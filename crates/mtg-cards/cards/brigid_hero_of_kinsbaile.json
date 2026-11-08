@@ -1,0 +1,34 @@
+{
+  "oracle_id": "929ad5c3-4efe-44c3-93ac-eda432814385",
+  "name": "Brigid, Hero of Kinsbaile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brigid, Hero of Kinsbaile",
+      "oracle_fingerprint": "88d940c1a3d27be7e8b0b23d6581190f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": ["Attacking", "Blocking"] },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -71,6 +71,7 @@ fn with_sentence(ability: &Ability, sentence: &str) -> Vec<String> {
         } => {
             targets.clear();
             *effects = vec![Effect::Draw {
+                bind: None,
                 who: Ref::You,
                 count: Amount::one(),
             }];

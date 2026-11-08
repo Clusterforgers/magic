@@ -22,6 +22,14 @@ use crate::triggers::DelayedId;
 pub enum Grant {
     /// A continuous effect that a resolved spell or ability began (`Effect::Continuous`), named by its id.
     Effect(EffectId),
+    /// The ability `ability` among the rules printed on the card of `donor`, which an object has because a static ability
+    /// says it has the abilities of that card (`Modification::GainAbilitiesOf`).
+    Borrowed {
+        /// The card the ability is printed on.
+        donor: ObjectId,
+        /// The ability's index among the rules of that card.
+        ability: usize,
+    },
     /// The modification `index` of the static ability `rule` printed on the card of `source`, where `rule` is the
     /// static's index among the rules of that card.
     Static {
@@ -57,6 +65,14 @@ impl AbilitySource {
     /// Whether this is the printed source, which a serialized [`AbilityRef`] leaves out.
     pub const fn is_printed(&self) -> bool {
         matches!(self, AbilitySource::Printed)
+    }
+
+    /// The permanent whose static ability gave the ability (`Ref::Granter`), when a static did.
+    pub const fn granter(&self) -> Option<ObjectId> {
+        match self {
+            AbilitySource::Granted(Grant::Static { source, .. }) => Some(*source),
+            _ => None,
+        }
     }
 }
 
@@ -126,6 +142,11 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub source: Option<ObjectRef>,
+    /// What the subject went against (`Ref::Against`): the player, planeswalker or battle an attacker attacks, the attacker a
+    /// creature blocks; none for any other event.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub against: Option<Target>,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]

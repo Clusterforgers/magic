@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c5866507-ef3b-446a-99ea-d31d974bdb01",
+  "name": "Predatory Focus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predatory Focus",
+      "oracle_fingerprint": "03f868712778956df57d39ae5522afff",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": {
+                      "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "quirk": "AssignsAsUnblocked"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

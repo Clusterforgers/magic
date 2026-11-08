@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d66e89a3-d582-4867-899c-f560b8a5b973",
+  "name": "Soul Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Scourge",
+      "oracle_fingerprint": "5743b1386cde8d40f546a0ee4db38bb5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } },
+              { "Forget": { "slot": "remembered" } },
+              { "Remember": { "what": { "Target": 0 }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "who": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "amount": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

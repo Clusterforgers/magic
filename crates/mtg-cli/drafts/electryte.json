@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5ff0c25f-4593-460b-9d7f-d9c37f135a18",
+  "name": "Electryte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electryte",
+      "oracle_fingerprint": "0d33254d4186e8a571fd604bd3f6e7c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Defending", "combat": true } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, "Blocking"] },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8f7f4061-8998-40e9-b980-c63f27e7a5cd",
+  "name": "Safe Haven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Safe Haven",
+      "oracle_fingerprint": "9bc889a195075f73b1ae9a5ecc09640f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

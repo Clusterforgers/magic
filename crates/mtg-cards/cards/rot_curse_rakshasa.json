@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9fee2572-8864-475c-bade-a64e36ef69c4",
+  "name": "Rot-Curse Rakshasa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rot-Curse Rakshasa",
+      "oracle_fingerprint": "b44f50b86319130c824ca0310f5df4ab",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Decayed" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{B}{B}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "decayed" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "116bf8c6-8488-4eff-b350-b3ea821353b1",
+  "oracle_id": "5182de2d-aceb-450e-bd20-8bc7db124334",
+  "multiverse_ids": [
+    667651
+  ],
+  "mtgo_id": 128088,
+  "tcgplayer_id": 555881,
+  "cardmarket_id": 774642,
+  "name": "Mary Read and Anne Bonny",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/116bf8c6-8488-4eff-b350-b3ea821353b1",
+  "scryfall_uri": "https://scryfall.com/card/acr/61/mary-read-and-anne-bonny?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.jpg?1783910969",
+    "normal": "https://cards.scryfall.io/normal/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.jpg?1783910969",
+    "large": "https://cards.scryfall.io/large/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.jpg?1783910969",
+    "png": "https://cards.scryfall.io/png/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.png?1783910969",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.jpg?1783910969",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.jpg?1783910969",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.webp?1783910969",
+    "grid": "https://cards.scryfall.io/grid/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.webp?1783910969",
+    "display": "https://cards.scryfall.io/display/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.webp?1783910969",
+    "art": "https://cards.scryfall.io/art/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.webp?1783910969",
+    "crop": "https://cards.scryfall.io/crop/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.webp?1783910969",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/1/116bf8c6-8488-4eff-b350-b3ea821353b1.jpg?1783910969"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Assassin Pirate",
+  "oracle_text": "Haste\n{T}: Draw a card, then discard a card.\nWhenever you discard an Island, Pirate, or Vehicle card, create a tapped Treasure token.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Treasure",
+    "Haste"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "536a82d3-f5e2-46b7-969e-84683f937b38",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/536a82d3-f5e2-46b7-969e-84683f937b38"
+    },
+    {
+      "object": "related_card",
+      "id": "f7b07542-b347-43ca-8203-cbf648d5426c",
+      "component": "combo_piece",
+      "name": "Mary Read and Anne Bonny",
+      "type_line": "Legendary Creature — Human Assassin Pirate",
+      "uri": "https://api.scryfall.com/cards/f7b07542-b347-43ca-8203-cbf648d5426c"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/116bf8c6-8488-4eff-b350-b3ea821353b1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5182de2d-aceb-450e-bd20-8bc7db124334&unique=prints",
+  "collector_number": "61",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Pirating might be seen as a man's life, but I guarantee: it's the most liberty a woman's going to find in this world.\"\n—Anne Bonny",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wangjie Li",
+  "artist_ids": [
+    "eef3629c-af13-4cc4-a5d8-3d2ae6dd4ed6"
+  ],
+  "illustration_id": "02384c5b-2916-4c3d-98d8-67f7db67e19a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5432,
+  "penny_rank": 12882,
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": "0.49",
+    "usd_etched": null,
+    "eur": "0.73",
+    "eur_foil": "0.64",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667651&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMary%2BRead%2Band%2BAnne%2BBonny",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMary%2BRead%2Band%2BAnne%2BBonny",
+    "edhrec": "https://edhrec.com/route/?cc=Mary+Read+and+Anne+Bonny"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F555881%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=774642&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128088?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

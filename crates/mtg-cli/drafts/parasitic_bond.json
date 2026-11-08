@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9d973df5-b2e8-4af8-8379-0f8282e1e62a",
+  "name": "Parasitic Bond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parasitic Bond",
+      "oracle_fingerprint": "8e9900a0cc482097d28e4f19f4618bba",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

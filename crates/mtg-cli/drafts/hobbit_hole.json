@@ -1,0 +1,34 @@
+{
+  "oracle_id": "17492186-9814-4c41-8111-1f000a96c212",
+  "name": "Hobbit Hole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hobbit Hole",
+      "oracle_fingerprint": "bf64d40a1c11e499c408a67de37dc573",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Halfling" }], "cost": "{4}" } } }
+      ]
+    }
+  ]
+}

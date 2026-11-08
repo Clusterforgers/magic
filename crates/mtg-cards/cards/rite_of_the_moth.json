@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a7fea839-d7d7-48b4-aeaf-133767532e32",
+  "name": "Rite of the Moth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of the Moth",
+      "oracle_fingerprint": "de86b92bf4ea28b20b2242205d2aaadf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{W}{W}{B}" } }
+      ]
+    }
+  ]
+}

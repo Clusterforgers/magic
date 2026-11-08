@@ -1,0 +1,61 @@
+{
+  "oracle_id": "55a253f9-f44d-4898-af83-fea68b7b279d",
+  "name": "Blood Lust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Lust",
+      "oracle_fingerprint": "8ca4780c0d2cab363e4c19c47ad4c080",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": 4,
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Sum": [
+                                        { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
+                                        -1
+                                      ]
+                                    },
+                                    "op": "Ge",
+                                    "right": 4
+                                  }
+                                },
+                                "then": 4,
+                                "otherwise": {
+                                  "Sum": [
+                                    { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
+                                    -1
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

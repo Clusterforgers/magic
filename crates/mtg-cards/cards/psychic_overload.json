@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c50354fc-7dfe-4ea7-87dd-488ca6213344",
+  "name": "Psychic Overload",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Overload",
+      "oracle_fingerprint": "082e306fc0913ba811c319c398e20336",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Discard": { "count": 2, "filter": [{ "Type": "Artifact" }] } }],
+                    "effects": [{ "Untap": { "what": "This" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

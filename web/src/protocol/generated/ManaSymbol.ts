@@ -4,4 +4,4 @@ import type { Color } from "./Color";
 /**
  * One symbol of a mana cost (CR 107.4).
  */
-export type ManaSymbol = { "Generic": number } | { "Colored": Color } | "Colorless" | { "Hybrid": [Color, Color] } | { "MonoHybrid": Color } | { "Phyrexian": Color } | { "HybridPhyrexian": [Color, Color] } | { "ColorlessHybrid": Color } | "ColorlessPhyrexian";
+export type ManaSymbol = { "Generic": number } | { "Colored": Color } | "Colorless" | { "Hybrid": [Color, Color] } | { "MonoHybrid": Color } | { "Phyrexian": Color } | { "HybridPhyrexian": [Color, Color] } | { "ColorlessHybrid": Color } | "ColorlessPhyrexian" | "Snow";

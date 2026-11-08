@@ -1,0 +1,26 @@
+{
+  "oracle_id": "13d5b664-db13-406e-9956-3d9fe4177d33",
+  "name": "Scale the Heights",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scale the Heights",
+      "oracle_fingerprint": "c4e5440ef2eba8551b9a90e1dbc98ec9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "GainLife": { "amount": 2 } },
+              { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

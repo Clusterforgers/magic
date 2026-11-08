@@ -1,0 +1,76 @@
+{
+  "oracle_id": "5a775f50-20f8-4a8f-868c-8907305bfad6",
+  "name": "Zoraline, Cosmos Caller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zoraline, Cosmos Caller",
+      "oracle_fingerprint": "348aa020ff4133d5f8bbf0ea19e9b1d2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Bat" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Mana": "{W}{B}" }, { "PayLife": 2 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Not": { "Type": "Land" } },
+                                { "OwnedBy": "You" },
+                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Battle" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" }
+                                  ]
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": {
+                                "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d2c6502d-fefd-4c9f-9d7b-6dfcc43316e1",
+  "name": "Sanguine Brushstroke",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sanguine Brushstroke",
+      "oracle_fingerprint": "ff153483c57ba2bcf6322e3e8014402a",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 130 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": { "what": [{ "Subtype": "Blood" }, "Token", { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

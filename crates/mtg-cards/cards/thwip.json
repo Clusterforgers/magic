@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f7d11254-b48a-4016-a035-c0d6642fdfae",
+  "name": "Thwip!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thwip!",
+      "oracle_fingerprint": "3fd1dfd54159329df1ff699d22cee1c9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Spider" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

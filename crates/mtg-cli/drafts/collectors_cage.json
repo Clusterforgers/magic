@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8f5b71fd-469f-4370-a806-9bfefbae03a2",
+  "name": "Collector's Cage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collector's Cage",
+      "oracle_fingerprint": "dc161c415e267266ece1d832a11cf573",
+      "abilities": [
+        { "Keyword": { "Hideaway": 5 } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "stat": "Power"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                        "as": "card",
+                        "effects": [
+                          {
+                            "CastFromZone": {
+                              "what": { "Bound": "card" },
+                              "free": true,
+                              "play": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

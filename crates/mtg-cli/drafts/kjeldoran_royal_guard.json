@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8137e765-4df9-469f-a527-dee91d58fb7e",
+  "name": "Kjeldoran Royal Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran Royal Guard",
+      "oracle_fingerprint": "9bf88635141a688b668d626618278a85",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": "You",
+                      "source": [{ "Type": "Creature" }, "Unblocked"],
+                      "combat": true
+                    }
+                  },
+                  "by": {
+                    "Instead": [
+                      { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

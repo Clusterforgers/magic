@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f515cdc8-c39f-4c98-a970-faafad458ec2",
+  "name": "Wandering Treefolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wandering Treefolk",
+      "oracle_fingerprint": "c82a231cb642ca2ccbf66b954c0661f6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{7}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Seek": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

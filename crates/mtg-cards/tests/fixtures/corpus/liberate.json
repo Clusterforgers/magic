@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "96794470-31ea-478f-b11c-dc8342a508e2",
+  "oracle_id": "f17e6c85-4813-4b0f-a0e9-d295822e9bb5",
+  "multiverse_ids": [
+    22953
+  ],
+  "mtgo_id": 14555,
+  "mtgo_foil_id": 14556,
+  "tcgplayer_id": 7541,
+  "cardmarket_id": 3537,
+  "name": "Liberate",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/96794470-31ea-478f-b11c-dc8342a508e2",
+  "scryfall_uri": "https://scryfall.com/card/inv/21/liberate?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:28:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.jpg?1783945715",
+    "normal": "https://cards.scryfall.io/normal/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.jpg?1783945715",
+    "large": "https://cards.scryfall.io/large/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.jpg?1783945715",
+    "png": "https://cards.scryfall.io/png/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.png?1783945715",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.jpg?1783945715",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.jpg?1783945715",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.webp?1783945715",
+    "grid": "https://cards.scryfall.io/grid/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.webp?1783945715",
+    "display": "https://cards.scryfall.io/display/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.webp?1783945715",
+    "art": "https://cards.scryfall.io/art/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.webp?1783945715",
+    "crop": "https://cards.scryfall.io/crop/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.webp?1783945715",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/6/96794470-31ea-478f-b11c-dc8342a508e2.jpg?1783945715"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile target creature you control. Return that card to the battlefield under its owner's control at the beginning of the next end step.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/96794470-31ea-478f-b11c-dc8342a508e2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af17e6c85-4813-4b0f-a0e9-d295822e9bb5&unique=prints",
+  "collector_number": "21",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Not everyone gets a second chance.\"\n—Hanna",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alan Pollack",
+  "artist_ids": [
+    "70c20ea3-5ad6-4082-a337-6e994ae5828e"
+  ],
+  "illustration_id": "a8b9d37f-9475-4c15-9c51-365f493917ce",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18352,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "4.91",
+    "usd_etched": null,
+    "eur": "0.51",
+    "eur_foil": "1.85",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=22953&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLiberate",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLiberate",
+    "edhrec": "https://edhrec.com/route/?cc=Liberate"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7541%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3537&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14555?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "9c3be33b-0be9-49ec-8160-898cbcab8814",
+  "name": "Toxic Stench",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toxic Stench",
+      "oracle_fingerprint": "5e604d045f7e0f475c1f4e795e5df67e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "op": "Lt",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

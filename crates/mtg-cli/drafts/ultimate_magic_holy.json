@@ -1,0 +1,58 @@
+{
+  "oracle_id": "1eae48aa-f01d-4398-a68e-3b5af0542ab1",
+  "name": "Ultimate Magic: Holy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultimate Magic: Holy",
+      "oracle_fingerprint": "21631588db329e6062dd7f16ed408b6a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Matches": {
+                              "subject": "This",
+                              "selector": [{ "WasCast": { "from": "Exile" } }]
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "to": "You" } },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{2}{W}" } }
+      ]
+    }
+  ]
+}

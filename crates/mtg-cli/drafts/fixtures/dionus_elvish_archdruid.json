@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "5a3dfd71-9ec0-4842-b99d-c1833679f0c5",
+  "oracle_id": "d5e5cf55-eb9e-4f01-9056-791215411b27",
+  "multiverse_ids": [
+    680952
+  ],
+  "mtgo_id": 132784,
+  "arena_id": 93616,
+  "tcgplayer_id": 590235,
+  "cardmarket_id": 795473,
+  "name": "Dionus, Elvish Archdruid",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/5a3dfd71-9ec0-4842-b99d-c1833679f0c5",
+  "scryfall_uri": "https://scryfall.com/card/j25/52/dionus-elvish-archdruid?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:14:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.jpg?1783908855",
+    "normal": "https://cards.scryfall.io/normal/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.jpg?1783908855",
+    "large": "https://cards.scryfall.io/large/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.jpg?1783908855",
+    "png": "https://cards.scryfall.io/png/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.png?1783908855",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.jpg?1783908855",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.jpg?1783908855",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.webp?1783908855",
+    "grid": "https://cards.scryfall.io/grid/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.webp?1783908855",
+    "display": "https://cards.scryfall.io/display/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.webp?1783908855",
+    "art": "https://cards.scryfall.io/art/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.webp?1783908855",
+    "crop": "https://cards.scryfall.io/crop/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.webp?1783908855",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/a/5a3dfd71-9ec0-4842-b99d-c1833679f0c5.jpg?1783908855"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Elf Druid",
+  "oracle_text": "Elves you control have \"Whenever this creature becomes tapped during your turn, untap it and put a +1/+1 counter on it. This ability triggers only once each turn.\"",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9201567c-bab5-4720-aac9-260e6741f115",
+  "set": "j25",
+  "set_name": "Foundations Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/9201567c-bab5-4720-aac9-260e6741f115",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5a3dfd71-9ec0-4842-b99d-c1833679f0c5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad5e5cf55-eb9e-4f01-9056-791215411b27&unique=prints",
+  "collector_number": "52",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"My people are like the great magnigoth trees. We've seen ice, flood, invasions, and wars, yet our roots remain strong.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "BODAX",
+  "artist_ids": [
+    "62c3536b-ef57-4815-bfc5-a29be487d2a3"
+  ],
+  "illustration_id": "3b1d5813-f129-4956-bf26-847fe30e6628",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2441,
+  "prices": {
+    "usd": "15.12",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "14.91",
+    "eur_foil": null,
+    "tix": "4.53"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=680952&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDionus%252C%2BElvish%2BArchdruid",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDionus%252C%2BElvish%2BArchdruid",
+    "edhrec": "https://edhrec.com/route/?cc=Dionus%2C+Elvish+Archdruid"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590235%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=795473&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132784?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

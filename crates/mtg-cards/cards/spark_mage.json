@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f427a1ed-d7ca-40e5-a759-a1096bad166d",
+  "name": "Spark Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spark Mage",
+      "oracle_fingerprint": "455cbbc729c551e8ad004a4a95d35a0a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

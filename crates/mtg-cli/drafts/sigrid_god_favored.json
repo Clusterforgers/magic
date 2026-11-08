@@ -1,0 +1,32 @@
+{
+  "oracle_id": "84d37104-2681-42c1-9d19-91a2ebe6a435",
+  "name": "Sigrid, God-Favored",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigrid, God-Favored",
+      "oracle_fingerprint": "8f50589c5f778502a0074d3687264ea4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "Protection": [{ "Type": "Creature" }, { "Subtype": "God" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

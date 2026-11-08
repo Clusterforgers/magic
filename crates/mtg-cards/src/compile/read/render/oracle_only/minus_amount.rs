@@ -17,6 +17,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             source,
             to,
             amount: Amount::Sum(parts),
+            unpreventable: false,
+            ..
         },
     ] = effects.as_slice()
     else {
@@ -35,6 +37,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let mut plain = ability.clone();
     if let Ability::Triggered { effects, .. } = &mut plain {
         *effects = vec![Effect::DealDamage {
+            excess: None,
+            unpreventable: false,
             source: source.clone(),
             to: to.clone(),
             amount: Amount::X,

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "3e50d4c9-343b-42e7-b777-9d479e97e776",
+  "name": "Crystallization",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystallization",
+      "oracle_fingerprint": "fff106f7e6ecfe998387893a84b6dcee",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Exile": { "what": "TriggeringFirst" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

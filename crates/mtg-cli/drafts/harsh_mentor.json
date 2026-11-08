@@ -1,0 +1,28 @@
+{
+  "oracle_id": "168336e2-d795-4b75-bf21-ce128b0dd7b0",
+  "name": "Harsh Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harsh Mentor",
+      "oracle_fingerprint": "e1aa3af1c8715d1c719c0dddbfb2b19c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "Opponents",
+                "what": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }] },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

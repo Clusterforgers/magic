@@ -1,0 +1,57 @@
+{
+  "oracle_id": "472756f7-7fb8-4630-be14-d78bb9c99157",
+  "name": "Sigardian Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigardian Paladin",
+      "oracle_fingerprint": "e86c8d4657a2fa976e2f9fa62c66b057",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "PlusOneCountersPut",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{G}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasCounter": "+1/+1" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

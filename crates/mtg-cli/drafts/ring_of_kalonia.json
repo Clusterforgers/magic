@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d4344e5e-148b-4df9-88e4-ca91afcc32e0",
+  "name": "Ring of Kalonia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ring of Kalonia",
+      "oracle_fingerprint": "73ad458bde3832944e2c8ef2a6af699c",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Trample" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Attached",
+                      "selector": [{ "Type": "Creature" }, { "Color": "Green" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

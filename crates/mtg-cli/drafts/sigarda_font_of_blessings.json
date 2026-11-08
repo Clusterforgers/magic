@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5fe07a76-f261-4f16-8a15-571bed707261",
+  "name": "Sigarda, Font of Blessings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigarda, Font of Blessings",
+      "oracle_fingerprint": "16c6484dc1d93f585549d2e6275509b5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": ["Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Angel" }, { "Subtype": "Human" }] },
+                  "TopOfLibrary",
+                  { "Not": { "Type": "Land" } }
+                ],
+                "from": "Library"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

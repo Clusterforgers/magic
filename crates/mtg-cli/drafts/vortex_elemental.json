@@ -1,0 +1,64 @@
+{
+  "oracle_id": "4acb586c-dd87-452c-b3d8-728a4396aae6",
+  "name": "Vortex Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vortex Elemental",
+      "oracle_fingerprint": "8f17deff4d9f4144cf7571da08fb57f4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          "This",
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "Blocks": "This" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "BlockedBy": "This" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

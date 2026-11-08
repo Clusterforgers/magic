@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9e60c102-412e-4956-a7bb-a2cd737d6692",
+  "name": "Zhalfirin Crusader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zhalfirin Crusader",
+      "oracle_fingerprint": "0e1909fb5899bda0df590e7b3973fa42",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

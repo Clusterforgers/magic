@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c19aaf86-b098-4e7d-af50-9e02ae3cda55",
+  "name": "Hagi Mob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hagi Mob",
+      "oracle_fingerprint": "01d00ba005699a80230d6b534ba0d041",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

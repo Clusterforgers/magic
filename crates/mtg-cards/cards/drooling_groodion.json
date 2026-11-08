@@ -1,0 +1,43 @@
+{
+  "oracle_id": "b027a80b-30cf-4e7b-8902-efd584e0edf7",
+  "name": "Drooling Groodion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drooling Groodion",
+      "oracle_fingerprint": "f267f32647a431314068d546512342cf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}{G}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

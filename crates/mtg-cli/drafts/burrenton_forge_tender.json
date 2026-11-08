@@ -1,0 +1,39 @@
+{
+  "oracle_id": "70bb275b-3458-4690-a50f-b231fbf0bccb",
+  "name": "Burrenton Forge-Tender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burrenton Forge-Tender",
+      "oracle_fingerprint": "7f96d9c0cea34ab6772487aa116c69d6",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Red" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

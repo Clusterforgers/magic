@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "45851394-b8f3-4713-8239-afcb387d47c5",
+  "oracle_id": "97f9b82f-b3cf-44ff-9abc-2d92d7cbaa27",
+  "multiverse_ids": [
+    633142
+  ],
+  "mtgo_id": 117304,
+  "tcgplayer_id": 512239,
+  "cardmarket_id": 730201,
+  "name": "Ellivere of the Wild Court",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/45851394-b8f3-4713-8239-afcb387d47c5",
+  "scryfall_uri": "https://scryfall.com/card/woc/2/ellivere-of-the-wild-court?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:56:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.jpg?1783914992",
+    "normal": "https://cards.scryfall.io/normal/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.jpg?1783914992",
+    "large": "https://cards.scryfall.io/large/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.jpg?1783914992",
+    "png": "https://cards.scryfall.io/png/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.png?1783914992",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.jpg?1783914992",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.jpg?1783914992",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.webp?1783914992",
+    "grid": "https://cards.scryfall.io/grid/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.webp?1783914992",
+    "display": "https://cards.scryfall.io/display/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.webp?1783914992",
+    "art": "https://cards.scryfall.io/art/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.webp?1783914992",
+    "crop": "https://cards.scryfall.io/crop/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.webp?1783914992",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/5/45851394-b8f3-4713-8239-afcb387d47c5.jpg?1783914992"
+  },
+  "mana_cost": "{2}{G}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Knight",
+  "oracle_text": "Whenever Ellivere enters or attacks, create a Virtuous Role token attached to another target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 for each enchantment you control.)\nWhenever an enchanted creature you control deals combat damage to a player, draw a card.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Role token"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "27927100-2587-4e05-9957-eb183d46c1f0",
+      "component": "token",
+      "name": "Monster // Virtuous",
+      "type_line": "Token Enchantment — Aura Role // Token Enchantment — Aura Role",
+      "uri": "https://api.scryfall.com/cards/27927100-2587-4e05-9957-eb183d46c1f0"
+    },
+    {
+      "object": "related_card",
+      "id": "dd2e0242-68ad-48ae-9f1b-7c4089b9fe04",
+      "component": "combo_piece",
+      "name": "Ellivere of the Wild Court",
+      "type_line": "Legendary Creature — Human Knight",
+      "uri": "https://api.scryfall.com/cards/dd2e0242-68ad-48ae-9f1b-7c4089b9fe04"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "51c0814a-2db2-4182-9aac-77340e9a540d",
+  "set": "woc",
+  "set_name": "Wilds of Eldraine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/51c0814a-2db2-4182-9aac-77340e9a540d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/45851394-b8f3-4713-8239-afcb387d47c5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A97f9b82f-b3cf-44ff-9abc-2d92d7cbaa27&unique=prints",
+  "collector_number": "2",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dmitry Burmak",
+  "artist_ids": [
+    "9872f5c0-274a-48ce-a9ad-6f0d5654e29c"
+  ],
+  "illustration_id": "d9bfeb35-3201-4ea3-b4e7-5b1c940bd6e2",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6551,
+  "prices": {
+    "usd": "0.43",
+    "usd_foil": "0.55",
+    "usd_etched": null,
+    "eur": "0.67",
+    "eur_foil": "0.56",
+    "tix": "0.75"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=633142&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEllivere%2Bof%2Bthe%2BWild%2BCourt",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEllivere%2Bof%2Bthe%2BWild%2BCourt",
+    "edhrec": "https://edhrec.com/route/?cc=Ellivere+of+the+Wild+Court"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F512239%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=730201&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117304?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

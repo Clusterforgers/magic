@@ -1,0 +1,101 @@
+{
+  "oracle_id": "6c948f71-5c86-450c-8828-df4d8deaf1dd",
+  "name": "Intermediate Chirography",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intermediate Chirography",
+      "oracle_fingerprint": "4c88dee5fde30fedae70a9113713c37e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Inkling",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Inkling"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "LifeLost": { "who": "You" } }, "nth": 1 } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "All": [
+                { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Died",
+                        "who": "EachPlayer",
+                        "filter": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Inkling",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Inkling"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

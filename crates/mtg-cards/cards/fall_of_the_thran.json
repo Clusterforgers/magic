@@ -1,0 +1,79 @@
+{
+  "oracle_id": "341803d9-fd29-4721-81bf-ae9b7f1c01d2",
+  "name": "Fall of the Thran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fall of the Thran",
+      "oracle_fingerprint": "adfb39f09d6541020d3e89afd08f976d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Land" }] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

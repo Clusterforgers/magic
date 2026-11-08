@@ -1,0 +1,54 @@
+{
+  "oracle_id": "4de71245-9d9b-44ca-9c13-37dc3dfbbcd5",
+  "name": "Mine Worker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mine Worker",
+      "oracle_fingerprint": "100d38e628b5a4cc347c7d3029633c1d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Product": [
+                              {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "Named": "Tower Worker" }
+                                ]
+                              },
+                              {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "Named": "Power Plant Worker" }
+                                ]
+                              }
+                            ]
+                          },
+                          "op": "Gt",
+                          "right": 0
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

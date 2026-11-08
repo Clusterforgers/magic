@@ -1,0 +1,57 @@
+{
+  "oracle_id": "adb34f27-abfd-4323-9b5a-b68166213a46",
+  "name": "Chomping Mastasaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chomping Mastasaur",
+      "oracle_fingerprint": "261ccdbeb62240419b42ab4b13c03eb3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              { "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": {
+                                "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

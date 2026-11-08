@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bed7ac55-fe40-46d0-bc22-1c8d11f41459",
+  "name": "Rogue Elephant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rogue Elephant",
+      "oracle_fingerprint": "f12b7dfceeefaa06f44f86163132dd93",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Forest" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

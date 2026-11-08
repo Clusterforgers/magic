@@ -1,0 +1,19 @@
+{
+  "oracle_id": "957e8ded-90e7-4bc6-98c1-eb6af1fd0ce5",
+  "name": "Strip Bare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strip Bare",
+      "oracle_fingerprint": "49631a30affed7a746d6b4fc9cb7f90d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Each": [{ "AttachedTo": { "Target": 0 } }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

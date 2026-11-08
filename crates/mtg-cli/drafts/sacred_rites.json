@@ -1,0 +1,54 @@
+{
+  "oracle_id": "860a0e32-135b-4972-a1af-ebac60cae08f",
+  "name": "Sacred Rites",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacred Rites",
+      "oracle_fingerprint": "2a3554ffed29edcde72e9ffcc4136cb9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": 0,
+                        "toughness": {
+                          "Count": [
+                            { "Is": { "Bound": "discarded" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

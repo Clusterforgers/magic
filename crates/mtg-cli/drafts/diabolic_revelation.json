@@ -1,0 +1,22 @@
+{
+  "oracle_id": "dcf438a7-adc4-4658-b75a-2dd633f595a7",
+  "name": "Diabolic Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diabolic Revelation",
+      "oracle_fingerprint": "a4e2b532db29310fbd47f62db0bc6b95",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "count": { "min": 0, "max": "X" }, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

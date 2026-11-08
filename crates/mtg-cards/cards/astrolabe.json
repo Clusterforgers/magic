@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d19567ac-1f52-40eb-b2cf-4c791823ec92",
+  "name": "Astrolabe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astrolabe",
+      "oracle_fingerprint": "0e07d87c146e66e227f7a46ce6ff7eb7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 2 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

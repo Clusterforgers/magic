@@ -1,0 +1,50 @@
+{
+  "oracle_id": "591fe685-767e-4e6e-905e-cc8b423caa19",
+  "name": "Echoing Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echoing Return",
+      "oracle_fingerprint": "f7b9bb2c18a51becdebf26c3919d1c26",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Not": { "Is": { "Target": 0 } } } },
+                                { "Not": { "SharesName": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

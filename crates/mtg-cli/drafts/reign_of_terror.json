@@ -1,0 +1,51 @@
+{
+  "oracle_id": "67d12a5a-9e0c-4550-86ad-cd1e173fea8f",
+  "name": "Reign of Terror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reign of Terror",
+      "oracle_fingerprint": "38a6079ba8559c07eb66ab4e3fdc7efb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "Color": "White" }] },
+                        "regenerate": false,
+                        "as": "destroyed"
+                      }
+                    },
+                    {
+                      "LoseLife": {
+                        "amount": { "Times": { "by": 2, "of": { "Bound": "destroyed~moved" } } }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "Color": "Green" }] },
+                        "regenerate": false,
+                        "as": "destroyed2"
+                      }
+                    },
+                    {
+                      "LoseLife": {
+                        "amount": { "Times": { "by": 2, "of": { "Bound": "destroyed2~moved" } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

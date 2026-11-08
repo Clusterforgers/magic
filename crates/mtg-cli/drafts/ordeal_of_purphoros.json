@@ -1,0 +1,42 @@
+{
+  "oracle_id": "652d282d-6dec-4043-a531-480f12ba471e",
+  "name": "Ordeal of Purphoros",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ordeal of Purphoros",
+      "oracle_fingerprint": "ac50e57c04c761e1f72655820ff603c7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 3 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["This"], "by": "You" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

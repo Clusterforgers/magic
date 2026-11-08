@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4dab6a96-4376-4aea-983d-406167993214",
+  "name": "Anje Falkenrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anje Falkenrath",
+      "oracle_fingerprint": "b68b37f0a5c4ac9ddd6e64d3b58ae970",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Activated": { "cost": ["Tap", { "Discard": {} }], "effects": [{ "Draw": {} }] } },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "HasKeywordNamed": "Madness" }], "by": "You" } },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

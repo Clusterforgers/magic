@@ -1,0 +1,28 @@
+{
+  "oracle_id": "749683c9-8cc0-4e8e-8d90-adda5e5f4e93",
+  "name": "Hidetsugu's Second Rite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidetsugu's Second Rite",
+      "oracle_fingerprint": "f45123e3428a3d607fb3b4add91aafe9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Life": { "Target": 0 } }, "op": "Eq", "right": 10 }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 10 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

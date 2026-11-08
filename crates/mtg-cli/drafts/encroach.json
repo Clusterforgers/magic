@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b9959d63-5489-4ed1-a04e-9d6ba4a5f68e",
+  "name": "Encroach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Encroach",
+      "oracle_fingerprint": "5c5c93d8064caac06fda0adfb2283f7a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

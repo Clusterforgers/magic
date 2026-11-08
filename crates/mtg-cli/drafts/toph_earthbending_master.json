@@ -1,0 +1,79 @@
+{
+  "oracle_id": "ad5d3e7e-bf8c-4fa3-a81e-1523aec2585f",
+  "name": "Toph, Earthbending Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toph, Earthbending Master",
+      "oracle_fingerprint": "bba89099e6b295d75cf7c21108b6d4bc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Graveyard"
+                        }
+                      },
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Exile"
+                        }
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "tapped": true } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

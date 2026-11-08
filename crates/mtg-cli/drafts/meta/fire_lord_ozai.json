@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Exile the top card of each opponent's library. Until end of turn, you may play one of those cards without paying its mana cost.",
+      "abilities": [],
+      "gap": "key:Trigger.SpellCast.Static"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME attacks, you may sacrifice another creature. If you do, add an amount of {R} equal to the sacrificed creature's power. Until end of combat, you don't lose this mana as steps end.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 202
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 203,
+          "end": 335
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

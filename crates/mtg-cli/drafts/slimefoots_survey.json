@@ -1,0 +1,70 @@
+{
+  "oracle_id": "8ace9425-fcdd-45b0-abf0-1a7d601de25e",
+  "name": "Slimefoot's Survey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slimefoot's Survey",
+      "oracle_fingerprint": "88d3a160f99c9bcf59e820a808e8ac85",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Plains" },
+                        { "Subtype": "Island" },
+                        { "Subtype": "Swamp" },
+                        { "Subtype": "Mountain" },
+                        { "Subtype": "Forest" }
+                      ]
+                    }
+                  ],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "as": "top2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "top2" },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept3",
+                  "rest_as": "rest4"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept3" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest4" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

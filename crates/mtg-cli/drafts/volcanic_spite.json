@@ -1,0 +1,62 @@
+{
+  "oracle_id": "10426070-2e6f-47a5-bc8d-16dcfb058b26",
+  "name": "Volcanic Spite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volcanic Spite",
+      "oracle_fingerprint": "dae4fb5ca036eeb1c5e32fa844818fa3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Creature" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

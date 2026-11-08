@@ -1,0 +1,57 @@
+{
+  "oracle_id": "edf429a8-6a4d-4d2a-b0ca-c0c72a0698a3",
+  "name": "Grim Reaper, Lethal Legionnaire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Reaper, Lethal Legionnaire",
+      "oracle_fingerprint": "094f08373f61a3372b37dd42bdb30664",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{3}{B}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": {
+                                "Battlefield": {
+                                  "tapped": true,
+                                  "counters": [[{ "Other": "finality" }, 1]]
+                                }
+                              },
+                              "as": "moved"
+                            }
+                          },
+                          { "JoinAttack": { "what": { "Bound": "moved" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

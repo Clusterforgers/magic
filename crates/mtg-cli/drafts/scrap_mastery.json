@@ -1,0 +1,33 @@
+{
+  "oracle_id": "62dac700-49f7-4745-af67-37d2a81dcebc",
+  "name": "Scrap Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrap Mastery",
+      "oracle_fingerprint": "522d71aea90375de06c4a70687ac7456",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Artifact" }, { "In": "Graveyard" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Artifact" }],
+                  "count": { "Count": [{ "Type": "Artifact" }] }
+                }
+              },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

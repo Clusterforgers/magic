@@ -1,0 +1,23 @@
+{
+  "oracle_id": "41074ef0-8686-41b5-9b99-7103192da915",
+  "name": "Vectis Gloves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vectis Gloves",
+      "oracle_fingerprint": "42862f4f1720f0c7f3a1edc8d126cda0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "AddKeyword": { "Landwalk": [{ "Type": "Land" }, { "Type": "Artifact" }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

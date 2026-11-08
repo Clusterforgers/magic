@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8f8ebf49-37c5-4da0-9cee-84ad22ab5d37",
+  "name": "Heartstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartstone",
+      "oracle_fingerprint": "68e701b021e6f9b1bd1140b767a5701a",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Creature" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Any",
+            "least": 1
+          }
+        }
+      ]
+    }
+  ]
+}

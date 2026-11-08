@@ -1,0 +1,190 @@
+{
+  "object": "card",
+  "id": "75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5",
+  "oracle_id": "3b102ccc-7629-457c-aba6-e9b00fd50c85",
+  "multiverse_ids": [],
+  "resource_id": "843EFD97BD0D16C788F2DA99C6E038B80C882B695C8B1353D9D8F827714D4484",
+  "mtgo_id": 141383,
+  "arena_id": 96086,
+  "tcgplayer_id": 618861,
+  "cardmarket_id": 824116,
+  "name": "Emet-Selch, Unsundered // Hades, Sorcerer of Eld",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5",
+  "scryfall_uri": "https://scryfall.com/card/fin/218/emet-selch-unsundered-hades-sorcerer-of-eld?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:36:19Z",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Elder Wizard // Legendary Creature — Avatar",
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Echo of the Lost",
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Emet-Selch, Unsundered",
+      "mana_cost": "{1}{U}{B}",
+      "type_line": "Legendary Creature — Elder Wizard",
+      "oracle_text": "Vigilance\nWhenever Emet-Selch enters or attacks, draw a card, then discard a card.\nAt the beginning of your upkeep, if there are fourteen or more cards in your graveyard, you may transform Emet-Selch.",
+      "colors": [
+        "B",
+        "U"
+      ],
+      "power": "2",
+      "toughness": "4",
+      "artist": "Néstor Ossandón Leal",
+      "artist_id": "7a6f1667-a8ac-47f5-a302-f71cb54b2adf",
+      "illustration_id": "45d1c55f-171a-409c-8841-46f6f24d5684",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "normal": "https://cards.scryfall.io/normal/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "large": "https://cards.scryfall.io/large/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "png": "https://cards.scryfall.io/png/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.png?1783906579",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "thumb": "https://cards.scryfall.io/thumb/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "grid": "https://cards.scryfall.io/grid/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "display": "https://cards.scryfall.io/display/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "art": "https://cards.scryfall.io/art/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "crop": "https://cards.scryfall.io/crop/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "jpeg": "https://cards.scryfall.io/normal/front/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Hades, Sorcerer of Eld",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar",
+      "oracle_text": "Vigilance\nEcho of the Lost — During your turn, you may play cards from your graveyard.\nIf a card or token would be put into your graveyard from anywhere, exile it instead.",
+      "colors": [
+        "B",
+        "U"
+      ],
+      "color_indicator": [
+        "B",
+        "U"
+      ],
+      "power": "6",
+      "toughness": "6",
+      "flavor_text": "\"What will become of our triumphs? Our hopes? Our... our despair?\"",
+      "artist": "Néstor Ossandón Leal",
+      "artist_id": "7a6f1667-a8ac-47f5-a302-f71cb54b2adf",
+      "illustration_id": "f04db53e-ab7f-48ad-bf3a-87eacb7de57e",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "normal": "https://cards.scryfall.io/normal/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "large": "https://cards.scryfall.io/large/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "png": "https://cards.scryfall.io/png/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.png?1783906579",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579",
+        "thumb": "https://cards.scryfall.io/thumb/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "grid": "https://cards.scryfall.io/grid/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "display": "https://cards.scryfall.io/display/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "art": "https://cards.scryfall.io/art/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "crop": "https://cards.scryfall.io/crop/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.webp?1783906579",
+        "jpeg": "https://cards.scryfall.io/normal/back/7/5/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5.jpg?1783906579"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/75cf4eb8-33e7-4dfc-b890-a7e3b5c1b9d5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3b102ccc-7629-457c-aba6-e9b00fd50c85&unique=prints",
+  "collector_number": "218",
+  "digital": false,
+  "rarity": "mythic",
+  "artist": "Néstor Ossandón Leal",
+  "artist_ids": [
+    "7a6f1667-a8ac-47f5-a302-f71cb54b2adf"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffxiv",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6233,
+  "penny_rank": 2329,
+  "prices": {
+    "usd": "1.76",
+    "usd_foil": "3.95",
+    "usd_etched": null,
+    "eur": "2.55",
+    "eur_foil": "3.96",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEmet-Selch%252C%2BUnsundered%2B%252F%252F%2BHades%252C%2BSorcerer%2Bof%2BEld",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEmet-Selch%252C%2BUnsundered%2B%252F%252F%2BHades%252C%2BSorcerer%2Bof%2BEld",
+    "edhrec": "https://edhrec.com/route/?cc=Emet-Selch%2C+Unsundered"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F618861%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824116&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141383?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "55c71732-6ba1-401d-8759-4d64dae22133",
+  "name": "Declaration of Naught",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Declaration of Naught",
+      "oracle_fingerprint": "c0eed12f4bf1054bfa8f186af5eae1e0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CardName" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": { "Object": ["Spell", "ChosenName"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

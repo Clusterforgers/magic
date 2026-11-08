@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8ce7f05c-6352-49e8-95b3-8ab87106b75e",
+  "name": "Draining Whelk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draining Whelk",
+      "oracle_fingerprint": "5eeadcd6184344ce3917ef24ed270415",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "RememberValue": {
+                  "value": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "ed43f1f9-ef96-47bc-8a54-e59154319f9d",
+  "name": "Alpharael, Stonechosen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alpharael, Stonechosen",
+      "oracle_fingerprint": "694f3eee57bac8aebdd0a1d97d524bae",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "DiscardRandom": 1 }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Any": [
+                        {
+                          "Compare": {
+                            "left": {
+                              "Tallied": { "who": "EachPlayer", "what": "NonlandPermanentsLeft" }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Defending",
+                  "amount": { "Half": { "of": { "Life": "Defending" }, "up": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

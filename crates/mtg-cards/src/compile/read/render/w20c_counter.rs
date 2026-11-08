@@ -31,6 +31,7 @@ impl Writer<'_> {
         let [
             Effect::Counter {
                 what: Ref::Triggering,
+                bind: None,
             },
         ] = unpaid
         else {

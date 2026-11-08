@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8a810017-06ac-4824-bc2f-a7d303d58ad7",
+  "name": "About Face",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "About Face",
+      "oracle_fingerprint": "6e52135956c37bcc74234d8e3b4801ec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

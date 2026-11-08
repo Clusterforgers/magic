@@ -1,0 +1,73 @@
+{
+  "oracle_id": "e71479c9-bb38-4112-bf8a-41b39a3ade51",
+  "name": "Pizza Face, Gastromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pizza Face, Gastromancer",
+      "oracle_fingerprint": "26a19a62bea76aefe9d2e22958bb246f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }, "Other"]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Not": { "Type": "Creature" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 0, "toughness": 0 } },
+                          { "AddSubtype": "Mutant" },
+                          { "AddType": "Creature" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{10}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 15 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

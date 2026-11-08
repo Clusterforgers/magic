@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8b2ba6f8-1060-4167-9941-3ab7bd4e0ca8",
+  "name": "Stasis Cell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stasis Cell",
+      "oracle_fingerprint": "c6e5cdf92651cc3fde144263ac16525a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

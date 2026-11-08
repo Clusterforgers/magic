@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ef75da10-1b33-4066-bd42-1111b5a94f75",
+  "name": "Blood Operative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Operative",
+      "oracle_fingerprint": "06e8c23de2d7839ad877a1bf1e7359ab",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Surveilled", "who": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 3 }],
+                  "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

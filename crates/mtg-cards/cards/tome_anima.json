@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e4a68bb3-5a79-4764-8223-acddd16fb660",
+  "name": "Tome Anima",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tome Anima",
+      "oracle_fingerprint": "25ed9050518d7ca5a8f6f9fba04a99ce",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

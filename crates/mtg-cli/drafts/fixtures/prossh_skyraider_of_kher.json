@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "889c1a0f-7df2-4497-8058-04358173d7e8",
+  "oracle_id": "868882d2-ed4e-4171-a17c-478a341080fb",
+  "multiverse_ids": [
+    442203
+  ],
+  "mtgo_id": 67342,
+  "mtgo_foil_id": 67343,
+  "tcgplayer_id": 161428,
+  "cardmarket_id": 319004,
+  "name": "Prossh, Skyraider of Kher",
+  "lang": "en",
+  "released_at": "2018-03-16",
+  "uri": "https://api.scryfall.com/cards/889c1a0f-7df2-4497-8058-04358173d7e8",
+  "scryfall_uri": "https://scryfall.com/card/a25/214/prossh-skyraider-of-kher?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:31:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.jpg?1783935112",
+    "normal": "https://cards.scryfall.io/normal/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.jpg?1783935112",
+    "large": "https://cards.scryfall.io/large/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.jpg?1783935112",
+    "png": "https://cards.scryfall.io/png/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.png?1783935112",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.jpg?1783935112",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.jpg?1783935112",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.webp?1783935112",
+    "grid": "https://cards.scryfall.io/grid/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.webp?1783935112",
+    "display": "https://cards.scryfall.io/display/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.webp?1783935112",
+    "art": "https://cards.scryfall.io/art/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.webp?1783935112",
+    "crop": "https://cards.scryfall.io/crop/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.webp?1783935112",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.jpg?1783935112"
+  },
+  "mana_cost": "{3}{B}{R}{G}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Dragon",
+  "oracle_text": "When you cast this spell, create X 0/1 red Kobold creature tokens named Kobolds of Kher Keep, where X is the amount of mana spent to cast it.\nFlying\nSacrifice another creature: Prossh gets +1/+0 until end of turn.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "dfc03591-1114-4e36-a397-0bb3db8a153c",
+      "component": "token",
+      "name": "Kobolds of Kher Keep",
+      "type_line": "Token Creature — Kobold",
+      "uri": "https://api.scryfall.com/cards/dfc03591-1114-4e36-a397-0bb3db8a153c"
+    },
+    {
+      "object": "related_card",
+      "id": "889c1a0f-7df2-4497-8058-04358173d7e8",
+      "component": "combo_piece",
+      "name": "Prossh, Skyraider of Kher",
+      "type_line": "Legendary Creature — Dragon",
+      "uri": "https://api.scryfall.com/cards/889c1a0f-7df2-4497-8058-04358173d7e8"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41ee6e2f-69b3-4c53-8a8e-960f5e974cfc",
+  "set": "a25",
+  "set_name": "Masters 25",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41ee6e2f-69b3-4c53-8a8e-960f5e974cfc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aa25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/a25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/889c1a0f-7df2-4497-8058-04358173d7e8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A868882d2-ed4e-4171-a17c-478a341080fb&unique=prints",
+  "collector_number": "214",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "set",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Todd Lockwood",
+  "artist_ids": [
+    "d0b9f3cc-13fb-42b6-bc43-b034728e5c7b"
+  ],
+  "illustration_id": "b96b45bc-5bc9-4578-8789-4833d820a6b7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9851,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "5.50",
+    "usd_etched": null,
+    "eur": "0.88",
+    "eur_foil": "10.22",
+    "tix": "0.17"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=442203&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DProssh%252C%2BSkyraider%2Bof%2BKher",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DProssh%252C%2BSkyraider%2Bof%2BKher",
+    "edhrec": "https://edhrec.com/route/?cc=Prossh%2C+Skyraider+of+Kher"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F161428%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=319004&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/67342?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

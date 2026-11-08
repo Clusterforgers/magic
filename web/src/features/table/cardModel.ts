@@ -172,6 +172,8 @@ function pipOf(symbol: ManaSymbol, index: number): ManaPip {
         phyrexian: true,
         name: `colorless mana or ${LIFE_PER_SYMBOL} life`,
       }
+    case 'snow':
+      return { ...base, tone: 'colorless', text: 'S', name: 'mana from a snow source' }
   }
 }
 
@@ -369,6 +371,8 @@ export function statusChips(object: ObjectView, role: CombatRole | null): Status
   if (state?.phased_out === true) add('identity', 'Phased out')
   if (state?.exerted === true) add('identity', 'Exerted')
   if (state?.prepared === true) add('identity', 'Prepared')
+  if (state?.suspected === true) add('identity', 'Suspected')
+  if (state?.solved === true) add('identity', 'Solved')
   if (state?.level !== undefined) add('identity', `Level ${state.level}`)
   return chips
 }
@@ -401,6 +405,7 @@ export function statusWords(object: ObjectView, role: CombatRole | null, links: 
   if (state?.phased_out === true) words.push('phased out')
   if (state?.exerted === true) words.push('exerted')
   if (state?.prepared === true) words.push('prepared')
+  if (state?.suspected === true) words.push('suspected')
   if (state?.level !== undefined) words.push(`level ${state.level}`)
   if (isUnattached(object)) words.push('unattached')
   return words

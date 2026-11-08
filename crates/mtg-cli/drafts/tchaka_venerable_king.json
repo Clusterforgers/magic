@@ -1,0 +1,50 @@
+{
+  "oracle_id": "2a9f2d69-328c-46f4-be37-60b85b197b72",
+  "name": "T'Chaka, Venerable King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "T'Chaka, Venerable King",
+      "oracle_fingerprint": "e25959ab4304092f2ef451130585897b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "ExileSelf"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

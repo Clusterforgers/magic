@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1b788680-28e3-4378-9607-bd42acb4fbad",
+  "name": "Sabotage Strategist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sabotage Strategist",
+      "oracle_fingerprint": "b720c62e776184dadcb089700ca18a95",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "GroupAttacksAt": { "what": [{ "Type": "Creature" }], "at": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{U}{U}",
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

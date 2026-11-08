@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2bdd0bcb-6cfb-48e7-972e-355ff46621a4",
+  "name": "Cryptcaller Chariot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptcaller Chariot",
+      "oracle_fingerprint": "c1ed295cf503cfdedb528fb3158f05fa",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": "Triggering",
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

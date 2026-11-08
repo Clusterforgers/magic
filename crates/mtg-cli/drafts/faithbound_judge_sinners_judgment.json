@@ -1,0 +1,90 @@
+{
+  "oracle_id": "830e3e37-a80c-4b0e-b9af-393ad4ca01d7",
+  "name": "Faithbound Judge // Sinner's Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faithbound Judge",
+      "oracle_fingerprint": "82cfb48a3fd3a5fa45d8ed8f3c561c4e",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "judgment" }, "op": "Le", "to": 2 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "judgment" } } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "judgment" }, "op": "Ge", "to": 3 } }
+                  ]
+                },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        },
+        { "Keyword": { "Disturb": "{5}{W}{W}" } }
+      ]
+    },
+    {
+      "name": "Sinner's Judgment",
+      "oracle_fingerprint": "95101ef81c94e80304e30bdb3804c7cf",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "judgment" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          {
+                            "CounterCount": { "kind": { "Other": "judgment" }, "op": "Ge", "to": 3 }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseGame": { "who": "AttachedPlayer" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

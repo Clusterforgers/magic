@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1bd5e51f-f9a5-4eb7-bda2-957310602c20",
+  "name": "Davriel, Rogue Shadowmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Davriel, Rogue Shadowmage",
+      "oracle_fingerprint": "4fe36c68220c2f475baf09b935ef56ca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Le",
+                "right": 1
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

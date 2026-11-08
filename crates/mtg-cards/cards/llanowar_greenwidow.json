@@ -1,0 +1,54 @@
+{
+  "oracle_id": "23391456-5dfd-4402-88fa-3b08f5e23864",
+  "name": "Llanowar Greenwidow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Greenwidow",
+      "oracle_fingerprint": "19547760b1452a8910417dc14b9001ee",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{7}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ],
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Replacement": {
+                          "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                          "by": { "MoveTo": "Exile" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

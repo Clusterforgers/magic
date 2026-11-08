@@ -1,0 +1,58 @@
+{
+  "oracle_id": "77eb76cf-a361-44e0-aeee-e8ef4b695799",
+  "name": "Persistent Marshstalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Persistent Marshstalker",
+      "oracle_fingerprint": "9ec287f2040cfa49ab2f41aceed04906",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Rat" }, { "ControlledBy": "You" }, "Other"] },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "ControlledBy": "You" }, { "Subtype": "Rat" }] }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{B}",
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "Battlefield": { "tapped": true } },
+                        "as": "moved"
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "moved" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

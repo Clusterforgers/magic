@@ -1,0 +1,25 @@
+{
+  "oracle_id": "edadd0bf-15c8-4e9c-810e-2edfd77a9d01",
+  "name": "Embargo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embargo",
+      "oracle_fingerprint": "e2717d52f07d775c055e07400432819c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Not": { "Type": "Land" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "LoseLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

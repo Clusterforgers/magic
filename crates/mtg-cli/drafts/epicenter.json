@@ -1,0 +1,43 @@
+{
+  "oracle_id": "264cb7f6-6d36-4e58-87f4-83ccaa998a32",
+  "name": "Epicenter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Epicenter",
+      "oracle_fingerprint": "1d59e9cd4960bf4ae3c0a2567d295415",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "Sacrifice": {
+                        "who": "EachPlayer",
+                        "filter": [{ "Type": "Land" }],
+                        "count": { "Count": [{ "Type": "Land" }] }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Land" }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

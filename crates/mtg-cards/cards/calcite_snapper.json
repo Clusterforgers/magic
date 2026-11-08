@@ -1,0 +1,39 @@
+{
+  "oracle_id": "36593200-e53c-46e4-a04e-8deec8273c65",
+  "name": "Calcite Snapper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calcite Snapper",
+      "oracle_fingerprint": "bae9797f7381a7cfcb6bcd04fc9e644b",
+      "abilities": [
+        { "Keyword": "Shroud" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["SwitchPT"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "916d2a0d-1c3e-4102-958d-524b6b4df509",
+  "name": "Novice Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Novice Knight",
+      "oracle_fingerprint": "647f3cf1db2c556c159322d0fcd14b43",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    "This",
+                    {
+                      "AnyOf": [
+                        { "HasAttached": [{ "Subtype": "Aura" }] },
+                        { "HasAttached": [{ "Subtype": "Equipment" }] }
+                      ]
+                    }
+                  ]
+                },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

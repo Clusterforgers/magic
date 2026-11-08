@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3913c7f2-86b7-4dd4-84a6-9bd4c1c66781",
+  "name": "Spiritmonger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiritmonger",
+      "oracle_fingerprint": "f94d290776fc78a71b0c15cbf27b5a01",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        { "Activated": { "cost": "{B}", "effects": [{ "Regenerate": { "what": "This" } }] } },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

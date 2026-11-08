@@ -1,0 +1,42 @@
+{
+  "oracle_id": "39acc3d0-85fc-4814-93f2-e709c3b2c86b",
+  "name": "Everything Comes to Dust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Everything Comes to Dust",
+      "oracle_fingerprint": "a66d9b4c428e2ed7035f73d0126fdf2a",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "Not": { "SharesSubtype": "Convoked" } } }
+                              ]
+                            }
+                          },
+                          { "Type": "Artifact" },
+                          { "Type": "Enchantment" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

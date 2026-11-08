@@ -1,0 +1,57 @@
+{
+  "oracle_id": "b0060b32-b856-4ff7-a113-cec2dc8f8dc6",
+  "name": "See the Unwritten",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "See the Unwritten",
+      "oracle_fingerprint": "0cfc33c58b3e0095015de0fe548b370d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 8, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" },
+                                { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

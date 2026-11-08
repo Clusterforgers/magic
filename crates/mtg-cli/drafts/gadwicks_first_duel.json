@@ -1,0 +1,73 @@
+{
+  "oracle_id": "322e3bc1-2dfa-4d5f-848f-a82d9ce02a67",
+  "name": "Gadwick's First Duel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gadwick's First Duel",
+      "oracle_fingerprint": "ad9defcc3fd6fc7dfda617d8c49cdb35",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cursed",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                      ],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "317169b8-9014-48e6-862b-ca21b706846e",
+  "name": "Hopeful Initiate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hopeful Initiate",
+      "oracle_fingerprint": "dcebbae609fd6cba3e08cf54b3556bf6",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "training", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{W}" },
+              {
+                "RemoveCountersAmong": {
+                  "counter": "+1/+1",
+                  "count": 2,
+                  "from": [{ "Type": "Creature" }]
+                }
+              }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

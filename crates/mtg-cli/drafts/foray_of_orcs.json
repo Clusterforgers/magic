@@ -1,0 +1,54 @@
+{
+  "oracle_id": "60bfcaef-9014-4707-b681-cc3920bf223e",
+  "name": "Foray of Orcs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foray of Orcs",
+      "oracle_fingerprint": "480c673bd254bca3391e827416c90b86",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Amass": { "subtype": "Orc", "count": 2, "as": "amassed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "amassed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "amassed" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": { "Stat": { "of": { "Bound": "when2" }, "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9b020aeb-7b27-43f2-9767-d93dae3d102a",
+  "name": "Phantom Whelp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantom Whelp",
+      "oracle_fingerprint": "0e84ae6ec994b082d22475c676fbaeef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

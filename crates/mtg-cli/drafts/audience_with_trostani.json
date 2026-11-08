@@ -1,0 +1,43 @@
+{
+  "oracle_id": "cbbb5c0c-e953-410d-88c6-8fedb719e94c",
+  "name": "Audience with Trostani",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Audience with Trostani",
+      "oracle_fingerprint": "014b3045d6fa23716900160424e01230",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Plant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Plant"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Token"],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

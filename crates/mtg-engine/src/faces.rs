@@ -133,7 +133,7 @@ pub(crate) fn grantable_faces(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
-    granted: Granted,
+    granted: &Granted,
 ) -> Vec<Option<u8>> {
     // Cast transformed, a transforming card is its back face as the spell (CR 712.4).
     let faces = if granted.transformed {
@@ -152,7 +152,7 @@ pub(crate) fn grantable_faces(
         .into_iter()
         .filter(|face| {
             let view = state.with_face(id, *face);
-            ways::grantable_as_is(&view, player, id, granted.free, granted.way)
+            ways::grantable_as_is(&view, player, id, granted)
         })
         .collect()
 }

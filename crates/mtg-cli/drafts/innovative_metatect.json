@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cc6b95d1-2a08-44d4-850c-e748fed413e8",
+  "name": "Innovative Metatect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Innovative Metatect",
+      "oracle_fingerprint": "37584d4bf01336155feea3dc7a61c211",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Creature" },
+                    { "Type": "Artifact" },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

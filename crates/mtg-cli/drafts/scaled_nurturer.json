@@ -1,0 +1,33 @@
+{
+  "oracle_id": "13b96709-0e88-476b-9485-956e682bb818",
+  "name": "Scaled Nurturer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scaled Nurturer",
+      "oracle_fingerprint": "859934142c13f356dfa836defeef8f55",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "only": [
+                    {
+                      "When": {
+                        "spell": { "types": ["Creature"], "subtypes": ["Dragon"] },
+                        "effects": [{ "GainLife": { "amount": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

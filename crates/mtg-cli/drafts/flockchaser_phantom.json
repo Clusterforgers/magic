@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6471335e-e054-4e68-b02e-052d65a2fdfc",
+  "name": "Flockchaser Phantom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flockchaser Phantom",
+      "oracle_fingerprint": "2eaa01a35f1527f641085965dbfd2cbe",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "benefit": { "Keyword": "Convoke" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

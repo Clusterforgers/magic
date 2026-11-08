@@ -1,0 +1,41 @@
+{
+  "oracle_id": "22d85711-485b-47a2-b161-eaed135f1ddc",
+  "name": "Wine of Blood and Iron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wine of Blood and Iron",
+      "oracle_fingerprint": "25845faf41c533e70fd699afbb75cab4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": "This" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

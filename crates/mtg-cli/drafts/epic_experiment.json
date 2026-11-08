@@ -1,0 +1,47 @@
+{
+  "oracle_id": "08bc10fd-8901-4836-ad4d-a867e1bcba77",
+  "name": "Epic Experiment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Epic Experiment",
+      "oracle_fingerprint": "cb6af2763a255c3fb143d66822bf7427",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": "X", "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "as": "card2",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card2" }, "free": true } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": "You" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": "Graveyard"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

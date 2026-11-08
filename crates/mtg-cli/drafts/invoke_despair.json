@@ -1,0 +1,89 @@
+{
+  "oracle_id": "f9ee4c80-20fb-4322-be02-1c78d37d7a99",
+  "name": "Invoke Despair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invoke Despair",
+      "oracle_fingerprint": "ed0ad5731912bb0ad12be570e201414e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Eq", "right": 0 }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Eq", "right": 0 }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Enchantment" }],
+                  "as": "sacrificed2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed2~moved" }, "op": "Eq", "right": 0 }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed2~moved" }, "op": "Eq", "right": 0 }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Planeswalker" }],
+                  "as": "sacrificed3"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed3~moved" }, "op": "Eq", "right": 0 }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed3~moved" }, "op": "Eq", "right": 0 }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

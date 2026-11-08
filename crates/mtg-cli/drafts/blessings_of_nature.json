@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1e77cf90-ac51-4ac7-b123-be04aabe1688",
+  "name": "Blessings of Nature",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessings of Nature",
+      "oracle_fingerprint": "65133c0802033b683f5230cf16f94850",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": 4 },
+                "divide": 4
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{G}" } }
+      ]
+    }
+  ]
+}

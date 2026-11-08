@@ -1,0 +1,47 @@
+{
+  "oracle_id": "502230fb-3a7a-439c-adfa-f7820deacf87",
+  "name": "Momentum Rumbler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Momentum Rumbler",
+      "oracle_fingerprint": "90656f0015e137372189bbe62f9a7d50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasKeyword": "FirstStrike" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "first strike" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasKeyword": "FirstStrike" }] },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

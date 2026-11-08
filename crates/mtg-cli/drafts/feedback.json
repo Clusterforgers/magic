@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2ff92886-5c17-47a4-a02b-a97432d9203e",
+  "name": "Feedback",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feedback",
+      "oracle_fingerprint": "3a9beafcc67e66208b98373ac4c29ebf",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Enchantment" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

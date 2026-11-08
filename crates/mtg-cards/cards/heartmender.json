@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ab4cf0ba-617f-4ef6-a831-eb3b41b4ab34",
+  "name": "Heartmender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartmender",
+      "oracle_fingerprint": "0c01b75a5b879e5cf7b22fcc1715fbff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "-1/-1"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

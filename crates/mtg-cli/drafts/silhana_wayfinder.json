@@ -1,0 +1,41 @@
+{
+  "oracle_id": "dc858fc1-d97a-4cc5-af31-2c33d9639e1b",
+  "name": "Silhana Wayfinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silhana Wayfinder",
+      "oracle_fingerprint": "92fb5ff3fa976b5b14b936b2b5d8232d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

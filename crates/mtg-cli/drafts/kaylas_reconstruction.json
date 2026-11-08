@@ -1,0 +1,41 @@
+{
+  "oracle_id": "43bae4b3-57e8-4d9a-9d1b-9805b0e0fff5",
+  "name": "Kayla's Reconstruction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kayla's Reconstruction",
+      "oracle_fingerprint": "8ba2d5404d0b628c5dc180b24e2d761e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": "X" },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

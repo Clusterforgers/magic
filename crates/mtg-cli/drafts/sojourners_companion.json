@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1cbfe1f2-776b-429d-9a60-8da32058a927",
+  "name": "Sojourner's Companion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sojourner's Companion",
+      "oracle_fingerprint": "a44b154181e23c6de5d1e4dd30e9a5b5",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Type": "Artifact" }], "cost": "{2}" }
+          }
+        }
+      ]
+    }
+  ]
+}

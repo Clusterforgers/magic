@@ -1,0 +1,37 @@
+{
+  "oracle_id": "87837a94-05db-48fe-b810-26d8f92cfc58",
+  "name": "Corrupted Resolve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corrupted Resolve",
+      "oracle_fingerprint": "db03c80ce50a614f0fdba9fe20b8169b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Counters": {
+                          "on": { "ControllerOf": { "Target": 0 } },
+                          "counter": "poison"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

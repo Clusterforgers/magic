@@ -1,0 +1,45 @@
+{
+  "oracle_id": "86d67952-19b8-4bb8-b7d7-b2751e86591c",
+  "name": "Gastal Thrillroller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gastal Thrillroller",
+      "oracle_fingerprint": "e720381bb8fed190836bc9eb4f3a95d6",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, { "Discard": {} }],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

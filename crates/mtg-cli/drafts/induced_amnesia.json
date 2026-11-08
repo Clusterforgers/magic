@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6f01c124-0518-428c-9efe-7f3741f3c109",
+  "name": "Induced Amnesia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Induced Amnesia",
+      "oracle_fingerprint": "0a978f8a2a0a2d7602c9ed5fa32fda74",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "sealed": true,
+                  "as": "exiled"
+                }
+              },
+              { "Draw": { "who": { "Target": 0 }, "count": { "Bound": "exiled~moved" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

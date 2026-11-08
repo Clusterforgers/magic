@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9bdc79c9-c8b0-4db1-89d9-0ca7920b6576",
+  "name": "Essence Flare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Flare",
+      "oracle_fingerprint": "5b92c20af4042b6b31813e0ce1141830",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": { "Other": "-0/-1" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

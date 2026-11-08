@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "2a02aabb-c464-4672-b37b-d5d713ef8939",
+  "oracle_id": "59258149-1c18-421b-b940-d0aa29da572a",
+  "multiverse_ids": [
+    1669
+  ],
+  "tcgplayer_id": 3949,
+  "cardmarket_id": 7255,
+  "name": "Lord Magnus",
+  "lang": "en",
+  "released_at": "1994-06-01",
+  "uri": "https://api.scryfall.com/cards/2a02aabb-c464-4672-b37b-d5d713ef8939",
+  "scryfall_uri": "https://scryfall.com/card/leg/243/lord-magnus?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:07:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.jpg?1783948036",
+    "normal": "https://cards.scryfall.io/normal/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.jpg?1783948036",
+    "large": "https://cards.scryfall.io/large/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.jpg?1783948036",
+    "png": "https://cards.scryfall.io/png/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.png?1783948036",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.jpg?1783948036",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.jpg?1783948036",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.webp?1783948036",
+    "grid": "https://cards.scryfall.io/grid/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.webp?1783948036",
+    "display": "https://cards.scryfall.io/display/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.webp?1783948036",
+    "art": "https://cards.scryfall.io/art/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.webp?1783948036",
+    "crop": "https://cards.scryfall.io/crop/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.webp?1783948036",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/a/2a02aabb-c464-4672-b37b-d5d713ef8939.jpg?1783948036"
+  },
+  "mana_cost": "{3}{G}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Druid",
+  "oracle_text": "First strike\nCreatures with plainswalk can be blocked as though they didn't have plainswalk.\nCreatures with forestwalk can be blocked as though they didn't have forestwalk.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "First strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78c50b4b-b220-455b-a2d5-cee458fa56f3",
+  "set": "leg",
+  "set_name": "Legends",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/78c50b4b-b220-455b-a2d5-cee458fa56f3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aleg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/leg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2a02aabb-c464-4672-b37b-d5d713ef8939/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A59258149-1c18-421b-b940-d0aa29da572a&unique=prints",
+  "collector_number": "243",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Tedin",
+  "artist_ids": [
+    "9ee9a9cc-c09e-486f-918b-69f80cbc4188"
+  ],
+  "illustration_id": "7c3024f2-c34c-4e5b-ac8d-843d72c767c3",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30939,
+  "prices": {
+    "usd": "3.45",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.62",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=1669&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLord%2BMagnus",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLord%2BMagnus",
+    "edhrec": "https://edhrec.com/route/?cc=Lord+Magnus"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3949%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7255&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Lord+Magnus&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "4f5ebbb8-f49b-488f-bb85-888aaa918bdd",
+  "name": "Gumdrop Poisoner // Tempt with Treats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gumdrop Poisoner",
+      "oracle_fingerprint": "eea110ddba6f222b1988f6f582c99bd5",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tempt with Treats",
+      "oracle_fingerprint": "0b728f32c978ce8e9b845391717c3b9f",
+      "abilities": [
+        { "Spell": { "effects": [{ "CreateToken": { "token": { "Named": "food" } } }] } }
+      ]
+    }
+  ]
+}

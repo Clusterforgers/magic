@@ -2,12 +2,14 @@
 //! of an ability's cost (`parts`) the engine pays, and the mana sources that may pay it.
 
 use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaCost;
+use mtg_core::mana::{ManaCost, ManaSymbol};
 
 use crate::mana::{ManaOption, reserve_energy};
 use crate::parts::{Part, Payer};
 use crate::priority::mana_options;
+use crate::resolve::Scope;
 use crate::state::GameState;
 
 /// What paying a cost does to its source besides tapping it.
@@ -29,18 +31,24 @@ pub(crate) enum Leaves {
 pub(crate) struct Price {
     /// The source is tapped.
     pub(crate) tap: bool,
+    /// The source is untapped (`{Q}`, CR 107.6): only an ability of a tapped permanent pays it.
+    pub(crate) untap: bool,
     /// What happens to the source.
     pub(crate) leaves: Leaves,
     /// Every mana part together, without its `{X}`; `None` for a cost without mana.
     pub(crate) mana: Option<ManaCost>,
     /// How many `{X}` the mana parts hold; each costs X generic mana once X is announced.
     pub(crate) x: u32,
+    /// How much of the mana is a waterbend cost: artifacts and creatures tapped may pay for it, each {1} (Avatar).
+    pub(crate) waterbend: u32,
     /// The other parts, in the order the cost prints them: life, counters removed, the objects the player picks.
     pub(crate) parts: Vec<Part>,
     /// The parts are paid for a spell being cast: the card itself is never picked for them.
     pub(crate) casting: bool,
     /// The changes the ability prints of its own cost (`CostItem::Changed`), applied to the mana as it is activated.
     pub(crate) changes: Vec<CostItem>,
+    /// The permanent whose static ability gave the ability this pays for (`Ref::Granter`).
+    pub(crate) granter: Option<ObjectId>,
 }
 
 /// The name `Caps` gives a cost part, for the parts the engine does not pay.
@@ -57,7 +65,25 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Discard { .. } => "Cost.Discard",
         CostItem::PayEnergy(_) => "Cost.PayEnergy",
         CostItem::Mill(_) => "Cost.Mill",
+        CostItem::Draw(_) => "Cost.Draw",
+        CostItem::DiscardRandom(_) => "Cost.DiscardRandom",
+        CostItem::DamageToYou(_) => "Cost.DamageToYou",
+        CostItem::Unattach => "Cost.Unattach",
+        CostItem::ExileTop(_) => "Cost.ExileTop",
+        CostItem::CollectEvidence(_) => "Cost.CollectEvidence",
+        CostItem::Blight(_) => "Cost.Blight",
+        CostItem::Behold { .. } => "Cost.Behold",
+        CostItem::ToLibrary { .. } => "Cost.ToLibrary",
+        CostItem::Forage => "Cost.Forage",
+        CostItem::Craft { .. } => "Cost.Craft",
+        CostItem::Waterbend(_) => "Cost.Waterbend",
+        CostItem::ExiledToGraveyard { .. } => "Cost.ExiledToGraveyard",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters",
+        CostItem::PutCounters { .. } => "Cost.PutCounters",
+        CostItem::UntapPermanents { .. } => "Cost.UntapPermanents",
+        CostItem::Exert => "Cost.Exert",
+        CostItem::OwnManaCost => "Cost.OwnManaCost",
+        CostItem::RemoveCountersAmong { .. } => "Cost.RemoveCountersAmong",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents",
         CostItem::TapPower { .. } => "Cost.TapPower",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard",
@@ -66,6 +92,22 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::RevealFromHand { .. } => "Cost.RevealFromHand",
         CostItem::OneOf(_) => "Cost.OneOf",
         CostItem::Changed { .. } => "Cost.Changed",
+        CostItem::XAtLeast(_) => "Cost.XAtLeast",
+    }
+}
+
+/// Whether the amount is worked out from X (twice X, half of X), which no value stands for before X is announced.
+fn builds_on_x(amount: &Amount) -> bool {
+    match amount {
+        Amount::X => true,
+        Amount::Sum(parts) | Amount::Product(parts) => parts.iter().any(builds_on_x),
+        Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::EvenShare(of) => {
+            builds_on_x(of)
+        }
+        Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
+            builds_on_x(of) || builds_on_x(by)
+        }
+        _ => false,
     }
 }
 
@@ -78,8 +120,15 @@ impl Price {
         if let Some(part) = price.parts.first() {
             return Err(part.name());
         }
+        // Only an activated ability untaps its source as a cost.
+        if price.untap {
+            return Err("Cost.Untap");
+        }
         if price.x > 0 {
             return Err("Cost.Mana.X");
+        }
+        if price.waterbend > 0 {
+            return Err("Cost.Waterbend");
         }
         if !price.changes.is_empty() {
             return Err("Cost.Changed");
@@ -87,14 +136,53 @@ impl Price {
         Ok(price)
     }
 
+    /// [`Self::announced`] for the cost of an ability `player` activates from `source`: a part that counts something other
+    /// than a fixed number or X ("Sacrifice a creature for each opponent") counts it as the ability is announced.
+    pub(crate) fn announced_in(
+        cost: &Cost,
+        state: &GameState,
+        player: PlayerId,
+        source: ObjectId,
+        granter: Option<ObjectId>,
+    ) -> Result<Price, &'static str> {
+        let mut settled = cost.clone();
+        if let Some(object) = state.object(source) {
+            let scope = Scope::announcing(state, player, object.reference());
+            for item in &mut settled.0 {
+                let Some(amount) = item.amount_mut() else {
+                    continue;
+                };
+                // An amount built on X has no value before X is announced: left as it is, the engine refuses to pay it
+                // rather than count it as 0 and make the part free.
+                if matches!(amount, Amount::Fixed(_) | Amount::X) || builds_on_x(amount) {
+                    continue;
+                }
+                if let Ok(number) = scope.amount(amount)
+                    && let Ok(number) = i32::try_from(number)
+                {
+                    *amount = Amount::Fixed(number);
+                }
+            }
+        }
+        Price::read(&settled, true).map(|price| Price { granter, ..price })
+    }
+
     /// The price of the cost of an ability as it is announced, with the `{X}` it holds counted for the announcement
     /// to ask; the name of the first part the engine does not pay otherwise.
     pub(crate) fn announced(cost: &Cost) -> Result<Price, &'static str> {
+        Price::read(cost, false)
+    }
+
+    /// [`Self::announced`], with a waterbend part read only for the cost of an activated ability: nothing else offers the
+    /// creatures and artifacts that help pay it.
+    fn read(cost: &Cost, waterbend_ok: bool) -> Result<Price, &'static str> {
         let mut tap = false;
+        let mut untap = false;
         let mut leaves = Leaves::Stays;
         let mut symbols = Vec::new();
         let mut mana = false;
         let mut x = 0u32;
+        let mut waterbend = 0u32;
         let mut parts = Vec::new();
         let mut changes = Vec::new();
         for item in &cost.0 {
@@ -113,7 +201,16 @@ impl Price {
             }
             match item {
                 CostItem::Tap => tap = true,
+                CostItem::Untap => untap = true,
                 CostItem::Changed { .. } => changes.push(item.clone()),
+                // The least X is read where X is announced (`announce/x.rs`).
+                CostItem::XAtLeast(_) => {}
+                CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
+                CostItem::Waterbend(number) => {
+                    mana = true;
+                    waterbend = waterbend.saturating_add(*number);
+                    symbols.push(ManaSymbol::Generic(*number));
+                }
                 CostItem::Mana(part) => {
                     mana = true;
                     x = x.saturating_add(u32::from(part.x()));
@@ -127,12 +224,15 @@ impl Price {
         }
         Ok(Price {
             tap,
+            untap,
             leaves,
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
             x,
+            waterbend,
             parts,
             casting: false,
             changes,
+            granter: None,
         })
     }
 
@@ -172,7 +272,8 @@ impl Price {
         picked: &[Vec<ObjectId>],
     ) -> Vec<ObjectId> {
         let mut barred: Vec<ObjectId> = picked.iter().flatten().copied().collect();
-        if self.casting || self.moves_source() || (self.tap && part.taps()) {
+        // A source the price untaps is untapped by its own symbol, so no other part takes it.
+        if self.casting || self.moves_source() || self.untap || (self.tap && part.taps()) {
             barred.push(source);
         }
         barred
@@ -212,6 +313,7 @@ impl Price {
                 player,
                 source,
                 barred: &barred,
+                granter: self.granter,
             };
             taken.push(part.payable(&owner, &spare)?);
         }
@@ -316,6 +418,7 @@ mod tests {
             Price::of(&cost(json)),
             Ok(Price {
                 tap,
+                untap: false,
                 leaves: if sacrifice {
                     Leaves::Sacrificed
                 } else {
@@ -323,9 +426,11 @@ mod tests {
                 },
                 mana: mana(expected),
                 x: 0,
+                waterbend: 0,
                 parts: Vec::new(),
                 casting: false,
                 changes: Vec::new(),
+                granter: None,
             })
         );
     }
@@ -434,5 +539,24 @@ mod tests {
             .collect();
         assert_eq!(sources.len(), 1);
         assert!(!sources.contains(&rock));
+    }
+
+    #[rstest]
+    #[case::twice_x(r#"[{"PayLife":{"Times":{"by":2,"of":"X"}}}]"#, false)]
+    #[case::x_and_one(r#"[{"PayEnergy":{"Sum":["X",1]}}]"#, false)]
+    #[case::half_of_x(r#"[{"Mill":{"Half":{"of":"X","up":true}}}]"#, false)]
+    #[case::plain_x(r#"[{"PayLife":"X"}]"#, true)]
+    #[case::a_count_settled_on_announcing(
+        r#"[{"PayLife":{"Counters":{"on":"This","counter":"charge"}}}]"#,
+        true
+    )]
+    fn an_amount_built_on_x_is_refused_not_settled_to_nothing(
+        #[case] json: &str,
+        #[case] priced: bool,
+    ) {
+        let game = state(vec![vec![], vec![]], vec![vec![], vec![]]);
+        let cost = cost(json);
+        let result = Price::announced_in(&cost, &game, PlayerId(0), ObjectId(0), None);
+        assert_eq!(result.is_ok(), priced, "{result:?}");
     }
 }

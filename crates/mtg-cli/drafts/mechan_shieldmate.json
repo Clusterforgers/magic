@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d0025d29-d652-4af8-b367-13142d5532df",
+  "name": "Mechan Shieldmate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mechan Shieldmate",
+      "oracle_fingerprint": "a1327e2f72b98231fe9b239bae4a300c",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

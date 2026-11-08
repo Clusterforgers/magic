@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ca9ab230-51e2-4ef2-a7b9-4e325d9f9657",
+  "name": "Sephiroth, Fallen Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sephiroth, Fallen Hero",
+      "oracle_fingerprint": "4eee5c98580c8fb80ea89833d0409db8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "cell" } } }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "SetPT": { "power": 7, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Modified"] } }
+            ],
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

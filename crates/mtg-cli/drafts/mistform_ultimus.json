@@ -1,0 +1,14 @@
+{
+  "oracle_id": "7bf0e628-06b5-4e12-a526-a2bce08844f2",
+  "name": "Mistform Ultimus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Ultimus",
+      "oracle_fingerprint": "ea9f4b3f7f452aa71fee2a6676540130",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["AddAllCreatureTypes"], "defining": true } }
+      ]
+    }
+  ]
+}

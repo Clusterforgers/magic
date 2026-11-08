@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d6ba76fa-441c-4a74-bfea-8ae2a2c9e391",
+  "name": "Skyward Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyward Spider",
+      "oracle_fingerprint": "e8957b2d9bad22e1ad02ee43060df076",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Modified"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

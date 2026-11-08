@@ -1,0 +1,61 @@
+{
+  "oracle_id": "5bb06e6f-e3af-4caa-b66d-77248ad46b61",
+  "name": "Lilypad Village",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lilypad Village",
+      "oracle_fingerprint": "4296d352146c4ba8bbe33ef6b79aec85",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [{ "Spell": { "types": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Frog" },
+                          { "Subtype": "Bird" },
+                          { "Subtype": "Otter" },
+                          { "Subtype": "Rat" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b7a1c54b-bb2f-4423-865a-ad114cd18c76",
+  "name": "Whirlpool Warrior",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Whirlpool Warrior",
+      "oracle_fingerprint": "c7a568a4f1a62eaa194d213ebb577333",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved"
+                }
+              },
+              { "Draw": { "count": { "Bound": "moved~moved" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 106, "end": 230 }
+          }
+        }
+      ]
+    }
+  ]
+}

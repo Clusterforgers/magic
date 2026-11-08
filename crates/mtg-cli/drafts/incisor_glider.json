@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e51f89c8-3d7f-4f1a-bc35-67b92db20e10",
+  "name": "Incisor Glider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incisor Glider",
+      "oracle_fingerprint": "08f245480093b364775898be21d297f1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

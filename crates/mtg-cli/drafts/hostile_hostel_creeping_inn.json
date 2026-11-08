@@ -1,0 +1,103 @@
+{
+  "oracle_id": "1b340f71-502f-48e9-85ed-9af62f356115",
+  "name": "Hostile Hostel // Creeping Inn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hostile Hostel",
+      "oracle_fingerprint": "e1610f0f19f69198e9faa79d8cca93e7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "soul" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          { "CounterCount": { "kind": { "Other": "soul" }, "op": "Ge", "to": 3 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "soul" },
+                        "count": { "Counters": { "on": "This", "counter": { "Other": "soul" } } }
+                      }
+                    },
+                    { "Transform": { "what": "This" } },
+                    { "Untap": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Creeping Inn",
+      "oracle_fingerprint": "37af2212e2eb2cce5dc701b0ea28a289",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [
+                    {
+                      "LoseLife": {
+                        "who": "Opponents",
+                        "amount": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ExiledWith": "This" },
+                            { "In": "Exile" }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "GainLife": {
+                        "amount": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ExiledWith": "This" },
+                            { "In": "Exile" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{4}", "effects": [{ "PhaseOut": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

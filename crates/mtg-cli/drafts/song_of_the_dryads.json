@@ -11,7 +11,7 @@
         {
           "Static": {
             "affected": "Attached",
-            "mods": [{ "SetTypes": ["Land"] }, { "SetColors": [] }, "AddAllCreatureTypes"]
+            "mods": [{ "SetColors": [] }, { "SetTypes": ["Land"] }, { "SetLandTypes": ["Forest"] }]
           }
         }
       ]

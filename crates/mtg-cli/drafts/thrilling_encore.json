@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2a114ff8-fa7d-41b8-b412-6232fbb68efc",
+  "name": "Thrilling Encore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrilling Encore",
+      "oracle_fingerprint": "9a7c83477e247721073a7a60bc1f5458",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

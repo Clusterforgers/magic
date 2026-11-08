@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5109aa76-ca40-44d1-abb4-5e7a23a2c274",
+  "name": "Mind Warp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Warp",
+      "oracle_fingerprint": "5ff65c8e5fb8230fcd9b3aacdcf8f5a5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": "X", "by": "You" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

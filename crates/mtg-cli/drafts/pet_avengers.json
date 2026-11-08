@@ -1,0 +1,53 @@
+{
+  "oracle_id": "bbee7921-19c9-4c70-8462-f16e7e9c25db",
+  "name": "Pet Avengers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pet Avengers",
+      "oracle_fingerprint": "aba622f23bf7874dd4ab3d44457d4454",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{6}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{3}{G}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hero",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Hero"],
+                      "power": 3,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

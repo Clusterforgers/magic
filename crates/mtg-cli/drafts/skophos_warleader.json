@@ -1,0 +1,48 @@
+{
+  "oracle_id": "883a2b57-1075-4479-920b-3f7d5da1f444",
+  "name": "Skophos Warleader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skophos Warleader",
+      "oracle_fingerprint": "5d16c95ec2920bccedf90f47b63e3387",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{R}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }]
+                          }
+                        },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "571f9d80-9c37-474e-9524-400e7a238e2c",
+  "name": "Shatterskull Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shatterskull Charger",
+      "oracle_fingerprint": "d1f39acef953f6a252d958dff1d985c2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Not": { "HasCounter": "+1/+1" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

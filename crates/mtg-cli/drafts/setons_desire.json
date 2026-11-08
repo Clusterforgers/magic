@@ -1,0 +1,32 @@
+{
+  "oracle_id": "76fe7cfa-c3db-4122-b262-f7c5c90fcdd7",
+  "name": "Seton's Desire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seton's Desire",
+      "oracle_fingerprint": "e6d4c8030c0b057276c94aa0bc37095d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "Attached", "quirk": { "MustBeBlocked": "Every" } } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

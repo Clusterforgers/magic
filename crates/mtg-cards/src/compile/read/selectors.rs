@@ -13,6 +13,7 @@ use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
 use super::counters;
+use super::e10a_targets::{another_text, is_total, total_text};
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use super::w6d_shares;
@@ -564,6 +565,9 @@ fn this_turn_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     if r.words(super::w13b_mill_rad::W13B_MILLED_THIS_TURN) {
         return Some(Pred::MilledThisTurn);
     }
+    if r.words("that has an Adventure") || r.words("that have an Adventure") {
+        return Some(Pred::HasAdventure);
+    }
     if r.words("that attacked this turn") {
         return Some(Pred::AttackedThisTurn);
     }
@@ -700,6 +704,7 @@ fn like_this(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
+#[allow(clippy::too_many_lines)]
 pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     if let Some(text) = super::t17b_attached::suffix_text(pred, form) {
         return Some(text);
@@ -722,7 +727,9 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
         Pred::EnteredThisTurn => "that entered this turn".to_owned(),
+        Pred::SummoningSick => "that has summoning sickness".to_owned(),
         Pred::MilledThisTurn => "that was milled this turn".to_owned(),
+        Pred::HasAdventure => "that has an Adventure".to_owned(),
         Pred::AttackedThisTurn => "that attacked this turn".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
@@ -753,6 +760,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             format!("with {words} on it")
         }
         pred @ (Pred::XInCost
+        | Pred::GenericCost(_)
         | Pred::SharesName(_)
         | Pred::SharesType(_)
         | Pred::SharesColor(_)
@@ -1779,8 +1787,15 @@ pub fn second_target(r: &mut Reader<'_>) -> Option<Ref> {
     Some(Ref::Target(1))
 }
 
-/// One target of several kinds of objects: "target artifact, enchantment, or creature with power 4 or greater".
+/// One target of several kinds of objects ("target artifact, enchantment, or creature with power 4 or greater"), or of any
+/// permanent or player.
 fn either_objects(kinds: &[Targetable]) -> Option<String> {
+    // Any permanent or any player: the ones that can hold counters.
+    if let [Targetable::Object(any), Targetable::Player] = kinds
+        && any.0.is_empty()
+    {
+        return Some("target permanent or player".to_owned());
+    }
     let phrases: Vec<String> = kinds
         .iter()
         .map(|kind| match kind {
@@ -1843,8 +1858,14 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                     None => format!("target {phrase}"),
                 }
             }
-            Targetable::PerPlayer { .. } => return None,
+            Targetable::Together { .. }
+            | Targetable::PerPlayer { .. }
+            | Targetable::ChosenBy { .. } => return None,
+            Targetable::Another { what, .. } => return another_text(what),
         });
+    }
+    if is_total(spec) {
+        return total_text(spec);
     }
     let Targetable::Object(selector) = &spec.what else {
         return None;

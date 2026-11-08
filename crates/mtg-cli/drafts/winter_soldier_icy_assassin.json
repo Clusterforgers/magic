@@ -1,0 +1,60 @@
+{
+  "oracle_id": "6f4c94b6-f829-4646-a574-083997b78dfb",
+  "name": "Winter Soldier, Icy Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter Soldier, Icy Assassin",
+      "oracle_fingerprint": "e0a66a7a8fff75e83fc72e650f19594d",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{B}",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                        "as": "attach"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "attach" }, "to": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

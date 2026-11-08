@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2e818d7e-169c-4909-969e-42e9f5d5c08a",
+  "name": "Gustcloak Cavalier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gustcloak Cavalier",
+      "oracle_fingerprint": "85c57cc2db0fad3ae5ea2b43abb8cddd",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "May": { "effects": [{ "Tap": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Untap": { "what": "This" } },
+                    { "RemoveFromCombat": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "12c63a45-7eb2-4262-b571-3358182f5610",
+  "name": "Stony Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stony Silence",
+      "oracle_fingerprint": "66d992dd5f45e130be329593a636a892",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": { "kind": "Every", "sources": [{ "Type": "Artifact" }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "43975c07-103c-4664-b7e6-55bb29d85183",
+  "name": "Ostracize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ostracize",
+      "oracle_fingerprint": "eae7f219cda777abb2e71b692ef68b84",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

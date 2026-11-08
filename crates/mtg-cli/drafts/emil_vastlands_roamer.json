@@ -1,0 +1,55 @@
+{
+  "oracle_id": "9f800ebc-d6e4-4bfc-bebe-8baad51efa19",
+  "name": "Emil, Vastlands Roamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emil, Vastlands Roamer",
+      "oracle_fingerprint": "5404f2059fbee0ab43aa2d04d8d2ec5a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{G}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

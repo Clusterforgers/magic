@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c4698dcc-baa0-44c5-a283-22f9dfe150f5",
+  "name": "Avarice Totem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avarice Totem",
+      "oracle_fingerprint": "03550fb47dc578d2c87c8cbb50d87499",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{5}",
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "ExchangeControl": { "what": ["This", { "Target": 0 }], "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

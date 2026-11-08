@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "d585e218-3dc8-4fbd-8ad2-795fbc9b2155",
+  "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+  "multiverse_ids": [],
+  "resource_id": "26B50FF093F2D97AF8104B531228FB01249CCCDA4DC6FF9AA9677F58BF5A71E2",
+  "mtgo_id": 141307,
+  "arena_id": 96050,
+  "tcgplayer_id": 633136,
+  "cardmarket_id": 826606,
+  "name": "The Earth Crystal",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/d585e218-3dc8-4fbd-8ad2-795fbc9b2155",
+  "scryfall_uri": "https://scryfall.com/card/fin/184/the-earth-crystal?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:36:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.jpg?1783906588",
+    "normal": "https://cards.scryfall.io/normal/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.jpg?1783906588",
+    "large": "https://cards.scryfall.io/large/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.jpg?1783906588",
+    "png": "https://cards.scryfall.io/png/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.png?1783906588",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.jpg?1783906588",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.jpg?1783906588",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.webp?1783906588",
+    "grid": "https://cards.scryfall.io/grid/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.webp?1783906588",
+    "display": "https://cards.scryfall.io/display/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.webp?1783906588",
+    "art": "https://cards.scryfall.io/art/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.webp?1783906588",
+    "crop": "https://cards.scryfall.io/crop/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.webp?1783906588",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/5/d585e218-3dc8-4fbd-8ad2-795fbc9b2155.jpg?1783906588"
+  },
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "Green spells you cast cost {1} less to cast.\nIf one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on that creature instead.\n{4}{G}{G}, {T}: Distribute two +1/+1 counters among one or two target creatures you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d585e218-3dc8-4fbd-8ad2-795fbc9b2155/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5e7ef7fe-968b-4ada-9fe4-6fda0541aafc&unique=prints",
+  "collector_number": "184",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pablo Mendoza",
+  "artist_ids": [
+    "57f8d135-42e9-46e2-bb00-eff941b3152b"
+  ],
+  "illustration_id": "06f51796-2ec7-41a0-97d5-acd30fdfaad2",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffiii",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 678,
+  "penny_rank": 8176,
+  "preview": {
+    "source": "Collider",
+    "source_uri": "https://collider.com/magic-the-gathering-final-fantasy-crystal-card-images/",
+    "previewed_at": "2025-05-20"
+  },
+  "prices": {
+    "usd": "11.51",
+    "usd_foil": "14.93",
+    "usd_etched": null,
+    "eur": "7.54",
+    "eur_foil": "8.25",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BEarth%2BCrystal",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BEarth%2BCrystal",
+    "edhrec": "https://edhrec.com/route/?cc=The+Earth+Crystal"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F633136%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=826606&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141307?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

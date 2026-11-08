@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bbb2ac2e-de5c-441a-9707-5ced64df43a6",
+  "name": "Mistform Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Mask",
+      "oracle_fingerprint": "bfa9e48f06571d0be3e764c5f6b80840",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

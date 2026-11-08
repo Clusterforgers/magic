@@ -1,0 +1,39 @@
+{
+  "oracle_id": "97a2cd39-6b54-496b-b3ac-dab9dfed7edc",
+  "name": "Elven Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elven Passage",
+      "oracle_fingerprint": "d945f4fd5d7087f26ccb08fe2bbc3ef6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "Pay": {
+                  "cost": [{ "Behold": { "filter": [{ "Subtype": "Elf" }] } }],
+                  "paid": [{ "Untap": { "what": { "Bound": "found" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "2719516a-7a47-413e-b1a3-15543d229e08",
+  "oracle_id": "6517edb3-30e2-40ba-b6e4-4554b4bbb342",
+  "multiverse_ids": [
+    202619
+  ],
+  "mtgo_id": 38648,
+  "mtgo_foil_id": 38649,
+  "name": "Ali from Cairo",
+  "lang": "en",
+  "released_at": "2011-01-10",
+  "uri": "https://api.scryfall.com/cards/2719516a-7a47-413e-b1a3-15543d229e08",
+  "scryfall_uri": "https://scryfall.com/card/me4/107/ali-from-cairo?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:17:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.jpg?1783941438",
+    "normal": "https://cards.scryfall.io/normal/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.jpg?1783941438",
+    "large": "https://cards.scryfall.io/large/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.jpg?1783941438",
+    "png": "https://cards.scryfall.io/png/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.png?1783941438",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.jpg?1783941438",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.jpg?1783941438",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.webp?1783941438",
+    "grid": "https://cards.scryfall.io/grid/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.webp?1783941438",
+    "display": "https://cards.scryfall.io/display/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.webp?1783941438",
+    "art": "https://cards.scryfall.io/art/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.webp?1783941438",
+    "crop": "https://cards.scryfall.io/crop/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.webp?1783941438",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/7/2719516a-7a47-413e-b1a3-15543d229e08.jpg?1783941438"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human",
+  "oracle_text": "Damage that would reduce your life total to less than 1 reduces it to 1 instead.",
+  "power": "0",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d38a13b7-6615-4c89-be7d-3b4eaacf1875",
+  "set": "me4",
+  "set_name": "Masters Edition IV",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/d38a13b7-6615-4c89-be7d-3b4eaacf1875",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame4&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me4?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2719516a-7a47-413e-b1a3-15543d229e08/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6517edb3-30e2-40ba-b6e4-4554b4bbb342&unique=prints",
+  "collector_number": "107",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Poole",
+  "artist_ids": [
+    "bfdeaf09-f915-4058-8e8b-bcac3bc43c33"
+  ],
+  "illustration_id": "5b523782-4f55-4991-94da-de072767e13e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25742,
+  "penny_rank": 11459,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=202619&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAli%2Bfrom%2BCairo",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAli%2Bfrom%2BCairo",
+    "edhrec": "https://edhrec.com/route/?cc=Ali+from+Cairo"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DAli%2Bfrom%2BCairo%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Ali+from+Cairo&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/38648?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

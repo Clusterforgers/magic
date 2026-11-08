@@ -1,0 +1,51 @@
+{
+  "oracle_id": "7d22c7ed-2f45-42af-b999-b921f4f4db25",
+  "name": "Skull Raid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skull Raid",
+      "oracle_fingerprint": "745bef6d1e1e9e2a225766d3dbec95d0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2, "as": "discarded" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      2,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": {
+                            "Count": [
+                              { "Is": { "Bound": "discarded" } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "58940a7e-3827-43fa-8bf5-cc88dc295df0",
+  "name": "Mystic Genesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Genesis",
+      "oracle_fingerprint": "a8a977fe40c96ba5e758089b454bef54",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "RememberValue": {
+                  "value": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "token": {
+                        "name": "Ooze",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Ooze"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

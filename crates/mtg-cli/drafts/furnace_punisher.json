@@ -1,0 +1,39 @@
+{
+  "oracle_id": "606af824-e711-4957-99c0-d02b0f6c729d",
+  "name": "Furnace Punisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furnace Punisher",
+      "oracle_fingerprint": "670299d9b97d251ece4d17a009ce23b3",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Land" },
+                          { "Supertype": "Basic" },
+                          { "ControlledBy": "Triggering" }
+                        ]
+                      },
+                      "op": "Lt",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "bfa21cbc-8a04-4456-bf02-bae6b514d50a",
+  "name": "Exile into Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exile into Darkness",
+      "oracle_fingerprint": "c71483f0b4a5478cc41533f8b693ef81",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Gt",
+                "right": {
+                  "Largest": { "who": "Opponents", "of": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

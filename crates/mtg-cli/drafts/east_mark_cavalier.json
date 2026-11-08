@@ -1,0 +1,27 @@
+{
+  "oracle_id": "884d08bf-7e97-40cc-864e-445ae0bd1646",
+  "name": "East-Mark Cavalier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "East-Mark Cavalier",
+      "oracle_fingerprint": "528094dba0cf0d669b7624caf0f6a356",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Subtype": "Goblin" }] } }
+                },
+                { "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Subtype": "Orc" }] } } }
+              ]
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

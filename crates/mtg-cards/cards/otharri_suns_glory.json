@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b081352b-d17b-4031-bbcc-c5c02cbfa6b6",
+  "name": "Otharri, Suns' Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otharri, Suns' Glory",
+      "oracle_fingerprint": "2df2631a2b9cd0bdefb27b2a6dedca57",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "experience" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rebel",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rebel"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "Counters": { "on": "You", "counter": { "Other": "experience" } } },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{W}{R}" },
+              { "TapPermanents": { "filter": [{ "Subtype": "Rebel" }] } }
+            ],
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

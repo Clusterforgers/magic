@@ -1,0 +1,58 @@
+{
+  "oracle_id": "f81ca3a5-356d-4b5d-afc2-a33aa774816b",
+  "name": "Soul-Shackled Zombie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul-Shackled Zombie",
+      "oracle_fingerprint": "097dcfdd1748e3632795366d95a5affe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

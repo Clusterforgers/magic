@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e921839f-9d91-41a9-bc89-016af3c757aa",
+  "name": "Consult the Star Charts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consult the Star Charts",
+      "oracle_fingerprint": "4b068a8a6e30e6b3935114a7cbc6ba3f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": {
+                    "min": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } },
+                    "max": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } }
+                  },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

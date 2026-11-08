@@ -1,0 +1,50 @@
+{
+  "oracle_id": "585c9671-7451-4506-8b21-0d64106c4cd7",
+  "name": "Wall of Mourning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Mourning",
+      "oracle_fingerprint": "9eb5c8e58b213368c798178d69981d05",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "ExileTop": { "count": { "Players": "Opponents" }, "as": "exiled", "sealed": true }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

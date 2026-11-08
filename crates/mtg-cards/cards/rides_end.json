@@ -1,0 +1,32 @@
+{
+  "oracle_id": "89e209f3-c474-453f-9659-ccebfc88bc0f",
+  "name": "Ride's End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ride's End",
+      "oracle_fingerprint": "5ca0772b3f6e7ee36f2cb4826d8e3f82",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This", { "Targeting": ["Tapped"] }],
+            "change": "Reduce",
+            "mana": "{3}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

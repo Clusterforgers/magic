@@ -1,0 +1,28 @@
+{
+  "oracle_id": "56e05866-a441-4487-a5c8-cf62b78c9012",
+  "name": "Nettling Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nettling Host",
+      "oracle_fingerprint": "0bec12498b312cb1fda0022d36502274",
+      "abilities": [
+        { "Keyword": { "Toxic": 2 } },
+        {
+          "Activated": {
+            "cost": ["ExileSelf"],
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Conjure": { "name": "Nettlecyst", "zone": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,7 +12,7 @@ use mtg_core::mana::ManaCost;
 
 use crate::abilities::{AbilityRef, PutOnStack};
 use crate::ability_reader;
-use crate::announce::{Pending, Special, What, companion, foretell, suspend, turn_up};
+use crate::announce::{Pending, Special, What, companion, foretell, plot, suspend, turn_up};
 use crate::answers::Outcome;
 use crate::choose::{Choice, Choices};
 use crate::decision::{PayChoice, PayOptions};
@@ -34,6 +34,22 @@ use crate::spend::Spend;
 use crate::state::GameState;
 use crate::zones::Zone;
 
+/// The tap (`{T}`) and the untap (`{Q}`) of the source that `price` asks.
+fn turns(price: &Price, object: ObjectId) -> impl Iterator<Item = Event> {
+    let tap = price.tap.then_some(Event::PermanentTapped { object });
+    let untap = price.untap.then_some(Event::PermanentUntapped { object });
+    tap.into_iter().chain(untap)
+}
+
+/// The object a part of an activation's cost is paid from: the source, except that an ability an Equipment or Aura
+/// gives unattaches that Equipment or Aura ("{T}, Unattach Shuriken").
+fn paid_from(part: &Part, ability: AbilityRef) -> ObjectId {
+    match (part, ability.source.granter()) {
+        (Part::Unattach, Some(granter)) => granter,
+        _ => ability.object,
+    }
+}
+
 /// The events of activating an ability: the tap and the sacrifice, discard or exile of the source that its cost asks,
 /// the activation and the ability on the stack. The mana of its cost is paid around them by [`pay_answer`].
 ///
@@ -52,13 +68,17 @@ pub(crate) fn activation_events(
     let mut shots = Vec::new();
     match &*rules {
         Ability::Activated { cost, .. } => {
-            let price = Price::announced(cost).ok()?.at(choices.x.unwrap_or(0));
+            let price = Price::announced_in(
+                cost,
+                state,
+                player,
+                ability.object,
+                ability.source.granter(),
+            )
+            .ok()?
+            .at(choices.x.unwrap_or(0));
             shots = parts::photographed(state, &price.parts, choices.cost_picks());
-            if price.tap {
-                events.push(Event::PermanentTapped {
-                    object: ability.object,
-                });
-            }
+            events.extend(turns(&price, ability.object));
             // The other parts of the cost, in the order it prints them, with the objects the player picked for them.
             let mut picks = choices.cost_picks().iter();
             let mut kinds = choices.cost_kinds().iter();
@@ -68,7 +88,8 @@ pub(crate) fn activation_events(
                 } else {
                     &[]
                 };
-                events.extend(part.w2f_events(state, (player, ability.object), picked, &mut kinds));
+                let from = paid_from(part, ability);
+                events.extend(part.w2f_events(state, (player, from), picked, &mut kinds));
                 if let Part::Counters { counter, count } = part {
                     parts::after_removal(&mut before.counters, counter, *count);
                 }
@@ -174,6 +195,8 @@ pub(crate) fn payment_decision(
         help: Box::new(help),
         spend: Box::new(spend),
         can_cancel,
+        attack: false,
+        block: false,
         life,
         max_life: max_life_payment(&cost, life),
         cost,
@@ -184,6 +207,9 @@ pub(crate) fn payment_decision(
 
 /// How a mana source is used when the game is not at hand: the source and the permanents its cost takes.
 type Activate<'a> = &'a dyn Fn(&ManaOption, &[Vec<ObjectId>]) -> Result<Vec<Event>, EngineError>;
+
+/// The object an id names now, which the payment records of what it tapped.
+type Refer<'a> = &'a dyn Fn(ObjectId) -> Option<crate::object::ObjectRef>;
 
 /// The offered permanents that are tapped (or gone) and the offered cards that left the graveyard in `state`; no payment may use them.
 fn unusable(state: &GameState, player: PlayerId, options: &PayOptions) -> Vec<ObjectId> {
@@ -239,6 +265,7 @@ fn payment_events(
     payment: &Payment,
     announced: Vec<Event>,
     activate: Activate<'_>,
+    refer: Refer<'_>,
 ) -> Result<Vec<Event>, EngineError> {
     let spent = check_payment_with(
         &options.cost,
@@ -275,7 +302,19 @@ fn payment_events(
     let mut announced = announced;
     for event in &mut announced {
         if let Event::SpellCast { choices, .. } = event {
-            choices.spent = (!spent.mana.is_empty()).then(|| Box::new(spent.mana.clone()));
+            // The mana a helper paid with assist was spent to cast it too (CR 702.132a, 601.2h).
+            let mut all = choices.spent.take().map(|held| *held).unwrap_or_default();
+            all.extend(spent.mana.iter().copied());
+            choices.spent = (!all.is_empty()).then(|| Box::new(all));
+            // The spell remembers the creatures that convoked it, as they are now (CR 702.51).
+            let convoked: Vec<_> = payment
+                .convoke
+                .iter()
+                .filter_map(|convoked| refer(convoked.creature))
+                .collect();
+            if !convoked.is_empty() {
+                choices.cost_taken.get_or_insert_with(Box::default).convoked = convoked;
+            }
         }
     }
     events.extend(announced);
@@ -345,6 +384,31 @@ pub(crate) fn pay_answer(
     choice: PayChoice,
     pending: Option<&Pending>,
 ) -> Result<Outcome, EngineError> {
+    // The helper of an assist pays its share when asked, before and apart from the caster's payment (CR 702.132a).
+    if let Some(Pending {
+        what: What::Spell(_),
+        player: caster,
+        ..
+    }) = pending
+        && *caster != player
+    {
+        let outcome = pay_with(
+            player,
+            options,
+            &unusable(state, player, options),
+            choice,
+            Vec::new(),
+            &|option, taken| mana_ability::activation(state, player, option, taken),
+            &|id| state.object(id).map(crate::object::GameObject::reference),
+        )?;
+        return Ok(match outcome {
+            Outcome::Events(mut events) => {
+                mana_ability::r5g_distinct(state, &mut events);
+                Outcome::Assisted(events)
+            }
+            other => other,
+        });
+    }
     let announced = match choice {
         PayChoice::Cancel => Vec::new(),
         _ => announcement(state, player, pending)?,
@@ -356,10 +420,13 @@ pub(crate) fn pay_answer(
         choice,
         announced,
         &|option, taken| mana_ability::activation(state, player, option, taken),
+        &|id| state.object(id).map(crate::object::GameObject::reference),
     )?;
     Ok(match outcome {
-        Outcome::Events(events) => {
+        Outcome::Events(mut events) => {
+            mana_ability::r5g_distinct(state, &mut events);
             let mut events = parts::mill::in_turn(state, player, events);
+            record_sources(state, &mut events);
             // The mana a cast spends can set off an ability as the spell is cast.
             events.extend(crate::spend_rider::created(state, player, options, &events));
             Outcome::Events(events)
@@ -451,6 +518,11 @@ fn announcement(
             ..
         }) => foretell::events(state, *card).ok_or_else(unexpected),
         Some(Pending {
+            what: What::Spell(card),
+            special: Some(Special::Plot),
+            ..
+        }) => plot::events(state, *card).ok_or_else(unexpected),
+        Some(Pending {
             special: Some(Special::Companion),
             ..
         }) => companion::events(state, player).ok_or_else(unexpected),
@@ -460,10 +532,15 @@ fn announcement(
             ..
         }) => crate::dk1c5_rooms::dk1c5_events(state, player, *card, *door).ok_or_else(unexpected),
         Some(Pending {
+            special: Some(Special::EndEffect(effect)),
+            ..
+        }) => crate::e15g_paid::events(state, player, *effect).ok_or_else(unexpected),
+        Some(Pending {
             what: What::Spell(card),
             special: Some(Special::TurnFaceUp),
+            choices,
             ..
-        }) => turn_up::events(state, *card).ok_or_else(unexpected),
+        }) => turn_up::events(state, player, *card, choices).ok_or_else(unexpected),
         Some(
             pending @ Pending {
                 what: What::Spell(spell),
@@ -471,16 +548,39 @@ fn announcement(
                 granted,
                 ..
             },
-        ) => spell_events(
-            state,
-            player,
-            *spell,
-            &pending.cost_parts(),
-            choices,
-            granted.is_some(),
-        )
-        .map(|events| unpreparing(state, *spell, events))
-        .ok_or_else(unexpected),
+        ) => {
+            // The player who helps with assist pays first, in the same batch as the caster's payment (CR 702.132a).
+            let helped = match (pending.done.assist_paid, &pending.done.assist_events) {
+                (Some(_), Some(events)) => events.clone(),
+                _ => Vec::new(),
+            };
+            let mut cast = spell_events(
+                state,
+                player,
+                *spell,
+                &pending.cost_parts(),
+                choices,
+                granted.is_some(),
+            )
+            .map(|events| unpreparing(state, *spell, events))
+            .ok_or_else(unexpected)?;
+            let given: Vec<mtg_core::mana::ManaType> = helped
+                .iter()
+                .filter_map(|event| match event {
+                    Event::ManaSpent { mana, .. } => Some(mana.clone()),
+                    _ => None,
+                })
+                .flatten()
+                .collect();
+            if !given.is_empty() {
+                for event in &mut cast {
+                    if let Event::SpellCast { choices, .. } = event {
+                        choices.spent = Some(Box::new(given.clone()));
+                    }
+                }
+            }
+            Ok(helped.into_iter().chain(cast).collect())
+        }
         Some(Pending {
             what: What::Ability(ability),
             choices,
@@ -495,10 +595,88 @@ fn announcement(
             ..
         }) => Ok(crate::attack_tax::made(state, player, attackers, exert)),
         Some(Pending {
+            what: What::Block(blocks),
+            ..
+        }) => Ok(crate::block_tax::made(state, player, blocks)),
+        Some(Pending {
             what: What::Trigger(_),
             ..
         })
         | None => Err(unexpected()),
+    }
+}
+
+/// Gives the spell the payment casts the sources of the mana it spends (CR 601.2h): what each was as it made the mana, and
+/// how much of its mana was spent. The payment is played out on a copy of the pool, which keeps the source of mana added
+/// before the cast; only the last spending is the spell's, the earlier ones pay for mana abilities.
+fn record_sources(state: &GameState, events: &mut [Event]) {
+    let Some((last, player)) =
+        events
+            .iter()
+            .enumerate()
+            .rev()
+            .find_map(|(at, event)| match event {
+                Event::ManaSpent { player, .. } => Some((at, *player)),
+                _ => None,
+            })
+    else {
+        return;
+    };
+    let Some(mut pool) = state.player(player).map(|held| held.mana().clone()) else {
+        return;
+    };
+    let mut from: Vec<mtg_cards::spend::SpentFrom> = Vec::new();
+    for (at, event) in events.iter().enumerate() {
+        match event {
+            Event::ManaAdded {
+                player: to,
+                mana,
+                source,
+                only,
+                lasts,
+            } if *to == player => {
+                let kind = source.map(|id| crate::spend::source_kind(state, id));
+                pool.add_from(*mana, only.clone(), *lasts, kind);
+            }
+            Event::ManaSpent {
+                player: by,
+                mana,
+                restricted,
+            } if *by == player => {
+                let mut plain = mana.clone();
+                for unit in restricted {
+                    if let Some(at) = plain.iter().position(|m| *m == unit.mana) {
+                        plain.remove(at);
+                    }
+                    pool.spend_restricted(unit);
+                }
+                for m in plain {
+                    let Some(traits) = pool.spend_noting(m) else {
+                        continue;
+                    };
+                    if at != last {
+                        continue;
+                    }
+                    match from.iter_mut().find(|known| known.traits == traits) {
+                        Some(known) => known.count += 1,
+                        None => from.push(mtg_cards::spend::SpentFrom { traits, count: 1 }),
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    if from.is_empty() {
+        return;
+    }
+    for event in events.iter_mut() {
+        if let Event::SpellCast { choices, .. } = event {
+            choices
+                .cost_taken
+                .get_or_insert_with(Box::default)
+                .sources
+                .clone_from(&from);
+        }
     }
 }
 
@@ -511,9 +689,15 @@ pub(crate) fn pay_choice(
     choice: PayChoice,
     announced: Vec<Event>,
 ) -> Result<Outcome, EngineError> {
-    pay_with(player, options, tapped, choice, announced, &|option, _| {
-        Ok(tap_events(player, option))
-    })
+    pay_with(
+        player,
+        options,
+        tapped,
+        choice,
+        announced,
+        &|option, _| Ok(tap_events(player, option)),
+        &|id| Some(crate::object::ObjectRef { id, counter: 0 }),
+    )
 }
 
 /// [`pay_choice`] with the events of using each mana source given by `activate`.
@@ -524,6 +708,7 @@ fn pay_with(
     choice: PayChoice,
     announced: Vec<Event>,
     activate: Activate<'_>,
+    refer: Refer<'_>,
 ) -> Result<Outcome, EngineError> {
     let payment = match choice {
         PayChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
@@ -550,7 +735,9 @@ fn pay_with(
         )
         .ok_or(IllegalAnswer::NotOffered("automatic payment"))?,
     };
-    let events = payment_events(player, options, tapped, &payment, announced, activate)?;
+    let events = payment_events(
+        player, options, tapped, &payment, announced, activate, refer,
+    )?;
     Ok(Outcome::Events(events))
 }
 
@@ -593,6 +780,8 @@ mod tests {
             help: Box::default(),
             spend: Box::new(Spend::other()),
             can_cancel,
+            attack: false,
+            block: false,
             life,
             max_life: max_life_payment(&cost, life),
             cost,

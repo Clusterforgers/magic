@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1ef07ae5-3b04-45c8-a080-852b84da4fef",
+  "name": "Shoving Match",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shoving Match",
+      "oracle_fingerprint": "4cc5ecc8b710e80272bb334cd204551a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                          "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

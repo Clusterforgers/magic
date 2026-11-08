@@ -1,0 +1,30 @@
+{
+  "oracle_id": "268f423e-b368-4561-ae24-db0f7ca775f4",
+  "name": "Mistform Seaswift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Seaswift",
+      "oracle_fingerprint": "9b653afab5381713c46f33c4c2202ca2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{1}{U}" } }
+      ]
+    }
+  ]
+}

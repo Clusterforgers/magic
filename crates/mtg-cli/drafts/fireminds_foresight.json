@@ -1,0 +1,53 @@
+{
+  "oracle_id": "bf5765e0-def0-4ddf-9cd7-083feae71660",
+  "name": "Firemind's Foresight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firemind's Foresight",
+      "oracle_fingerprint": "1fb9c0f3213721be023750c7027c65b7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Instant" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 3 } }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Instant" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 2 } }
+                  ],
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Instant" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } }
+                  ],
+                  "reveal": true,
+                  "as": "found3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

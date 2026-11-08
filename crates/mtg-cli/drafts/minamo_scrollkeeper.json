@@ -1,0 +1,15 @@
+{
+  "oracle_id": "9ad4f876-e923-4a09-8e70-eb826aacf89d",
+  "name": "Minamo Scrollkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minamo Scrollkeeper",
+      "oracle_fingerprint": "1ef6520186ddbbe4512c257bb2d0b814",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Rule": { "rule": { "HandSizeChange": { "who": "You", "by": 1 } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "98a89d5c-871c-4da6-a502-9fdb7bdfccff",
+  "name": "Hikari, Twilight Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hikari, Twilight Guardian",
+      "oracle_fingerprint": "dd92b31a0fc87b1577c30ba22c896b2b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "This", "as": "exiled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "exiled" },
+                                    "to": { "Battlefield": {} }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

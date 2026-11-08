@@ -1,0 +1,68 @@
+{
+  "oracle_id": "7abbd5af-a04b-476d-aee5-2b2f5114b019",
+  "name": "Thief of Existence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thief of Existence",
+      "oracle_fingerprint": "271bcf1b2fe65d718808e7130ffa4fd5",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Creature" } },
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "ZoneChange": { "what": ["This"], "from": "Battlefield" }
+                                },
+                                "targets": [{ "what": "Opponent" }],
+                                "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

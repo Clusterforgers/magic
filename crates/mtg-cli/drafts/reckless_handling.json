@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f1ea7dc5-01cb-4780-947c-08ea9324c52f",
+  "name": "Reckless Handling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Handling",
+      "oracle_fingerprint": "79db19e3ecb555b7d1d37261ac68a41a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Artifact" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "Discard": { "random": true, "as": "discarded2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded2" },
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "oracle_id": "6be21185-f85c-49e8-988a-a76b6613fdaa",
+  "name": "Giant Inheritance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Inheritance",
+      "oracle_fingerprint": "b69e564bdd893b39f25d95cb0fda7c98",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 5, "toughness": 5 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [
+                      {
+                        "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                        "bounds": { "min": 0, "max": 1 }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Monster",
+                              "types": ["Enchantment"],
+                              "subtypes": ["Aura", "Role"],
+                              "abilities": [
+                                { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                                {
+                                  "Static": {
+                                    "affected": "Attached",
+                                    "mods": [
+                                      { "ModifyPT": { "power": 1, "toughness": 1 } },
+                                      { "AddKeyword": "Trample" }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "as": "token"
+                        }
+                      },
+                      { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

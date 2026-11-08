@@ -1,0 +1,35 @@
+{
+  "oracle_id": "294f4c23-d046-4f9d-81ad-446a9b09d75b",
+  "name": "Obsessive Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obsessive Collector",
+      "oracle_fingerprint": "46e24665be66d7b19e93ac0b47c18e67",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

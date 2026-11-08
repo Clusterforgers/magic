@@ -1,0 +1,79 @@
+{
+  "oracle_id": "d565cd3d-68d4-4039-9e45-7e69e31d0ffb",
+  "name": "Ugin's Labyrinth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin's Labyrinth",
+      "oracle_fingerprint": "b59bd4c19680514a8531f51a1373ea2a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            "Colorless",
+                            { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 7 } },
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

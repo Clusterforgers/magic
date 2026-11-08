@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fba2fa87-3f2a-4a9f-a19e-a1f9dada4118",
+  "name": "Gallant Pie-Wielder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gallant Pie-Wielder",
+      "oracle_fingerprint": "1ee17924d3785ff45f699c93fb8275f6",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

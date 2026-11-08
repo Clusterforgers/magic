@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4520c630-3650-462f-ab01-215eb2bdbbf5",
+  "name": "Zerapa Minotaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zerapa Minotaur",
+      "oracle_fingerprint": "c8d051e7da3b488efb79d3fc2fb65a16",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "RemoveKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "oracle_id": "ec9c35f2-6a68-45e7-a86e-9f5af9fe28fc",
+  "name": "Phyrexian Ingester",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Ingester",
+      "oracle_fingerprint": "1e5287e53fd058cdb1c2256d56b4431f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "imprinted" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Total": {
+                      "of": [
+                        { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ],
+                      "stat": "Power"
+                    }
+                  },
+                  "toughness": {
+                    "Total": {
+                      "of": [
+                        { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ],
+                      "stat": "Toughness"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

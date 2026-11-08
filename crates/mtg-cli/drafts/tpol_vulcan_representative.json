@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e8a548e8-057e-4023-ac20-bac973dbce09",
+  "name": "T'Pol, Vulcan Representative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "T'Pol, Vulcan Representative",
+      "oracle_fingerprint": "c4e5e5864d3316842e4b433a9d84f82a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" }, "count": 2 }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

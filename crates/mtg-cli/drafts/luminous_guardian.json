@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0d9a31f5-20d0-4266-95ec-38b4fa96b8aa",
+  "name": "Luminous Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luminous Guardian",
+      "oracle_fingerprint": "6a5e384ebeec4a7aafaa7deb1ee41727",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "BlocksAdditional": 1 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

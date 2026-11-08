@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a61267d2-2cc7-4208-a365-581d56b92e1c",
+  "name": "Badlands Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Badlands Revival",
+      "oracle_fingerprint": "1146a030da6df59439284cd716b8617b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

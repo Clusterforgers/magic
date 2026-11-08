@@ -1,0 +1,35 @@
+{
+  "oracle_id": "db5a4c25-5ae5-4a04-be79-bdee39b9152c",
+  "name": "Call to the Grave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call to the Grave",
+      "oracle_fingerprint": "42714fc86462a0bd76f15939571cec40",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Triggering",
+                  "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Zombie" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Type": "Creature" }] }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

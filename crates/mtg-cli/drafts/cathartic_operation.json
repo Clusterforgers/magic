@@ -1,0 +1,34 @@
+{
+  "oracle_id": "246e1349-2036-4325-b22d-be8d93d72658",
+  "name": "Cathartic Operation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cathartic Operation",
+      "oracle_fingerprint": "e7ce7ed57fa312babebedf0d22909215",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "Seek": {
+                  "filter": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }],
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

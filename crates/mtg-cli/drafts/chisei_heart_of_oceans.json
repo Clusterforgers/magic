@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f91407fe-3c3b-4ffc-81de-cb8c5b0fe526",
+  "name": "Chisei, Heart of Oceans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chisei, Heart of Oceans",
+      "oracle_fingerprint": "7402557a08c482082c921912a6bc1de7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCountersAmong": { "from": [] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

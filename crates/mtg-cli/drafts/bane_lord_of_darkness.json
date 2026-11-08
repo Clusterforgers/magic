@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ca507eea-1b04-4488-813e-ca970640e227",
+  "name": "Bane, Lord of Darkness",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bane, Lord of Darkness",
+      "oracle_fingerprint": "4bc016d450eebf2d2a498b2eee7623a1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Le",
+                "right": { "Half": { "of": { "StartingLife": "You" }, "up": false } }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 108, "end": 313 }
+          }
+        }
+      ]
+    }
+  ]
+}

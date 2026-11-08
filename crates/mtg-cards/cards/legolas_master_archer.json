@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5e99497f-7c73-49ae-88b3-78d5d74ba9ea",
+  "name": "Legolas, Master Archer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legolas, Master Archer",
+      "oracle_fingerprint": "993bdd036e546f29673b936edafd02da",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Targeting": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

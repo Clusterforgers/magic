@@ -1,0 +1,66 @@
+{
+  "oracle_id": "83959c3d-053c-4d95-a1b0-fe92f2b906db",
+  "name": "Careful Cultivation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Careful Cultivation",
+      "oracle_fingerprint": "c539113046976d86640c94c43a5d7401",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 3 } },
+              { "AddKeyword": "Reach" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Monk",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Monk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "oracle_id": "2cef4171-8151-4ee9-83a7-bcb5116451bf",
+  "name": "Dorothea, Vengeful Victim // Dorothea's Retribution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dorothea, Vengeful Victim",
+      "oracle_fingerprint": "f3727dcec066d8bb5c1ea8ea03a32a5e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": "This" }] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Disturb": "{1}{W}{U}" } }
+      ]
+    },
+    {
+      "name": "Dorothea's Retribution",
+      "oracle_fingerprint": "da3d91fd6d4380e5fb7985e5c580ea3d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Spirit",
+                              "colors": ["White"],
+                              "types": ["Creature"],
+                              "subtypes": ["Spirit"],
+                              "power": 4,
+                              "toughness": 4,
+                              "abilities": [{ "Keyword": "Flying" }]
+                            }
+                          },
+                          "tapped": true,
+                          "attacking": true,
+                          "as": "token"
+                        }
+                      },
+                      {
+                        "DelayedTrigger": {
+                          "when": { "StepBegins": { "step": "EndCombat" } },
+                          "effects": [
+                            {
+                              "Sacrifice": {
+                                "who": { "ControllerOf": { "Bound": "token" } },
+                                "filter": [{ "Is": { "Bound": "token" } }],
+                                "count": { "Count": [{ "Is": { "Bound": "token" } }] }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e04560ea-f2bd-4cb7-8f65-3aa0dd58fbdf",
+  "name": "Likeness Looter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Likeness Looter",
+      "oracle_fingerprint": "87b602b86020595e4542042b47e233d1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Draw": {} }, { "Discard": {} }] } },
+        {
+          "Activated": {
+            "cost": "{X}",
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "except": [{ "AddKeyword": "Flying" }, "ThisAbility"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

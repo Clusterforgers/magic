@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bddf0772-503c-42f1-bb86-1dfeeedf4a7e",
+  "name": "Inexorable Blob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inexorable Blob",
+      "oracle_fingerprint": "63052aa44af05a51fc2e14bf2aafb75e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ooze",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ooze"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

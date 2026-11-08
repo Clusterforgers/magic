@@ -1,0 +1,56 @@
+{
+  "oracle_id": "7e7d7f4d-2c22-4803-ba5e-5eb653c25b5e",
+  "name": "Aerial Extortionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aerial Extortionist",
+      "oracle_fingerprint": "3d210881c20fc57cdbcd12c0d9271aa6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } }
+              ]
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "OwnerOf": { "Target": 0 } },
+                      "from": "Exile",
+                      "only": { "Target": 0 }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Not": { "WasCast": { "from": "Hand" } } }],
+                "by": "Opponents"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

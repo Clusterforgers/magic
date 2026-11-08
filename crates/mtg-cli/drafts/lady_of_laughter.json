@@ -1,0 +1,33 @@
+{
+  "oracle_id": "356a85d9-2570-448c-a455-f4ce915a604f",
+  "name": "Lady of Laughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lady of Laughter",
+      "oracle_fingerprint": "24fef34d42fb0285eb4ed57435db39d2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

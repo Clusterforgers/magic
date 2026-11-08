@@ -1,0 +1,46 @@
+{
+  "oracle_id": "ad3e705f-da57-4eff-84d7-2072522de988",
+  "name": "Insatiable Avarice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insatiable Avarice",
+      "oracle_fingerprint": "78f10fa32d688f0fbed7a1891e2ce189",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{2}", "{B}{B}"],
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Search": { "filter": [], "as": "found" } },
+                        { "Shuffle": {} },
+                        {
+                          "Move": {
+                            "what": { "Bound": "found" },
+                            "to": { "Library": { "place": "Top" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Draw": { "who": { "Target": 0 }, "count": 3 } },
+                        { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

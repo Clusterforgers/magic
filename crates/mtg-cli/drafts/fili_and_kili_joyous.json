@@ -1,0 +1,31 @@
+{
+  "oracle_id": "392f6cd3-3895-42b3-8bb9-6b0c6a689a29",
+  "name": "Fíli and Kíli, Joyous",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fíli and Kíli, Joyous",
+      "oracle_fingerprint": "722e8a11171e6152ba1ae6dc4ec648fe",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red"] },
+                  "only": [
+                    { "Spell": { "subtypes": ["Dwarf"] } },
+                    { "Spell": { "subtypes": ["Equipment"] } },
+                    { "Spell": { "subtypes": ["Saga"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

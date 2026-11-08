@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5a8630a8-804e-4789-b9a3-96d9ede5e188",
+  "name": "Brass Knuckles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brass Knuckles",
+      "oracle_fingerprint": "f5e36caddec41f279815143f67a8f51d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [{ "CopySpell": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Subtype": "Equipment" },
+                    { "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "784bda96-5bc1-47bc-a69e-e38b047ed914",
+  "name": "Veteran Warleader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran Warleader",
+      "oracle_fingerprint": "42e6a078cc330678813d1bac1ce69eb2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Ally" }, "Other"] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "FirstStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Vigilance" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Trample" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "oracle_id": "8965647b-1032-4b82-825e-fcdaf2ba6f45",
+  "name": "Liara of the Flaming Fist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Liara of the Flaming Fist",
+      "oracle_fingerprint": "6ce96343b37cc4ae6a2080606cf5074a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "Not": { "Is": { "Bound": "each" } } },
+                                    { "ControlledBy": "You" },
+                                    { "SharesName": { "Bound": "each" } }
+                                  ]
+                                },
+                                {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "OwnedBy": "You" },
+                                    { "SharesName": { "Bound": "each" } },
+                                    { "In": "Graveyard" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "each" },
+                              "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 182, "end": 333 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "6d4e7943-1fdf-4085-8af0-658badbd0cb8",
+  "name": "Monster Manual // Zoological Study",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monster Manual",
+      "oracle_fingerprint": "450888c6839a25489dc5c98fc00545fe",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Zoological Study",
+      "oracle_fingerprint": "0aa0261cd5360446d55484d2c9b3f917",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 5, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

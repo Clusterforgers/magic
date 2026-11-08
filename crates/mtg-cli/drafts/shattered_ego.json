@@ -1,0 +1,28 @@
+{
+  "oracle_id": "829436df-a48b-4535-84ec-64682a16949b",
+  "name": "Shattered Ego",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shattered Ego",
+      "oracle_fingerprint": "35333bcc66567d1bf96acc638c66383f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}{U}",
+            "effects": [
+              { "Move": { "what": "Attached", "to": { "Library": { "place": { "Below": 2 } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a5d3af88-2ca6-4e3d-8b6e-67482136a5c9",
+  "name": "Witchstalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witchstalker",
+      "oracle_fingerprint": "466cfad9e17bf6c92b45127e6b3162b2",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }],
+                "by": "Opponents"
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

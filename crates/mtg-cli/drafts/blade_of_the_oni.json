@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6d9ac636-3c6c-40ca-90f3-1a3387836bb4",
+  "name": "Blade of the Oni",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blade of the Oni",
+      "oracle_fingerprint": "44af4c2ad3261dc28e1ac871fcc1a73d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 5, "toughness": 5 } },
+              { "AddKeyword": "Menace" },
+              { "AddColors": ["Black"] },
+              { "AddSubtype": "Demon" }
+            ]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{2}{B}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "3a020ae9-279b-4c6c-8d3d-90d7b335fa3c",
+  "name": "Bala Ged Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bala Ged Thief",
+      "oracle_fingerprint": "ff26d88fd0214814d3db3839c4dd773d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": { "Count": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] },
+                    "max": { "Count": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] }
+                  },
+                  "as": "shown"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "shown" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "shown" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

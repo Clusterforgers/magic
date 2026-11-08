@@ -31,9 +31,11 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             Effect::Destroy {
                 what: Ref::Dealer,
                 regenerate,
+                ..
             } => Effect::Destroy {
                 what: Ref::This,
                 regenerate: *regenerate,
+                bind: None,
             },
             other => other.clone(),
         })

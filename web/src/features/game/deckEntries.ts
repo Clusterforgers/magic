@@ -126,6 +126,14 @@ export function entryOfPrecon(precon: PreconListItem, favourite = false): DeckEn
   }
 }
 
+const COLOUR_LETTER: Record<DeckInfo['color'], string> = {
+  White: 'W',
+  Blue: 'U',
+  Black: 'B',
+  Red: 'R',
+  Green: 'G',
+}
+
 /** A built-in deck as a row: a Normal deck the whole game runs. */
 export function entryOfBuiltIn(deck: DeckInfo): DeckEntry {
   return {
@@ -137,7 +145,7 @@ export function entryOfBuiltIn(deck: DeckInfo): DeckEntry {
     commanders: [],
     commanderNames: [],
     pictures: [],
-    identity: null,
+    identity: [COLOUR_LETTER[deck.color]],
     counts: null,
     byHand: 0,
     favourite: false,

@@ -99,7 +99,16 @@ impl CardDefinition {
             .flat_map(|face| face.manual.iter().map(|clause| clause.text.to_lowercase()))
             .collect::<Vec<_>>()
             .join("\n");
-        if text.contains("a deck can have any number of cards named") {
+        let any_number = self.rules.iter().any(|rule| {
+            matches!(
+                **rule,
+                Ability::Rule {
+                    rule: GameRule::AnyNumberInDeck,
+                    ..
+                }
+            )
+        });
+        if any_number || text.contains("a deck can have any number of cards named") {
             return None;
         }
         let marker = "a deck can have up to ";
@@ -545,6 +554,7 @@ mod tests {
     #[case::ordinary(CardDefinition::new("Bear"), Some(1))]
     #[case::basic(CardDefinition::basic_land(Some(Color::Red)), None)]
     #[case::any_number(CardDefinition::new("Rats").with_manual("A deck can have any number of cards named Rats.", ""), None)]
+    #[case::r5g_any_number_by_rule(CardDefinition::new("Rats").with_rules(serde_json::from_str::<Ability>(r#"{"Rule":{"rule":"AnyNumberInDeck"}}"#).unwrap()), None)]
     #[case::up_to_seven(CardDefinition::new("Dwarves").with_manual("A deck can have up to seven cards named Dwarves.", ""), Some(7))]
     fn a_singleton_deck_holds_the_copies_a_card_allows(
         #[case] card: CardDefinition,

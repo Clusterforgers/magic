@@ -19,6 +19,7 @@ describe('which mana is restricted', () => {
   it.each<[string, Restricted, boolean]>([
     ['a rider alone', unit('White', WHEN()), false],
     ['two riders', unit('White', WHEN(), WHEN(rider({ types: ['Land'] }))), false],
+    ['an enters bonus', unit('Green', { Enters: { spell: { types: ['Creature'] }, counters: 1 } }), false],
     ['a use alone', unit('White', 'CostWithX'), true],
     ['a spell use', unit('White', { Spell: { types: ['Creature'] } }), true],
     ['a rider beside a use', unit('White', WHEN(), 'CostWithX'), true],

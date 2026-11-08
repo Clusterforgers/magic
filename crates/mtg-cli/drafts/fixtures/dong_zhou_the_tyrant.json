@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb",
+  "oracle_id": "a1da64bc-8cff-4c89-9b9c-db0ddff5abc4",
+  "multiverse_ids": [
+    201123
+  ],
+  "mtgo_id": 33874,
+  "mtgo_foil_id": 33875,
+  "name": "Dong Zhou, the Tyrant",
+  "lang": "en",
+  "released_at": "2009-09-07",
+  "uri": "https://api.scryfall.com/cards/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb",
+  "scryfall_uri": "https://scryfall.com/card/me3/96/dong-zhou-the-tyrant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:30:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.jpg?1783942219",
+    "normal": "https://cards.scryfall.io/normal/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.jpg?1783942219",
+    "large": "https://cards.scryfall.io/large/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.jpg?1783942219",
+    "png": "https://cards.scryfall.io/png/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.png?1783942219",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.jpg?1783942219",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.jpg?1783942219",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.webp?1783942219",
+    "grid": "https://cards.scryfall.io/grid/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.webp?1783942219",
+    "display": "https://cards.scryfall.io/display/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.webp?1783942219",
+    "art": "https://cards.scryfall.io/art/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.webp?1783942219",
+    "crop": "https://cards.scryfall.io/crop/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.webp?1783942219",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/d/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb.jpg?1783942219"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Soldier",
+  "oracle_text": "When Dong Zhou enters, target creature an opponent controls deals damage equal to its power to that player.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set": "me3",
+  "set_name": "Masters Edition III",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bdd91a2b-53d2-4b97-b85b-5a48b9ca68cb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa1da64bc-8cff-4c89-9b9c-db0ddff5abc4&unique=prints",
+  "collector_number": "96",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Inoue Junichi",
+  "artist_ids": [
+    "691186e3-3034-4385-9616-1f1ceef10420"
+  ],
+  "illustration_id": "1a16e22c-4d46-418d-9e09-42034c144b1c",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24366,
+  "penny_rank": 15730,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=201123&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDong%2BZhou%252C%2Bthe%2BTyrant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDong%2BZhou%252C%2Bthe%2BTyrant",
+    "edhrec": "https://edhrec.com/route/?cc=Dong+Zhou%2C+the+Tyrant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DDong%2BZhou%252C%2Bthe%2BTyrant%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Dong+Zhou%2C+the+Tyrant&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/33874?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

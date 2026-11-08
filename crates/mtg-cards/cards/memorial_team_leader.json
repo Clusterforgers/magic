@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c71d3775-0c71-4e37-979d-35e319f357f0",
+  "name": "Memorial Team Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memorial Team Leader",
+      "oracle_fingerprint": "ee25f1b0c647026425b8893eddf3efdb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": "YourTurn"
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

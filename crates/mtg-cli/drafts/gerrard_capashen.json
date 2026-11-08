@@ -1,0 +1,36 @@
+{
+  "oracle_id": "27521e70-3a1f-4819-a111-c38216ffe7c3",
+  "name": "Gerrard Capashen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gerrard Capashen",
+      "oracle_fingerprint": "8ef6f5b5f1bd935016e10e62bd98f493",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Attacking"] }, "op": "Ge", "right": 1 }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

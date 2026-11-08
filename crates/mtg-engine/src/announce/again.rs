@@ -22,6 +22,7 @@ impl Answered {
                 | Outcome::Costs(_)
                 | Outcome::Cards(_)
                 | Outcome::Division(_)
+                | Outcome::Assisted(_)
         )
     }
 
@@ -35,6 +36,7 @@ impl Answered {
             Outcome::Costs(costs) => Answered::Costs(costs),
             Outcome::Cards(cards) => Answered::Cards(cards),
             Outcome::Division(shares) => Answered::Division(shares),
+            Outcome::Assisted(events) => Answered::Assisted(events),
             _ => return None,
         })
     }

@@ -1,0 +1,69 @@
+{
+  "oracle_id": "edcb0248-e7c9-4df9-8dba-982048654fd2",
+  "name": "Archenemy's Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archenemy's Charm",
+      "oracle_fingerprint": "20ca31dcbd4e07f4fa82a08505b380c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Lifelink" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

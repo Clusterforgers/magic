@@ -1,0 +1,65 @@
+{
+  "oracle_id": "5f97d49c-d0fa-4776-9455-93c1a172cd83",
+  "name": "HULK SMASH!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "HULK SMASH!",
+      "oracle_fingerprint": "d8cc016a6d649e946c2be8a40609f3f0",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 4 } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    },
+                    "max": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "source": { "Target": 0 },
+                            "to": { "Target": 1 },
+                            "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

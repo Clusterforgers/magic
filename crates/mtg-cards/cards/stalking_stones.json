@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f3658894-3d3d-4cd4-b0ac-c53e1d08747c",
+  "name": "Stalking Stones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stalking Stones",
+      "oracle_fingerprint": "926369b22c136aadda6583558bb1bcb1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Elemental"] },
+                    { "AddType": "Creature" },
+                    { "AddType": "Artifact" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

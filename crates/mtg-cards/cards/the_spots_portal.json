@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3ceac6ce-acde-42ab-b79d-ff153074d2d8",
+  "name": "The Spot's Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Spot's Portal",
+      "oracle_fingerprint": "9355686787619b4c052cae46d008d228",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Villain" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "LoseLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -44,6 +44,7 @@ fn begun() -> Engine {
         optional: vec![Optional::mana_only("Kicker {1}", "{1}", false)],
         x: Some(XCost::Mana { symbols: 1 }),
         price: None,
+        modes: None,
     };
     engine
         .begin(Pending::needing(SEAT, What::Spell(card), needs))

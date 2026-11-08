@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d85e5398-fa97-4bcd-8b93-008f3f435e22",
+  "name": "Verazol, the Split Current",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Verazol, the Split Current",
+      "oracle_fingerprint": "6081633343ae9296d0baee120a740dca",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "ManaSpent": { "of": null } } }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 74, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

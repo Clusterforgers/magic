@@ -12,7 +12,12 @@
             "effects": [
               {
                 "Shield": {
-                  "when": { "Damage": { "to": "You", "source": [{ "Type": "Creature" }] } },
+                  "when": {
+                    "Damage": {
+                      "to": "You",
+                      "source": [{ "Type": "Creature" }, { "In": "Battlefield" }]
+                    }
+                  },
                   "by": "Prevent",
                   "duration": "UntilEndOfTurn"
                 }
@@ -22,7 +27,7 @@
                   "when": {
                     "Damage": {
                       "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
-                      "source": [{ "Type": "Creature" }]
+                      "source": [{ "Type": "Creature" }, { "In": "Battlefield" }]
                     }
                   },
                   "by": "Prevent",

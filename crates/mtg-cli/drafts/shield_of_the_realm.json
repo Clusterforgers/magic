@@ -1,0 +1,17 @@
+{
+  "oracle_id": "d669ed30-efe9-4455-813a-c747b123333f",
+  "name": "Shield of the Realm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shield of the Realm",
+      "oracle_fingerprint": "409328ec4a75aa80aa1464bb89105712",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Damage": { "to": "Attached" } }, "by": { "PreventUpTo": 2 } }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

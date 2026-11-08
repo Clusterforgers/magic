@@ -1,0 +1,47 @@
+{
+  "oracle_id": "175db9f1-0188-4640-9b54-6b461c5440aa",
+  "name": "Prowling Geistcatcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prowling Geistcatcher",
+      "oracle_fingerprint": "81b609d9bf9f3aac90292d82f3927fd6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }, "Other"], "by": "You" } },
+            "effects": [
+              { "Exile": { "what": "Triggering" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Type": "Creature" }, "Token"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

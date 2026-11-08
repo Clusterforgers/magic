@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2847c8a0-f6aa-4e4a-a7b8-fc116436a264",
+  "name": "Demonic Hordes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Hordes",
+      "oracle_fingerprint": "f7017bf9dd389eb87cca0837414f36df",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{B}{B}{B}",
+                  "unpaid": [
+                    { "Tap": { "what": "This" } },
+                    { "Choose": { "from": "Opponents", "as": "player" } },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "as": "card2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "card2" } } },
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "card2" } },
+                        "filter": [{ "Is": { "Bound": "card2" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "card2" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

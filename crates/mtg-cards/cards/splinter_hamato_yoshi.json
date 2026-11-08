@@ -1,0 +1,47 @@
+{
+  "oracle_id": "41fbdaa2-7a7a-44d5-a8f4-77624350eedd",
+  "name": "Splinter, Hamato Yoshi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splinter, Hamato Yoshi",
+      "oracle_fingerprint": "de548d556c78504412351b4adc4a6c8a",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{B}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Ninja" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

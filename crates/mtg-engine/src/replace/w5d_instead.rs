@@ -45,6 +45,7 @@ impl Pass<'_> {
             snapshots: Vec::new(),
             amount,
             source,
+            against: None,
         }
     }
 
@@ -70,6 +71,17 @@ impl Pass<'_> {
             self.slots[at].applied = applied;
             return;
         };
+        // Damage redirected to a recipient that is gone is dealt as it was.
+        if events.is_empty()
+            && matches!(unit, Unit::Damage { .. })
+            && effects
+                .iter()
+                .any(|effect| matches!(effect, Effect::DealDamage { .. }))
+        {
+            self.slots[at].applied = applied;
+            return;
+        }
+        self.end_once_shield(candidate);
         if matches!(unit, Unit::Draw { .. }) {
             self.draws_changed = true;
         }
@@ -176,6 +188,7 @@ mod tests {
                 deathtouch: false,
                 form: crate::combat::DamageForm::default(),
                 toxic: 0,
+                unpreventable: false,
             }],
         );
         assert!(

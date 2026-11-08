@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e2048201-6dc9-4cf5-916f-1d867ae8dbdd",
+  "name": "Rain of Daggers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rain of Daggers",
+      "oracle_fingerprint": "76aa8db4e7e1f5c46328f02f109b29f0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "destroyed"
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Times": { "by": 2, "of": { "Bound": "destroyed~moved" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

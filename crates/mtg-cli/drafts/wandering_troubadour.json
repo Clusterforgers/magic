@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1a304703-6b48-4f3f-bd41-7f10ce0a751c",
+  "name": "Wandering Troubadour",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wandering Troubadour",
+      "oracle_fingerprint": "e7ffd6648cc137d43c6a2273997eeb48",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Venture": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

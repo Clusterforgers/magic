@@ -1,0 +1,22 @@
+{
+  "oracle_id": "85909caa-d2ad-4487-b9b7-6ac60a14b833",
+  "name": "Beacon of Tomorrows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beacon of Tomorrows",
+      "oracle_fingerprint": "407ff7099d6e0e7a2e9aa0ef0874401a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ExtraTurn": { "who": { "Target": 0 } } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

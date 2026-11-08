@@ -1,0 +1,31 @@
+{
+  "oracle_id": "de41ad94-b9d7-4c2b-bfa6-394d18737228",
+  "name": "Ketramose, the New Dawn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ketramose, the New Dawn",
+      "oracle_fingerprint": "7d5568f3fb42c3d0109552e5e6b0263b",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": { "left": { "Count": [{ "In": "Exile" }] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 112, "end": 247 }
+          }
+        }
+      ]
+    }
+  ]
+}

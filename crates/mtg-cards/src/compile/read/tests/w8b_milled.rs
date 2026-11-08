@@ -41,7 +41,7 @@ fn w8b_a_mill_trigger(#[case] text: &str, #[case] json: &str) {
 )]
 #[case::you_get_counters_and_put(
     "Whenever this creature is dealt damage, you get three rad counters and put three +1/+1 counters on this creature.",
-    r#"{"Triggered":{"when":{"DealsDamage":{"source":[],"to":"This"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"rad"},"count":3}},{"PutCounters":{"on":"This","counter":"+1/+1","count":3}}]}}"#
+    r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"rad"},"count":3}},{"PutCounters":{"on":"This","counter":"+1/+1","count":3}}]}}"#
 )]
 fn w8b_a_whole_ability(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Triggered, false, json);

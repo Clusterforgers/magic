@@ -1,0 +1,38 @@
+{
+  "oracle_id": "87efff06-b6cb-4a8f-937b-e50e367fd896",
+  "name": "Gaea's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaea's Will",
+      "oracle_fingerprint": "9e67463a9d36046707ad30520140a195",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 4, "cost": "{G}" } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Graveyard", "play": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Not": "Token" }, { "OwnedBy": "You" }],
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

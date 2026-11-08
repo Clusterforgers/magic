@@ -1,0 +1,36 @@
+{
+  "oracle_id": "eed9c168-1c78-43c6-a814-9b80054d1373",
+  "name": "Spined Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spined Sliver",
+      "oracle_fingerprint": "b2882ee09d3a2ce91ee0447692777282",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Subtype": "Sliver" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }] },
+                        "toughness": {
+                          "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

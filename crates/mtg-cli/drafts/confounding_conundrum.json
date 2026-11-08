@@ -1,0 +1,60 @@
+{
+  "oracle_id": "f86b9a01-62fc-4120-8914-5054ed48d37e",
+  "name": "Confounding Conundrum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Confounding Conundrum",
+      "oracle_fingerprint": "06de35360c8c245872e66b314743e415",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "Type": "Land" },
+                      { "ControlledBy": { "ControllerOf": "Triggering" } }
+                    ]
+                  }
+                },
+                "op": "Gt",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "ControlledBy": { "ControllerOf": "Triggering" } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

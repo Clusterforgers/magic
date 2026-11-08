@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "6c59a4db-5806-40da-8752-cec05af6bf51",
+  "oracle_id": "68c88a4c-8c2b-4e6f-b835-7e269eb073c8",
+  "multiverse_ids": [
+    489527
+  ],
+  "arena_id": 72399,
+  "tcgplayer_id": 216652,
+  "cardmarket_id": 474694,
+  "name": "Inferno Hellion",
+  "lang": "en",
+  "released_at": "2020-07-17",
+  "uri": "https://api.scryfall.com/cards/6c59a4db-5806-40da-8752-cec05af6bf51",
+  "scryfall_uri": "https://scryfall.com/card/jmp/337/inferno-hellion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:13:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.jpg?1783930388",
+    "normal": "https://cards.scryfall.io/normal/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.jpg?1783930388",
+    "large": "https://cards.scryfall.io/large/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.jpg?1783930388",
+    "png": "https://cards.scryfall.io/png/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.png?1783930388",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.jpg?1783930388",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.jpg?1783930388",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.webp?1783930388",
+    "grid": "https://cards.scryfall.io/grid/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.webp?1783930388",
+    "display": "https://cards.scryfall.io/display/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.webp?1783930388",
+    "art": "https://cards.scryfall.io/art/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.webp?1783930388",
+    "crop": "https://cards.scryfall.io/crop/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.webp?1783930388",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/c/6c59a4db-5806-40da-8752-cec05af6bf51.jpg?1783930388"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Hellion",
+  "oracle_text": "Trample (This creature can deal excess combat damage to the player or planeswalker it's attacking.)\nAt the beginning of each end step, if this creature attacked or blocked this turn, its owner shuffles it into their library.",
+  "power": "7",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0f6ccf25-a627-4263-86df-5757137f1696",
+  "set": "jmp",
+  "set_name": "Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/0f6ccf25-a627-4263-86df-5757137f1696",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6c59a4db-5806-40da-8752-cec05af6bf51/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A68c88a4c-8c2b-4e6f-b835-7e269eb073c8&unique=prints",
+  "collector_number": "337",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason A. Engle",
+  "artist_ids": [
+    "02e2b5de-4341-464c-8fdb-a1adbf873bc0"
+  ],
+  "illustration_id": "f45b1fcd-ac4c-419b-a4f5-c545a240ab0c",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24792,
+  "penny_rank": 17326,
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489527&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInferno%2BHellion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInferno%2BHellion",
+    "edhrec": "https://edhrec.com/route/?cc=Inferno+Hellion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F216652%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=474694&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Inferno+Hellion&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

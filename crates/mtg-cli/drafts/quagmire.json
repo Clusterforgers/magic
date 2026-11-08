@@ -1,0 +1,23 @@
+{
+  "oracle_id": "0fb54ed7-4c64-4029-b52d-2bf5343e7426",
+  "name": "Quagmire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quagmire",
+      "oracle_fingerprint": "8fc9a28fea98cd9cc939eb8f2c2b20ee",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Swamp" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

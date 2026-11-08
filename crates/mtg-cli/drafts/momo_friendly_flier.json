@@ -1,0 +1,75 @@
+{
+  "oracle_id": "a3c56e71-0de6-447a-a9b4-0971f56c2362",
+  "name": "Momo, Friendly Flier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Momo, Friendly Flier",
+      "oracle_fingerprint": "beac229d0ce1c418caf2d97c3a6ded1b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Type": "Creature" },
+              { "Not": { "Subtype": "Lemur" } },
+              { "HasKeyword": "Flying" },
+              { "ControlledBy": "You" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "SpellCast",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "Type": "Creature" },
+                          { "Not": { "Subtype": "Lemur" } },
+                          { "HasKeyword": "Flying" },
+                          { "ControlledBy": "You" }
+                        ]
+                      }
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                "YourTurn"
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Flying" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

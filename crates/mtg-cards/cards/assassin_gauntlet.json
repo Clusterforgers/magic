@@ -1,0 +1,52 @@
+{
+  "oracle_id": "85d06533-3c0b-46a8-8fdb-379db9ae7e2e",
+  "name": "Assassin Gauntlet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assassin Gauntlet",
+      "oracle_fingerprint": "644530804b3309ceec7aca319076cdae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              { "what": "Opponent" }
+            ],
+            "effects": [
+              { "Attach": { "what": "This", "to": { "Target": 0 } } },
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "Draw": {} }, { "Discard": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

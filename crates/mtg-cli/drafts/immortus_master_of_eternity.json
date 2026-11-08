@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8952a7e6-4ede-42bb-b90c-00ea4f24f8f8",
+  "name": "Immortus, Master of Eternity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immortus, Master of Eternity",
+      "oracle_fingerprint": "6b08e9bd9499d48c7b7d6e0898b2218b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "times": { "Tallied": { "who": "You", "what": "Drawn" } },
+                  "only": [{ "Spell": { "without": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{U}{U}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{2}{U}{U}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

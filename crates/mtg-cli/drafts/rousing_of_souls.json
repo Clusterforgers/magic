@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e5e42293-ce01-4872-be2a-a79ff4312992",
+  "name": "Rousing of Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rousing of Souls",
+      "oracle_fingerprint": "77c0fd959f3fd40c6a5a16352b8610f9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  }
+                }
+              },
+              { "Draw": { "who": "EachPlayer" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

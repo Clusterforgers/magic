@@ -1,0 +1,58 @@
+{
+  "oracle_id": "83045a9c-57da-411f-80aa-56178d14856b",
+  "name": "Vraska, Scheming Gorgon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska, Scheming Gorgon",
+      "oracle_fingerprint": "a5ddbf2715d1110480adb85118d7402c",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Deathtouch" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+                          "effects": [{ "LoseGame": { "who": "Triggering" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

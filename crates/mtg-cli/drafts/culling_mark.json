@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0cb7f468-070a-463c-b00c-16db3421d16a",
+  "name": "Culling Mark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Culling Mark",
+      "oracle_fingerprint": "b903845a65487cdad96b07490cc32b43",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

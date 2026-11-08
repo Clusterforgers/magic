@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2c1dd6f4-2db5-449d-9ed8-579d98cfcfb8",
+  "name": "Flailing Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flailing Soldier",
+      "oracle_fingerprint": "e23b994e8b7371cb67b56aa6a7a04786",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

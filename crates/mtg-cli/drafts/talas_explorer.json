@@ -1,0 +1,21 @@
+{
+  "oracle_id": "da359465-f823-4989-9acd-249a2a1f3f17",
+  "name": "Talas Explorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talas Explorer",
+      "oracle_fingerprint": "e3208ce5bf25fbacc969d3ad2610b892",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

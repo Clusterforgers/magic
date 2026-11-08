@@ -1,0 +1,77 @@
+{
+  "oracle_id": "d097991c-41df-47de-a439-57a0693b9581",
+  "name": "Tezzeret, Master of the Bridge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret, Master of the Bridge",
+      "oracle_fingerprint": "0aa9055f14517769455a93c9e55bbecb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Affinity": [{ "Type": "Artifact" }] } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              { "ExileTop": { "count": 10, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

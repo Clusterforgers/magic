@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ba9ac0a9-735d-4bca-9d24-586aca963872",
+  "name": "Elder Cathar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elder Cathar",
+      "oracle_fingerprint": "be4b96f6b238a2e77d275ade1e4270a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      { "CountOf": { "of": { "Target": 0 }, "filter": [{ "Subtype": "Human" }] } },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

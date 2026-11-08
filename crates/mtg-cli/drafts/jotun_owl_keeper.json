@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3acef3dc-61ee-48e0-9b2e-a8e29d5f4ac7",
+  "name": "Jötun Owl Keeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jötun Owl Keeper",
+      "oracle_fingerprint": "bc8e9809ec253e8b0cd906892ca14fb5",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{W/U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "6cbafa7b-4448-4ad4-b4f2-0ab6e7c95b0b",
+  "name": "Darigaaz, the Igniter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darigaaz, the Igniter",
+      "oracle_fingerprint": "41835f99d9a44c7e5e1e20ede0cd45aa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{R}",
+                  "paid": [
+                    { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+                    {
+                      "Bind": {
+                        "what": { "Each": [{ "OwnedBy": "Triggering" }, { "In": "Hand" }] },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "DealDamage": {
+                        "to": "Triggering",
+                        "amount": {
+                          "Count": [
+                            { "Is": { "Bound": "revealed2" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            },
+                            { "ChosenAs": "chosen" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

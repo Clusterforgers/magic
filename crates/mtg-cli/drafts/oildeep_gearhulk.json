@@ -1,0 +1,44 @@
+{
+  "oracle_id": "aff0740f-51d5-41c7-ac13-97c298cfd743",
+  "name": "Oildeep Gearhulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oildeep Gearhulk",
+      "oracle_fingerprint": "0dce1be7c53eaef886e62c6dbe8a707a",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "by": "You",
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

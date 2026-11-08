@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2f497352-c812-48c4-a922-cc311bcdcdc6",
+  "name": "Arboreal Alliance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arboreal Alliance",
+      "oracle_fingerprint": "8478da106d447154d02aa50137fd6b74",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": "X",
+                      "token": {
+                        "name": "Treefolk",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Treefolk"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "populated"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "populated" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "542c5eaf-8b03-4406-a794-30c56b61d637",
+  "name": "Samite Pilgrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Pilgrim",
+      "oracle_fingerprint": "0a92b0668bbbf0ad9759ab2bf36c2f1d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventCounted": {
+                      "Distinct": {
+                        "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                        "stat": "BasicLandTypes"
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

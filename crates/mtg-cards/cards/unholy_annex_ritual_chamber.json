@@ -1,0 +1,65 @@
+{
+  "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
+  "name": "Unholy Annex // Ritual Chamber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unholy Annex",
+      "oracle_fingerprint": "ac4258bf652cd8ffcdb884f61fe02640",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }] },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                    { "GainLife": { "amount": 2 } }
+                  ],
+                  "otherwise": [{ "LoseLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ritual Chamber",
+      "oracle_fingerprint": "30d04839e30b8750e42b40e1c7b34d24",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Demon",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon"],
+                      "power": 6,
+                      "toughness": 6,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "792f8235-f23b-4858-bdd4-c7a186b7a470",
+  "name": "Arcane Proxy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Proxy",
+      "oracle_fingerprint": "07f43fd48fe88346fa76bcfd37b821b4",
+      "abilities": [
+        { "Keyword": { "Prototype": { "cost": "{1}{U}{U}", "power": 2, "toughness": 1 } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CopyCard": { "what": { "Bound": "picked2" }, "as": "copy3" } },
+              { "CastFromZone": { "what": { "Bound": "copy3" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

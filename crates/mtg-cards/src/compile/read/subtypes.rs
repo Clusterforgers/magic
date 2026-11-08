@@ -448,6 +448,15 @@ pub fn is_two_word_land(first: &str, second: &str) -> bool {
 }
 
 /// Whether the word is a subtype, as it is written (capitalized).
+/// The creature types, sorted: the subtypes that are neither land types nor other non-creature types.
+pub fn creature_types() -> Vec<&'static str> {
+    SUBTYPES
+        .iter()
+        .copied()
+        .filter(|word| mtg_core::card::Subtype((*word).to_owned()).is_creature_type())
+        .collect()
+}
+
 pub fn is_subtype(word: &str) -> bool {
     SUBTYPES.binary_search(&word).is_ok()
 }

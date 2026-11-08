@@ -1,0 +1,18 @@
+{
+  "oracle_id": "8576201b-186d-4e28-97d4-deb344f14436",
+  "name": "Hotshot Mechanic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hotshot Mechanic",
+      "oracle_fingerprint": "a52b019443a2e72a4ce8d7752ce3db16",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } } }
+          }
+        }
+      ]
+    }
+  ]
+}

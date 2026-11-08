@@ -1,0 +1,61 @@
+{
+  "oracle_id": "7e46d2c7-59ae-4b0e-a2ec-d0ac1b68d594",
+  "name": "Stir the Pride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stir the Pride",
+      "oracle_fingerprint": "50919e005642b63ef07fcd8d14fc3e36",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+                                    "effects": [{ "GainLife": { "amount": "Triggering" } }]
+                                  }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{1}{W}" } }
+      ]
+    }
+  ]
+}

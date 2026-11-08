@@ -1,0 +1,61 @@
+{
+  "oracle_id": "c2008ba9-00df-4607-ba0c-189af52033eb",
+  "name": "Mr. Foxglove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mr. Foxglove",
+      "oracle_fingerprint": "27a09bf99532c925ffc525e6916f7b97",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      { "Count": [{ "In": "Hand" }, { "OwnedBy": "Defending" }] },
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "drawn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "drawn" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ae7cfdb8-b0f2-46d7-b847-9a760ddbe028",
+  "name": "Cryptic Cruiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptic Cruiser",
+      "oracle_fingerprint": "73b94dd9c5813d2a2e569d5330fa8b4c",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{U}" },
+              { "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }] } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

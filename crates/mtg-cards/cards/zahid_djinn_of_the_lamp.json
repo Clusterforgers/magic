@@ -1,0 +1,22 @@
+{
+  "oracle_id": "89b07037-64df-4e66-acd8-87d97df61e3a",
+  "name": "Zahid, Djinn of the Lamp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zahid, Djinn of the Lamp",
+      "oracle_fingerprint": "c2195c274decda058c53b1ebb312e603",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Mana": "{3}{U}" },
+              { "TapPermanents": { "filter": [{ "Type": "Artifact" }] } }
+            ]
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

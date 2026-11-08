@@ -4,7 +4,11 @@
 use serde::{Deserialize, Serialize};
 
 use crate::card::Card;
-use crate::support::{Caps, PrintedCard, SupportRecord, read_hash, read_support};
+use crate::proposal::partial::PartialProof;
+use crate::proposal::{ClauseReport, differing};
+use crate::support::{
+    Caps, PrintedCard, Support, SupportRecord, partial_support, read_hash, read_support,
+};
 
 /// What the verdicts on one `read_hash` come to: `wrong` when a counting verdict is `wrong`, else `approved` when one
 /// is `correct`, else `pending`.
@@ -32,6 +36,10 @@ pub struct DraftRules {
     pub rules: serde_json::Value,
     /// What the verdicts on `read_hash` come to.
     pub read: ReadState,
+    /// A trusted translation of a Forge script (source `forge`, Oracle text matched): its record is `Forge`, not `Read`.
+    pub forge: bool,
+    /// For a draft with lines left by hand: the proof that every one of them is safe to leave (Partial translations).
+    pub proof: Option<PartialProof>,
 }
 
 /// A card's current draft in a library: parsed and checked rules with their read state.
@@ -43,6 +51,10 @@ pub struct Draft {
     pub read_hash: String,
     /// What the verdicts on `read_hash` come to.
     pub read: ReadState,
+    /// A trusted translation of a Forge script: its record is `Forge`, not `Read`.
+    pub forge: bool,
+    /// The proof behind a draft with lines left by hand; `None` for a whole draft.
+    pub proof: Option<PartialProof>,
 }
 
 impl Draft {
@@ -56,12 +68,33 @@ impl Draft {
         }
     }
 
-    /// The `Read` record of the card when the draft is approved for `printed`, covers its whole text, and the engine
+    /// The record of the card when the draft is approved for `printed`, covers its whole text, and the engine
     /// runs every primitive it uses; `None` otherwise.
     pub fn record(&self, printed: &PrintedCard, caps: &Caps) -> Option<SupportRecord> {
         if self.state_for(printed) != ReadState::Approved {
             return None;
         }
-        read_support(&self.card, printed, caps)
+        self.runs(printed, caps)
+    }
+
+    /// The record the draft gives the card when the engine can run it, whatever its read state: `Partial` for a proved
+    /// partial draft, else `Read` or `Forge`. `None` also when a clause reads back as other text than the card.
+    pub fn runs(&self, printed: &PrintedCard, caps: &Caps) -> Option<SupportRecord> {
+        let record = if self.proof.is_some() {
+            partial_support(&self.card, printed, caps)
+        } else {
+            let tier = if self.forge {
+                Support::Forge
+            } else {
+                Support::Read
+            };
+            read_support(&self.card, printed, caps, tier)
+        }?;
+        self.differs(printed).is_empty().then_some(record)
+    }
+
+    /// The clauses of `printed` the draft reads back as other text: any one keeps it from playing automatically.
+    pub fn differs(&self, printed: &PrintedCard) -> Vec<ClauseReport> {
+        differing(&self.card, printed)
     }
 }

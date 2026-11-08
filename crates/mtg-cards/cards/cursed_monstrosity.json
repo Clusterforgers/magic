@@ -1,0 +1,27 @@
+{
+  "oracle_id": "16e03598-30bf-4b6c-9b88-36c3c5c010dd",
+  "name": "Cursed Monstrosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Monstrosity",
+      "oracle_fingerprint": "42d42ddaecec3c12504d3b6a5a9394a8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

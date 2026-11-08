@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever another nontoken creature you control dies, target opponent may have you draw a card. If they don't, you may put a creature card with equal or lesser toughness from your hand onto the battlefield.",
+      "abilities": [],
+      "gap": "effect:GenericChoice"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "As long as your life total is less than or equal to half your starting life total, CARDNAME has indestructible.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 107
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 108,
+          "end": 313
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

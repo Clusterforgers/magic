@@ -1,0 +1,73 @@
+{
+  "oracle_id": "5d86c92f-5d52-43de-92b4-3040db598efc",
+  "name": "Phyrexian Adapter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Adapter",
+      "oracle_fingerprint": "caf683f12a4f1433343c2000a47efe81",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Incubator" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddSubtype": "Food" },
+              { "AddSubtype": "Blood" },
+              { "AddSubtype": "Clue" },
+              { "AddSubtype": "Treasure" },
+              { "AddSubtype": "Powerstone" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                    "effects": [{ "GainLife": { "amount": 3 } }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{1}" }, "Tap", { "Discard": {} }, "SacrificeSelf"],
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "SacrificeSelf"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": { "Fixed": ["Colorless"] },
+                          "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

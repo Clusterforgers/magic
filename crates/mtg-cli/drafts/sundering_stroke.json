@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9c348bc7-e6e1-40a2-9798-6d2c4a2d8e72",
+  "name": "Sundering Stroke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sundering Stroke",
+      "oracle_fingerprint": "cc9eb2d43fdf97f75391312629728009",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 3 }, "divide": 7 }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Compare": {
+                        "left": { "ManaSpent": { "of": "Red" } },
+                        "op": "Ge",
+                        "right": 7
+                      }
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "ManaSpent": { "of": "Red" } }, "op": "Ge", "right": 7 }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 7 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

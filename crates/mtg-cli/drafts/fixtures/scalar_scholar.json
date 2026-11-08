@@ -1,0 +1,123 @@
+{
+  "object": "card",
+  "id": "17f18b66-de0a-4619-aa53-8e08b79cdedc",
+  "oracle_id": "c87e6bee-5e27-45e5-b59e-72e0343f7e3d",
+  "multiverse_ids": [],
+  "name": "Scalar Scholar",
+  "lang": "en",
+  "released_at": "2026-05-19",
+  "uri": "https://api.scryfall.com/cards/17f18b66-de0a-4619-aa53-8e08b79cdedc",
+  "scryfall_uri": "https://scryfall.com/card/ysos/25/scalar-scholar?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:43:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.jpg?1783903414",
+    "normal": "https://cards.scryfall.io/normal/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.jpg?1783903414",
+    "large": "https://cards.scryfall.io/large/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.jpg?1783903414",
+    "png": "https://cards.scryfall.io/png/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.png?1783903414",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.jpg?1783903414",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.jpg?1783903414",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.webp?1783903414",
+    "grid": "https://cards.scryfall.io/grid/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.webp?1783903414",
+    "display": "https://cards.scryfall.io/display/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.webp?1783903414",
+    "art": "https://cards.scryfall.io/art/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.webp?1783903414",
+    "crop": "https://cards.scryfall.io/crop/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.webp?1783903414",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/7/17f18b66-de0a-4619-aa53-8e08b79cdedc.jpg?1783903414"
+  },
+  "mana_cost": "{G}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Salamander Wizard",
+  "oracle_text": "Increment\nWhen this creature enters, each card you own with {X} in its mana cost perpetually gains \"This spell costs {1} less to cast.\"",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Increment"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2fd19b90-7ba4-4f33-b876-3367d15ab426",
+  "set": "ysos",
+  "set_name": "Alchemy: Secrets of Strixhaven",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/2fd19b90-7ba4-4f33-b876-3367d15ab426",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aysos&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ysos?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/17f18b66-de0a-4619-aa53-8e08b79cdedc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac87e6bee-5e27-45e5-b59e-72e0343f7e3d&unique=prints",
+  "collector_number": "25",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Craig J Spearing",
+  "artist_ids": [
+    "b0f15e74-0dd6-4156-959e-c5e30c5cdc52"
+  ],
+  "illustration_id": "18700afa-cf03-4a39-92ee-6a057ccc4dab",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DScalar%2BScholar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DScalar%2BScholar",
+    "edhrec": "https://edhrec.com/route/?cc=Scalar+Scholar"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b152753f-0516-4e21-b823-608e9d0c9c82",
+  "name": "Noble Ox",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Noble Ox",
+      "oracle_fingerprint": "39f06f28388a4d4aafd12e3113fd0b17",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 109 }
+          }
+        },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 99 }] } }
+      ]
+    }
+  ]
+}

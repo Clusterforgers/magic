@@ -1,0 +1,45 @@
+{
+  "oracle_id": "1fe549c3-79be-40ef-b57c-de59f24df5ab",
+  "name": "The Sentry, Golden Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Sentry, Golden Guardian",
+      "oracle_fingerprint": "e8994bf4eb1965aad2f7f6b92b52ac84",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "The Void",
+                      "colors": ["Black"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Horror", "Villain"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": "Indestructible" },
+                        { "Rule": { "rule": { "MustAttack": "This" } } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

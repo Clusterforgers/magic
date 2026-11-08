@@ -1,0 +1,63 @@
+{
+  "oracle_id": "c2b2b743-dfc7-439e-8563-1ccce54422bd",
+  "name": "Death to Our Enemies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death to Our Enemies",
+      "oracle_fingerprint": "cd56b864287db6d788e5a1078c540163",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": { "Other": "plan" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "plan" } } },
+                  "op": "Eq",
+                  "right": 4
+                }
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          { "what": "AnyTarget", "bounds": { "min": 1, "max": 2 }, "divide": 7 }
+                        ],
+                        "effects": [
+                          { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

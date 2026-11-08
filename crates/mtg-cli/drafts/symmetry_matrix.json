@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2f6d129c-e6ad-4f35-b8b1-56a101fdd5db",
+  "name": "Symmetry Matrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Symmetry Matrix",
+      "oracle_fingerprint": "f256f619d8dad7e97fe7dd3372f12b18",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                      "op": "Eq",
+                      "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                    }
+                  },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Pay": { "cost": "{1}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

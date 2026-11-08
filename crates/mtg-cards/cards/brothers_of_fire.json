@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ee9208e7-2075-45b9-9ed7-b18e1a280d79",
+  "name": "Brothers of Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brothers of Fire",
+      "oracle_fingerprint": "0ad4d0a19aff9ae27888cd1b31b39aed",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}{R}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

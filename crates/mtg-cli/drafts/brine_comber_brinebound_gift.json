@@ -1,0 +1,86 @@
+{
+  "oracle_id": "8845ba0d-c2f4-49e4-b06e-54a06a8297e0",
+  "name": "Brine Comber // Brinebound Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brine Comber",
+      "oracle_fingerprint": "c7332bbb7502d31be897efdd10996843",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "BecomesTarget": { "what": ["This"], "by": ["Spell", { "Subtype": "Aura" }] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Disturb": "{W}{U}" } }
+      ]
+    },
+    {
+      "name": "Brinebound Gift",
+      "oracle_fingerprint": "f03f21efb606637af24d5f838c309dee",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "BecomesTarget": {
+                    "what": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                    "by": ["Spell", { "Subtype": "Aura" }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

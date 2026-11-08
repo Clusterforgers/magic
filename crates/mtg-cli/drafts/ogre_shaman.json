@@ -1,0 +1,20 @@
+{
+  "oracle_id": "04c7bb20-6e40-4e79-a0ec-ced920d3491e",
+  "name": "Ogre Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ogre Shaman",
+      "oracle_fingerprint": "08789d7e82bdee6181fcceebd1268762",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "DiscardRandom": 1 }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

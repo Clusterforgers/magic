@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4bccfa67-0c6f-42a1-b8d4-0842a8230d1e",
+  "name": "Rick Jones, Destined Sidekick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rick Jones, Destined Sidekick",
+      "oracle_fingerprint": "2149ae1fc478f16eeafeb18148e2b2e7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Hero" }, { "Type": "Enchantment" }] },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

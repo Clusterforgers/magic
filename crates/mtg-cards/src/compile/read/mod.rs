@@ -57,6 +57,7 @@ mod c8_kwq_abilities;
 mod c9_fight_double;
 mod card_grants;
 mod cast;
+mod champion;
 mod chance;
 mod changes;
 mod chapters;
@@ -69,6 +70,7 @@ mod cost_conditions;
 mod costs;
 mod counters;
 mod create;
+mod d14_wordings;
 mod damage;
 mod day_night;
 mod defining;
@@ -76,17 +78,46 @@ mod dk1a_attached;
 mod dk1c5_rooms;
 mod dk1d_by_paying;
 mod draws;
+mod e10a_targets;
+mod e10c_granted;
+mod e14b_entering;
+mod e14d_sparing;
+mod e15a_max_speed;
+mod e15b_entering;
+mod e15f_words;
+mod e15g_licid;
+mod e16a_history;
+mod e16b_presence;
+mod e16c_attacks;
 mod effects;
+mod either_way_pairs;
+mod equip_options;
 mod evasion;
 mod event_wordings;
 mod exiled_kind;
 mod facts;
+mod fix16_kicked;
+mod fix23_dice;
 mod flicker;
+mod g10c_facts;
+mod g10c_wordings;
+mod g10d_spell_costs;
+mod g11c_taxes;
+mod g12b_copy_kinds;
+mod g12b_counters_of;
+mod g12f_taxes;
+mod g13a_wordings;
+mod g13d_attacked;
+mod g13g_activation_costs;
+mod g8e_attached;
+mod g9a_blocks;
+mod g9c_blocks;
 mod group_copies;
 mod group_phrases;
 mod group_pump;
 mod instead_pairs;
 mod joined;
+mod keyword_actions;
 mod kicked_copies;
 mod land_types;
 mod lands;
@@ -99,6 +130,7 @@ mod mana_trigger;
 mod manifest;
 mod mass_moves;
 mod modal;
+mod outside;
 mod pairs;
 mod pay_phrases;
 mod payments;
@@ -106,6 +138,33 @@ mod player_keywords;
 mod prepare;
 mod prevention;
 mod pronouns;
+mod r11w_tallies;
+mod r5a_order;
+mod r5a_wordings;
+mod r5b_performed;
+mod r5c_order;
+mod r5g_lines;
+mod r6a_effects;
+mod r6a_more;
+mod r6a_wordings;
+mod r6b_pairs;
+mod r6b_wordings;
+mod r6c_pairs;
+mod r6c_wordings;
+mod r6d_done;
+mod r6d_facts;
+mod r6d_heads;
+mod r6d_kind;
+mod r6f_flash_sacrifice;
+mod r7a_more;
+mod r7a_wordings;
+mod r7b_more;
+mod r7b_wordings;
+mod r7c_when;
+mod r7d_statics;
+mod r7e_events;
+mod r9w_cant;
+mod r9w_players;
 mod random_moves;
 mod render;
 mod repeat;
@@ -126,6 +185,10 @@ mod stations;
 pub(super) mod subtypes;
 mod t15a_alt_costs;
 mod t17b_attached;
+mod t18_binds;
+mod t18_dead;
+mod t18_demorgan;
+mod t18_words;
 mod target_phrases;
 #[cfg(test)]
 mod tests;
@@ -140,13 +203,22 @@ mod w11a_joins;
 mod w11b_phase;
 mod w11c_clash;
 mod w13b_mill_rad;
+mod w14_trailing_if;
 mod w14a_limits;
 mod w14a_wanderer;
 mod w14b_or_spell;
 mod w14c_alt_costs;
 mod w14c_block_capacity;
+mod w15_wordings;
 mod w15b_time;
 mod w15c_clash;
+mod w16_wordings;
+mod w16b_labels;
+mod w16c_lists;
+mod w16d_forms;
+mod w16e_sequence;
+mod w17_forms;
+mod w17_wordings;
 mod w17b_statics;
 mod w17c_cast_only;
 mod w20a_look_pick;
@@ -175,22 +247,28 @@ mod w9b_clash;
 mod w9c_replaced;
 mod w9d_exert;
 mod where_x;
+mod written_memo;
 mod zone_moves;
 
+pub use champion::champion_line;
 pub use chance::{add_row as add_die_row, die_row, ends_in_roll, row_texts as die_row_texts};
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use costs::text as render_cost;
+pub use e15f_words::block as word_block;
+pub use either_way_pairs::texts as either_way_pair_texts;
+pub use equip_options::equip_line;
 pub use group_phrases::{all_groups, subject_group};
 pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
+pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;
-pub use tokens::same_text;
+pub use tokens::{same_text, same_written_text};
 
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
@@ -311,6 +389,19 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(granted) = text.strip_prefix("Max speed \u{2014} ") {
+        let inner = classify::classify(granted, false);
+        if kind != ClauseKind::Static {
+            return None;
+        }
+        return clause_with(granted, inner, x_free, own)
+            .or_else(|| {
+                e15a_max_speed::e15a_read_body(granted, |body| {
+                    clause_with(body, inner, x_free, own)
+                })
+            })
+            .map(e15a_max_speed::e15a_wrap);
+    }
     let text = match kind {
         // An ability word is flavor: "Landfall — ", "Strive — ".
         ClauseKind::Triggered | ClauseKind::Static => {

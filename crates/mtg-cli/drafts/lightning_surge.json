@@ -1,0 +1,47 @@
+{
+  "oracle_id": "dc55e69e-e1b8-4129-902c-c71bcb952418",
+  "name": "Lightning Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Surge",
+      "oracle_fingerprint": "c29581dd684b03de3e47724ac8085729",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "op": "Lt",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 6, "unpreventable": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{R}{R}" } }
+      ]
+    }
+  ]
+}

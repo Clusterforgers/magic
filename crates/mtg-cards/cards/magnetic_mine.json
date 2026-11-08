@@ -1,0 +1,25 @@
+{
+  "oracle_id": "bbb50cf5-cd07-4ae8-bfa8-d747e44fb1ef",
+  "name": "Magnetic Mine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magnetic Mine",
+      "oracle_fingerprint": "b56ab94b88bf32279971c6479b8079fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

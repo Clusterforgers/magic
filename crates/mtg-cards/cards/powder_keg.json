@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ca1144c2-49a3-49b4-9085-3094141769ea",
+  "name": "Powder Keg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Powder Keg",
+      "oracle_fingerprint": "ee79312a1c4d8716caed78515930bc6d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "fuse" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": { "Counters": { "on": "This", "counter": { "Other": "fuse" } } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

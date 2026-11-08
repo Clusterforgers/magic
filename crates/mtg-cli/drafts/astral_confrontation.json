@@ -1,0 +1,27 @@
+{
+  "oracle_id": "80788ac7-19d6-42d2-9f6e-676d7b5c912e",
+  "name": "Astral Confrontation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astral Confrontation",
+      "oracle_fingerprint": "452c6e9b65088b407e36ad241c3e15a6",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Players": "Attacked" }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

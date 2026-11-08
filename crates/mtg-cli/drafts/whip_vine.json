@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4e90ddce-1765-44e4-9b3c-e576f3a1bcd4",
+  "name": "Whip Vine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whip Vine",
+      "oracle_fingerprint": "e8d2aaa84c04dbf761e23d05f2a72a72",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Reach" },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "HasKeyword": "Flying" },
+                    { "BlockedBy": "This" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

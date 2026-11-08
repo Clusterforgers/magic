@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9d2f02f7-adcd-4d23-a051-ebca70f22ba5",
+  "name": "Fateful Tempest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fateful Tempest",
+      "oracle_fingerprint": "bf842b220d28a583daa9198ed3984961",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Vote": { "options": { "Named": ["past", "present"] } } },
+              { "Mill": { "count": { "Players": { "Bound": "past" } }, "as": "milled" } },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": { "Bound": "milled" }, "stat": "ManaValue" } }
+                }
+              },
+              { "ExileTop": { "count": { "Players": { "Bound": "present" } }, "as": "exiled2" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled2" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "5c151e3b-fcf2-4adb-a60b-9eff0c360705",
+  "name": "Arcane Amphisbaena",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Amphisbaena",
+      "oracle_fingerprint": "4987c2ed529e19fc2d6afcec104f4ea9",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Jace",
+                            "colors": ["Blue"],
+                            "types": ["Planeswalker"],
+                            "subtypes": ["Jace"],
+                            "abilities": [
+                              {
+                                "Loyalty": {
+                                  "cost": { "Minus": 1 },
+                                  "effects": [{ "Surveil": {} }]
+                                }
+                              },
+                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "jace"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "jace" }, "counter": "loyalty", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "63a19c7c-49d7-4b75-aac8-d0ff36c45fb8",
+  "name": "Sowing Mycospawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sowing Mycospawn",
+      "oracle_fingerprint": "31042f0ddca34d19570807032bfff014",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": { "Kicker": "{1}{C}" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Land" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This", "Kicked"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

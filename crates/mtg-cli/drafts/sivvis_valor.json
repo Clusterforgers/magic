@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e02164ba-34f8-4a5f-a05b-dd3ef3f8ceae",
+  "name": "Sivvi's Valor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sivvi's Valor",
+      "oracle_fingerprint": "9f68d68dc1fc822e4ece70a25b7a0492",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "Instead": [
+                      { "DealDamage": { "source": "Dealer", "to": "You", "amount": "Triggering" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

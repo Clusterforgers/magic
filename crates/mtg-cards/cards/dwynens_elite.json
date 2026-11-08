@@ -1,0 +1,41 @@
+{
+  "oracle_id": "3d4a7dd3-9258-4bd1-adc4-08f0205e196a",
+  "name": "Dwynen's Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwynen's Elite",
+      "oracle_fingerprint": "dccae49e1952b81cf4aa970ecaebd21e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "ControlledBy": "You" }, "Other", { "Subtype": "Elf" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

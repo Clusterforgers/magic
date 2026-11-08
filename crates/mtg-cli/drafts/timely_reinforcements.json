@@ -1,0 +1,64 @@
+{
+  "oracle_id": "64f4f0ed-e924-459e-86a4-8202fae6ef3e",
+  "name": "Timely Reinforcements",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timely Reinforcements",
+      "oracle_fingerprint": "c8ad68c2913d30c5bd2c2bb16a357e72",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Lt",
+                      "right": { "HighestLife": "Opponents" }
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 6 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "op": "Lt",
+                      "right": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

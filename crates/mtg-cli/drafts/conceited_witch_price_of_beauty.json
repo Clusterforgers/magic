@@ -1,0 +1,61 @@
+{
+  "oracle_id": "1c751201-24ba-4e5c-bf44-71c3e4693a92",
+  "name": "Conceited Witch // Price of Beauty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conceited Witch",
+      "oracle_fingerprint": "1a3c963b3c089d7d6a6ec3848e8caff2",
+      "abilities": [{ "Keyword": "Menace" }]
+    },
+    {
+      "name": "Price of Beauty",
+      "oracle_fingerprint": "6ce27d1dbfc168183e490f5355b0143c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wicked",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+                          }
+                        },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "oracle_id": "2800830c-73c6-4097-be7b-d698c6813c38",
+  "name": "Banishing Slash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banishing Slash",
+      "oracle_fingerprint": "a6ffe45d5ab6fae62c604b22c77bf202",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Tapped" }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Samurai",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Samurai"],
+                            "power": 2,
+                            "toughness": 2,
+                            "abilities": [{ "Keyword": "Vigilance" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

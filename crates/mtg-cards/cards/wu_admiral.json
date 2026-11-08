@@ -1,0 +1,26 @@
+{
+  "oracle_id": "578c5b92-9f7e-4645-9624-f2c1a16b6aaf",
+  "name": "Wu Admiral",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wu Admiral",
+      "oracle_fingerprint": "d6def4fb28fbd4c07657aede017185aa",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

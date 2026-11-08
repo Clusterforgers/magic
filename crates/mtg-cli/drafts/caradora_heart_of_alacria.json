@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a9d60d80-bcef-45e0-8ded-d70bd3c2780f",
+  "name": "Caradora, Heart of Alacria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caradora, Heart of Alacria",
+      "oracle_fingerprint": "61ae06ecbfdb5620410a70d88d13fe80",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": {
+                  "Each": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "You" },
+                    { "In": "Battlefield" }
+                  ]
+                },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

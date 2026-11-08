@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f574bd9f-4246-42cb-bf4e-d2888daa44c9",
+  "name": "Alchemist's Vial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alchemist's Vial",
+      "oracle_fingerprint": "4f8fde49f9003f7a6cbe3944c72c8be1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

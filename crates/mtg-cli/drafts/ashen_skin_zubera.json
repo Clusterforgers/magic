@@ -1,0 +1,33 @@
+{
+  "oracle_id": "af9dc302-0345-402f-8e6b-e9706da14bca",
+  "name": "Ashen-Skin Zubera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashen-Skin Zubera",
+      "oracle_fingerprint": "bc8c34999c08989702724f24e6209265",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Subtype": "Zubera" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

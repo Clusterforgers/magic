@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b173245e-2009-48ff-ac42-5f28d12aec79",
+  "name": "Fireglass Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fireglass Mentor",
+      "oracle_fingerprint": "a2d9ece2b7ed73fba2f0a06423597b5a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "card2" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

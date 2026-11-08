@@ -1,0 +1,37 @@
+{
+  "oracle_id": "fce29dd8-23b1-465c-a977-526f716dc8f6",
+  "name": "Dragon Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Mask",
+      "oracle_fingerprint": "cdc99da5b5695d6262a05a2db7aaf32e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Bind": { "what": { "Target": 0 }, "as": "target" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "target" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

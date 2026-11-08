@@ -1,0 +1,88 @@
+{
+  "oracle_id": "690ae865-87bd-46b2-8e65-c53bd80c1a18",
+  "name": "Hungering Puppetbeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hungering Puppetbeast",
+      "oracle_fingerprint": "909645cc3e4dfe63456ed810e24c06cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Heartwood",
+                      "colors": ["Red", "Green"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Heartwood"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Hexproof" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

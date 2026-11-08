@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2e665a03-bece-43df-bd15-b4496e233f2e",
+  "name": "Captain Marvel, Earth's Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Marvel, Earth's Protector",
+      "oracle_fingerprint": "43dd39160d6df623b61933095df84458",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{W}{W}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{3}{W}{W}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

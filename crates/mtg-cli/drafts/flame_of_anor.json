@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ecd49d85-9c8c-4cc9-9a83-072ecd433677",
+  "name": "Flame of Anor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame of Anor",
+      "oracle_fingerprint": "d033fe5ea158113083c1f37538379ec5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 2 } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "df39fbee-6ddc-4733-a32e-cdaf369ecccf",
+  "name": "Bound // Determined",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bound",
+      "oracle_fingerprint": "b733ff63f4af764ed213711c23b41f5b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "sacrificed" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Colors" } }
+                  },
+                  "as": "card2"
+                }
+              },
+              { "Move": { "what": { "Bound": "card2" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Determined",
+      "oracle_fingerprint": "20aba743f4384a873ea18f81ae55c5a3",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 54 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 55, "end": 67 }
+          }
+        }
+      ]
+    }
+  ]
+}

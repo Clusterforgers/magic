@@ -1,0 +1,27 @@
+{
+  "oracle_id": "77828ebf-58d2-4aca-ae6f-0efa50d5d640",
+  "name": "Fathom Fleet Swordjack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fathom Fleet Swordjack",
+      "oracle_fingerprint": "cef47855608afdbe4c06b1191d95634f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Against",
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{5}{R}" } }
+      ]
+    }
+  ]
+}

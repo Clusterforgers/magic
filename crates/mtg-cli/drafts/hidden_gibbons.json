@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2315b044-bfd2-40dd-a73e-4cf064b36999",
+  "name": "Hidden Gibbons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Gibbons",
+      "oracle_fingerprint": "dbc2268c426e5076f5060148a74cc5ea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Instant" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetCreatureTypes": ["Ape"] },
+                    { "SetTypes": ["Creature"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

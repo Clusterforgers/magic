@@ -1,0 +1,32 @@
+{
+  "oracle_id": "af1acf07-39e2-441e-a1e0-1db535535e2e",
+  "name": "White Mage's Staff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Mage's Staff",
+      "oracle_fingerprint": "661b8ef1fd54be7c274a4efd1954d051",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddSubtype": "Cleric" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [{ "GainLife": { "amount": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

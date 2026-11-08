@@ -1,0 +1,47 @@
+{
+  "oracle_id": "4993e373-4b76-4582-a789-6a3123e7ca89",
+  "name": "Bane Alley Broker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bane Alley Broker",
+      "oracle_fingerprint": "51aac175306fad4ef895c3c21e2f1d7b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "picked" }, "sealed": true } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "LookAtExiled": { "what": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{B}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

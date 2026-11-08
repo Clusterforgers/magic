@@ -1,0 +1,18 @@
+{
+  "oracle_id": "a3a8a044-283d-443e-bc40-c2f826d70c22",
+  "name": "Mana Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Reflection",
+      "oracle_fingerprint": "2bf0f44c49b8551ff88b273c168a4e69",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "ManaProduced": { "what": [], "who": "You", "change": { "Times": 2 } } }
+          }
+        }
+      ]
+    }
+  ]
+}

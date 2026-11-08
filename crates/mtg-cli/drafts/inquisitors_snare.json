@@ -1,0 +1,46 @@
+{
+  "oracle_id": "55e3dfcb-0999-401a-ae59-9804e12f4cfe",
+  "name": "Inquisitor's Snare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inquisitor's Snare",
+      "oracle_fingerprint": "7dfa19e833ba223a039d12a1c3c8ae78",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

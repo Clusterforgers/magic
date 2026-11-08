@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ce8fc1bb-5dd0-41b1-909a-bbfe6b165158",
+  "name": "Ronin Cliffrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ronin Cliffrider",
+      "oracle_fingerprint": "b15b210fa01090267c1afb128aa066ef",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] },
+                        "amount": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6a802318-9123-4058-8554-5023eace33f4",
+  "name": "Mirror Mockery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Mockery",
+      "oracle_fingerprint": "4ed81c5f50fd7a4b7d6cdf8ad3ad8b86",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } }, "as": "copy" }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "EndCombat" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

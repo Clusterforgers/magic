@@ -1,0 +1,64 @@
+{
+  "oracle_id": "c1a9d60f-a469-48f9-8f1c-3ca5ae86bd64",
+  "name": "Campus Crier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Campus Crier",
+      "oracle_fingerprint": "60309005ec4459e5ae10cb47db88a654",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Jace",
+                            "colors": ["Blue"],
+                            "types": ["Planeswalker"],
+                            "subtypes": ["Jace"],
+                            "abilities": [
+                              {
+                                "Loyalty": {
+                                  "cost": { "Minus": 1 },
+                                  "effects": [{ "Surveil": {} }]
+                                }
+                              },
+                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "jace"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "jace" }, "counter": "loyalty", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

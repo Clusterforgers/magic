@@ -1,0 +1,26 @@
+{
+  "oracle_id": "296c4d2b-e41c-416b-807e-5b4db638ec57",
+  "name": "Reminisce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reminisce",
+      "oracle_fingerprint": "6a84d5ed07b1eb36321bb75e2c439c33",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

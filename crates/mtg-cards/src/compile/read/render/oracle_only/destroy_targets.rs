@@ -17,7 +17,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let in_order = effects.iter().enumerate().all(|(at, effect)| {
         matches!(
             effect,
-            Effect::Destroy { what: Ref::Target(index), regenerate: true } if usize::from(*index) == at
+            Effect::Destroy { what: Ref::Target(index), regenerate: true, .. } if usize::from(*index) == at
         )
     });
     if !in_order {

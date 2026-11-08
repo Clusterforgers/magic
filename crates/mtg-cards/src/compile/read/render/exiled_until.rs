@@ -25,6 +25,7 @@ impl Writer<'_> {
         };
         let found = Ref::Bound(FOUND.to_owned());
         let cast_it = Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: found,
             free: true,
@@ -40,6 +41,7 @@ impl Writer<'_> {
                 place: Place::Bottom,
                 order: Some(Order::Random),
             },
+            bind: None,
         };
         (bind == FOUND && exiled_as == EXILED && *cast == cast_it && *moved == to_the_bottom)
             .then_some(())?;

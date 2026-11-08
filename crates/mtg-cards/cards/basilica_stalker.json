@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e335485a-80fc-40d4-8be6-7eabf2bab571",
+  "name": "Basilica Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basilica Stalker",
+      "oracle_fingerprint": "b608a9b1ca21412d2e9e729f48f3f4f1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Surveil": {} }]
+          }
+        },
+        { "Keyword": { "Disguise": "{4}{B}" } }
+      ]
+    }
+  ]
+}

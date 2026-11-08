@@ -1,0 +1,47 @@
+{
+  "oracle_id": "61a1748c-e772-4338-9edd-720cd5d2fc12",
+  "name": "Surprise Deployment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surprise Deployment",
+      "oracle_fingerprint": "a09b4aad5eaeb6db0e007f1661745a91",
+      "abilities": [
+        { "CastOnly": { "condition": "InCombat" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Color": "White" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "moved2" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

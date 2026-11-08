@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8e5e8bca-b52a-4178-ab53-bdd0e0e11dc1",
+  "name": "Heartless Pillage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartless Pillage",
+      "oracle_fingerprint": "b62d2510616e347965e213b64acb37e2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

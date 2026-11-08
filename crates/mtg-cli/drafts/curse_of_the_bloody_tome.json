@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5480f855-80b7-45c7-94a9-071c7b5d5ccf",
+  "name": "Curse of the Bloody Tome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Bloody Tome",
+      "oracle_fingerprint": "861466ef4addb7c2dd67b9f16ffa8d18",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "effects": [{ "Mill": { "who": "AttachedPlayer", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

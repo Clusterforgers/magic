@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4e1c9e10-1cae-4ee5-866e-b7b5bb47bbce",
+  "name": "Rhino, Terrible Trampler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhino, Terrible Trampler",
+      "oracle_fingerprint": "b354b0dec4e4969e43ff89db07b9664f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1", "count": "Divided" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

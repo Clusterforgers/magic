@@ -1,0 +1,21 @@
+{
+  "oracle_id": "64231f03-ea89-4589-8ef8-a87dc9448e7b",
+  "name": "Torch Slinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torch Slinger",
+      "oracle_fingerprint": "9179965dc50fc5f3953b192e21acf388",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

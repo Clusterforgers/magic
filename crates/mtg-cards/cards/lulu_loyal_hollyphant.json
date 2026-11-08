@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d99197b9-143a-462f-ace4-f35228ba082e",
+  "name": "Lulu, Loyal Hollyphant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lulu, Loyal Hollyphant",
+      "oracle_fingerprint": "545ce3c6e916c31b26d1d8387445c804",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Untap": {
+                  "what": { "Each": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

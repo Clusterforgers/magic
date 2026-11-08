@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2802069f-201e-43a7-b5d3-43a95951a2ec",
+  "name": "Glamdring, Foe-hammer // Gleam of Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glamdring, Foe-hammer",
+      "oracle_fingerprint": "9702174bfa8ee0bc2b43a04ec5e3e75c",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Stat": { "of": "Attached", "stat": "Power" } }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    },
+    {
+      "name": "Gleam of Death",
+      "oracle_fingerprint": "c3cc60809587bd2942a194ee0ad56300",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 6, "as": "milled" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

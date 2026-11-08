@@ -1,0 +1,30 @@
+{
+  "oracle_id": "51d7b287-90d5-4e3b-a82c-6b98996154e1",
+  "name": "Trustworthy Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trustworthy Scout",
+      "oracle_fingerprint": "7fa9a7313033a572a2735722f37b35c6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Named": "Trustworthy Scout" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

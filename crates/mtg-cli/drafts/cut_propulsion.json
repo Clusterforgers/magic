@@ -1,0 +1,49 @@
+{
+  "oracle_id": "cf3234f2-09d7-4d8b-b871-3bf0fcb75b6d",
+  "name": "Cut Propulsion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut Propulsion",
+      "oracle_fingerprint": "3634336e08d2cbfb6fad402b29fccee5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "CountOf": {
+                              "of": { "Target": 0 },
+                              "filter": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": {
+                        "Times": {
+                          "by": 2,
+                          "of": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                        }
+                      },
+                      "otherwise": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

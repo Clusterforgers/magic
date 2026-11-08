@@ -1,0 +1,54 @@
+{
+  "oracle_id": "41618227-a1c9-41e2-b567-7dfb493974c4",
+  "name": "Winnower Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winnower Patrol",
+      "oracle_fingerprint": "6c5dbff29dca99d5002032454c586c28",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

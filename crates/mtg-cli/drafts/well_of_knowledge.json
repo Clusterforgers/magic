@@ -1,0 +1,21 @@
+{
+  "oracle_id": "99e2b36b-1fab-4b09-b371-d97a6854dfbc",
+  "name": "Well of Knowledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Well of Knowledge",
+      "oracle_fingerprint": "b805ca2dc3ccafb46a551406a3c78dc2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "condition": { "All": ["YourTurn", { "Step": "Draw" }] },
+            "by": "Anyone",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

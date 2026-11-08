@@ -1,0 +1,45 @@
+{
+  "oracle_id": "fb8f7047-280b-464f-aca2-6add3e21df8f",
+  "name": "Harnesser of Storms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harnesser of Storms",
+      "oracle_fingerprint": "606b52742b9e415c390b85c36acddaf2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Subtype": "Otter" }] }],
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExileTop": { "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c1111228-ef88-4b64-91e0-66ee32a1f5e4",
+  "name": "Nullpriest of Oblivion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nullpriest of Oblivion",
+      "oracle_fingerprint": "f18a3bf39ee91823f4361c0828b5ddd9",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{B}" } },
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

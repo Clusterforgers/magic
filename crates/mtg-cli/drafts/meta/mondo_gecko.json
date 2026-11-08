@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Until end of turn, CARDNAME becomes the color of your choice and gains hexproof from that color.",
+      "abilities": [],
+      "gap": "key:Animate.Colors=ChosenColor"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME deals combat damage to a player, draw a card for each color among permanents you control.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 120
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 121,
+          "end": 231
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

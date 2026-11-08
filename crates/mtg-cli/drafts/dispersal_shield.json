@@ -1,0 +1,34 @@
+{
+  "oracle_id": "aefb1463-76fb-419e-8cda-8c5bfb88a3d2",
+  "name": "Dispersal Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dispersal Shield",
+      "oracle_fingerprint": "4e789efd9cd42b1a24b1625c242e04ba",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": {
+                        "Greatest": { "of": [{ "ControlledBy": "You" }], "stat": "ManaValue" }
+                      }
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

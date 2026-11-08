@@ -1,0 +1,40 @@
+{
+  "oracle_id": "da4ed552-a85a-47e1-ab67-5c93a9a20048",
+  "name": "Grizzled Wolverine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grizzled Wolverine",
+      "oracle_fingerprint": "3f8eccea7d0d0a29783108812a6bca52",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                { "Step": "DeclareBlockers" }
+              ]
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

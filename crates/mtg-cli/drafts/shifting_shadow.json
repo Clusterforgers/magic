@@ -1,0 +1,47 @@
+{
+  "oracle_id": "564b1253-2e1f-46c5-b5ae-3932127ca614",
+  "name": "Shifting Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shifting Shadow",
+      "oracle_fingerprint": "29aa67c1ba07d18e3b60450cdcfc2584",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Haste" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [
+                      { "Destroy": { "what": "This" } },
+                      {
+                        "RevealUntil": {
+                          "filter": [{ "Type": "Creature" }],
+                          "as": "found",
+                          "revealed_as": "revealed2"
+                        }
+                      },
+                      { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                      {
+                        "Move": {
+                          "what": { "Bound": "revealed2" },
+                          "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                        }
+                      },
+                      { "Attach": { "what": "Granter", "to": { "Bound": "found" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

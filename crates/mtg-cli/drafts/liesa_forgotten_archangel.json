@@ -1,0 +1,57 @@
+{
+  "oracle_id": "efcaadbe-24e3-4dfc-b08c-a910f003d427",
+  "name": "Liesa, Forgotten Archangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liesa, Forgotten Archangel",
+      "oracle_fingerprint": "e1e4d81420cc2c0a2b4b9d096663f1a7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                  "as": "event"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "event" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

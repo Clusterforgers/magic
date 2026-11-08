@@ -1,6 +1,6 @@
 //! The engine's answer to a decision that leaves its player one legal answer.
 //!
-//! The table gives it for a seat out of Full Control (`docs/arena-flow.md`, P10). Only decisions whose options every
+//! The table gives it for a seat out of Full Control (`docs/ui-design.md`, Priority, stops and information leaks). Only decisions whose options every
 //! player can see qualify, so answering at once never shows what a hidden zone holds: a question whose single answer
 //! could come from a hand or a library (a discard, a search, a payment that needs a card from the hand) is always asked.
 
@@ -114,6 +114,8 @@ mod tests {
             wording: String::new(),
             triggered: !can_cancel,
             apart: Vec::new(),
+            together: None,
+            total: None,
         })
     }
 
@@ -163,12 +165,14 @@ mod tests {
                 .map(|at| ModeOption {
                     index: at * 2,
                     label: None,
+                    cost: None,
                 })
                 .collect(),
             min,
             max,
             repeat,
             can_cancel,
+            cheapest: Vec::new(),
         })
     }
 

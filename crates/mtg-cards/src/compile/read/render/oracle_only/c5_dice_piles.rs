@@ -27,8 +27,8 @@ fn c5_dice_moves(effects: &[Effect], kept: &str, left: &str) -> bool {
     matches!(
         effects,
         [
-            Effect::Move { what: Ref::Bound(hand), to: Destination::Hand },
-            Effect::Move { what: Ref::Bound(yard), to: Destination::Graveyard },
+            Effect::Move { what: Ref::Bound(hand), to: Destination::Hand, .. },
+            Effect::Move { what: Ref::Bound(yard), to: Destination::Graveyard, .. },
         ] if hand == kept && yard == left
     )
 }

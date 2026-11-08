@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7dc7d90d-5979-4c4a-9183-392e0e0b878a",
+  "name": "Hell to Pay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hell to Pay",
+      "oracle_fingerprint": "0fd5f68ba0e58e05909ebfd568c3d6dc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": { "to": { "Target": 0 }, "amount": "X", "excess": { "as": "excess" } }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Bound": "excess" },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

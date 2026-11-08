@@ -1,0 +1,29 @@
+{
+  "oracle_id": "821f4ff3-ebc7-4f47-ac35-d00093b6d35b",
+  "name": "Possessed Goat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possessed Goat",
+      "oracle_fingerprint": "17ada8f818eadfafb64e37c4e071a8c2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, { "Discard": {} }],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddColors": ["Black"] }, { "AddSubtype": "Demon" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

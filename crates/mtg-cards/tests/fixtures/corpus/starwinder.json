@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "27d1a010-5790-4b35-9fdc-0e366eed021d",
+  "oracle_id": "face2dc0-37ba-4efe-b900-b5521567c943",
+  "multiverse_ids": [],
+  "resource_id": "9A233C8C76C8530C73736F13025A5FBB1E23F727D12EEA65D0000E1A66405271",
+  "mtgo_id": 142771,
+  "arena_id": 96653,
+  "tcgplayer_id": 644278,
+  "cardmarket_id": 836307,
+  "name": "Starwinder",
+  "lang": "en",
+  "released_at": "2025-08-01",
+  "uri": "https://api.scryfall.com/cards/27d1a010-5790-4b35-9fdc-0e366eed021d",
+  "scryfall_uri": "https://scryfall.com/card/eoe/79/starwinder?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:26:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.jpg?1783905975",
+    "normal": "https://cards.scryfall.io/normal/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.jpg?1783905975",
+    "large": "https://cards.scryfall.io/large/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.jpg?1783905975",
+    "png": "https://cards.scryfall.io/png/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.png?1783905975",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.jpg?1783905975",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.jpg?1783905975",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.webp?1783905975",
+    "grid": "https://cards.scryfall.io/grid/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.webp?1783905975",
+    "display": "https://cards.scryfall.io/display/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.webp?1783905975",
+    "art": "https://cards.scryfall.io/art/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.webp?1783905975",
+    "crop": "https://cards.scryfall.io/crop/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.webp?1783905975",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/7/27d1a010-5790-4b35-9fdc-0e366eed021d.jpg?1783905975"
+  },
+  "mana_cost": "{5}{U}{U}",
+  "cmc": 7.0,
+  "type_line": "Creature — Leviathan",
+  "oracle_text": "Whenever a creature you control deals combat damage to a player, you may draw that many cards.\nWarp {2}{U}{U} (You may cast this card from your hand for its warp cost. Exile this creature at the beginning of the next end step, then you may cast it from exile on a later turn.)",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Warp"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "452951cf-378b-4472-b7fe-572fe2af2ac0",
+  "set": "eoe",
+  "set_name": "Edge of Eternities",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/452951cf-378b-4472-b7fe-572fe2af2ac0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eoe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/27d1a010-5790-4b35-9fdc-0e366eed021d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aface2dc0-37ba-4efe-b900-b5521567c943&unique=prints",
+  "collector_number": "79",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Devin Elle Kurtz",
+  "artist_ids": [
+    "7324e6e2-bb7c-467c-b615-ef52328c1857"
+  ],
+  "illustration_id": "e76b90fa-e199-4c08-aac9-9c02859fdfdd",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2353,
+  "penny_rank": 4471,
+  "preview": {
+    "source": "PowrDragn",
+    "source_uri": "https://www.youtube.com/watch?v=jljk4lNfLW4",
+    "previewed_at": "2025-07-16"
+  },
+  "prices": {
+    "usd": "1.83",
+    "usd_foil": "1.79",
+    "usd_etched": null,
+    "eur": "1.09",
+    "eur_foil": "1.27",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStarwinder",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStarwinder",
+    "edhrec": "https://edhrec.com/route/?cc=Starwinder"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F644278%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=836307&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/142771?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

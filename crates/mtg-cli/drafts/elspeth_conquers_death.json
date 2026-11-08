@@ -1,0 +1,79 @@
+{
+  "oracle_id": "40c88392-2aa7-4e12-86a4-8d680219e670",
+  "name": "Elspeth Conquers Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elspeth Conquers Death",
+      "oracle_fingerprint": "f808c975351e18409784f229eea8e256",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": [
+                        "Spell",
+                        { "Not": { "Type": "Creature" } },
+                        { "ControlledBy": "Opponents" }
+                      ],
+                      "change": "Increase",
+                      "mana": "{2}"
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Either": {
+                  "first": [{ "PutCounters": { "on": { "Bound": "moved" }, "counter": "+1/+1" } }],
+                  "second": [
+                    { "PutCounters": { "on": { "Bound": "moved" }, "counter": "loyalty" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

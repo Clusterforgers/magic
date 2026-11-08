@@ -1,0 +1,24 @@
+{
+  "oracle_id": "724767ca-bd84-4137-9133-4ad2e96b8428",
+  "name": "Dack's Duplicate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dack's Duplicate",
+      "oracle_fingerprint": "48c863ad63ce78c5fd7b162063af39fe",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, "Other"],
+                "except": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Dethrone" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

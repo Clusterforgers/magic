@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2aac0ddc-1005-4049-a337-fe86e092b461",
+  "name": "Rebuild the City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rebuild the City",
+      "oracle_fingerprint": "b5d8a982bed6695b19521d462510b499",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "SetPT": { "power": 3, "toughness": 3 } },
+                        { "AddType": "Creature" },
+                        { "AddKeyword": "Vigilance" },
+                        { "AddKeyword": "Menace" }
+                      ]
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

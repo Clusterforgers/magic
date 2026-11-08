@@ -1,0 +1,41 @@
+{
+  "oracle_id": "3f2a27a1-f9cf-4dac-a248-5c6af4de3722",
+  "name": "Azorius Arrester",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Arrester",
+      "oracle_fingerprint": "77bea00c504945575d4053c336096805",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Target": 0 },
+                      "action": { "ActivateKind": { "kind": "Every" } }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

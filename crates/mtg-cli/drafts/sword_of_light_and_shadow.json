@@ -1,0 +1,47 @@
+{
+  "oracle_id": "01c8a554-45a6-46ca-b40a-af0fd4529e40",
+  "name": "Sword of Light and Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Light and Shadow",
+      "oracle_fingerprint": "d7ecd0d61d11d81248d7ed6383652642",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "White" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Black" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "GainLife": { "amount": 3 } },
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

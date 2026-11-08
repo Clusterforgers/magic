@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0023888e-7bec-43e0-8dee-d1a4eb94b372",
+  "name": "Palinchron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Palinchron",
+      "oracle_fingerprint": "b9f31b05ebd8bda283a1bfa15b3dc37d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": { "min": 0, "max": 7 },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}{U}",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

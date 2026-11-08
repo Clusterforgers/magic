@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
+  "name": "Painter's Studio // Defaced Gallery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Painter's Studio",
+      "oracle_fingerprint": "64d3744a4184642dc6e942a775a03b25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Defaced Gallery",
+      "oracle_fingerprint": "006ae18ef04adfbbd0495272a168c2b5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

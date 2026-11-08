@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4cd82c7a-86df-4d29-b578-c009208c0d4b",
+  "name": "Agent of Treachery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agent of Treachery",
+      "oracle_fingerprint": "e3f4eb5de971c67862af251003db7209",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Not": { "OwnedBy": "You" } }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

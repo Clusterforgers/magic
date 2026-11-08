@@ -1,0 +1,33 @@
+{
+  "oracle_id": "dab16c93-9788-46e0-9345-838ebeda8d54",
+  "name": "Tuinvale Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tuinvale Guide",
+      "oracle_fingerprint": "0b8904dfdd012e4da26ec7bdf6c8c580",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

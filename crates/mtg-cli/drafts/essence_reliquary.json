@@ -1,0 +1,45 @@
+{
+  "oracle_id": "528039f3-e8e6-499d-add4-43cf2d731b65",
+  "name": "Essence Reliquary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Reliquary",
+      "oracle_fingerprint": "e299c959dbdeefe8a1eb7eb56f7068e4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "YourTurn",
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }, "Other"] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Aura" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "AttachedTo": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e330412f-46a1-4e7c-8766-f644606049e0",
+  "name": "Into the Pit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Pit",
+      "oracle_fingerprint": "a448620a9b72156c2c5856c5fd6b2c4a",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["TopOfLibrary", { "Not": { "Type": "Land" } }],
+                "from": "Library",
+                "additional": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

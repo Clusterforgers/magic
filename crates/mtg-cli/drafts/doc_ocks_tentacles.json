@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a5a18764-eb29-4bd8-a2e9-0ce55f4f6c88",
+  "name": "Doc Ock's Tentacles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doc Ock's Tentacles",
+      "oracle_fingerprint": "3f55c558063b54f56dee4dc237c81378",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

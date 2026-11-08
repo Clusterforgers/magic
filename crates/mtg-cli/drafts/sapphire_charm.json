@@ -1,0 +1,59 @@
+{
+  "oracle_id": "2ea2bf6c-a427-4d0c-b447-159959327697",
+  "name": "Sapphire Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sapphire Charm",
+      "oracle_fingerprint": "7a557e4080d36e734a3abaedc0fbe87e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Bind": { "what": { "Target": 0 }, "as": "target" } },
+                        {
+                          "DelayedTrigger": {
+                            "when": { "StepBegins": { "step": "Upkeep" } },
+                            "effects": [{ "Draw": { "who": { "Bound": "target" } } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Flying" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "PhaseOut": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

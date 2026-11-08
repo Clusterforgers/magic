@@ -1,0 +1,28 @@
+{
+  "oracle_id": "79560d80-1745-4773-a5c4-4c8e98475135",
+  "name": "Jabari's Banner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jabari's Banner",
+      "oracle_fingerprint": "1bab8c42c673edb35dcb9dbb12bc0ed9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Macro": { "name": "flanking", "amount": 0 } } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

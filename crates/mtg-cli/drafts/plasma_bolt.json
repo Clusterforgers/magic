@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ac5258c1-5b46-4892-a445-bfd56875f039",
+  "name": "Plasma Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plasma Bolt",
+      "oracle_fingerprint": "5099af7ab3a2082f56b0b48238de6de1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Any": [
+                          {
+                            "Compare": {
+                              "left": {
+                                "Tallied": { "who": "EachPlayer", "what": "NonlandPermanentsLeft" }
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          {
+                            "Compare": {
+                              "left": { "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" } },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          }
+                        ]
+                      },
+                      "then": 3,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

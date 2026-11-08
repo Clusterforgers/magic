@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4f597675-0f6d-438c-990c-337171927a5e",
+  "name": "Leyline Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline Axe",
+      "oracle_fingerprint": "a9035ae5623641b632db5432eaf4665d",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "DoubleStrike" },
+              { "AddKeyword": "Trample" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

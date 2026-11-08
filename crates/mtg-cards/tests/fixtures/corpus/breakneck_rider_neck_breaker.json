@@ -1,0 +1,200 @@
+{
+  "object": "card",
+  "id": "fe9f85e8-1e4c-4478-8344-71fae357b694",
+  "oracle_id": "51685f85-06ad-4de2-a7a6-06e6f59a1cbb",
+  "multiverse_ids": [
+    409897,
+    409898
+  ],
+  "mtgo_id": 59780,
+  "mtgo_foil_id": 59781,
+  "tcgplayer_id": 115888,
+  "cardmarket_id": 288963,
+  "name": "Breakneck Rider // Neck Breaker",
+  "lang": "en",
+  "released_at": "2016-04-08",
+  "uri": "https://api.scryfall.com/cards/fe9f85e8-1e4c-4478-8344-71fae357b694",
+  "scryfall_uri": "https://scryfall.com/card/soi/147/breakneck-rider-neck-breaker?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:16:04Z",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Scout Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Breakneck Rider",
+      "mana_cost": "{1}{R}{R}",
+      "type_line": "Creature — Human Scout Werewolf",
+      "oracle_text": "At the beginning of each upkeep, if no spells were cast last turn, transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "flavor_text": "Only the most skillful riders brave the Breakneck Ride through Kessig.",
+      "artist": "Victor Adame Minguez",
+      "artist_id": "bd8f7368-5b10-4554-b6b8-d052c6aca89f",
+      "illustration_id": "b6d643b4-f859-4e88-bb7e-722b546571fe",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "normal": "https://cards.scryfall.io/normal/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "large": "https://cards.scryfall.io/large/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "png": "https://cards.scryfall.io/png/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.png?1783937764",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "thumb": "https://cards.scryfall.io/thumb/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "grid": "https://cards.scryfall.io/grid/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "display": "https://cards.scryfall.io/display/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "art": "https://cards.scryfall.io/art/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "crop": "https://cards.scryfall.io/crop/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "jpeg": "https://cards.scryfall.io/normal/front/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Neck Breaker",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "Attacking creatures you control get +1/+0 and have trample.\nAt the beginning of each upkeep, if a player cast two or more spells last turn, transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "color_indicator": [
+        "R"
+      ],
+      "power": "4",
+      "toughness": "3",
+      "flavor_text": "He can't outrun what he is.",
+      "artist": "Victor Adame Minguez",
+      "artist_id": "bd8f7368-5b10-4554-b6b8-d052c6aca89f",
+      "illustration_id": "cd268a22-ff74-4ef2-b40e-31f07f2dd887",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "normal": "https://cards.scryfall.io/normal/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "large": "https://cards.scryfall.io/large/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "png": "https://cards.scryfall.io/png/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.png?1783937764",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764",
+        "thumb": "https://cards.scryfall.io/thumb/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "grid": "https://cards.scryfall.io/grid/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "display": "https://cards.scryfall.io/display/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "art": "https://cards.scryfall.io/art/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "crop": "https://cards.scryfall.io/crop/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.webp?1783937764",
+        "jpeg": "https://cards.scryfall.io/normal/back/f/e/fe9f85e8-1e4c-4478-8344-71fae357b694.jpg?1783937764"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "fe9f85e8-1e4c-4478-8344-71fae357b694",
+      "component": "combo_piece",
+      "name": "Breakneck Rider // Neck Breaker",
+      "type_line": "Creature — Human Scout Werewolf // Creature — Werewolf",
+      "uri": "https://api.scryfall.com/cards/fe9f85e8-1e4c-4478-8344-71fae357b694"
+    },
+    {
+      "object": "related_card",
+      "id": "4d323ead-24f5-42e4-9e23-aa14eb66264d",
+      "component": "combo_piece",
+      "name": "Shadows Over Innistrad Checklist 1",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/4d323ead-24f5-42e4-9e23-aa14eb66264d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set": "soi",
+  "set_name": "Shadows over Innistrad",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fe9f85e8-1e4c-4478-8344-71fae357b694/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A51685f85-06ad-4de2-a7a6-06e6f59a1cbb&unique=prints",
+  "collector_number": "147",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Victor Adame Minguez",
+  "artist_ids": [
+    "bd8f7368-5b10-4554-b6b8-d052c6aca89f"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "sunmoondfc"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12541,
+  "penny_rank": 8191,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "1.37",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "2.02",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=409897&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBreakneck%2BRider%2B%252F%252F%2BNeck%2BBreaker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBreakneck%2BRider%2B%252F%252F%2BNeck%2BBreaker",
+    "edhrec": "https://edhrec.com/route/?cc=Breakneck+Rider"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F115888%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=288963&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/59780?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

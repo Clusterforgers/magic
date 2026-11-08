@@ -1,0 +1,49 @@
+{
+  "oracle_id": "bb6aef0d-052b-44e6-b4cd-2d2eafd84969",
+  "name": "Donatello, Gadget Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Donatello, Gadget Master",
+      "oracle_fingerprint": "f0963787d1fdb8220680280865a48d55",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{1}{U}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

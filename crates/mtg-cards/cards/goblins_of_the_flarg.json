@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3a620d92-ec92-4733-8c05-7fa1b956bab6",
+  "name": "Goblins of the Flarg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblins of the Flarg",
+      "oracle_fingerprint": "bb7ed6d3068fb2054dc321d84af5184d",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Mountain" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Dwarf" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

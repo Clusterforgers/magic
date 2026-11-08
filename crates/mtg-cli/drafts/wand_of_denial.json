@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9d32da71-60e5-4eb3-97ca-ae76e2f5df57",
+  "name": "Wand of Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wand of Denial",
+      "oracle_fingerprint": "b16fc7c9967b55dc0a91bdd542739200",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "cost": [{ "PayLife": 2 }],
+                        "paid": [
+                          { "LookAtTop": { "who": { "Target": 0 }, "as": "top2" } },
+                          { "Move": { "what": { "Bound": "top2" }, "to": "Graveyard" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5afbd367-19c7-418f-994d-a7958fb1c4ae",
+  "name": "Karn's Temporal Sundering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn's Temporal Sundering",
+      "oracle_fingerprint": "7f5f45c60bca19eb5f5ce01fa7a58dbc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "ExtraTurn": { "who": { "Target": 0 } } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

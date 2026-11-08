@@ -1,0 +1,57 @@
+{
+  "oracle_id": "2cd10c6c-f946-457e-9175-92501322f7a5",
+  "name": "Minsc, Beloved Ranger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minsc, Beloved Ranger",
+      "oracle_fingerprint": "e6021623fd336a0f208ccd7a9f529667",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Boo",
+                      "colors": ["Red"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Hamster"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": "X", "toughness": "X" } },
+                    { "AddSubtype": "Giant" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

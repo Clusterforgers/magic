@@ -23,7 +23,17 @@ pub(super) fn handles(when: &ReplaceWhen) -> bool {
 /// The wordings of a replacement of one of the events above, each without its capital and closing period.
 pub(super) fn sentences(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<String> {
     match when {
-        ReplaceWhen::Damage { to, source, combat } => damage(to.as_ref(), source, *combat, by),
+        ReplaceWhen::Damage { to, source, combat } => {
+            let mut found = damage(to.as_ref(), source, *combat, by);
+            if *by == ReplaceBy::Prevent {
+                found.extend(super::g8e_attached::g8e_prevented(
+                    to.as_ref(),
+                    source,
+                    kind(*combat),
+                ));
+            }
+            found
+        }
         ReplaceWhen::TokenCreation { controller, what } if what.is_empty() => {
             tokens(controller, by)
         }
@@ -135,6 +145,14 @@ fn damage(
                     "{passive}, prevent that damage. Remove a {name} counter from ~"
                 ));
             }
+        }
+        ReplaceBy::PreventHalf => {
+            found.push(format!("{head}, prevent half that damage, rounded up"));
+            found.extend(
+                passive
+                    .iter()
+                    .map(|passive| format!("{passive}, prevent half that damage, rounded up")),
+            );
         }
         ReplaceBy::PreventUpTo(most) if *most > 0 => {
             for number in numbers(*most) {
@@ -278,6 +296,35 @@ fn instead(by: &ReplaceBy) -> Vec<&'static str> {
     }
 }
 
+/// "Reveal ~ and shuffle it into its owner's library instead", "put it on top of its owner's library instead".
+fn into_library(what: &Selector, by: &ReplaceBy) -> Vec<String> {
+    let ReplaceBy::IntoLibrary { place, reveal } = by else {
+        return Vec::new();
+    };
+    let (verb, place) = match place {
+        crate::effect::Place::Top => ("put", "on top of its owner's library"),
+        crate::effect::Place::Bottom => ("put", "on the bottom of its owner's library"),
+        crate::effect::Place::Shuffled => ("shuffle", "into its owner's library"),
+        crate::effect::Place::Below(_) => return Vec::new(),
+    };
+    // The card itself is named again by its name or by "it"; a reveal names it first and "it" after.
+    let names: &[&str] = if what.0 == [Pred::This] {
+        &["~", "it"]
+    } else {
+        &["it"]
+    };
+    names
+        .iter()
+        .map(|named| {
+            if *reveal {
+                format!("reveal {named} and {verb} it {place} instead")
+            } else {
+                format!("{verb} {named} {place} instead")
+            }
+        })
+        .collect()
+}
+
 /// "If a creature you control would die, exile it instead."
 fn zone_change(
     what: &Selector,
@@ -288,6 +335,12 @@ fn zone_change(
     let (subject, owner) = moved(what, to);
     let Some(subject) = subject else {
         return Vec::new();
+    };
+    // What you own takes in your tokens too: "If a card or token would be put into your graveyard from anywhere".
+    let subjects = if what.0 == [Pred::OwnedBy(Ref::You)] && to == Some(ZoneKind::Graveyard) {
+        vec![subject, "a card or token".to_owned()]
+    } else {
+        vec![subject]
     };
     let events: Vec<String> = match (from, to) {
         (None, Some(ZoneKind::Graveyard)) => {
@@ -303,14 +356,26 @@ fn zone_change(
         (None, Some(ZoneKind::Exile)) => vec!["be exiled".to_owned()],
         _ => Vec::new(),
     };
+    let mut thens: Vec<String> = instead(by).into_iter().map(str::to_owned).collect();
+    thens.extend(into_library(what, by));
+    // A permanent that leaves goes to exile wherever it was going: "instead of putting it anywhere else".
+    if (from, to, by)
+        == (
+            Some(ZoneKind::Battlefield),
+            None,
+            &ReplaceBy::MoveTo(ZoneKind::Exile),
+        )
+    {
+        thens.push("exile it instead of putting it anywhere else".to_owned());
+    }
     events
         .iter()
-        .flat_map(|event| {
-            instead(by)
-                .into_iter()
-                .map(move |then| (event.clone(), then))
+        .flat_map(|event| thens.iter().map(move |then| (event.clone(), then.clone())))
+        .flat_map(|(event, then)| {
+            subjects
+                .iter()
+                .map(move |subject| format!("if {subject} would {event}, {then}"))
         })
-        .map(|(event, then)| format!("if {subject} would {event}, {then}"))
         .collect()
 }
 

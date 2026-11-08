@@ -1,0 +1,24 @@
+{
+  "oracle_id": "e6b3028c-5ad6-4802-a414-3084ec02786e",
+  "name": "Hag of Scoured Thoughts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hag of Scoured Thoughts",
+      "oracle_fingerprint": "16cc0ef66871b17c8b7db6a6e37c1735",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Mill": { "who": "Opponents", "count": 5 } },
+              {
+                "Exile": { "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

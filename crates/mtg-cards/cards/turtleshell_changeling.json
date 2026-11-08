@@ -1,0 +1,28 @@
+{
+  "oracle_id": "87f8b403-765c-4a2a-8b21-edaaaa889234",
+  "name": "Turtleshell Changeling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turtleshell Changeling",
+      "oracle_fingerprint": "941cd458050b0bd9f50d87a2dd2a5383",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

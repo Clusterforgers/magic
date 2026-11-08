@@ -28,6 +28,9 @@ impl KeywordRules for Landwalk {
         let Keyword::Landwalk(land) = keyword else {
             return false;
         };
+        if crate::combat_quirks::landwalk_ignored(state, attacker, blocker, land) {
+            return false;
+        }
         let (Some(defending), Some(attacking), Some(source)) = (
             controller_of(state, blocker),
             controller_of(state, attacker),

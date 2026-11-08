@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2b51bbb3-1514-4a79-861f-b9cec9f0ec1b",
+  "name": "Armory Veteran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armory Veteran",
+      "oracle_fingerprint": "12b4d481538ab2da0973916a26e6ce62",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Menace" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

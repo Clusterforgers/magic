@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "b251aa7c-d011-4b52-ab92-415d536c0182",
+  "oracle_id": "52befc89-e895-4dd5-95e4-8f6d03e627aa",
+  "multiverse_ids": [
+    503769
+  ],
+  "mtgo_id": 87649,
+  "arena_id": 75200,
+  "tcgplayer_id": 230527,
+  "cardmarket_id": 531202,
+  "name": "Tundra Fumarole",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/b251aa7c-d011-4b52-ab92-415d536c0182",
+  "scryfall_uri": "https://scryfall.com/card/khm/156/tundra-fumarole?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:37:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.jpg?1783928221",
+    "normal": "https://cards.scryfall.io/normal/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.jpg?1783928221",
+    "large": "https://cards.scryfall.io/large/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.jpg?1783928221",
+    "png": "https://cards.scryfall.io/png/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.png?1783928221",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.jpg?1783928221",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.jpg?1783928221",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.webp?1783928221",
+    "grid": "https://cards.scryfall.io/grid/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.webp?1783928221",
+    "display": "https://cards.scryfall.io/display/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.webp?1783928221",
+    "art": "https://cards.scryfall.io/art/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.webp?1783928221",
+    "crop": "https://cards.scryfall.io/crop/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.webp?1783928221",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/2/b251aa7c-d011-4b52-ab92-415d536c0182.jpg?1783928221"
+  },
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Snow Sorcery",
+  "oracle_text": "Tundra Fumarole deals 4 damage to target creature or planeswalker. Add {C} for each {S} spent to cast this spell. Until end of turn, you don't lose this mana as steps and phases end. ({S} is mana from a snow source.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b251aa7c-d011-4b52-ab92-415d536c0182/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A52befc89-e895-4dd5-95e4-8f6d03e627aa&unique=prints",
+  "collector_number": "156",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The only thing that smells worse than troll is burnt troll.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Simon Dominic",
+  "artist_ids": [
+    "b0e80135-db5a-4b88-a0bc-815a0e94faa1"
+  ],
+  "illustration_id": "23c19fd6-7c28-4172-8aa1-0782cbc4bd7e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "snow"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23072,
+  "penny_rank": 11026,
+  "preview": {
+    "source": "ChannelFireball",
+    "source_uri": "https://strategy.channelfireball.com/all-strategy/mtg/kaldheim-exclusive-preview-card-tundra-fumarole/",
+    "previewed_at": "2021-01-14"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.09",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.13",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503769&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTundra%2BFumarole",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTundra%2BFumarole",
+    "edhrec": "https://edhrec.com/route/?cc=Tundra+Fumarole"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230527%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=531202&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87649?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

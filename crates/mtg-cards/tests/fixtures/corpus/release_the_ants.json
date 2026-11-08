@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "1b6f1afb-2451-4611-ac3e-3513a4651719",
+  "oracle_id": "b420e429-9dec-4993-a45f-3458795e5cbe",
+  "multiverse_ids": [
+    152619
+  ],
+  "mtgo_id": 29028,
+  "mtgo_foil_id": 29029,
+  "tcgplayer_id": 18045,
+  "cardmarket_id": 18927,
+  "name": "Release the Ants",
+  "lang": "en",
+  "released_at": "2008-02-01",
+  "uri": "https://api.scryfall.com/cards/1b6f1afb-2451-4611-ac3e-3513a4651719",
+  "scryfall_uri": "https://scryfall.com/card/mor/98/release-the-ants?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:39:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.jpg?1783942785",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.jpg?1783942785",
+    "large": "https://cards.scryfall.io/large/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.jpg?1783942785",
+    "png": "https://cards.scryfall.io/png/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.png?1783942785",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.jpg?1783942785",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.jpg?1783942785",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.webp?1783942785",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.webp?1783942785",
+    "display": "https://cards.scryfall.io/display/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.webp?1783942785",
+    "art": "https://cards.scryfall.io/art/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.webp?1783942785",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.webp?1783942785",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1b6f1afb-2451-4611-ac3e-3513a4651719.jpg?1783942785"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Release the Ants deals 1 damage to any target. Clash with an opponent. If you win, return Release the Ants to its owner's hand. (Each clashing player reveals the top card of their library, then puts that card on their choice of the top or bottom. A player wins if their card had a greater mana value.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Clash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c41550df-7b41-41a3-85ab-8612eb2f168f",
+  "set": "mor",
+  "set_name": "Morningtide",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c41550df-7b41-41a3-85ab-8612eb2f168f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amor&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mor?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1b6f1afb-2451-4611-ac3e-3513a4651719/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab420e429-9dec-4993-a45f-3458795e5cbe&unique=prints",
+  "collector_number": "98",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spencer",
+  "artist_ids": [
+    "dab52c11-0564-4207-a4a1-c1735c946a65"
+  ],
+  "illustration_id": "26d11ceb-7b59-4c08-ab47-e369b17a7e7d",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27393,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "1.89",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "1.27",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=152619&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRelease%2Bthe%2BAnts",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRelease%2Bthe%2BAnts",
+    "edhrec": "https://edhrec.com/route/?cc=Release+the+Ants"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F18045%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=18927&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/29028?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

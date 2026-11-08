@@ -1,0 +1,29 @@
+{
+  "oracle_id": "75701981-b9fc-471f-a97f-e897bb3dfb77",
+  "name": "Planar Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Guide",
+      "oracle_fingerprint": "fac800db28e645361bfbf7b705fc393e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{W}" }, "ExileSelf"],
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

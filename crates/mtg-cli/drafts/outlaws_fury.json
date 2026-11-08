@@ -1,0 +1,72 @@
+{
+  "oracle_id": "5b5ef88c-f863-4f55-91fc-a63f7f3c1b3f",
+  "name": "Outlaws' Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outlaws' Fury",
+      "oracle_fingerprint": "c0825f8967b8d46bf61a6fb9617227e4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Assassin" },
+                              { "Subtype": "Mercenary" },
+                              { "Subtype": "Pirate" },
+                              { "Subtype": "Rogue" },
+                              { "Subtype": "Warlock" }
+                            ]
+                          },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Exile": {
+                        "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                        "as": "exiled4"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled4" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

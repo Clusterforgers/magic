@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a61277d6-a27d-45d1-ba2a-7afe1b8f5ce1",
+  "name": "Encase in Ice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Encase in Ice",
+      "oracle_fingerprint": "07590b8f37079befe3638ef4dbf33e8f",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Keyword": {
+            "Enchant": [
+              { "Type": "Creature" },
+              { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

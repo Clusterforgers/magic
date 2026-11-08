@@ -163,6 +163,24 @@ describe('a choice of one', () => {
   })
 })
 
+describe('a choice with different names', () => {
+  it('closes a second card of a name that is chosen and opens it again when the first is put back', async () => {
+    const twins = permanents.filter((id) => nameOf(id) === nameOf(permanents[0] as ObjectId))
+    const other = permanents.find((id) => nameOf(id) !== nameOf(permanents[0] as ObjectId))
+    const from = [...twins.slice(0, 2), other].filter((id): id is ObjectId => id !== undefined)
+    if (twins.length < 2) return
+    const table = renderDecision({
+      ChooseCards: { source, from, min: 0, max: 2, one_per_name: true },
+    })
+    const group = within(screen.getByRole('group', { name: 'Cards to choose from' }))
+    const [first, second] = group.getAllByRole('button')
+    await table.user.click(must(first))
+    expect(must(second)).toHaveAttribute('aria-disabled', 'true')
+    await table.user.click(must(first))
+    expect(must(second)).not.toHaveAttribute('aria-disabled')
+  })
+})
+
 describe('a choice of several', () => {
   it('opens Confirm at the fewest, closes the rest at the most and sends the order chosen', async () => {
     const { card, confirm, chosen, count, user, answer, sent } = mount(hand, 2, 2)

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2db8fc61-13af-4227-83f9-9f426ab978d3",
+  "name": "Jwar Isle Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jwar Isle Avenger",
+      "oracle_fingerprint": "f175357a161fe228f7ea84ae155c57ac",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{2}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "67ee7c8b-afcc-4f09-a184-3db01f2ab175",
+  "name": "Enter the God-Eternals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enter the God-Eternals",
+      "oracle_fingerprint": "87a1410d6fd6154d62bedcbe2d6112ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "GainLife": { "amount": "DamageDealtThisWay" } },
+              { "Mill": { "who": { "Target": 1 }, "count": 4 } },
+              { "Amass": { "subtype": "Zombie", "count": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

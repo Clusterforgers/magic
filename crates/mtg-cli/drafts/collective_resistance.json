@@ -1,0 +1,50 @@
+{
+  "oracle_id": "bffdfe7b-f17a-41b6-a460-80280fe497d4",
+  "name": "Collective Resistance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collective Resistance",
+      "oracle_fingerprint": "f9110fd37f9e7f938e0d373ccbfe02b0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 3 },
+                  "extra_mode_cost": "{G}",
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "AddKeyword": "Hexproof" },
+                              { "AddKeyword": "Indestructible" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

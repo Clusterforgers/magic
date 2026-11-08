@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f0e4dda1-2ffb-4353-a292-dcbc966967b4",
+  "name": "Yuan-Ti Malison",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yuan-Ti Malison",
+      "oracle_fingerprint": "e04389b77e0066ffd732ebae75814461",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", "Attacking"] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": { "left": { "Count": ["Attacking", "Other"] }, "op": "Eq", "right": 0 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Venture": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

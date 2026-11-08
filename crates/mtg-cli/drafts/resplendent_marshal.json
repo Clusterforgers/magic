@@ -1,0 +1,68 @@
+{
+  "oracle_id": "1fb4c1c1-b10c-463f-a97d-eca9f978e371",
+  "name": "Resplendent Marshal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resplendent Marshal",
+      "oracle_fingerprint": "97f2c9946b5d75c4ab46d3baf9fa0407",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Other",
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled2" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            "Other",
+                            { "ControlledBy": "You" },
+                            { "SharesSubtype": { "Bound": "exiled2" } }
+                          ]
+                        },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -37,6 +37,7 @@ impl KeywordRules for Encore {
             timing: Timing::Sorcery,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Graveyard,
             targets: Vec::new(),
             effects: vec![
@@ -54,6 +55,7 @@ impl KeywordRules for Encore {
                     duration: Duration::UntilEndOfTurn,
                 },
                 Effect::DelayedTrigger {
+                    until: None,
                     when: TriggerPattern::StepBegins {
                         step: Step::End,
                         whose: Ref::EachPlayer,
@@ -84,6 +86,7 @@ fn one_copy_for_each_opponent() -> Effect {
         count: Amount::Players(Ref::Opponents),
         tapped: false,
         attacking: false,
+        against: None,
         bind: Some(ENCORED.to_owned()),
     }
 }
@@ -95,6 +98,7 @@ fn sacrifice_them() -> Effect {
         who: Ref::You,
         count: Amount::Count(them.clone()),
         filter: them,
+        bind: None,
     }
 }
 

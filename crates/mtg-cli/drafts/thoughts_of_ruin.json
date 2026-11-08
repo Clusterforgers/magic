@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bb9e1d12-ebcc-4a8a-baef-9f69638a51cd",
+  "name": "Thoughts of Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughts of Ruin",
+      "oracle_fingerprint": "5f19b1b8a9fac8b18763e0712c6d22da",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

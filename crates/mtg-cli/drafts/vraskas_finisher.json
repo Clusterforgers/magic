@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5df16529-6f1d-4978-b364-97d91abac441",
+  "name": "Vraska's Finisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska's Finisher",
+      "oracle_fingerprint": "1e5b7769149cddb1ba0501b250838e62",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" },
+                    "DamagedThisTurn"
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

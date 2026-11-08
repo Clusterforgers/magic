@@ -1,0 +1,33 @@
+{
+  "oracle_id": "959e1f72-4ba2-4c87-95d1-ca0265dc128c",
+  "name": "Deadeye Harpooner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadeye Harpooner",
+      "oracle_fingerprint": "bc3809459fdc39991f7307b4ad001b20",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

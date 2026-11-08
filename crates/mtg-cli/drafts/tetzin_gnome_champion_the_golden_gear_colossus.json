@@ -1,0 +1,113 @@
+{
+  "oracle_id": "e12b38e5-621b-4b2c-8c04-c15c41d4fc70",
+  "name": "Tetzin, Gnome Champion // The Golden-Gear Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tetzin, Gnome Champion",
+      "oracle_fingerprint": "36c457eb1741107c697ca97515654b62",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Artifact" } },
+                            { "Not": "Other" },
+                            { "Not": "DoubleFaced" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{4}" },
+              { "Craft": { "filter": [{ "Type": "Artifact" }, "Other"], "count": 6 } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Golden-Gear Colossus",
+      "oracle_fingerprint": "693b3f26f0c8198652c13ff1957eec8a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    "Other",
+                    "DoubleFaced",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Transform": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gnome",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Gnome"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

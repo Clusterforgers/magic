@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0b9b8e60-51eb-4d4a-95c1-48ca5b8153df",
+  "name": "Veiled Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veiled Sentry",
+      "oracle_fingerprint": "ee6a41c0a7861ed37509eb53ecf5621f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    },
+                    { "SetCreatureTypes": ["Illusion"] },
+                    { "SetTypes": ["Creature"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

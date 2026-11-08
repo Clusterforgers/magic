@@ -19,12 +19,12 @@
             "cost": [{ "Mana": "{3}{B}" }, "Tap"],
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shadow" } } },
               {
                 "Continuous": {
                   "affected": { "Target": 0 },
                   "mods": [{ "AddSubtype": "Wraith" }],
-                  "duration": "Forever"
+                  "duration": { "WhileHasCounter": { "Other": "shadow" } }
                 }
               }
             ]

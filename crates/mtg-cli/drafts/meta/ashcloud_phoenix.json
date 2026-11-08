@@ -1,0 +1,76 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Flying",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Morph:4 R R",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME dies, return it to the battlefield face down under your control.",
+      "abilities": [],
+      "gap": "key:ChangeZone.FaceDown"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME is turned face up, it deals 2 damage to each player.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 6
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 7,
+          "end": 90
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 91,
+          "end": 213
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 214,
+          "end": 285
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

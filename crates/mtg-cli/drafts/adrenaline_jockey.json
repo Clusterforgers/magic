@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c3dc6b0e-8790-4bd3-b166-63b2dc77488f",
+  "name": "Adrenaline Jockey",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Adrenaline Jockey",
+      "oracle_fingerprint": "111004307d11c4b77dfd200a642abecf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "by": { "PlayersWhere": { "who": "EachPlayer", "test": { "Not": "YourTurn" } } }
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 4 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 174 }
+          }
+        }
+      ]
+    }
+  ]
+}

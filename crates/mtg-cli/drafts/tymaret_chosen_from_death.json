@@ -1,0 +1,51 @@
+{
+  "oracle_id": "64b4e91f-83a4-4b3f-87d4-8c48907e628d",
+  "name": "Tymaret, Chosen from Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tymaret, Chosen from Death",
+      "oracle_fingerprint": "3cb7380f03dc160683ce4c2e97893308",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 2, "toughness": { "Devotion": ["Black"] } } }],
+            "defining": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

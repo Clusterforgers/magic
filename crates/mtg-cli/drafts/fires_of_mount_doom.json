@@ -1,0 +1,37 @@
+{
+  "oracle_id": "f4944fde-2066-4aed-85c0-6e5e00a4bfe6",
+  "name": "Fires of Mount Doom",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fires of Mount Doom",
+      "oracle_fingerprint": "caf2f8475306efece9baa964c356a10e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AttachedTo": { "Target": 0 } }, { "Subtype": "Equipment" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 141, "end": 300 }
+          }
+        }
+      ]
+    }
+  ]
+}

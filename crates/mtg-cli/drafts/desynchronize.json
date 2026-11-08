@@ -1,0 +1,44 @@
+{
+  "oracle_id": "dae81b1b-28dd-4f7f-9bcb-65e72eaa37e2",
+  "name": "Desynchronize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desynchronize",
+      "oracle_fingerprint": "603bd4042b2b737ea125d8acaf35eb4a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              },
+              { "Scry": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

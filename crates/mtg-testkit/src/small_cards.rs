@@ -120,6 +120,7 @@ pub fn grind(name: &str) -> Arc<CardDefinition> {
         vec![Effect::Mill {
             who: Ref::Target(0),
             count: Amount::Fixed(3),
+            bind: None,
         }],
     )
 }
@@ -135,6 +136,7 @@ pub fn rot(name: &str) -> Arc<CardDefinition> {
         vec![Effect::Mill {
             who: Ref::EachPlayer,
             count: Amount::Fixed(2),
+            bind: None,
         }],
     )
 }
@@ -196,6 +198,7 @@ pub fn study(name: &str) -> Arc<CardDefinition> {
             Effect::Mill {
                 who: Ref::You,
                 count: Amount::Fixed(2),
+                bind: None,
             },
             Effect::If {
                 condition: Condition::Compare {

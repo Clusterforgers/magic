@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1373fa8d-0a39-4451-a482-ce2071438dc8",
+  "name": "Nezumi Graverobber // Nighteyes the Desecrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nezumi Graverobber",
+      "oracle_fingerprint": "ed93039f9289bb3beac30a1f545bec2a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "OwnedBy": { "ControllerOf": { "Target": 0 } } },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Flip": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nighteyes the Desecrator",
+      "oracle_fingerprint": "4fea259ec3f605edb6aec7a926dfbf40",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

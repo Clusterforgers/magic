@@ -12,7 +12,15 @@
         {
           "Triggered": {
             "when": {
-              "ZoneChange": { "what": ["This", "Other", "Token", "Spell"], "to": "Battlefield" }
+              "ZoneChange": {
+                "what": [
+                  { "Subtype": "Dragon" },
+                  { "ControlledBy": "You" },
+                  { "Not": "Token" },
+                  "Other"
+                ],
+                "to": "Battlefield"
+              }
             },
             "effects": [
               {
@@ -21,8 +29,7 @@
                     "CopyOf": { "of": "Triggering", "except": [{ "RemoveSupertype": "Legendary" }] }
                   }
                 }
-              },
-              { "Counter": { "what": "Triggering" } }
+              }
             ]
           }
         }

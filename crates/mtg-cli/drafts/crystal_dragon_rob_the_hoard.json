@@ -1,0 +1,40 @@
+{
+  "oracle_id": "56b0cb64-b886-413e-bb20-392bf12d3926",
+  "name": "Crystal Dragon // Rob the Hoard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Dragon",
+      "oracle_fingerprint": "771dc95bfdda131d16a82140c13461c4",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }]
+    },
+    {
+      "name": "Rob the Hoard",
+      "oracle_fingerprint": "a966e99a9d6eef013bc84383f5022b41",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        { "Supertype": "Legendary" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -15,9 +15,17 @@
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "Attached" } },
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
             "targets": [{ "what": "AnyTarget" }],
-            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Attached",
+                  "to": { "Target": 0 },
+                  "amount": "Triggering"
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Equip": "{4}" } }

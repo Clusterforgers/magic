@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0441a901-31ce-419f-a898-e9a9ad4ab351",
+  "name": "Showstopper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Showstopper",
+      "oracle_fingerprint": "336762d6f5eead2d5db0da76e44095fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "targets": [
+                            {
+                              "what": {
+                                "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                              }
+                            }
+                          ],
+                          "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "80745dea-2335-43fc-9915-f62e0436e73b",
+  "name": "Lieutenants of the Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lieutenants of the Guard",
+      "oracle_fingerprint": "55bc6ac71fce40d86ba2479c964693a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Vote": { "options": { "Named": ["strength", "numbers"] } } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Players": { "Bound": "strength" } }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Players": { "Bound": "numbers" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

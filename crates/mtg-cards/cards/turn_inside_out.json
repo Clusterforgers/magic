@@ -1,0 +1,47 @@
+{
+  "oracle_id": "be0a3925-8e0d-4ef6-85cb-c9f5eef6b4bb",
+  "name": "Turn Inside Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turn Inside Out",
+      "oracle_fingerprint": "467083bc2dce63e7eeac799ac5d0eade",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    { "LookAtTop": { "count": 2, "as": "looked" } },
+                    {
+                      "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" }
+                    },
+                    { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+                    { "Manifest": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

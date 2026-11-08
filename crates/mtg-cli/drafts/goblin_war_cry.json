@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a6c8c660-2b06-4395-8c86-dd540760d9ae",
+  "name": "Goblin War Cry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin War Cry",
+      "oracle_fingerprint": "dddd9dde184364a8ba93092a2b3f595b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "card"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "card" } } },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

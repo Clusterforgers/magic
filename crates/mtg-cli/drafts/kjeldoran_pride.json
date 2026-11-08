@@ -1,0 +1,29 @@
+{
+  "oracle_id": "515fb257-ec07-4978-af16-47a10a22ba3c",
+  "name": "Kjeldoran Pride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran Pride",
+      "oracle_fingerprint": "a238aff92af95ffdc70c345de5acb491",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": "Attached" } }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

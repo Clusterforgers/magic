@@ -42,6 +42,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         who: Ref::Opponents,
         filter: filter.clone(),
         count: Amount::one(),
+        bind: None,
     };
     let Some(bare) = with_effects(ability, stand_in) else {
         return;

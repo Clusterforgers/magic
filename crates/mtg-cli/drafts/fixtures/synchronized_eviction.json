@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "68f10249-8cd0-4366-bd9a-755f8e1c3592",
+  "oracle_id": "ad64b05a-4702-47ef-a81e-1b481e57ab55",
+  "multiverse_ids": [
+    589572
+  ],
+  "mtgo_id": 137748,
+  "tcgplayer_id": 455025,
+  "cardmarket_id": 686438,
+  "name": "Synchronized Eviction",
+  "lang": "en",
+  "released_at": "2022-12-02",
+  "uri": "https://api.scryfall.com/cards/68f10249-8cd0-4366-bd9a-755f8e1c3592",
+  "scryfall_uri": "https://scryfall.com/card/j22/18/synchronized-eviction?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:06:30Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.jpg?1783919190",
+    "normal": "https://cards.scryfall.io/normal/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.jpg?1783919190",
+    "large": "https://cards.scryfall.io/large/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.jpg?1783919190",
+    "png": "https://cards.scryfall.io/png/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.png?1783919190",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.jpg?1783919190",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.jpg?1783919190",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.webp?1783919190",
+    "grid": "https://cards.scryfall.io/grid/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.webp?1783919190",
+    "display": "https://cards.scryfall.io/display/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.webp?1783919190",
+    "art": "https://cards.scryfall.io/art/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.webp?1783919190",
+    "crop": "https://cards.scryfall.io/crop/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.webp?1783919190",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/8/68f10249-8cd0-4366-bd9a-755f8e1c3592.jpg?1783919190"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "This spell costs {2} less to cast if you control at least two creatures that share a creature type.\nPut target nonland permanent into its owner's library second from the top.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "247df475-e4ce-4e5e-9317-11892d2211e0",
+  "set": "j22",
+  "set_name": "Jumpstart 2022",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/247df475-e4ce-4e5e-9317-11892d2211e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj22&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j22?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/68f10249-8cd0-4366-bd9a-755f8e1c3592/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aad64b05a-4702-47ef-a81e-1b481e57ab55&unique=prints",
+  "collector_number": "18",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"I told you this one would be a handful.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nicholas Gregory",
+  "artist_ids": [
+    "a1bba8ff-63b4-4786-b1c4-f1bfe5d3ab1c"
+  ],
+  "illustration_id": "34fad557-d71e-4e44-935d-3e65e53483a1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20394,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=589572&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSynchronized%2BEviction",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSynchronized%2BEviction",
+    "edhrec": "https://edhrec.com/route/?cc=Synchronized+Eviction"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F455025%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=686438&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/137748?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

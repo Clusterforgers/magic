@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1322734c-3c3e-4885-a6d2-d6460a16fca2",
+  "name": "Stonesplitter Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonesplitter Bolt",
+      "oracle_fingerprint": "7edbe431d362f6d478fd477769ded605",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Product": [
+                      "X",
+                      { "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

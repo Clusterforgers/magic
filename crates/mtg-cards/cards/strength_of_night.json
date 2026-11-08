@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0045cf16-86dd-4417-ae36-88ca63b30c26",
+  "name": "Strength of Night",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strength of Night",
+      "oracle_fingerprint": "6a0458bc3016e6f8f8715c5b8c00fc7a",
+      "abilities": [
+        { "Keyword": { "Kicker": "{B}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Subtype": "Zombie" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

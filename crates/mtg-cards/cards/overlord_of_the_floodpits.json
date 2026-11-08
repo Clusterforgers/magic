@@ -1,0 +1,46 @@
+{
+  "oracle_id": "31196f0b-33ee-4981-ac97-24226e8b405f",
+  "name": "Overlord of the Floodpits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overlord of the Floodpits",
+      "oracle_fingerprint": "24d5c0fc3da4d83b9c51c008816e804a",
+      "abilities": [
+        { "AltCast": { "way": "Impending", "cost": "{1}{U}{U}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "time" }, "count": 4 } },
+            "condition": { "CastWith": "Impending" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

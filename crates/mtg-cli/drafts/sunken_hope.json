@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1820b6e9-83fd-40b9-953e-ba1a8ae69614",
+  "name": "Sunken Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunken Hope",
+      "oracle_fingerprint": "4f291983b1e3d401781479a1712dae49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

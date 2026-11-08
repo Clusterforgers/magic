@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f73da5d8-fd15-4315-ad3c-c86c28087285",
+  "name": "Nasty End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nasty End",
+      "oracle_fingerprint": "371d961c60fa7b0b18c1ab8174b9c5b5",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "CountOf": { "of": "Paid", "filter": [{ "Supertype": "Legendary" }] }
+                          },
+                          "op": "Eq",
+                          "right": 1
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

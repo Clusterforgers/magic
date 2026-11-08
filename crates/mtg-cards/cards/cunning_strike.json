@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a01491b7-89c8-4d6e-a516-431440ff3e88",
+  "name": "Cunning Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning Strike",
+      "oracle_fingerprint": "412e02c90bb511a619ca36a8a222f492",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

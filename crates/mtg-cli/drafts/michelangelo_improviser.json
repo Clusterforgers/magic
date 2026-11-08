@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
+  "name": "Michelangelo, Improviser",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Michelangelo, Improviser",
+      "oracle_fingerprint": "41aa9d4d4dfa6f6ceb989842cd0c8cb7",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{2}{G}{G}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 183, "end": 321 }
+          }
+        }
+      ]
+    }
+  ]
+}

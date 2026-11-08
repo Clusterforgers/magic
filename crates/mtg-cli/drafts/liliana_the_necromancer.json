@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f3ad60a6-05d0-48a1-a804-7900d306d613",
+  "name": "Liliana, the Necromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana, the Necromancer",
+      "oracle_fingerprint": "df55a8555d253dc9f75a2264feab7819",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

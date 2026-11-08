@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6fa27f8a-bade-460f-853a-abc1c05c946a",
+  "name": "Behold the Sinister Six!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Behold the Sinister Six!",
+      "oracle_fingerprint": "a10cc9cb86633dd762b0c7c31c4eb221",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "rule": "DifferentNames"
+                  }
+                },
+                "bounds": { "min": 0, "max": 6 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

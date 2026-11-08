@@ -1,0 +1,49 @@
+{
+  "oracle_id": "c2fb8d4c-b973-42a0-9e9c-7abd5cc2c22e",
+  "name": "Call to the Kindred",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call to the Kindred",
+      "oracle_fingerprint": "0bcd91d747746770a2de74f60247a399",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "count": 5, "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Creature" },
+                            { "SharesSubtype": "Attached" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kept2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

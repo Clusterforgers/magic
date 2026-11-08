@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bf2dc318-7b51-451e-ac4d-0f1b756dc860",
+  "name": "Senu, Keen-Eyed Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Senu, Keen-Eyed Protector",
+      "oracle_fingerprint": "1c7cc9bb23fa1e33271546de27126f01",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap", "ExileSelf"],
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Unblocked": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "from": "Exile",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": {} }, "as": "moved" } },
+              { "JoinAttack": { "what": { "Bound": "moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

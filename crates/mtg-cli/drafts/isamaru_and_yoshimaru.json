@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c22cb20a-f280-4e47-9556-ca8b465f9b17",
+  "name": "Isamaru and Yoshimaru",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isamaru and Yoshimaru",
+      "oracle_fingerprint": "fdad38b0f19b2f30470bac0c811514c3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "AnyOf": [
+                      { "Supertype": "Legendary" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } }
+                    ]
+                  },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

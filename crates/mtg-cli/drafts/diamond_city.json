@@ -1,0 +1,53 @@
+{
+  "oracle_id": "88e29d50-1680-495d-be84-b92b4c9e636f",
+  "name": "Diamond City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diamond City",
+      "oracle_fingerprint": "32281d92e9b29e10ca36e44aedd58eee",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "MoveCounters": {
+                  "from": "This",
+                  "to": { "Target": 0 },
+                  "counter": { "Other": "shield" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

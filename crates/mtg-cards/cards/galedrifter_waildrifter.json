@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ba88575a-4b9a-40cd-abbc-4539912c9455",
+  "name": "Galedrifter // Waildrifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galedrifter",
+      "oracle_fingerprint": "b393bbf7bc75b8d17dfd558ac458e204",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Disturb": "{4}{U}" } }]
+    },
+    {
+      "name": "Waildrifter",
+      "oracle_fingerprint": "dec5a52045a00236b0340498321e51e2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

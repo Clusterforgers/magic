@@ -1,0 +1,41 @@
+{
+  "oracle_id": "236ce592-1321-4a7c-b695-fd84496f8924",
+  "name": "Fear of Missing Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of Missing Out",
+      "oracle_fingerprint": "f3ac059e5f0179da2b55cc104235b794",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Discard": {} }, { "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+                "nth": 1
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

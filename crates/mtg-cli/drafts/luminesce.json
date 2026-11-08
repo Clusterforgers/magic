@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7b0f482d-35a3-47f1-8283-0fd47e30cc31",
+  "name": "Luminesce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luminesce",
+      "oracle_fingerprint": "63d276ea77fee77d9226648b4b3bcb6b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [{ "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }]
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

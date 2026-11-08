@@ -28,18 +28,22 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let [
         Effect::Modal {
             choose,
+            who: crate::refs::Ref::You,
             repeat: false,
             at_random: false,
+            different_players: false,
             once_each_turn: false,
             once_ever: false,
             all_if: None,
+            mode_costs,
+            extra_mode_cost: None,
             modes,
         },
     ] = ability.effects()
     else {
         return;
     };
-    if !choose.is_one() || modes.len() < 2 {
+    if !choose.is_one() || !mode_costs.is_empty() || modes.len() < 2 {
         return;
     }
     let mut words = Vec::new();

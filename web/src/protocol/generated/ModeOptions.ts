@@ -30,4 +30,9 @@ repeat: boolean,
  * Whether the cast or activation may still be backed out of: nothing is logged until it is paid for. A triggered
  * ability that chooses its modes as it goes on the stack cannot (CR 603.3c).
  */
-can_cancel: boolean, };
+can_cancel: boolean, 
+/**
+ * The modes in the order the cheapest are paid first, as many as can be paid for together; empty when no mode has a
+ * cost. The first `min` are a set the player can afford, which an automatic answer takes.
+ */
+cheapest?: Array<number>, };

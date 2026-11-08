@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d66f7ee7-e9a1-4714-b79c-8c86c6b6d5dc",
+  "name": "Macabre Mockery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Macabre Mockery",
+      "oracle_fingerprint": "3161dfa21c364d1893aa71ff14fe7efc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "pumped" } },
+                              "filter": [{ "Is": { "Bound": "pumped" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "pumped" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

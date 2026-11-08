@@ -17,6 +17,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
         Effect::Destroy {
             what: Ref::Bound(left),
             regenerate: true,
+            ..
         },
         ..,
     ] = effects

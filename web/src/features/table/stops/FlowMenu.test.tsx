@@ -1,9 +1,10 @@
-// Goal: the Full Control menu ends with the pace settings: "End my turn by hand" shows what the server holds and asks for the other value, the auto choices show what the server holds and ask for the one toggled, and the pinned stops are saved as the default of new games or reset, with the count in words.
+// Goal: the Full Control menu ends with the pace settings: "End my turn by hand" shows what the server holds and asks for the other value, the auto choices show what the server holds and ask for the one toggled, the abilities the seat always yields to are listed and a click takes one back, and the pinned stops are saved as the default of new games or reset, with the count in words.
 import { screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flowPrefs, resetFlowPrefs, saveDefaultStops } from '@/play/flowPrefs'
 import type { PlayState } from '@/play/store'
-import type { AutoChoices, Stop } from '@/protocol/generated'
+import type { AutoChoices, AutoYield, Stop } from '@/protocol/generated'
+import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 
 const trigger = (): HTMLElement => screen.getByRole('button', { name: 'Full Control options' })
@@ -63,6 +64,39 @@ describe('auto choices', () => {
     expect(item).toHaveAttribute('aria-checked', String(on))
     await user.click(item)
     expect(setAutoChoices).toHaveBeenCalledExactlyOnceWith(asked)
+  })
+})
+
+describe('always yielding to', () => {
+  const warden: AutoYield = {
+    name: 'Soul Warden',
+    text: 'Whenever another creature enters, you gain 1 life.',
+  }
+  const ornithopter: AutoYield = { name: 'Ornithopter', text: '' }
+
+  it('lists nothing while the seat yields to no ability', async () => {
+    const { user } = renderTable({ state: withState({ autoYields: [] }) })
+    await user.click(trigger())
+    await screen.findByRole('menuitemcheckbox', { name: /End my turn by hand/ })
+    expect(screen.queryByText('Always yielding to')).toBeNull()
+  })
+
+  it.each([
+    [[warden], 0, 'Stop yielding to Soul Warden: Whenever another creature enters, you gain 1 life.'],
+    [[warden, ornithopter], 1, 'Stop yielding to Ornithopter'],
+  ] as const)('lists %o and a click on item %i (%s) takes that one back', async (held, at, name) => {
+    const clearAutoYield = vi.fn((_ability: AutoYield) => true)
+    const { user } = renderTable({
+      session: { clearAutoYield },
+      state: withState({ autoYields: [...held] }),
+    })
+    await user.click(trigger())
+    expect(await screen.findByText('Always yielding to')).toBeInTheDocument()
+    const items = screen.getAllByRole('menuitem', { name: /^Stop yielding to/ })
+    expect(items).toHaveLength(held.length)
+    expect(items[at]).toHaveAccessibleName(name)
+    await user.click(must(items[at]))
+    expect(clearAutoYield).toHaveBeenCalledExactlyOnceWith(held[at])
   })
 })
 

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "382b7873-e78d-473b-8346-d92d16e8f634",
+  "name": "Tooth and Nail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tooth and Nail",
+      "oracle_fingerprint": "9b58c80cce31eaa2497c865e946b70c6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Creature" }],
+                            "count": { "min": 0, "max": 2 },
+                            "reveal": true,
+                            "as": "found"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "In": "Hand" },
+                                { "OwnedBy": "You" }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 2 },
+                            "as": "picked2"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{2}" } }
+      ]
+    }
+  ]
+}

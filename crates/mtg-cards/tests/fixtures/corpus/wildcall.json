@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "065fc4d8-c097-4d0e-81cf-22a0b694be9a",
+  "oracle_id": "d96ac790-428b-4a64-8dbd-6baa73eb6210",
+  "multiverse_ids": [
+    391960
+  ],
+  "mtgo_id": 55408,
+  "mtgo_foil_id": 55409,
+  "tcgplayer_id": 95320,
+  "cardmarket_id": 271539,
+  "name": "Wildcall",
+  "lang": "en",
+  "released_at": "2015-01-23",
+  "uri": "https://api.scryfall.com/cards/065fc4d8-c097-4d0e-81cf-22a0b694be9a",
+  "scryfall_uri": "https://scryfall.com/card/frf/146/wildcall?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:31:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.jpg?1783938675",
+    "normal": "https://cards.scryfall.io/normal/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.jpg?1783938675",
+    "large": "https://cards.scryfall.io/large/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.jpg?1783938675",
+    "png": "https://cards.scryfall.io/png/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.png?1783938675",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.jpg?1783938675",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.jpg?1783938675",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.webp?1783938675",
+    "grid": "https://cards.scryfall.io/grid/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.webp?1783938675",
+    "display": "https://cards.scryfall.io/display/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.webp?1783938675",
+    "art": "https://cards.scryfall.io/art/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.webp?1783938675",
+    "crop": "https://cards.scryfall.io/crop/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.webp?1783938675",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/6/065fc4d8-c097-4d0e-81cf-22a0b694be9a.jpg?1783938675"
+  },
+  "mana_cost": "{X}{G}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Manifest the top card of your library, then put X +1/+1 counters on it. (To manifest a card, put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Manifest"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "065fc4d8-c097-4d0e-81cf-22a0b694be9a",
+      "component": "combo_piece",
+      "name": "Wildcall",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/065fc4d8-c097-4d0e-81cf-22a0b694be9a"
+    },
+    {
+      "object": "related_card",
+      "id": "e9f896d4-34b4-407d-be7e-bf7a69aaf811",
+      "component": "combo_piece",
+      "name": "Manifest",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/e9f896d4-34b4-407d-be7e-bf7a69aaf811"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7bb5cb2b-081a-4c8c-b7e1-494046e6baa1",
+  "set": "frf",
+  "set_name": "Fate Reforged",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/7bb5cb2b-081a-4c8c-b7e1-494046e6baa1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afrf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/frf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/065fc4d8-c097-4d0e-81cf-22a0b694be9a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad96ac790-428b-4a64-8dbd-6baa73eb6210&unique=prints",
+  "collector_number": "146",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "A howl on the wind hides many dangers.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Adam Paquette",
+  "artist_ids": [
+    "89023dad-e6c0-41e0-83fb-eb2bfbbdc3f2"
+  ],
+  "illustration_id": "84eb61a8-fc15-4af6-97ca-25d00f59c2e4",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20806,
+  "penny_rank": 15453,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.49",
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": "0.31",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=391960&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWildcall",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWildcall",
+    "edhrec": "https://edhrec.com/route/?cc=Wildcall"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F95320%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=271539&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/55408?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "oracle_id": "11d74dc2-8c11-4d4b-b727-8216d2eb6b4e",
+  "name": "The Super Hero Civil War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Super Hero Civil War",
+      "oracle_fingerprint": "8e5aed21ca3d6d494579f95b2c1e33f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }] },
+                    "rule": { "TotalManaValueAtMost": 6 }
+                  }
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

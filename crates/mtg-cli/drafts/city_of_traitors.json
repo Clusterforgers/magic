@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f161111d-9747-47b3-bb10-3c8bded32e21",
+  "name": "City of Traitors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "City of Traitors",
+      "oracle_fingerprint": "a8ec1174c4f0b917f2e193eb4c12ac44",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PlayedLand",
+                "what": [{ "Type": "Land" }, "Other", { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

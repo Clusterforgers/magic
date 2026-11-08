@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f444a0f8-32d8-4748-af58-51a1a8ed72b4",
+  "name": "Phyrexian Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Infiltrator",
+      "oracle_fingerprint": "8a27b3ff340270a61b7f645c68a27403",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{U}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ExchangeControl": { "what": ["This", { "Target": 0 }], "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d767463b-0fc9-43fc-a85f-e60f030f9b96",
+  "name": "Flamecache Gecko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamecache Gecko",
+      "oracle_fingerprint": "e0a9cdb94deec4869f212105c2b5d75f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, { "Discard": {} }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

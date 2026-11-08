@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b401179f-eded-4973-8182-df4627133886",
+  "name": "Persuasive Interrogators",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Persuasive Interrogators",
+      "oracle_fingerprint": "45c1b91bb4694deffa7f8d4adbd73e77",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }], "by": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "poison", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

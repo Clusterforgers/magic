@@ -1,0 +1,27 @@
+{
+  "oracle_id": "66412a7a-4ec0-41f0-80ad-eb483213ff81",
+  "name": "Maraleaf Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maraleaf Rider",
+      "oracle_fingerprint": "dcd6f261f2edaa9ad2a316b7dbd149e8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

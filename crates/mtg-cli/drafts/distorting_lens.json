@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9c9579c5-7edf-41ca-8595-713ca9245576",
+  "name": "Distorting Lens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Distorting Lens",
+      "oracle_fingerprint": "aa6daf9d223f7f244bdb2454cfa9953b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

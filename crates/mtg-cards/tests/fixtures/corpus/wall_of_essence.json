@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "94b05805-e2af-4048-b7c7-1dbd188ba0f6",
+  "oracle_id": "1374ac18-01bd-452f-af72-a5f96285ed69",
+  "multiverse_ids": [
+    397439
+  ],
+  "mtgo_id": 56870,
+  "mtgo_foil_id": 56871,
+  "name": "Wall of Essence",
+  "lang": "en",
+  "released_at": "2015-05-06",
+  "uri": "https://api.scryfall.com/cards/94b05805-e2af-4048-b7c7-1dbd188ba0f6",
+  "scryfall_uri": "https://scryfall.com/card/tpr/38/wall-of-essence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:28:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.jpg?1783938501",
+    "normal": "https://cards.scryfall.io/normal/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.jpg?1783938501",
+    "large": "https://cards.scryfall.io/large/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.jpg?1783938501",
+    "png": "https://cards.scryfall.io/png/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.png?1783938501",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.jpg?1783938501",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.jpg?1783938501",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.webp?1783938501",
+    "grid": "https://cards.scryfall.io/grid/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.webp?1783938501",
+    "display": "https://cards.scryfall.io/display/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.webp?1783938501",
+    "art": "https://cards.scryfall.io/art/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.webp?1783938501",
+    "crop": "https://cards.scryfall.io/crop/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.webp?1783938501",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/4/94b05805-e2af-4048-b7c7-1dbd188ba0f6.jpg?1783938501"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Wall",
+  "oracle_text": "Defender (This creature can't attack.)\nWhenever this creature is dealt combat damage, you gain that much life.",
+  "power": "0",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Defender"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41b3e002-ab58-46a0-8024-056ee843e267",
+  "set": "tpr",
+  "set_name": "Tempest Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41b3e002-ab58-46a0-8024-056ee843e267",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atpr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tpr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/94b05805-e2af-4048-b7c7-1dbd188ba0f6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1374ac18-01bd-452f-af72-a5f96285ed69&unique=prints",
+  "collector_number": "38",
+  "digital": true,
+  "rarity": "uncommon",
+  "flavor_text": "The ceiling and the floor fell in love, but only the wall knew.\n—Dal saying",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Adam Rex",
+  "artist_ids": [
+    "445bd2fb-4a70-4599-87a4-83cf5979fc56"
+  ],
+  "illustration_id": "2e457976-2c63-49db-9795-6245be11cdd5",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12335,
+  "penny_rank": 8392,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397439&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWall%2Bof%2BEssence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWall%2Bof%2BEssence",
+    "edhrec": "https://edhrec.com/route/?cc=Wall+of+Essence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DWall%2Bof%2BEssence%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Wall+of+Essence&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56870?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

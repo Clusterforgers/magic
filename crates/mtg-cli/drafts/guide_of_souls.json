@@ -1,7 +1,7 @@
 {
   "oracle_id": "b304ac72-7f40-40de-b8d6-6392909b6029",
   "name": "Guide of Souls",
-  "impl_status": "Full",
+  "impl_status": "Partial",
   "faces": [
     {
       "name": "Guide of Souls",
@@ -11,30 +11,20 @@
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [
-                  { "Type": "Creature" },
-                  { "ControlledBy": "You" },
-                  { "Not": { "Is": "This" } }
-                ],
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
                 "to": "Battlefield"
               }
             },
             "effects": [
               { "GainLife": { "amount": 1 } },
-              { "PutCounters": { "on": "You", "counter": "+1/+1" } }
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }
             ]
           }
         },
         {
-          "Triggered": {
-            "when": { "Attacks": { "what": [{ "Type": "Creature" }] } },
-            "targets": [
-              { "what": { "Object": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] } }
-            ],
-            "effects": [
-              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
-              { "AddPhase": { "phases": ["Combat"] } }
-            ]
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 277 }
           }
         }
       ]

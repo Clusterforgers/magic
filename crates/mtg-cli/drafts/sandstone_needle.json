@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c8e0a1a5-8188-4677-9d8a-a18eb593343a",
+  "name": "Sandstone Needle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandstone Needle",
+      "oracle_fingerprint": "e1b08be8e5ff57e2c2440dc0047f0f0b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": { "Other": "depletion" }, "count": 2, "tapped": true }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "depletion" } } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": ["This", { "Not": { "HasCounter": { "Other": "depletion" } } }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

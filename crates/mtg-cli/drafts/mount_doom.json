@@ -1,0 +1,52 @@
+{
+  "oracle_id": "995c8dac-fd27-468a-abd4-02372cf0c850",
+  "name": "Mount Doom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mount Doom",
+      "oracle_fingerprint": "25c60021f34ceb495cf987acb137fcff",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}{R}" }, "Tap"],
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{B}{R}" },
+              "Tap",
+              "SacrificeSelf",
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }, { "Supertype": "Legendary" }] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }] },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "card"
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "card" } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

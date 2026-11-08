@@ -1,0 +1,49 @@
+{
+  "oracle_id": "88929373-b2c8-4a81-a809-fed87fd5b0d7",
+  "name": "Dandân",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dandân",
+      "oracle_fingerprint": "7b6ef0cc6d9c2d0b52982c546fc3f7ae",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

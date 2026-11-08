@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cceba6f3-b1c0-45ee-826c-b871d24c7208",
+  "name": "General's Regalia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "General's Regalia",
+      "oracle_fingerprint": "ced63b1e4b5dbad19d0f89d5efd70768",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": { "Redirect": { "to": { "Target": 0 }, "next": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

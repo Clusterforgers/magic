@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8593e899-8e6f-4d40-96ab-98788b3d9486",
+  "name": "Burning-Tree Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning-Tree Shaman",
+      "oracle_fingerprint": "68958f6fdd22f87f7a463a6fa1b67a18",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Activated" } },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

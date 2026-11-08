@@ -1,0 +1,14 @@
+{
+  "oracle_id": "c05c2eae-1a9c-4ce7-9c76-22e40781c1a9",
+  "name": "Raging Kronch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raging Kronch",
+      "oracle_fingerprint": "b9522c1e5f22c555f81306b8cf241dda",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } }
+      ]
+    }
+  ]
+}

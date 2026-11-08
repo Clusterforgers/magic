@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8a1e8435-16f2-475b-a8a9-7b9f0cf4594a",
+  "name": "Gerrard, Weatherlight Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gerrard, Weatherlight Hero",
+      "oracle_fingerprint": "7a0506a8c850b3b28e435308e20aa4bc",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "OwnedBy": "You" },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

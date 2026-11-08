@@ -1,0 +1,83 @@
+{
+  "oracle_id": "6dbd0764-4bfe-4a58-905d-aeee70ceb798",
+  "name": "Vivien's Grizzly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivien's Grizzly",
+      "oracle_fingerprint": "30dcd77c13a1a52b567f037a71323458",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                      ],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                        },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

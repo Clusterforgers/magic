@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d95cd013-6f32-4a8b-9c46-a28695eea4f1",
+  "name": "Elder Arthur Maxson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elder Arthur Maxson",
+      "oracle_fingerprint": "eaa2f7512aab2e9d82232f3d0dd900f1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "training", "amount": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

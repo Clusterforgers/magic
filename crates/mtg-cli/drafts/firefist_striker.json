@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a017ab43-7d73-441a-8931-2a038306083f",
+  "name": "Firefist Striker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firefist Striker",
+      "oracle_fingerprint": "0b14afbc60674e51d3912b7c0c167be6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

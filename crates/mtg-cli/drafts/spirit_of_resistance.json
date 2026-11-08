@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b075b645-2e5a-4d91-9440-02db4e6f5d08",
+  "name": "Spirit of Resistance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit of Resistance",
+      "oracle_fingerprint": "8298601afb10d973d35aaaeb8adbb1e5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": "Prevent",
+            "condition": {
+              "Compare": {
+                "left": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } },
+                "op": "Eq",
+                "right": 5
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

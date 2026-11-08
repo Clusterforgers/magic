@@ -1,0 +1,34 @@
+{
+  "oracle_id": "73b8adea-1786-44fc-b190-bf240b07f5b6",
+  "name": "Cryptic Coat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptic Coat",
+      "oracle_fingerprint": "1a809a874450d58641fbd1219d18e6fd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Cloak": { "as": "cloak" } },
+              { "Attach": { "what": "This", "to": { "Bound": "cloak" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, "CantBeBlocked"]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "19ea326f-45ff-4bc0-a957-7d3f22dd8c6f",
+  "name": "Flicker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flicker",
+      "oracle_fingerprint": "51f83ddcb4cb50c5c1af29ca459b72ee",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": "Token" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

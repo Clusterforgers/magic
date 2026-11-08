@@ -1,0 +1,28 @@
+{
+  "oracle_id": "00e6808c-1f9e-4b6a-807c-83f433b81a41",
+  "name": "Krovikan Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krovikan Sorcerer",
+      "oracle_fingerprint": "cd014804126c0548ac2c7b58a6fb8ecd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Discard": { "filter": [{ "Not": { "Color": "Black" } }] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Discard": { "filter": [{ "Color": "Black" }] } }],
+            "effects": [
+              { "Draw": { "count": 2, "as": "drawn" } },
+              { "Discard": { "filter": [{ "Is": { "Bound": "drawn" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

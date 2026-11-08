@@ -1,0 +1,21 @@
+{
+  "oracle_id": "50608b7e-b6b2-40ca-91ec-db3e03dbb1af",
+  "name": "Spark Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spark Elemental",
+      "oracle_fingerprint": "f6da02dadebe048d06c3ff307a2209f7",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

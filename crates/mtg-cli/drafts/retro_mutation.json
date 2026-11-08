@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d8b5de6d-8654-4550-bccb-79de6cbef4d5",
+  "name": "Retro-Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retro-Mutation",
+      "oracle_fingerprint": "55c8d1b1ce9c6d5162f62e65cc616bfe",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              "CantAttack",
+              { "SetPT": { "power": 0, "toughness": 1 } },
+              "LoseAbilities",
+              { "SetCreatureTypes": ["Turtle"] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

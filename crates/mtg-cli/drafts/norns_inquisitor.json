@@ -1,0 +1,34 @@
+{
+  "oracle_id": "89a59a6d-e9d4-405c-8518-4da86dae30d1",
+  "name": "Norn's Inquisitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norn's Inquisitor",
+      "oracle_fingerprint": "049d6690e05ec9cd611d03de4d68420d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Incubate": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Transformed",
+                "what": [
+                  { "Subtype": "Phyrexian" },
+                  { "ControlledBy": "You" },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

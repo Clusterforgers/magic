@@ -1,0 +1,81 @@
+{
+  "oracle_id": "c8f827d7-4740-43c8-b494-c9e0479e0bf7",
+  "name": "Neriv, Crackling Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neriv, Crackling Vanguard",
+      "oracle_fingerprint": "748bd071f4a0e50074b9a3df68612e3f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "ExileTop": {
+                  "count": {
+                    "Distinct": { "of": [{ "ControlledBy": "You" }, "Token"], "stat": "Name" }
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "when": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Attacked",
+                              "who": "EachPlayer",
+                              "filter": [
+                                { "Type": "Creature" },
+                                "Commander",
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

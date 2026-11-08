@@ -1,0 +1,16 @@
+{
+  "oracle_id": "0be1ace3-2b3d-4465-b63a-be523f73df36",
+  "name": "Breaker of Armies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breaker of Armies",
+      "oracle_fingerprint": "d086d94bff869ad621ee566034e4e5a7",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        }
+      ]
+    }
+  ]
+}

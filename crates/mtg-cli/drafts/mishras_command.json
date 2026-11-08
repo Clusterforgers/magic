@@ -1,0 +1,82 @@
+{
+  "oracle_id": "25434ea3-bcfa-4dae-a16e-10ab87ce32af",
+  "name": "Mishra's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra's Command",
+      "oracle_fingerprint": "e36aabccc924d902ecaf5654f3a5ee94",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "count": "X",
+                            "optional": true,
+                            "as": "discarded"
+                          }
+                        },
+                        {
+                          "Draw": {
+                            "who": { "Target": 0 },
+                            "count": {
+                              "Count": [
+                                { "Is": { "Bound": "discarded" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Planeswalker" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": "X", "toughness": 0 } },
+                              { "AddKeyword": "Haste" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

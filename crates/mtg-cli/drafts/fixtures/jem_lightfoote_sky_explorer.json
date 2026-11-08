@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "e24fe6dc-662a-4abc-ad60-a1959b2be006",
+  "oracle_id": "5802aa98-a9b7-4b0d-9d7c-c3938701870d",
+  "multiverse_ids": [
+    655150
+  ],
+  "mtgo_id": 124329,
+  "arena_id": 90555,
+  "tcgplayer_id": 544697,
+  "cardmarket_id": 764053,
+  "name": "Jem Lightfoote, Sky Explorer",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/e24fe6dc-662a-4abc-ad60-a1959b2be006",
+  "scryfall_uri": "https://scryfall.com/card/otj/209/jem-lightfoote-sky-explorer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:03:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.jpg?1783911794",
+    "normal": "https://cards.scryfall.io/normal/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.jpg?1783911794",
+    "large": "https://cards.scryfall.io/large/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.jpg?1783911794",
+    "png": "https://cards.scryfall.io/png/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.png?1783911794",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.jpg?1783911794",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.jpg?1783911794",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.webp?1783911794",
+    "grid": "https://cards.scryfall.io/grid/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.webp?1783911794",
+    "display": "https://cards.scryfall.io/display/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.webp?1783911794",
+    "art": "https://cards.scryfall.io/art/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.webp?1783911794",
+    "crop": "https://cards.scryfall.io/crop/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.webp?1783911794",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/2/e24fe6dc-662a-4abc-ad60-a1959b2be006.jpg?1783911794"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Scout",
+  "oracle_text": "Flying, vigilance\nAt the beginning of your end step, if you haven't cast a spell from your hand this turn, draw a card.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "otj",
+  "set_name": "Outlaws of Thunder Junction",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e24fe6dc-662a-4abc-ad60-a1959b2be006/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5802aa98-a9b7-4b0d-9d7c-c3938701870d&unique=prints",
+  "collector_number": "209",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The nomadic Atiin rarely settle anywhere for more than a few seasons, but Jem never lets that stop her from seeing every last corner.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Darren Tan",
+  "artist_ids": [
+    "14c7f83c-d0fb-43f0-90f3-703f910f8bb9"
+  ],
+  "illustration_id": "5cc03d27-a73d-4c65-808d-43022d244727",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21205,
+  "preview": {
+    "source": "ComicBook.com",
+    "source_uri": "https://comicbook.com/gaming/news/magic-the-gathering-outlaws-thunder-junction-card-spoilers/",
+    "previewed_at": "2024-03-30"
+  },
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.21",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.07",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=655150&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJem%2BLightfoote%252C%2BSky%2BExplorer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJem%2BLightfoote%252C%2BSky%2BExplorer",
+    "edhrec": "https://edhrec.com/route/?cc=Jem+Lightfoote%2C+Sky+Explorer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F544697%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764053&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124329?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

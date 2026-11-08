@@ -1,0 +1,21 @@
+{
+  "oracle_id": "c025d558-aae8-4146-923b-a98035025a42",
+  "name": "Apex Hawks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apex Hawks",
+      "oracle_fingerprint": "b17d0da618c1a2be6e49d3c0eaba7d2c",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{1}{W}" } },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "Kicks" } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -10,9 +10,15 @@
         {
           "Activated": {
             "cost": "{1}{W}",
+            "from": "Graveyard",
             "effects": [
               { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } },
-              { "Move": { "what": "This", "to": "Graveyard" } }
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
             ]
           }
         }

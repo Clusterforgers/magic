@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc",
+  "oracle_id": "8a397a64-542f-43fb-bf54-27ac651e1819",
+  "multiverse_ids": [
+    282600
+  ],
+  "mtgo_id": 43654,
+  "mtgo_foil_id": 43655,
+  "tcgplayer_id": 58072,
+  "cardmarket_id": 253551,
+  "name": "Coral Fighters",
+  "lang": "en",
+  "released_at": "2012-03-30",
+  "uri": "https://api.scryfall.com/cards/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc",
+  "scryfall_uri": "https://scryfall.com/card/ddi/4/coral-fighters?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:06:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.jpg?1783940784",
+    "normal": "https://cards.scryfall.io/normal/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.jpg?1783940784",
+    "large": "https://cards.scryfall.io/large/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.jpg?1783940784",
+    "png": "https://cards.scryfall.io/png/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.png?1783940784",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.jpg?1783940784",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.jpg?1783940784",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.webp?1783940784",
+    "grid": "https://cards.scryfall.io/grid/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.webp?1783940784",
+    "display": "https://cards.scryfall.io/display/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.webp?1783940784",
+    "art": "https://cards.scryfall.io/art/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.webp?1783940784",
+    "crop": "https://cards.scryfall.io/crop/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.webp?1783940784",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/f/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc.jpg?1783940784"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Merfolk Soldier",
+  "oracle_text": "Whenever this creature attacks and isn't blocked, look at the top card of defending player's library. You may put that card on the bottom of that player's library.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a29e8ace-bbcd-4507-b159-7ec77d28f792",
+  "set": "ddi",
+  "set_name": "Duel Decks: Venser vs. Koth",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/a29e8ace-bbcd-4507-b159-7ec77d28f792",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4f6e1cf2-1c0e-4b9b-9687-dd02ac019fbc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8a397a64-542f-43fb-bf54-27ac651e1819&unique=prints",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steve Luke",
+  "artist_ids": [
+    "e2b0133e-a28d-45d1-8843-26285b41d61d"
+  ],
+  "illustration_id": "fa2dd37e-7830-4ea3-baa0-935e20728405",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 27890,
+  "penny_rank": 16864,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=282600&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCoral%2BFighters",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCoral%2BFighters",
+    "edhrec": "https://edhrec.com/route/?cc=Coral+Fighters"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F58072%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=253551&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/43654?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

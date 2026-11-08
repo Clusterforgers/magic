@@ -1,0 +1,87 @@
+{
+  "oracle_id": "dfc8b8de-be1d-4f7f-bb21-4761a0e7db4e",
+  "name": "Sandbenders' Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandbenders' Storm",
+      "oracle_fingerprint": "e99928660314b0b20c66fe32acb43164",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "AddType": "Creature" },
+                              { "SetPT": { "power": 0, "toughness": 0 } },
+                              { "AddKeyword": "Haste" }
+                            ],
+                            "duration": "Forever"
+                          }
+                        },
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "AnyOf": [
+                                {
+                                  "ZoneChange": {
+                                    "what": [{ "Is": { "Target": 0 } }],
+                                    "from": "Battlefield",
+                                    "to": "Graveyard"
+                                  }
+                                },
+                                {
+                                  "ZoneChange": {
+                                    "what": [{ "Is": { "Target": 0 } }],
+                                    "from": "Battlefield",
+                                    "to": "Exile"
+                                  }
+                                }
+                              ]
+                            },
+                            "effects": [
+                              {
+                                "Move": {
+                                  "what": "Triggering",
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

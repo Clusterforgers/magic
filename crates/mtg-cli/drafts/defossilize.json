@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d620de15-8141-4877-9330-8328a3fa85e1",
+  "name": "Defossilize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defossilize",
+      "oracle_fingerprint": "2855bba43049b751ca80b66e7e43f4e6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              { "Explore": { "what": { "Bound": "moved" } } },
+              { "Explore": { "what": { "Bound": "moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

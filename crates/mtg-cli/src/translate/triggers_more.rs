@@ -1,0 +1,248 @@
+//! More trigger modes: batches ("one or more"), mana, targeting, counters, life loss and the nth spell of a turn.
+
+use serde_json::{Value, json};
+
+use super::ctx::{Ctx, Tr, unmapped};
+use super::triggers::{keys, player_ref};
+use super::valid::selector_any;
+use crate::forge::script::Params;
+
+/// The pattern of a mode this module reads; `None` for any other mode.
+pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
+    Some(match mode {
+        "DamageDoneOnce" => damage(ctx, p, "DamageDoneOnce").map(|inner| batch(&inner)),
+        "ChangesZoneAll" => zone_changes(ctx, p).map(|inner| batch(&inner)),
+        "LifeLost" => life_lost(p),
+        "TapsForMana" => taps_for_mana(ctx, p),
+        "BecomesTarget" => becomes_target(ctx, p),
+        "CounterAdded" => counters(ctx, p, "CountersPut"),
+        "CounterRemoved" => counters(ctx, p, "CountersRemoved"),
+        _ => return None,
+    })
+}
+
+/// One or more events together trigger the ability once.
+pub(super) fn batch(inner: &Value) -> Value {
+    json!({ "Batch": inner })
+}
+
+/// The recipient of damage: a player word, the card itself, what it enchants or equips, or the objects a valid-string names.
+fn recipient(ctx: &Ctx, valid: &str) -> Tr<Value> {
+    Ok(match valid {
+        "Player" | "You" | "Opponent" => super::triggers::player_ref(Some(valid))?,
+        word if word.starts_with("Player.") => super::triggers::player_ref(Some(word))?,
+        "Card.Self" | "Creature.Self" => json!("This"),
+        "Card.AttachedBy" | "Creature.AttachedBy" | "Card.EnchantedBy" | "Creature.EnchantedBy" => {
+            json!("Attached")
+        }
+        other => json!({"Each": selector_any(ctx, other)?}),
+    })
+}
+
+/// Whether the trigger's description and the Oracle text both name an opponent as the player dealt damage, and the Oracle
+/// text names no player so (a description can keep an older wording: Deepfathom Skulker's says "an opponent").
+fn to_an_opponent(description: Option<&str>, oracle: &str) -> bool {
+    let opponent = |text: &str| {
+        let text = text.to_lowercase();
+        let named = [
+            "damage to an opponent",
+            "an opponent is dealt",
+            "damage to one or more opponents",
+        ]
+        .iter()
+        .any(|words| text.contains(words));
+        named && !text.contains("damage to a player") && !text.contains("a player is dealt")
+    };
+    opponent(description.unwrap_or_default()) && opponent(oracle)
+}
+
+/// Whether the trigger text and the card text say "to a player" and the trigger text names no opponent.
+fn to_a_player(description: Option<&str>, oracle: &str) -> bool {
+    let player = |text: &str| {
+        let text = text.to_lowercase();
+        text.contains("damage to a player") || text.contains("a player is dealt")
+    };
+    let description = description.unwrap_or_default();
+    player(description) && !description.to_lowercase().contains("opponent") && player(oracle)
+}
+
+/// `DamageDone` and `DamageDoneOnce`: a source deals damage to a recipient.
+pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
+    keys(
+        p,
+        mode,
+        &[
+            "ValidSource",
+            "ValidTarget",
+            "CombatDamage",
+            "TriggerController",
+        ],
+    )?;
+    // The controller of the source is the controller of the ability only for the card itself.
+    if let Some(word) = p.get("TriggerController")
+        && (word != "TriggeredSourceController" || p.get("ValidSource") != Some("Card.Self"))
+    {
+        return unmapped(format!("key:Trigger.{mode}.TriggerController={word}"));
+    }
+    let source = super::valid::source_any(ctx, p.get("ValidSource").unwrap_or("Card"))?;
+    let mut pattern = json!({ "source": source });
+    match p.get("CombatDamage") {
+        None => {}
+        Some("True") => pattern["combat"] = json!(true),
+        Some("False") => pattern["combat"] = json!(false),
+        Some(other) => return unmapped(format!("key:Trigger.{mode}.CombatDamage={other}")),
+    }
+    let Some(target) = p.get("ValidTarget") else {
+        return Ok(json!({ "DealsDamage": pattern }));
+    };
+    // "To a player or a planeswalker": one pattern for each recipient, any of which triggers.
+    let recipients: Vec<&str> = target.split(',').collect();
+    if let [only] = recipients.as_slice() {
+        // Some scripts write `Player` where the text says "to an opponent" (Kediss, Emberclaw Familiar).
+        let only = if *only == "Player" && to_an_opponent(p.get("TriggerDescription"), ctx.oracle) {
+            "Opponent"
+        } else if *only == "Player.Opponent" && to_a_player(p.get("TriggerDescription"), ctx.oracle)
+        {
+            // And `Player.Opponent` where the text says "to a player" (Broodbirth Viper).
+            "Player"
+        } else {
+            only
+        };
+        pattern["to"] = recipient(ctx, only)?;
+        return Ok(json!({ "DealsDamage": pattern }));
+    }
+    if mode != "DamageDone" {
+        // Several kinds of permanent are one selector of alternatives; a player among them has no such selector.
+        let players =
+            |word: &&str| matches!(word.split('.').next(), Some("You" | "Player" | "Opponent"));
+        if recipients.iter().any(players) {
+            return unmapped("key:Trigger.DamageDoneOnce.ValidTarget-or");
+        }
+        pattern["to"] = json!({"Each": selector_any(ctx, target)?});
+        return Ok(json!({ "DealsDamage": pattern }));
+    }
+    let mut any = Vec::new();
+    for each in recipients {
+        let mut one = pattern.clone();
+        one["to"] = recipient(ctx, each)?;
+        any.push(json!({ "DealsDamage": one }));
+    }
+    Ok(json!({ "AnyOf": any }))
+}
+
+/// `ChangesZoneAll`: cards change zones together.
+fn zone_changes(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "ChangesZoneAll",
+        &["ValidCards", "Origin", "Destination"],
+    )?;
+    let what = selector_any(ctx, p.get("ValidCards").unwrap_or("Card"))?;
+    let mut pattern = json!({ "what": what });
+    for (key, field) in [("Origin", "from"), ("Destination", "to")] {
+        match p.get(key) {
+            None | Some("Any") => {}
+            Some(zone @ ("Battlefield" | "Graveyard" | "Hand" | "Library" | "Exile" | "Stack")) => {
+                pattern[field] = json!(zone);
+            }
+            Some(other) => return unmapped(format!("zone:Trigger.{key}={other}")),
+        }
+    }
+    Ok(json!({ "ZoneChange": pattern }))
+}
+
+fn life_lost(p: &Params) -> Tr<Value> {
+    keys(p, "LifeLost", &["ValidPlayer", "FirstTime"])?;
+    let who = player_ref(p.get("ValidPlayer"))?;
+    super::triggers::first_time(p, json!({"LifeLost": {"who": who}}))
+}
+
+fn taps_for_mana(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "TapsForMana", &["ValidCard", "Activator", "Static"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Permanent"))?;
+    let by = match p.get("Activator") {
+        None => "EachPlayer",
+        Some("You") => "You",
+        Some("Opponent" | "Player.Opponent") => "Opponents",
+        Some(other) => return unmapped(format!("key:Trigger.TapsForMana.Activator={other}")),
+    };
+    Ok(json!({"TappedForMana": {"what": what, "by": by}}))
+}
+
+fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "BecomesTarget",
+        &["ValidTarget", "ValidSource", "FirstTime", "Valiant"],
+    )?;
+    // The pattern holds objects: a player that becomes a target is another event.
+    if p.get("ValidTarget").is_some_and(|valid| {
+        valid.split(',').any(|word| {
+            let head = word.split('.').next().unwrap_or_default();
+            matches!(head, "You" | "Player" | "Opponent")
+        })
+    }) {
+        return unmapped("trigger:BecomesTarget-a-player");
+    }
+    let what = selector_any(ctx, p.get("ValidTarget").unwrap_or("Card"))?;
+    let by = match p.get("ValidSource") {
+        Some(valid) => super::valid::source_any(ctx, valid)?,
+        None => Vec::new(),
+    };
+    // The engine counts a turn's targetings of the object for the controller of the source when the pattern names one
+    // ("a spell or ability you control"), and for every source when it names none; any other source word cannot ask for
+    // the first.
+    let mine = by.len() == 2
+        && by.contains(&json!({"ControlledBy": "You"}))
+        && by
+            .iter()
+            .any(|pred| pred.get("AnyOf").is_some_and(only_what_targets));
+    let valiant = p.get("Valiant") == Some("True");
+    let counted = valiant || p.get("FirstTime") == Some("True");
+    if counted && !by.is_empty() && !mine {
+        return unmapped("key:Trigger.BecomesTarget.FirstTime-with-source");
+    }
+    // Only a spell or ability targets: the count names the source by its controller alone.
+    let by = if counted && mine {
+        vec![json!({"ControlledBy": "You"})]
+    } else {
+        by
+    };
+    let pattern = json!({"BecomesTarget": {"what": what, "by": by}});
+    if valiant {
+        return Ok(json!({"Nth": {"event": pattern, "nth": 1}}));
+    }
+    super::triggers::first_time(p, pattern)
+}
+
+/// Whether the alternatives are every kind of source that targets (a spell, an activated or a triggered ability).
+fn only_what_targets(alternatives: &Value) -> bool {
+    *alternatives == json!(["Spell", {"Ability": "Activated"}, {"Ability": "Triggered"}])
+}
+
+/// `CounterAdded` and `CounterRemoved` of the kind `CounterType$` names.
+pub(super) fn counters(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
+    keys(p, "Counter", &["ValidCard", "ValidObject", "CounterType"])?;
+    // `ValidObject$` is what a player puts counters on (`CounterPlayerAddedAll`).
+    let valid = p.get("ValidCard").or_else(|| p.get("ValidObject"));
+    let what = selector_any(ctx, valid.unwrap_or("Permanent"))?;
+    let mut pattern = json!({ "what": what });
+    if let Some(kind) = p.get("CounterType") {
+        let Some(kind) = super::amount::counter_kind(kind) else {
+            return unmapped("key:Trigger.Counter.CounterType");
+        };
+        pattern["counter"] = kind;
+    }
+    Ok(json!({ variant: pattern }))
+}
+
+/// The nth spell of a turn: `ActivatorThisTurnCast$ EQn`.
+pub fn nth_spell(p: &Params, pattern: Value) -> Tr<Value> {
+    match p.get("ActivatorThisTurnCast") {
+        None => Ok(pattern),
+        Some(word) => match word.strip_prefix("EQ").and_then(|n| n.parse::<u32>().ok()) {
+            Some(nth) => Ok(json!({"Nth": {"event": pattern, "nth": nth}})),
+            None => unmapped("key:Trigger.SpellCast.ActivatorThisTurnCast"),
+        },
+    }
+}

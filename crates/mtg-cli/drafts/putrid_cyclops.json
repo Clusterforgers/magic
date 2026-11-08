@@ -1,0 +1,65 @@
+{
+  "oracle_id": "8bcb0f45-902d-41d6-a10c-60bc27befd30",
+  "name": "Putrid Cyclops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Putrid Cyclops",
+      "oracle_fingerprint": "b1fe70a0e9917637be557574e780b9f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Scry": {} },
+              { "LookAtTop": { "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Total": {
+                                "of": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"],
+                                "stat": "ManaValue"
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Total": {
+                                "of": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"],
+                                "stat": "ManaValue"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

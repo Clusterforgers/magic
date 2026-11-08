@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b3f9da94-c822-49b8-a1fc-be82189206af",
+  "name": "Three Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Three Dreams",
+      "oracle_fingerprint": "72526892811f717ed6a57c53719704fd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Aura" }],
+                  "count": { "min": 0, "max": 3 },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

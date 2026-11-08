@@ -380,6 +380,67 @@ impl CardDefinition {
         self.types.contains(&ty)
     }
 
+    /// The names of the cards its abilities (and those of its faces) can conjure, each once.
+    pub fn conjured_names(&self) -> BTreeSet<String> {
+        fn walk(value: &serde_json::Value, names: &mut BTreeSet<String>) {
+            match value {
+                serde_json::Value::Object(map) => {
+                    if let Some(name) = map
+                        .get("Conjure")
+                        .and_then(|conjure| conjure.get("name"))
+                        .and_then(serde_json::Value::as_str)
+                    {
+                        names.insert(name.to_owned());
+                    }
+                    for inner in map.values() {
+                        walk(inner, names);
+                    }
+                }
+                serde_json::Value::Array(items) => {
+                    for inner in items {
+                        walk(inner, names);
+                    }
+                }
+                _ => {}
+            }
+        }
+        let mut names = BTreeSet::new();
+        if let Ok(value) = serde_json::to_value(self) {
+            walk(&value, &mut names);
+        }
+        names
+    }
+
+    /// The conditions its abilities (and those of its faces) ask "as you cast this spell" (`Condition::AsCast`), each once.
+    pub fn as_cast_conditions(&self) -> Vec<crate::value::Condition> {
+        fn walk(value: &serde_json::Value, found: &mut Vec<crate::value::Condition>) {
+            match value {
+                serde_json::Value::Object(map) => {
+                    if let Some(inner) = map.get("AsCast")
+                        && let Ok(condition) = serde_json::from_value(inner.clone())
+                        && !found.contains(&condition)
+                    {
+                        found.push(condition);
+                    }
+                    for inner in map.values() {
+                        walk(inner, found);
+                    }
+                }
+                serde_json::Value::Array(items) => {
+                    for inner in items {
+                        walk(inner, found);
+                    }
+                }
+                _ => {}
+            }
+        }
+        let mut found = Vec::new();
+        if let Ok(value) = serde_json::to_value(self) {
+            walk(&value, &mut found);
+        }
+        found
+    }
+
     /// Printed types as a compact set.
     pub fn type_set(&self) -> CardTypes {
         self.types.iter().copied().collect()
@@ -429,7 +490,7 @@ impl CardDefinition {
         values
     }
 
-    /// Applies one exception of a copy effect to these copiable values (CR 707.9b): types and subtypes, a supertype taken away, a
+    /// Applies one exception of a copy effect to these copiable values (CR 707.9b): types, subtypes and creature types, a supertype taken away, a
     /// keyword or an ability, colours, a fixed power and toughness. False, with nothing changed, for any other
     /// modification.
     pub fn except(&mut self, modification: &Modification) -> bool {
@@ -449,12 +510,28 @@ impl CardDefinition {
                     self.subtypes.retain(|subtype| !subtype.is_creature_type());
                 }
             }
+            // "except it's a Zombie": the creature types are these alone; the other subtypes stay (CR 205.1b).
+            Modification::SetCreatureTypes(types) => {
+                self.subtypes.retain(|subtype| !subtype.is_creature_type());
+                for subtype in types {
+                    if !self.subtypes.contains(subtype) {
+                        self.subtypes.push(subtype.clone());
+                    }
+                }
+            }
             Modification::RemoveSupertype(supertype) => {
                 self.supertypes.retain(|kept| kept != supertype);
             }
+            Modification::AddSupertype(supertype) => {
+                self.supertypes.insert(*supertype);
+            }
+            Modification::SetName(name) => self.name.clone_from(name),
             Modification::AddKeyword(keyword) => {
                 self.rules.push(Arc::new(Ability::Keyword(keyword.clone())));
             }
+            Modification::RemoveKeyword(keyword) => self
+                .rules
+                .retain(|rule| !matches!(&**rule, Ability::Keyword(had) if had == keyword)),
             Modification::GrantAbility(ability) => self.rules.push(Arc::clone(ability)),
             Modification::SetColors(colors) => {
                 self.color_indicator = Some(
@@ -484,6 +561,23 @@ mod tests {
 
     use crate::effect::Effect;
     use crate::refs::Ref;
+
+    #[test]
+    fn the_names_a_card_can_conjure_are_those_of_its_conjure_effects() {
+        let conjure = |name: &str| -> Effect {
+            serde_json::from_str(&format!(
+                r#"{{"Conjure":{{"name":"{name}","zone":"Hand"}}}}"#
+            ))
+            .unwrap()
+        };
+        let card = CardDefinition::new("Maker").with_rules(Ability::Spell {
+            targets: Vec::new(),
+            effects: vec![conjure("Ponder"), conjure("Ponder"), conjure("Mox Opal")],
+        });
+        let names: Vec<String> = card.conjured_names().into_iter().collect();
+        assert_eq!(names, ["Mox Opal", "Ponder"]);
+        assert!(CardDefinition::new("Bear").conjured_names().is_empty());
+    }
 
     #[rstest]
     #[case::tap_ability(
@@ -552,6 +646,7 @@ mod tests {
     #[rstest]
     #[case::legendary(Modification::RemoveSupertype(Supertype::Legendary), &[Supertype::Snow], &[CardType::Creature], true)]
     #[case::a_supertype_it_lacks(Modification::RemoveSupertype(Supertype::Basic), &[Supertype::Legendary, Supertype::Snow], &[CardType::Creature], true)]
+    #[case::legendary_added(Modification::AddSupertype(Supertype::Basic), &[Supertype::Basic, Supertype::Legendary, Supertype::Snow], &[CardType::Creature], true)]
     #[case::only_an_artifact(Modification::SetTypes(vec![CardType::Artifact]), &[Supertype::Legendary, Supertype::Snow], &[CardType::Artifact], false)]
     #[case::an_artifact_creature(Modification::SetTypes(vec![CardType::Artifact, CardType::Creature]), &[Supertype::Legendary, Supertype::Snow], &[CardType::Artifact, CardType::Creature], true)]
     fn the_exceptions_of_a_copy_take_a_supertype_away_and_set_the_types(
@@ -568,6 +663,23 @@ mod tests {
             values.subtypes.iter().any(|subtype| subtype.0 == "Elf"),
             keeps_the_elf
         );
+    }
+
+    #[rstest]
+    #[case::a_zombie(vec!["Zombie"], &["Equipment", "Zombie"])]
+    #[case::two_types(vec!["Zombie", "Wizard"], &["Equipment", "Zombie", "Wizard"])]
+    #[case::no_creature_type(vec![], &["Equipment"])]
+    #[case::the_type_it_has(vec!["Elf"], &["Equipment", "Elf"])]
+    fn g12b_an_exception_of_creature_types_replaces_only_the_creature_types(
+        #[case] set: Vec<&str>,
+        #[case] subtypes: &[&str],
+    ) {
+        let mut values = legendary_elf().with_subtype("Equipment");
+        let set = set.into_iter().map(|s| Subtype(s.into())).collect();
+        assert!(values.except(&Modification::SetCreatureTypes(set)));
+        let found: Vec<&str> = values.subtypes.iter().map(|s| s.0.as_str()).collect();
+        assert_eq!(found, subtypes);
+        assert!(values.types.contains(&CardType::Creature));
     }
 
     #[rstest]
@@ -682,6 +794,7 @@ mod tests {
             .with_rules(Ability::Spell {
                 targets: vec![],
                 effects: vec![Effect::Draw {
+                    bind: None,
                     who: Ref::You,
                     count: Amount::one(),
                 }],

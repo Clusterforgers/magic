@@ -1,0 +1,20 @@
+{
+  "oracle_id": "340d27c6-2e8e-472a-85f5-9b36d9cc3e42",
+  "name": "Mana Chains",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Chains",
+      "oracle_fingerprint": "8b60f40d0b33770d29b007d458f88f05",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "CumulativeUpkeep": "{1}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

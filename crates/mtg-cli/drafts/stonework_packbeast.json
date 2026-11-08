@@ -1,0 +1,28 @@
+{
+  "oracle_id": "782c47c5-b108-415c-9b70-a033ac52956f",
+  "name": "Stonework Packbeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonework Packbeast",
+      "oracle_fingerprint": "eb909a84cf37f6e16f25185cfb76e820",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddSubtype": "Cleric" },
+              { "AddSubtype": "Rogue" },
+              { "AddSubtype": "Warrior" },
+              { "AddSubtype": "Wizard" }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Activated": { "cost": "{2}", "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }] }
+        }
+      ]
+    }
+  ]
+}

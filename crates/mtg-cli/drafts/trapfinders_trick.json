@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9792ae99-7b3a-46cb-bd22-0b33c499ce1a",
+  "name": "Trapfinder's Trick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trapfinder's Trick",
+      "oracle_fingerprint": "63dd7ffb1c672ac8868f2187e36c4cfd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Subtype": "Trap" }
+                    ]
+                  },
+                  "filter": [{ "Subtype": "Trap" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

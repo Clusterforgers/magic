@@ -1,0 +1,54 @@
+{
+  "oracle_id": "aa630f3d-9443-46fe-a54f-8b3c9fcb872e",
+  "name": "Shadowfax, Lord of Horses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadowfax, Lord of Horses",
+      "oracle_fingerprint": "10899f2d20b5eb8ed4a15bac3df37281",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Horse" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Lt",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved2"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

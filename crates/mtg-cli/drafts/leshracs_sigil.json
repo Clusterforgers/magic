@@ -1,0 +1,32 @@
+{
+  "oracle_id": "98388eba-31ab-4302-be9e-ea67ea2b8c1a",
+  "name": "Leshrac's Sigil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leshrac's Sigil",
+      "oracle_fingerprint": "aa593f93b40ced3e0ca67b2564f8daff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Green" }], "by": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{B}{B}",
+                  "paid": [{ "Discard": { "who": "Triggering", "by": "You" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{B}",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

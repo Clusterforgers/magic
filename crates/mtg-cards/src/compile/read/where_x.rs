@@ -69,7 +69,7 @@ fn characteristic(r: &mut Reader<'_>) -> Option<(Whose, StatKind)> {
 }
 
 /// What the cost of an ability or a spell took out of its zone, as a card words it.
-const PAID_VERBS: [&str; 4] = ["sacrificed", "discarded", "exiled", "revealed"];
+const PAID_VERBS: [&str; 5] = ["sacrificed", "discarded", "exiled", "revealed", "tapped"];
 
 /// What the cost took, as a card names it.
 const PAID_NOUNS: [&str; 7] = [
@@ -270,6 +270,15 @@ fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
     };
     if *of == Ref::Paid {
         return paid_names(stat);
+    }
+    // What an earlier step sacrificed: "that creature's power".
+    if let Ref::Bound(bound) = of
+        && bound.starts_with("sacrificed")
+    {
+        return ["that creature's", "the sacrificed creature's"]
+            .iter()
+            .map(|owner| format!("{owner} {name}"))
+            .collect();
     }
     // What an earlier step exiled: "the mana value of the permanent exiled this way".
     if matches!(of, Ref::Bound(_)) {

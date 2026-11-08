@@ -1,0 +1,33 @@
+{
+  "oracle_id": "60e7517f-7cc5-4073-9f2c-3e6acb891128",
+  "name": "Taste for Mayhem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taste for Mayhem",
+      "oracle_fingerprint": "155a44c78d8b078e11c82fe0acf147b4",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "50bebbb9-01b7-4eb6-8efd-307c9bcd2517",
+  "name": "Goblin Vandal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Vandal",
+      "oracle_fingerprint": "d333461dda92a9cfd9aea56a8cad0979",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}",
+                  "paid": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

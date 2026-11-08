@@ -1,0 +1,70 @@
+{
+  "oracle_id": "334c284e-7bc3-4c18-9f8d-4d846f80008e",
+  "name": "Haunting Voyage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunting Voyage",
+      "oracle_fingerprint": "51b870e6b27f9b592c5c9a787418ad5c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "CastWith": "Foretold" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ChosenAs": "chosen" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ChosenAs": "chosen" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 2 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{5}{B}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c56f0f4c-c85a-4931-b22a-42dc5d1dc7dd",
+  "name": "Zombie Mob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zombie Mob",
+      "oracle_fingerprint": "15a7f33b316c9618b30f73ff7ae7cfa9",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "8ec7c7ce-23a5-4ba7-8cfd-4caf8601a9c8",
+  "name": "Whisperwood Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whisperwood Elemental",
+      "oracle_fingerprint": "26c13f5927b7b2325aef269cdba101b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Manifest": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": "Token" },
+                      { "Not": "FaceDown" }
+                    ]
+                  },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [{ "Manifest": {} }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

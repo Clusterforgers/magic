@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d39a492e-a599-4283-bfc1-8e99065a9303",
+  "name": "Elvish Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Scout",
+      "oracle_fingerprint": "a8ee7e4ddbc59054808a4936fa20357a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 }, "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "69812cd2-9885-45ed-9d79-658597bfeb8b",
+  "name": "Mogg Bombers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogg Bombers",
+      "oracle_fingerprint": "b5ce7380d47a2cfd60481469da7b30b4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

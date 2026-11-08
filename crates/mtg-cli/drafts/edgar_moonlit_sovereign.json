@@ -1,0 +1,52 @@
+{
+  "oracle_id": "1917bda6-c0e1-4c80-8009-74c28cf6b8e9",
+  "name": "Edgar, Moonlit Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Edgar, Moonlit Sovereign",
+      "oracle_fingerprint": "61b181345a8ae86cb8a7db41c8c4c028",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{G}",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasCounter": "+1/+1" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

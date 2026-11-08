@@ -1,0 +1,34 @@
+{
+  "oracle_id": "45c48bd8-9150-4699-a1eb-f4883165a4a0",
+  "name": "Pearlspear Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pearlspear Courier",
+      "oracle_fingerprint": "83512667c9d9a13de6692d0fa4fb6457",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Soldier" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

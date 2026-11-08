@@ -1,0 +1,64 @@
+{
+  "oracle_id": "ddcd8a0a-7ac3-4400-a16f-8bb5aa50994e",
+  "name": "Ezrim, Agency Chief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ezrim, Agency Chief",
+      "oracle_fingerprint": "3100748121831c7041b1d97a396cf1d7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Vigilance" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Lifelink" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Hexproof" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

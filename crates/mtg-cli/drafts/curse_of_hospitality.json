@@ -1,0 +1,50 @@
+{
+  "oracle_id": "0fb70b94-0847-4155-8953-cb53fef82ef1",
+  "name": "Curse of Hospitality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Hospitality",
+      "oracle_fingerprint": "c88418241b5751fb7874d96748f77494",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "AttachedPlayer" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }],
+                "to": "AttachedPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "ControllerOf": "Dealer" },
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

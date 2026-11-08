@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ab715312-0103-4681-b559-520026abd350",
+  "name": "Corpse Explosion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpse Explosion",
+      "oracle_fingerprint": "07f1cc128d07d2bd9e721c1a6a852614",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  },
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

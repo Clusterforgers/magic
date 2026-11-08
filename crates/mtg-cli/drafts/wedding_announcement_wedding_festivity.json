@@ -1,0 +1,105 @@
+{
+  "oracle_id": "259ac30c-cc05-4c04-9b23-71283f84b808",
+  "name": "Wedding Announcement // Wedding Festivity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wedding Announcement",
+      "oracle_fingerprint": "e2186f15d238603560eaf36e29fc9749",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "invitation" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    { "Draw": {} },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": "This",
+                            "selector": [
+                              {
+                                "CounterCount": {
+                                  "kind": { "Other": "invitation" },
+                                  "op": "Ge",
+                                  "to": 3
+                                }
+                              }
+                            ],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Transform": { "what": "This" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": "This",
+                            "selector": [
+                              {
+                                "CounterCount": {
+                                  "kind": { "Other": "invitation" },
+                                  "op": "Ge",
+                                  "to": 3
+                                }
+                              }
+                            ],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Transform": { "what": "This" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wedding Festivity",
+      "oracle_fingerprint": "ce0bb963a8a090d56153734aa724b38c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

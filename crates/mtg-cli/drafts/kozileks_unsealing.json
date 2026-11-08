@@ -14,13 +14,17 @@
               "SpellCast": {
                 "what": [
                   { "Type": "Creature" },
-                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } },
-                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 6 } }
+                  {
+                    "AnyOf": [
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 4 } },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 5 } },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 6 } }
+                    ]
+                  }
                 ],
                 "by": "You"
               }
             },
-            "from": "Stack",
             "effects": [
               {
                 "CreateToken": {
@@ -30,13 +34,20 @@
                       "types": ["Creature"],
                       "subtypes": ["Eldrazi", "Spawn"],
                       "power": 0,
-                      "toughness": 1
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
                     }
                   },
                   "count": 2
                 }
-              },
-              { "AddMana": { "mana": { "Fixed": ["Colorless"] } } }
+              }
             ]
           }
         },
@@ -51,7 +62,6 @@
                 "by": "You"
               }
             },
-            "from": "Stack",
             "effects": [{ "Draw": { "count": 3 } }]
           }
         }

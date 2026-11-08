@@ -1,0 +1,42 @@
+{
+  "oracle_id": "dcddd143-a7d9-4a38-a2da-dd6bd2e48205",
+  "name": "Zephyr Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zephyr Sentinel",
+      "oracle_fingerprint": "73492b8a9bbd22e42cbbc4c1e9d2adee",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [{ "Subtype": "Soldier" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

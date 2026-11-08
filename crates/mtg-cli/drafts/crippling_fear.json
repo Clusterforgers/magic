@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e7a7ba65-ad14-41d5-889b-9bbeae9ab3f7",
+  "name": "Crippling Fear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crippling Fear",
+      "oracle_fingerprint": "6e61eb1e605c552e4cb25acc5fe01ec6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "ChosenAs": "chosen" } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

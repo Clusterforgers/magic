@@ -1,0 +1,36 @@
+{
+  "oracle_id": "780c9cb2-9d98-4789-87e0-cb81db477204",
+  "name": "Cho-Arrim Legate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cho-Arrim Legate",
+      "oracle_fingerprint": "87fad973aa691fa54ee110286d7c2900",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "Opponents" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } }
+      ]
+    }
+  ]
+}

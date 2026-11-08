@@ -1,0 +1,44 @@
+{
+  "oracle_id": "97bff952-3bc8-41d0-b03f-5c76f3c7e0a3",
+  "name": "Firecannon Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firecannon Blast",
+      "oracle_fingerprint": "99430a39e08f028b27d74907dd795300",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 6 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

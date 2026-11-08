@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2fbb6703-3517-4117-9ca4-45e90a6216ce",
+  "name": "Faith's Reward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faith's Reward",
+      "oracle_fingerprint": "bdab65c46d414ec86c5f4a169be84437",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "ArrivedFrom": "Battlefield" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

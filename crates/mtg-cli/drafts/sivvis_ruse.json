@@ -1,0 +1,54 @@
+{
+  "oracle_id": "c5edfaae-3ecd-41ad-970f-8cecb09bf1e4",
+  "name": "Sivvi's Ruse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sivvi's Ruse",
+      "oracle_fingerprint": "6e66052d98ae2f586f9a247adbe6d569",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "Opponents" }]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

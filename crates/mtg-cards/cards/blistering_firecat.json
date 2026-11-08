@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b3595359-0d40-495e-85da-6a56fbce7357",
+  "name": "Blistering Firecat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blistering Firecat",
+      "oracle_fingerprint": "b4793d9d24a38d4f66c4ba5eccc96f25",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        { "Keyword": { "Morph": "{R}{R}" } }
+      ]
+    }
+  ]
+}

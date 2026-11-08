@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ca54e14c-67ee-4de2-bc0f-19a5f9461d37",
+  "name": "Call In a Professional",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call In a Professional",
+      "oracle_fingerprint": "d78b29ae13b4bbe581227003439f12c8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "Rule": { "rule": { "CantGainLife": "EachPlayer" }, "duration": "UntilEndOfTurn" } },
+              { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "UntilEndOfTurn" } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3, "unpreventable": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "97773064-6534-4761-8c73-3ffd713f4569",
+  "name": "Call of the Death-Dweller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call of the Death-Dweller",
+      "oracle_fingerprint": "797caab7074e5c2a71ab9123e74cf066",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "rule": { "TotalManaValueAtMost": 3 }
+                  }
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "Is": { "Bound": "moved" } }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "PutCounters": { "on": { "Bound": "card2" }, "counter": { "Other": "deathtouch" } }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "Is": { "Bound": "moved" } }] },
+                  "as": "card3"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "card3" }, "counter": { "Other": "menace" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

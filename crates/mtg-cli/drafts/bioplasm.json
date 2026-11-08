@@ -1,0 +1,83 @@
+{
+  "oracle_id": "f39777be-39af-4a97-a70d-824d713bf145",
+  "name": "Bioplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bioplasm",
+      "oracle_fingerprint": "aeda614f09437240edf10f1fef443a58",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Total": {
+                                  "of": [
+                                    { "Is": { "Bound": "exiled" } },
+                                    {
+                                      "AnyOf": [
+                                        { "In": "Battlefield" },
+                                        { "In": "Hand" },
+                                        { "In": "Library" },
+                                        { "In": "Graveyard" },
+                                        { "In": "Exile" },
+                                        { "In": "Stack" }
+                                      ]
+                                    }
+                                  ],
+                                  "stat": "Power"
+                                }
+                              },
+                              "toughness": {
+                                "Total": {
+                                  "of": [
+                                    { "Is": { "Bound": "exiled" } },
+                                    {
+                                      "AnyOf": [
+                                        { "In": "Battlefield" },
+                                        { "In": "Hand" },
+                                        { "In": "Library" },
+                                        { "In": "Graveyard" },
+                                        { "In": "Exile" },
+                                        { "In": "Stack" }
+                                      ]
+                                    }
+                                  ],
+                                  "stat": "Toughness"
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "68d84ffa-5bd0-4ed9-a987-6cef13095438",
+  "name": "Avatar of Might",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar of Might",
+      "oracle_fingerprint": "fc99b7e3ce4bbf60139e3673efb2ca11",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{6}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Sum": [{ "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }, 4]
+                },
+                "op": "Le",
+                "right": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

@@ -43,6 +43,10 @@ pub(crate) fn kind(action: &ManualAction) -> &'static str {
         ManualAction::Damage { .. } => "damage",
         ManualAction::AddMana { .. } => "mana",
         ManualAction::Pump { .. } => "pump",
+        ManualAction::Transform { .. } => "transform",
+        ManualAction::MoveBack { .. } => "move back",
+        ManualAction::AttackDespiteDefender { .. } => "attack despite defender",
+        ManualAction::BlockAdditional { .. } => "block additional",
         ManualAction::LookTop { .. } => "look at the top",
         ManualAction::ArrangeTop { .. } => "arrange the top",
         ManualAction::Shuffle {} => "shuffle",
@@ -54,6 +58,7 @@ pub(crate) fn kind(action: &ManualAction) -> &'static str {
         ManualAction::RemoveSickness { .. } => "remove sickness",
         ManualAction::Sacrifice { .. } => "sacrifice",
         ManualAction::GiveControl { .. } => "give control",
+        ManualAction::GrantAbility { .. } => "grant ability",
     }
 }
 
@@ -98,6 +103,7 @@ fn seeded_games_with_manual_cards_and_manual_actions_finish_and_keep_every_invar
         "remove sickness",
         "sacrifice",
         "give control",
+        "grant ability",
     ] {
         assert!(
             kinds.contains(wanted),

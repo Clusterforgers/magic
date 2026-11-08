@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c6b26c1f-121f-4b7c-921e-429b623ca934",
+  "name": "Breakthrough",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breakthrough",
+      "oracle_fingerprint": "cf4f638db6c50751eaac2c29ca2537a4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 4 } },
+              {
+                "Discard": {
+                  "count": {
+                    "Sum": [
+                      { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                      { "Times": { "by": -1, "of": "X" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

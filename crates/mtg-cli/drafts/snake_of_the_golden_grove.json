@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ef0c8193-8cbe-409e-9c2e-96b46ffcc420",
+  "name": "Snake of the Golden Grove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snake of the Golden Grove",
+      "oracle_fingerprint": "8b1e2fa3dc89b1ec3446d0cff27c883b",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 3 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

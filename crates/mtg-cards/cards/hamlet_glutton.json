@@ -1,0 +1,29 @@
+{
+  "oracle_id": "aa1b7cdd-0296-418c-ac3b-7ad3c51f1760",
+  "name": "Hamlet Glutton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hamlet Glutton",
+      "oracle_fingerprint": "71cbd0d81fd0df65d2e52c735e3fc74f",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": "AdditionalCostPaid"
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

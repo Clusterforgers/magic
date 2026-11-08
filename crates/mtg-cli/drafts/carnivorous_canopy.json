@@ -1,0 +1,55 @@
+{
+  "oracle_id": "b3360259-19df-43c6-95a9-e76770f2fb77",
+  "name": "Carnivorous Canopy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carnivorous Canopy",
+      "oracle_fingerprint": "ff47714013cab649970aa670ab6f333a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "HasKeyword": "Flying" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Proliferate": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

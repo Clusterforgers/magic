@@ -1,0 +1,48 @@
+{
+  "oracle_id": "56edd306-8676-49c4-b3c3-5ff840536c3a",
+  "name": "Termination Facilitator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Termination Facilitator",
+      "oracle_fingerprint": "b7ff04945da21e772ed18c5c2bfda827",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "bounty" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [],
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "Opponents" },
+                      { "HasCounter": { "Other": "bounty" } }
+                    ]
+                  }
+                }
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

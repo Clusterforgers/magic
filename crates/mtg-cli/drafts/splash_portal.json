@@ -13,19 +13,31 @@
               { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
             ],
             "effects": [
-              { "Exile": { "what": { "Target": 0 }, "as": "gone" } },
-              { "Move": { "what": { "Bound": "gone" }, "to": { "Battlefield": {} } } },
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
               {
                 "If": {
                   "condition": {
-                    "Matches": {
-                      "subject": { "Target": 0 },
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
                       "selector": [
-                        { "Subtype": "Bird" },
-                        { "Subtype": "Frog" },
-                        { "Subtype": "Otter" },
-                        { "Subtype": "Rat" }
-                      ]
+                        {
+                          "AnyOf": [
+                            { "Subtype": "Bird" },
+                            { "Subtype": "Frog" },
+                            { "Subtype": "Otter" },
+                            { "Subtype": "Rat" }
+                          ]
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
                     }
                   },
                   "then": [{ "Draw": {} }]

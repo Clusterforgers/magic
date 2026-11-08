@@ -1,0 +1,58 @@
+{
+  "oracle_id": "3d4b9d71-4275-4c18-a4dc-9aad234eb92c",
+  "name": "The Fire Nation Drill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Fire Nation Drill",
+      "oracle_fingerprint": "dff4cec836199b0d1aed70bc915cc3b9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": ["This"] } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "Compare": { "stat": "Power", "op": "Le", "to": 4 } }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "Opponents" }] },
+                  "mods": [{ "RemoveKeyword": "Hexproof" }, { "RemoveKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

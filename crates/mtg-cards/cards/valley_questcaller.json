@@ -1,0 +1,56 @@
+{
+  "oracle_id": "81c509b2-3164-47e9-94b3-bdba0487d2f1",
+  "name": "Valley Questcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valley Questcaller",
+      "oracle_fingerprint": "6bba2a771fc273a83e88456ed2722afc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Rabbit" },
+                        { "Subtype": "Bat" },
+                        { "Subtype": "Bird" },
+                        { "Subtype": "Mouse" }
+                      ]
+                    },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Rabbit" },
+                    { "Subtype": "Bat" },
+                    { "Subtype": "Bird" },
+                    { "Subtype": "Mouse" }
+                  ]
+                },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

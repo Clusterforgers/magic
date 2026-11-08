@@ -1,0 +1,43 @@
+{
+  "oracle_id": "55722e42-a729-4289-895f-be913398c434",
+  "name": "Skittish Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skittish Kavu",
+      "oracle_fingerprint": "db67a5ecfc765ee4b75ba9032d575c54",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Color": "White" },
+                        { "ControlledBy": "Opponents" }
+                      ]
+                    },
+                    {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Color": "Blue" },
+                        { "ControlledBy": "Opponents" }
+                      ]
+                    }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

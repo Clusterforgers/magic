@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "711784fe-e36b-44ac-bbcc-c29921e231f3",
+  "oracle_id": "02f31e00-646d-4971-8704-1583bbfcddd6",
+  "multiverse_ids": [
+    580622
+  ],
+  "tcgplayer_id": 287718,
+  "cardmarket_id": 676754,
+  "name": "Park Bleater",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/711784fe-e36b-44ac-bbcc-c29921e231f3",
+  "scryfall_uri": "https://scryfall.com/card/unf/21/park-bleater?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:30:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.jpg?1783920610",
+    "normal": "https://cards.scryfall.io/normal/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.jpg?1783920610",
+    "large": "https://cards.scryfall.io/large/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.jpg?1783920610",
+    "png": "https://cards.scryfall.io/png/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.png?1783920610",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.jpg?1783920610",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.jpg?1783920610",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.webp?1783920610",
+    "grid": "https://cards.scryfall.io/grid/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.webp?1783920610",
+    "display": "https://cards.scryfall.io/display/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.webp?1783920610",
+    "art": "https://cards.scryfall.io/art/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.webp?1783920610",
+    "crop": "https://cards.scryfall.io/crop/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.webp?1783920610",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/1/711784fe-e36b-44ac-bbcc-c29921e231f3.jpg?1783920610"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Goat Employee",
+  "oracle_text": "Whenever another creature you own enters, you get {TK}.\n{W}, {T}: You may put a sticker on a creature you own that entered this turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c2c155fd-bab7-4f86-b10c-6c9f1f43b330",
+      "component": "combo_piece",
+      "name": "Park Bleater",
+      "type_line": "Creature — Goat Employee",
+      "uri": "https://api.scryfall.com/cards/c2c155fd-bab7-4f86-b10c-6c9f1f43b330"
+    },
+    {
+      "object": "related_card",
+      "id": "52942a5c-0552-4a9b-9c0f-7a9ffd04d0af",
+      "component": "combo_piece",
+      "name": "Ticket Bucket-Bot",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/52942a5c-0552-4a9b-9c0f-7a9ffd04d0af"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "banned",
+    "pauper": "not_legal",
+    "vintage": "banned",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "banned",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "banned",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/711784fe-e36b-44ac-bbcc-c29921e231f3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A02f31e00-646d-4971-8704-1583bbfcddd6&unique=prints",
+  "collector_number": "21",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Once he stopped eating tickets, Bixby was a model employee.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "April Prime",
+  "artist_ids": [
+    "266f773b-5c80-4803-9b95-5a985af90548"
+  ],
+  "illustration_id": "44c8e8f2-3402-49bb-9c1d-97ddf2346ff9",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24931,
+  "preview": {
+    "source": "Charly GAG",
+    "source_uri": "https://twitter.com/CharlyGAG/status/1573423159289970688",
+    "previewed_at": "2022-09-23"
+  },
+  "prices": {
+    "usd": "0.08",
+    "usd_foil": "0.18",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.11",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580622&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPark%2BBleater",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPark%2BBleater",
+    "edhrec": "https://edhrec.com/route/?cc=Park+Bleater"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F287718%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=676754&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Park+Bleater&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

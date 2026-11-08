@@ -1,0 +1,27 @@
+{
+  "oracle_id": "132401fb-6754-4190-9c85-1e57e7f63ed6",
+  "name": "Strength of the Tajuru",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strength of the Tajuru",
+      "oracle_fingerprint": "6ebafcbee908923b21c958315807665f",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{1}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": { "Sum": ["Kicks", 1] }, "max": { "Sum": ["Kicks", 1] } }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -4,15 +4,17 @@
 //! What a player has begun lives outside game state until it is paid for, so backing out is free and leaves no trace
 //! in the log. [`announce`] walks the [`Phase`]s in the order of the rules; each is a module that asks its question,
 //! passes or rewinds the whole announcement, and the ones that wait for a later task are stubs that pass
-//! (`docs/engine.md`, Casting).
+//! (`docs/engine.md`, Announcement).
 
 mod again;
 mod alternative;
 mod anchor;
+pub(crate) mod assist;
 mod c9_emerge_reduce;
 pub(crate) mod companion;
 mod division;
 mod dk1c5_unlock;
+mod e15g_paid_end;
 mod face;
 pub(crate) mod foretell;
 mod legality;
@@ -21,6 +23,8 @@ mod modifiers;
 mod optional;
 mod parts;
 mod payment;
+pub(crate) mod plot;
+mod price;
 pub(crate) mod required;
 pub(crate) mod suspend;
 mod targets;
@@ -51,9 +55,9 @@ use crate::triggers::PendingTrigger;
 use crate::ways::Way;
 use anchor::Anchor;
 
-pub(crate) use modifiers::{c11a_reduced, cheapest};
+pub(crate) use modifiers::{c11a_reduced, cheapest, floored};
 pub(crate) use optional::{Optional, kicked_with, payments};
-pub(crate) use x::{XCost, payable, some_x_has_targets};
+pub(crate) use x::{XCost, least_of, payable, some_x_has_targets};
 
 /// What is being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -66,6 +70,8 @@ pub(crate) enum What {
     Trigger(Box<PendingTrigger>),
     /// An attack declared whose cost is not paid yet (CR 508.1h); only its payment is asked (`attack_tax`).
     Attack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
+    /// A block declared whose cost is not paid yet (CR 509.1d); only its payment is asked (`block_tax`).
+    Block(Vec<(ObjectId, ObjectId)>),
 }
 
 /// One step of the announcement, named by the rule of CR 601.2 it carries out.
@@ -91,6 +97,8 @@ pub(crate) enum Phase {
     Legality,
     /// The total cost: the cost, its alternative and additional parts, X and the cost modifiers (CR 601.2f).
     Total,
+    /// The player who helps pay the generic mana of a spell with assist (CR 702.132a).
+    Assist,
     /// Mana abilities and payment, then the spell or ability goes on the stack (CR 601.2g, 601.2h, 601.2i).
     Payment,
 }
@@ -98,7 +106,7 @@ pub(crate) enum Phase {
 impl Phase {
     /// The steps in the order of the rules; the announcement asks them one after the other and a step that has
     /// nothing to ask passes to the next.
-    pub(crate) const ORDER: [Phase; 10] = [
+    pub(crate) const ORDER: [Phase; 11] = [
         Phase::Modes,
         Phase::Alternative,
         Phase::Optional,
@@ -108,6 +116,7 @@ impl Phase {
         Phase::Division,
         Phase::Legality,
         Phase::Total,
+        Phase::Assist,
         Phase::Payment,
     ];
 
@@ -124,7 +133,7 @@ impl Phase {
             Phase::Targets => 'c',
             Phase::Division => 'd',
             Phase::Legality => 'e',
-            Phase::Total => 'f',
+            Phase::Total | Phase::Assist => 'f',
             Phase::Payment => 'g',
         }
     }
@@ -136,9 +145,12 @@ impl Phase {
                 Unplayable::Targets
             }
             Phase::Parts => Unplayable::Cost,
-            Phase::Alternative | Phase::Optional | Phase::X | Phase::Total | Phase::Payment => {
-                Unplayable::Mana
-            }
+            Phase::Alternative
+            | Phase::Optional
+            | Phase::X
+            | Phase::Total
+            | Phase::Assist
+            | Phase::Payment => Unplayable::Mana,
         }
     }
 
@@ -156,6 +168,7 @@ impl Phase {
             Phase::Division => division::run(ctx, work),
             Phase::Legality => legality::run(ctx, work),
             Phase::Total => total::run(ctx, work),
+            Phase::Assist => assist::run(ctx, work),
             Phase::Payment => Some(payment::run(ctx, work)),
         }
     }
@@ -176,11 +189,13 @@ pub(crate) struct Needs {
     pub(crate) x: Option<XCost>,
     /// The price of an activated ability whose cost has parts the player picks objects for.
     pub(crate) price: Option<Box<Price>>,
+    /// The costs of the modes of a modal spell (Spree, Tiered, Escalate).
+    pub(crate) modes: Option<price::ModeCosts>,
 }
 
 /// What a resolution lets a player cast (CR 608.2g): the spell goes on the stack as part of the resolution, with no
 /// timing and no way back.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Granted {
     /// The mana cost is not paid (CR 118.9).
     pub(crate) free: bool,
@@ -188,6 +203,8 @@ pub(crate) struct Granted {
     pub(crate) way: Option<CastWay>,
     /// The card is cast transformed: its back face is the spell (CR 712.4).
     pub(crate) transformed: bool,
+    /// What it is cast for rather than its mana cost (CR 118.9), its amounts counted for the card.
+    pub(crate) rather: Option<mtg_cards::cost::Cost>,
 }
 
 impl Needs {
@@ -202,8 +219,13 @@ impl Needs {
         Needs {
             ways: alternative::read(state, player, what, granted),
             optional: optional::read(state, what),
-            x: XCost::of(state, what, rules),
-            price: parts::read(what, rules),
+            x: XCost::of(state, player, what, rules),
+            price: parts::read(state, player, what, rules),
+            modes: if matches!(what, What::Spell(_)) {
+                price::ModeCosts::of(rules)
+            } else {
+                None
+            },
         }
     }
 
@@ -226,6 +248,9 @@ impl Needs {
             .map(|way| way.parts.clone())
             .unwrap_or_default();
         parts.extend(optional::parts_paid(&self.optional, choices));
+        if let Some(costs) = &self.modes {
+            parts.extend(costs.parts(&choices.modes));
+        }
         parts
     }
 }
@@ -252,6 +277,14 @@ pub(crate) struct Done {
     pub(crate) repeated: Option<usize>,
     /// X is settled.
     pub(crate) x: bool,
+    /// The player the caster picked to help pay with assist, by position among those offered (0 is no one).
+    pub(crate) assist_pick: Option<usize>,
+    /// How much generic mana the helper chose to pay.
+    pub(crate) assist_amount: Option<u32>,
+    /// The events of the helper's own payment of that mana, chosen by the helper.
+    pub(crate) assist_events: Option<Vec<Event>>,
+    /// The helper and the generic mana they pay, once the step has taken it off the cost.
+    pub(crate) assist_paid: Option<(PlayerId, u32)>,
     /// How many target specifications have their division settled.
     pub(crate) divided: usize,
     /// The kind of counter the player picked for the next permanent of a cost that removes a counter of any kind, by
@@ -271,12 +304,16 @@ pub(crate) enum Special {
     Suspend,
     /// Foretell (CR 702.143a).
     Foretell,
+    /// Plot (CR 702.170a).
+    Plot,
     /// Turning a face-down permanent face up (CR 702.37e).
     TurnFaceUp,
     /// Putting a companion from outside the game into the hand (CR 702.139): the card is the id it will have there.
     Companion,
     /// Unlocking this door of a Room (CR 709.5e).
     Unlock(u8),
+    /// Ending this effect by paying its price (CR 116.2c): the card is the object it changes.
+    EndEffect(mtg_core::ids::EffectId),
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -328,12 +365,14 @@ impl Pending {
         free: bool,
         way: Option<CastWay>,
         transformed: bool,
+        rather: Option<mtg_cards::cost::Cost>,
     ) -> Self {
         Pending {
             granted: Some(Granted {
                 free,
                 way,
                 transformed,
+                rather,
             }),
             ..Pending::new(player, What::Spell(spell))
         }
@@ -386,8 +425,45 @@ impl Pending {
             .as_ref()
             .and_then(|needs| parts::weak(&self.what, needs, &self.choices, state, cards));
         match weak {
-            Some((needed, got)) => Err(IllegalAnswer::TooLittlePower { needed, got }),
+            Some(illegal) => Err(illegal),
             None => Ok(()),
+        }
+    }
+
+    /// Whether the spell can be paid for with the modes chosen: the answer is refused when their costs cannot be paid.
+    pub(crate) fn check_modes(
+        &self,
+        state: &GameState,
+        modes: &[usize],
+    ) -> Result<(), IllegalAnswer> {
+        let (What::Spell(card), Some(needs)) = (&self.what, &self.needs) else {
+            return Ok(());
+        };
+        if needs.modes.is_none() {
+            return Ok(());
+        }
+        let faced;
+        let state = if faces::is_multi_face(state, *card) {
+            faced = state.with_face(*card, self.choices.face);
+            &*faced
+        } else {
+            state
+        };
+        let held = rules_of(state, &self.what);
+        let ctx = Ctx {
+            state,
+            player: self.player,
+            what: &self.what,
+            source: *card,
+            ability: held.as_deref(),
+            triggered: None,
+            granted: self.granted.clone(),
+            needs,
+        };
+        if price::affordable_set(&ctx, &self.choices, modes) {
+            Ok(())
+        } else {
+            Err(IllegalAnswer::Unaffordable("the modes"))
         }
     }
 
@@ -396,6 +472,11 @@ impl Pending {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
             Answered::Way(_) if self.done.asked == Some(Phase::Face) => Phase::Face,
+            Answered::Way(_) | Answered::Number(_) | Answered::Assisted(_)
+                if self.done.asked == Some(Phase::Assist) =>
+            {
+                Phase::Assist
+            }
             // The X of a counted part is asked while the parts are, before the picks that depend on it, and a choice of
             // option among the parts is the kind of counter a picked permanent loses.
             Answered::Way(_) | Answered::Number(_) if self.done.asked == Some(Phase::Parts) => {
@@ -414,6 +495,7 @@ impl Pending {
             Answered::Number(_) => Phase::X,
             Answered::Costs(_) => Phase::Optional,
             Answered::Division(_) => Phase::Division,
+            Answered::Assisted(_) => Phase::Assist,
         };
         let costs_again = matches!(answered, Answered::Costs(_)) && self.done.repeated.is_some();
         if self.done.asked != Some(wanted) || costs_again {
@@ -428,6 +510,11 @@ impl Pending {
                 self.done.modes = true;
             }
             Answered::Way(pick) if wanted == Phase::Face => self.done.face_picked = Some(pick),
+            Answered::Way(pick) if wanted == Phase::Assist => self.done.assist_pick = Some(pick),
+            Answered::Assisted(events) => self.done.assist_events = Some(events),
+            Answered::Number(amount) if wanted == Phase::Assist => {
+                self.done.assist_amount = Some(amount);
+            }
             Answered::Way(pick) if wanted == Phase::Parts => {
                 self.done.w2f_kind_picked = u8::try_from(pick).ok();
             }
@@ -481,6 +568,8 @@ pub(crate) enum Answered {
     Cards(Vec<ObjectId>),
     /// The shares of the next amount to divide.
     Division(Vec<(Target, u32)>),
+    /// The events of the helper's payment with assist.
+    Assisted(Vec<Event>),
 }
 
 /// What the cast or activation needs next.
@@ -551,6 +640,7 @@ fn source_of(what: &What) -> ObjectId {
         What::Ability(ability) => ability.object,
         What::Trigger(waiting) => waiting.trigger.source.id,
         What::Attack(attackers, _) => attackers.first().map_or(ObjectId(0), |(object, _)| *object),
+        What::Block(blocks) => blocks.first().map_or(ObjectId(0), |(object, _)| *object),
     }
 }
 
@@ -563,7 +653,7 @@ fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
             .map(|(_, rules)| rules),
         What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
-        What::Attack(..) => None,
+        What::Attack(..) | What::Block(_) => None,
     }
 }
 
@@ -595,15 +685,20 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     if let What::Attack(attackers, _) = what {
         return crate::attack_tax::next(state, *player, attackers);
     }
+    if let What::Block(blocks) = what {
+        return crate::block_tax::next(state, *player, blocks);
+    }
     if let Some(special) = special
         && let What::Spell(card) = what
     {
         return match special {
             Special::Suspend => suspend::next(state, *player, *card),
             Special::Foretell => foretell::next(state, *player, *card),
-            Special::TurnFaceUp => turn_up::next(state, *player, *card),
+            Special::Plot => plot::next(state, *player, *card),
+            Special::TurnFaceUp => turn_up::next(state, *player, *card, choices, done),
             Special::Companion => companion::next(state, *player, *card),
             Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),
+            Special::EndEffect(effect) => e15g_paid_end::next(state, *player, *effect),
         };
     }
     let what: &What = what;
@@ -611,7 +706,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     let faced;
     let state = match what {
         What::Spell(card) if faces::is_multi_face(state, *card) => {
-            if let Some(next) = face::run(state, *player, *card, *granted, choices, done) {
+            if let Some(next) = face::run(state, *player, *card, granted.clone(), choices, done) {
                 return next;
             }
             faced = state.with_face(*card, choices.face);
@@ -620,8 +715,8 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         _ => state,
     };
     let held = rules_of(state, what);
-    let needs: &Needs =
-        needs.get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), *granted));
+    let needs: &Needs = needs
+        .get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), granted.clone()));
     let ctx = Ctx {
         state,
         player: *player,
@@ -632,7 +727,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             What::Trigger(waiting) => Some(waiting),
             _ => None,
         },
-        granted: *granted,
+        granted: granted.clone(),
         needs,
     };
     let mut work = Work {
@@ -677,6 +772,12 @@ mod through_engine;
 
 #[cfg(test)]
 mod kicks;
+
+#[cfg(test)]
+mod cost_keywords;
+
+#[cfg(test)]
+mod mode_costs;
 
 #[cfg(test)]
 mod x_after;

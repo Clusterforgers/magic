@@ -1,0 +1,49 @@
+{
+  "oracle_id": "db025c94-1182-412e-9665-b5ae89d26616",
+  "name": "Scorching Winds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scorching Winds",
+      "oracle_fingerprint": "97c834c43169dfbdc124a40f356f5cd5",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [
+                { "Step": "DeclareAttackers" },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Attacked",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "DidThisTurn": { "event": "Attacked", "to": "You", "combat": true } }
+                        ]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

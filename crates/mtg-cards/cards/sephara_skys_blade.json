@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ac8952c9-bd30-48cd-b964-7e6271f9cbc8",
+  "name": "Sephara, Sky's Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sephara, Sky's Blade",
+      "oracle_fingerprint": "963634bf96fda29cce635952143b61a2",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Mana": "{W}" },
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                  "count": 4
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" },
+                { "HasKeyword": "Flying" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        }
+      ]
+    }
+  ]
+}

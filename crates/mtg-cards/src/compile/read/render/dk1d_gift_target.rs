@@ -41,6 +41,7 @@ pub(super) fn sentences(targets: &[TargetSpec], effects: &[Effect]) -> Option<Ve
     let [
         Effect::Counter {
             what: Ref::Target(1),
+            bind: None,
         },
     ] = then.as_slice()
     else {
@@ -49,6 +50,7 @@ pub(super) fn sentences(targets: &[TargetSpec], effects: &[Effect]) -> Option<Ve
     let [
         Effect::Counter {
             what: Ref::Target(0),
+            bind: None,
         },
     ] = otherwise.as_slice()
     else {

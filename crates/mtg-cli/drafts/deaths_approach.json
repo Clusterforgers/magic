@@ -1,0 +1,49 @@
+{
+  "oracle_id": "7a1798d3-33fb-4092-a843-45a25f3b4e82",
+  "name": "Death's Approach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death's Approach",
+      "oracle_fingerprint": "908190f98b00b76fddf2656032d7f169",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": { "ControllerOf": "Attached" } },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": { "ControllerOf": "Attached" } },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

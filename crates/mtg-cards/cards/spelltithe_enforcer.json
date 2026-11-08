@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0da4988f-47ca-4786-ac33-edbc9cfd6785",
+  "name": "Spelltithe Enforcer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spelltithe Enforcer",
+      "oracle_fingerprint": "51eb8c361d3dd40b22d5212013ecd063",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": "{1}",
+                  "unpaid": [
+                    { "Sacrifice": { "who": { "ControllerOf": "Triggering" }, "filter": [] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

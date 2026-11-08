@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6bcdbded-46f0-44b9-86ad-edd6414e7ef6",
+  "name": "Heir of the Ancient Fang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heir of the Ancient Fang",
+      "oracle_fingerprint": "efa47209473d128b14d2214dc7799e9a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Modified"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "oracle_id": "aea8345a-191d-4c62-8d15-a716a9934b66",
+  "name": "Celes, Rune Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celes, Rune Knight",
+      "oracle_fingerprint": "5d5409f5aab7f4f4868fc95cbb09b5ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Is": { "Bound": "discarded" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Creature" },
+                    "Other",
+                    { "ControlledBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "WasCast": { "from": "Graveyard" } },
+                        { "ArrivedFrom": "Graveyard" }
+                      ]
+                    }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

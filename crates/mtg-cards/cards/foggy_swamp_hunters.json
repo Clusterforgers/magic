@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1941cf7a-ad53-4bce-beea-104951619a30",
+  "name": "Foggy Swamp Hunters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foggy Swamp Hunters",
+      "oracle_fingerprint": "18e96872cd37afaac586b2c1df3275ca",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }, { "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "8e1649a2-adc4-4703-a453-df3cfdb423a2",
+  "oracle_id": "e1894a57-0faa-4e0d-8ab9-e4785f0457a4",
+  "multiverse_ids": [
+    423470
+  ],
+  "tcgplayer_id": 125436,
+  "cardmarket_id": 294283,
+  "name": "Hellion Eruption",
+  "lang": "en",
+  "released_at": "2016-11-25",
+  "uri": "https://api.scryfall.com/cards/8e1649a2-adc4-4703-a453-df3cfdb423a2",
+  "scryfall_uri": "https://scryfall.com/card/pca/45/hellion-eruption?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:00:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.jpg?1783936834",
+    "normal": "https://cards.scryfall.io/normal/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.jpg?1783936834",
+    "large": "https://cards.scryfall.io/large/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.jpg?1783936834",
+    "png": "https://cards.scryfall.io/png/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.png?1783936834",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.jpg?1783936834",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.jpg?1783936834",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.webp?1783936834",
+    "grid": "https://cards.scryfall.io/grid/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.webp?1783936834",
+    "display": "https://cards.scryfall.io/display/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.webp?1783936834",
+    "art": "https://cards.scryfall.io/art/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.webp?1783936834",
+    "crop": "https://cards.scryfall.io/crop/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.webp?1783936834",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/e/8e1649a2-adc4-4703-a453-df3cfdb423a2.jpg?1783936834"
+  },
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Sacrifice all creatures you control, then create that many 4/4 red Hellion creature tokens.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "00a1209e-c4c3-4250-ad36-ef451f5e34cd",
+      "component": "token",
+      "name": "Hellion",
+      "type_line": "Token Creature — Hellion",
+      "uri": "https://api.scryfall.com/cards/00a1209e-c4c3-4250-ad36-ef451f5e34cd"
+    },
+    {
+      "object": "related_card",
+      "id": "8e1649a2-adc4-4703-a453-df3cfdb423a2",
+      "component": "combo_piece",
+      "name": "Hellion Eruption",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/8e1649a2-adc4-4703-a453-df3cfdb423a2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ceadd605-dfba-4998-b96d-e8e8138aa20f",
+  "set": "pca",
+  "set_name": "Planechase Anthology",
+  "set_type": "planechase",
+  "set_uri": "https://api.scryfall.com/sets/ceadd605-dfba-4998-b96d-e8e8138aa20f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apca&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pca?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8e1649a2-adc4-4703-a453-df3cfdb423a2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae1894a57-0faa-4e0d-8ab9-e4785f0457a4&unique=prints",
+  "collector_number": "45",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Just when you thought you'd be safe, in the middle of an open field with no Eldrazi around for miles.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anthony Francisco",
+  "artist_ids": [
+    "6ac24c4b-70e9-4286-8f4b-b40c92ab5847"
+  ],
+  "illustration_id": "2796cb1d-f566-4a33-b4ab-305de9741ec3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 22155,
+  "penny_rank": 15924,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=423470&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHellion%2BEruption",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHellion%2BEruption",
+    "edhrec": "https://edhrec.com/route/?cc=Hellion+Eruption"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F125436%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=294283&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Hellion+Eruption&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

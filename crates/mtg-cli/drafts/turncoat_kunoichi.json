@@ -1,0 +1,78 @@
+{
+  "oracle_id": "0f35cf85-6783-4d69-b5e6-a81f7c1f21e7",
+  "name": "Turncoat Kunoichi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turncoat Kunoichi",
+      "oracle_fingerprint": "082870b77cbd9c7c1e9398b64e43e0b0",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{2}{W}{B}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "CastWith": "Sneak" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "CastWith": "Sneak" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

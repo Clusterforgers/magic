@@ -16,11 +16,11 @@
               }
             },
             "effects": [
-              { "ExileTop": { "as": "card" } },
+              { "ExileTop": { "as": "exiled" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "card" }, "play": true }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
                   },
                   "duration": "Forever"
                 }
@@ -31,15 +31,22 @@
         {
           "Triggered": {
             "when": { "StepBegins": { "step": "End", "whose": "You" } },
-            "effects": [
-              { "Draw": {} },
-              {
-                "DealDamage": {
-                  "source": "This",
-                  "to": "Opponents",
-                  "amount": { "Count": [{ "Is": "This" }] }
-                }
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                "op": "Gt",
+                "right": 0
               }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Graveyard",
+                  "as": "moved"
+                }
+              },
+              { "DealDamage": { "to": "Opponents", "amount": { "Bound": "moved~moved" } } }
             ]
           }
         }

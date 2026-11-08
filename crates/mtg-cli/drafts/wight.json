@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0a07a676-890f-49a2-9a2d-17d7b1dc6868",
+  "name": "Wight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wight",
+      "oracle_fingerprint": "fe1687b6f8d63f5d5f33243782db7dcb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "tapped": true
+                }
+              },
+              { "Exile": { "what": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

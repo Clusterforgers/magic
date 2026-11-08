@@ -1,0 +1,48 @@
+{
+  "oracle_id": "31fc5d8b-94bc-4688-8a84-f15800e717a8",
+  "name": "Ashling, Rekindled // Ashling, Rimebound",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ashling, Rekindled",
+      "oracle_fingerprint": "e877c219c6b64262f44f1753ec94b646",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "Transformed", "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{U}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ashling, Rimebound",
+      "oracle_fingerprint": "862b4ba56083831fc51b7f7cd1b9f0ba",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 201 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{R}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

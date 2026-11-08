@@ -1,0 +1,42 @@
+{
+  "oracle_id": "27177cb0-1670-488e-82be-4610da5a7de3",
+  "name": "Reprocess",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reprocess",
+      "oracle_fingerprint": "cc2be78e39b41bb614230fe00da6a53e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    }
+                  ],
+                  "count": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Land" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "sacrificed"
+                }
+              },
+              { "Draw": { "count": { "Bound": "sacrificed~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

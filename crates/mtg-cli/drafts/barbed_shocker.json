@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ae5cf0da-bea8-4ba7-9fb3-0fcb076257ae",
+  "name": "Barbed Shocker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbed Shocker",
+      "oracle_fingerprint": "ec74558bc71a5f1adbe1ef9db13a570b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [
+              {
+                "Discard": {
+                  "who": "Triggering",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "who": "Triggering",
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

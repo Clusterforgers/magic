@@ -1,0 +1,27 @@
+{
+  "oracle_id": "731821b1-89fd-4166-94b8-35a1364e4d9d",
+  "name": "Provoke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Provoke",
+      "oracle_fingerprint": "29da05c36fdb7cb305e14d6823e69ec3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

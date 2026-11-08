@@ -1,0 +1,62 @@
+{
+  "oracle_id": "7e64b1dc-a238-4bff-98ff-2bea44340568",
+  "name": "Overlord of the Mistmoors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overlord of the Mistmoors",
+      "oracle_fingerprint": "8716258d5c4c02c7e9a3d9463e09ae58",
+      "abilities": [
+        { "AltCast": { "way": "Impending", "cost": "{2}{W}{W}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "time" }, "count": 4 } },
+            "condition": { "CastWith": "Impending" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

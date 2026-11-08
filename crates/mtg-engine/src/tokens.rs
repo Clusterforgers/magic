@@ -111,6 +111,8 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         x: None,
         face: None,
         spent: Vec::new(),
+        spent_from: Vec::new(),
+        convoked: Vec::new(),
         copy: event.copy_of.map(|of| {
             crate::copies::CopyEffect::new(of, Arc::clone(&event.definition), state.next_timestamp)
         }),
@@ -126,6 +128,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     let entered = token.reference();
     state.objects.insert(id, token);
     state.tally_object(entered, None, crate::state::Tally::Entered);
+    state.log_event(mtg_cards::value::TallyEvent::Entered, event.controller, id);
     state.zones.insert(Zone::Battlefield, id, Placement::Top);
     state.next_object = state.next_object.max(id.get() + 1);
     if let Some(target) = event.attacking {
@@ -139,6 +142,11 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         });
     }
     state.tally(event.controller, Tally::Tokens);
+    state.log_event(
+        mtg_cards::value::TallyEvent::TokenCreated,
+        event.controller,
+        id,
+    );
     reset_passes(state);
     Ok(())
 }

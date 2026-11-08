@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f203671b-76f7-4be0-80a9-826fbb450fe7",
+  "name": "Ethereal Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Champion",
+      "oracle_fingerprint": "dbc3f8d9c4b119b1209f9029f1662d83",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 1 }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

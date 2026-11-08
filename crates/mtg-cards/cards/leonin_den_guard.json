@@ -1,0 +1,25 @@
+{
+  "oracle_id": "651220f7-223a-49b3-995d-32f08eb3a16a",
+  "name": "Leonin Den-Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leonin Den-Guard",
+      "oracle_fingerprint": "55fcde6fb5be1c89e391ce1519ddf74f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "82caf3e2-da42-4851-b4db-546e2403c4bf",
+  "name": "Boulderbranch Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boulderbranch Golem",
+      "oracle_fingerprint": "383babe3523066bfb2bcf74b6703a954",
+      "abilities": [
+        { "Keyword": { "Prototype": { "cost": "{3}{G}", "power": 3, "toughness": 3 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

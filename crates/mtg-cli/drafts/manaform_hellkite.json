@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f426aa1a-e1dc-4563-b450-2e23d6bd980b",
+  "name": "Manaform Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manaform Hellkite",
+      "oracle_fingerprint": "123c4a1649009e3e45a6853569b61750",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "token": {
+                        "name": "Dragon Illusion",
+                        "colors": ["Red"],
+                        "types": ["Creature"],
+                        "subtypes": ["Dragon", "Illusion"],
+                        "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Haste" }]
+                      }
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b9e61e68-9dc8-4295-95dc-dd66a0907c8c",
+  "name": "Forsaken Wastes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forsaken Wastes",
+      "oracle_fingerprint": "9fd1de149954fddbbbe47a04c325c71b",
+      "abilities": [
+        { "Rule": { "rule": { "CantGainLife": "EachPlayer" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

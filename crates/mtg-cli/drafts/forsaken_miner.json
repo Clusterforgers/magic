@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d37e0127-6f68-438e-8b9e-a71bb3c34733",
+  "name": "Forsaken Miner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forsaken Miner",
+      "oracle_fingerprint": "a10adb56436b02c8c8dcb270b64985a4",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{B}",
+                  "paid": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

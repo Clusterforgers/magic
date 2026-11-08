@@ -1,0 +1,42 @@
+{
+  "oracle_id": "45ef5ea9-70a6-4999-8778-6a11cb97d28e",
+  "name": "Gravelighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravelighter",
+      "oracle_fingerprint": "b502ee3d228bcb2b3a519d80856b0166",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Died",
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [
+                    { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

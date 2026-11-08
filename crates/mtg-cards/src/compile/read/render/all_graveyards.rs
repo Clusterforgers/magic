@@ -14,6 +14,7 @@ pub(super) fn text(effect: &Effect) -> Option<String> {
                 transformed: false,
                 counters,
             },
+        ..
     } = effect
     else {
         return None;

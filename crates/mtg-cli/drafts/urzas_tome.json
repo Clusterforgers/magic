@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4734b73e-104c-4b25-ab52-0145f361c9d1",
+  "name": "Urza's Tome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Tome",
+      "oracle_fingerprint": "e4ab262ee3a8bf9ad6daf18e5ccf0943",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              { "Draw": {} },
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              { "Supertype": "Legendary" },
+                              { "Type": "Artifact" },
+                              { "Subtype": "Saga" }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

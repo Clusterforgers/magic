@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4d0a0027-53b3-45a1-8736-f0ac86b19342",
+  "name": "Mischievous Catgeist // Catlike Curiosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mischievous Catgeist",
+      "oracle_fingerprint": "ad2beb9e12dd86c4d40897386818e2ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Disturb": "{2}{U}" } }
+      ]
+    },
+    {
+      "name": "Catlike Curiosity",
+      "oracle_fingerprint": "edde56c16ce709108fd4aeb341517fed",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

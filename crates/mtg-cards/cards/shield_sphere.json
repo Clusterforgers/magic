@@ -1,0 +1,20 @@
+{
+  "oracle_id": "df9ec9b0-be22-4136-923b-11a71ca4b6c2",
+  "name": "Shield Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shield Sphere",
+      "oracle_fingerprint": "b472b8185728cb51223fe486d1a4681a",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "-0/-1" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

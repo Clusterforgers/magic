@@ -13,7 +13,13 @@
             "when": { "StepBegins": { "step": "End" } },
             "if": {
               "Compare": {
-                "left": { "Tallied": { "who": "You", "what": "CreaturesDied" } },
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": ["Token", { "ControlledBy": "You" }]
+                  }
+                },
                 "op": "Ge",
                 "right": 1
               }

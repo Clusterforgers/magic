@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5c43c1d7-1899-45c1-992b-443873890d78",
+  "name": "Dryad Greenseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dryad Greenseeker",
+      "oracle_fingerprint": "8338380998cca64a46d9dae7e8891041",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

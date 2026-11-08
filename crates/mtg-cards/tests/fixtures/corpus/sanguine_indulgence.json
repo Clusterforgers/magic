@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "03a26ca7-b26f-4b86-a060-712f15f4bf7f",
+  "oracle_id": "010ec11a-0484-486d-b7c0-de65593bf457",
+  "multiverse_ids": [
+    680752
+  ],
+  "resource_id": "317DD9A2779C9EF88F93B46AF80A0B552600EA0315AB41AB5B3E13550DE6AEA5",
+  "mtgo_id": 134562,
+  "arena_id": 94041,
+  "tcgplayer_id": 591016,
+  "cardmarket_id": 795916,
+  "name": "Sanguine Indulgence",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/03a26ca7-b26f-4b86-a060-712f15f4bf7f",
+  "scryfall_uri": "https://scryfall.com/card/fdn/613/sanguine-indulgence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:15:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.jpg?1783908926",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.jpg?1783908926",
+    "large": "https://cards.scryfall.io/large/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.jpg?1783908926",
+    "png": "https://cards.scryfall.io/png/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.png?1783908926",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.jpg?1783908926",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.jpg?1783908926",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.webp?1783908926",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.webp?1783908926",
+    "display": "https://cards.scryfall.io/display/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.webp?1783908926",
+    "art": "https://cards.scryfall.io/art/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.webp?1783908926",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.webp?1783908926",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/03a26ca7-b26f-4b86-a060-712f15f4bf7f.jpg?1783908926"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "This spell costs {3} less to cast if you've gained 3 or more life this turn.\nReturn up to two target creature cards from your graveyard to your hand.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/03a26ca7-b26f-4b86-a060-712f15f4bf7f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A010ec11a-0484-486d-b7c0-de65593bf457&unique=prints",
+  "collector_number": "613",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Drink from the vein? How provincial.\"\n—Lord Duchorvin",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Andrey Kuzinskiy",
+  "artist_ids": [
+    "c04ff0b2-67a1-4238-82f7-6c67de734b56"
+  ],
+  "illustration_id": "87cf93dc-2af0-4910-807d-c91fd820269a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "startercollection"
+  ],
+  "edhrec_rank": 15115,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=680752&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSanguine%2BIndulgence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSanguine%2BIndulgence",
+    "edhrec": "https://edhrec.com/route/?cc=Sanguine+Indulgence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F591016%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=795916&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/134562?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

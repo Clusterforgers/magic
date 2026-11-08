@@ -1,0 +1,27 @@
+{
+  "oracle_id": "aaaaf370-6486-4e17-9a93-92e05ebcf29f",
+  "name": "Rampant Elephant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampant Elephant",
+      "oracle_fingerprint": "71df89c4aca630c6db04ff91ddead35a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "dc8c6803-dd87-4f00-8a92-9613dbe90549",
+  "name": "Karsus Depthguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karsus Depthguard",
+      "oracle_fingerprint": "c968fcbf242edd4dfbc5017e2d38d414",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": ["This", { "Compare": { "stat": "Power", "op": "Ge", "to": 5 } }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

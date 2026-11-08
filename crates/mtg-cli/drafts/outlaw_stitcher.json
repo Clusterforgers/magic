@@ -1,0 +1,59 @@
+{
+  "oracle_id": "9fda1239-97ca-41f0-8bfa-040484769396",
+  "name": "Outlaw Stitcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outlaw Stitcher",
+      "oracle_fingerprint": "dcef5301f59642526a04b2ba697d11fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Rogue",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Rogue"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Sum": [
+                          {
+                            "Tally": {
+                              "event": "SpellCast",
+                              "who": "EachPlayer",
+                              "filter": [{ "ControlledBy": "You" }]
+                            }
+                          },
+                          -1
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{4}{U}" } }
+      ]
+    }
+  ]
+}

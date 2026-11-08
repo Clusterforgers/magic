@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d6786f80-818c-433d-8978-81814171dd39",
+  "name": "Wind Zendikon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wind Zendikon",
+      "oracle_fingerprint": "b513f4f4496d1c1f872af228509d56ba",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              { "SetColors": ["Blue"] },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Elemental" }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

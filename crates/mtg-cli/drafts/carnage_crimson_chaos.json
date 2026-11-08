@@ -1,0 +1,58 @@
+{
+  "oracle_id": "c0efafc6-8ffb-4908-ae64-3f391722370a",
+  "name": "Carnage, Crimson Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carnage, Crimson Chaos",
+      "oracle_fingerprint": "d4ccdfe439172d462f65e16abe90bd6c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    },
+                    { "GrantAbility": { "Rule": { "rule": { "MustAttack": "This" } } } }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Mayhem": "{B}{R}" } }
+      ]
+    }
+  ]
+}

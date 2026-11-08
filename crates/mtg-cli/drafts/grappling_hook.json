@@ -1,0 +1,37 @@
+{
+  "oracle_id": "24c193cc-3f83-4414-8cac-8b9f48d5bb6d",
+  "name": "Grappling Hook",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grappling Hook",
+      "oracle_fingerprint": "41c702977874e559f18b9b89bf33c4c1",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "DoubleStrike" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "Triggering" }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

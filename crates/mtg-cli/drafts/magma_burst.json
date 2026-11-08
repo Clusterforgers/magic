@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f5af6d60-decd-4e04-8841-da2d3000a405",
+  "name": "Magma Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magma Burst",
+      "oracle_fingerprint": "1af7df400590eeba6764001969ba61c7",
+      "abilities": [
+        {
+          "Keyword": { "Kicker": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }] }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } },
+                  "max": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } }
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "10b9bfb3-c478-45c6-b227-9c66b63bc79b",
+  "name": "Veldt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veldt",
+      "oracle_fingerprint": "6f0cbacc4da0f961833641a09d8d38a4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", { "HasCounter": { "Other": "depletion" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Green", "White"] } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

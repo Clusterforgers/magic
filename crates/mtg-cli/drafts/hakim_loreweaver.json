@@ -1,0 +1,61 @@
+{
+  "oracle_id": "43e99cba-a6e3-4abc-a92b-aaf5839c72d2",
+  "name": "Hakim, Loreweaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hakim, Loreweaver",
+      "oracle_fingerprint": "8696cca60eca8317ef5e0f5d8a7ba025",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{U}{U}",
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                { "Step": "Upkeep" }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Aura" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "BattlefieldAttached": { "to": "This" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{U}" }, "Tap"],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Subtype": "Aura" }, { "AttachedTo": { "Each": ["This"] } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -46,6 +46,7 @@ fn effect(who: Ref, token: TokenRef, count: Amount, tapped: bool, attacking: boo
         count,
         tapped,
         attacking,
+        against: None,
         bind: None,
     }
 }
@@ -109,6 +110,7 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
         // The announced X stands for the amount until the where clause or the cost names it.
         Some(()) if r.where_x || r.x_free => TokenRef::Sized {
             size: Amount::X,
+            toughness: None,
             token: spec,
         },
         Some(()) => return None,
@@ -473,7 +475,11 @@ fn token_text(token: &TokenRef) -> Option<Described> {
         }
         TokenRef::Custom(spec) | TokenRef::Sized { token: spec, .. } => {
             let size = match token {
-                TokenRef::Sized { size, .. } if *size == Amount::X => "X/X".to_owned(),
+                TokenRef::Sized {
+                    size,
+                    toughness: None,
+                    ..
+                } if *size == Amount::X => "X/X".to_owned(),
                 TokenRef::Sized { .. } => return None,
                 _ => format!("{}/{}", spec.power?, spec.toughness?),
             };
@@ -553,6 +559,7 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
         count,
         tapped,
         attacking,
+        against,
         bind: None,
     } = effect
     else {
@@ -569,12 +576,21 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
     } else {
         "creates"
     };
-    let entering = |single: bool| match (*tapped, *attacking, single) {
-        (_, false, _) => "",
-        (true, true, true) => " that's tapped and attacking",
-        (true, true, false) => " that are tapped and attacking",
-        (false, true, true) => " that's attacking",
-        (false, true, false) => " that are attacking",
+    // The defender an attack trigger names: "attacking that player" (e16c).
+    let at = match (against, *attacking) {
+        (None, _) => "",
+        (Some(Ref::Against | Ref::Defending), true) => " that player",
+        _ => return None,
+    };
+    let entering = |single: bool| {
+        let state = match (*tapped, *attacking, single) {
+            (_, false, _) => "",
+            (true, true, true) => " that's tapped and attacking",
+            (true, true, false) => " that are tapped and attacking",
+            (false, true, true) => " that's attacking",
+            (false, true, false) => " that are attacking",
+        };
+        format!("{state}{at}")
     };
     if legendary {
         let name = name?;

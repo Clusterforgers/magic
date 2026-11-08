@@ -14,11 +14,15 @@ mod become_copy;
 mod become_day_night;
 mod become_level;
 mod become_monarch;
+mod bind_ref;
 mod bolster;
 mod c10_vp_planechase;
 mod cast_from_zone;
+mod change_targets;
 mod choose;
 mod choose_at_random;
+mod choose_value;
+mod conjure;
 mod connive;
 mod continuous;
 mod copy_ability;
@@ -26,11 +30,18 @@ mod copy_card;
 mod copy_spell;
 mod crewed;
 mod join_attack;
+mod let_amount;
 mod retarget;
+mod ring_tempts;
 mod unattach;
 mod w2d_villainous;
 mod w6e_exchange;
 pub(crate) use continuous::lower;
+
+/// The name under which the first step of a resolution binds whether it was done ("you may ...", "you may pay ...").
+pub(crate) fn first_step_done() -> String {
+    may::performed_name(&[0])
+}
 mod c6_kw_exploit;
 mod c6_kw_renown;
 mod counter;
@@ -43,6 +54,7 @@ mod dk1c5_either;
 mod done;
 mod draw;
 mod encode;
+mod end_turn;
 mod exile;
 mod exile_hidden;
 mod exile_top;
@@ -50,6 +62,11 @@ mod exile_until;
 mod explore;
 mod extra_turn;
 mod fabricate;
+mod fe1n_damage;
+mod fe1n_game;
+mod fe1n_life;
+mod fe1n_piles;
+mod fe1n_repeat_while;
 mod fight;
 mod flip;
 mod flip_coin;
@@ -57,6 +74,7 @@ mod gain_life;
 mod goad;
 mod if_then;
 mod learn;
+mod look_at_hand;
 mod look_at_top;
 mod lose_life;
 mod manifest;
@@ -65,9 +83,15 @@ mod mill;
 mod modal;
 mod monstrosity;
 mod move_counters;
+mod moved_as;
+mod one_of;
 mod pair;
+mod reflexive;
+mod remember;
+mod turn_up;
 // dk1b
 mod dk1c5_unlock;
+mod g12b_counters_of;
 #[cfg(test)]
 mod move_attached;
 mod move_to;
@@ -90,9 +114,11 @@ mod sacrifice;
 mod scry;
 mod search;
 mod search_zones;
+mod seek;
 mod shield;
 mod shuffle;
 mod surveil;
+mod suspect;
 mod tap;
 #[cfg(test)]
 mod tap_bound_tests;
@@ -128,10 +154,34 @@ fn wrong_effect(name: &str) -> ResolveError {
 
 /// Runs one effect; a sacrifice or a removal of counters also reports whether it did anything (`done::report`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    Ok(done::report(cx, effect, dispatch(cx, effect)?))
+    let run = moved_as::bind(cx, effect, dispatch(cx, effect)?);
+    Ok(done::report(cx, effect, run))
+}
+
+/// The game, life, damage, repeat, pile, kept-number and copy effects.
+fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    match effect {
+        Effect::LoseGame { .. } => fe1n_game::lose(cx, effect),
+        Effect::DrawGame {} => fe1n_game::draw(cx, effect),
+        Effect::SetLife { .. } => fe1n_life::set(cx, effect),
+        Effect::ExchangeLife { .. } => fe1n_life::exchange(cx, effect),
+        Effect::RemoveDamage { .. } => fe1n_damage::run(cx, effect),
+        Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
+        Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
+        Effect::LookAtHand { .. } => look_at_hand::run(cx, effect),
+        Effect::Let { .. } => let_amount::run(cx, effect),
+        Effect::Bind { .. } => bind_ref::run(cx, effect),
+        Effect::CopySpell { .. } => copy_spell::run(cx, effect),
+        Effect::ChangeTargets { .. } => change_targets::run(cx, effect),
+        Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
+        Effect::CopyCard { .. } => copy_card::run(cx, effect),
+        Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
+        _ => Err(wrong_effect("dispatch")),
+    }
 }
 
 /// Hands the effect to the primitive of its variant.
+#[allow(clippy::too_many_lines)] // one arm per effect
 fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     match effect {
         Effect::Draw { .. } => draw::run(cx, effect),
@@ -140,17 +190,26 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Scry { .. } => scry::run(cx, effect),
         Effect::LookAtTop { .. } => look_at_top::run(cx, effect),
         Effect::Reveal { .. } => reveal::run(cx, effect),
+        Effect::Search {
+            zone: mtg_cards::refs::ZoneKind::Outside,
+            bind,
+            ..
+        } => Ok(search::nothing_outside(bind)),
         Effect::Search { .. } => search::run(cx, effect),
         Effect::Choose { .. } => choose::run(cx, effect),
         Effect::ChooseAtRandom { .. } => choose_at_random::run(cx, effect),
+        Effect::ChooseValue { .. } => choose_value::run(cx, effect),
         Effect::Shuffle { .. } => shuffle::run(cx, effect),
         Effect::Move { .. } => move_to::run(cx, effect),
         Effect::Destroy { .. } => destroy::run(cx, effect),
         Effect::Exile { .. } => exile::run(cx, effect),
         Effect::ExileHidden { .. } => exile_hidden::run(cx, effect),
-        Effect::Encode { .. } => encode::run(cx, effect),
+        Effect::Encode { .. } | Effect::Haunt { .. } => encode::run(cx, effect),
+        Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } => {
+            remember::run(cx, effect)
+        }
         Effect::Manifest { .. } | Effect::Cloak { .. } => manifest::run(cx, effect),
-        Effect::Sacrifice { .. } => sacrifice::run(cx, effect),
+        Effect::Sacrifice { .. } | Effect::SacrificeUpTo { .. } => sacrifice::run(cx, effect),
         Effect::Counter { .. } => counter::run(cx, effect),
         Effect::DealDamage { .. } => deal_damage::run(cx, effect),
         Effect::GainLife { .. } => gain_life::run(cx, effect),
@@ -158,8 +217,10 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::AddMana { .. } => add_mana::run(cx, effect),
         Effect::PutCounters { .. } => put_counters::run(cx, effect),
         Effect::RemoveCounters { .. } => remove_counters::run(cx, effect),
+        Effect::RemoveAllCounters { .. } => remove_counters::run_all(cx, effect),
         Effect::MoveCounters { .. } => move_counters::run(cx, effect),
         Effect::MultiplyCounters { .. } => multiply_counters::run(cx, effect),
+        Effect::PutCountersOf { .. } => g12b_counters_of::run(cx, effect),
         Effect::Tap { .. } => tap::run(cx, effect),
         Effect::Untap { .. } => untap::run(cx, effect),
         Effect::TapOrUntap { .. } => w5d_tap_or_untap::run(cx, effect),
@@ -170,16 +231,23 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::MyriadCopies { .. } => myriad_copies::run(cx, effect),
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),
+        Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
+        Effect::Suspect { .. } | Effect::Unsuspect { .. } | Effect::Solve { .. } => {
+            suspect::run(cx, effect)
+        }
         Effect::Surveil { .. } => surveil::run(cx, effect),
         Effect::Proliferate { .. } => proliferate::run(cx, effect),
         Effect::Goad { .. } => goad::run(cx, effect),
         Effect::Fight { .. } => fight::run(cx, effect),
         Effect::BecomeMonarch { .. } => become_monarch::run(cx, effect),
+        Effect::RingTempts { .. } => ring_tempts::run(cx, effect),
         Effect::CreateEmblem { .. } => w6b_create_emblem::run(cx, effect),
         Effect::BecomeDayNight { .. } => become_day_night::run(cx, effect),
         Effect::Amass { .. } => amass::run(cx, effect),
         Effect::Incubate { .. } => w7c_incubate::run(cx, effect),
+        Effect::Conjure { .. } => conjure::run(cx, effect),
+        Effect::Seek { .. } => seek::run(cx, effect),
         Effect::Venture { .. } => w11d_venture::run(cx, effect),
         Effect::UnlockDoor { .. } => dk1c5_unlock::run(cx, effect),
         Effect::TakeInitiative { .. } => w15a_take_initiative::run(cx, effect),
@@ -201,12 +269,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::CastFromZone { .. } => cast_from_zone::run(cx, effect),
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
+        Effect::EndTurn => Ok(end_turn::run(cx)),
         Effect::AddPhase { .. } => add_phase::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
-        Effect::CopySpell { .. } => copy_spell::run(cx, effect),
-        Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
-        Effect::CopyCard { .. } => copy_card::run(cx, effect),
-        Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
@@ -215,7 +280,18 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
+        Effect::Reflexive { .. } => reflexive::run(cx, effect),
         Effect::If { .. } => if_then::run(cx, effect),
+        Effect::Together { effects } => Ok(Run::Done {
+            events: Vec::new(),
+            bound: Vec::new(),
+            snapshots: Vec::new(),
+            next: if effects.is_empty() {
+                crate::resolve::Next::Sibling
+            } else {
+                crate::resolve::Next::Enter(0)
+            },
+        }),
         Effect::May { .. } => may::run(cx, effect),
         Effect::Pay { .. } => pay::run(cx, effect),
         Effect::Modal { .. } => modal::run(cx, effect),
@@ -226,7 +302,16 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
-        Effect::Either { .. } => dk1c5_either::run(cx, effect),
+        Effect::Either { .. } | Effect::OneOf { .. } => choice_of_lists(cx, effect),
+        other => fe1n(cx, other),
+    }
+}
+
+/// A choice among lists of effects: two printed options ("or") or several.
+fn choice_of_lists(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    match effect {
+        Effect::OneOf { .. } => one_of::run(cx, effect),
+        _ => dk1c5_either::run(cx, effect),
     }
 }
 
@@ -243,19 +328,20 @@ mod tests {
 
     /// One effect of every variant of the vocabulary.
     const EFFECTS: &str = r#"[
-        {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}},
+        {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
-        {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
-        {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}},
+        {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"ChooseValue":{"kind":"Color","as":"hue"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
+        {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}},
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
-        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"AddPhase":{"phases":["Combat","Main"]}},
+        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"PutCountersOf":{"on":"This","of":"This"}}, {"Tap":{"what":"This"}},
+        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
-        {"BecomeMonarch":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Venture":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
+        {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}}, "EndTurn",
+        {"ChangeTargets":{"what":"This","to":"Another"}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
@@ -265,26 +351,33 @@ mod tests {
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
-        {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
+        {"Reflexive":{"effects":[]}},
+        {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Together":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}, {"Clash":{}},
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
         {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}},
-        {"Either":{"first":[],"second":[]}}
+        {"Either":{"first":[],"second":[]}},
+        {"OneOf":{"options":[[],[],[]]}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
-        serde_json::to_value(effect)
-            .unwrap()
-            .as_object()
-            .and_then(|map| map.keys().next().cloned())
-            .unwrap()
+        let value = serde_json::to_value(effect).unwrap();
+        value.as_str().map_or_else(
+            || {
+                value
+                    .as_object()
+                    .and_then(|map| map.keys().next().cloned())
+                    .unwrap()
+            },
+            str::to_owned,
+        )
     }
 
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 92, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 113, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -324,15 +417,18 @@ mod tests {
         "Effect.Mill",
         "Effect.Scry",
         "Effect.LookAtTop",
+        "Effect.LookAtHand",
         "Effect.Reveal",
         "Effect.Search",
         "Effect.Choose",
         "Effect.ChooseAtRandom",
+        "Effect.ChooseValue",
         "Effect.Shuffle",
         "Effect.Move",
         "Effect.Destroy",
         "Effect.Exile",
         "Effect.Sacrifice",
+        "Effect.SacrificeUpTo",
         "Effect.Counter",
         "Effect.DealDamage",
         "Effect.GainLife",
@@ -342,6 +438,7 @@ mod tests {
         "Effect.RemoveCounters",
         "Effect.MoveCounters",
         "Effect.MultiplyCounters",
+        "Effect.PutCountersOf",
         "Effect.Tap",
         "Effect.Untap",
         "Effect.TapOrUntap",
@@ -354,16 +451,26 @@ mod tests {
         "Effect.Flip",
         "Effect.Prepare",
         "Effect.WinGame",
+        "Effect.LoseGame",
+        "Effect.DrawGame",
+        "Effect.SetLife",
+        "Effect.ExchangeLife",
+        "Effect.RemoveDamage",
+        "Effect.RepeatWhile",
+        "Effect.SeparatePiles",
         "Effect.AddPhase",
         "Effect.Surveil",
         "Effect.Proliferate",
         "Effect.Goad",
         "Effect.Fight",
         "Effect.BecomeMonarch",
+        "Effect.RingTempts",
         "Effect.CreateEmblem",
         "Effect.BecomeDayNight",
         "Effect.Amass",
         "Effect.Incubate",
+        "Effect.Conjure",
+        "Effect.Seek",
         "Effect.Venture",
         "Effect.TakeInitiative",
         "Effect.Monstrosity",
@@ -382,11 +489,15 @@ mod tests {
         "Effect.ExileTop",
         "Effect.ExileHidden",
         "Effect.Encode",
+        "Effect.Remember",
+        "Effect.Forget",
         "Effect.Manifest",
         "Effect.Cloak",
         "Effect.CastFromZone",
         "Effect.TimeTravel",
         "Effect.ExtraTurn",
+        "Effect.EndTurn",
+        "Effect.ChangeTargets",
         "Effect.CopySpell",
         "Effect.CopyAbility",
         "Effect.CopyCard",
@@ -399,8 +510,10 @@ mod tests {
         "Effect.RemoveFromCombat",
         "Effect.Shield",
         "Effect.DelayedTrigger",
+        "Effect.Reflexive",
         "Effect.If",
         "Effect.May",
+        "Effect.Together",
         "Effect.Pay",
         "Effect.Modal",
         "Effect.RepeatEach",
@@ -411,5 +524,6 @@ mod tests {
         "Effect.Planechase",
         "Effect.VillainousChoice",
         "Effect.Either",
+        "Effect.OneOf",
     ];
 }

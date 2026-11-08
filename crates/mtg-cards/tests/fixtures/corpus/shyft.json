@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc",
+  "oracle_id": "40c3007a-be6c-4400-9139-12b9ca098ac4",
+  "multiverse_ids": [
+    184721
+  ],
+  "mtgo_id": 30544,
+  "mtgo_foil_id": 30545,
+  "name": "Shyft",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc",
+  "scryfall_uri": "https://scryfall.com/card/me2/66/shyft?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:37:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.jpg?1783942629",
+    "normal": "https://cards.scryfall.io/normal/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.jpg?1783942629",
+    "large": "https://cards.scryfall.io/large/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.jpg?1783942629",
+    "png": "https://cards.scryfall.io/png/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.png?1783942629",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.jpg?1783942629",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.jpg?1783942629",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.webp?1783942629",
+    "grid": "https://cards.scryfall.io/grid/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.webp?1783942629",
+    "display": "https://cards.scryfall.io/display/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.webp?1783942629",
+    "art": "https://cards.scryfall.io/art/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.webp?1783942629",
+    "crop": "https://cards.scryfall.io/crop/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.webp?1783942629",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/7/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc.jpg?1783942629"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "At the beginning of your upkeep, you may have this creature become the color or colors of your choice. (This effect lasts indefinitely.)",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d7f2bbf6-65b7-41c4-a219-f8ea4aeb9bbc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A40c3007a-be6c-4400-9139-12b9ca098ac4&unique=prints",
+  "collector_number": "66",
+  "digital": true,
+  "rarity": "common",
+  "flavor_text": "\"Capturing this specimen was not easy. Study it well, that you someday might be as versatile.\"\n—Gerda Äagesdotter, Archmage of the Unseen",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Richard Thomas",
+  "artist_ids": [
+    "596b3aac-b331-4e1e-ae41-9ec2d3b653e1"
+  ],
+  "illustration_id": "bdb89747-68d0-439d-9717-31d67168f166",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30924,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184721&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShyft",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShyft",
+    "edhrec": "https://edhrec.com/route/?cc=Shyft"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DShyft%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Shyft&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30544?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

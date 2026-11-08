@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4d08e822-6535-44b7-a100-e5e1e8f5c3e3",
+  "name": "Dust Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dust Elemental",
+      "oracle_fingerprint": "d4e589334c8b0aa02849745c4a4cdbde",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 3, "max": 3 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

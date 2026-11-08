@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME loses this ability and becomes an Aura enchantment with enchant creature. Attach it to target creature. You may pay {B} to end this effect.",
+      "abilities": [],
+      "gap": "key:Animate.RemoveThisAbility"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of the upkeep of enchanted creature's controller, CARDNAME deals 1 damage to that player.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 163
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 164,
+          "end": 275
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e729fce5-a1cf-4e95-9fd5-fccf4f704d31",
+  "name": "Awaken the Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awaken the Inferno",
+      "oracle_fingerprint": "7a1f7538a6fc831a7d8bc45523e6eb2f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6 } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Supertype": "Basic" }], "cost": "{2}" }
+          }
+        }
+      ]
+    }
+  ]
+}

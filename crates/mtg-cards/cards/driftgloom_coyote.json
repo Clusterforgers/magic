@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f76a86f3-568a-40b3-8e2c-f84db4141293",
+  "name": "Driftgloom Coyote",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Driftgloom Coyote",
+      "oracle_fingerprint": "1a2e94dca1174bf9fea749e9a3ebca79",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

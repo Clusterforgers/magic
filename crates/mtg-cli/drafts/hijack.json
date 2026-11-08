@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fd5651f7-52f8-4845-8a1b-32e5d2e9b00e",
+  "name": "Hijack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hijack",
+      "oracle_fingerprint": "1b553ef93a95fe81d38823606e9d120a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "118f2cb6-2af9-4acc-b386-a8e8dded5793",
+  "name": "Strider, Ranger of the North",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strider, Ranger of the North",
+      "oracle_fingerprint": "41888ff3e982bd539cbd64d846c84b3c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "FirstStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

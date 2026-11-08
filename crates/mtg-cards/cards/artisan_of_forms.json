@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3e8abec7-1e18-460a-9d88-30969755ebd2",
+  "name": "Artisan of Forms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artisan of Forms",
+      "oracle_fingerprint": "b43d4b0f196f1628a0d47fd9919ec8e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Target": 0 },
+                        "except": ["ThisAbility"],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

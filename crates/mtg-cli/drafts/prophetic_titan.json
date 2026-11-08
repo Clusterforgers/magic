@@ -1,0 +1,77 @@
+{
+  "oracle_id": "224f5f1a-4f31-4935-bf5a-910fd0a666a1",
+  "name": "Prophetic Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prophetic Titan",
+      "oracle_fingerprint": "53f3b59d37b88ccd8df5be3b3d5e1679",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                            "op": "Ge",
+                            "right": 4
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    },
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                            "op": "Ge",
+                            "right": 4
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                    },
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": 4, "as": "top" } },
+                        {
+                          "Choose": {
+                            "from": { "Bound": "top" },
+                            "as": "kept2",
+                            "rest_as": "rest3"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "rest3" },
+                            "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

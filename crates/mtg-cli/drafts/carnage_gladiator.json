@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7d8e20e5-6456-43f5-9188-263b54c0a923",
+  "name": "Carnage Gladiator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carnage Gladiator",
+      "oracle_fingerprint": "1042987e04a382c51128a64b16f9d59c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": [{ "Type": "Creature" }] } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 1 } }]
+          }
+        },
+        { "Activated": { "cost": "{1}{B}{R}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

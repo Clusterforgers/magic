@@ -1,0 +1,28 @@
+{
+  "oracle_id": "09bf80cc-1112-4f4c-9431-92d741bf2230",
+  "name": "Rotting Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rotting Giant",
+      "oracle_fingerprint": "136beaff867b72c1feb6046a6abb647e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

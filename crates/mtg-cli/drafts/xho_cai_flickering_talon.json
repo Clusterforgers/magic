@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0988d2cd-4e1d-47c6-b0db-0ff0335b12e6",
+  "name": "Xho Cai, Flickering Talon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Xho Cai, Flickering Talon",
+      "oracle_fingerprint": "76bcee53ea9e9367310d9e25cd125e8f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 25, "end": 105 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

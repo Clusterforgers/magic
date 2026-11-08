@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6629e5f3-ac59-48f8-b09c-3b98f59b9922",
+  "name": "Awakened Awareness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awakened Awareness",
+      "oracle_fingerprint": "7b555647b30cfdda8795d1e59f48824b",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1", "count": "X" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

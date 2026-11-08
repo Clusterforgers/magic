@@ -1,0 +1,45 @@
+{
+  "oracle_id": "0f9c4b56-7ad7-4262-8079-3eee5f0cdd3b",
+  "name": "Mistform Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Stalker",
+      "oracle_fingerprint": "944e1ec9b530eb15ff42fdb5f85a5275",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

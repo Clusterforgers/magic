@@ -21,6 +21,8 @@ export interface CardChoicesProps {
   chosen: readonly ObjectId[]
   /** The choice is full: the cards outside it are closed. */
   closed: boolean
+  /** Cards closed while the rest stay open (a second card of a name that a search takes once). */
+  shut?: ReadonlySet<ObjectId>
   /** What a screen reader calls each card; two cards of one name are told apart by the caller. */
   labels: ReadonlyMap<ObjectId, string>
   /** The views of the cards on offer, for the filter by name or type line; a card the view lacks matches nothing. */
@@ -59,6 +61,7 @@ export function CardChoices({
   cards,
   chosen,
   closed,
+  shut,
   labels,
   objects,
   onPress,
@@ -153,7 +156,7 @@ export function CardChoices({
               label={labels.get(id) ?? 'A card'}
               size={size}
               chosen={chosen.includes(id)}
-              closed={closed && !chosen.includes(id)}
+              closed={(closed || shut?.has(id) === true) && !chosen.includes(id)}
               tabbable={id === current}
               hotkey={key}
               onPress={onPress}

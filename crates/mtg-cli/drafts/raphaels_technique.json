@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f58a5f8b-254c-4206-bdbe-55a23798ed2d",
+  "name": "Raphael's Technique",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Raphael's Technique",
+      "oracle_fingerprint": "5d4f987456ad31e9b17f912823aaa430",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{2}{R}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 145, "end": 201 }
+          }
+        }
+      ]
+    }
+  ]
+}

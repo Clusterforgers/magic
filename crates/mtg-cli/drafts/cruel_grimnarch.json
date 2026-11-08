@@ -1,0 +1,56 @@
+{
+  "oracle_id": "4c27b7cd-dcbf-45a7-9e15-a6d8dfd3a087",
+  "name": "Cruel Grimnarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Grimnarch",
+      "oracle_fingerprint": "28153c1f2d13a9df274e1e3e0f28bd2a",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "who": "Opponents", "as": "discarded" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 4,
+                      "of": {
+                        "Sum": [
+                          { "Players": "Opponents" },
+                          {
+                            "Times": {
+                              "by": -1,
+                              "of": {
+                                "Count": [
+                                  { "Is": { "Bound": "discarded" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "647e5639-6339-48af-af96-e48729e1cad3",
+  "name": "Ray of Enfeeblement",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ray of Enfeeblement",
+      "oracle_fingerprint": "fdda3f846131b6448ae7a5a8d72f6b1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": -4,
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "CountOf": {
+                                        "of": { "Target": 0 },
+                                        "filter": [{ "Type": "Creature" }, { "Color": "White" }]
+                                      }
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": 4,
+                                "otherwise": 1
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

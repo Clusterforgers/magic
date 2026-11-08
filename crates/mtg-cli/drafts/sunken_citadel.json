@@ -1,0 +1,36 @@
+{
+  "oracle_id": "508189e1-9cef-4f9c-8ff1-078c99a0f603",
+  "name": "Sunken Citadel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunken Citadel",
+      "oracle_fingerprint": "d8c0ba07206c92dccd98e7735174b793",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "ChosenColor": 2 },
+                  "only": [{ "Ability": { "types": ["Land"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

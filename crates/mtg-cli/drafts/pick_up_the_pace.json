@@ -1,0 +1,42 @@
+{
+  "oracle_id": "873e739c-edf4-46a7-9024-5caaf87f507e",
+  "name": "Pick Up the Pace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pick Up the Pace",
+      "oracle_fingerprint": "953d8ac438c20e0dc5db4a7bcf498d55",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "EnteredThisTurn"]
+              }
+            },
+            "effects": [{ "ExileTop": { "as": "exiled" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "ExiledWith": "This" }], "from": "Exile", "play": true }
+            },
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                "YourTurn"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

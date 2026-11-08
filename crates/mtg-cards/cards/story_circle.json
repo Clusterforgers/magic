@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7071aee8-b5ca-4be5-9ba0-2df7e3af303b",
+  "name": "Story Circle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Story Circle",
+      "oracle_fingerprint": "ded6d4e32cae2a161262b8cea59c9afc",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      "ChosenColor"
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

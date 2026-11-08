@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Each opponent loses 3 life unless they discard a card or sacrifice a creature. (To collect evidence 3, exile cards with total mana value 3 or greater from your graveyard.)",
+      "abilities": [],
+      "gap": "effect:GenericChoice"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, look at the top four cards of your library. Put two of them into your hand and the rest into your graveyard. You lose 2 life.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 152
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 153,
+          "end": 354
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

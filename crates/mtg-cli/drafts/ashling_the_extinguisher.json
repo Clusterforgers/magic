@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e89e102f-e3bc-4c16-bb27-09db83cec5ec",
+  "name": "Ashling, the Extinguisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashling, the Extinguisher",
+      "oracle_fingerprint": "6ff89ffbcb218369f811b964b13d3bd7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Is": { "Target": 0 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

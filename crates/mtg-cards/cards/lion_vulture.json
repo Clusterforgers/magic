@@ -1,0 +1,27 @@
+{
+  "oracle_id": "169d24f3-a308-4a2e-ae25-85dae448994e",
+  "name": "Lion Vulture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lion Vulture",
+      "oracle_fingerprint": "2a38881f0ef6b2fbd40cb733b12903a9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

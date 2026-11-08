@@ -17,6 +17,7 @@ fn blow(effects: &[Effect]) -> Option<(&crate::refs::Ref, i32)> {
                 source: None,
                 to,
                 amount: Amount::Fixed(amount),
+                ..
             },
         ] => Some((to, *amount)),
         _ => None,

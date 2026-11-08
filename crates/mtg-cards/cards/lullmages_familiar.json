@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2a56fe0b-f8a9-499c-bce1-cec6cb3b66f0",
+  "name": "Lullmage's Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lullmage's Familiar",
+      "oracle_fingerprint": "b85dcf07025309b6a497208ce82e203c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Kicked"], "by": "You" } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

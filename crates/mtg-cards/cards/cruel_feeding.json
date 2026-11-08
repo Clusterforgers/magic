@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ef60bb5b-7cf5-4b4d-a725-4531fc0c852a",
+  "name": "Cruel Feeding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Feeding",
+      "oracle_fingerprint": "40cd0257d8acfc0dff35efa3bea7c425",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{2}{B}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

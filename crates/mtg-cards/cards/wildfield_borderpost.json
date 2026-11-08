@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b8141489-00fa-4aba-85d0-4c883196fece",
+  "name": "Wildfield Borderpost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildfield Borderpost",
+      "oracle_fingerprint": "06261af5ca3050284d01698f2dac35e0",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }] } }
+            ]
+          }
+        },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

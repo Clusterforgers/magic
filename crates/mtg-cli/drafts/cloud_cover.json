@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a4cd8dd1-adb9-4c4c-bda9-6f6b6c167702",
+  "name": "Cloud Cover",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloud Cover",
+      "oracle_fingerprint": "04c81afa7b42f0cd9d8da65bbb5ce7ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "ControlledBy": "You" }, "Other", { "In": "Battlefield" }],
+                "by": [
+                  { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": "TriggeringFirst", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

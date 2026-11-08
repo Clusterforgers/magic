@@ -1,0 +1,41 @@
+{
+  "oracle_id": "3361cf88-171a-4ddd-ac56-a31d42613c80",
+  "name": "Clockwork Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clockwork Dragon",
+      "oracle_fingerprint": "f11e7b626488fd7f2200171bb677362a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 6 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "RemoveCounters": { "from": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

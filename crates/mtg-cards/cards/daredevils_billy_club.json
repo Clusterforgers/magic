@@ -1,0 +1,30 @@
+{
+  "oracle_id": "654db13d-c7e4-4ee0-a87a-3635467f2f19",
+  "name": "Daredevil's Billy Club",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daredevil's Billy Club",
+      "oracle_fingerprint": "6615578275b7f5095b474bd6f0abfe92",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

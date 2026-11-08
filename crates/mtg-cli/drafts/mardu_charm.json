@@ -1,0 +1,78 @@
+{
+  "oracle_id": "147eabab-9d93-4cf4-811b-0efa3b84c5b5",
+  "name": "Mardu Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Charm",
+      "oracle_fingerprint": "d375e049d930eea3555cd16278a39f12",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Warrior",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Warrior"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": 2,
+                            "as": "token"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "Is": { "Bound": "token" } }]
+                            },
+                            "mods": [{ "AddKeyword": "FirstStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "filter": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Type": "Land" } }
+                            ],
+                            "by": "You"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "5c92f375-ae6a-4be5-a499-ab87d6bdc49b",
+  "name": "Palace Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Palace Guard",
+      "oracle_fingerprint": "1d8dc2be37680fe5777777f0d23bcd48",
+      "abilities": [{ "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 99 }] } }]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a2a40a19-8704-42fe-b9a6-5ae37c110303",
+  "name": "Idle Thoughts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Idle Thoughts",
+      "oracle_fingerprint": "5b4e65f410c300c0912418ece455e55f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

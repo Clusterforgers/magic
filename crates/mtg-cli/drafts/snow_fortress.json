@@ -1,0 +1,59 @@
+{
+  "oracle_id": "7709ed84-ed71-4dd2-b002-b257418dd79e",
+  "name": "Snow Fortress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snow Fortress",
+      "oracle_fingerprint": "8869a714cfc3ed0d27d6cb2f0dd75485",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "HasKeyword": "Flying" } },
+                    { "AttackingPlayer": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

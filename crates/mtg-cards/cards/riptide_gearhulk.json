@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f3838ff1-5403-4f3f-8531-36029c13fcfc",
+  "name": "Riptide Gearhulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riptide Gearhulk",
+      "oracle_fingerprint": "4c458758bad7c138e77839fb10edad1a",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Not": { "Type": "Land" } }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": { "Below": 2 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "49479778-c4c0-43ba-a7b7-45f00d067462",
+  "name": "Maze's End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maze's End",
+      "oracle_fingerprint": "8d97ec645378700ff64f0de16b111843",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", { "ReturnToHand": { "filter": ["This"] } }],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Gate" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }],
+                          "stat": "Name"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 10
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

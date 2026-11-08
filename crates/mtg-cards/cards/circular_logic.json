@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b071bbaf-79fa-413b-807b-2cc86c8a8125",
+  "name": "Circular Logic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circular Logic",
+      "oracle_fingerprint": "d37e8417ee5ec3977d896a881b1eb409",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{U}" } }
+      ]
+    }
+  ]
+}

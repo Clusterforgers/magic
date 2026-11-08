@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3a225d39-c1f8-4ab0-98ec-dad63bf268db",
+  "name": "Repopulate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repopulate",
+      "oracle_fingerprint": "c4977cb0f593ff578ace0f2cad579960",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

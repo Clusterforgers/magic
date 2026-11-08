@@ -9,7 +9,8 @@ use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::modify::SpendAs;
+use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::{Amount, CastWay};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -101,13 +102,17 @@ pub(crate) fn cast_cost_counting(
 fn cast_cost_x(cost: &mtg_cards::cost::Cost, counted: bool) -> Option<(ManaCost, Vec<Part>, u32)> {
     let price = Price::announced(cost).ok()?;
     let unpaid = price.tap
+        || price.untap
         || price.moves_source()
         || !price.changes.is_empty()
         || (price.mana.is_none() && price.parts.is_empty())
-        || price
-            .parts
-            .iter()
-            .any(|part| (part.is_counted() && !counted) || matches!(part, Part::Counters { .. }));
+        || price.parts.iter().any(|part| {
+            (part.is_counted() && !counted)
+                || matches!(
+                    part,
+                    Part::Counters { .. } | Part::PutCounters { .. } | Part::Exert
+                )
+        });
     (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts, price.x))
 }
 
@@ -188,6 +193,29 @@ fn with_required(state: &GameState, id: ObjectId, ways: Vec<Way>) -> Vec<Way> {
     })
 }
 
+/// Mana of any color or type may pay for a cast through a permission that says so (CR 609.4b): the ways cost the same total
+/// in generic mana.
+fn spend_as_any(permissions: &[&Cast], ways: &mut [Way], printed: Option<&ManaCost>) {
+    if permissions
+        .iter()
+        .any(|permission| permission.spend_as != SpendAs::Normal)
+    {
+        // Mana of any color still does not pay `{C}`; only mana of any type does.
+        let any_type = permissions
+            .iter()
+            .any(|permission| permission.spend_as == SpendAs::AnyType);
+        for way in ways {
+            way.mana = way.cost(printed).map(|cost| {
+                if any_type {
+                    cost.paid_by_any_mana()
+                } else {
+                    cost.paid_by_any_color()
+                }
+            });
+        }
+    }
+}
+
 /// The ways of [`of`] before the required additional costs.
 fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
@@ -244,7 +272,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let by_permission: Vec<&Cast> = permissions
         .iter()
         .copied()
-        .filter(|permission| !permission.free && permission.from == Some(zone_kind(zone)))
+        .filter(|permission| permission.adds_to_printed(zone_kind(zone)))
         .collect();
     let added = if own {
         Some(Added::default())
@@ -266,6 +294,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             printed,
         ));
     }
+    ways.extend(rather_way(state, player, card, &permissions, instant));
     let free_permissions = permissions
         .iter()
         .copied()
@@ -292,11 +321,137 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     }
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));
+    ways.extend(alt_cast_ways(state, player, card, instant));
+    if !own {
+        spend_as_any(&permissions, &mut ways, printed);
+    }
     ways
+}
+
+/// The ways the `AltCast` rules printed on the card give `player` now (CR 118.9): each names the zone the card is cast
+/// from, a condition that holds for the caster, and what is paid in place of the mana cost. The list of castable cards and
+/// the announcement both read this, so a card is offered exactly when its cost can be announced.
+fn alt_cast_ways(
+    state: &GameState,
+    player: PlayerId,
+    card: &GameObject,
+    instant: bool,
+) -> Vec<Way> {
+    let zone = zone_kind(card.zone());
+    let scope = Scope::announcing(state, player, card.reference());
+    let mut found: Vec<Way> = Vec::new();
+    for rule in ability_reader::printed_rules(card.card()) {
+        let Ability::AltCast {
+            way,
+            cost,
+            from,
+            condition,
+            flash,
+        } = &**rule
+        else {
+            continue;
+        };
+        let here = *from == zone && (zone == ZoneKind::Hand || card.owner() == player);
+        let open = condition
+            .as_ref()
+            .is_none_or(|held| scope.holds(held).unwrap_or(false));
+        if !here || !open || found.iter().any(|seen| seen.alternative == Some(*way)) {
+            continue;
+        }
+        let instant = instant || *flash;
+        let (mana, parts) = match cost {
+            None => (ManaCost::default(), Vec::new()),
+            Some(cost) => match cast_cost(cost) {
+                Some(paid) => paid,
+                None => continue,
+            },
+        };
+        found.push(Way {
+            alternative: Some(*way),
+            label: format!("{} {}", way_label(*way), cost_words(&mana, &parts)),
+            mana: Some(mana),
+            instant,
+            variant: 0,
+            parts,
+        });
+    }
+    found
+}
+
+/// The name a way of the `AltCast` table goes by in the list of ways.
+const fn way_label(way: CastWay) -> &'static str {
+    match way {
+        CastWay::Warp => "Warp",
+        CastWay::Surge => "Surge",
+        CastWay::WebSlinging => "Web-slinging",
+        CastWay::Impending => "Impending",
+        CastWay::Sneak => "Sneak",
+        _ => "Alternative cost",
+    }
 }
 
 /// The way of casting a card without paying its mana cost (CR 118.9): no mana, and the other parts and the cost increases of
 /// the cast stay.
+/// The way to cast for the mana cost a permission puts in place of the printed one (airbend).
+fn rather_way(
+    state: &GameState,
+    player: PlayerId,
+    card: &GameObject,
+    permissions: &[&Cast],
+    instant: bool,
+) -> Option<Way> {
+    if let Some(cost) = permissions
+        .iter()
+        .find_map(|permission| permission.instead.as_ref())
+    {
+        return instead_way(state, player, card, cost, instant);
+    }
+    let cost = permissions
+        .iter()
+        .find_map(|permission| permission.rather.as_ref())?;
+    Some(Way {
+        alternative: Some(CastWay::Alternative),
+        label: format!("Cast for {cost}"),
+        mana: Some(cost.clone()),
+        instant,
+        variant: 0,
+        parts: Vec::new(),
+    })
+}
+
+/// The way to cast `card` for `cost` rather than its mana cost (CR 118.9): "pay life equal to its mana value rather than
+/// pay its mana cost". Each amount of the cost is counted now with the card as `This`; a cost the engine cannot pay as a
+/// cast gives no way.
+pub(crate) fn instead_way(
+    state: &GameState,
+    player: PlayerId,
+    card: &GameObject,
+    cost: &Cost,
+    instant: bool,
+) -> Option<Way> {
+    let scope = Scope::announcing(state, player, card.reference());
+    let mut settled = cost.clone();
+    for item in &mut settled.0 {
+        let Some(amount) = item.amount_mut() else {
+            continue;
+        };
+        if matches!(amount, Amount::Fixed(_) | Amount::X) {
+            continue;
+        }
+        let number = i32::try_from(scope.amount(amount).ok()?.max(0)).ok()?;
+        *amount = Amount::Fixed(number);
+    }
+    let (mana, parts) = cast_cost(&settled)?;
+    Some(Way {
+        alternative: Some(CastWay::Alternative),
+        label: format!("Cast for {}", cost_words(&mana, &parts)),
+        mana: Some(mana),
+        instant,
+        variant: 0,
+        parts,
+    })
+}
+
 fn free_way(instant: bool) -> Way {
     Way {
         alternative: Some(CastWay::Free),
@@ -345,6 +500,8 @@ fn w14c_printed_alternative(
 }
 
 /// The alternative cost the keyword gives the card `id` for casting it where it is, when it gives one.
+// One arm for each keyword that gives an alternative cost.
+#[allow(clippy::too_many_lines)]
 fn keyword_way(
     state: &GameState,
     player: PlayerId,
@@ -413,10 +570,19 @@ fn keyword_way(
             cost,
             in_hand && state.opponent_lost_life(player),
         ),
+        // Open from a hand in a turn in which an Assassin or a commander of the caster dealt combat damage to a player (CR 702.173a).
+        Keyword::Freerunning(cost) => (
+            CastWay::Freerunning,
+            "Freerunning",
+            cost,
+            in_hand && state.freerunning_open(player),
+        ),
         Keyword::Awaken { cost, .. } => (CastWay::Awaken, "Awaken", cost, in_hand),
+        Keyword::Prototype { cost, .. } => (CastWay::Prototype, "Prototype", cost, in_hand),
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
             return Some(face_down_way(instant));
         }
+        Keyword::Plot(_) => return plot_way(state, player, id),
         Keyword::Foretell(cost) => (
             CastWay::Foretold,
             "Foretell",
@@ -439,8 +605,10 @@ fn keyword_way(
             | CastWay::Blitz
             | CastWay::Prowl
             | CastWay::Spectacle
+            | CastWay::Freerunning
             | CastWay::Mayhem
             | CastWay::Mutate
+            | CastWay::Prototype
     ) {
         cast_cost(cost)?
     } else {
@@ -539,25 +707,54 @@ fn foretold_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> boo
     })
 }
 
+/// The free cast of a plotted card as a sorcery (CR 702.170a), open on a later turn than the plot.
+fn plot_way(state: &GameState, player: PlayerId, id: ObjectId) -> Option<Way> {
+    plotted_before_now(state, player, id).then(|| Way {
+        alternative: Some(CastWay::Plotted),
+        label: "Cast without paying its mana cost".to_owned(),
+        mana: Some(ManaCost::default()),
+        instant: false,
+        variant: 0,
+        parts: Vec::new(),
+    })
+}
+
+/// Whether `player` plotted the card `id` on an earlier turn and it still lies in exile (CR 702.170a): the free cast is open
+/// to them then, and never on the turn it was plotted in.
+fn plotted_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+    state.object(id).is_some_and(|card| {
+        card.zone() == Zone::Exile
+            && card.owner() == player
+            && card
+                .plotted()
+                .is_some_and(|turn| turn < state.turn().number())
+    })
+}
+
 /// The way `player` casts the card `id` when a resolution lets them (CR 608.2g): for its mana cost, or without paying it.
 /// A land cannot be cast, nor can a card that is on the battlefield or the stack. The way takes the required additional
 /// costs of the card.
-pub(crate) fn granted(
+pub(crate) fn granted_ways(
     state: &GameState,
+    player: PlayerId,
     id: ObjectId,
-    free: bool,
-    way: Option<CastWay>,
+    granted: &Granted,
 ) -> Vec<Way> {
-    with_required(state, id, granted_before_required(state, id, free, way))
+    with_required(
+        state,
+        id,
+        granted_before_required(state, player, id, granted),
+    )
 }
 
-/// The ways of [`granted`] before the required additional costs.
+/// The ways of [`granted`] before the required additional costs: a cost paid rather than the mana cost is the one way.
 fn granted_before_required(
     state: &GameState,
+    player: PlayerId,
     id: ObjectId,
-    free: bool,
-    way: Option<CastWay>,
+    granted: &Granted,
 ) -> Vec<Way> {
+    let (free, way) = (granted.free, granted.way);
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
@@ -584,6 +781,11 @@ fn granted_before_required(
                 variant: 0,
                 parts,
             })
+            .into_iter()
+            .collect();
+    }
+    if let Some(cost) = &granted.rather {
+        return instead_way(state, player, card, cost, true)
             .into_iter()
             .collect();
     }
@@ -696,6 +898,60 @@ pub(crate) fn can_foretell(
         )
 }
 
+/// The mana the special action of plot costs for the card `id` (CR 702.170a): the plot cost, when it has the keyword and the
+/// cost is mana alone.
+pub(crate) fn plot_action_cost(state: &GameState, id: ObjectId) -> Option<ManaCost> {
+    keywords_of(state, id).into_iter().find_map(|keyword| {
+        let Keyword::Plot(cost) = keyword else {
+            return None;
+        };
+        mana_only(cost)
+    })
+}
+
+/// The cards of `hand` that `player` can plot now.
+pub(crate) fn plottable(
+    state: &GameState,
+    player: PlayerId,
+    hand: &[ObjectId],
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> Vec<ObjectId> {
+    hand.iter()
+        .copied()
+        .filter(|id| can_plot(state, player, *id, pool, sources, life))
+        .collect()
+}
+
+/// Whether `player` can plot the card `id` now: it is in their hand, they can cast a sorcery now and can pay the plot
+/// cost (CR 702.170a).
+pub(crate) fn can_plot(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> bool {
+    let Some(card) = state.object(id) else {
+        return false;
+    };
+    let Some(cost) = plot_action_cost(state, id) else {
+        return false;
+    };
+    card.kind() == ObjectKind::Card
+        && card.zone() == Zone::Hand(player)
+        && sorcery_timing(state, player)
+        && can_afford(
+            &cost,
+            pool,
+            &for_card(state, sources, id),
+            life,
+            &Spend::other(),
+        )
+}
+
 /// Whether `player` can turn the face-down permanent `id` face up now: they control it and can pay its morph, megamorph or
 /// disguise cost (CR 702.37e). It is a special action, so the timing is any time they have priority.
 pub(crate) fn can_turn_up(
@@ -706,12 +962,18 @@ pub(crate) fn can_turn_up(
     sources: &[ManaOption],
     life: i32,
 ) -> bool {
-    let Some((cost, _)) = face_down::turn_up_cost(state, id) else {
+    let Some(up) = face_down::turn_up(state, id) else {
         return false;
     };
+    // The parts beyond mana take what the player has, never the permanent being turned up.
+    let parts_paid = up.parts.is_empty()
+        || crate::price::Price::casting(up.parts)
+            .claimed(state, player, id)
+            .is_some();
     controller_of(state, id) == Some(player)
+        && parts_paid
         && can_afford(
-            &cost,
+            &up.mana,
             pool,
             &for_card(state, sources, id),
             life,
@@ -760,7 +1022,7 @@ pub(crate) fn grantable(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
-    (free, way, transformed): (bool, Option<CastWay>, bool),
+    granted: &Granted,
 ) -> bool {
     // Players cannot cast spells while a spell with split second is on the stack, whatever lets them (CR 702.61a, 101.2).
     if crate::keywords::split_second_on_stack(state)
@@ -769,22 +1031,12 @@ pub(crate) fn grantable(
         return false;
     }
     if faces::is_multi_face(state, id) {
-        return !faces::grantable_faces(
-            state,
-            player,
-            id,
-            Granted {
-                free,
-                way,
-                transformed,
-            },
-        )
-        .is_empty();
+        return !faces::grantable_faces(state, player, id, granted).is_empty();
     }
-    if transformed {
+    if granted.transformed {
         return false;
     }
-    grantable_as_is(state, player, id, free, way)
+    grantable_as_is(state, player, id, granted)
 }
 
 /// [`grantable`] for the card as it stands: a card with several faces is judged as the face it is in use as.
@@ -792,8 +1044,7 @@ pub(crate) fn grantable_as_is(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
-    free: bool,
-    way: Option<CastWay>,
+    granted: &Granted,
 ) -> bool {
     let Some(card) = state.object(id) else {
         return false;
@@ -801,11 +1052,14 @@ pub(crate) fn grantable_as_is(
     let Some(seat) = state.player(player) else {
         return false;
     };
+    if crate::prohibit::forbidden(state, crate::prohibit::Doing::Cast { player, card: id }) {
+        return false;
+    }
     let all = mana_options(state, player);
     let sources = for_card(state, &all, id);
     let spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let base = help::offered(state, player, id, &[]);
-    granted(state, id, free, way).iter().any(|way| {
+    granted_ways(state, player, id, granted).iter().any(|way| {
         let help = help_in(state, player, id, &base, &way.parts);
         announceable_in(state, player, id, way.alternative)
             && parts_payable(state, player, id, &way.parts)
@@ -817,7 +1071,10 @@ pub(crate) fn grantable_as_is(
                         state,
                         player,
                         id,
-                        way.alternative.is_some_and(CastWay::replaces_cost),
+                        (
+                            way.alternative.is_some_and(CastWay::replaces_cost),
+                            way.alternative,
+                        ),
                         &cost,
                         |total| {
                             can_afford_with(
@@ -921,6 +1178,9 @@ pub(crate) fn hindrance_as_is(
     let Some(card) = state.object(id) else {
         return Some(Unplayable::Cost);
     };
+    if crate::prohibit::forbidden(state, crate::prohibit::Doing::Cast { player, card: id }) {
+        return Some(Unplayable::Restricted);
+    }
     let printed_spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
     let base = help::offered(state, player, id, &[]);
@@ -941,7 +1201,10 @@ pub(crate) fn hindrance_as_is(
                 state,
                 player,
                 id,
-                way.alternative.is_some_and(CastWay::replaces_cost),
+                (
+                    way.alternative.is_some_and(CastWay::replaces_cost),
+                    way.alternative,
+                ),
                 cost,
                 |total| can_afford_with(total, pool, sources, help.help(), life, &spend),
             )

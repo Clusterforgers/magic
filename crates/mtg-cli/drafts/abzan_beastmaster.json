@@ -1,0 +1,53 @@
+{
+  "oracle_id": "aab463bb-e790-403b-a88d-06ef81c7302b",
+  "name": "Abzan Beastmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abzan Beastmaster",
+      "oracle_fingerprint": "d03fae9b9adf3e73a292fbfadb1f6045",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                              "stat": "Toughness"
+                            }
+                          },
+                          "op": "Ge",
+                          "right": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }],
+                              "stat": "Toughness"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

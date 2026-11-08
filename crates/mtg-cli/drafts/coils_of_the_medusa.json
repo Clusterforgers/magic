@@ -1,0 +1,38 @@
+{
+  "oracle_id": "02a8a4e6-2081-4903-81ad-96e5a949dff8",
+  "name": "Coils of the Medusa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coils of the Medusa",
+      "oracle_fingerprint": "8fe04440c2d038ddad2059272f8e30af",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Subtype": "Wall" } },
+                      { "Blocks": "Attached" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

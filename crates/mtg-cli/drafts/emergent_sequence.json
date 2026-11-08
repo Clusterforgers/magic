@@ -1,0 +1,57 @@
+{
+  "oracle_id": "dc859ce2-a267-481f-80d5-2cc38935baa0",
+  "name": "Emergent Sequence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emergent Sequence",
+      "oracle_fingerprint": "8c455ed83075a7265ffa2f9597d6693b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "found" },
+                  "mods": [
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "SetColors": ["Green", "Blue"] },
+                    { "AddSubtype": "Fractal" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "found" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Tally": {
+                      "event": "Entered",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

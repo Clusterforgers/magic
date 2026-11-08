@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0d96b60b-a060-48ee-bb83-93f1c4a10669",
+  "name": "Green Sun's Zenith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Sun's Zenith",
+      "oracle_fingerprint": "db977a166f5cfd39a14527dea38b6749",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "Color": "Green" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

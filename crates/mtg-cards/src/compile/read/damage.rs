@@ -78,7 +78,14 @@ fn amount_and_recipient(r: &mut Reader<'_>) -> Option<(Amount, Ref)> {
 /// target." as the first thing an ability does, where "it" is the source, and "~ deals 3 damage to any target and you
 /// gain 3 life.".
 pub(super) fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    (r.source() || (r.targets.is_empty() && r.word("it"))).then_some(())?;
+    let source = if r.source() {
+        None
+    } else if r.targets.is_empty() && r.word("it") {
+        // "Whenever equipped creature is dealt damage, it deals that much damage": the creature is the source.
+        r.it.clone().filter(|it| *it == Ref::Attached)
+    } else {
+        return None;
+    };
     r.need("deals")?;
     // "it deals damage equal to the number of time counters on it": the source is "it" in its own amount.
     let outer = r.it.clone();
@@ -101,7 +108,9 @@ pub(super) fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let mut effects: Vec<Effect> = recipients
         .into_iter()
         .map(|to| Effect::DealDamage {
-            source: None,
+            excess: None,
+            unpreventable: false,
+            source: source.clone(),
             to,
             amount: amount.clone(),
         })

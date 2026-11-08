@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a7243d25-22a2-4df5-adaf-1f40f5330ec1",
+  "name": "Sakashima the Impostor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sakashima the Impostor",
+      "oracle_fingerprint": "7bc7a253136d1507fa74a739d6b43b72",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, "Other"],
+                "except": [
+                  { "SetName": "Sakashima the Impostor" },
+                  { "AddSupertype": "Legendary" },
+                  {
+                    "GrantAbility": {
+                      "Activated": {
+                        "cost": "{2}{U}{U}",
+                        "effects": [
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

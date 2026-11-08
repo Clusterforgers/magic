@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0c952586-e522-4982-bebd-96f1db73053d",
+  "name": "Tourach, Dread Cantor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tourach, Dread Cantor",
+      "oracle_fingerprint": "cc4620aba5ee4e87f2410bf6b7305369",
+      "abilities": [
+        { "Keyword": { "Kicker": "{B}{B}" } },
+        { "Keyword": { "Protection": [{ "Color": "White" }] } },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2, "random": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

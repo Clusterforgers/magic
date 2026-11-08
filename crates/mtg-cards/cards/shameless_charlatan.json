@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a9b08567-398a-46ba-b0e8-ade65fec83c6",
+  "name": "Shameless Charlatan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shameless Charlatan",
+      "oracle_fingerprint": "29390c182a106ff84db91985d526af7c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{2}{U}",
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+                    "effects": [
+                      {
+                        "BecomeCopy": {
+                          "what": "This",
+                          "of": { "Target": 0 },
+                          "duration": "Forever"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

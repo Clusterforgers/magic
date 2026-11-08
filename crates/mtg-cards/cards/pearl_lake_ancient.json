@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b7ae125c-955b-4cfd-9aeb-e6572c0d4d3d",
+  "name": "Pearl Lake Ancient",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pearl Lake Ancient",
+      "oracle_fingerprint": "8cc720779e386b7a2dbbcb82352b8402",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Prowess" },
+        {
+          "Activated": {
+            "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Land" }], "count": 3 } }],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

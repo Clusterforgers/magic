@@ -1,0 +1,49 @@
+{
+  "oracle_id": "caeb508a-c1fd-45b5-a14e-e0ac7321c9a9",
+  "name": "Dance with Devils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dance with Devils",
+      "oracle_fingerprint": "cea726f7f27198a7a66696a7e2b08250",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Devil",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Devil"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8e3e5264-d472-41ce-ad65-a53f8b24fc40",
+  "name": "Venomous Dragonfly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venomous Dragonfly",
+      "oracle_fingerprint": "bd8036d6aa9ee271750d447127e10f7b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

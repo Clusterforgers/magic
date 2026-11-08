@@ -1,0 +1,54 @@
+{
+  "oracle_id": "da8dd2ee-0ce3-4ce6-abb9-7444cefcbe83",
+  "name": "Flames of the Raze-Boar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flames of the Raze-Boar",
+      "oracle_fingerprint": "4d84bed33c9cb5d35e943aa0791c1dcd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "Is": { "Target": 0 } } },
+                            { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        },
+                        "amount": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

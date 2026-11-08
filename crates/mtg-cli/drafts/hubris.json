@@ -1,0 +1,42 @@
+{
+  "oracle_id": "95fbd573-c04c-408a-a8c3-f7e1ad5ddac0",
+  "name": "Hubris",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hubris",
+      "oracle_fingerprint": "74547afadf0d1d2ca86b4a2e37a6059e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Aura" } },
+                                { "Not": { "AttachedTo": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

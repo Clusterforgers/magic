@@ -1,0 +1,49 @@
+{
+  "oracle_id": "2227bab2-36a0-47f1-a797-7b82323eca9d",
+  "name": "Death Pulse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Pulse",
+      "oracle_fingerprint": "3cd7720e06429ca3ffe05e469fe05550",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": -4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{1}{B}{B}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

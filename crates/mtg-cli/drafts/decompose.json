@@ -1,0 +1,29 @@
+{
+  "oracle_id": "12c2b6bb-05f8-4291-b9a5-c4ddb7a69b9e",
+  "name": "Decompose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decompose",
+      "oracle_fingerprint": "104b312be1910f9c9396b888914b8349",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

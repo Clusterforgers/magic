@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a8af4d61-1aed-415d-8d8e-7384194ee3e2",
+  "name": "Brackwater Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brackwater Elemental",
+      "oracle_fingerprint": "5e340f45b1d094b6c52a4b85f6f97630",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "This" },
+                        "filter": [{ "Is": "This" }],
+                        "count": { "Count": [{ "Is": "This" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{2}{U}" } }
+      ]
+    }
+  ]
+}

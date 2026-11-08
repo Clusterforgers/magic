@@ -1,0 +1,49 @@
+{
+  "oracle_id": "dc47a97b-f511-4b97-97b2-e0309055544b",
+  "name": "Necromancer's Stockpile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromancer's Stockpile",
+      "oracle_fingerprint": "cc50a811f05adbfc723eb393596436ee",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, { "Discard": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CountOf": { "of": "Paid", "filter": [{ "Subtype": "Zombie" }] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

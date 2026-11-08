@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ec3471ad-b65c-4e35-a7d1-68da9555a9ec",
+  "name": "Ethersworn Canonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethersworn Canonist",
+      "oracle_fingerprint": "2452c4ed0238ff3784cd3166d1bd4bcf",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": { "filter": [{ "Not": { "Type": "Artifact" } }], "more_than": 1 }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

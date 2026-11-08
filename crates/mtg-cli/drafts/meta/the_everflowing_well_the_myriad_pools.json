@@ -1,0 +1,76 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, mill two cards, then draw two cards.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Descend 8 — At the beginning of your upkeep, if there are eight or more permanent cards in your graveyard, transform CARDNAME.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Add {U}.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever you cast a permanent spell using mana produced by CARDNAME, up to one other target permanent you control becomes a copy of that spell until end of turn.",
+      "abilities": [],
+      "gap": "valid:ManaFromCard.StrictlySelf"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 70
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 71,
+          "end": 209
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 40,
+          "end": 53
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 54,
+          "end": 223
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

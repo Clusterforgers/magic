@@ -1,0 +1,27 @@
+{
+  "oracle_id": "36937483-30cb-449a-8028-75017a124922",
+  "name": "Boseiju, Who Shelters All",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boseiju, Who Shelters All",
+      "oracle_fingerprint": "cd3a23a36cf91b686790e5385fd78f76",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 2 }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [{ "Uncounterable": { "types": ["Instant", "Sorcery"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

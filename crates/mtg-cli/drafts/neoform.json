@@ -1,0 +1,47 @@
+{
+  "oracle_id": "420c6dcf-966d-4a4c-a0ef-23037ab8b325",
+  "name": "Neoform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neoform",
+      "oracle_fingerprint": "d7c33501ad23a4d878d25713a7576599",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Sum": [{ "Stat": { "of": "Paid", "stat": "ManaValue" } }, 1] }
+                      }
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8b5659bd-a272-44cd-811f-9feec7d9825f",
+  "name": "Pack's Disdain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pack's Disdain",
+      "oracle_fingerprint": "7c61d9c58f1230e458b603f4a2498547",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "ChosenAs": "chosen" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "ChosenAs": "chosen" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

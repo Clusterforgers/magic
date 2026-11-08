@@ -1,0 +1,32 @@
+{
+  "oracle_id": "42176320-ee7f-44c9-916e-5ee4a6108be3",
+  "name": "Frostweb Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frostweb Spider",
+      "oracle_fingerprint": "f5b465a29a8574764280df690d7faa01",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

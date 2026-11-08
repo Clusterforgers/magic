@@ -1,5 +1,5 @@
 //! Why the cards of a player's hand and command zone that the priority offer leaves out cannot be played now
-//! (`PriorityOptions.unplayable`, `docs/engine.md`, Priority). The spells are judged once, and the same judgement decides
+//! (`PriorityOptions.unplayable`, `docs/engine.md`, Priority options). The spells are judged once, and the same judgement decides
 //! `castable`, so the offer runs the rules of a card once.
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -72,8 +72,8 @@ pub(crate) struct Offered<'a> {
     pub(crate) castable: &'a [ObjectId],
     /// `PriorityOptions.faces`.
     pub(crate) faces: &'a [FaceOption],
-    /// `PriorityOptions.suspendable` and `foretellable`.
-    pub(crate) special: [&'a [ObjectId]; 2],
+    /// `PriorityOptions.suspendable`, `foretellable` and `plottable`.
+    pub(crate) special: [&'a [ObjectId]; 3],
 }
 
 /// The cards of `player`'s hand and command zone that `offered` leaves out, in zone order, each with its first reason: a
@@ -117,6 +117,8 @@ pub(crate) fn unplayable(
 fn land_reason(state: &GameState, player: PlayerId) -> Option<Unplayable> {
     if !sorcery_timing(state, player) {
         Some(Unplayable::Timing)
+    } else if crate::prohibit::forbidden(state, crate::prohibit::Doing::PlayLand { player }) {
+        Some(Unplayable::Restricted)
     } else if !land_play_left(state, player) {
         Some(Unplayable::LandPlayed)
     } else {

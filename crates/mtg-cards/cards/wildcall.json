@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d96ac790-428b-4a64-8dbd-6baa73eb6210",
+  "name": "Wildcall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildcall",
+      "oracle_fingerprint": "9a82d253a8339118976136942411514d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Manifest": { "as": "manifest" } },
+              { "PutCounters": { "on": { "Bound": "manifest" }, "counter": "+1/+1", "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

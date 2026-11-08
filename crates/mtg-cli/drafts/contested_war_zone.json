@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ed73de2b-d7f4-48d9-9be2-aa9d111b7aa7",
+  "name": "Contested War Zone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contested War Zone",
+      "oracle_fingerprint": "9d89faefbdff06f5876593a85610fa5e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "You", "combat": true }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "ControllerOf": "Dealer" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

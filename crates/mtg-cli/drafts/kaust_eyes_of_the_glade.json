@@ -1,0 +1,37 @@
+{
+  "oracle_id": "af78c13f-67f8-42bf-b012-482a48af4f31",
+  "name": "Kaust, Eyes of the Glade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kaust, Eyes of the Glade",
+      "oracle_fingerprint": "a1654d64bdc8750ae67ba4d0ae873cd9",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 111 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "FaceDown",
+                    "Attacking",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "TurnFaceUp": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

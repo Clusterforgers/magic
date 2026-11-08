@@ -1,0 +1,44 @@
+{
+  "oracle_id": "dfe1a112-97aa-4e81-8431-81552ba2cdcf",
+  "name": "Crawling Barrens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crawling Barrens",
+      "oracle_fingerprint": "ce98de58dc9271b8b33111db3fe540f2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 0, "toughness": 0 } },
+                          { "AddSubtype": "Elemental" },
+                          { "AddType": "Creature" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

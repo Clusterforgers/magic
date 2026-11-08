@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e",
+  "oracle_id": "4bf589ed-58f8-40ad-bcee-50cb99da02ca",
+  "multiverse_ids": [],
+  "resource_id": "336E66EB193F1D036AFD4F92DFCC7763E1ACCCD188233D087CD62C0F1D5CF0A3",
+  "mtgo_id": 141091,
+  "arena_id": 95939,
+  "tcgplayer_id": 634192,
+  "cardmarket_id": 827731,
+  "name": "Thief's Knife",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e",
+  "scryfall_uri": "https://scryfall.com/card/fin/81/thiefs-knife?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:37:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.jpg?1783906627",
+    "normal": "https://cards.scryfall.io/normal/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.jpg?1783906627",
+    "large": "https://cards.scryfall.io/large/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.jpg?1783906627",
+    "png": "https://cards.scryfall.io/png/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.png?1783906627",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.jpg?1783906627",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.jpg?1783906627",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.webp?1783906627",
+    "grid": "https://cards.scryfall.io/grid/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.webp?1783906627",
+    "display": "https://cards.scryfall.io/display/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.webp?1783906627",
+    "art": "https://cards.scryfall.io/art/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.webp?1783906627",
+    "crop": "https://cards.scryfall.io/crop/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.webp?1783906627",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/2/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e.jpg?1783906627"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Job select (When this Equipment enters, create a 1/1 colorless Hero creature token, then attach this to it.)\nEquipped creature gets +1/+1, has \"Whenever this creature deals combat damage to a player, draw a card,\" and is a Rogue in addition to its other types.\nEquip {4}",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Job select",
+    "Equip"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e",
+      "component": "combo_piece",
+      "name": "Thief's Knife",
+      "type_line": "Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e"
+    },
+    {
+      "object": "related_card",
+      "id": "17fa0c1f-6737-487c-9101-0bec2e586795",
+      "component": "token",
+      "name": "Hero",
+      "type_line": "Token Creature — Hero",
+      "uri": "https://api.scryfall.com/cards/17fa0c1f-6737-487c-9101-0bec2e586795"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c2dcfd0a-3f52-4616-a09a-fd2db8b6b93e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4bf589ed-58f8-40ad-bcee-50cb99da02ca&unique=prints",
+  "collector_number": "81",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Domenico Cava",
+  "artist_ids": [
+    "15eda809-1e56-4583-89e6-c9ccda740e16"
+  ],
+  "illustration_id": "a1a1872a-486a-4cab-b2a2-fbe1575735c2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffi",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10627,
+  "preview": {
+    "source": "seannicorn",
+    "source_uri": "https://www.tiktok.com/@seannicorn/video/7509183785263566111",
+    "previewed_at": "2025-05-27"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.65",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.27",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThief%2527s%2BKnife",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThief%2527s%2BKnife",
+    "edhrec": "https://edhrec.com/route/?cc=Thief%27s+Knife"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F634192%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=827731&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141091?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8c4545f8-10b6-4a62-9bce-8c9ffa8b8471",
+  "name": "Putrefaction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Putrefaction",
+      "oracle_fingerprint": "1b8030bbe63d73095494d805a27698e2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }] }
+            },
+            "effects": [{ "Discard": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

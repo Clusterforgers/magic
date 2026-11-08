@@ -1,0 +1,20 @@
+{
+  "oracle_id": "af7fabf4-8d55-4b06-9c21-472f4a5775b4",
+  "name": "Glasses of Urza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glasses of Urza",
+      "oracle_fingerprint": "9aee52ca462176ce49355ca61d55dde4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

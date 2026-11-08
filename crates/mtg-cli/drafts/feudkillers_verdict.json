@@ -1,0 +1,47 @@
+{
+  "oracle_id": "4dacd89b-5983-4905-9f6c-43aa6a12149d",
+  "name": "Feudkiller's Verdict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feudkiller's Verdict",
+      "oracle_fingerprint": "f6182f1c6c4461d73ace6959b2feaa9c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": 10 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Gt",
+                      "right": { "LowestLife": "Opponents" }
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Giant Warrior",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Giant", "Warrior"],
+                            "power": 5,
+                            "toughness": 5
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

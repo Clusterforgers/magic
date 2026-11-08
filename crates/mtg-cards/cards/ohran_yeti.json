@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e606cba7-7e3c-4834-b2cd-56e51cedccb7",
+  "name": "Ohran Yeti",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ohran Yeti",
+      "oracle_fingerprint": "5a1b194f1bd85fc562e720c0eb305894",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{S}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Supertype": "Snow" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

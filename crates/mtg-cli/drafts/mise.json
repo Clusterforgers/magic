@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ee8de564-9c46-437e-92e6-829f002e181d",
+  "name": "Mise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mise",
+      "oracle_fingerprint": "8be235c44ccd0547fbbbe10bc6de1bfe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "CardName": [{ "Not": { "Type": "Land" } }] },
+                  "as": "name"
+                }
+              },
+              { "LookAtTop": { "as": "top2" } },
+              { "Reveal": { "what": { "Bound": "top2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top2" },
+                      "selector": [{ "ChosenAs": "name" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

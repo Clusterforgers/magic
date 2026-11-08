@@ -59,6 +59,7 @@ impl KeywordRules for Offspring {
                 count: Amount::one(),
                 tapped: false,
                 attacking: false,
+                against: None,
                 bind: None,
             }],
         }]

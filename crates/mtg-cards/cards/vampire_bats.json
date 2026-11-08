@@ -1,0 +1,29 @@
+{
+  "oracle_id": "da66f1db-0fde-4112-ae8e-0e63fc686835",
+  "name": "Vampire Bats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Bats",
+      "oracle_fingerprint": "8421d3982c7d513cc938916a49dee012",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "limit": { "TimesPerTurn": 2 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

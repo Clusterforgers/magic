@@ -1,0 +1,69 @@
+{
+  "oracle_id": "fb5ec55d-4a35-432a-be6e-c295f1b2e603",
+  "name": "Naked Singularity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naked Singularity",
+      "oracle_fingerprint": "2af808d330c0f0d0e55ef018fd0d3929",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{3}" } },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Plains" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Red" }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Island" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Green" }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Swamp" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "White" }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Mountain" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Blue" }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Subtype": "Forest" }],
+                "who": "EachPlayer",
+                "change": { "OnlyType": "Black" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

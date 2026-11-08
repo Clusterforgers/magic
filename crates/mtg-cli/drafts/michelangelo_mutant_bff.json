@@ -1,0 +1,56 @@
+{
+  "oracle_id": "fe1eb8b3-c605-4711-a057-ed3565bfe75c",
+  "name": "Michelangelo, Mutant BFF",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Michelangelo, Mutant BFF",
+      "oracle_fingerprint": "e33516ac203cb077448cb7a4634e8ec8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+            },
+            "mods": [{ "MaxBlockers": 1 }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutagen",
+                      "types": ["Artifact"],
+                      "subtypes": ["Mutagen"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                            "timing": "Sorcery",
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [
+                              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

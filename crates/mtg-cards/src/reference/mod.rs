@@ -1,5 +1,5 @@
 //! The DSL reference: the type tree of a rules file and its vocabulary as compact text, generated from the source of the
-//! types so it cannot drift from them (`docs/cards-dsl.md`, Model-assisted reading).
+//! types so it cannot drift from them (`docs/cards-dsl.md`, Proposals and drafts).
 
 mod lex;
 mod parse;
@@ -17,6 +17,7 @@ const SOURCES: &[&str] = &[
     include_str!("../card.rs"),
     include_str!("../ability.rs"),
     include_str!("../effect.rs"),
+    include_str!("../did.rs"),
     include_str!("../trigger.rs"),
     include_str!("../cost.rs"),
     include_str!("../refs.rs"),
@@ -253,8 +254,9 @@ mod tests {
 
     use super::*;
 
-    /// The reference in bytes may not grow past this without a decision (about 20 thousand tokens in a prompt).
-    const BUDGET: usize = 80_000;
+    /// The reference in bytes may not grow past this without a decision (about 30 thousand tokens in a prompt). It only
+    /// feeds the local model; the Forge path does not use it.
+    const BUDGET: usize = 120_000;
 
     #[test]
     fn the_reference_stays_under_its_budget() {

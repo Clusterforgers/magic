@@ -1,0 +1,67 @@
+{
+  "oracle_id": "203f6f4a-1cf5-4ddc-b60f-676832eeff6b",
+  "name": "Hela, Mistress of Darkness // Dark Tutor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hela, Mistress of Darkness",
+      "oracle_fingerprint": "e611821f74fa182f340a0f23594897b1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeLost": {} },
+            "if": { "AtTrigger": "YourTurn" },
+            "limit": "OncePerTurnDone",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "count": "Triggering",
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dark Tutor",
+      "oracle_fingerprint": "29589961195103c238b9cc5f2cedc6b2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "ChooseValue": { "kind": { "Options": ["Hand", "Graveyard"] }, "as": "way2" } },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way2", "word": "Graveyard" } },
+                  "then": [{ "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } }],
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              { "Shuffle": {} },
+              { "LoseLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

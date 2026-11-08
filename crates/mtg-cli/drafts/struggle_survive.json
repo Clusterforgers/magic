@@ -1,0 +1,45 @@
+{
+  "oracle_id": "0b1f2522-960c-405f-9622-4cadbc7ba545",
+  "name": "Struggle // Survive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Struggle",
+      "oracle_fingerprint": "f51c0020babe74e461ca10f5549a7c42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Survive",
+      "oracle_fingerprint": "857fe24018bc832ab9e13e82143fa25b",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "EachPlayer" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

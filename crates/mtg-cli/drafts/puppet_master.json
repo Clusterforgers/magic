@@ -1,0 +1,48 @@
+{
+  "oracle_id": "42c7e933-f169-444b-917d-b4dca918d989",
+  "name": "Puppet Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puppet Master",
+      "oracle_fingerprint": "5c7febd6bd6d497502b161568832b398",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "cost": "{U}{U}{U}",
+                        "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

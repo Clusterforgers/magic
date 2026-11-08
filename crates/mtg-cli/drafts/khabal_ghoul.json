@@ -1,0 +1,33 @@
+{
+  "oracle_id": "cb558dda-0c05-426d-aedc-bc07cc54db76",
+  "name": "Khabál Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Khabál Ghoul",
+      "oracle_fingerprint": "29552a877c22e197b76e83ba014bcb4b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

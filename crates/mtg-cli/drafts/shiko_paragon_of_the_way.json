@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d3bdd3f2-9e38-436a-93a3-f87d9f4d4f86",
+  "name": "Shiko, Paragon of the Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shiko, Paragon of the Way",
+      "oracle_fingerprint": "345cd1c01b31f95e62542fe0220f59c0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CopyCard": { "what": { "Bound": "picked2" }, "as": "copy3" } },
+              { "CastFromZone": { "what": { "Bound": "copy3" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

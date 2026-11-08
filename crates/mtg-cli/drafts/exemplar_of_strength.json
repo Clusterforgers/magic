@@ -1,0 +1,62 @@
+{
+  "oracle_id": "f732873e-0b34-4ccc-8b4c-9f02463ba57b",
+  "name": "Exemplar of Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exemplar of Strength",
+      "oracle_fingerprint": "b31864c7fe55765d7a7b0d94c9483bde",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1", "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Counters": { "on": "This", "counter": "-1/-1" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": { "Counters": { "on": "This", "counter": "-1/-1" } }
+                    }
+                  },
+                  "slot": "remembered_number"
+                }
+              },
+              { "RemoveCounters": { "from": "This", "counter": "-1/-1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

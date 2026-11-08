@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b997a982-09e1-4ae1-a972-3c2e5f101e8c",
+  "name": "Faithful Mending",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faithful Mending",
+      "oracle_fingerprint": "b4fb7ee4f38fd35d3b8a4f8c761c632a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              { "Draw": { "count": 2 } },
+              { "Discard": { "count": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{W}{U}" } }
+      ]
+    }
+  ]
+}

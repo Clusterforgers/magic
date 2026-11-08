@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f1812d69-c016-4bc3-b899-ed47f5e893e5",
+  "name": "Expressive Firedancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expressive Firedancer",
+      "oracle_fingerprint": "c3af7a16678637a6b77f8f19dc1ed6e1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "DoubleStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

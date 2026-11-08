@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f8961618-ae68-4d13-84eb-8b5464ce4971",
+  "name": "Vow to Erebor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vow to Erebor",
+      "oracle_fingerprint": "cf11a756e792da9cfb9de17d5b5e87d2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Dwarf" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "attach"
+                            }
+                          },
+                          { "Attach": { "what": { "Bound": "attach" }, "to": { "Target": 0 } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

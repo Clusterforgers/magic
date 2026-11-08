@@ -9,7 +9,11 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "Triggering" } },
+            "when": {
+              "Batch": {
+                "DealsDamage": { "source": [], "to": { "Each": [{ "Type": "Creature" }] } }
+              }
+            },
             "effects": [
               { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": "Triggering" } }
             ]

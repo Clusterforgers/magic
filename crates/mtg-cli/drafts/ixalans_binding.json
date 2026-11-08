@@ -1,0 +1,44 @@
+{
+  "oracle_id": "5a2d0df9-950e-4c3d-8a08-275f179e33c7",
+  "name": "Ixalan's Binding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ixalan's Binding",
+      "oracle_fingerprint": "260d31dd6ba189764514cddd3b594c82",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      { "SharesName": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

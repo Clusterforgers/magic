@@ -1,0 +1,46 @@
+{
+  "oracle_id": "fdb10291-b5e0-4da8-a103-8e7ac7f8177b",
+  "name": "Psychic Intrusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Intrusion",
+      "oracle_fingerprint": "685c48761e62e90a619ac01e7b63eb6b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled2" },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

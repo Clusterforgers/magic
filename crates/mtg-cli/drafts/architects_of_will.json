@@ -1,0 +1,29 @@
+{
+  "oracle_id": "79d290ea-c095-4135-9711-f3ce089dae43",
+  "name": "Architects of Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Architects of Will",
+      "oracle_fingerprint": "320a614fed29a85e0d2a3e099f00bacd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{U/B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6557813b-4ee7-4881-a37c-10c8ea097360",
+  "name": "Wartime Protestors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wartime Protestors",
+      "oracle_fingerprint": "45b527d7ffc451ed38bc578e615a19fe",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }, "Other"],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

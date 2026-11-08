@@ -1,0 +1,61 @@
+{
+  "oracle_id": "df72b5d6-6f9e-4d6b-acf6-7dec4ff35468",
+  "name": "Bess, Soul Nourisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bess, Soul Nourisher",
+      "oracle_fingerprint": "a85ba95a53bf9f7bb82c08e5a132de24",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "BasePower", "op": "Eq", "to": 1 } },
+                    { "Compare": { "stat": "BaseToughness", "op": "Eq", "to": 1 } },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "BasePower", "op": "Eq", "to": 1 } },
+                      { "Compare": { "stat": "BaseToughness", "op": "Eq", "to": 1 } },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                        "toughness": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

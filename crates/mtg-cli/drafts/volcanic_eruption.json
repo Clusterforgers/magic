@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4c15889e-3172-413b-b805-a2b7ad05f636",
+  "name": "Volcanic Eruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volcanic Eruption",
+      "oracle_fingerprint": "ba8a61faed69ab319de822ad7cb30190",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Mountain" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }] },
+                  "amount": {
+                    "Count": [
+                      { "Subtype": "Mountain" },
+                      { "Is": { "Bound": "destroyed" } },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "EachPlayer",
+                  "amount": {
+                    "Count": [
+                      { "Subtype": "Mountain" },
+                      { "Is": { "Bound": "destroyed" } },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

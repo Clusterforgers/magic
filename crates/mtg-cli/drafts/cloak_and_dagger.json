@@ -1,0 +1,33 @@
+{
+  "oracle_id": "73ca14bb-0586-4716-8d4c-738a93950ed5",
+  "name": "Cloak and Dagger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloak and Dagger",
+      "oracle_fingerprint": "9463c3697a46538f5120fb7dd742cdb8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Shroud" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Rogue" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

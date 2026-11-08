@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3dc225a2-61b6-4ac9-a86b-df0c2b0b3898",
+  "name": "Steelclad Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steelclad Spirit",
+      "oracle_fingerprint": "2ce3276e170efe7acdf5bf87dd240d8c",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

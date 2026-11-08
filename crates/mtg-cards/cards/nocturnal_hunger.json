@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ed7f64d1-69ba-40f5-9863-3edba10e23c7",
+  "name": "Nocturnal Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nocturnal Hunger",
+      "oracle_fingerprint": "f8f16848af2a4f98aace5ce7995c8c6b",
+      "abilities": [
+        { "Keyword": { "Gift": "Food" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 0 } },
+                  "then": [{ "LoseLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

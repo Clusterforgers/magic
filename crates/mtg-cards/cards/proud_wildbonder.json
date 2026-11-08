@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e72f995e-288f-4d32-b067-ae73eea87e67",
+  "name": "Proud Wildbonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proud Wildbonder",
+      "oracle_fingerprint": "bb83c699877708773fbefb8bd6fc2698",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasKeyword": "Trample" }
+              ]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsAsUnblocked" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

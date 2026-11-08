@@ -1,0 +1,50 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Sacrifice a creature. Return up to X cards from your graveyard to your hand, where X is the number of colors that creature was. Exile this card.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Other spells you control can't be countered this turn. Draw a card.",
+      "abilities": [],
+      "gap": "replacement:Counter"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 144
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 54
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 55,
+          "end": 67
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "oracle_id": "1d09ebb7-c4c9-4bb7-b6bf-3c8330b954e8",
+  "name": "Tymaret Calls the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tymaret Calls the Dead",
+      "oracle_fingerprint": "31f6ddc9c06f9452e2268696014aa717",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Scry": {
+                  "count": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

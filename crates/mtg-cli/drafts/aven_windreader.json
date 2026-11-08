@@ -1,0 +1,24 @@
+{
+  "oracle_id": "8406b724-a824-4905-83e0-a6c02d7f72e3",
+  "name": "Aven Windreader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Windreader",
+      "oracle_fingerprint": "edc1c6965ab569c2977bd12a465b863a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

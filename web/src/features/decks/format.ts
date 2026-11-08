@@ -1,6 +1,6 @@
 /** Words for the decks page: format names, the check state and its note, card counts and the kind of a pasted list. */
 import { BY_HAND, BY_HAND_TITLE, byHandCopies, cardsByHand } from '@/lib/byHand'
-import { RUNS_ON_READS } from '@/lib/toRead'
+import { cardsFromForge, RUNS_ON_READS } from '@/lib/toRead'
 import type {
   Counts,
   DeckListItem,
@@ -56,6 +56,7 @@ export const BLOCKED_MEANING = 'Cannot be taken to a game until its issues are f
 export const SUPPORT_LABEL: Readonly<Record<Support, string>> = {
   verified: 'Verified',
   read: 'Read',
+  forge: 'From Forge',
   partial: 'Partial',
   manual: 'Manual',
   stale: 'Stale',
@@ -74,6 +75,7 @@ export function countsText(counts: Counts): string {
   const hand = byHandCopies(counts)
   const parts = [
     counts.read > 0 ? `${counts.read} on reads` : null,
+    counts.forge > 0 ? cardsFromForge(counts.forge) : null,
     hand > 0 ? `${hand} ${BY_HAND}` : null,
     counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
   ].filter((part) => part !== null)
@@ -98,8 +100,7 @@ export function unvalidatedLink(counts: Counts): string {
 }
 
 /**
- * The line under a deck's name that explains its check state: how many cards are played by hand, what blocks it, or that
- * it was never checked. A verified deck, and one that changed since its check, need no line: its marker says so.
+ * The line under a deck's name that explains its check state: how many cards are played by hand, what blocks it. A verified deck needs no line: its marker says so.
  */
 export function checkNote(deck: DeckListItem): string | null {
   const { counts, issues } = deck.summary
@@ -117,7 +118,7 @@ export function checkNote(deck: DeckListItem): string | null {
       return `${parts.length > 0 ? `${parts.join(', ')}. ` : ''}${BLOCKED_MEANING}.`
     }
     case 'unchecked':
-      return deck.changed ? null : 'Not checked yet'
+      return 'Not checked yet'
   }
 }
 

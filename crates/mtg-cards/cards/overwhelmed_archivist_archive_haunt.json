@@ -1,0 +1,39 @@
+{
+  "oracle_id": "13c90d78-cfb1-4d40-a35e-1fd170450b45",
+  "name": "Overwhelmed Archivist // Archive Haunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwhelmed Archivist",
+      "oracle_fingerprint": "db61757d435cec57468f1d12e5fc2025",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        { "Keyword": { "Disturb": "{3}{U}" } }
+      ]
+    },
+    {
+      "name": "Archive Haunt",
+      "oracle_fingerprint": "3d53fe884ab0d1381ca52594381268bb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

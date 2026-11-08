@@ -1,0 +1,40 @@
+{
+  "oracle_id": "6ff1e793-1569-4887-b6bb-d9855c5e8a26",
+  "name": "Curfew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curfew",
+      "oracle_fingerprint": "758533348fada4da30f04840caa8263c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

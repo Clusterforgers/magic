@@ -5,7 +5,7 @@ import type { PlayerId } from "./PlayerId";
 /**
  * Why an object moved from one zone to another.
  */
-export type ZoneCause = "Moved" | "Destroyed" | "Buried" | "Sacrificed" | "Exiled" | "Foretold" | { "Manifested": { 
+export type ZoneCause = "Moved" | "Destroyed" | "Buried" | "Sacrificed" | "Exiled" | "Foretold" | "Plotted" | { "Manifested": { 
 /**
  * The player who manifested it and controls it.
  */
@@ -16,6 +16,18 @@ by: PlayerId, } } | { "Cloaked": {
 by: PlayerId, } } | { "Hideaway": { 
 /**
  * The permanent that hides it.
+ */
+by: ObjectRef, } } | { "Held": { 
+/**
+ * The source of the effect.
+ */
+by: ObjectRef, 
+/**
+ * The player who exiled it and may look at it.
+ */
+looker: PlayerId, } } | { "Sealed": { 
+/**
+ * The source of the effect.
  */
 by: ObjectRef, } } | { "ExiledUntil": { 
 /**
@@ -29,4 +41,8 @@ by: PlayerId, } } | { "Encoded": {
 /**
  * The creature it is encoded on.
  */
-by: ObjectRef, } } | "Adventure" | "Countered" | "Milled" | "StateBased" | "Discarded";
+by: ObjectRef, } } | { "Haunting": { 
+/**
+ * The creature it haunts.
+ */
+of: ObjectRef, } } | "Adventure" | "Countered" | "Milled" | "StateBased" | "Discarded" | "LandPlayed";

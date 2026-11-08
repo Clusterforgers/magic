@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7c69cb2b-14f1-4215-aba8-c107493c3036",
+  "name": "Kaervek's Hex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaervek's Hex",
+      "oracle_fingerprint": "220e518ac83f17adc3109b72c5753d7d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] },
+                  "amount": 1
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Color": "Green" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

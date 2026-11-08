@@ -1,0 +1,64 @@
+{
+  "oracle_id": "6df03db9-e4b3-4931-94e3-c582d2b04110",
+  "name": "Hildibrand Manderville // Gentleman's Rise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hildibrand Manderville",
+      "oracle_fingerprint": "2faf77997f6770f45aff1a5b5231d5df",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Subtype": "Adventure" }],
+                      "from": "Graveyard",
+                      "only": "This"
+                    }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gentleman's Rise",
+      "oracle_fingerprint": "7b1d5d737bd0e74efc6a2b927a63a8f7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1c2445b4-e8be-452c-950d-f42e549daf9a",
+  "name": "Lunk Errant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lunk Errant",
+      "oracle_fingerprint": "91045867e2f2b2709fe8417135361daa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

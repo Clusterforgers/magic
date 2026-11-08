@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e75b2a97-b28d-43fe-8b1e-ba87a09f339c",
+  "name": "Ambush Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ambush Commander",
+      "oracle_fingerprint": "34cb504f6b7a3461e7a7c7be7b09ef2a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "SetPT": { "power": 1, "toughness": 1 } },
+              { "SetColors": ["Green"] },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Elf" }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, { "Sacrifice": { "filter": [{ "Subtype": "Elf" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

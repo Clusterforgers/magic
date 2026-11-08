@@ -1,0 +1,69 @@
+{
+  "oracle_id": "5b8be856-c08d-4356-925d-fce843565189",
+  "name": "Hidetsugu Consumes All // Vessel of the All-Consuming",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hidetsugu Consumes All",
+      "oracle_fingerprint": "39442c001566cece201fdaf817e60272",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vessel of the All-Consuming",
+      "oracle_fingerprint": "1673a68398664de808258c024097d17a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 72, "end": 200 }
+          }
+        }
+      ]
+    }
+  ]
+}

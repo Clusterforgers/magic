@@ -1,0 +1,49 @@
+{
+  "oracle_id": "2aff9be5-f6d4-4cdd-ab59-20202bc2f144",
+  "name": "Peregrination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peregrination",
+      "oracle_fingerprint": "36d6633252b9f5bc11d3beceddaf79e7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": { "min": 0, "max": 2 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Is": { "Bound": "found" } }],
+                  "as": "found2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Is": { "Bound": "found" } }],
+                  "reveal": true,
+                  "as": "found3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

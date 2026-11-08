@@ -1,0 +1,57 @@
+{
+  "oracle_id": "f2000fb8-39c6-4ad6-a020-5245faaa1eba",
+  "name": "Fire Nation Palace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Nation Palace",
+      "oracle_fingerprint": "376352c7ef63cc7a65f6bae3ee5e77e7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Supertype": "Basic" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Macro": { "name": "firebending", "amount": 4 } } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

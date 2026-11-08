@@ -1,0 +1,41 @@
+{
+  "oracle_id": "53745903-de8f-42cf-a949-842e5831de30",
+  "name": "Survey Mechan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Survey Mechan",
+      "oracle_fingerprint": "134ac51c7e4653631e1841e2b726cedb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Hexproof" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{10}" },
+              "SacrificeSelf",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ],
+            "targets": [{ "what": "AnyTarget" }, { "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "Draw": { "who": { "Target": 1 }, "count": 3 } },
+              { "GainLife": { "who": { "Target": 1 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

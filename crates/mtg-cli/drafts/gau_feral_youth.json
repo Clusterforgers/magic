@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9e96d12b-8381-4706-8089-3521aa2b5422",
+  "name": "Gau, Feral Youth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gau, Feral Youth",
+      "oracle_fingerprint": "c5bf3a1fc713cf7d2ffdc9f296aa513b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "CardsLeftGraveyard" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

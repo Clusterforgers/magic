@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a600af0b-ea04-4813-b700-f51820868c86",
+  "name": "Battlefield Medic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlefield Medic",
+      "oracle_fingerprint": "8cc77a22cc4806e95f4c99e2b4a79b04",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventCounted": { "Count": [{ "Subtype": "Cleric" }] } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

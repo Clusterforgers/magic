@@ -1,0 +1,41 @@
+{
+  "oracle_id": "30dc2a1a-c17e-4e95-9dd8-d0e9be1dcd77",
+  "name": "Soul Nova",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Nova",
+      "oracle_fingerprint": "665bbade6301aaf1c77f51ead9dc883c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Equipment" } },
+                                { "Not": { "AttachedTo": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

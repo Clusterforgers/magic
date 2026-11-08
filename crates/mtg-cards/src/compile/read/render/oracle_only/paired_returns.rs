@@ -16,7 +16,7 @@ const JOINTS: [&str; 2] = [
 fn returns(effect: &Effect, index: u8) -> bool {
     matches!(
         effect,
-        Effect::Move { what: Ref::Target(found), to: Destination::Battlefield { .. } } if *found == index
+        Effect::Move { what: Ref::Target(found), to: Destination::Battlefield { .. }, .. } if *found == index
     )
 }
 

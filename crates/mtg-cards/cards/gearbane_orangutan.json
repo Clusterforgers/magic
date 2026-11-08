@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1f3e7420-86aa-4847-bc2d-21f6bae470c8",
+  "name": "Gearbane Orangutan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gearbane Orangutan",
+      "oracle_fingerprint": "5343debbf5786e2d635620ff2ecc00fd",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Artifact" }] },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        { "Sacrifice": { "filter": [{ "Type": "Artifact" }], "as": "sacrificed" } },
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Bound": "sacrificed" },
+                                "selector": [],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

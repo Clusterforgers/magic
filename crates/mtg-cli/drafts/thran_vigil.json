@@ -1,0 +1,33 @@
+{
+  "oracle_id": "01c179aa-533e-47e1-b6e5-c35587a39680",
+  "name": "Thran Vigil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Vigil",
+      "oracle_fingerprint": "5fd8ad5541122631329d90b8ea726aa2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    { "OwnedBy": "You" }
+                  ],
+                  "from": "Graveyard"
+                }
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

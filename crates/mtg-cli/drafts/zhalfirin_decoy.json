@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b22e55ef-fb74-4991-a43b-9d3ce06c23e5",
+  "name": "Zhalfirin Decoy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zhalfirin Decoy",
+      "oracle_fingerprint": "285689a4aa2797f9531fa806eaa0bfdd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bc8b2b89-7118-4662-beda-9108cd08491b",
+  "name": "Rouse the Mob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rouse the Mob",
+      "oracle_fingerprint": "b6768c593524a8fde1d418d720ba64dc",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{2}{R}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

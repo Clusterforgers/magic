@@ -1,0 +1,55 @@
+{
+  "oracle_id": "7def9bfe-6a59-4300-8134-fce7508dca38",
+  "name": "Hunter's Mark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunter's Mark",
+      "oracle_fingerprint": "06d6b445eec35101fdfd2c6e8bcd8be8",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              { "Targeting": [{ "Color": "Blue" }, { "Not": { "ControlledBy": "You" } }] }
+            ],
+            "change": "Reduce",
+            "mana": "{3}"
+          }
+        },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9f7b2ec6-a828-499b-a2ac-766bdaaf30c1",
+  "name": "Excavation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excavation",
+      "oracle_fingerprint": "f46b6b5795b69fabfa122fe273d36c5a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "by": "Anyone",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

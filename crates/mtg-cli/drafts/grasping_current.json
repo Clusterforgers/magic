@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a10a4bb2-c6fa-482b-9c8b-e64cbb8424ba",
+  "name": "Grasping Current",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grasping Current",
+      "oracle_fingerprint": "7e9d9d3e64df0fe7294e8052e75f35a3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Jace, Ingenious Mind-Mage" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

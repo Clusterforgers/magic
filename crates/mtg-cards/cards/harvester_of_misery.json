@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a0d3bb63-2977-41b2-bcc3-2488e6696cb8",
+  "name": "Harvester of Misery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harvester of Misery",
+      "oracle_fingerprint": "efedca89c1a696744aa9c681281a3da1",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

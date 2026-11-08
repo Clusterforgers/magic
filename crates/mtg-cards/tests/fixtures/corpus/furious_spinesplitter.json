@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "205a6ed6-38b0-42cd-a564-65ce19fb9031",
+  "oracle_id": "f4964f74-07c0-4edc-984d-57722fb16961",
+  "multiverse_ids": [
+    651768
+  ],
+  "mtgo_id": 123374,
+  "tcgplayer_id": 534568,
+  "cardmarket_id": 753088,
+  "name": "Furious Spinesplitter",
+  "lang": "en",
+  "released_at": "2024-02-23",
+  "uri": "https://api.scryfall.com/cards/205a6ed6-38b0-42cd-a564-65ce19fb9031",
+  "scryfall_uri": "https://scryfall.com/card/clu/33/furious-spinesplitter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:16:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.jpg?1783912576",
+    "normal": "https://cards.scryfall.io/normal/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.jpg?1783912576",
+    "large": "https://cards.scryfall.io/large/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.jpg?1783912576",
+    "png": "https://cards.scryfall.io/png/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.png?1783912576",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.jpg?1783912576",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.jpg?1783912576",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.webp?1783912576",
+    "grid": "https://cards.scryfall.io/grid/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.webp?1783912576",
+    "display": "https://cards.scryfall.io/display/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.webp?1783912576",
+    "art": "https://cards.scryfall.io/art/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.webp?1783912576",
+    "crop": "https://cards.scryfall.io/crop/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.webp?1783912576",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/0/205a6ed6-38b0-42cd-a564-65ce19fb9031.jpg?1783912576"
+  },
+  "mana_cost": "{2}{R/G}{R/G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Ogre Warrior",
+  "oracle_text": "Trample\nAt the beginning of your end step, put a +1/+1 counter on this creature for each opponent who was dealt damage this turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set": "clu",
+  "set_name": "Ravnica: Clue Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/205a6ed6-38b0-42cd-a564-65ce19fb9031/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af4964f74-07c0-4edc-984d-57722fb16961&unique=prints",
+  "collector_number": "33",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "gruul",
+  "flavor_text": "The Gruul believe the best way to protect Ravnica's wilderness is to destroy civilization and all who defend it.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Elizabeth Peiró",
+  "artist_ids": [
+    "154beecd-b9b8-4795-950c-de8de7434c43"
+  ],
+  "illustration_id": "6fabcc32-a036-42a6-aa27-0e78a9fef83c",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 27217,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/magic-the-gathering-ravnica-clue-edition-spoilers-standalone-board-game",
+    "previewed_at": "2024-01-22"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=651768&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFurious%2BSpinesplitter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFurious%2BSpinesplitter",
+    "edhrec": "https://edhrec.com/route/?cc=Furious+Spinesplitter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F534568%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753088&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/123374?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

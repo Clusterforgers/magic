@@ -1,0 +1,48 @@
+{
+  "oracle_id": "7292272d-6511-466b-aadd-c4fe7ed8df09",
+  "name": "Bloodvial Purveyor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodvial Purveyor",
+      "oracle_fingerprint": "54181565f8efc69a26efe19c62897336",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [{ "CreateToken": { "who": "Triggering", "token": { "Named": "blood" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Subtype": "Blood" },
+                            "Token",
+                            { "ControlledBy": "Defending" }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

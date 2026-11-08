@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e90e3f58-1197-41c1-81c5-008e946eb539",
+  "name": "Fathom Fleet Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fathom Fleet Cutthroat",
+      "oracle_fingerprint": "75f5a58ae9c90b4306965ab1517e0684",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    "DamagedThisTurn"
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

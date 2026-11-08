@@ -1,0 +1,51 @@
+{
+  "oracle_id": "da21c21c-88d8-4a93-b2b4-6d7bb28959c9",
+  "name": "Dread Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Specter",
+      "oracle_fingerprint": "9d91351d293f65ebc4786affc62b9079",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

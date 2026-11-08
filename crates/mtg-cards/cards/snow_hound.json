@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2fe8512f-826c-400d-ba6d-1de4f315b617",
+  "name": "Snow Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snow Hound",
+      "oracle_fingerprint": "9569dc929be997aa87901615c94a01bc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Blue" }, { "Color": "Green" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand" } },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

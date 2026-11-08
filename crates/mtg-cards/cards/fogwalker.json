@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c597cfae-3f92-4d31-8bc1-5a2da995f1bf",
+  "name": "Fogwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fogwalker",
+      "oracle_fingerprint": "49865eb0d10bfbaeba4a0ad95eb2cb30",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

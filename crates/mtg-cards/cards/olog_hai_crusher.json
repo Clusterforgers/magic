@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fb6f04bc-3514-49b2-9d17-f80980d996a8",
+  "name": "Olog-hai Crusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Olog-hai Crusher",
+      "oracle_fingerprint": "3d61eafcf2992f355c1f04e3101a391b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

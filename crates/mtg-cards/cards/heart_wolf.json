@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2f50c45f-058d-41fb-9965-08c2e0edc8ac",
+  "name": "Heart Wolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heart Wolf",
+      "oracle_fingerprint": "c80e30402d6ae09ce532ea3e0e5da128",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "InCombat",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Dwarf" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Target": 0 } }], "from": "Battlefield" }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "799e7bb4-b03c-4568-b321-7810868bdcd7",
+  "name": "Phalanx Formation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phalanx Formation",
+      "oracle_fingerprint": "76c5313c38a46548f7e3966616d7f2df",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{1}{W}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

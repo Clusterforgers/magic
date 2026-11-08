@@ -1,0 +1,14 @@
+{
+  "oracle_id": "976968c5-7ef4-4451-86ff-03a011bbcca7",
+  "name": "Heartwood Dryad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartwood Dryad",
+      "oracle_fingerprint": "3634f187c2ec677d647d71e9665c63ef",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "BlockAsThoughShadow" } } } }
+      ]
+    }
+  ]
+}

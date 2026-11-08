@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8f7479e6-b2bd-46b1-96ad-34deb43565c1",
+  "name": "Spectacular Pileup",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectacular Pileup",
+      "oracle_fingerprint": "1404db6c7c765b375c6d0616af4064f1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                  },
+                  "mods": [{ "RemoveKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

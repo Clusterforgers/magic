@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c5e7ba95-c9b9-45e8-9551-dba892d90683",
+  "name": "Siren of the Fanged Coast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siren of the Fanged Coast",
+      "oracle_fingerprint": "1e4efdd206ce0ee22d0db6d4f77ab1f0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 3 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

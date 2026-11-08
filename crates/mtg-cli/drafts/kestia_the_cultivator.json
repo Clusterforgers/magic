@@ -1,0 +1,36 @@
+{
+  "oracle_id": "21620bfc-8ef0-4e43-b675-d0bbad86e83d",
+  "name": "Kestia, the Cultivator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kestia, the Cultivator",
+      "oracle_fingerprint": "b794d1a237e3cfd595b6074a538f0fa8",
+      "abilities": [
+        { "Keyword": { "Bestow": "{3}{W}{U}{G}" } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "AnyOf": [{ "HasAttached": [{ "Subtype": "Aura" }] }, { "Type": "Enchantment" }]
+                  },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

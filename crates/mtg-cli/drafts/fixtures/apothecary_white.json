@@ -1,0 +1,173 @@
+{
+  "object": "card",
+  "id": "4fedf84e-55ca-4334-a2c1-6e991112bb68",
+  "oracle_id": "7bf8bb41-6f46-492c-b6cf-5cfb29f973a4",
+  "multiverse_ids": [
+    652009
+  ],
+  "mtgo_id": 123412,
+  "tcgplayer_id": 535233,
+  "cardmarket_id": 752663,
+  "name": "Apothecary White",
+  "lang": "en",
+  "released_at": "2024-02-23",
+  "uri": "https://api.scryfall.com/cards/4fedf84e-55ca-4334-a2c1-6e991112bb68",
+  "scryfall_uri": "https://scryfall.com/card/clu/1/apothecary-white?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:16:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.jpg?1783912585",
+    "normal": "https://cards.scryfall.io/normal/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.jpg?1783912585",
+    "large": "https://cards.scryfall.io/large/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.jpg?1783912585",
+    "png": "https://cards.scryfall.io/png/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.png?1783912585",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.jpg?1783912585",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.jpg?1783912585",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.webp?1783912585",
+    "grid": "https://cards.scryfall.io/grid/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.webp?1783912585",
+    "display": "https://cards.scryfall.io/display/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.webp?1783912585",
+    "art": "https://cards.scryfall.io/art/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.webp?1783912585",
+    "crop": "https://cards.scryfall.io/crop/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.webp?1783912585",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/f/4fedf84e-55ca-4334-a2c1-6e991112bb68.jpg?1783912585"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Cleric",
+  "oracle_text": "Vigilance\nWhenever you attack, you create a Food token for each player being attacked. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n{W}, {T}, Tap X untapped Foods you control: Create X 1/1 white Human creature tokens.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d7cd1de1-9657-4262-be11-8279b3408e54",
+      "component": "token",
+      "name": "Human",
+      "type_line": "Token Creature — Human",
+      "uri": "https://api.scryfall.com/cards/d7cd1de1-9657-4262-be11-8279b3408e54"
+    },
+    {
+      "object": "related_card",
+      "id": "4fedf84e-55ca-4334-a2c1-6e991112bb68",
+      "component": "combo_piece",
+      "name": "Apothecary White",
+      "type_line": "Legendary Creature — Human Cleric",
+      "uri": "https://api.scryfall.com/cards/4fedf84e-55ca-4334-a2c1-6e991112bb68"
+    },
+    {
+      "object": "related_card",
+      "id": "276dedb8-3d41-499c-8804-bb1471fcb06f",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/276dedb8-3d41-499c-8804-bb1471fcb06f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set": "clu",
+  "set_name": "Ravnica: Clue Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4fedf84e-55ca-4334-a2c1-6e991112bb68/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7bf8bb41-6f46-492c-b6cf-5cfb29f973a4&unique=prints",
+  "collector_number": "1",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anna Steinbauer",
+  "artist_ids": [
+    "3516496c-c279-4b56-8239-720683d03ae0"
+  ],
+  "illustration_id": "02abcf4c-ef14-4348-b4aa-8ab830c7bdfc",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5732,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/magic-the-gathering-ravnica-clue-edition-spoilers-standalone-board-game",
+    "previewed_at": "2024-01-22"
+  },
+  "prices": {
+    "usd": "5.22",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.16",
+    "eur_foil": null,
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652009&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DApothecary%2BWhite",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DApothecary%2BWhite",
+    "edhrec": "https://edhrec.com/route/?cc=Apothecary+White"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535233%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=752663&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/123412?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

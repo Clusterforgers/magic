@@ -9,11 +9,14 @@ use std::collections::BTreeSet;
 use std::sync::Arc;
 
 use mtg_cards::ability::{Ability, Limit};
+use mtg_cards::did::Action;
 use mtg_cards::mana_trigger::mana_trigger;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
+
+mod did;
 
 use super::{DelayedId, Triggered, x_read};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};
@@ -47,7 +50,11 @@ enum Happened {
     /// A token was created, the `nth` of its controller's turn: it enters the battlefield from no zone.
     Created { object: ObjectId, nth: u32 },
     /// A creature was declared as an attacker, the `nth` time this turn for it.
-    Attacked { attacker: ObjectId, nth: u32 },
+    Attacked {
+        attacker: ObjectId,
+        nth: u32,
+        at: AttackTarget,
+    },
     /// A creature was declared as the only attacker.
     AttackedAlone { attacker: ObjectId },
     /// A creature was declared as an attacker of a player, or of a planeswalker that player controls.
@@ -105,14 +112,19 @@ enum Happened {
         amount: u32,
         nth: u32,
     },
-    /// A player drew `card`, the `nth` of their turn.
+    /// A player drew `card`, the `nth` of their turn and the `in_draw_step`th of their own draw step (0 outside it).
     Drew {
         player: PlayerId,
         card: ObjectId,
         nth: u32,
+        in_draw_step: u32,
     },
-    /// A permanent became tapped.
-    Tapped { object: ObjectId },
+    /// A permanent became tapped: the `nth` time this turn, and whether as it was declared as an attacker.
+    Tapped {
+        object: ObjectId,
+        nth: u32,
+        declared: bool,
+    },
     /// A permanent became untapped.
     Untapped { object: ObjectId },
     /// A permanent phased out; judged as it was before (CR 702.26).
@@ -130,19 +142,38 @@ enum Happened {
         before: u32,
         nth: u32,
     },
+    /// A player got counters of a kind (`delta` above 0) or lost them.
+    PlayerCounters {
+        player: PlayerId,
+        counter: CounterKind,
+        delta: i32,
+    },
     /// A creature was declared as a blocker of an attacker.
     Blocked {
         blocker: ObjectId,
         attacker: ObjectId,
     },
     /// An attacker became blocked, once however many creatures block it.
-    BecameBlocked { attacker: ObjectId },
+    BecameBlocked {
+        attacker: ObjectId,
+        blockers: Vec<ObjectId>,
+    },
+    /// A creature was declared as a blocker, once however many attackers it blocks.
+    Blocking {
+        blocker: ObjectId,
+        attackers: Vec<ObjectId>,
+    },
     /// An attacker of the player who declared blockers was not blocked (CR 509.1h).
     Unblocked { attacker: ObjectId },
     /// A player copied a spell: the copy, on the stack under their control.
     Copied { player: PlayerId, spell: ObjectId },
     /// Attackers were declared together.
     AttackedTogether { attackers: Vec<ObjectId> },
+    /// Attackers were declared together at one player (not at a planeswalker or battle), once for each player.
+    AttackedTogetherAt {
+        attackers: Vec<ObjectId>,
+        at: PlayerId,
+    },
     /// An Aura, Equipment or Fortification became attached to a permanent.
     Attached { attachment: ObjectId, to: ObjectId },
     /// A player cycled a card, the `nth` of their turn.
@@ -155,6 +186,11 @@ enum Happened {
     },
     /// A player surveilled, the `nth` time of their turn.
     Surveilled { player: PlayerId, nth: u32 },
+    /// The Ring tempted a player, who chose `bearer`.
+    RingTempted {
+        player: PlayerId,
+        bearer: Option<ObjectId>,
+    },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
     /// A player took the initiative.
@@ -235,6 +271,15 @@ enum Happened {
     Adapted { object: ObjectId, player: PlayerId },
     /// A player bolstered.
     Bolstered { player: PlayerId },
+    /// A player or object took an action (`TriggerPattern::Did`); `ability` is the ability an activation put on the stack.
+    Did {
+        action: Action,
+        player: Option<PlayerId>,
+        object: Option<ObjectId>,
+        ability: Option<ObjectId>,
+        /// How much it was: the cards a scry looked at; zero for the rest.
+        amount: u32,
+    },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -250,7 +295,7 @@ impl Happened {
                 ..
             } | Happened::Exploited { .. }
                 | Happened::PhasedOut { .. }
-        )
+        ) || matches!(self, Happened::Did { action, .. } if action.looks_back())
     }
 
     /// How much it was: the damage dealt, the life gained or lost, the counters put or removed, the X of a monstrosity or a
@@ -259,8 +304,11 @@ impl Happened {
         match self {
             Happened::Damaged { amount, .. }
             | Happened::LifeGained { amount, .. }
-            | Happened::LifeLost { amount, .. } => *amount,
-            Happened::Counters { delta, .. } => delta.unsigned_abs(),
+            | Happened::LifeLost { amount, .. }
+            | Happened::Did { amount, .. } => *amount,
+            Happened::Counters { delta, .. } | Happened::PlayerCounters { delta, .. } => {
+                delta.unsigned_abs()
+            }
             Happened::Monstrous { x, .. } | Happened::Cycled { x, .. } => *x,
             Happened::Cast { before, .. } => *before,
             _ => 0,
@@ -281,6 +329,7 @@ impl Happened {
             | Happened::LifeLost { nth, .. }
             | Happened::Cycled { nth, .. }
             | Happened::Surveilled { nth, .. }
+            | Happened::Tapped { nth, .. }
             | Happened::Created { nth, .. }
             | Happened::Counters { nth, .. } => Some(*nth),
             _ => None,
@@ -441,25 +490,25 @@ fn c10_pa_attacked_players(
         .collect()
 }
 
+#[allow(clippy::too_many_lines)]
 fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happened> {
     let mut found = Vec::new();
     // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.
     let mut tapped = Vec::new();
     for (at, event) in events.iter().enumerate() {
+        let start = found.len();
         let look = Look::at(pre, post, events, at);
-        let later = look.later;
-        if let Some(moved) = moved(pre, event, post) {
-            found.push(moved);
-        }
+        found.extend(moved(pre, event, post));
         found.extend(dk1c5_happened(pre, post, look.earlier, event));
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
-                nth: ordinal(post, later, token.controller, Tally::Tokens),
+                nth: ordinal(post, look.later, token.controller, Tally::Tokens),
             }),
             Event::AttackersDeclared { attackers, .. } => {
-                found.extend(attackers.iter().map(|(attacker, _)| Happened::Attacked {
+                found.extend(attackers.iter().map(|(attacker, at)| Happened::Attacked {
                     attacker: *attacker,
+                    at: *at,
                     nth: before(look, *attacker).map_or(0, |object| {
                         object_ordinal(look, object, None, Tally::Attacked)
                     }),
@@ -495,20 +544,38 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                         attackers: attackers.iter().map(|(attacker, _)| *attacker).collect(),
                     });
                 }
+                let mut at_players: Vec<PlayerId> = Vec::new();
+                for (_, at) in attackers {
+                    if let AttackTarget::Player(at) = at
+                        && !at_players.contains(at)
+                    {
+                        at_players.push(*at);
+                    }
+                }
+                for at in at_players {
+                    found.push(Happened::AttackedTogetherAt {
+                        attackers: attackers
+                            .iter()
+                            .filter(|(_, to)| *to == AttackTarget::Player(at))
+                            .map(|(attacker, _)| *attacker)
+                            .collect(),
+                        at,
+                    });
+                }
             }
             Event::SpellCast {
                 player,
                 object,
                 choices,
             } => {
-                let nth = ordinal(post, later, *player, Tally::Cast);
+                let nth = ordinal(post, look.later, *player, Tally::Cast);
                 found.push(Happened::Cast {
                     player: *player,
                     spell: *object,
                     nth,
-                    before: cast_before(post, later),
+                    before: cast_before(post, look.later),
                 });
-                found.extend(w9a_expended(post, later, *player, choices));
+                found.extend(w9a_expended(post, look.later, *player, choices));
                 found.extend(w11c_crime(post, *player, choices));
                 found.extend(targeted(look, choices, (*object, *player)));
             }
@@ -534,13 +601,23 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     (copy.object, copy.controller),
                 ));
             }
+            Event::TargetsChanged(change) => {
+                let new = Choices {
+                    targets: vec![change.added.clone()],
+                    ..Choices::default()
+                };
+                found.extend(targeted(look, &new, (change.object.id, change.controller)));
+            }
             Event::StepBegan { step } => found.push(Happened::Step {
                 step: *step,
                 active: post.turn().active(),
             }),
             other => about_players_and_permanents(other, look, &mut tapped, &mut found),
         }
+        let fresh = did::did_happened(pre, post, event, &found[start..]);
+        found.extend(fresh);
     }
+    found.extend(did::controller_changes(pre, post, events));
     found
 }
 
@@ -613,7 +690,7 @@ fn w9a_expended(
 /// that follow it in the batch (`later`).
 fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> u32 {
     let same = |event: &Event| match (kind, event) {
-        (Tally::Drawn, Event::CardDrawn { player: who, .. })
+        (Tally::Drawn | Tally::C6BlkDrawStepDrawn, Event::CardDrawn { player: who, .. })
         | (Tally::Cast, Event::SpellCast { player: who, .. })
         | (Tally::Gained, Event::LifeGained { player: who, .. })
         | (Tally::Cycled, Event::Cycled { player: who, .. })
@@ -653,6 +730,16 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
     let after = post.tallied(player, kind);
     after
         .saturating_sub(u32::try_from(later.iter().filter(|e| same(e)).count()).unwrap_or(u32::MAX))
+}
+
+/// Which card of the draw step under way a draw by `player` is, when it is their own draw step (CR 504.1); 0 otherwise.
+fn draw_step_ordinal(look: Look<'_>, player: PlayerId) -> u32 {
+    if look.post.turn().step() != crate::turn::Step::Draw
+        || look.post.active_player() != Some(player)
+    {
+        return 0;
+    }
+    ordinal(look.post, look.later, player, Tally::C6BlkDrawStepDrawn)
 }
 
 /// Which time of the turn a loss of `amount` life is for `player`; none for a loss of nothing, which the turn does not count.
@@ -767,6 +854,23 @@ const fn crewed_tally(saddle: bool) -> Tally {
     }
 }
 
+/// A permanent becoming tapped: which time of the turn for it, and whether an earlier event of the batch declared it as an
+/// attacker (the tap of attacking, CR 508.1f).
+fn e16a_tapped(look: Look<'_>, object: ObjectId) -> Happened {
+    let declared = look.earlier.iter().any(|event| {
+        matches!(event, Event::AttackersDeclared { attackers, .. }
+            if attackers.iter().any(|(attacker, _)| *attacker == object))
+    });
+    let nth = look.post.object(object).map_or(0, |held| {
+        object_ordinal(look, held.reference(), None, Tally::E16aTapped)
+    });
+    Happened::Tapped {
+        object,
+        nth,
+        declared,
+    }
+}
+
 /// Which time of the turn the event of `kind` is for `object` (caused by what `by` controls, when it is given): the count
 /// after the batch less the events of that kind for the object that follow it in the batch.
 fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind: Tally) -> u32 {
@@ -775,6 +879,7 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
         (Tally::Attacked, Event::AttackersDeclared { attackers, .. }) => {
             attackers.iter().any(|(attacker, _)| *attacker == object.id)
         }
+        (Tally::E16aTapped, Event::PermanentTapped { object: tapped }) => *tapped == object.id,
         (
             Tally::Damaged,
             Event::DamageDealt {
@@ -806,6 +911,9 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
         }
         (Tally::Targeted, Event::AbilityCopied(copy)) => {
             by_them(copy.controller) && copy.choices.targeted_objects().contains(&object)
+        }
+        (Tally::Targeted, Event::TargetsChanged(change)) => {
+            by_them(change.controller) && change.added.contains(&Target::Object(object))
         }
         _ => false,
     };
@@ -860,11 +968,28 @@ fn about_players_and_permanents(
                 attacker: *attacker,
             }));
             let mut blocked = Vec::new();
-            for (_, attacker) in blocks {
+            let mut blocking = Vec::new();
+            for (blocker, attacker) in blocks {
                 if !blocked.contains(attacker) {
                     blocked.push(*attacker);
                     found.push(Happened::BecameBlocked {
                         attacker: *attacker,
+                        blockers: blocks
+                            .iter()
+                            .filter(|(_, of)| of == attacker)
+                            .map(|(by, _)| *by)
+                            .collect(),
+                    });
+                }
+                if !blocking.contains(blocker) {
+                    blocking.push(*blocker);
+                    found.push(Happened::Blocking {
+                        blocker: *blocker,
+                        attackers: blocks
+                            .iter()
+                            .filter(|(by, _)| by == blocker)
+                            .map(|(_, of)| *of)
+                            .collect(),
                     });
                 }
             }
@@ -898,11 +1023,15 @@ fn about_players_and_permanents(
             if let DamageTarget::Player(player) = target
                 && !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss)
             {
-                found.push(Happened::LifeLost {
-                    player: *player,
-                    amount: *amount,
-                    nth: loss_ordinal(look, *player, *amount),
-                });
+                // A life floor lets damage take less life than it deals (CR 614.1): the trigger sees the life lost.
+                let lost = super::life_floor::damage_lost(look.pre, look.earlier, *player, *amount);
+                if lost > 0 || *amount == 0 {
+                    found.push(Happened::LifeLost {
+                        player: *player,
+                        amount: lost,
+                        nth: loss_ordinal(look, *player, lost),
+                    });
+                }
             }
         }
         Event::LifeGained { player, amount } => found.push(Happened::LifeGained {
@@ -921,10 +1050,11 @@ fn about_players_and_permanents(
             player: *player,
             card: *object,
             nth: ordinal(look.post, look.later, *player, Tally::Drawn),
+            in_draw_step: draw_step_ordinal(look, *player),
         }),
         Event::PermanentTapped { object } => {
             tapped.push(*object);
-            found.push(Happened::Tapped { object: *object });
+            found.push(e16a_tapped(look, *object));
         }
         Event::PermanentUntapped { object } => found.push(Happened::Untapped { object: *object }),
         Event::PermanentPhasedOut { object, .. } => {
@@ -944,21 +1074,24 @@ fn about_players_and_permanents(
                 });
             }
         }
-        Event::CountersChanged(changed) => {
-            if let Target::Object(on) = changed.on {
-                found.push(Happened::Counters {
-                    on: on.id,
-                    counter: changed.counter.clone(),
-                    delta: changed.delta,
-                    before: counters_before(look, changed, on),
-                    nth: if changed.delta > 0 {
-                        object_ordinal(look, on, None, Tally::Countered)
-                    } else {
-                        0
-                    },
-                });
-            }
-        }
+        Event::CountersChanged(changed) => match changed.on {
+            Target::Object(on) => found.push(Happened::Counters {
+                on: on.id,
+                counter: changed.counter.clone(),
+                delta: changed.delta,
+                before: counters_before(look, changed, on),
+                nth: if changed.delta > 0 {
+                    object_ordinal(look, on, None, Tally::Countered)
+                } else {
+                    0
+                },
+            }),
+            Target::Player(player) => found.push(Happened::PlayerCounters {
+                player,
+                counter: changed.counter.clone(),
+                delta: changed.delta,
+            }),
+        },
         Event::Attached { object, to } => found.push(Happened::Attached {
             attachment: *object,
             to: *to,
@@ -972,6 +1105,10 @@ fn about_players_and_permanents(
         Event::Surveilled(surveilled) => found.push(Happened::Surveilled {
             player: surveilled.player,
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
+        }),
+        Event::RingTempted { player, bearer, .. } => found.push(Happened::RingTempted {
+            player: *player,
+            bearer: *bearer,
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
         Event::InitiativeTaken { player, .. } => {
@@ -1096,6 +1233,8 @@ fn about_players_and_permanents(
 struct Used {
     limits: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     delayed: BTreeSet<DelayedId>,
+    /// The spell or ability that caused the batch, for `TriggerPattern::Caused`.
+    caused: Option<super::CausedBy>,
 }
 
 /// The cause of a trigger about `subjects`, with the objects among them as they are in `state`.
@@ -1115,6 +1254,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         snapshots,
         amount,
         source: None,
+        against: None,
     }
 }
 
@@ -1146,6 +1286,22 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             };
             let reference = object(*moved)?;
             (named(left, *from) && named(entered, *to) && scope.selects(what, reference).ok()?)
+                .then(|| cause(state, vec![Target::Object(reference)]))
+        }
+        // A resolved spell moves with no cause; a countered one with `Countered`.
+        (
+            TriggerPattern::ResolvedToGraveyard { what },
+            Happened::Moved {
+                object: moved,
+                from: Zone::Stack,
+                to: Zone::Graveyard(_),
+                cause: None,
+            },
+        ) => {
+            let reference = object(*moved)?;
+            scope
+                .selects(what, reference)
+                .ok()?
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
         (
@@ -1180,12 +1336,16 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 && scope.selects(what, reference).ok()?)
             .then(|| cause(state, vec![Target::Object(reference)]))
         }
-        (TriggerPattern::Attacks { what }, Happened::Attacked { attacker, .. }) => {
+        (TriggerPattern::Attacks { what }, Happened::Attacked { attacker, at, .. }) => {
             let reference = object(*attacker)?;
-            scope
-                .selects(what, reference)
-                .ok()?
-                .then(|| cause(state, vec![Target::Object(reference)]))
+            let against = match at {
+                AttackTarget::Player(player) => Some(Target::Player(*player)),
+                AttackTarget::Planeswalker(walker) => object(*walker).map(Target::Object),
+            };
+            scope.selects(what, reference).ok()?.then(|| Cause {
+                against,
+                ..cause(state, vec![Target::Object(reference)])
+            })
         }
         (TriggerPattern::AttacksAlone { what }, Happened::AttackedAlone { attacker }) => {
             let reference = object(*attacker)?;
@@ -1320,8 +1480,10 @@ fn becomes_target(
         Target::Object(targeting),
         Target::Player(controller_of(state, caster)?),
     ];
-    (scope.selects(what, *targeted).ok()? && scope.selects(by, targeting).ok()?)
-        .then(|| cause(state, subjects))
+    (scope.selects(what, *targeted).ok()? && scope.selects(by, targeting).ok()?).then(|| Cause {
+        source: Some(targeting),
+        ..cause(state, subjects)
+    })
 }
 
 /// What `pattern` finds in the player actions of a game: a venture, a die roll, a crime and the mana spent in a turn.
@@ -1371,6 +1533,9 @@ fn matching_player_action(
             (by(who, player) && *from < *n && *n <= *to)
                 .then(|| counted(state, vec![Target::Player(*player)], 0))
         }
+        (TriggerPattern::Did { .. }, Happened::Did { .. }) => {
+            did::matching_did(pattern, happened, scope)
+        }
         _ => None,
     }
 }
@@ -1380,6 +1545,7 @@ fn matching_player_action(
 /// the player who tapped for mana alone, so that damage to "that player" hits no creature that dealt it or land that was
 /// tapped; the player and the card of a discard and of a cycling; the blocker and the attacker; the attachment and what
 /// it is attached to.
+#[allow(clippy::too_many_lines)]
 fn matching_event(
     pattern: &TriggerPattern,
     happened: &Happened,
@@ -1393,6 +1559,11 @@ fn matching_event(
         (TriggerPattern::Nth { event, nth }, happened) => (happened.nth_for(event) == Some(*nth))
             .then(|| matching(event, happened, scope))
             .flatten(),
+        (TriggerPattern::Caused { inner, by, source }, happened) => {
+            caused_by(scope, by.as_ref(), source)
+                .then(|| matching(inner, happened, scope))
+                .flatten()
+        }
         (
             TriggerPattern::DealsDamage { source, to, combat },
             Happened::Damaged {
@@ -1408,15 +1579,35 @@ fn matching_event(
                 DamageTarget::Player(player) => Target::Player(*player),
                 DamageTarget::Object(hit) => Target::Object(object(*hit)?),
             };
-            let named = to
-                .as_ref()
-                .is_none_or(|to| scope.refs(to).is_ok_and(|named| named.contains(&recipient)));
+            let named = to.as_ref().is_none_or(|to| {
+                // "Defending" is the player the damage dealer attacks, whatever the ability's own source is (an Aura).
+                if matches!(to, Ref::Defending) {
+                    scope.defending_of(dealer.id).map(Target::Player) == Some(recipient)
+                } else {
+                    scope.refs(to).is_ok_and(|named| named.contains(&recipient))
+                }
+            });
             (combat.is_none_or(|wanted| wanted == *was) && named && picks(source, dealer)?).then(
                 || Cause {
                     source: Some(dealer),
                     ..counted(state, vec![recipient], *amount)
                 },
             )
+        }
+        (
+            TriggerPattern::RingTempts {
+                who,
+                bearer: wanted,
+            },
+            Happened::RingTempted { player, bearer },
+        ) => {
+            let chosen = (*bearer).and_then(object);
+            let named = !wanted.is_empty();
+            let fits = by(who, player)
+                && (!named || chosen.is_some_and(|c| picks(wanted, c) == Some(true)));
+            let mut subjects = vec![Target::Player(*player)];
+            subjects.extend(chosen.filter(|_| named).map(Target::Object));
+            fits.then(|| counted(state, subjects, happened.amount()))
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
@@ -1430,10 +1621,34 @@ fn matching_event(
         | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
-        (TriggerPattern::Drew { who, what }, Happened::Drew { player, card, .. }) => {
+        (
+            TriggerPattern::PlayerCountersPut { who, counter },
+            Happened::PlayerCounters {
+                player,
+                counter: kind,
+                delta,
+            },
+        ) => {
+            (*delta > 0 && counter.as_ref().is_none_or(|wanted| wanted == kind) && by(who, player))
+                .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
+        }
+        (
+            TriggerPattern::Drew {
+                who,
+                what,
+                first_in_draw_step,
+            },
+            Happened::Drew {
+                player,
+                card,
+                in_draw_step,
+                ..
+            },
+        ) => {
             // The card is read where the batch left it: in the hand it was drawn into, or wherever an effect sent it since.
             let drawn = object(*card)?;
-            (by(who, player) && picks(what, drawn)?)
+            let step = first_in_draw_step.is_none_or(|first| first == (*in_draw_step == 1));
+            (step && by(who, player) && picks(what, drawn)?)
                 .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
         }
         (
@@ -1581,7 +1796,15 @@ fn matching_permanents(
             (level == reached && picks(what, actor)?)
                 .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
         }
-        (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
+        (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped, .. })
+        | (
+            TriggerPattern::TappedNotAttacking { what },
+            Happened::Tapped {
+                object: tapped,
+                declared: false,
+                ..
+            },
+        )
         | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped })
         | (TriggerPattern::PhasedOut { what }, Happened::PhasedOut { object: tapped })
         | (TriggerPattern::PhasedIn { what }, Happened::PhasedIn { object: tapped }) => {
@@ -1596,8 +1819,9 @@ fn matching_permanents(
             },
         ) => {
             let tapped = object(*tapped)?;
+            // The event holds the permanent ("that land doesn't untap") and the player who tapped it ("that player").
             (by(who, player) && picks(what, tapped)?)
-                .then(|| cause(state, vec![Target::Player(*player)]))
+                .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
         }
         (
             TriggerPattern::CountersPut { what, counter }
@@ -1636,17 +1860,76 @@ fn matching_permanents(
                 && picks(&Selector::this(), on)?)
             .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
         }
-        (TriggerPattern::Blocks { what }, Happened::Blocked { blocker, attacker }) => {
+        (TriggerPattern::Blocks { what, blocking }, Happened::Blocked { blocker, attacker })
+            if blocking.is_empty() =>
+        {
             let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);
-            picks(what, blocker)?.then(|| {
-                cause(
+            picks(what, blocker)?.then(|| Cause {
+                source: Some(blocker),
+                against: Some(Target::Object(attacker)),
+                ..cause(
                     state,
                     vec![Target::Object(blocker), Target::Object(attacker)],
                 )
             })
         }
-        (TriggerPattern::BecomesBlocked { what }, Happened::BecameBlocked { attacker })
-        | (TriggerPattern::Unblocked { what }, Happened::Unblocked { attacker }) => {
+        (TriggerPattern::Blocks { what, blocking }, Happened::Blocking { blocker, attackers })
+            if !blocking.is_empty() =>
+        {
+            let blocker = object(*blocker)?;
+            if !picks(what, blocker)? {
+                return None;
+            }
+            let mut first = None;
+            for attacker in attackers {
+                if let Some(attacker) = object(*attacker)
+                    && picks(blocking, attacker)?
+                {
+                    first = Some(attacker);
+                    break;
+                }
+            }
+            let attacker = first?;
+            Some(Cause {
+                source: Some(blocker),
+                against: Some(Target::Object(attacker)),
+                ..cause(
+                    state,
+                    vec![Target::Object(blocker), Target::Object(attacker)],
+                )
+            })
+        }
+        (
+            TriggerPattern::BecomesBlocked {
+                what,
+                by,
+                once: false,
+            },
+            Happened::Blocked { blocker, attacker },
+        ) if !by.is_empty() => {
+            let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);
+            (picks(what, attacker)? && picks(by, blocker)?).then(|| Cause {
+                source: Some(blocker),
+                ..cause(state, vec![Target::Object(attacker)])
+            })
+        }
+        (
+            TriggerPattern::BecomesBlocked { what, by, once },
+            Happened::BecameBlocked { attacker, blockers },
+        ) if by.is_empty() || *once => {
+            let attacker = object(*attacker)?;
+            if !picks(what, attacker)? {
+                return None;
+            }
+            let mut matched = by.is_empty();
+            for blocker in blockers {
+                if !matched && let Some(blocker) = object(*blocker) {
+                    matched = picks(by, blocker)?;
+                }
+            }
+            matched.then(|| cause(state, vec![Target::Object(attacker)]))
+        }
+        (TriggerPattern::Unblocked { what }, Happened::Unblocked { attacker }) => {
             let attacker = object(*attacker)?;
             picks(what, attacker)?.then(|| cause(state, vec![Target::Object(attacker)]))
         }
@@ -1665,6 +1948,32 @@ fn matching_permanents(
             (picked.len() >= usize::try_from(*at_least).unwrap_or(usize::MAX)).then(|| {
                 let count = u32::try_from(picked.len()).unwrap_or(u32::MAX);
                 counted(state, picked, count)
+            })
+        }
+        (
+            TriggerPattern::GroupAttacksAt { what, at, at_least },
+            Happened::AttackedTogetherAt {
+                attackers,
+                at: attacked,
+            },
+        ) => {
+            if !scope.players(at).ok()?.contains(attacked) {
+                return None;
+            }
+            let mut picked = Vec::new();
+            for attacker in attackers {
+                if let Some(attacker) = object(*attacker)
+                    && picks(what, attacker)?
+                {
+                    picked.push(Target::Object(attacker));
+                }
+            }
+            (picked.len() >= usize::try_from(*at_least).unwrap_or(usize::MAX)).then(|| {
+                let count = u32::try_from(picked.len()).unwrap_or(u32::MAX);
+                Cause {
+                    against: Some(Target::Player(*attacked)),
+                    ..counted(state, picked, count)
+                }
             })
         }
         (
@@ -1707,6 +2016,25 @@ pub(crate) fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool
     )
 }
 
+/// Whether the spell or ability that caused the events is controlled by one of the players `by` names and is one of the
+/// objects `source` selects; no cause is no match.
+fn caused_by(scope: &Scope<'_>, by: Option<&Ref>, source: &Selector) -> bool {
+    let Some(caused) = scope.caused else {
+        return false;
+    };
+    if let Some(who) = by
+        && !scope
+            .players(who)
+            .is_ok_and(|players| players.contains(&caused.player))
+    {
+        return false;
+    }
+    source.is_empty()
+        || caused
+            .object
+            .is_some_and(|object| scope.selects(source, object).unwrap_or(false))
+}
+
 /// What `pattern` finds in `happened`: one cause for an event, and for the events of a batch one for each player they
 /// are about (or one in all when they are about none).
 fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Vec<Cause> {
@@ -1722,47 +2050,148 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
                 .flat_map(|member| causes(member, happened, scope))
                 .collect()
         }
-        (TriggerPattern::Batch(inner), Happened::Batch(members)) => {
-            let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
-            for member in members {
-                let Some(found) = matching(inner, member, scope) else {
-                    continue;
-                };
-                let players: Vec<Target> = found
-                    .subjects
-                    .iter()
-                    .filter(|subject| matches!(subject, Target::Player(_)))
-                    .copied()
-                    .collect();
-                // The damage dealt together is one amount ("that damage"); any other batch counts its events.
-                let weight = if matches!(**inner, TriggerPattern::DealsDamage { .. }) {
-                    found.amount
-                } else {
-                    1
-                };
-                let at = groups.iter().position(|(key, _)| *key == players);
-                let at = at.unwrap_or_else(|| {
-                    groups.push((players, Cause::default()));
-                    groups.len() - 1
-                });
-                let group = &mut groups[at].1;
-                for subject in found.subjects {
-                    if !group.subjects.contains(&subject) {
-                        group.subjects.push(subject);
-                    }
-                }
-                for shot in found.snapshots {
-                    if !group.snapshots.contains(&shot) {
-                        group.snapshots.push(shot);
-                    }
-                }
-                group.amount = group.amount.saturating_add(weight);
+        (TriggerPattern::Caused { inner, by, source }, happened) => {
+            if caused_by(scope, by.as_ref(), source) {
+                causes(inner, happened, scope)
+            } else {
+                Vec::new()
             }
-            groups.into_iter().map(|(_, cause)| cause).collect()
+        }
+        (TriggerPattern::Batch(inner), Happened::Batch(members)) => {
+            batch_causes(inner, members.iter(), scope)
+        }
+        // The first damage of a turn to an object is the batch that holds the first event to it.
+        (TriggerPattern::Nth { event, nth: 1 }, Happened::Batch(members))
+            if matches!(&**event, TriggerPattern::Batch(inner)
+                if matches!(**inner, TriggerPattern::DealsDamage { .. })) =>
+        {
+            let TriggerPattern::Batch(inner) = &**event else {
+                return Vec::new();
+            };
+            let first: Vec<ObjectId> = members
+                .iter()
+                .filter_map(|member| match member {
+                    Happened::Damaged {
+                        to: DamageTarget::Object(hit),
+                        nth: 1,
+                        ..
+                    } => Some(*hit),
+                    _ => None,
+                })
+                .collect();
+            let firsts = members.iter().filter(|member| {
+                matches!(member, Happened::Damaged { to: DamageTarget::Object(hit), .. }
+                    if first.contains(hit))
+            });
+            batch_causes(inner, firsts, scope)
+        }
+        // "Whenever you discard one or more cards for the first time each turn": the batch that holds the player's first
+        // discards of the turn, any card.
+        (TriggerPattern::Nth { event, nth: 1 }, Happened::Batch(members))
+            if matches!(&**event, TriggerPattern::Batch(inner)
+                if matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())) =>
+        {
+            let TriggerPattern::Batch(inner) = &**event else {
+                return Vec::new();
+            };
+            let firsts = members
+                .iter()
+                .filter(|member| e16a_first_discards(scope.state, members, member));
+            batch_causes(inner, firsts, scope)
         }
         (TriggerPattern::Batch(_), _) | (_, Happened::Batch(_)) => Vec::new(),
         _ => matching(pattern, happened, scope).into_iter().collect(),
     }
+}
+
+/// Whether `member` is a discard of a player whose discards this turn are all in this batch: the turn's count after the
+/// batch (`post`) equals the player's discards in it.
+fn e16a_first_discards(post: &GameState, members: &[Happened], member: &Happened) -> bool {
+    let discarder = |happened: &Happened| match happened {
+        Happened::Moved {
+            from: Zone::Hand(player),
+            cause: Some(ZoneCause::Discarded),
+            ..
+        } => Some(*player),
+        _ => None,
+    };
+    let Some(player) = discarder(member) else {
+        return false;
+    };
+    let here = members
+        .iter()
+        .filter(|other| discarder(other) == Some(player))
+        .count();
+    usize::try_from(post.tallied(player, Tally::Discarded)).is_ok_and(|turn| turn == here)
+}
+
+/// Whether a damage pattern's recipient names players, so that its batch triggers once for each player dealt damage.
+const fn names_players(to: Option<&Ref>) -> bool {
+    matches!(
+        to,
+        Some(Ref::EachPlayer | Ref::Opponents | Ref::You | Ref::Defending)
+    )
+}
+
+/// The causes of the `members` of a batch that `inner` finds: one for each player they are about (or one in all when
+/// they are about none). Damage is grouped by player only when `inner` names players as its recipients: damage to a
+/// blocker and to a player at once is one batch for "Whenever ~ deals combat damage" (CR 603.2c).
+fn batch_causes<'a>(
+    inner: &TriggerPattern,
+    members: impl Iterator<Item = &'a Happened>,
+    scope: &Scope<'_>,
+) -> Vec<Cause> {
+    let damage = match inner {
+        TriggerPattern::DealsDamage { to, .. } => Some(names_players(to.as_ref())),
+        _ => None,
+    };
+    let counters = matches!(
+        inner,
+        TriggerPattern::CountersPut { .. }
+            | TriggerPattern::CountersRemoved { .. }
+            | TriggerPattern::PlayerCountersPut { .. }
+    );
+    let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
+    for member in members {
+        let Some(found) = matching(inner, member, scope) else {
+            continue;
+        };
+        let players: Vec<Target> = if damage == Some(false) {
+            Vec::new()
+        } else {
+            found
+                .subjects
+                .iter()
+                .filter(|subject| matches!(subject, Target::Player(_)))
+                .copied()
+                .collect()
+        };
+        // The damage dealt together is one amount ("that damage") and the counters put together one number ("that many");
+        // any other batch counts its events.
+        let weight = if damage.is_some() || counters {
+            found.amount
+        } else {
+            1
+        };
+        let at = groups.iter().position(|(key, _)| *key == players);
+        let at = at.unwrap_or_else(|| {
+            groups.push((players, Cause::default()));
+            groups.len() - 1
+        });
+        let group = &mut groups[at].1;
+        for subject in found.subjects {
+            if !group.subjects.contains(&subject) {
+                group.subjects.push(subject);
+            }
+        }
+        for shot in found.snapshots {
+            if !group.snapshots.contains(&shot) {
+                group.snapshots.push(shot);
+            }
+        }
+        group.amount = group.amount.saturating_add(weight);
+    }
+    groups.into_iter().map(|(_, cause)| cause).collect()
 }
 
 /// Who controls the triggered abilities of `object`: its controller, except that a card in exile encoded on a creature
@@ -1816,7 +2245,7 @@ fn object_triggers(
         if *from != zone && !from_anywhere {
             continue;
         }
-        let scope = Scope::announcing(state, controller, source);
+        let scope = Scope::announcing(state, controller, source).with_caused(used.caused);
         for cause in causes(when, happened, &scope) {
             // CR 603.4: an "if" in the trigger is checked as the event happens.
             if let Some(condition) = intervening_if {
@@ -1837,8 +2266,19 @@ fn object_triggers(
                     continue;
                 }
             }
+            // "Do this only once each turn" triggers each time until it was done; one done this turn would do nothing.
+            if *limit == Some(Limit::OncePerTurnDone)
+                && state.limit_spent(
+                    Limit::OncePerTurnDone,
+                    source,
+                    address.source,
+                    address.ability,
+                )
+            {
+                continue;
+            }
             if *limit == Some(Limit::OncePerTurn)
-                && (state.limit_spent(source, address.source, address.ability)
+                && (state.limit_spent(Limit::OncePerTurn, source, address.source, address.ability)
                     || !used
                         .limits
                         .insert((source, address.source, address.ability)))
@@ -1862,7 +2302,7 @@ fn object_triggers(
             };
             // An ability that triggers only once each turn does so once, whatever else is said of it.
             if limit.is_none() && zone == ZoneKind::Battlefield {
-                for _ in 0..repeats(state, happened, controller) {
+                for _ in 0..repeats(state, happened, controller, source) {
                     found.push(trigger.clone());
                 }
             }
@@ -1947,15 +2387,55 @@ fn elsewhere(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>,
 
 /// How many additional times a triggered ability of a permanent `controller` controls triggers on `happened`: once for
 /// each rule in force that says so and whose event this is.
-fn repeats(state: &GameState, happened: &Happened, controller: PlayerId) -> usize {
+fn repeats(
+    state: &GameState,
+    happened: &Happened,
+    controller: PlayerId,
+    watcher: ObjectRef,
+) -> usize {
     triggers_again(state)
         .iter()
         .filter(|again| again.controller == controller)
         .filter(|again| {
+            again.from.as_ref().is_none_or(|from| {
+                Scope::announcing(state, again.controller, again.source)
+                    .selects(from, watcher)
+                    .unwrap_or(false)
+            })
+        })
+        .filter(|again| {
             let scope = Scope::announcing(state, again.controller, again.source);
-            matching(&again.cause, happened, &scope).is_some()
+            again
+                .cause
+                .as_ref()
+                .is_none_or(|cause| matching(cause, happened, &scope).is_some())
         })
         .count()
+}
+
+/// Drops the abilities from `first` on that a prohibition keeps from triggering on `happened` (`GameRule::Cant` with a
+/// trigger): its subjects are the players who control the abilities and the objects that have them.
+fn forbid_triggers(
+    state: &GameState,
+    happened: &Happened,
+    found: &mut Vec<Triggered>,
+    first: usize,
+) {
+    for (ban, pattern) in crate::prohibit::trigger_bans(state) {
+        let mut index = first;
+        while index < found.len() {
+            let ability = &found[index];
+            let scope =
+                Scope::announcing(state, ban.controller, ban.source.unwrap_or(ability.source));
+            if crate::prohibit::covers(&ban.who, Some(ability.controller), Some(ability.source.id))
+                && matching(pattern, happened, &scope).is_some()
+            {
+                found.remove(index);
+            } else {
+                index += 1;
+            }
+        }
+    }
 }
 
 /// The delayed triggered abilities of `post` that trigger on `happened`, judged in `state`.
@@ -1975,7 +2455,7 @@ fn delayed(
         };
         let (source, controller) = (waiting.source(), waiting.controller());
         // The event it waits for may name what the resolution bound ("whenever that creature deals combat damage").
-        let mut scope = Scope::announcing(state, controller, source);
+        let mut scope = Scope::announcing(state, controller, source).with_caused(used.caused);
         scope.bindings = &waiting.bindings;
         let Some(cause) = matching(pattern, happened, &scope) else {
             continue;
@@ -2002,16 +2482,29 @@ fn delayed(
 }
 
 /// Whether [`detect`] reads the state before `events`: only a move out of the battlefield, a death, a discard, a change
-/// of day or night (which was something else before) and a
+/// of day or night (which was something else before), damage to a player (a life floor cuts the life it takes), an arrival on the battlefield and a
 /// spell or ability that ends without resolving look back at it. Any other batch is judged by the state after it
 /// alone, which saves copying the whole state for it.
 pub(crate) fn needs_before(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
-        Event::CreatureDied { .. }
+        Event::DamageDealt {
+            target: DamageTarget::Player(_),
+            ..
+        }
+        | Event::CreatureDied { .. }
         | Event::CardDiscarded { .. }
         | Event::DayNightChanged { .. }
-        | Event::PermanentPhasedOut { .. } => true,
-        Event::ZoneChanged { from, .. } => *from == Zone::Battlefield,
+        | Event::PermanentPhasedOut { .. }
+        | Event::PlayerLost { .. }
+        | Event::EffectCreated { .. }
+        | Event::EffectExpired { .. }
+        | Event::Attached { .. }
+        | Event::Unattached { .. }
+        | Event::ObjectLeftGame { .. } => true,
+        // An arrival can change who controls a permanent already there, as a departure can (`did::controller_changes`).
+        Event::ZoneChanged { from, to, .. } => {
+            *from == Zone::Battlefield || *to == Zone::Battlefield
+        }
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,
     })
@@ -2028,7 +2521,10 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
         return Vec::new();
     }
     let mut found = Vec::new();
-    let mut used = Used::default();
+    let mut used = Used {
+        caused: super::cause_of(pre, events, post),
+        ..Used::default()
+    };
     let all = happenings(pre, events, post);
     let (before, after) = (OnceCell::new(), OnceCell::new());
     for happened in &all {
@@ -2037,9 +2533,11 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
         } else {
             (post, after.get_or_init(|| Watchers::of(post)))
         };
+        let first = found.len();
         permanents(state, watching, happened, &mut found, &mut used);
         elsewhere(state, happened, &mut found, &mut used);
         delayed(state, post, happened, &mut found, &mut used);
+        forbid_triggers(state, happened, &mut found, first);
     }
     // The events of the batch together, after each of them: what looks back is judged against `pre`, the rest `post`.
     let (back, forward): (Vec<Happened>, Vec<Happened>) =
@@ -2050,8 +2548,10 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
             starts.push(found.len());
             let together = Happened::Batch(members);
             let watching = watching.get_or_init(|| Watchers::of(state));
+            let first = found.len();
             permanents(state, watching, &together, &mut found, &mut used);
             elsewhere(state, &together, &mut found, &mut used);
+            forbid_triggers(state, &together, &mut found, first);
         }
     }
     if let [back, forward] = starts[..] {
@@ -2690,6 +3190,11 @@ mod tests {
             "what was targeted, what targets it and who controls that"
         );
         assert_eq!(
+            found[0].cause.source.map(|source| source.id),
+            Some(reference(&post, "Spell").id),
+            "the dealer is what targets it"
+        );
+        assert_eq!(
             fire(&pre, &[cast(&pre, ME, "Spell", vec![at("Ogre")])]).1,
             []
         );
@@ -2712,6 +3217,7 @@ mod tests {
                     timing: mtg_cards::ability::Timing::Instant,
                     condition: None,
                     limit: None,
+                    by: mtg_cards::ability::Activators::Controller,
                     from: ZoneKind::Battlefield,
                     targets: vec![TargetSpec {
                         what: Targetable::AnyTarget,
@@ -2719,6 +3225,8 @@ mod tests {
                         divide: None,
                     }],
                     effects: vec![Effect::DealDamage {
+                        excess: None,
+                        unpreventable: false,
                         source: None,
                         to: Ref::Target(0),
                         amount: Amount::Fixed(1),
@@ -2808,7 +3316,12 @@ mod tests {
             &post,
             &[Event::AbilityTriggered(Box::new(found[0].clone()))],
         );
-        assert!(spent.limit_spent(found[0].source, found[0].origin, found[0].ability));
+        assert!(spent.limit_spent(
+            Limit::OncePerTurn,
+            found[0].source,
+            found[0].origin,
+            found[0].ability
+        ));
         let next = fold(
             &spent,
             &[Event::TurnBegan {
@@ -2818,7 +3331,12 @@ mod tests {
             }],
         );
         assert!(
-            !next.limit_spent(found[0].source, found[0].origin, found[0].ability),
+            !next.limit_spent(
+                Limit::OncePerTurn,
+                found[0].source,
+                found[0].origin,
+                found[0].ability
+            ),
             "the new turn gives it back"
         );
     }
@@ -2860,8 +3378,11 @@ mod tests {
             when: pattern(r#"{"StepBegins":{"step":"End"}}"#),
             once,
             this_turn: false,
+            until: None,
             effects: gain(),
+            targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],
+            kept: None,
         }))
     }
 
@@ -2952,6 +3473,13 @@ mod tests {
         object: ObjectId(1),
         from: Zone::Hand(ME),
         to: Zone::Battlefield,
+        cause: ZoneCause::Moved,
+    }], true)]
+    #[case::an_object_that_left_the_game(vec![Event::ObjectLeftGame { object: ObjectId(1) }], true)]
+    #[case::a_move_between_hidden_zones(vec![Event::ZoneChanged {
+        object: ObjectId(1),
+        from: Zone::Hand(ME),
+        to: Zone::Graveyard(ME),
         cause: ZoneCause::Moved,
     }], false)]
     #[case::a_land_played(vec![Event::LandPlayed { player: ME, object: ObjectId(1), face: None }], false)]

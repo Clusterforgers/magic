@@ -1,0 +1,52 @@
+{
+  "oracle_id": "2bddbd7d-9b6b-4166-88de-368d91c7fe4f",
+  "name": "Sentinel of the Pearl Trident",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sentinel of the Pearl Trident",
+      "oracle_fingerprint": "a1206150706a1086f1cea680970e1c83",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Supertype": "Legendary" },
+                        { "Type": "Artifact" },
+                        { "Subtype": "Saga" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

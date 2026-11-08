@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "aefcd734-3916-4c77-9d98-3ea2c2795658",
+  "oracle_id": "e93782e3-1b93-459a-a7de-06c3b6591e6f",
+  "multiverse_ids": [],
+  "resource_id": "038EAC657784CEBE0AF360848D39BB8F82A84635792CAAA32E427E8095711593",
+  "mtgo_id": 144886,
+  "arena_id": 97478,
+  "tcgplayer_id": 649605,
+  "cardmarket_id": 857479,
+  "name": "Turtle-Duck",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/aefcd734-3916-4c77-9d98-3ea2c2795658",
+  "scryfall_uri": "https://scryfall.com/card/tla/200/turtle-duck?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:08:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.jpg?1783904935",
+    "normal": "https://cards.scryfall.io/normal/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.jpg?1783904935",
+    "large": "https://cards.scryfall.io/large/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.jpg?1783904935",
+    "png": "https://cards.scryfall.io/png/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.png?1783904935",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.jpg?1783904935",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.jpg?1783904935",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.webp?1783904935",
+    "grid": "https://cards.scryfall.io/grid/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.webp?1783904935",
+    "display": "https://cards.scryfall.io/display/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.webp?1783904935",
+    "art": "https://cards.scryfall.io/art/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.webp?1783904935",
+    "crop": "https://cards.scryfall.io/crop/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.webp?1783904935",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/e/aefcd734-3916-4c77-9d98-3ea2c2795658.jpg?1783904935"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Turtle Bird",
+  "oracle_text": "{3}: Until end of turn, this creature has base power 4 and gains trample.",
+  "power": "0",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aefcd734-3916-4c77-9d98-3ea2c2795658/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae93782e3-1b93-459a-a7de-06c3b6591e6f&unique=prints",
+  "collector_number": "200",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "A turtle-duckling's greatest defense comes not from their shell, but from their mother.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sylvain Sarrailh",
+  "artist_ids": [
+    "2e95abfc-addc-477e-a98e-b551ab56d4ec"
+  ],
+  "illustration_id": "e5769829-5a69-4f90-bd94-e6be417ecdef",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14976,
+  "penny_rank": 9786,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/avatar-the-last-airbender-magic-the-gathering-beginner-box-card-reveal-spoilers",
+    "previewed_at": "2025-08-14"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.26",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.08",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTurtle-Duck",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTurtle-Duck",
+    "edhrec": "https://edhrec.com/route/?cc=Turtle-Duck"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F649605%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857479&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144886?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

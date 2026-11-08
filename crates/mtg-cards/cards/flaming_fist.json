@@ -1,0 +1,36 @@
+{
+  "oracle_id": "cdaefc96-4560-43bb-9514-bf87657bd481",
+  "name": "Flaming Fist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flaming Fist",
+      "oracle_fingerprint": "77e88df0eabc7841018aa45086b0f28d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "AddKeyword": "DoubleStrike" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

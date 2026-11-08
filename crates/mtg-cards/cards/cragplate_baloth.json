@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3f599e15-cbc5-4170-b6b4-efd16aa222ac",
+  "name": "Cragplate Baloth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cragplate Baloth",
+      "oracle_fingerprint": "b37482104f3044b575b1c290207f7fc7",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{G}" } },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Hexproof" },
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

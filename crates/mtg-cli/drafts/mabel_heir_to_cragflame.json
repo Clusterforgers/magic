@@ -1,0 +1,52 @@
+{
+  "oracle_id": "4b11e435-5888-4e3b-a255-db817392163f",
+  "name": "Mabel, Heir to Cragflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mabel, Heir to Cragflame",
+      "oracle_fingerprint": "8cfe36d19307cba89d9f12da99b0165a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Mouse" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cragflame",
+                      "supertypes": ["Legendary"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Equipment"],
+                      "abilities": [
+                        { "Keyword": { "Equip": "{2}" } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "Vigilance" },
+                              { "AddKeyword": "Trample" },
+                              { "AddKeyword": "Haste" }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

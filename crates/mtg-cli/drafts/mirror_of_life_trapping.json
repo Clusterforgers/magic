@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3ec7ae18-b203-49bd-95f9-ad5482459a23",
+  "name": "Mirror of Life Trapping",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror of Life Trapping",
+      "oracle_fingerprint": "e2eacc823d9c9fdcd7920e92a964b86c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "WasCast": {} }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "ExiledWith": "This" },
+                      { "Not": { "Is": { "Bound": "exiled" } } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "256d884f-5dea-4906-a53d-cf14d43e6bc8",
+  "name": "Memory Leak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Leak",
+      "oracle_fingerprint": "109ebf59e3b946260fed25a48626f2af",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{1}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dbdf3c82-b0fc-479c-acce-f7e60be3a2b1",
+  "name": "Inkfathom Divers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inkfathom Divers",
+      "oracle_fingerprint": "aa52e39e336310a34af1854517ba11af",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

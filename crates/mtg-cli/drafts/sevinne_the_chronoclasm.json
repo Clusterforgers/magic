@@ -1,0 +1,35 @@
+{
+  "oracle_id": "869c9bc4-2b21-40c3-8b1c-c83269c856d0",
+  "name": "Sevinne, the Chronoclasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sevinne, the Chronoclasm",
+      "oracle_fingerprint": "5c788353c2a98ded024546a3e0d06b46",
+      "abilities": [
+        { "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "Prevent" } },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" },
+                      { "WasCast": { "from": "Graveyard" } },
+                      { "OwnedBy": "You" }
+                    ],
+                    "by": "You"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

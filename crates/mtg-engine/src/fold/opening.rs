@@ -97,8 +97,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let scry = rules
                 .scry_after_keep(taken)
                 .min(state.zones.get(Zone::Library(*player)).len());
+            let settled = settled(state, *player);
             player_mut(state, *player)?.mulligan = match (bottom, scry) {
-                (0, 0) => MulliganStatus::Kept,
+                (0, 0) => settled,
                 (0, _) => MulliganStatus::Scrying,
                 (n, _) => MulliganStatus::Bottoming(n),
             };
@@ -114,6 +115,17 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 }
                 super::zones::move_object(state, *card, Zone::Library(*player), Placement::Bottom)?;
             }
+            let settled = settled(state, *player);
+            player_mut(state, *player)?.mulligan = settled;
+        }
+        Event::OpeningCardsPlayed { player, cards } => {
+            expect_status(state, *player, MulliganStatus::Opening)?;
+            for card in cards {
+                if !state.zones.get(Zone::Hand(*player)).contains(card) {
+                    return Err(invalid("opening card is not in hand"));
+                }
+                super::zones::move_object(state, *card, Zone::Battlefield, Placement::Top)?;
+            }
             player_mut(state, *player)?.mulligan = MulliganStatus::Kept;
         }
         Event::MulliganPhaseEnded => state.stage = Stage::Turns,
@@ -122,11 +134,21 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
     Ok(())
 }
 
+/// Where a seat stands once its hand is final: asked about the cards that may begin on the battlefield, or done.
+fn settled(state: &GameState, player: PlayerId) -> MulliganStatus {
+    if crate::mulligan::opening_cards(state, player).is_empty() {
+        MulliganStatus::Kept
+    } else {
+        MulliganStatus::Opening
+    }
+}
+
 /// A scry in the opening ends the one a seat owed after keeping its hand; a scry of a resolution owes nothing.
 pub(super) fn scried(state: &mut GameState, player: PlayerId) -> Result<(), EngineError> {
     if state.stage == Stage::Mulligan {
         expect_status(state, player, MulliganStatus::Scrying)?;
-        player_mut(state, player)?.mulligan = MulliganStatus::Kept;
+        let settled = settled(state, player);
+        player_mut(state, player)?.mulligan = settled;
     }
     Ok(())
 }

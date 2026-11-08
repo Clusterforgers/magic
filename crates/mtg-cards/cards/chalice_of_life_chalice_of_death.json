@@ -1,0 +1,46 @@
+{
+  "oracle_id": "28df85d6-e13a-4178-a361-7015afd316ca",
+  "name": "Chalice of Life // Chalice of Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chalice of Life",
+      "oracle_fingerprint": "3bf49d221276143b0acce1fcf267cd89",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Ge",
+                      "right": { "Sum": [{ "StartingLife": "You" }, 10] }
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chalice of Death",
+      "oracle_fingerprint": "722e6c00eca0d8b805e5bc32307a016c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

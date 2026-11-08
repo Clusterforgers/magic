@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3a46d85b-ce1a-4842-a342-92a5bddb1053",
+  "name": "Scrounging Skyray",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrounging Skyray",
+      "oracle_fingerprint": "3ca3c0117797e1c2860be9477001f995",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

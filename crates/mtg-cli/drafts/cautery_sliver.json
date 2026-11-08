@@ -1,0 +1,63 @@
+{
+  "oracle_id": "93a9423c-2b1b-41ce-80f4-157140c684ad",
+  "name": "Cautery Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cautery Sliver",
+      "oracle_fingerprint": "0089267c9fe36ad3534f1b05dc13ea7e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+                    "targets": [
+                      {
+                        "what": {
+                          "Either": [
+                            { "Object": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+                            "Player",
+                            { "Object": [{ "Type": "Planeswalker" }] }
+                          ]
+                        }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "Shield": {
+                          "when": { "Damage": { "to": { "Target": 0 } } },
+                          "by": { "PreventUpTo": 1 },
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

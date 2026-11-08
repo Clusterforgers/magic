@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ef987ddb-25f6-4895-8f83-045254745ea4",
+  "name": "Blood Clock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Clock",
+      "oracle_fingerprint": "4945805378fa15aca56d7fab42d18697",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": [{ "PayLife": 2 }],
+                  "unpaid": [
+                    {
+                      "Choose": {
+                        "who": "Triggering",
+                        "from": { "Each": [{ "ControlledBy": "Triggering" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

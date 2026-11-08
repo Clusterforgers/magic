@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c235fda2-1a8d-4ac7-9a23-784529a520f0",
+  "name": "Nihilith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nihilith",
+      "oracle_fingerprint": "0de02520f3c04ff8323e5c08a13cfd9b",
+      "abilities": [
+        { "Keyword": "Fear" },
+        { "Keyword": { "Suspend": { "time": 7, "cost": "{1}{B}" } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", "Suspended", { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Exile",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "RemoveCounters": { "from": "This", "counter": { "Other": "time" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

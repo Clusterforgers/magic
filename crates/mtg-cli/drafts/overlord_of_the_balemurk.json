@@ -7,7 +7,27 @@
       "name": "Overlord of the Balemurk",
       "oracle_fingerprint": "b736b411f3c7383903bc1e84b9cad7a4",
       "abilities": [
-        { "Keyword": "Improvise" },
+        { "AltCast": { "way": "Impending", "cost": "{1}{B}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "time" }, "count": 5 } },
+            "condition": { "CastWith": "Impending" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        },
         {
           "Triggered": {
             "when": {
@@ -19,29 +39,31 @@
             "effects": [
               { "Mill": { "count": 4 } },
               {
-                "May": {
-                  "effects": [
-                    {
-                      "Choose": {
-                        "from": {
-                          "Each": [
-                            { "In": "Graveyard" },
-                            { "OwnedBy": "You" },
-                            {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
                               "AnyOf": [
-                                { "Type": "Planeswalker" },
-                                { "Not": { "Subtype": "Avatar" } }
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "Not": { "Subtype": "Avatar" } } }
                               ]
                             }
-                          ]
-                        },
-                        "as": "returned"
-                      }
-                    },
-                    { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
-                  ]
+                          },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
                 }
-              }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
             ]
           }
         }

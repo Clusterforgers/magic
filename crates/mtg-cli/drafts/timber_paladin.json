@@ -1,0 +1,56 @@
+{
+  "oracle_id": "0be44c76-9e3f-45c2-9b2c-6a5f00678780",
+  "name": "Timber Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timber Paladin",
+      "oracle_fingerprint": "e6a36e7c9a6f1494e55440d8839aa8ef",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }] },
+                "op": "Eq",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 5, "toughness": 5 } }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }] },
+                "op": "Eq",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 10, "toughness": 10 } },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Trample" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

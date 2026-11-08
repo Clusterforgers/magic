@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "b8320434-70d6-48c6-a4cd-1cecc6a21ad4",
+  "oracle_id": "f27fb53f-a983-410a-821b-e48cd8c01f2e",
+  "multiverse_ids": [
+    446119
+  ],
+  "tcgplayer_id": 167889,
+  "cardmarket_id": 358980,
+  "name": "Noosegraf Mob",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/b8320434-70d6-48c6-a4cd-1cecc6a21ad4",
+  "scryfall_uri": "https://scryfall.com/card/bbd/151/noosegraf-mob?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:27:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.jpg?1783934821",
+    "normal": "https://cards.scryfall.io/normal/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.jpg?1783934821",
+    "large": "https://cards.scryfall.io/large/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.jpg?1783934821",
+    "png": "https://cards.scryfall.io/png/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.png?1783934821",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.jpg?1783934821",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.jpg?1783934821",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.webp?1783934821",
+    "grid": "https://cards.scryfall.io/grid/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.webp?1783934821",
+    "display": "https://cards.scryfall.io/display/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.webp?1783934821",
+    "art": "https://cards.scryfall.io/art/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.webp?1783934821",
+    "crop": "https://cards.scryfall.io/crop/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.webp?1783934821",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/8/b8320434-70d6-48c6-a4cd-1cecc6a21ad4.jpg?1783934821"
+  },
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Zombie",
+  "oracle_text": "This creature enters with five +1/+1 counters on it.\nWhenever a player casts a spell, remove a +1/+1 counter from this creature. If you do, create a 2/2 black Zombie creature token.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f08609b4-f5e0-4e3b-aee3-8ed3e3232074",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/f08609b4-f5e0-4e3b-aee3-8ed3e3232074"
+    },
+    {
+      "object": "related_card",
+      "id": "b8320434-70d6-48c6-a4cd-1cecc6a21ad4",
+      "component": "combo_piece",
+      "name": "Noosegraf Mob",
+      "type_line": "Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/b8320434-70d6-48c6-a4cd-1cecc6a21ad4"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set": "bbd",
+  "set_name": "Battlebond",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abbd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bbd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b8320434-70d6-48c6-a4cd-1cecc6a21ad4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af27fb53f-a983-410a-821b-e48cd8c01f2e&unique=prints",
+  "collector_number": "151",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Seb McKinnon",
+  "artist_ids": [
+    "ad4caca0-8d89-44ce-a1a6-d5ca905bd6fb"
+  ],
+  "illustration_id": "d363cd23-279a-4345-95aa-372e484b630e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11099,
+  "penny_rank": 10380,
+  "prices": {
+    "usd": "0.44",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": "0.49",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=446119&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNoosegraf%2BMob",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNoosegraf%2BMob",
+    "edhrec": "https://edhrec.com/route/?cc=Noosegraf+Mob"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F167889%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358980&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Noosegraf+Mob&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

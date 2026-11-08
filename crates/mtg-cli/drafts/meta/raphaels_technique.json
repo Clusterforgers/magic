@@ -1,0 +1,43 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Sneak:2 R",
+      "abilities": [
+        0,
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Each player may discard their hand and draw seven cards.",
+      "abilities": [],
+      "gap": "key:Discard.RememberDiscardingPlayers"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 144
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 145,
+          "end": 201
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

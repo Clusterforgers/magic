@@ -1,0 +1,77 @@
+{
+  "oracle_id": "3a68915d-3e8b-4ede-bdd9-6c138ca63220",
+  "name": "Regal Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regal Sliver",
+      "oracle_fingerprint": "fdc6a25ffcda696dc21f732aba5ebbf2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }, { "ControlledBy": "You" }]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                    "effects": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "When": {
+                                  "condition": { "Monarch": "You" },
+                                  "then": 1,
+                                  "otherwise": 0
+                                }
+                              },
+                              "op": "Eq",
+                              "right": 1
+                            }
+                          },
+                          "then": [
+                            {
+                              "Continuous": {
+                                "affected": {
+                                  "Each": [{ "Subtype": "Sliver" }, { "ControlledBy": "You" }]
+                                },
+                                "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "If": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "When": {
+                                  "condition": { "Monarch": "You" },
+                                  "then": 1,
+                                  "otherwise": 0
+                                }
+                              },
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          },
+                          "then": [{ "BecomeMonarch": {} }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

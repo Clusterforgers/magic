@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2750451f-348e-452f-88d0-bc921c46e8cc",
+  "name": "Undercity Scrounger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercity Scrounger",
+      "oracle_fingerprint": "6d8e99f310664774b31864bd66464dcc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1803850e-9499-4bf7-a4d9-6bf655cbe87d",
+  "name": "Mausoleum Wanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mausoleum Wanderer",
+      "oracle_fingerprint": "7561ff2cde5e261e2b5542c7c2f59825",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Spirit" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Stat": { "of": "This", "stat": "Power" } },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

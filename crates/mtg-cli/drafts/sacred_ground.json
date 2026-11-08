@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b18e773c-611b-4c18-8b2d-8d3a7e5ddc93",
+  "name": "Sacred Ground",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacred Ground",
+      "oracle_fingerprint": "921f84627a8532ba09e9b090a27bdd51",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                "by": "Opponents"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

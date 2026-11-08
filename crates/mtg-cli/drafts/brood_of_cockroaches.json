@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7a22d694-29d1-4e7b-8fca-d7008aede489",
+  "name": "Brood of Cockroaches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brood of Cockroaches",
+      "oracle_fingerprint": "e28cce55c922d97878420dd19cb49035",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                  "as": "event"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "LoseLife": { "amount": 1 } },
+                    { "Move": { "what": { "Bound": "event" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

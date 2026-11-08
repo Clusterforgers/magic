@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f4f66558-3c99-4488-ad2d-90626a922042",
+  "name": "Foundry Helix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foundry Helix",
+      "oracle_fingerprint": "183b5d85da945ad95d2279df739aa174",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Sacrifice": { "filter": [] } }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

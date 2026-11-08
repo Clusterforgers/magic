@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b947b9a7-7a42-447d-b3fd-e20dba8a8f41",
+  "name": "Grid Monitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grid Monitor",
+      "oracle_fingerprint": "e8b55c0bca67eb89c7a88c8ff51868ce",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "You", "action": { "Cast": { "filter": [{ "Type": "Creature" }] } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

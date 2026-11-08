@@ -28,19 +28,29 @@
         },
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": [{ "OwnedBy": "Opponents" }], "to": "Graveyard" } },
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                "to": "Graveyard"
+              }
+            },
             "if": {
               "Compare": {
-                "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "quest" }, "op": "Ge", "to": 3 } }
+                  ]
+                },
                 "op": "Ge",
-                "right": 3
+                "right": 1
               }
             },
             "effects": [
               {
                 "May": {
                   "effects": [
-                    { "LoseLife": { "who": "Triggering", "amount": 2 } },
+                    { "LoseLife": { "who": { "OwnerOf": "Triggering" }, "amount": 2 } },
                     { "GainLife": { "amount": 2 } }
                   ]
                 }

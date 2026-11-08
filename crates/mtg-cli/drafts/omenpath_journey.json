@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8b067e44-2001-4b49-aa4a-2c86f8929751",
+  "name": "Omenpath Journey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omenpath Journey",
+      "oracle_fingerprint": "27e8bd2592055012cffcafc2ebc4fdfb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                  "count": { "min": 0, "max": 5 },
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

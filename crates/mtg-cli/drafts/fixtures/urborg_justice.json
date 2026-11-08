@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "39f322ff-0b04-41ce-90cd-9896f941e703",
+  "oracle_id": "d8e2dea9-0e96-4ce4-a070-9893f44cf0cc",
+  "multiverse_ids": [
+    4472
+  ],
+  "mtgo_id": 9283,
+  "tcgplayer_id": 6123,
+  "cardmarket_id": 8594,
+  "name": "Urborg Justice",
+  "lang": "en",
+  "released_at": "1997-06-09",
+  "uri": "https://api.scryfall.com/cards/39f322ff-0b04-41ce-90cd-9896f941e703",
+  "scryfall_uri": "https://scryfall.com/card/wth/84/urborg-justice?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:45:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.jpg?1783946731",
+    "normal": "https://cards.scryfall.io/normal/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.jpg?1783946731",
+    "large": "https://cards.scryfall.io/large/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.jpg?1783946731",
+    "png": "https://cards.scryfall.io/png/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.png?1783946731",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.jpg?1783946731",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.jpg?1783946731",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.webp?1783946731",
+    "grid": "https://cards.scryfall.io/grid/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.webp?1783946731",
+    "display": "https://cards.scryfall.io/display/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.webp?1783946731",
+    "art": "https://cards.scryfall.io/art/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.webp?1783946731",
+    "crop": "https://cards.scryfall.io/crop/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.webp?1783946731",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/9/39f322ff-0b04-41ce-90cd-9896f941e703.jpg?1783946731"
+  },
+  "mana_cost": "{B}{B}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Target opponent sacrifices a creature of their choice for each creature put into your graveyard from the battlefield this turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "700997ac-add2-4ce2-992e-5efa0fdfc0e9",
+  "set": "wth",
+  "set_name": "Weatherlight",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/700997ac-add2-4ce2-992e-5efa0fdfc0e9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awth&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/wth?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/39f322ff-0b04-41ce-90cd-9896f941e703/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad8e2dea9-0e96-4ce4-a070-9893f44cf0cc&unique=prints",
+  "collector_number": "84",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"It is a narrow line between justice and vengeance.\"\n—Crovax",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gary Leach",
+  "artist_ids": [
+    "fb608209-fd37-435a-b2fb-a158aeb3f927"
+  ],
+  "illustration_id": "0c261135-46e5-4ea9-b870-3caf041418b0",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22969,
+  "prices": {
+    "usd": "3.10",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.41",
+    "eur_foil": null,
+    "tix": "0.17"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4472&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUrborg%2BJustice",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUrborg%2BJustice",
+    "edhrec": "https://edhrec.com/route/?cc=Urborg+Justice"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6123%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8594&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/9283?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

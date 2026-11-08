@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1e05e6ef-14af-451d-9d54-e75b1f8871ab",
+  "name": "Thirst for Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thirst for Discovery",
+      "oracle_fingerprint": "8dd8c50c0395857bd2f303689ddae0da",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [
+                    { "Discard": { "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }] } }
+                  ],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

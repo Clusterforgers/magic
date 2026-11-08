@@ -280,7 +280,6 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
           draft={draft}
           deckId={stored.view.id}
           state={stored.view.state}
-          changed={stored.view.changed}
           check={check}
           dirty={dirty}
           saving={saving}

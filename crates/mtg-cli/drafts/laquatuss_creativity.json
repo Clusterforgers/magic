@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d4a73cee-659b-4e1a-8821-a8d0a31c749f",
+  "name": "Laquatus's Creativity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laquatus's Creativity",
+      "oracle_fingerprint": "4385d4986fb8b5efb840bfe54bf8adf5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "drawn"
+                }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Sum": [
+                      { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                      { "Times": { "by": -1, "of": { "Bound": "drawn~moved" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0e4150db-ac43-48b4-9791-0d874906acf5",
+  "name": "Deputy of Detention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deputy of Detention",
+      "oracle_fingerprint": "21345a05c1688de49c5947cdc6b33e3b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Not": { "Type": "Land" } } },
+                                { "Not": { "Not": { "Is": { "Target": 0 } } } },
+                                { "Not": { "SharesName": { "Target": 0 } } },
+                                { "Not": { "ControlledBy": { "ControllerOf": { "Target": 0 } } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

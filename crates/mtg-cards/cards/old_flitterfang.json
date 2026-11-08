@@ -1,0 +1,60 @@
+{
+  "oracle_id": "f95bdf0d-5bd1-4215-b143-0930973807ce",
+  "name": "Old Flitterfang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Old Flitterfang",
+      "oracle_fingerprint": "959f67a1a19f4a508f927b47252c3e94",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

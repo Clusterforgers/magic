@@ -9,7 +9,7 @@ pub(super) fn pays_to_return(effects: &[Effect]) -> bool {
     matches!(
         effects,
         [Effect::Pay { who: Ref::You, paid, unpaid, .. }]
-            if unpaid.is_empty() && matches!(paid.as_slice(), [Effect::Move { what: Ref::This, to: Destination::Hand }])
+            if unpaid.is_empty() && matches!(paid.as_slice(), [Effect::Move { what: Ref::This, to: Destination::Hand, .. }])
     )
 }
 
@@ -27,6 +27,7 @@ pub(super) fn returns_to_hand(effects: &[Effect]) -> bool {
             Effect::Move {
                 what: Ref::This,
                 to: Destination::Hand,
+                ..
             },
         ] => true,
         // A payment after which the card returns: "you may pay {R}. If you do, return this card from your graveyard".

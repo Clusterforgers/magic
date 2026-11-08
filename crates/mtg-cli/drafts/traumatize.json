@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e2ea7d01-6564-4a7f-b935-49a5e3978dac",
+  "name": "Traumatize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traumatize",
+      "oracle_fingerprint": "cec9ba797b422026c6c529d01ba928f2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

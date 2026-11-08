@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d157a9df-59bc-40ad-b62b-43f973f14be1",
+  "name": "Venerated Loxodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venerated Loxodon",
+      "oracle_fingerprint": "1bf5183d8cad1164dadef85f602dab21",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "PutCounters": { "on": "Convoked", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

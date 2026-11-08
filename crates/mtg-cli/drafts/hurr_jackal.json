@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d17f5afa-a884-4b99-aa9e-89ddb3d43b22",
+  "name": "Hurr Jackal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hurr Jackal",
+      "oracle_fingerprint": "6aac742edac74e033ab3c7e651d505c0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantBeRegenerated": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

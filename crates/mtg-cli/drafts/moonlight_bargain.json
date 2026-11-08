@@ -1,0 +1,40 @@
+{
+  "oracle_id": "444dea65-9be7-4b64-afd1-eebe44b285be",
+  "name": "Moonlight Bargain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonlight Bargain",
+      "oracle_fingerprint": "79ea60d528d2f1b2277ed12323f4e2af",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "as": "each2",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "cost": [{ "PayLife": 2 }],
+                        "unpaid": [{ "Move": { "what": { "Bound": "each2" }, "to": "Graveyard" } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

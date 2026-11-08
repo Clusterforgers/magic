@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cb8f5ee4-285a-4c37-adcb-514b3e4bdad3",
+  "name": "Sun Clasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sun Clasp",
+      "oracle_fingerprint": "8ed14bc6f9c64e29d6b8e5350d1f1b31",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [{ "Move": { "what": "Attached", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

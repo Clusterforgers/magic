@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0fdfe986-0216-468b-aac8-bbcf588fd894",
+  "name": "Arcum Dagsson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcum Dagsson",
+      "oracle_fingerprint": "4ac6301a811f6699b93a05b184294fb8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Is": { "Target": 0 } }]
+                }
+              },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

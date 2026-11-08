@@ -156,6 +156,7 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
         let selections: Vec<Selection> = seats
             .iter()
             .map(|(player, again)| Selection {
+                one_per_name: false,
                 player: *player,
                 from: objects.clone(),
                 min: usize::from(!again),

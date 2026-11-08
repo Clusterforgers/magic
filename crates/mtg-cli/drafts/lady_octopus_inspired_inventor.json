@@ -1,0 +1,54 @@
+{
+  "oracle_id": "8e51fdb8-4f83-4e94-b36c-40a501075ecb",
+  "name": "Lady Octopus, Inspired Inventor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lady Octopus, Inspired Inventor",
+      "oracle_fingerprint": "baa0674fa7d4d539043f3d0dd179a905",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 1 } },
+                { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "ingenuity" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": {
+                            "Counters": { "on": "This", "counter": { "Other": "ingenuity" } }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

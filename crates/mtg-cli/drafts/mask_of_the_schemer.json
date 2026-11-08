@@ -1,0 +1,26 @@
+{
+  "oracle_id": "584f9c45-9737-47bb-8ba4-a7cd9b0b2c1f",
+  "name": "Mask of the Schemer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mask of the Schemer",
+      "oracle_fingerprint": "454a07ecbf3b0bc70a74226f0c104800",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Connive": { "what": "Dealer", "count": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

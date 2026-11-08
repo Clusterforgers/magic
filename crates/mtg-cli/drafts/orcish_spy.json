@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0d058991-3751-4afe-80c9-79f0c6e10282",
+  "name": "Orcish Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Spy",
+      "oracle_fingerprint": "d11e5828f3b5d200b09c6e6a02991eb6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "top" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

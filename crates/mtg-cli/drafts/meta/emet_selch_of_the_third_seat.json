@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever one or more opponents lose life, you may cast target instant or sorcery card from your graveyard. If that spell would be put into your graveyard, exile it instead. Do this only once each turn.",
+      "abilities": [],
+      "gap": "key:Trigger.LifeLostAll.ResolvedLimit"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Spells you cast from your graveyard cost {2} less to cast.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 58
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 59,
+          "end": 260
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

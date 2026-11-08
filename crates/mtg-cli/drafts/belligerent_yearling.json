@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2d785e3e-8e19-4eea-b09f-9a30c792dba1",
+  "name": "Belligerent Yearling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Belligerent Yearling",
+      "oracle_fingerprint": "1042cb9c871648c9fb56783d565b0cae",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }, "Other"],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPower": { "Stat": { "of": "Triggering", "stat": "Power" } } }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

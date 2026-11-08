@@ -1,0 +1,36 @@
+{
+  "oracle_id": "14d5fdb3-14a3-461d-8515-a520c2c9e666",
+  "name": "Fleshtaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleshtaker",
+      "oracle_fingerprint": "eee72b68a96c6b407519d3781aac6f2f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }, "Other"], "by": "You" } },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

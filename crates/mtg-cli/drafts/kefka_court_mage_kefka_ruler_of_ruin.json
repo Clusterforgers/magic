@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6d3ca5cb-781d-4608-b7f1-38c020536376",
+  "name": "Kefka, Court Mage // Kefka, Ruler of Ruin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kefka, Court Mage",
+      "oracle_fingerprint": "fa848ff326980598e86f2d47c3b5d2e7",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 134 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{8}",
+            "timing": "Sorcery",
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [] } },
+              { "Transform": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kefka, Ruler of Ruin",
+      "oracle_fingerprint": "15b5ffac606a6c7fa634028d9a85e065",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "LifeLost": { "who": "Opponents" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

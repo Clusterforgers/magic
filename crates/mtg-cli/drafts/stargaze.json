@@ -1,0 +1,31 @@
+{
+  "oracle_id": "db8b4869-f898-40ad-bbad-62390a02d1b1",
+  "name": "Stargaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stargaze",
+      "oracle_fingerprint": "215e22cba2fe106fee7bd35854d2592a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": { "Times": { "by": 2, "of": "X" } }, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": "X", "max": "X" },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "LoseLife": { "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

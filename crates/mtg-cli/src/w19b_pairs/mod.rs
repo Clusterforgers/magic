@@ -1,5 +1,5 @@
 //! `export-pairs`: every `Verified` card as an (oracle text, rules) training pair with a stable held-out split, and the
-//! solved cards `propose --solved-examples` retrieves from (`docs/cards-dsl.md`, Proposer).
+//! solved cards `propose --solved-examples` retrieves from (`docs/cards-dsl.md`, Proposals and drafts).
 
 pub mod measure;
 pub mod retrieve;

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "64ed5c35-8185-4e68-8028-b7b632ef5828",
+  "name": "Skullport Merchant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullport Merchant",
+      "oracle_fingerprint": "eb6d14c394ea5a7ea68491af22c2f133",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Artifact" } },
+                              { "Not": { "Subtype": "Treasure" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

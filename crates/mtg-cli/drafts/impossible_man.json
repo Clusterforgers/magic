@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9be1d4b1-064d-4051-aafc-ca48def28e3b",
+  "name": "Impossible Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impossible Man",
+      "oracle_fingerprint": "d69334165df2bafd628e2c5677ed04ff",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "except": [{ "SetName": "Impossible Man" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

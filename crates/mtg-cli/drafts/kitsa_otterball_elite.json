@@ -1,0 +1,42 @@
+{
+  "oracle_id": "16414460-11ce-481d-ab54-6f0e0ea7d83d",
+  "name": "Kitsa, Otterball Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitsa, Otterball Elite",
+      "oracle_fingerprint": "d74ec9b3540fc701f54b88ba424b2787",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Prowess" },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Draw": {} }, { "Discard": {} }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }, "This"]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -28,6 +28,10 @@ export const COMBAT: readonly Entry[] = [
     'Protection',
     'Can not be damaged, enchanted, equipped, blocked or targeted by anything of the stated quality.',
   ],
+  [
+    'Protection sparing',
+    'Protection from the stated quality that leaves the Auras or Equipment the effect names attached.',
+  ],
   ['Prowess', 'Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.'],
   [
     'Ward',

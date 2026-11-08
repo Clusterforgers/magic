@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "f69b1a5d-fb17-43f0-bf29-4ade853e0e6e",
+  "oracle_id": "28956db0-985c-402d-abae-1075c68b97e7",
+  "multiverse_ids": [
+    394686
+  ],
+  "mtgo_id": 56402,
+  "mtgo_foil_id": 56403,
+  "tcgplayer_id": 96513,
+  "cardmarket_id": 273186,
+  "name": "Self-Inflicted Wound",
+  "lang": "en",
+  "released_at": "2015-03-27",
+  "uri": "https://api.scryfall.com/cards/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e",
+  "scryfall_uri": "https://scryfall.com/card/dtk/117/self-inflicted-wound?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:29:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.jpg?1783938594",
+    "normal": "https://cards.scryfall.io/normal/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.jpg?1783938594",
+    "large": "https://cards.scryfall.io/large/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.jpg?1783938594",
+    "png": "https://cards.scryfall.io/png/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.png?1783938594",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.jpg?1783938594",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.jpg?1783938594",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.webp?1783938594",
+    "grid": "https://cards.scryfall.io/grid/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.webp?1783938594",
+    "display": "https://cards.scryfall.io/display/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.webp?1783938594",
+    "art": "https://cards.scryfall.io/art/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.webp?1783938594",
+    "crop": "https://cards.scryfall.io/crop/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.webp?1783938594",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/6/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e.jpg?1783938594"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target opponent sacrifices a green or white creature of their choice. If that player does, they lose 2 life.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7e72625f-f320-4552-a719-d11e2f1853bd",
+  "set": "dtk",
+  "set_name": "Dragons of Tarkir",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/7e72625f-f320-4552-a719-d11e2f1853bd",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adtk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dtk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f69b1a5d-fb17-43f0-bf29-4ade853e0e6e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A28956db0-985c-402d-abae-1075c68b97e7&unique=prints",
+  "collector_number": "117",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Worse than watching the cruelest deed is watching it done by your own hand.\"\n—Baihir, Dromoka mage",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mathias Kollros",
+  "artist_ids": [
+    "2ae0dd12-047c-4efb-80d7-bccc3bac5fba"
+  ],
+  "illustration_id": "964755b4-4c27-4627-8eb0-d340eed54277",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30598,
+  "penny_rank": 10772,
+  "prices": {
+    "usd": "0.08",
+    "usd_foil": "0.49",
+    "usd_etched": null,
+    "eur": "0.05",
+    "eur_foil": "0.29",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=394686&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSelf-Inflicted%2BWound",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSelf-Inflicted%2BWound",
+    "edhrec": "https://edhrec.com/route/?cc=Self-Inflicted+Wound"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F96513%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=273186&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56402?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

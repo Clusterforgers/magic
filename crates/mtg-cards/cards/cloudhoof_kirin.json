@@ -1,0 +1,39 @@
+{
+  "oracle_id": "82d8732b-8246-4fbf-96aa-e192daf527f1",
+  "name": "Cloudhoof Kirin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudhoof Kirin",
+      "oracle_fingerprint": "f6d3f46ba6407d071d5113568d0e7620",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Mill": {
+                        "who": { "Target": 0 },
+                        "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

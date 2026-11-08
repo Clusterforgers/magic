@@ -1,0 +1,26 @@
+{
+  "oracle_id": "56697773-8a04-49b6-8327-895e972da7e7",
+  "name": "Night Revelers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Revelers",
+      "oracle_fingerprint": "28f1fb156ef1bcf99667be9173d70679",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Human" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

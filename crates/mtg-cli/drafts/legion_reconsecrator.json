@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d2e98c8e-dd2a-4358-81e4-15cb287ea143",
+  "name": "Legion Reconsecrator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Legion Reconsecrator",
+      "oracle_fingerprint": "ff9d804eb752ea1f826c7efd2176bc57",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 279 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "Compare": { "stat": "Power", "op": "Eq", "to": 1 } },
+                        { "Compare": { "stat": "Toughness", "op": "Eq", "to": 1 } }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    "Other",
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

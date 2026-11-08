@@ -1,16 +1,36 @@
 //! The single state transition: folding one [`Event`] into a [`GameState`].
 
+#[cfg(test)]
+mod active_ref;
 mod combat;
 #[cfg(test)]
 mod crew_record;
 #[cfg(test)]
+mod distinct_names;
+#[cfg(test)]
 mod entered;
+#[cfg(test)]
+mod fe1a_atoms;
+#[cfg(test)]
+mod g13a_atoms;
+#[cfg(test)]
+mod g13b_left;
+#[cfg(test)]
+mod g8a_faces;
 mod opening;
+#[cfg(test)]
+mod p12_amounts;
+#[cfg(test)]
+mod p12_arrived;
+#[cfg(test)]
+mod r3d_atoms;
 mod resolution;
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
 mod w21a_atoms;
+#[cfg(test)]
+mod zone_tally;
 mod zones;
 
 use std::collections::BTreeSet;
@@ -61,6 +81,8 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     }
     w2c_note_destroyed(state, event);
     w14b_note_exiled(state, event);
+    crate::memory::forget_object(state, event);
+    crate::triggers::g10c_note_crime(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
@@ -83,6 +105,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::MulliganTaken { .. }
         | Event::MulliganKept { .. }
         | Event::CardsBottomed { .. }
+        | Event::OpeningCardsPlayed { .. }
         | Event::MulliganPhaseEnded => opening::apply(state, event),
         Event::LandPlayed { .. }
         | Event::SpellCast { .. }
@@ -142,14 +165,23 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Paired { object, with } => crate::soulbond::fold_paired(state, *object, *with),
         Event::Unpaired { object, with } => crate::soulbond::fold_unpaired(state, *object, *with),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
+        Event::CardConjured(card) => crate::conjure::fold(state, card),
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::CardCopied(copy) => crate::copies::fold_card(state, copy),
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
+        Event::TargetsChanged(change) => crate::retargeted::fold(state, change),
+        Event::Remembered(change) => {
+            crate::memory::fold(state, change);
+            Ok(())
+        }
         ended @ Event::CopyEnded { .. } => crate::copies::fold_ended(state, ended),
         Event::Prepared { object } => set_prepared(state, *object, true),
         Event::Unprepared { object } => set_prepared(state, *object, false),
+        Event::Suspected { object } => set_suspected(state, *object, true),
+        Event::Unsuspected { object } => set_suspected(state, *object, false),
+        Event::Solved { object } => set_solved(state, *object),
         Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action restarts the round, so the other seats see it, and a look
         // by hand records what the seat learned.
@@ -176,6 +208,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::Scried(scried) => {
             zones::scry(state, scried)?;
+            state.tally(scried.player, Tally::Scried);
             opening::scried(state, scried.player)?;
             let seen: Vec<ObjectId> = scried.top.iter().chain(&scried.bottom).copied().collect();
             sight::show(state, Some(scried.player), &seen);
@@ -192,7 +225,15 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.rng_index += u64::from(*random);
             Ok(())
         }
-        Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Revealed(_) => {
+        Event::LibraryInserted {
+            player,
+            cards,
+            below,
+        } => zones::insert(state, *player, cards, *below),
+        Event::LibraryLooked(_)
+        | Event::HandLooked(_)
+        | Event::CardsFound(_)
+        | Event::Revealed(_) => {
             show_learned(state, event);
             Ok(())
         }
@@ -204,6 +245,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
 fn show_learned(state: &mut GameState, event: &Event) {
     match event {
         Event::LibraryLooked(looked) => sight::show(state, Some(looked.player), &looked.cards),
+        Event::HandLooked(looked) => sight::show(state, Some(looked.player), &looked.cards),
         Event::CardsFound(found) => {
             sight::show(state, Some(found.player), &found.cards);
             if let Some(resolving) = state.resolving.as_mut() {
@@ -222,6 +264,26 @@ fn designate(state: &mut GameState, event: &Event) {
         Event::MonarchChanged { player } => crate::monarch::set(state, Some(*player)),
         Event::CitysBlessingGained { player } => {
             state.citys_blessing.insert(*player);
+        }
+        Event::SpeedChanged { player, speed } => crate::speed::set(state, *player, *speed),
+        Event::RingBearerLost { player } => {
+            if let Some(ring) = state.ring.get_mut(player) {
+                ring.bearer = None;
+            }
+        }
+        Event::RingTempted {
+            player,
+            level,
+            bearer,
+        } => {
+            let chosen = bearer
+                .and_then(|id| state.object(id))
+                .map(crate::object::GameObject::reference);
+            let ring = state.ring.entry(*player).or_default();
+            ring.level = *level;
+            if chosen.is_some() {
+                ring.bearer = chosen;
+            }
         }
         _ => {}
     }
@@ -259,6 +321,11 @@ fn begin_turn(
     extra: bool,
 ) -> Result<(), EngineError> {
     let (before, previous) = (state.turn.number, state.turn.regular);
+    // The turn that is ending is kept before its counts are cleared.
+    if before != 0 {
+        let ending = state.turn.active;
+        state.summarize_turn(ending);
+    }
     if extra {
         if state.extra_turns.pop().map(|turn| turn.player) != Some(active) {
             return Err(invalid(format!("{active:?} has no extra turn to take")));
@@ -273,6 +340,7 @@ fn begin_turn(
     state.turn.lands_played = 0;
     state.turn.combats = 0;
     state.turn.ahead.clear();
+    state.turn.ending = false;
     if !extra && (before == 0 || state.opens_round(previous, active)) {
         state.turn.round += 1;
     }
@@ -321,6 +389,7 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             if *step == Step::BeginCombat {
                 state.turn.combats += 1;
+                state.begin_combat_log();
             }
             // "Each of your draw steps" counts the draws of each draw step afresh, an added one included.
             if *step == Step::Draw {
@@ -329,6 +398,8 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                     .players
                     .retain(|(_, kind), _| *kind != Tally::C6BlkDrawStepDrawn);
             }
+            // A cleanup step that begins during a resolution ends the turn by an effect (CR 723).
+            state.turn.ending = *step == Step::Cleanup && state.resolving.is_some();
             state.turn.step = *step;
             state.priority = None;
             // Each combat damage step divides its damage afresh: a double striker divides twice.
@@ -339,6 +410,7 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     Ok(())
 }
 
+#[allow(clippy::too_many_lines)]
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan { .. }
@@ -358,7 +430,11 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Learned { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
-        Event::ChosenAtRandom { .. } | Event::DieRolled { .. } | Event::CoinFlipped { .. } => {
+        Event::ChosenAtRandom { .. }
+        | Event::PlayersChosenAtRandom { .. }
+        | Event::Sought { .. }
+        | Event::DieRolled { .. }
+        | Event::CoinFlipped { .. } => {
             c11e_draw_random(state, event);
         }
         Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
@@ -373,9 +449,17 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Flipped { object } => flip(state, *object)?,
         Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
-        | Event::CitysBlessingGained { .. } => designate(state, event),
+        | Event::RingTempted { .. }
+        | Event::RingBearerLost { .. }
+        | Event::CitysBlessingGained { .. }
+        | Event::SpeedChanged { .. } => designate(state, event),
 
-        Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
+        Event::PermanentTapped { object } => {
+            set_tapped(state, *object, true)?;
+            if let Some(tapped) = state.object(*object).map(GameObject::reference) {
+                state.tally_object(tapped, None, Tally::E16aTapped);
+            }
+        }
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::PermanentPhasedOut { .. } => crate::phasing::w11b_fold_out_event(state, event)?,
         Event::PermanentPhasedIn { object } => crate::phasing::fold_in(state, *object)?,
@@ -389,9 +473,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             mana,
             only,
             lasts,
-            ..
+            source,
         } => {
-            pool_mut(state, *player)?.add_restricted(*mana, only.clone(), *lasts);
+            let from = source.map(|id| crate::spend::source_kind(state, id));
+            pool_mut(state, *player)?.add_from(*mana, only.clone(), *lasts, from);
             reset_passes(state);
         }
         Event::ManaSpent {
@@ -455,6 +540,7 @@ fn create_effect(
         effect.duration,
         mtg_cards::modify::Duration::WhileSourceOnBattlefield
             | mtg_cards::modify::Duration::WhileYouControlSource
+            | mtg_cards::modify::Duration::WhileSourceTapped
     ) && effect.source.is_none()
     {
         return Err(invalid(
@@ -468,13 +554,29 @@ fn create_effect(
     state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
     if matches!(
         &effect.modification,
-        Modification::AddKeyword(mtg_cards::keyword::Keyword::Protection(_))
+        Modification::AddKeyword(
+            mtg_cards::keyword::Keyword::Protection(_)
+                | mtg_cards::keyword::Keyword::ProtectionSparing { .. }
+        )
     ) {
         state.possible.protection = true;
+    }
+    // A spell that gains rebound on the stack is exiled by a replacement effect as it resolves (CR 702.88a).
+    if matches!(
+        &effect.modification,
+        Modification::AddKeyword(mtg_cards::keyword::Keyword::Rebound)
+    ) {
+        state.possible.replacements = true;
     }
     if let Modification::GrantAbility(granted) = &effect.modification {
         if matches!(**granted, mtg_cards::ability::Ability::Replacement { .. }) {
             state.possible.replacements = true;
+        }
+        if crate::ability_reader::is_rule(granted) {
+            state.rules_possible = true;
+        }
+        if crate::ability_reader::is_cost_modifier(granted) {
+            state.possible.costs = true;
         }
         if triggers_something(granted) {
             state.triggers_possible = true;
@@ -595,6 +697,9 @@ fn lose_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Eng
 /// Gives priority to the active player (or the next player in turn order) with nobody having passed, as it
 /// is after something leaves the stack (CR 117.3b).
 pub(crate) fn priority_to_active(state: &mut GameState) {
+    if state.turn.ending {
+        return;
+    }
     let active = state.turn.active;
     if let Some(holder) = state.turn_order_from(active).first().copied() {
         state.priority = Some(PriorityState {
@@ -696,6 +801,38 @@ fn set_prepared(state: &mut GameState, id: ObjectId, prepared: bool) -> Result<(
         )));
     }
     perm.designations.prepared = prepared;
+    Ok(())
+}
+
+/// A permanent becomes suspected or stops being so: it was not (or was), and it is a permanent.
+fn set_suspected(state: &mut GameState, id: ObjectId, suspected: bool) -> Result<(), EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&id)
+        .and_then(|object| object.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if perm.designations.suspected == suspected {
+        return Err(invalid(format!(
+            "{id:?} is {}suspected already",
+            if suspected { "" } else { "un" }
+        )));
+    }
+    perm.designations.suspected = suspected;
+    state.possible.suspected |= suspected;
+    Ok(())
+}
+
+/// A permanent becomes solved (CR 719.3): it was not, and it is a permanent.
+fn set_solved(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&id)
+        .and_then(|object| object.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if perm.designations.solved {
+        return Err(invalid(format!("{id:?} is solved already")));
+    }
+    perm.designations.solved = true;
     Ok(())
 }
 

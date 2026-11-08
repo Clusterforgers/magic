@@ -1,0 +1,45 @@
+{
+  "oracle_id": "a7726d8c-7539-43bc-9614-418fa12c0912",
+  "name": "Celestial Gatekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Gatekeeper",
+      "oracle_fingerprint": "7ef570bd8da906396e01b41c830e8c64",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Bird" }, { "Subtype": "Cleric" }] },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": "This" } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "90b5ed05-7a67-4bd3-a8c4-2a4565d084fc",
+  "name": "Face of Divinity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Face of Divinity",
+      "oracle_fingerprint": "eb856cc69b2b46f7123f01323f8f112b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [
+                  { "Type": "Creature" },
+                  { "HasAttached": [{ "Subtype": "Aura" }, "Other"] }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3047ad53-1fbd-4b01-bf75-a3e633c863fe",
+  "name": "Diver Skaab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diver Skaab",
+      "oracle_fingerprint": "b265bba727e566f9cfe92bf668d4766e",
+      "abilities": [
+        { "Keyword": "Exploit" },
+        {
+          "Triggered": {
+            "when": { "Exploits": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

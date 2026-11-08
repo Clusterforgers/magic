@@ -1,0 +1,49 @@
+{
+  "oracle_id": "1a4e948a-5a5e-4811-a6af-7ea93a051746",
+  "name": "Second Sight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Second Sight",
+      "oracle_fingerprint": "7d01de82b3b436ce9e554a447ffba5a2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        { "LookAtTop": { "who": { "Target": 0 }, "count": 5, "as": "top" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "top" },
+                            "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": 5, "as": "top2" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "top2" },
+                            "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{U}" } }
+      ]
+    }
+  ]
+}

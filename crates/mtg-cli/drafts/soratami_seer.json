@@ -1,0 +1,49 @@
+{
+  "oracle_id": "7b4ff283-ab2d-4eb2-8bd3-7398e4da0e95",
+  "name": "Soratami Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soratami Seer",
+      "oracle_fingerprint": "13c8b6002c9e87ebbb303dfc2102a892",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Land" }], "count": 2 } }
+            ],
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

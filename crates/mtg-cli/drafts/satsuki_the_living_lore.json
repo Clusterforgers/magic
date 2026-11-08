@@ -1,0 +1,72 @@
+{
+  "oracle_id": "e41be9ad-3717-4f25-a8e0-c9947a2a0227",
+  "name": "Satsuki, the Living Lore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Satsuki, the Living Lore",
+      "oracle_fingerprint": "8dba77b268a1ac3d0cbc54b2c099a550",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] },
+                  "counter": { "Other": "lore" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 1 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  { "Subtype": "Saga" },
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Type": "Creature" } },
+                                        { "Not": { "Type": "Enchantment" } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              { "ControlledBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Subtype": "Saga" }, { "In": "Graveyard" }] } }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

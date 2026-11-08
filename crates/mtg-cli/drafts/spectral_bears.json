@@ -1,0 +1,40 @@
+{
+  "oracle_id": "539899f3-f3f2-4f7a-a6f6-e80d4a39f753",
+  "name": "Spectral Bears",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Bears",
+      "oracle_fingerprint": "ce27714e103b24a3282af259a5e28ff2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Color": "Black" },
+                    { "Not": "Token" },
+                    { "ControlledBy": "Defending" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc",
+  "oracle_id": "f15bd5c0-99ff-42c6-8eed-48de6df81b61",
+  "multiverse_ids": [],
+  "resource_id": "DC4AB2187E64C4D1846DF89BD1AA4F53EB12A17EF938898A54C5FB99488CDD2C",
+  "mtgo_id": 153465,
+  "arena_id": 97929,
+  "tcgplayer_id": 651384,
+  "cardmarket_id": 846658,
+  "name": "Radioactive Spider",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc",
+  "scryfall_uri": "https://scryfall.com/card/spm/111/radioactive-spider?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:15:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.jpg?1783905323",
+    "normal": "https://cards.scryfall.io/normal/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.jpg?1783905323",
+    "large": "https://cards.scryfall.io/large/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.jpg?1783905323",
+    "png": "https://cards.scryfall.io/png/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.png?1783905323",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.jpg?1783905323",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.jpg?1783905323",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.webp?1783905323",
+    "grid": "https://cards.scryfall.io/grid/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.webp?1783905323",
+    "display": "https://cards.scryfall.io/display/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.webp?1783905323",
+    "art": "https://cards.scryfall.io/art/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.webp?1783905323",
+    "crop": "https://cards.scryfall.io/crop/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.webp?1783905323",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/2/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc.jpg?1783905323"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Spider",
+  "oracle_text": "Reach, deathtouch\nFateful Bite — {2}, Sacrifice this creature: Search your library for a Spider Hero card, reveal it, put it into your hand, then shuffle. Activate only as a sorcery.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Fateful Bite",
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a1c7b891-9e96-434c-9994-be58b62b27f1",
+  "set": "spm",
+  "set_name": "Marvel's Spider-Man",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a1c7b891-9e96-434c-9994-be58b62b27f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f2d267f5-7f12-45f8-8fcb-e0ba3fbdeddc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af15bd5c0-99ff-42c6-8eed-48de6df81b61&unique=prints",
+  "collector_number": "111",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Ow! A spider! It bit me! But why is it glowing that way?\"\n—Peter Parker",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pavel Kolomeyets",
+  "artist_ids": [
+    "13435e52-d47a-4143-adfa-2ae0a6858292"
+  ],
+  "illustration_id": "6f21d1eb-a77d-42f2-82e0-d8d2ff2086fa",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5844,
+  "penny_rank": 9341,
+  "prices": {
+    "usd": "0.45",
+    "usd_foil": "0.56",
+    "usd_etched": null,
+    "eur": "0.34",
+    "eur_foil": "0.58",
+    "tix": "0.17"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRadioactive%2BSpider",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRadioactive%2BSpider",
+    "edhrec": "https://edhrec.com/route/?cc=Radioactive+Spider"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F651384%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=846658&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/153465?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

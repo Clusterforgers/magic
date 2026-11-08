@@ -1,0 +1,19 @@
+{
+  "oracle_id": "72aeed80-653b-4c53-ba65-a339aad14b9a",
+  "name": "Hivestone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hivestone",
+      "oracle_fingerprint": "cd1d19bb79664fa656ba72bc83c60cf4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddSubtype": "Sliver" }]
+          }
+        }
+      ]
+    }
+  ]
+}

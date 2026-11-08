@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3fe1530d-bcf2-440b-a905-5a2216daa7eb",
+  "name": "Rent Is Due",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rent Is Due",
+      "oracle_fingerprint": "3c52c3a54758dd6d973330396554fa9f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "TapPermanents": {
+                        "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Treasure" }] }],
+                        "count": 2
+                      }
+                    }
+                  ],
+                  "paid": [{ "Draw": {} }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

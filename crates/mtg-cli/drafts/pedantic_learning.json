@@ -1,0 +1,25 @@
+{
+  "oracle_id": "194c0ace-4c5d-4698-a924-901bdef99a5f",
+  "name": "Pedantic Learning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pedantic Learning",
+      "oracle_fingerprint": "48a6bfe65bab3ac93c5e1d32890f4262",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Library",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Pay": { "cost": "{1}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 import type { CounterKind } from "./CounterKind";
 import type { DamageTarget } from "./DamageTarget";
 import type { ManaType } from "./ManaType";
+import type { ManualGrant } from "./ManualGrant";
 import type { ManualReveal } from "./ManualReveal";
 import type { ManualRoll } from "./ManualRoll";
 import type { ManualToken } from "./ManualToken";
@@ -130,7 +131,27 @@ power: number,
 /**
  * Toughness change, from -99 to 99.
  */
-toughness: number, } } | { "LookTop": { 
+toughness: number, } } | { "Transform": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "MoveBack": { 
+/**
+ * The card.
+ */
+object: ObjectId, } } | { "AttackDespiteDefender": { 
+/**
+ * The creature.
+ */
+object: ObjectId, } } | { "BlockAdditional": { 
+/**
+ * The creature.
+ */
+object: ObjectId, 
+/**
+ * How many more creatures, 1 to 99.
+ */
+count: number, } } | { "LookTop": { 
 /**
  * How many, 1 to 10.
  */
@@ -174,7 +195,19 @@ object: ObjectId, } } | { "Sacrifice": {
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "GiveControl": { 
+object: ObjectId, } } | { "GrantAbility": { 
+/**
+ * The permanent, whoever controls it.
+ */
+object: ObjectId, 
+/**
+ * What it gets.
+ */
+grant: ManualGrant, 
+/**
+ * Whether it ends with the turn; otherwise it lasts as long as the permanent stays.
+ */
+until_end_of_turn: boolean, } } | { "GiveControl": { 
 /**
  * The permanent or card.
  */

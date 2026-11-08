@@ -1,0 +1,23 @@
+{
+  "oracle_id": "5914d4d5-51b8-49c2-9459-bf5579df4990",
+  "name": "Juniper Order Rootweaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Juniper Order Rootweaver",
+      "oracle_fingerprint": "6bcb0471ffaab0b49ce7fb4ff2ece656",
+      "abilities": [
+        { "Keyword": { "Kicker": "{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

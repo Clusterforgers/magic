@@ -1,0 +1,75 @@
+{
+  "oracle_id": "70ac902e-1eb5-4f83-a5a6-00ac89cfe50f",
+  "name": "Void Winnower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Void Winnower",
+      "oracle_fingerprint": "624c6520d82268898dfbf34947fe9bc2",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                          "op": "Eq",
+                          "right": {
+                            "Times": {
+                              "by": 2,
+                              "of": {
+                                "Half": {
+                                  "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                  "up": false
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                      "op": "Eq",
+                      "right": {
+                        "Times": {
+                          "by": 2,
+                          "of": {
+                            "Half": {
+                              "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                              "up": false
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

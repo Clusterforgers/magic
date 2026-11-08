@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0d9df234-520c-40aa-a37d-070181cf695c",
+  "name": "Graven Lore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graven Lore",
+      "oracle_fingerprint": "1a8b95c9c05b9ffdb2a76dc400d0b951",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Scry": {
+                  "count": { "ManaSpent": { "of": null, "from": { "supertypes": ["Snow"] } } }
+                }
+              },
+              { "Draw": { "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

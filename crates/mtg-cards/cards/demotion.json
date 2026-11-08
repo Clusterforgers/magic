@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c333eb79-300e-4dc0-9126-8dca1bac6ef2",
+  "name": "Demotion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demotion",
+      "oracle_fingerprint": "3ae4f192b8737442c32af70350b650e8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

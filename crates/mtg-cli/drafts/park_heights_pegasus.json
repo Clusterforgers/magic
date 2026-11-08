@@ -1,0 +1,34 @@
+{
+  "oracle_id": "fd92b588-f273-4206-9887-34e6877fc14f",
+  "name": "Park Heights Pegasus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Park Heights Pegasus",
+      "oracle_fingerprint": "e3b7fbe14ff812dda956235c024901e2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

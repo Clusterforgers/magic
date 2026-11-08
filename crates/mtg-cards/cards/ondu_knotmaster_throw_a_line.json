@@ -1,0 +1,46 @@
+{
+  "oracle_id": "dc69a130-967a-4d9f-992f-db7fad2fcd6d",
+  "name": "Ondu Knotmaster // Throw a Line",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ondu Knotmaster",
+      "oracle_fingerprint": "6324f35c30174f44aa27e11df93b5c01",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Modified", "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Throw a Line",
+      "oracle_fingerprint": "1c319275569baa7349eb4378e33a7f8b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

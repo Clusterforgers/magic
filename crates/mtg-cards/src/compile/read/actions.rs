@@ -47,7 +47,10 @@ pub fn explore(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 pub fn connive(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let what = creature(r)?;
     r.need("connives")?;
-    Some(vec![Effect::Connive { what }])
+    Some(vec![Effect::Connive {
+        what,
+        count: Amount::one(),
+    }])
 }
 
 /// "Attach it to target creature you control." (also "attach ~ to ..."): an Equipment or an Aura that enters attaches
@@ -63,6 +66,7 @@ pub fn attach(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Attach {
         what: Ref::This,
         to,
+        bind: None,
     }])
 }
 
@@ -131,6 +135,8 @@ pub fn bite(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let hit = fought(r)?;
     is_on_the_battlefield(r, &hit).then_some(())?;
     Some(vec![Effect::DealDamage {
+        excess: None,
+        unpreventable: false,
         source: Some(dealer.clone()),
         to: hit,
         amount: Amount::Stat {
@@ -159,4 +165,18 @@ pub fn goad(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.it = Some(what.clone());
     }
     is_on_the_battlefield(r, &what).then_some(vec![Effect::Goad { what }])
+}
+
+/// "Suspect it.", "suspect target creature", "suspect enchanted creature" (CR 701.60): the creatures become suspected
+/// (`Effect::Suspect`).
+pub fn suspect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("suspect")?;
+    let what = match r.it.clone() {
+        Some(it) if r.word("it") => it,
+        _ => object(r)?,
+    };
+    if matches!(what, Ref::Target(_)) {
+        r.it = Some(what.clone());
+    }
+    is_on_the_battlefield(r, &what).then_some(vec![Effect::Suspect { what }])
 }

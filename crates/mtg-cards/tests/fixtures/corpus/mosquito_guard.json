@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "626040ca-adb0-49c8-82cd-d1e27926cb79",
+  "oracle_id": "6beaeec2-b4e9-4904-b817-c0118549d4a9",
+  "multiverse_ids": [
+    222716
+  ],
+  "mtgo_id": 37672,
+  "mtgo_foil_id": 37756,
+  "tcgplayer_id": 36959,
+  "cardmarket_id": 242452,
+  "name": "Mosquito Guard",
+  "lang": "en",
+  "released_at": "2010-09-03",
+  "uri": "https://api.scryfall.com/cards/626040ca-adb0-49c8-82cd-d1e27926cb79",
+  "scryfall_uri": "https://scryfall.com/card/ddf/6/mosquito-guard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:22:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.jpg?1783941772",
+    "normal": "https://cards.scryfall.io/normal/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.jpg?1783941772",
+    "large": "https://cards.scryfall.io/large/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.jpg?1783941772",
+    "png": "https://cards.scryfall.io/png/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.png?1783941772",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.jpg?1783941772",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.jpg?1783941772",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.webp?1783941772",
+    "grid": "https://cards.scryfall.io/grid/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.webp?1783941772",
+    "display": "https://cards.scryfall.io/display/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.webp?1783941772",
+    "art": "https://cards.scryfall.io/art/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.webp?1783941772",
+    "crop": "https://cards.scryfall.io/crop/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.webp?1783941772",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/2/626040ca-adb0-49c8-82cd-d1e27926cb79.jpg?1783941772"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Creature — Kithkin Soldier",
+  "oracle_text": "First strike\nReinforce 1—{1}{W} ({1}{W}, Discard this card: Put a +1/+1 counter on target creature.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "First strike",
+    "Reinforce"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2a5a88d5-e2ac-4252-bc4e-62654b1f9a46",
+  "set": "ddf",
+  "set_name": "Duel Decks: Elspeth vs. Tezzeret",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/2a5a88d5-e2ac-4252-bc4e-62654b1f9a46",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/626040ca-adb0-49c8-82cd-d1e27926cb79/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6beaeec2-b4e9-4904-b817-c0118549d4a9&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "His aim is as sure as a mosquito's sting, but with none of the warning.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "eab9ed96-5789-4e01-83a3-a8f32676c2e0",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 27123,
+  "penny_rank": 11158,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=222716&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMosquito%2BGuard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMosquito%2BGuard",
+    "edhrec": "https://edhrec.com/route/?cc=Mosquito+Guard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F36959%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=242452&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/37672?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

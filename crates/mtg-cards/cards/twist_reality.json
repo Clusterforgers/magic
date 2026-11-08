@@ -1,0 +1,43 @@
+{
+  "oracle_id": "55b0518e-9c87-4f0e-81c2-9c984f760be1",
+  "name": "Twist Reality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twist Reality",
+      "oracle_fingerprint": "ef24e60f68cf590498e8bd7f6ff0db22",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": 2, "as": "looked" } },
+                        {
+                          "Choose": {
+                            "from": { "Bound": "looked" },
+                            "as": "kept2",
+                            "rest_as": "rest3"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+                        { "Manifest": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

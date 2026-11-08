@@ -25,18 +25,22 @@ pub(super) fn c5_gl_add(ability: &Ability, texts: &mut Vec<String>) {
     let [
         Effect::Modal {
             choose,
+            who: crate::refs::Ref::You,
             repeat: false,
             at_random: false,
+            different_players: false,
             once_each_turn: false,
             once_ever: false,
             all_if: None,
+            mode_costs,
+            extra_mode_cost: None,
             modes,
         },
     ] = effects.as_slice()
     else {
         return;
     };
-    if !choose.is_one() || !targets.is_empty() || modes.len() < 2 {
+    if !choose.is_one() || !mode_costs.is_empty() || !targets.is_empty() || modes.len() < 2 {
         return;
     }
     let mut heads: Option<Vec<(String, Vec<String>)>> = None;

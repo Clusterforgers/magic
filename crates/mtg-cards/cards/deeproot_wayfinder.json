@@ -1,0 +1,47 @@
+{
+  "oracle_id": "3ec767f2-40ba-46c9-b7cd-5821986dda0c",
+  "name": "Deeproot Wayfinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deeproot Wayfinder",
+      "oracle_fingerprint": "a55cfc63a2cd48eff400a0a534dbdc80",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Battle" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "Surveil": {} },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

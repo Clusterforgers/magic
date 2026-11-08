@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8998d211-5ca6-41d2-bc64-f51f70bd41e5",
+  "name": "Vines of Vastwood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vines of Vastwood",
+      "oracle_fingerprint": "2da47e1390a8737d3834e694745d5c9f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{G}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "When": { "condition": "Kicked", "then": 4, "otherwise": 0 } },
+                        "toughness": {
+                          "When": { "condition": "Kicked", "then": 4, "otherwise": 0 }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "0dfec692-66c8-4c90-8afa-095654011c3d",
+  "oracle_id": "08daa30f-7ce0-4a72-b539-fbb0c585fd73",
+  "multiverse_ids": [
+    578770
+  ],
+  "mtgo_id": 103194,
+  "tcgplayer_id": 282941,
+  "cardmarket_id": 672206,
+  "name": "Illuna, Apex of Wishes",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/0dfec692-66c8-4c90-8afa-095654011c3d",
+  "scryfall_uri": "https://scryfall.com/card/dmc/154/illuna-apex-of-wishes?utm_source=api",
+  "layout": "mutate",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:43:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.jpg?1783921412",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.jpg?1783921412",
+    "large": "https://cards.scryfall.io/large/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.jpg?1783921412",
+    "png": "https://cards.scryfall.io/png/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.png?1783921412",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.jpg?1783921412",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.jpg?1783921412",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.webp?1783921412",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.webp?1783921412",
+    "display": "https://cards.scryfall.io/display/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.webp?1783921412",
+    "art": "https://cards.scryfall.io/art/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.webp?1783921412",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.webp?1783921412",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0dfec692-66c8-4c90-8afa-095654011c3d.jpg?1783921412"
+  },
+  "mana_cost": "{2}{G}{U}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Beast Elemental Dinosaur",
+  "oracle_text": "Mutate {3}{R/G}{U}{U} (If you cast this spell for its mutate cost, put it over or under target non-Human creature you own. They mutate into the creature on top plus all abilities from under it.)\nFlying, trample\nWhenever this creature mutates, exile cards from the top of your library until you exile a nonland permanent card. Put that card onto the battlefield or into your hand.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Mutate",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "78076b27-f888-4723-b27c-44074accd261",
+  "set": "dmc",
+  "set_name": "Dominaria United Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/78076b27-f888-4723-b27c-44074accd261",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0dfec692-66c8-4c90-8afa-095654011c3d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A08daa30f-7ce0-4a72-b539-fbb0c585fd73&unique=prints",
+  "collector_number": "154",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rahn",
+  "artist_ids": [
+    "7742047e-0f80-4c0f-a530-d07460165e86"
+  ],
+  "illustration_id": "4a7649f6-ca91-4f9b-88bf-3522b2a47b6c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9787,
+  "penny_rank": 12162,
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": null,
+    "tix": "0.17"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=578770&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIlluna%252C%2BApex%2Bof%2BWishes",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIlluna%252C%2BApex%2Bof%2BWishes",
+    "edhrec": "https://edhrec.com/route/?cc=Illuna%2C+Apex+of+Wishes"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F282941%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=672206&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/103194?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

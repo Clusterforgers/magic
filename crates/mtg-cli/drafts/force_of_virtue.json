@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4262893c-8cbe-4854-9762-b3b6b75c0e35",
+  "name": "Force of Virtue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Force of Virtue",
+      "oracle_fingerprint": "ad5952182708e9eb5bdbb3e7460698be",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": { "Not": "YourTurn" },
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "White" }, "Other"] } }]
+          }
+        },
+        { "Keyword": "Flash" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

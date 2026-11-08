@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2c132e6f-2e9e-4b39-81a8-f88c32173cd5",
+  "name": "Recross the Paths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recross the Paths",
+      "oracle_fingerprint": "f5bc93e2b23b3ae02369bc0e9b61a4e7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Clash": { "win": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

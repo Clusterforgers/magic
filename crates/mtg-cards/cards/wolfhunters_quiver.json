@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f1ebccc2-d12a-4440-8a73-86c1bc901feb",
+  "name": "Wolfhunter's Quiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolfhunter's Quiver",
+      "oracle_fingerprint": "7bee49eb4cbd372ffbe4467168f316be",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Werewolf" }] } }
+                    ],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

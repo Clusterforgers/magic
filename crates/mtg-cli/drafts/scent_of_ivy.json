@@ -1,0 +1,70 @@
+{
+  "oracle_id": "b6db81e5-b7ca-45dc-a72d-1ff12935a3e4",
+  "name": "Scent of Ivy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scent of Ivy",
+      "oracle_fingerprint": "ffd9b4c9c4c50cf697b63835a928d2e6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Color": "Green" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Is": { "Bound": "revealed" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "Is": { "Bound": "revealed" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+//! `Count$` expressions that pick between two amounts: `Count$Compare Y GE1.2.1` (2 when Y is at least 1, else 1) and
+//! `Count$Kicked.2.0` (a named fact), as `Amount::When`.
+
+use serde_json::{Value, json};
+
+use super::amount::amount;
+use super::condition::named;
+use super::ctx::{Ctx, Tr, unmapped};
+use super::valid::cmp;
+
+/// The amount of a `Count$` base that is a choice between two amounts, `None` for any other base.
+pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
+    if let Some(rest) = base.strip_prefix("Compare ") {
+        return Some(compare(ctx, rest));
+    }
+    if let Some(rest) = base.strip_prefix("Adamant") {
+        return Some(adamant(ctx, rest));
+    }
+    let (word, branches) = base.split_once('.')?;
+    let condition = match word {
+        "Kicked" => json!("Kicked"),
+        // The gift was promised: one when its caster promised it, else none.
+        "PromisedGift" => json!({"Compare": {"left": "Promised", "op": "Ge", "right": 1}}),
+        // `OptionalGenericCostPaid`: the optional additional cost of the spell's own `OptionalCost` line was paid.
+        "Bargained" | "Teamwork" | "OptionalGenericCostPaid" => json!("AdditionalCostPaid"),
+        "Monarch" => json!({"Monarch": "You"}),
+        "MaxSpeed" => json!({"MaxSpeed": "You"}),
+        // "If you revealed a Dragon card or controlled a Dragon as you cast this spell": the optional reveal was paid, or a
+        // permanent of the type was yours as the spell was cast.
+        _ if word.starts_with("Presence_") => match presence(ctx, word) {
+            Ok(condition) => condition,
+            Err(gap) => return Some(Err(gap)),
+        },
+        "Morbid" => {
+            json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": "CreaturesDied"}}, "op": "Ge", "right": 1}})
+        }
+        "Blessing" => json!({"CitysBlessing": "You"}),
+        // You committed a crime this turn (CR 700.13).
+        "CommittedCrimeThisTurn" => {
+            json!({"Compare": {"left": {"Tallied": {"who": "You", "what": "Crimes"}}, "op": "Ge", "right": 1}})
+        }
+        "StartingPlayer" => json!({"StartingPlayer": "You"}),
+        "Night" => json!("IsNight"),
+        // Landfall: a land entered the battlefield under your control this turn.
+        "Landfall" => {
+            json!({"Compare": {"left": {"Tally": {"event": "Entered", "who": "You", "filter": [{"Type": "Land"}]}}, "op": "Ge", "right": 1}})
+        }
+        // An instant resolves in the phase it was cast in, so the phase now is the phase it was cast in.
+        "IfCastInOwnMainPhase" => {
+            json!({"All": ["YourTurn", {"Any": [{"Step": "Main1"}, {"Step": "Main2"}]}]})
+        }
+        // An {X} paid in the madness or foretell cost is not the X of the mana cost: only fixed amounts are read.
+        "Madness" | "Foretold" if branches.contains('X') => {
+            return Some(unmapped(format!("amount:Count${word}-with-X")));
+        }
+        "Madness" => json!({"CastWith": "Madness"}),
+        "Foretold" => json!({"CastWith": "Foretold"}),
+        // The three Urza lands together (Urza's Tower, Mine and Power-Plant, each one under your control).
+        "UrzaLands" => {
+            let held = |name: &str| json!({"Compare": {"left": {"Count": [{"Named": name}, {"ControlledBy": "You"}]}, "op": "Ge", "right": 1}});
+            json!({"All": [held("Urza's Tower"), held("Urza's Mine"), held("Urza's Power Plant")]})
+        }
+        // How this card was cast (`wasCastFromGraveyard.2.1`): the cast-way atoms of a valid-string, asked of the source.
+        _ if word.starts_with("wasCast") => {
+            let selector = super::valid_atoms::atom(word)?;
+            json!({"Matches": {"subject": "This", "selector": selector}})
+        }
+        "Threshold" | "Delirium" | "Hellbent" | "Metalcraft" | "Void" | "FatefulHour" => {
+            match named(word) {
+                Ok(condition) => condition,
+                Err(gap) => return Some(Err(gap)),
+            }
+        }
+        _ => return None,
+    };
+    Some(branch(ctx, &condition, branches))
+}
+
+/// `Presence_Dragon`: "if you revealed a Dragon card or controlled a Dragon as you cast this spell", the optional reveal
+/// of the spell itself paid or a permanent of the type controlled as it was cast. Other words are a gap.
+fn presence(ctx: &Ctx, word: &str) -> Tr<Value> {
+    let kind = word.strip_prefix("Presence_").unwrap_or_default();
+    let said = format!("revealed a {kind} card or controlled a {kind} as you cast this spell");
+    if kind.is_empty() || !ctx.oracle.contains(&said) {
+        return unmapped(format!("amount:Count${word}-wording"));
+    }
+    let controlled = super::valid::selector(ctx, &format!("Permanent.{kind}+YouCtrl"))?;
+    Ok(json!({"Any": [
+        "AdditionalCostPaid",
+        {"AsCast": {"Compare": {"left": {"Count": controlled}, "op": "Ge", "right": 1}}}
+    ]}))
+}
+
+/// `.White.1.0`: the amount when at least three mana of the color was spent to cast the spell (adamant), else the other;
+/// `_2.White.2.0` names the least amount ("if {W}{W} was spent"), and `Colorless` counts {C}.
+fn adamant(ctx: &Ctx, rest: &str) -> Tr<Value> {
+    let shape = || unmapped("amount:Count$Adamant-shape");
+    let (least, rest) = if let Some(counted) = rest.strip_prefix('_') {
+        let Some((least, rest)) = counted.split_once('.') else {
+            return shape();
+        };
+        match least.parse::<u32>() {
+            Ok(least) if least > 0 => (least, rest),
+            _ => return shape(),
+        }
+    } else {
+        let Some(rest) = rest.strip_prefix('.') else {
+            return shape();
+        };
+        (3, rest)
+    };
+    let Some((color, branches)) = rest.split_once('.') else {
+        return shape();
+    };
+    if !["White", "Blue", "Black", "Red", "Green", "Colorless"].contains(&color) {
+        return unmapped("amount:Count$Adamant-color");
+    }
+    // One mana of the type is the plain fact "{C} was spent to cast it".
+    let condition = if least == 1 {
+        json!({ "ManaSpent": color })
+    } else {
+        json!({"Compare": {"left": {"ManaSpent": {"of": color}}, "op": "Ge", "right": least}})
+    };
+    branch(ctx, &condition, branches)
+}
+
+/// `Y GE1.2.1`: an amount, a comparison with its threshold, the amount when it holds and the amount when it does not.
+fn compare(ctx: &Ctx, rest: &str) -> Tr<Value> {
+    let Some((left, test)) = rest.split_once(' ') else {
+        return unmapped("amount:Count$Compare-shape");
+    };
+    let Some((op, threshold)) = test.get(..2).and_then(cmp).zip(test.get(2..)) else {
+        return unmapped("amount:Count$Compare-operator");
+    };
+    let Some((threshold, branches)) = threshold.split_once('.') else {
+        return unmapped("amount:Count$Compare-branches");
+    };
+    let condition = json!({"Compare": {
+        "left": amount(ctx, left.trim())?, "op": op, "right": amount(ctx, threshold)?}});
+    branch(ctx, &condition, branches)
+}
+
+/// `2.1`: the amount when the condition holds and the amount when it does not.
+fn branch(ctx: &Ctx, condition: &Value, branches: &str) -> Tr<Value> {
+    let Some((then, otherwise)) = branches.split_once('.') else {
+        return unmapped("amount:Count-branches");
+    };
+    Ok(json!({"When": {
+        "condition": condition, "then": amount(ctx, then)?, "otherwise": amount(ctx, otherwise)?}}))
+}

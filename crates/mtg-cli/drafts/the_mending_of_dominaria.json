@@ -1,0 +1,70 @@
+{
+  "oracle_id": "9b0b8f00-6367-4dc9-b33e-680470b3a36c",
+  "name": "The Mending of Dominaria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Mending of Dominaria",
+      "oracle_fingerprint": "a3b3458a5973f0d68b996de5db9cf2b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

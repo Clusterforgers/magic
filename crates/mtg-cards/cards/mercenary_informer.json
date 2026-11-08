@@ -1,0 +1,29 @@
+{
+  "oracle_id": "245e26ec-39eb-4af8-99af-8cc22edbc261",
+  "name": "Mercenary Informer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercenary Informer",
+      "oracle_fingerprint": "3070c370ee47c3fe2a24b1167c5b80f4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "This", "action": { "BeTargeted": [{ "Color": "Black" }] } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Mercenary" }, { "Not": "Token" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

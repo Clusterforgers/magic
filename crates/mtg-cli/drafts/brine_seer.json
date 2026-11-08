@@ -1,0 +1,51 @@
+{
+  "oracle_id": "64c88c94-3a9d-4fd4-b58c-4d2167c2b8d5",
+  "name": "Brine Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brine Seer",
+      "oracle_fingerprint": "bd4f4bf5688cf83d3719b5863635f4f1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Color": "Blue" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": {
+                    "Count": [
+                      { "Is": { "Bound": "revealed" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

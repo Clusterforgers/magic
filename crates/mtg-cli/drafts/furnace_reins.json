@@ -1,0 +1,68 @@
+{
+  "oracle_id": "b623e61a-cdb9-46b0-a443-547be05db877",
+  "name": "Furnace Reins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furnace Reins",
+      "oracle_fingerprint": "f1df9deadee159e5408bb446f1e3ea96",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "AnyOf": [
+                              {
+                                "DealsDamage": {
+                                  "source": ["This"],
+                                  "to": "EachPlayer",
+                                  "combat": true
+                                }
+                              },
+                              {
+                                "DealsDamage": {
+                                  "source": ["This"],
+                                  "to": { "Each": [{ "Type": "Battle" }] },
+                                  "combat": true
+                                }
+                              }
+                            ]
+                          },
+                          "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

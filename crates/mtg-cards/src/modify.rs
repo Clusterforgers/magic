@@ -4,15 +4,16 @@ use std::sync::Arc;
 
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
+use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
-use crate::ability::Ability;
+use crate::ability::{Ability, ActivationKind};
 use crate::cost::Cost;
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, Selector, ZoneKind};
-use crate::trigger::TriggerPattern;
-use crate::value::{Amount, CounterKind};
+use crate::trigger::{Step, TriggerPattern};
+use crate::value::{Amount, Condition, CounterKind};
 
 /// A change to an object. Static abilities apply them continuously; `Effect::Continuous` applies
 /// them for a duration. The layer (CR 613) follows from the kind.
@@ -33,6 +34,10 @@ pub enum Modification {
         /// New toughness.
         toughness: Amount,
     },
+    /// Sets the power alone (layer 7b): "has base power 0".
+    SetPower(Amount),
+    /// Sets the toughness alone (layer 7b).
+    SetToughness(Amount),
     /// Switches power and toughness (layer 7d).
     SwitchPT,
     /// Adds a card type (layer 4).
@@ -45,6 +50,15 @@ pub enum Modification {
     /// Takes a supertype away from the copiable values of a copy: "except it isn't legendary". Only the exceptions of a
     /// copy have it, never a static ability or the effect of a spell.
     RemoveSupertype(Supertype),
+    /// Adds a supertype to the copiable values of a copy: "except it is legendary in addition to its other types". Only the
+    /// exceptions of a copy have it.
+    AddSupertype(Supertype),
+    /// Names the copiable values of a copy: "except its name is Lazav, Dimir Mastermind". Only the exceptions of a copy
+    /// have it.
+    SetName(String),
+    /// Gives the copiable values of a copy the ability that is resolving: "except it has this ability". Only the
+    /// exceptions of a `BecomeCopy` have it.
+    ThisAbility,
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
@@ -56,6 +70,23 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(Vec<Color>),
+    /// Adds these colors to the ones it has (layer 5): "is a black Zombie in addition to its other colors".
+    AddColors(Vec<Color>),
+    /// Makes the color the resolution chose under this name the only color (layer 5): "becomes the color of your choice".
+    /// Only an effect of a spell or ability has it, never a static ability.
+    SetColorsChosen(String),
+    /// Makes the land type the resolution chose under this name the only land type (layer 4): "becomes the basic land type
+    /// of your choice". Only an effect of a spell or ability has it.
+    SetLandTypesChosen(String),
+    /// Makes the creature type the resolution chose under this name the only creature type (layer 4): "becomes the
+    /// creature type of your choice". Only an effect of a spell or ability has it.
+    SetCreatureTypesChosen(String),
+    /// Adds the creature type the source chose as it entered (layer 4): "is the chosen type in addition to its
+    /// other types". Only a static ability has it; with no type chosen it changes nothing.
+    AddChosenSubtype,
+    /// Makes the colour the source chose as it entered the only colour (layer 5): "is the chosen color". Only a static
+    /// ability has it; with no colour chosen it changes nothing.
+    SetChosenColor,
     /// Adds a keyword ability (layer 6).
     AddKeyword(Keyword),
     /// Adds protection from a colour the controller chooses as the effect begins (layer 6): "protection from the
@@ -66,10 +97,19 @@ pub enum Modification {
     AddProtectionFromChosenCardType,
     /// Removes a keyword ability (layer 6).
     RemoveKeyword(Keyword),
+    /// Removes a keyword ability and the object can't have or gain it afterwards, whichever effect is newer (layer 6):
+    /// "lose flying and can't have or gain flying".
+    LockKeyword(Keyword),
     /// Gives the object an activated or a triggered ability (layer 6); a keyword is `AddKeyword`.
     GrantAbility(Arc<Ability>),
+    /// The object has the activated abilities printed on the cards the reference names, wherever they are (layer 6): "has all
+    /// activated abilities of all creature cards in graveyards". A card that leaves its zone is a new object and gives none.
+    GainAbilitiesOf(Ref),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
+    /// The object loses the ability that made the effect, as the effect begins (layer 6): "~ loses this ability". Only an
+    /// effect of an activated ability has it, never a static ability.
+    LoseThisAbility,
     /// Changes the controller to the player (layer 2).
     SetController(Ref),
     /// The object can't attack (a restriction, no layer).
@@ -108,7 +148,9 @@ impl Modification {
     pub fn is_player_keyword(&self) -> bool {
         matches!(
             self,
-            Modification::AddKeyword(keyword) | Modification::RemoveKeyword(keyword)
+            Modification::AddKeyword(keyword)
+            | Modification::RemoveKeyword(keyword)
+            | Modification::LockKeyword(keyword)
                 if matches!(keyword, Keyword::Hexproof | Keyword::Shroud | Keyword::Protection(_))
         )
     }
@@ -116,6 +158,9 @@ impl Modification {
     /// The layer of CR 613 this applies in, or `None` for a restriction that changes no characteristic.
     pub const fn layer(&self) -> Option<&'static str> {
         match self {
+            Modification::AddSupertype(_)
+            | Modification::SetName(_)
+            | Modification::ThisAbility => Some("1"),
             Modification::SetController(_) => Some("2"),
             Modification::AddType(_)
             | Modification::RemoveType(_)
@@ -124,15 +169,26 @@ impl Modification {
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
+            | Modification::SetLandTypesChosen(_)
+            | Modification::SetCreatureTypesChosen(_)
+            | Modification::AddChosenSubtype
             | Modification::AddAllCreatureTypes => Some("4"),
-            Modification::SetColors(_) => Some("5"),
+            Modification::SetColors(_)
+            | Modification::AddColors(_)
+            | Modification::SetColorsChosen(_)
+            | Modification::SetChosenColor => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
+            | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
+            | Modification::GainAbilitiesOf(_)
+            | Modification::LoseThisAbility
             | Modification::LoseAbilities => Some("6"),
-            Modification::SetPT { .. } => Some("7b"),
+            Modification::SetPT { .. }
+            | Modification::SetPower(_)
+            | Modification::SetToughness(_) => Some("7b"),
             Modification::ModifyPT { .. } => Some("7c"),
             Modification::SwitchPT => Some("7d"),
             Modification::CantAttack
@@ -161,12 +217,17 @@ pub enum Duration {
     UntilEndOfCombat,
     /// Until the controller's next turn begins.
     UntilYourNextTurn,
+    /// Until the controller's next end step begins: the one of this turn when it has not begun yet (CR 513).
+    UntilYourNextEndStep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
     /// For as long as the controller of the effect controls the source ("gain control of target creature for as long as you control ~"): it ends when the source leaves the battlefield or another player controls it (CR 611.2b).
     WhileYouControlSource,
+    /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
+    /// the battlefield or is another object, and does not come back when it is tapped again. Only a continuous effect lasts this long.
+    WhileSourceTapped,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
@@ -177,8 +238,14 @@ pub enum Duration {
     /// of the kind or leaves, and a counter put on another permanent later changes nothing. Only a continuous effect that
     /// names its objects (a reference, not a group) lasts this way.
     WhileHasCounter(Box<CounterKind>),
+    /// Until the turn it makes a player skip has been skipped ("skip your next turn", CR 614.10): only the rule that a
+    /// player skips a turn lasts this long.
+    UntilTurnSkipped,
     /// Without end (until the object or the game is gone).
     Forever,
+    /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay
+    /// {W} to end this effect", CR 116.2c), or the object is gone. Only a continuous effect that names its objects lasts this way.
+    UntilPaid(#[cfg_attr(feature = "ts", ts(type = "string"))] ManaCostX),
 }
 
 /// A permission to cast cards (CR 601.3): which cards, from where, and what is waived.
@@ -217,6 +284,36 @@ pub struct CastPermission {
     /// discarding a card in addition to paying its other costs".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub additional: Option<Cost>,
+    /// What a cast through it pays rather than the mana cost (CR 118.9): "pay life equal to its mana value rather than pay
+    /// its mana cost"; an amount in it counts the card cast as `This`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rather: Option<Cost>,
+    /// How the mana of a cast through it may be spent: as mana of any color or of any type ("spend mana as though it were mana of any color").
+    #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
+    pub spend_as: SpendAs,
+    /// The permission is open only while this holds for the controller of the rule ("during any turn you attacked with a
+    /// token, you may play that card"); always when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub when: Option<Condition>,
+}
+
+/// Which mana may pay for a cast through a permission.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SpendAs {
+    /// Mana pays what its type says.
+    #[default]
+    Normal,
+    /// Mana of any color pays a colored symbol (CR 609.4b); the engine lets any mana pay it.
+    AnyColor,
+    /// Mana of any type pays the cost (CR 609.4b).
+    AnyType,
+}
+
+impl SpendAs {
+    /// Whether mana pays what its type says.
+    pub fn is_normal(&self) -> bool {
+        *self == SpendAs::Normal
+    }
 }
 
 /// Whether an attack tax names no mana.
@@ -233,6 +330,146 @@ pub enum Attacked {
     Planeswalkers,
     /// Creatures attacking the players or planeswalkers they control.
     Both,
+}
+
+/// How many creatures must block an attacker that "must be blocked".
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Blocking {
+    /// At least one creature blocks it if any creature is able to (CR 509.1c).
+    AtLeastOne,
+    /// Every creature able to block it does.
+    Every,
+}
+
+/// What a `GameRule::Combat` says of creatures: a permission, or a limit on a declaration that is not a plain
+/// requirement.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum CombatQuirk {
+    /// They can't attack unless another creature attacks too (CR 506.5).
+    CantAttackAlone,
+    /// They can't block unless another creature blocks too.
+    CantBlockAlone,
+    /// They can attack as though they did not have defender.
+    AttackDespiteDefender,
+    /// They can block as though they were untapped.
+    BlockWhileTapped,
+    /// Their controller may choose not to untap them during their untap step (CR 502.3): asked for each one that is tapped.
+    MayStayTapped,
+    /// They assign no combat damage (CR 510.1): the damage they would deal in the combat damage steps is not dealt.
+    AssignsNoCombatDamage,
+    /// Their controller may have each of them assign its combat damage as though it were not blocked (CR 510.1c): asked when
+    /// it is blocked and the damage is divided.
+    AssignsAsUnblocked,
+    /// They assign combat damage equal to their toughness rather than their power (CR 510.1a).
+    AssignsByToughness,
+    /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
+    MustBeBlocked(Blocking),
+    /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
+    IgnoreLandwalk(Selector),
+    /// They can be blocked as though they did not have any landwalk ability.
+    IgnoreAllLandwalk,
+    /// They can block creatures with landwalk as though those did not have it.
+    BlockIgnoringLandwalk,
+    /// They can block creatures with shadow as though they had shadow (CR 702.28).
+    BlockAsThoughShadow,
+    /// They can block creatures with shadow as though those did not have shadow (CR 702.28).
+    BlockIgnoringShadow,
+    /// Tapped to crew or saddle, they count for another amount than their power.
+    TapPower(TapPowerAs),
+}
+
+/// What a creature counts for when it is tapped to crew or saddle.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum TapPowerAs {
+    /// Its toughness rather than its power.
+    Toughness,
+    /// Its power, this much greater.
+    Plus(u32),
+}
+
+/// What a `GameRule::Cant` forbids its subjects. A subject is covered when it is the object an action is about or the
+/// player who does it (or owns the object). Adding a prohibition is one entry here and one check where the engine does
+/// the action.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Prohibited {
+    /// Activate abilities of the sources the selector picks (every source when empty), except mana abilities (CR 605).
+    Activate(Selector),
+    /// Be the target of spells and abilities from the sources the selector picks (CR 115); every source when empty.
+    BeTargeted(Selector),
+    /// Play lands as the special action (CR 305.1).
+    PlayLand,
+    /// Sacrifice permanents, or be sacrificed (CR 701.21).
+    Sacrifice,
+    /// Have counters put on them (CR 122).
+    PutCounter,
+    /// Have counters of one kind put on them (CR 122).
+    PutCounterOf(crate::value::CounterKind),
+    /// Have triggered abilities of the subjects' permanents trigger from the event the pattern describes (CR 603).
+    Trigger(TriggerPattern),
+    /// Become attached, or have anything attached to them (CR 701.3).
+    Attach,
+    /// Have the attachments the selector picks attached to them: such an attachment can't become attached, and one attached
+    /// already is attached illegally (CR 303.4d, 301.5c, 704.5m, 704.5n).
+    BeAttachedBy(Selector),
+    /// Discard cards, or be discarded (CR 701.9).
+    Discard,
+    /// Be exiled (CR 406).
+    Exile,
+    /// Transform (CR 701.28).
+    Transform,
+    /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.
+    SkipStep(Step),
+    /// Skip their turns (CR 614.10).
+    SkipTurn,
+    /// Cast spells (CR 601): those whose card the filter selects (any when empty), and with `more_than` only once they have
+    /// cast that many such spells this turn; with `unless` only while the condition does not hold for the caster.
+    Cast {
+        /// The cards that can't be cast, described by their characteristics, not their zone.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        filter: Selector,
+        /// The spells of the filter a player may cast each turn; none are allowed when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        more_than: Option<u32>,
+        /// The cast is open while this holds for the caster.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        unless: Option<Condition>,
+    },
+    /// Attack a player or a planeswalker they control (CR 508.1b), unless the condition holds for the defending player
+    /// ("you" in it is that player).
+    Attack {
+        /// The attack is open while this holds for the defending player.
+        unless: Condition,
+    },
+    /// Activate abilities of one kind of the sources the selector picks (every source when empty): the kind is a loyalty
+    /// ability, the equip ability or the cycling ability, or any activated ability but a mana ability.
+    ActivateKind {
+        /// The kind of ability.
+        kind: ActivationKind,
+        /// The sources; every source when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        sources: Selector,
+    },
+}
+
+/// What the next spell of a `GameRule::NextSpell` gets.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SpellBenefit {
+    /// Its cost changes by `mana` once for each of `per` (CR 601.2f).
+    Cost {
+        /// More or less.
+        change: crate::ability::CostChange,
+        /// The mana added or removed each time.
+        mana: ManaCostX,
+        /// How many times; fixed when the rule begins.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        per: Amount,
+    },
+    /// It can be cast as though it had flash (CR 601.3).
+    Flash,
+    /// It can be cast without paying its mana cost (CR 118.9).
+    Free,
+    /// It has the keyword while it is cast: convoke, improvise or affinity, which help pay for it.
+    Keyword(Keyword),
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
@@ -261,6 +498,36 @@ pub enum GameRule {
     },
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
     MustBlock(Ref),
+    /// Each creature `who` names blocks the attacker `attacker` names if able (Provoke): a requirement on the block
+    /// declaration (CR 509.1c). The creatures and the attacker are named when the rule begins.
+    MustBlockAttacker {
+        /// The creatures that must block it.
+        who: Ref,
+        /// The attacking creature.
+        attacker: Ref,
+    },
+    /// A permission or a limit on how the creatures take part in combat (`CombatQuirk`).
+    Combat {
+        /// The creatures.
+        who: Ref,
+        /// What the rule says of them.
+        quirk: CombatQuirk,
+    },
+    /// Spells and abilities the players `by` name may target what the rule names as though it did not have hexproof (and
+    /// shroud when `shroud`): the permanents `what` names and the players `players` names.
+    IgnoreHexproof {
+        /// The players whose spells and abilities may target them.
+        by: Ref,
+        /// The permanents it covers; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        what: Option<Ref>,
+        /// The players it covers; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        players: Option<Ref>,
+        /// Shroud is ignored too.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        shroud: bool,
+    },
     /// Creatures can't attack the players (or their planeswalkers) unless their controller pays the mana for each of them
     /// as the attack is declared (CR 508.1h): the declaration is made only with the payment.
     AttackTax {
@@ -279,6 +546,25 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "crate::spend::is_zero")]
         life: u32,
         /// How many times the mana is paid for each creature, counted when the attack is declared.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        per: Amount,
+    },
+    /// Creatures can't block unless their controller pays the mana or life for each of them as blockers are declared
+    /// (CR 509.1d): the declaration is made only with the payment.
+    BlockTax {
+        /// The blocking creatures it taxes, judged when blockers are declared; every creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        blockers: Selector,
+        /// The attackers whose blockers it taxes, judged the same way; every attacker when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        attackers: Selector,
+        /// The mana each taxed creature costs, once for each of `per`; no `{X}`.
+        #[serde(default, skip_serializing_if = "no_mana")]
+        mana: ManaCostX,
+        /// The life each taxed creature costs, once for each of `per`.
+        #[serde(default, skip_serializing_if = "crate::spend::is_zero")]
+        life: u32,
+        /// How many times the cost is paid for each creature, counted when the rule began or the state last changed.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         per: Amount,
     },
@@ -304,10 +590,20 @@ pub enum GameRule {
     },
     /// The spells can't be countered.
     CantBeCountered(Ref),
+    /// The permanents can't be regenerated (CR 701.19c): a regeneration shield does nothing to their destruction.
+    CantBeRegenerated(Ref),
     /// The players can't gain life.
     CantGainLife(Ref),
     /// Damage dealt to the players causes no loss of life: it is still dealt, and every other effect of it happens.
     NoLifeLossFromDamage(Ref),
+    /// Damage that would reduce the life total of the players to less than `floor` reduces it to `floor` instead, while it is
+    /// `floor` or more: the damage is dealt in full and only the life lost changes.
+    LifeFloor {
+        /// The players.
+        who: Ref,
+        /// The life total damage can't take them below.
+        floor: i32,
+    },
     /// The players gain life rather than lose life from radiation (CR 725.2): the life the rad rule would make them lose.
     RadiationGainsLife(Ref),
     /// The players' life totals can't change (CR 119.7, 119.8): they gain and lose no life, pay no life and have no life
@@ -336,8 +632,49 @@ pub enum GameRule {
     MayCast(CastPermission),
     /// The players may look at the top card of their own library any time; no one else sees it.
     LookAtTopAnyTime(Ref),
+    /// The players may look at the cards in exile the selector picks that lie face down (CR 406.3): "You may look at the
+    /// cards exiled with ~".
+    LookAtExiled {
+        /// The players who may look; the controller of the rule when absent.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The cards they may look at; every face-down card in exile when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// Only the objects the reference names when the rule begins, as the objects they are then (CR 400.7).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        only: Option<Ref>,
+    },
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Ref),
+    /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
+    MaxHandSize {
+        /// The players.
+        who: Ref,
+        /// The cards they may keep at cleanup.
+        size: Amount,
+    },
+    /// The players' maximum hand size grows by `by` (shrinks when negative), after any size that is set (CR 402.2): "your maximum
+    /// hand size is reduced by three".
+    HandSizeChange {
+        /// The players.
+        who: Ref,
+        /// The cards added to the size; removed when negative.
+        by: Amount,
+    },
+    /// The legend rule (CR 704.5j) does not apply to the legendary permanents of the players.
+    NoLegendRule(Ref),
+    /// The legend rule (CR 704.5j) does not apply to the permanents the selector picks, judged for the rule's controller:
+    /// "the legend rule doesn't apply to tokens you control".
+    NoLegendRuleFor(Selector),
+    /// The permanents the selector picks that the rule's controller controls untap during the untap step of each of the
+    /// players (CR 502.3): "untap all creatures you control during each other player's untap step".
+    UntapDuring {
+        /// The permanents, among those the rule's controller controls.
+        what: Selector,
+        /// The players whose untap steps untap them.
+        whose: Ref,
+    },
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
@@ -351,11 +688,39 @@ pub enum GameRule {
     },
     /// The card can be a player's commander (CR 903.3), in every zone; the rule is written without `from`.
     CanBeCommander,
+    /// A deck can hold any number of cards with the card's name (CR 100.2a); it changes nothing in a game, and the rule is
+    /// written without `from`.
+    AnyNumberInDeck,
+    /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
+    /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
+    /// the turn. `what` names the cards, not the stack object (no `Spell`).
+    NextSpell {
+        /// The cards the cast must match.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// What the spell gets.
+        benefit: SpellBenefit,
+    },
+    /// The spells `applies_to` selects cost `mana` more or less to cast while the rule lasts (CR 601.2f): "spells your
+    /// opponents cast cost {1} more to cast until your next turn"; "you" in the selector is the rule's controller.
+    SpellCost {
+        /// The spells, with `Spell` first, as a cost modifier names them.
+        applies_to: Selector,
+        /// More or less.
+        change: crate::ability::CostChange,
+        /// The mana added or removed.
+        mana: ManaCostX,
+    },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
-    /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger").
+    /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger"), or any event
+    /// when it names none.
     TriggerAgain {
-        /// The event that causes the trigger, as a triggered ability describes it.
-        cause: TriggerPattern,
+        /// The event that causes the trigger, as a triggered ability describes it; every event when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cause: Option<TriggerPattern>,
+        /// Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        source: Option<Selector>,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
@@ -380,6 +745,50 @@ pub enum GameRule {
     /// Counters remain on the card as it moves to any zone other than a hand or a library (CR 122.2); the card reads it
     /// in every zone, so the rule is written without `from`.
     CountersRemain,
+    /// The owner of each exiled card `only` names may cast it for `cost` rather than its mana cost, while it stays exiled
+    /// (airbend: CR 118.9).
+    MayCastRather {
+        /// The exiled cards, named when the rule begins.
+        only: Ref,
+        /// The mana paid in place of the mana cost.
+        cost: ManaCostX,
+    },
+    /// The subjects `who` names (players or objects) can't do what `action` names: it is not offered, and an effect that
+    /// would have it done does nothing.
+    Cant {
+        /// The players or objects the prohibition is about.
+        who: Ref,
+        /// What they can't do.
+        action: Prohibited,
+    },
+    /// The mana the permanents `what` selects add as they are tapped for mana, when a player in `who` taps them, changes as
+    /// `change` says (CR 614.1, 106.6): "If a land is tapped for mana, it produces {B} instead of any other type and amount."
+    ManaProduced {
+        /// The permanents, judged as they are tapped.
+        what: Selector,
+        /// The players whose taps are changed.
+        who: Ref,
+        /// The change.
+        change: ManaChange,
+    },
+}
+
+/// How a `GameRule::ManaProduced` changes the mana of a tap.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ManaChange {
+    /// Every mana is of this type instead of any other type, in the same amount.
+    OnlyType(ManaType),
+    /// One mana of this type instead of any other type and amount.
+    One(ManaType),
+    /// As many times as much mana.
+    Times(u32),
+    /// Mana of the first type is of the second instead.
+    Convert {
+        /// The type that changes.
+        from: ManaType,
+        /// The type it becomes.
+        to: ManaType,
+    },
 }
 
 #[cfg(test)]
@@ -397,6 +806,7 @@ mod tests {
             timing: Timing::Instant,
             condition: None,
             limit: None,
+            by: crate::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: Vec::new(),
@@ -413,8 +823,11 @@ mod tests {
     #[case(Modification::LoseAbilities, Some("6"))]
     #[case(Modification::AddSubtype(Subtype("Elf".into())), Some("4"))]
     #[case(Modification::SetColors(vec![Color::Blue]), Some("5"))]
+    #[case(Modification::AddChosenSubtype, Some("4"))]
+    #[case(Modification::SetChosenColor, Some("5"))]
     #[case(Modification::AddKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::RemoveKeyword(Keyword::Flying), Some("6"))]
+    #[case(Modification::LockKeyword(Keyword::Flying), Some("6"))]
     #[case(Modification::SetPT { power: Amount::Fixed(1), toughness: Amount::Fixed(1) }, Some("7b"))]
     #[case(Modification::ModifyPT { power: Amount::Fixed(1), toughness: Amount::Fixed(1) }, Some("7c"))]
     #[case(Modification::SwitchPT, Some("7d"))]
@@ -473,6 +886,16 @@ mod tests {
         r#"{"AttackTax":{"who":"Opponents","attacked":"Both","attackers":[{"Type":"Creature"}],"mana":"{W/P}","per":2}}"#
     )]
     #[case(
+        GameRule::BlockTax {
+            blockers: Selector::this(),
+            attackers: Selector::default(),
+            mana: "{2}".parse().unwrap(),
+            life: 0,
+            per: Amount::Fixed(1),
+        },
+        r#"{"BlockTax":{"blockers":["This"],"mana":"{2}"}}"#
+    )]
+    #[case(
         GameRule::DamageCantBePrevented { source: Selector::default(), combat: None },
         r#"{"DamageCantBePrevented":{}}"#
     )]
@@ -486,6 +909,22 @@ mod tests {
         r#"{"MustAttackPlayers":{"who":{"Bound":"tokens"},"players":"Opponents"}}"#
     )]
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
+    #[case(
+        GameRule::MustBlockAttacker { who: Ref::Target(0), attacker: Ref::This },
+        r#"{"MustBlockAttacker":{"who":{"Target":0},"attacker":"This"}}"#
+    )]
+    #[case(
+        GameRule::Combat { who: Ref::This, quirk: CombatQuirk::CantAttackAlone },
+        r#"{"Combat":{"who":"This","quirk":"CantAttackAlone"}}"#
+    )]
+    #[case(
+        GameRule::Combat { who: Ref::This, quirk: CombatQuirk::MustBeBlocked(Blocking::Every) },
+        r#"{"Combat":{"who":"This","quirk":{"MustBeBlocked":"Every"}}}"#
+    )]
+    #[case(
+        GameRule::IgnoreHexproof { by: Ref::You, what: None, players: Some(Ref::Opponents), shroud: true },
+        r#"{"IgnoreHexproof":{"by":"You","players":"Opponents","shroud":true}}"#
+    )]
     #[case(GameRule::CantBeCountered(Ref::This), r#"{"CantBeCountered":"This"}"#)]
     #[case(GameRule::AttackLimit(1), r#"{"AttackLimit":1}"#)]
     #[case(
@@ -523,6 +962,7 @@ mod tests {
         r#"{"AdditionalLandPlays":{"who":"EachPlayer","count":2}}"#
     )]
     #[case(GameRule::CanBeCommander, r#""CanBeCommander""#)]
+    #[case(GameRule::AnyNumberInDeck, r#""AnyNumberInDeck""#)]
     #[case(
         GameRule::GraveyardCardsUntargetable,
         r#""GraveyardCardsUntargetable""#
@@ -542,9 +982,39 @@ mod tests {
     #[case(GameRule::CountersRemain, r#""CountersRemain""#)]
     #[case(
         GameRule::TriggerAgain {
-            cause: TriggerPattern::Attacks { what: Selector::this() }
+            cause: Some(TriggerPattern::Attacks { what: Selector::this() }),
+            source: None
         },
         r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}}}}"#
+    )]
+    #[case(GameRule::TriggerAgain { cause: None, source: None }, r#"{"TriggerAgain":{}}"#)]
+    #[case(
+        GameRule::Cant { who: Ref::You, action: Prohibited::PlayLand },
+        r#"{"Cant":{"who":"You","action":"PlayLand"}}"#
+    )]
+    #[case(
+        GameRule::Cant { who: Ref::Opponents, action: Prohibited::Activate(Selector::this()) },
+        r#"{"Cant":{"who":"Opponents","action":{"Activate":["This"]}}}"#
+    )]
+    #[case(
+        GameRule::Cant { who: Ref::You, action: Prohibited::SkipStep(Step::Draw) },
+        r#"{"Cant":{"who":"You","action":{"SkipStep":"Draw"}}}"#
+    )]
+    #[case(
+        GameRule::MaxHandSize { who: Ref::You, size: Amount::Fixed(3) },
+        r#"{"MaxHandSize":{"who":"You","size":3}}"#
+    )]
+    #[case(
+        GameRule::NoLegendRule(Ref::EachPlayer),
+        r#"{"NoLegendRule":"EachPlayer"}"#
+    )]
+    #[case(
+        GameRule::UntapDuring { what: Selector::this(), whose: Ref::Opponents },
+        r#"{"UntapDuring":{"what":["This"],"whose":"Opponents"}}"#
+    )]
+    #[case(
+        GameRule::TriggerAgain { cause: Some(TriggerPattern::Attacks { what: Selector::this() }), source: Some(Selector::this()) },
+        r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}},"source":["This"]}}"#
     )]
     fn a_rule_is_written_with_the_players_or_objects_it_names(
         #[case] rule: GameRule,
@@ -557,6 +1027,7 @@ mod tests {
     #[rstest]
     #[case(Duration::UntilEndOfTurn, r#""UntilEndOfTurn""#)]
     #[case(Duration::WhileYouControlSource, r#""WhileYouControlSource""#)]
+    #[case(Duration::WhileSourceTapped, r#""WhileSourceTapped""#)]
     #[case(
         Duration::WhileHasCounter(Box::new(CounterKind::Other("vow".into()))),
         r#"{"WhileHasCounter":{"Other":"vow"}}"#

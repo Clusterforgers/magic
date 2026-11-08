@@ -44,9 +44,21 @@ pub enum Keyword {
     Hexproof,
     /// Shroud: can't be the target of any spell or ability.
     Shroud,
+    /// Hexproof from a quality (CR 702.11d): the opponents' spells and abilities whose source the selector matches can't
+    /// target the holder.
+    HexproofFrom(Selector),
     /// Protection from a quality (CR 702.16): the sources the selector matches can't damage, enchant, equip, block or
     /// target the holder. The empty selector is protection from everything.
     Protection(Selector),
+    /// Protection from `from` that doesn't remove the Auras and Equipment `spares` matches ("This effect doesn't remove
+    /// this Aura"): `spares` is judged for the permanent whose static ability gives the keyword, so `This` is that Aura
+    /// and `You` its controller.
+    ProtectionSparing {
+        /// The quality protected from.
+        from: Selector,
+        /// The attachments it leaves attached.
+        spares: Selector,
+    },
     /// Prowess.
     Prowess,
     /// Convoke.
@@ -137,6 +149,8 @@ pub enum Keyword {
     Squad(Cost),
     /// Foretell with its cost: a special action from the hand exiles the card face down, and it is cast later for its foretell cost (CR 702.143).
     Foretell(Cost),
+    /// Plot with its cost: a special action at sorcery timing exiles the card from the hand face up, and it is cast on a later turn as a sorcery without paying its mana cost (CR 702.170).
+    Plot(Cost),
     /// Daybound (CR 702.145): the game becomes day when this permanent appears while it is neither, and the permanent is turned to its night face when it becomes night.
     Daybound,
     /// Nightbound (CR 702.145): the permanent is turned to its day face when it becomes day.
@@ -270,6 +284,10 @@ pub enum Keyword {
     },
     /// Casualty N (CR 702.153): as an additional cost to cast the spell, its caster may sacrifice a creature with power N or greater; when they cast it, if they did, they copy it.
     Casualty(u32),
+    /// Bargain (CR 702.166): as an additional cost to cast the spell, its caster may sacrifice an artifact, enchantment or token.
+    Bargain,
+    /// Conspire (CR 702.78): as an additional cost to cast the spell, its caster may tap two untapped creatures they control that share a color with it; when they cast it, if they did, they copy it.
+    Conspire,
     /// Offspring with its cost (CR 702.175): the caster may pay it in addition as they cast the spell; when the creature enters, if they did, they create a 1/1 token copy of it.
     Offspring(Cost),
     /// Demonstrate (CR 702.144): when the spell is cast, its caster may copy it and, if they do, choose an opponent who also copies it.
@@ -280,6 +298,8 @@ pub enum Keyword {
     Gift(GiftKind),
     /// For Mirrodin! (CR 702.163): when this Equipment enters, its controller creates a 2/2 red Rebel creature token, then attaches the Equipment to it.
     ForMirrodin,
+    /// Start your engines! (CR 702.179): its controller's speed becomes 1 if they have none; speed rises once on each of their turns when an opponent loses life, up to 4.
+    StartYourEngines,
     /// Job select: when this Equipment enters, its controller creates a 1/1 colorless Hero creature token, then attaches the Equipment to it.
     JobSelect,
     /// Equip with a restriction and its cost (CR 702.6): "[Cost]: Attach this permanent to target creature you control that `to` also names. Activate only as a sorcery" (Equip legendary creature, Equip commander, Equip Knight).
@@ -300,6 +320,19 @@ pub enum Keyword {
         /// The alternative cost.
         cost: Cost,
     },
+    /// Craft with its cost (CR 702.167): at sorcery speed, for the cost, which exiles this permanent and the materials, return this card from exile transformed.
+    Craft(Cost),
+    /// Assist (CR 702.132): as the spell is cast its caster may choose another player, who may pay any amount of the generic mana of its total cost.
+    Assist,
+    /// Prototype with its cost and size (CR 702.160): the permanent spell may be cast from a hand for the cost, with that mana cost, its colours and that power and toughness; it keeps them as a permanent.
+    Prototype {
+        /// The alternative mana cost, which is also the mana cost of the prototyped spell and permanent.
+        cost: Cost,
+        /// The power of the prototyped permanent.
+        power: i32,
+        /// The toughness of the prototyped permanent.
+        toughness: i32,
+    },
     /// Gravestorm (CR 702.69): when the spell is cast, its caster copies it for each permanent put into a graveyard from the battlefield this turn.
     Gravestorm,
     /// Sunburst (CR 702.44): the permanent enters with a +1/+1 counter (a charge counter unless it is a creature) for each color of mana spent to cast it.
@@ -312,10 +345,15 @@ pub enum Keyword {
     Phasing,
     /// Spectacle with its cost (CR 702.137): an alternative cost to cast the card from a hand when an opponent lost life this turn.
     Spectacle(Cost),
+    /// Freerunning with its cost (CR 702.173): an alternative cost to cast the card from a hand when its caster dealt combat damage
+    /// to a player this turn with an Assassin or a commander.
+    Freerunning(Cost),
     /// Umbra armor (CR 702.89): if the creature this Aura enchants would be destroyed, instead all damage is removed from it and this Aura is destroyed.
     UmbraArmor,
     /// Cipher (CR 702.99): as the spell resolves, its controller may exile it encoded on a creature they control; whenever that creature deals combat damage to a player, its controller may cast a copy of the encoded card without paying its mana cost, until the card leaves exile or the creature leaves the battlefield.
     Cipher,
+    /// Haunt (CR 702.55): when the creature dies, or the spell card is put into a graveyard after resolving, it is exiled haunting target creature; the card's "the creature it haunts dies" ability works from exile.
+    Haunt,
     /// Graft N (CR 702.58): it enters with N +1/+1 counters; whenever another creature enters, its controller may move a +1/+1 counter from it onto that creature.
     Graft(u32),
     /// Afflict N (CR 702.130): whenever the creature becomes blocked, the defending player loses N life.
@@ -340,6 +378,22 @@ pub enum Keyword {
         /// Only while the creature hasn't been exerted this turn.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         once_per_turn: bool,
+    },
+    /// "You may cast this as though it had flash. If you cast it any time a sorcery couldn't have been cast, the
+    /// controller of the permanent it becomes sacrifices it at the beginning of the next cleanup step."
+    FlashSacrifice,
+    /// Recover with its cost (CR 702.59): when a creature its owner owns dies, the card in the graveyard returns to hand if paid, else is exiled.
+    Recover(Cost),
+    /// Ripple N (CR 702.60): on cast, reveal the top N cards and cast those of the same name free.
+    Ripple(u32),
+    /// Epic (CR 702.50): no more spells for the game; the spell is copied each upkeep.
+    Epic,
+    /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
+    Macro {
+        /// The name in the table.
+        name: String,
+        /// The number printed after the name.
+        amount: u32,
     },
 }
 
@@ -383,7 +437,9 @@ impl Keyword {
         "Indestructible",
         "Hexproof",
         "Shroud",
+        "Hexproof from",
         "Protection",
+        "Protection sparing",
         "Prowess",
         "Convoke",
         "Delve",
@@ -424,6 +480,7 @@ impl Keyword {
         "Encore",
         "Squad",
         "Foretell",
+        "Plot",
         "Daybound",
         "Nightbound",
         "Wither",
@@ -482,24 +539,32 @@ impl Keyword {
         "Backup",
         "Devour",
         "Casualty",
+        "Bargain",
+        "Conspire",
         "Offspring",
         "Demonstrate",
         "Hideaway",
         "Gift",
         "For Mirrodin!",
+        "Start your engines!",
         "Job select",
         "Equip to",
         "Scavenge",
         "Transmute",
         "Awaken",
+        "Prototype",
+        "Assist",
+        "Craft",
         "Gravestorm",
         "Sunburst",
         "Afterlife",
         "Horsemanship",
         "Phasing",
         "Spectacle",
+        "Freerunning",
         "Umbra armor",
         "Cipher",
+        "Haunt",
         "Graft",
         "Afflict",
         "Replicate",
@@ -510,7 +575,28 @@ impl Keyword {
         "Harmonize",
         "Read ahead",
         "Exert",
+        "Flash, sacrificed at cleanup",
+        "Recover",
+        "Ripple",
+        "Epic",
+        "Macro",
     ];
+
+    /// The name a player reads: `name`, except that a macro keyword shows its own table name (`Bushido`), never `Macro`,
+    /// and protection with an exception shows as `Protection`.
+    pub fn shown_name(&self) -> String {
+        match self {
+            Keyword::ProtectionSparing { .. } => "Protection".to_owned(),
+            Keyword::Macro { name, .. } => {
+                let mut chars = name.chars();
+                chars
+                    .next()
+                    .map(|first| first.to_uppercase().chain(chars).collect())
+                    .unwrap_or_default()
+            }
+            other => other.name().to_owned(),
+        }
+    }
 
     /// The keyword as Scryfall spells it (`First strike`).
     pub const fn name(&self) -> &'static str {
@@ -530,7 +616,9 @@ impl Keyword {
             Keyword::Indestructible => "Indestructible",
             Keyword::Hexproof => "Hexproof",
             Keyword::Shroud => "Shroud",
+            Keyword::HexproofFrom(_) => "Hexproof from",
             Keyword::Protection(_) => "Protection",
+            Keyword::ProtectionSparing { .. } => "Protection sparing",
             Keyword::Prowess => "Prowess",
             Keyword::Convoke => "Convoke",
             Keyword::Delve => "Delve",
@@ -571,6 +659,7 @@ impl Keyword {
             Keyword::Encore(_) => "Encore",
             Keyword::Squad(_) => "Squad",
             Keyword::Foretell(_) => "Foretell",
+            Keyword::Plot(_) => "Plot",
             Keyword::Daybound => "Daybound",
             Keyword::Nightbound => "Nightbound",
             Keyword::Wither => "Wither",
@@ -638,16 +727,22 @@ impl Keyword {
             Keyword::Backup { .. } => "Backup",
             Keyword::Devour { .. } => "Devour",
             Keyword::Casualty(_) => "Casualty",
+            Keyword::Bargain => "Bargain",
+            Keyword::Conspire => "Conspire",
             Keyword::Offspring(_) => "Offspring",
             Keyword::Demonstrate => "Demonstrate",
             Keyword::Hideaway(_) => "Hideaway",
             Keyword::Gift(_) => "Gift",
             Keyword::ForMirrodin => "For Mirrodin!",
+            Keyword::StartYourEngines => "Start your engines!",
             Keyword::JobSelect => "Job select",
             Keyword::EquipTo { .. } => "Equip to",
             Keyword::Scavenge(_) => "Scavenge",
             Keyword::Transmute(_) => "Transmute",
             Keyword::Awaken { .. } => "Awaken",
+            Keyword::Prototype { .. } => "Prototype",
+            Keyword::Assist => "Assist",
+            Keyword::Craft(_) => "Craft",
             Keyword::Gravestorm => "Gravestorm",
             Keyword::Sunburst => "Sunburst",
             Keyword::UmbraArmor => "Umbra armor",
@@ -660,7 +755,9 @@ impl Keyword {
             Keyword::Horsemanship => "Horsemanship",
             Keyword::Phasing => "Phasing",
             Keyword::Spectacle(_) => "Spectacle",
+            Keyword::Freerunning(_) => "Freerunning",
             Keyword::Cipher => "Cipher",
+            Keyword::Haunt => "Haunt",
             Keyword::Graft(_) => "Graft",
             Keyword::Afflict(_) => "Afflict",
             Keyword::Replicate(_) => "Replicate",
@@ -671,9 +768,35 @@ impl Keyword {
             Keyword::Harmonize(_) => "Harmonize",
             Keyword::ReadAhead => "Read ahead",
             Keyword::Exert { .. } => "Exert",
+            Keyword::FlashSacrifice => "Flash, sacrificed at cleanup",
+            Keyword::Recover(_) => "Recover",
+            Keyword::Ripple(_) => "Ripple",
+            Keyword::Epic => "Epic",
+            Keyword::Macro { .. } => "Macro",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
+    }
+
+    /// The keyword with the `OwnManaCost` part of its cost read as `mana`, the mana cost of the card it is on; the keywords a
+    /// static ability gives with "equal to its mana cost" (escape, replicate, scavenge, encore, emerge, flashback).
+    #[must_use]
+    pub fn with_own_mana_cost(mut self, mana: &mtg_core::mana::ManaCost) -> Keyword {
+        if let Keyword::Escape(cost)
+        | Keyword::Replicate(cost)
+        | Keyword::Scavenge(cost)
+        | Keyword::Encore(cost)
+        | Keyword::Emerge(cost)
+        | Keyword::Flashback(cost) = &mut self
+        {
+            for item in &mut cost.0 {
+                if matches!(item, crate::cost::CostItem::OwnManaCost) {
+                    *item =
+                        crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, mana.clone()));
+                }
+            }
+        }
+        self
     }
 
     /// Whether Scryfall's keyword text names a keyword of this enum (case-insensitive).
@@ -687,7 +810,11 @@ impl Keyword {
     pub const fn has_additional_cost(&self) -> bool {
         matches!(
             self,
-            Keyword::Casualty(_) | Keyword::Offspring(_) | Keyword::Gift(_)
+            Keyword::Casualty(_)
+                | Keyword::Bargain
+                | Keyword::Conspire
+                | Keyword::Offspring(_)
+                | Keyword::Gift(_)
         )
     }
 
@@ -728,7 +855,12 @@ mod tests {
             Keyword::Indestructible,
             Keyword::Hexproof,
             Keyword::Shroud,
+            Keyword::HexproofFrom(Selector::default()),
             Keyword::Protection(Selector::default()),
+            Keyword::ProtectionSparing {
+                from: Selector::default(),
+                spares: Selector::default(),
+            },
             Keyword::Prowess,
             Keyword::Convoke,
             Keyword::Delve,
@@ -772,6 +904,7 @@ mod tests {
             Keyword::Encore(cost.clone()),
             Keyword::Squad(cost.clone()),
             Keyword::Foretell(cost.clone()),
+            Keyword::Plot(cost.clone()),
             Keyword::Daybound,
             Keyword::Nightbound,
             Keyword::Wither,
@@ -839,11 +972,14 @@ mod tests {
                 of: Selector::default(),
             },
             Keyword::Casualty(2),
+            Keyword::Bargain,
+            Keyword::Conspire,
             Keyword::Offspring(Cost::default()),
             Keyword::Demonstrate,
             Keyword::Hideaway(4),
             Keyword::Gift(GiftKind::Card),
             Keyword::ForMirrodin,
+            Keyword::StartYourEngines,
             Keyword::JobSelect,
             Keyword::EquipTo {
                 to: Box::default(),
@@ -855,14 +991,23 @@ mod tests {
                 count: 3,
                 cost: Cost::default(),
             },
+            Keyword::Prototype {
+                cost: Cost::default(),
+                power: 2,
+                toughness: 1,
+            },
+            Keyword::Assist,
+            Keyword::Craft(Cost::default()),
             Keyword::Gravestorm,
             Keyword::Sunburst,
             Keyword::Afterlife(2),
             Keyword::Horsemanship,
             Keyword::Phasing,
             Keyword::Spectacle(Cost::default()),
+            Keyword::Freerunning(Cost::default()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
+            Keyword::Haunt,
             Keyword::Graft(2),
             Keyword::Afflict(2),
             Keyword::Replicate(Cost::default()),
@@ -875,7 +1020,22 @@ mod tests {
             Keyword::Exert {
                 once_per_turn: true,
             },
+            Keyword::FlashSacrifice,
+            Keyword::Recover(Cost::default()),
+            Keyword::Ripple(4),
+            Keyword::Epic,
+            Keyword::Macro {
+                name: "bushido".to_owned(),
+                amount: 2,
+            },
         ]
+    }
+
+    #[rstest::rstest]
+    #[case::macro_keyword(Keyword::Macro { name: "bushido".to_owned(), amount: 2 }, "Bushido")]
+    #[case::plain(Keyword::FirstStrike, "First strike")]
+    fn a_player_reads_the_keywords_own_name(#[case] keyword: Keyword, #[case] shown: &str) {
+        assert_eq!(keyword.shown_name(), shown);
     }
 
     #[test]

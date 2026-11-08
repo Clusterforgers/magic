@@ -148,6 +148,9 @@ async fn a_wrong_draft_changes_nothing_and_a_draft_read_on_an_old_hash_waits_aga
         oracle_id: pyroblast.oracle_id.clone(),
         read_hash: "0123456789abcdef0123456789abcdef".to_owned(),
         rules,
+        source: "sweep".to_owned(),
+        oracle_matches: false,
+        proof: None,
     };
     db.drafts()
         .insert(std::slice::from_ref(&old))
@@ -235,7 +238,7 @@ async fn the_deck_list_has_the_cards_to_draft_most_played_first(pool: PgPool) {
     // with its first blocker.
     assert_eq!(rows.len(), 2, "{text}");
     assert_eq!(rows[0][..3], ["10", "waiting", "Pyroblast"], "{text}");
-    assert_eq!(rows[0][3], "modal:", "{text}");
+    assert_eq!(rows[0][3], "spell:", "{text}");
     assert_eq!((rows[1][0], rows[1][2]), ("30", "Jace,"), "{text}");
     assert!(
         !["waiting", "verified", "read"].contains(&rows[1][1]),

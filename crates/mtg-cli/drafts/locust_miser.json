@@ -1,0 +1,12 @@
+{
+  "oracle_id": "75a53a88-51a5-4c76-9f67-ee94c3065b98",
+  "name": "Locust Miser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Locust Miser",
+      "oracle_fingerprint": "7eddf4284530bd1e6fce193a1db077e4",
+      "abilities": [{ "Rule": { "rule": { "HandSizeChange": { "who": "Opponents", "by": -2 } } } }]
+    }
+  ]
+}

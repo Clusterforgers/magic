@@ -5,7 +5,7 @@ How the game runs on the k3s cluster and how a release reaches it.
 ## Parts
 
 - `deploy/server.Dockerfile` builds `mtg-server` and `mtg-cli` into one Debian slim image (user 10001); `deploy/web.Dockerfile` builds the client and serves it with nginx (`deploy/nginx.conf`: `/assets` cached for a year, every other path is the client). Both are `linux/amd64`.
-- The Helm chart `apps/magic` of `k3s-cluster-manifests` runs them in the namespace `magic`, pinned to `queen`: a Postgres StatefulSet, the server (one replica, `Recreate`, an init container runs `mtg-cli migrate`), the web, one Ingress on `magic.hivemindcloud.dk` (`/api`, `/ws` and `/healthz` to the server, everything else to the web), a post-sync Job that runs `mtg-cli compile`, and a suspended CronJob `magic-ingest` for the card data. The cluster side (secret, DNS, ingest) is in that repo's `docs/magic.md`.
+- The Helm chart `apps/magic` of `k3s-cluster-manifests` runs them in the namespace `magic`, pinned to `queen`: a Postgres StatefulSet, the server (one replica, `Recreate`, an init container runs `mtg-cli migrate`), the web, one Ingress on `magic.hivemindcloud.dk` (`/api`, `/ws` and `/healthz` to the server, everything else to the web), a post-sync Job that runs `mtg-cli compile --all`, and a suspended CronJob `magic-ingest` for the card data. The cluster side (secret, DNS, ingest) is in that repo's `docs/magic.md`.
 - The server runs behind the nginx ingress: `MTG_TRUSTED_PROXIES=1`, `MTG_COOKIE_SECURE=1`, `MTG_ALLOWED_ORIGINS=https://<host>`. `server.registration` in the chart's `values.yaml` sets `MTG_REGISTRATION` and `server.admin` sets `MTG_ADMIN_USERNAME` (see Accounts); the picture cache is a volume of `server.imageCacheMiB`. `MTG_SEED` stays unset.
 - Games live in memory with their event log in Postgres; a restart resumes them. A release that changes a card's rules or the engine's reading of it fails the stored games that use it at the next boot, so releases go between games.
 
@@ -48,11 +48,11 @@ The server marks the account named by `server.admin` at each start, so the rollo
 
 ## Backups
 
-A CronJob dumps the database every night onto its own volume next to the database on queen and keeps the newest 14 (restore and copy-out: the manifests repo's `docs/magic.md`). Copy a dump off the machine from time to time until the roadmap item d1c is built.
+A CronJob dumps the database every night onto its own volume next to the database on queen and keeps the newest 14 (restore and copy-out: the manifests repo's `docs/magic.md`). Copy a dump off the machine from time to time (roadmap item d1c).
 
 ## Card data
 
-The card tables are filled by the CronJob `magic-ingest` (`fetch scryfall --printings`, `fetch decks`, `ingest`, `compile`), started by hand after the first install and whenever Scryfall's data should refresh. Pictures load from the Scryfall CDN as games ask for them and stay in the cache volume.
+The card tables are filled by the CronJob `magic-ingest` (`fetch scryfall --printings`, `fetch decks`, `ingest`, `compile --all`), started by hand after the first install and whenever Scryfall's data should refresh. Pictures load from the Scryfall CDN as games ask for them and stay in the cache volume.
 
 ## Operations
 

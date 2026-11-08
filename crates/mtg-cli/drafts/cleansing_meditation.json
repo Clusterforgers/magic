@@ -1,0 +1,51 @@
+{
+  "oracle_id": "658bccf8-fe73-4d6a-b37b-7a58034e5e5d",
+  "name": "Cleansing Meditation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleansing Meditation",
+      "oracle_fingerprint": "9e17759ef6f0e78c55441764a7a7e871",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Enchantment" }] },
+                        "as": "destroyed"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Is": { "Bound": "destroyed" } },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Destroy": { "what": { "Each": [{ "Type": "Enchantment" }] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

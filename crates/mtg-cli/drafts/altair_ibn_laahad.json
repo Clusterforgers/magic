@@ -1,0 +1,61 @@
+{
+  "oracle_id": "43dc4b0c-e437-4abc-a3fb-48bd3098de88",
+  "name": "Altaïr Ibn-La'Ahad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Altaïr Ibn-La'Ahad",
+      "oracle_fingerprint": "1d96e2591c1f18e13292e863b58d5243",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Assassin" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "memory" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "HasCounter": { "Other": "memory" } },
+                          { "In": "Exile" }
+                        ]
+                      }
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy2"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy2" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

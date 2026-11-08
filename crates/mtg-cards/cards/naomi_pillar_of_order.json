@@ -1,0 +1,58 @@
+{
+  "oracle_id": "cd6018de-5791-4c13-b134-38c410f04872",
+  "name": "Naomi, Pillar of Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naomi, Pillar of Order",
+      "oracle_fingerprint": "cb0a4e364d9c63da594fbca89be894c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Samurai",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Samurai"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

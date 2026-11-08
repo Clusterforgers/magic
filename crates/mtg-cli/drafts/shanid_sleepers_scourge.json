@@ -1,0 +1,53 @@
+{
+  "oracle_id": "70e03c58-194f-443d-ab64-646dd14d2f53",
+  "name": "Shanid, Sleepers' Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shanid, Sleepers' Scourge",
+      "oracle_fingerprint": "8de16dad8bae54c4d4dcb0f161260d09",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Supertype": "Legendary" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "who": "You",
+                    "what": [
+                      { "Type": "Land" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                {
+                  "SpellCast": {
+                    "what": [{ "Supertype": "Legendary" }, { "ControlledBy": "You" }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

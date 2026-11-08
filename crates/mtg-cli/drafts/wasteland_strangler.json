@@ -1,0 +1,36 @@
+{
+  "oracle_id": "197f3b17-ce21-430e-8e41-f5d02d5e3637",
+  "name": "Wasteland Strangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wasteland Strangler",
+      "oracle_fingerprint": "4afc4c699072d7704a77a0fb0035d0e0",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }] } }],
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

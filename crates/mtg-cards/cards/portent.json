@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e744dbb6-2d56-462a-8d49-d79c73944048",
+  "name": "Portent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Portent",
+      "oracle_fingerprint": "1ca95b548d876af870cde5f624cf6e34",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              { "May": { "effects": [{ "Shuffle": { "who": { "Target": 0 } } }] } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

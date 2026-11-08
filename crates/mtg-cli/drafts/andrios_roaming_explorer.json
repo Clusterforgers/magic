@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e1c8c6bf-09e2-49de-9de0-17174b3b8a59",
+  "name": "Andrios, Roaming Explorer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Andrios, Roaming Explorer",
+      "oracle_fingerprint": "0ed7508885bae35257f13193a5b44735",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Compare": { "stat": "BasePower", "op": "Eq", "to": 4 } },
+                { "Compare": { "stat": "BaseToughness", "op": "Eq", "to": 3 } },
+                "Tapped",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "SetPT": { "power": 16, "toughness": 9 } }],
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Attacking"] }, "op": "Ge", "right": 1 }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 138, "end": 255 }
+          }
+        }
+      ]
+    }
+  ]
+}

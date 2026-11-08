@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3a8f382e-0bc6-4e79-87e2-9f99d907d234",
+  "name": "Sawtooth Thresher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sawtooth Thresher",
+      "oracle_fingerprint": "9d027ee73562b096fb8cb319151984c4",
+      "abilities": [
+        { "Keyword": "Sunburst" },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1", "count": 2 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

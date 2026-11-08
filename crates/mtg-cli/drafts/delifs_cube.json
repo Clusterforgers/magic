@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3106ba15-08d7-474c-a384-6848b713ba8d",
+  "name": "Delif's Cube",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delif's Cube",
+      "oracle_fingerprint": "bf43841f5660443a298b335c3943d261",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "Unblocked": { "what": [{ "Is": { "Target": 0 } }] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Combat": { "who": { "Target": 0 }, "quirk": "AssignsNoCombatDamage" }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "PutCounters": { "on": "This", "counter": { "Other": "cube" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "RemoveCounters": { "counter": { "Other": "cube" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

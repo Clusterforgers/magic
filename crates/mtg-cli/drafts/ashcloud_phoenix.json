@@ -1,0 +1,24 @@
+{
+  "oracle_id": "fb2d7c3d-b68f-410e-9a73-cfcbfe702ade",
+  "name": "Ashcloud Phoenix",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ashcloud Phoenix",
+      "oracle_fingerprint": "e86de88f21435ecb437e45ee31d57dea",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 90 } }
+        },
+        { "Keyword": { "Morph": "{4}{R}{R}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "EachPlayer", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

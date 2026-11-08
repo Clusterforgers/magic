@@ -1,0 +1,30 @@
+{
+  "oracle_id": "70cdd24a-8dc5-47b5-8729-9ebf486f4821",
+  "name": "Aerie Ouphes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aerie Ouphes",
+      "oracle_fingerprint": "1a4c03e4b35bf7de447f43c3d4d78272",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

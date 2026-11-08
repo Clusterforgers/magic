@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3c5e269e-1baa-4b40-8e0f-1763ac85dc6b",
+  "name": "Redeem the Lost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redeem the Lost",
+      "oracle_fingerprint": "55def4a5dedd34578fe21e6eb3fa8996",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Clash": { "win": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

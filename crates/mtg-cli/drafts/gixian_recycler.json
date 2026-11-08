@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7d0c3826-1a54-458f-9665-d34c6e1ed304",
+  "name": "Gixian Recycler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gixian Recycler",
+      "oracle_fingerprint": "d684d42de59f3cb9617401f04e2bb985",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "AnyOf": [
+                    { "ZoneChange": { "what": ["This"], "from": "Hand", "to": "Graveyard" } },
+                    { "ZoneChange": { "what": ["This"], "from": "Library", "to": "Graveyard" } }
+                  ]
+                }
+              ]
+            },
+            "effects": [{ "Conjure": { "name": "Gixian Recycler", "zone": "Graveyard" } }]
+          }
+        },
+        { "Keyword": { "Unearth": "{1}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1a840210-204d-41cd-afc0-46abf7ea5f87",
+  "name": "Apocalypse Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apocalypse Hydra",
+      "oracle_fingerprint": "6b806584d5ea4bd66abec00c55b7eea4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "When": {
+                    "condition": { "Compare": { "left": "X", "op": "Lt", "right": 5 } },
+                    "then": "X",
+                    "otherwise": { "Times": { "by": 2, "of": "X" } }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

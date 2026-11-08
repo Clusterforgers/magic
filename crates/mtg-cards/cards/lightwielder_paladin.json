@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ad62e9d6-61bc-485f-a9b8-2ef9ba98a4b0",
+  "name": "Lightwielder Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightwielder Paladin",
+      "oracle_fingerprint": "8ac7806726dbc6d0a57a26ad46424cc9",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] },
+                    { "ControlledBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

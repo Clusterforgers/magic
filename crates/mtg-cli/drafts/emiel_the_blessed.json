@@ -11,11 +11,7 @@
           "Activated": {
             "cost": "{3}",
             "targets": [
-              {
-                "what": {
-                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "This" }]
-                }
-              }
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
             ],
             "effects": [
               { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
@@ -27,7 +23,7 @@
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "This" }],
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
                 "to": "Battlefield"
               }
             },
@@ -37,25 +33,32 @@
                   "cost": "{G/W}",
                   "paid": [
                     {
-                      "If": {
-                        "condition": {
-                          "Matches": {
-                            "subject": "Triggering",
-                            "selector": [{ "Subtype": "Unicorn" }]
+                      "PutCounters": {
+                        "on": "Triggering",
+                        "counter": "+1/+1",
+                        "count": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "CountOf": {
+                                    "of": "Triggering",
+                                    "filter": [{ "Subtype": "Unicorn" }]
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 2,
+                            "otherwise": 1
                           }
-                        },
-                        "then": [
-                          { "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": 2 } }
-                        ],
-                        "otherwise": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+                        }
                       }
-                    },
-                    { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }
+                    }
                   ]
                 }
-              },
-              { "TimeTravel": {} },
-              { "Untap": { "what": "This" } }
+              }
             ]
           }
         }
