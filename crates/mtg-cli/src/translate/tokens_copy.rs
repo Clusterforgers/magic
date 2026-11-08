@@ -17,6 +17,7 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "CopyPermanent",
         &[
             "AtEOTTrig",
+            "DefinedName",
             "NewName",
             "RemoveCardTypes",
             "Defined",
@@ -47,6 +48,15 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ChoiceTitle",
         ],
     )?;
+    // `DefinedName$ Gingerbrute`: the token the name stands for, made as a copy of its script.
+    if let Some(name) = p.get("DefinedName") {
+        if name != "Gingerbrute" || p.meaningful_keys().len() != 1 {
+            return unmapped("key:CopyPermanent.DefinedName");
+        }
+        return Ok(vec![
+            json!({"CreateToken": {"token": {"Named": name.to_lowercase()}}}),
+        ]);
+    }
     let remember = flag(p, "RememberTokens")?;
     let mut effects = Vec::new();
     let of = copied(ctx, p, &mut effects)?;
