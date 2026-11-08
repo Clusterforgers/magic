@@ -1,4 +1,4 @@
-//! Goal: the w15 wordings (a toll counted by "{X}, where X is the number of", "sacrifice any number", the other card of two looked at, the top card revealed and sorted, a pair of types counted, damage divided among up to X targets, "also deals", names of modes and quoted abilities, support, blight and adamant) read as the text they mean, and a text of another meaning never reads as the clause.
+//! Goal: the w15 wordings (a toll counted by "{X}, where X is the number of", "sacrifice any number", the other card of two looked at, the top card revealed and sorted, a pair of types counted, damage divided among up to X targets, "also deals", names of quoted abilities, support, blight and adamant) read as the text they mean, and a text of another meaning never reads as the clause.
 use super::*;
 
 #[rstest]
@@ -115,6 +115,11 @@ fn w15_the_other_card(#[case] left: &str, #[case] right: &str, #[case] same: boo
 #[case::battlefield(
     "{2}{G}{G}: Reveal the top card of your library. If it's a creature card, put it onto the battlefield. Otherwise, put it into your graveyard.",
     "{2}{G}{G}: Reveal the top card of your library. Then put all creature cards revealed this way onto the battlefield and the rest into your graveyard.",
+    true
+)]
+#[case::that_card_for_it(
+    "{T}: Reveal the top card of your library. If it's a land card, put it onto the battlefield. Otherwise, put it into your hand.",
+    "{T}: Reveal the top card of your library. If it's a land card, put it onto the battlefield. Otherwise, put that card into your hand.",
     true
 )]
 #[case::hand_and_bottom(
@@ -539,10 +544,10 @@ fn w15_look_and_may_reveal(#[case] left: &str, #[case] right: &str, #[case] same
 }
 
 #[rstest]
-#[case::mode_name(
+#[case::mode_name_is_printed_text(
     "Choose one — / • Two-Weapon Fighting — Double target creature's power and toughness until end of turn. / • Archery — This spell deals 5 damage to target creature with flying.",
     "Choose one — / • Double target creature's power and toughness until end of turn. / • ~ deals 5 damage to target creature with flying.",
-    true
+    false
 )]
 #[case::a_mode_the_data_leaves_unnamed(
     "Choose one — / • Two-Weapon Fighting — Double target creature's power and toughness until end of turn. / • This spell deals 5 damage to target creature with flying.",
@@ -569,10 +574,6 @@ fn w15_look_and_may_reveal(#[case] left: &str, #[case] right: &str, #[case] same
     "• Draw a card.",
     false
 )]
-fn w15_names_of_modes_and_quoted_abilities(
-    #[case] left: &str,
-    #[case] right: &str,
-    #[case] same: bool,
-) {
+fn w15_names_of_quoted_abilities(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     assert_eq!(same_written_text(left, right), same, "{right}");
 }

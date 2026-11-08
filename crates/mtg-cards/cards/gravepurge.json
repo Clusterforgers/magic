@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cc94462f-a207-4fdb-8704-aa979c244cab",
+  "name": "Gravepurge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravepurge",
+      "oracle_fingerprint": "543cf6b68d7e5e17ba543ce9041713e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
