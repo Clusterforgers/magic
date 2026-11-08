@@ -50,6 +50,7 @@ const RUNS: &[&str] = &[
     "Trigger.Drew",
     "Trigger.Discarded",
     "Trigger.Tapped",
+    "Trigger.TappedNotAttacking",
     "Trigger.Untapped",
     "Trigger.PhasedOut",
     "Trigger.PhasedIn",

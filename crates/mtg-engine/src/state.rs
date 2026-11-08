@@ -157,6 +157,8 @@ pub(crate) enum Tally {
     Crewed,
     /// A Mount that became saddled (counted for the object).
     Saddled,
+    /// A permanent that became tapped (counted for the object).
+    E16aTapped,
     /// Damage dealt to a player after prevention (counted for the player, by the amount).
     Hurt,
     /// Combat damage dealt to a player after prevention (counted for the player, by the amount).

@@ -442,6 +442,9 @@ pub(super) fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "Drawn" => drawn(p),
         "LifeGained" => life_gained(p),
         "Sacrificed" => sacrificed(ctx, p),
+        "Taps" if p.get("Attacker").is_some() || p.get("FirstTime").is_some() => {
+            super::e16a_history::taps(ctx, p)
+        }
         "Taps" => what_trigger(ctx, p, "Tapped"),
         "Untaps" => what_trigger(ctx, p, "Untapped"),
         "Blocks" => blocks(ctx, p),

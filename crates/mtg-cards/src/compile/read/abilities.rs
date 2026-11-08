@@ -119,7 +119,9 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     r.acts_itself = triggers::itself_acts(&when);
     r.that_permanent = matches!(
         when,
-        TriggerPattern::Tapped { .. } | TriggerPattern::Untapped { .. }
+        TriggerPattern::Tapped { .. }
+            | TriggerPattern::TappedNotAttacking { .. }
+            | TriggerPattern::Untapped { .. }
     );
     if triggers::targeted_itself(&when) {
         r.it = Some(Ref::This);

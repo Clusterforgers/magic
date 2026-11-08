@@ -452,7 +452,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::RingBearerLost { .. }
         | Event::CitysBlessingGained { .. } => designate(state, event),
 
-        Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
+        Event::PermanentTapped { object } => {
+            set_tapped(state, *object, true)?;
+            if let Some(tapped) = state.object(*object).map(GameObject::reference) {
+                state.tally_object(tapped, None, Tally::E16aTapped);
+            }
+        }
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::PermanentPhasedOut { .. } => crate::phasing::w11b_fold_out_event(state, event)?,
         Event::PermanentPhasedIn { object } => crate::phasing::fold_in(state, *object)?,

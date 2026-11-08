@@ -686,6 +686,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} becomes tapped", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::TappedNotAttacking { what } => (
+            format!(
+                "{} becomes tapped, if it isn't being declared as an attacker",
+                subject(what)
+            ),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::PhasedOut { what } => (
             format!("{} phases out", subject(what)),
             what.0 == [Pred::This],

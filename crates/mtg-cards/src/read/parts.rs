@@ -231,6 +231,12 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         TriggerPattern::Tapped { what } => {
             format!("{} becomes tapped", phrase::selector(ctx, what))
         }
+        TriggerPattern::TappedNotAttacking { what } => {
+            format!(
+                "{} becomes tapped, if it isn't being declared as an attacker",
+                phrase::selector(ctx, what)
+            )
+        }
         TriggerPattern::Untapped { what } => {
             format!("{} becomes untapped", phrase::selector(ctx, what))
         }

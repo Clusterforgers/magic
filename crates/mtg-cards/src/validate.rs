@@ -2189,6 +2189,7 @@ impl<'a> Walker<'a> {
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
             TriggerPattern::Tapped { what }
+            | TriggerPattern::TappedNotAttacking { what }
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
@@ -2363,6 +2364,8 @@ impl Walker<'_> {
             | TriggerPattern::LifeGained { .. }
             | TriggerPattern::LifeLost { .. }
             | TriggerPattern::Surveilled { .. }
+            // The times the permanent itself became tapped.
+            | TriggerPattern::Tapped { .. }
             | TriggerPattern::Attacks { .. }
             | TriggerPattern::BecomesCrewed { .. }
             | TriggerPattern::BecomesSaddled { .. }

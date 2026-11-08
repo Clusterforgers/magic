@@ -1,6 +1,6 @@
 //! Facts of the turn's history written back (e16a), one row each: "you've sacrificed an artifact this turn", "you
 //! sacrificed three or more Clues this turn", "for each Food you've sacrificed this turn" and "the total life lost by all
-//! players this turn".
+//! players this turn", "an opponent was dealt noncombat damage this turn" and a player's first discards of the turn.
 
 use super::facts::quantity_texts;
 use super::selectors::{Form, phrase_text};

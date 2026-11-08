@@ -75,6 +75,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         | TriggerPattern::Mutates { what }
         | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
+        | TriggerPattern::TappedNotAttacking { what }
         | TriggerPattern::Untapped { what }
         | TriggerPattern::PhasedOut { what }
         | TriggerPattern::PhasedIn { what }
@@ -1389,6 +1390,10 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         }
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
+        TriggerPattern::TappedNotAttacking { what } => said(
+            what,
+            "becomes tapped, if it isn't being declared as an attacker",
+        ),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::PhasedOut { what } => said(what, "phases out"),
         TriggerPattern::PhasedIn { what } => said(what, "phases in"),
