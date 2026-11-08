@@ -6,7 +6,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording.
-const C11F_WHOLES: [(&str, &str); 98] = [
+const C11F_WHOLES: [(&str, &str); 99] = [
     (
         r#"{"Triggered":{"when":{"AttacksPlayer":{"what":[{"Type":"Creature"}],"at":"Opponents"}},"effects":[{"LoseLife":{"who":"Attacked","amount":1}}]}}"#,
         "Whenever a creature attacks one of your opponents, that player loses 1 life.",
@@ -14,6 +14,10 @@ const C11F_WHOLES: [(&str, &str); 98] = [
     (
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetColors":["Red"]},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}},{"Draw":{}}]}}"#,
         "Target creature becomes red and gains haste until end of turn.\nDraw a card.",
+    ),
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetColors":["Black"]},{"AddKeyword":"Fear"}],"duration":"UntilEndOfTurn"}},{"Draw":{}}]}}"#,
+        "Target creature becomes black and gains fear until end of turn.\nDraw a card.",
     ),
     (
         r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]},"as":"exiled"}},{"GainLife":{"amount":{"Times":{"by":3,"of":{"Count":[{"Is":{"Bound":"exiled"}}]}}}}}]}}"#,

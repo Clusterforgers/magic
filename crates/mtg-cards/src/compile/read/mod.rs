@@ -98,6 +98,8 @@ mod exiled_kind;
 mod facts;
 mod fix16_kicked;
 mod fix23_dice;
+mod fix32_animate;
+mod fix32_pairs;
 mod flicker;
 mod g10c_facts;
 mod g10c_wordings;

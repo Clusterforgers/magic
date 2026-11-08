@@ -35,7 +35,7 @@ pub(super) fn mods(form: &Form<'_>) -> Option<Vec<Modification>> {
         creature,
         size,
     } = *form;
-    (creature && !kinds.is_empty()).then_some(())?;
+    creature.then_some(())?;
     let mut mods = Vec::new();
     mods.extend(lose.then_some(Modification::LoseAbilities));
     mods.extend(artifact.then_some(Modification::AddType(CardType::Artifact)));
@@ -76,13 +76,17 @@ pub(super) fn texts(list: &[Modification]) -> Vec<String> {
             _ => None,
         })
         .collect();
-    let Some(names) = names.filter(|names| !names.is_empty()) else {
+    let Some(names) = names else {
         return Vec::new();
     };
     let noun = format!(
-        "{}{} creature",
-        names.join(" "),
-        if artifact { " artifact" } else { "" }
+        "{}{}creature",
+        if names.is_empty() {
+            String::new()
+        } else {
+            format!("{} ", names.join(" "))
+        },
+        if artifact { "artifact " } else { "" }
     );
     let head = format!(
         "is {} {noun} with base power and toughness {power}/{toughness} {IN_ADDITION}",

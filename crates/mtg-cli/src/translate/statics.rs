@@ -233,6 +233,10 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     if matches!(valid, "Creature" | "Card" | "Permanent") && !creature_condition {
         return Ok(None);
     }
+    // "Enchanted artifact is a creature": an Aura that enchants only artifacts has no condition to state.
+    if p.get("AffectedDefined") == Some("Enchanted") && enchants_only(ctx, valid) {
+        return Ok(None);
+    }
     if p.has("AffectedZone") {
         return unmapped("key:Static.Continuous.AffectedZone-with-AffectedDefined");
     }
@@ -240,6 +244,15 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     Ok(Some(
         json!({"Matches": {"subject": subject, "selector": selector}}),
     ))
+}
+
+/// Whether the face's `K:Enchant:` line names the one kind `valid`.
+fn enchants_only(ctx: &Ctx, valid: &str) -> bool {
+    ctx.keywords.iter().any(|keyword| {
+        keyword
+            .strip_prefix("Enchant:")
+            .is_some_and(|rest| rest.split(':').next() == Some(valid))
+    })
 }
 
 /// Whether the face's `K:Enchant:` line lets the Aura enchant something other than a creature ("Enchant permanent"); a
@@ -585,6 +598,16 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             p.get("Affected").unwrap_or_default()
         ));
     }
+    // An Aura that adds types and a size: the types first, the size after them (layers 4 and 7b).
+    if affected == "Attached"
+        && mods.iter().all(|m| {
+            ["SetPT", "AddType", "AddSubtype"]
+                .iter()
+                .any(|key| m.get(key).is_some())
+        })
+    {
+        mods.sort_by_key(|m| m.get("SetPT").is_some());
+    }
     let mut ability = json!({"affected": affected, "mods": mods});
     if let Some(refinement) = refinement {
         ability["condition"] = refinement;
@@ -830,6 +853,11 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
             only.push(inner);
             Ok(json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": only}]}}))
         }
+        // A bestowed creature and what it enchants: the card's own rule and the one the Aura gives.
+        ("Creature.Self,Creature.EnchantedBy", None) => Ok(json!([
+            {"Static": {"affected": "This", "mods": ["CantBeBlocked"]}},
+            {"Static": {"affected": "Attached", "mods": ["CantBeBlocked"]}},
+        ])),
         (valid, None) => Ok(json!({"Static": {
             "affected": affected_valid(ctx, valid)?,
             "mods": ["CantBeBlocked"],

@@ -280,12 +280,23 @@ fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
             .map(|owner| format!("{owner} {name}"))
             .collect();
     }
-    // What an earlier step exiled: "the mana value of the permanent exiled this way".
+    // What an earlier step exiled or returned: "the mana value of the permanent exiled this way", "the toughness of the
+    // card returned this way", "that creature's toughness".
     if matches!(of, Ref::Bound(_)) {
-        return ["permanent", "card", "creature"]
+        let mut found: Vec<String> = ["exiled", "returned"]
             .iter()
-            .map(|noun| format!("the {name} of the {noun} exiled this way"))
+            .flat_map(|verb| {
+                ["permanent", "card", "creature"]
+                    .iter()
+                    .map(move |noun| format!("the {name} of the {noun} {verb} this way"))
+            })
             .collect();
+        found.extend(
+            ["that creature's", "that card's"]
+                .iter()
+                .map(|owner| format!("{owner} {name}")),
+        );
+        return found;
     }
     let owners: &[&str] = match of {
         Ref::This => &["~'s", "its"],

@@ -548,6 +548,18 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     if !placed {
         out.push(any);
     }
+    // "Legendary creature and planeswalker": a supertype the alternatives share stands before their choice of types.
+    if let Some(at) = out.iter().position(|pred| {
+        pred["AnyOf"]
+            .as_array()
+            .is_some_and(|any| any.iter().all(|p| p.get("Type").is_some()))
+    }) {
+        let (supers, rest): (Vec<Value>, Vec<Value>) = out
+            .drain(at..)
+            .partition(|pred| pred.get("Supertype").is_some());
+        out.extend(supers);
+        out.extend(rest);
+    }
     Ok(out)
 }
 

@@ -265,7 +265,29 @@ fn static_abilities<'a>(ctx: &mut Ctx, bodies: &'a [String]) -> Vec<(Vec<&'a Str
             out.push((vec![line], result));
         }
     }
+    can_t_be_blocked_last(&mut out);
     out
+}
+
+/// "Enchanted creature gets +1/+1 and can't be blocked.": a line that makes the enchanted creature unblockable stands after
+/// the next static ability of the enchanted creature, which the card prints in one sentence with it.
+fn can_t_be_blocked_last(out: &mut [(Vec<&String>, Tr<Value>)]) {
+    let unblockable = json!({"Static": {"affected": "Attached", "mods": ["CantBeBlocked"]}});
+    for at in 0..out.len().saturating_sub(1) {
+        let (Ok(Value::Array(first)), Ok(next)) = (&out[at].1, &out[at + 1].1) else {
+            continue;
+        };
+        if first.last() != Some(&unblockable)
+            || next.pointer("/Static/affected") != Some(&json!("Attached"))
+        {
+            continue;
+        }
+        let mut first = first.clone();
+        let mut both = vec![next.clone()];
+        both.extend(first.pop());
+        out[at].1 = Ok(Value::Array(first));
+        out[at + 1].1 = Ok(Value::Array(both));
+    }
 }
 
 /// Adds the modifications of `second` to `first` when both are `Static` abilities that differ only in them.
