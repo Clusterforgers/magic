@@ -35,9 +35,9 @@ fn tally(event: Value, filter: Value) -> Value {
     "Count$ThisTurnActivated_Activated.Unearth+YouCtrl",
     tally(json!({"KindActivated": "Unearth"}), json!([]))
 )]
-#[case::of_a_card_in_a_graveyard(
-    "Count$ThisTurnActivated_Activated.YouCtrl+inZoneGraveyard",
-    tally(json!("Activated"), json!([{"In": "Graveyard"}]))
+#[case::of_an_artifact(
+    "Count$ThisTurnActivated_Activated.Artifact+YouCtrl",
+    tally(json!("Activated"), json!([{"Type": "Artifact"}]))
 )]
 fn activations_of_the_turn_read(#[case] svar: &str, #[case] expected: Value) {
     let text = gated(svar);
@@ -52,6 +52,7 @@ fn activations_of_the_turn_read(#[case] svar: &str, #[case] expected: Value) {
 #[case::targeting("Count$ThisTurnActivated_Activated.YouCtrl+IsTargeting Valid Creature.YouCtrl")]
 #[case::of_any_player("Count$ThisTurnActivated_Activated.Equip")]
 #[case::exhaust("Count$ThisTurnActivated_Activated.Exhaust+YouCtrl")]
+#[case::in_a_graveyard("Count$ThisTurnActivated_Activated.YouCtrl+inZoneGraveyard")]
 fn other_activation_tallies_stay_gaps(#[case] svar: &str) {
     assert!(!gaps(&gated(svar)).is_empty(), "{svar}");
 }

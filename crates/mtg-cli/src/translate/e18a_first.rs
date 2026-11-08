@@ -44,6 +44,11 @@ pub fn this_turn_activated(ctx: &Ctx, word: &str) -> Tr<Value> {
     {
         return unmapped("amount:Count$ThisTurnActivated_Activated-targeting");
     }
+    // Its one card (Laboratory Drudge) checks it as the trigger resolves ("draw a card if ..."), which an intervening "if"
+    // does not say.
+    if parts.contains(&"inZoneGraveyard") {
+        return unmapped("amount:Count$ThisTurnActivated_Activated-in-a-graveyard");
+    }
     // A type word leads the rest of the valid-string (`Artifact+inZoneBattlefield`); properties alone are of any card.
     let (head, props) = match parts.split_first() {
         None => ("Card", &[][..]),
