@@ -593,7 +593,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Mill" => one(mill(ctx, p)),
         "Scry" => one(scry(ctx, p)),
         "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
-        "Proliferate" => one(proliferate(p)),
+        "Proliferate" => proliferate(p),
         "Cleanup" => cleanup(ctx, p),
         "Effect" => effects_effect::effects(ctx, p),
         "RepeatEach" => effects_loop::repeat_each(ctx, p),
@@ -1488,9 +1488,17 @@ fn delayed_step(p: &Params) -> Tr<Value> {
     })
 }
 
-fn proliferate(p: &Params) -> Tr<Value> {
-    only(p, "Proliferate", &[])?;
-    Ok(json!({"Proliferate": {}}))
+/// `Proliferate`, `Amount$ N` times over ("proliferate twice" runs it again, choosing afresh each time).
+fn proliferate(p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Proliferate", &["Amount"])?;
+    let times = match p.get("Amount") {
+        None => 1,
+        Some(n) => match n.parse::<usize>() {
+            Ok(n @ 1..=5) => n,
+            _ => return unmapped("key:Proliferate.Amount"),
+        },
+    };
+    Ok(vec![json!({"Proliferate": {}}); times])
 }
 
 /// The targets a delayed trigger's own effects declare are chosen when it triggers, not when the spell is cast: they move

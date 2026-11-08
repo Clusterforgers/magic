@@ -1029,10 +1029,13 @@ fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec
     let keywords = p.get("KW")?;
     let mut rules = Vec::new();
     for word in keywords.split('&').map(str::trim) {
-        if !matches!(word, "Hexproof" | "Shroud") {
-            return Some(unmapped(format!("key:Pump.player-keyword-{word}")));
-        }
-        rules.push(json!({"Rule": {"rule": {"PlayersHave": {"who": subject, "keyword": word}}, "duration": duration}}));
+        let keyword = match word {
+            "Hexproof" | "Shroud" => json!(word),
+            // CR 702.16j: protection from everything is the protection keyword with no quality.
+            "Protection from everything" => json!({"Protection": []}),
+            _ => return Some(unmapped(format!("key:Pump.player-keyword-{word}"))),
+        };
+        rules.push(json!({"Rule": {"rule": {"PlayersHave": {"who": subject, "keyword": keyword}}, "duration": duration}}));
     }
     Some(Ok(rules))
 }
