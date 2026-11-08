@@ -287,6 +287,12 @@ pub enum ClientMessage {
         /// The key of the yield.
         ability: AutoYield,
     },
+    /// Adds these yields to the seat's own, as if it had chosen each by [`ClientMessage::AutoYield`]: the client sends the
+    /// ones its account keeps at `Welcome`. More than [`crate::rest::MAX_AUTO_YIELDS`] are refused with `Error{BadMessage}`.
+    LoadAutoYields {
+        /// The keys to add.
+        yields: Vec<AutoYield>,
+    },
 }
 
 /// A message from the server to one client.

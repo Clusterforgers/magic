@@ -5,23 +5,32 @@ import type { PrefsApi } from '@/net/prefs'
 import type { UserPrefs } from '@/protocol/generated'
 import {
   AUTO_CHOICES_KEY,
+  AUTO_YIELDS_KEY,
   DEFAULT_STOPS_KEY,
   END_TURN_KEY,
   flowPrefs,
   resetFlowPrefs,
   saveDefaultStops,
   saveAutoChoices,
+  saveAutoYields,
   saveEndTurnByHand,
 } from './flowPrefs'
 import { usePrefsSync } from './usePrefsSync'
 
 const upkeep = { side: 'Own', step: 'Upkeep', keep: true } as const
+const warden = { name: 'Soul Warden', text: 'gain 1' }
 const auto = { order_triggers: true, assign_damage: false, smart_stops: true }
-const held: UserPrefs = { default_stops: [upkeep], end_turn_by_hand: true, auto_choices: auto }
+const held: UserPrefs = {
+  default_stops: [upkeep],
+  end_turn_by_hand: true,
+  auto_choices: auto,
+  auto_yields: [warden],
+}
 const none: UserPrefs = {
   default_stops: [],
   end_turn_by_hand: false,
   auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
+  auto_yields: [],
 }
 
 function fakeApi(load: () => Promise<UserPrefs>) {
@@ -49,9 +58,7 @@ describe('usePrefsSync', () => {
     expect(flowPrefs().defaultStops).toEqual([upkeep])
 
     act(() => saveEndTurnByHand(false))
-    await waitFor(() =>
-      expect(saved).toEqual([{ default_stops: [upkeep], end_turn_by_hand: false, auto_choices: auto }]),
-    )
+    await waitFor(() => expect(saved).toEqual([{ ...held, end_turn_by_hand: false }]))
     expect(window.localStorage.getItem(END_TURN_KEY)).toBeNull()
 
     act(() => saveDefaultStops([]))
@@ -59,7 +66,12 @@ describe('usePrefsSync', () => {
     expect(window.localStorage.getItem(DEFAULT_STOPS_KEY)).toBeNull()
 
     rerender({ on: false })
-    expect(flowPrefs()).toEqual({ defaultStops: [], endTurnByHand: false, autoChoices: none.auto_choices })
+    expect(flowPrefs()).toEqual({
+      defaultStops: [],
+      endTurnByHand: false,
+      autoChoices: none.auto_choices,
+      autoYields: [],
+    })
   })
 
   it('saves a changed auto choice to the server and keeps it out of storage', async () => {
@@ -72,13 +84,21 @@ describe('usePrefsSync', () => {
     expect(window.localStorage.getItem(AUTO_CHOICES_KEY)).toBeNull()
   })
 
+  it('uses the account yields and saves a change of them to the server, not to storage', async () => {
+    const { api, saved } = fakeApi(() => Promise.resolve(held))
+    renderHook(() => usePrefsSync(true, api))
+    await waitFor(() => expect(flowPrefs().autoYields).toEqual([warden]))
+    act(() => saveAutoYields([]))
+    await waitFor(() => expect(saved).toHaveLength(1))
+    expect(saved[0]?.auto_yields).toEqual([])
+    expect(window.localStorage.getItem(AUTO_YIELDS_KEY)).toBeNull()
+  })
+
   it('gives an account with no preferences the ones this browser kept', async () => {
     window.localStorage.setItem(END_TURN_KEY, 'on')
     const { api, saved } = fakeApi(() => Promise.resolve(none))
     renderHook(() => usePrefsSync(true, api))
-    await waitFor(() =>
-      expect(saved).toEqual([{ default_stops: [], end_turn_by_hand: true, auto_choices: none.auto_choices }]),
-    )
+    await waitFor(() => expect(saved).toEqual([{ ...none, end_turn_by_hand: true }]))
     expect(flowPrefs().endTurnByHand).toBe(true)
   })
 
