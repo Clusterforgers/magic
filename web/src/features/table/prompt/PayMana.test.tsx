@@ -729,7 +729,7 @@ describe('a land with several kinds of mana', () => {
 
 describe('the tax of an attack', () => {
   it.each([
-    [false, 'Pay 2 generic for Selesnya Evangel.', 'Cancel casting'],
+    [false, 'Pay 2 generic for Selesnya Evangel.', /^Undo the (spell|ability)$/],
     [true, 'Pay 2 generic for the attack.', 'Back to attackers'],
   ])('with attack %s the prompt says %s and offers %s', async (attack, words, back) => {
     const { answer, user, text } = renderPay(
