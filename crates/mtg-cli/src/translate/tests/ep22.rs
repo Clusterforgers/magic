@@ -129,3 +129,56 @@ fn ep22_had_counters_is_the_intervening_condition(
     let had = json!({"Matches": {"subject": "Triggering", "selector": ["HasAnyCounter"]}});
     assert_eq!(found.get("if") == Some(&had), as_if, "{found}");
 }
+
+fn static_line(line: &str) -> String {
+    format!("Name:T\nTypes:Enchantment\nS:{line}\n")
+}
+
+const SAME: &str = "Description$ Creatures you control are artifacts in addition to their other types. The same is true for creature spells you control and creature cards you own that aren't on the battlefield.";
+
+#[test]
+fn ep22_every_zone_lists_the_zones() {
+    let script = static_line(&format!(
+        "Mode$ Continuous | Affected$ Creature.YouCtrl | AffectedZone$ All | AddType$ Artifact | {SAME}"
+    ));
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let found = abilities(&script);
+    let zones = json!({"AnyOf": [{"In": "Battlefield"}, {"In": "Stack"}, {"In": "Hand"}, {"In": "Library"}, {"In": "Graveyard"}, {"In": "Exile"}, {"In": "Command"}]});
+    assert_eq!(
+        found[0]["Static"]["affected"]["Each"],
+        json!([{"Type": "Creature"}, {"ControlledBy": "You"}, zones])
+    );
+}
+
+#[rstest]
+#[case::another_wording(
+    "Mode$ Continuous | Affected$ Land.YouCtrl | AffectedZone$ All | AddType$ Desert | Description$ Lands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types."
+)]
+#[case::not_yours(&format!(
+    "Mode$ Continuous | Affected$ Creature | AffectedZone$ All | AddType$ Artifact | {SAME}"
+))]
+fn ep22_other_zone_lists_stay_gaps(#[case] line: &str) {
+    let found = gaps(&static_line(line));
+    assert!(
+        found
+            .iter()
+            .any(|gap| gap == "key:Static.Continuous.AffectedZone=All"),
+        "{found:?}"
+    );
+}
+
+#[rstest]
+#[case::colored_only("Color$ W U B R G | IgnoreGeneric$ True", None)]
+#[case::of_generic("IgnoreGeneric$ True", Some("key:Static.CostModifier.IgnoreGeneric"))]
+fn ep22_a_colored_reduction_translates(#[case] keys: &str, #[case] gap: Option<&str>) {
+    let script = static_line(&format!(
+        "Mode$ ReduceCost | ValidCard$ Creature | Type$ Spell | Activator$ You | Amount$ 1 | {keys}"
+    ));
+    match gap {
+        None => assert_eq!(
+            abilities(&script)[0]["CostModifier"]["mana"],
+            json!("{W}{U}{B}{R}{G}")
+        ),
+        Some(gap) => assert!(gaps(&script).iter().any(|found| found == gap)),
+    }
+}

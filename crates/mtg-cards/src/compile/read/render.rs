@@ -565,6 +565,27 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         })
         .collect();
     texts.extend(won);
+    texts.extend(super::ep22_everywhere::texts(ability));
+    // A reduction of coloured symbols never takes generic mana: "This effect reduces only the amount of colored mana you
+    // pay."
+    if let Ability::CostModifier {
+        change: crate::ability::CostChange::Reduce,
+        mana,
+        ..
+    } = ability
+        && !mana.has_x()
+        && mana.rest().generic() == 0
+        && !mana.rest().symbols().is_empty()
+    {
+        let colored: Vec<String> = texts
+            .iter()
+            .map(|text| {
+                let text = text.strip_suffix('.').unwrap_or(text);
+                format!("{text}. This effect reduces only the amount of colored mana you pay.")
+            })
+            .collect();
+        texts.extend(colored);
+    }
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
     if let Some(plain) = r11w_batch::flat_ability(ability) {
         for text in written_variants(&plain) {

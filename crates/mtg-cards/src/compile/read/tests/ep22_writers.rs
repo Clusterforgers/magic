@@ -106,3 +106,49 @@ fn ep22_a_cost_and_its_reduction_write_as_one_clause(
     let found = static_pair_texts(&paid(cost), &less(mana, per, applies));
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
+
+const ALL_ZONES: &str = r#"{"AnyOf":[{"In":"Battlefield"},{"In":"Stack"},{"In":"Hand"},{"In":"Library"},{"In":"Graveyard"},{"In":"Exile"},{"In":"Command"}]}"#;
+const SOME_ZONES: &str = r#"{"AnyOf":[{"In":"Battlefield"},{"In":"Hand"}]}"#;
+const ARTIFACTS: &str = "Creatures you control are artifacts in addition to their other types. The same is true for creature spells you control and creature cards you own that aren't on the battlefield.";
+
+fn everywhere(kind: &str, who: &str, zones: &str) -> String {
+    format!(
+        r#"{{"Static":{{"affected":{{"Each":[{{"Type":"{kind}"}},{{"ControlledBy":"{who}"}},{zones}]}},"mods":[{{"AddType":"Artifact"}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::every_zone(everywhere("Creature", "You", ALL_ZONES), true)]
+#[case::some_zones(everywhere("Creature", "You", SOME_ZONES), false)]
+#[case::an_opponent_s(everywhere("Creature", "Opponents", ALL_ZONES), false)]
+#[case::another_type(everywhere("Enchantment", "You", ALL_ZONES), false)]
+fn ep22_every_zone_writes_as_printed(#[case] json: String, #[case] reads: bool) {
+    let found = written_variants(&ability(&json));
+    assert_eq!(
+        found.iter().any(|w| same_text(w, ARTIFACTS)),
+        reads,
+        "{found:?}"
+    );
+}
+
+const MOROPHON: &str = "Creature spells you cast cost {W}{U}{B}{R}{G} less to cast. This effect reduces only the amount of colored mana you pay.";
+
+#[rstest]
+#[case::colored(r#"{"CostModifier":{"applies_to":["Spell",{"Type":"Creature"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{W}{U}{B}{R}{G}"}}"#, true)]
+#[case::with_generic(r#"{"CostModifier":{"applies_to":["Spell",{"Type":"Creature"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}{W}{U}{B}{R}{G}"}}"#, false)]
+#[case::an_increase(r#"{"CostModifier":{"applies_to":["Spell",{"Type":"Creature"},{"ControlledBy":"You"}],"change":"Increase","mana":"{W}{U}{B}{R}{G}"}}"#, false)]
+fn ep22_a_colored_reduction_says_so(#[case] json: &str, #[case] reads: bool) {
+    let found = written_variants(&ability(json));
+    let wanted = if json.contains("{1}") {
+        MOROPHON.replace("{W}{U}{B}{R}{G} less", "{1}{W}{U}{B}{R}{G} less")
+    } else if json.contains("Increase") {
+        MOROPHON.replace("less", "more")
+    } else {
+        MOROPHON.to_owned()
+    };
+    assert_eq!(
+        found.iter().any(|w| same_text(w, &wanted)),
+        reads,
+        "{found:?}"
+    );
+}

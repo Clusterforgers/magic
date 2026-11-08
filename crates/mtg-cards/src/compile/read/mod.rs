@@ -95,6 +95,7 @@ mod e18a_first;
 mod effects;
 mod either_way_pairs;
 mod ep21_plus;
+mod ep22_everywhere;
 mod ep22_pairs;
 mod equip_options;
 mod evasion;

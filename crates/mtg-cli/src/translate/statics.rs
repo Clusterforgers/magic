@@ -207,6 +207,15 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
         (None, Some("You")) if !p.has("AffectedZone") => Ok(json!("You")),
         (None, Some("Player")) if !p.has("AffectedZone") => Ok(json!("EachPlayer")),
         (None, Some("Opponent")) if !p.has("AffectedZone") => Ok(json!("Opponents")),
+        // Every zone only in the wording the writer reads back.
+        (None, Some(_))
+            if p.get("AffectedZone") == Some("All")
+                && !p
+                    .get("Description")
+                    .is_some_and(|text| text.contains(". The same is true for ")) =>
+        {
+            unmapped("key:Static.Continuous.AffectedZone=All")
+        }
         (None, Some(valid)) => zoned(ctx, valid, p.get("AffectedZone")),
         (None, None) if p.get("CharacteristicDefining") == Some("True") => Ok(json!("This")),
         (None, None) => unmapped("static-affected:none"),
@@ -294,9 +303,29 @@ fn zoned(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
             preds.push(json!({"In": "Stack"}));
             Ok(json!({"Each": preds}))
         }
+        // "Creatures you control are artifacts ... The same is true for creature spells you control and creature cards you
+        // own that aren't on the battlefield": the objects of every zone, a card outside the battlefield controlled by its
+        // owner.
+        Some("All") if valid.ends_with(".YouCtrl") && !valid.contains(',') => {
+            let mut preds = selector_any(ctx, valid)?;
+            let zones: Vec<Value> = EP22_ZONES.iter().map(|zone| json!({"In": zone})).collect();
+            preds.push(json!({"AnyOf": zones}));
+            Ok(json!({"Each": preds}))
+        }
         Some(other) => unmapped(format!("key:Static.Continuous.AffectedZone={other}")),
     }
 }
+
+/// Every zone a card can be in during a game, in the order the selector lists them.
+const EP22_ZONES: [&str; 7] = [
+    "Battlefield",
+    "Stack",
+    "Hand",
+    "Library",
+    "Graveyard",
+    "Exile",
+    "Command",
+];
 
 fn affected_valid(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word {
@@ -983,7 +1012,8 @@ fn spell_kinds(p: &Params) -> Option<String> {
 }
 
 /// The keys a `ReduceCost` or `RaiseCost` line may have.
-const COST_MODIFIER: [&str; 18] = [
+const COST_MODIFIER: [&str; 19] = [
+    "IgnoreGeneric",
     "ValidCard",
     "ValidTarget",
     "ValidSpell",
@@ -1221,6 +1251,13 @@ fn modifier(
     // reduction of one symbol does not say.
     if p.has("Color") && ctx.oracle.contains("(or {1})") {
         return unmapped("key:Static.CostModifier.Color-or-generic");
+    }
+    // "This effect reduces only the amount of colored mana you pay": a reduction of coloured symbols never takes generic
+    // mana, which is how the engine reduces every coloured symbol.
+    match p.get("IgnoreGeneric") {
+        None => {}
+        Some("True") if change == "Reduce" && p.has("Color") => {}
+        Some(_) => return unmapped("key:Static.CostModifier.IgnoreGeneric"),
     }
     let symbol = match p.get("Color") {
         None => "{1}".to_owned(),
