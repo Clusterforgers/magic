@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "373f24b1-e763-475c-9760-aefae4be3ea0",
+  "oracle_id": "3891a3b6-d8ac-4cd3-b2f6-d6d786e89a67",
+  "multiverse_ids": [
+    532486
+  ],
+  "tcgplayer_id": 243863,
+  "cardmarket_id": 572272,
+  "name": "Fiend of the Shadows",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/373f24b1-e763-475c-9760-aefae4be3ea0",
+  "scryfall_uri": "https://scryfall.com/card/afc/99/fiend-of-the-shadows?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:03:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.jpg?1783926217",
+    "normal": "https://cards.scryfall.io/normal/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.jpg?1783926217",
+    "large": "https://cards.scryfall.io/large/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.jpg?1783926217",
+    "png": "https://cards.scryfall.io/png/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.png?1783926217",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.jpg?1783926217",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.jpg?1783926217",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.webp?1783926217",
+    "grid": "https://cards.scryfall.io/grid/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.webp?1783926217",
+    "display": "https://cards.scryfall.io/display/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.webp?1783926217",
+    "art": "https://cards.scryfall.io/art/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.webp?1783926217",
+    "crop": "https://cards.scryfall.io/crop/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.webp?1783926217",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/7/373f24b1-e763-475c-9760-aefae4be3ea0.jpg?1783926217"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Vampire Wizard",
+  "oracle_text": "Flying\nWhenever this creature deals combat damage to a player, that player exiles a card from their hand. You may play that card for as long as it remains exiled.\nSacrifice a Human: Regenerate this creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Regenerate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set": "afc",
+  "set_name": "Forgotten Realms Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/373f24b1-e763-475c-9760-aefae4be3ea0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3891a3b6-d8ac-4cd3-b2f6-d6d786e89a67&unique=prints",
+  "collector_number": "99",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Igor Kieryluk",
+  "artist_ids": [
+    "9c3e9d17-509f-485c-9360-46d897ce716b"
+  ],
+  "illustration_id": "f47e509a-a3ef-4970-9557-728fa9fb13ea",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 17637,
+  "penny_rank": 17086,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=532486&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFiend%2Bof%2Bthe%2BShadows",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFiend%2Bof%2Bthe%2BShadows",
+    "edhrec": "https://edhrec.com/route/?cc=Fiend+of+the+Shadows"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243863%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=572272&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Fiend+of+the+Shadows&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

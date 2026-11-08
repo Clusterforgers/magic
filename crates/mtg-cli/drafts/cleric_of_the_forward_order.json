@@ -1,0 +1,36 @@
+{
+  "oracle_id": "84a2a592-0e31-434f-b3b4-f2013d86f29d",
+  "name": "Cleric of the Forward Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleric of the Forward Order",
+      "oracle_fingerprint": "5a51f38405552036ba268973577439c6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Named": "Cleric of the Forward Order" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

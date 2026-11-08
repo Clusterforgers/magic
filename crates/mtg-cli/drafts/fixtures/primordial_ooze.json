@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "a53d8d6d-b8d3-4f71-a88a-5d639ce2925f",
+  "oracle_id": "133109c3-a2ca-4231-b3b1-baa700800b07",
+  "multiverse_ids": [
+    4082
+  ],
+  "tcgplayer_id": 2328,
+  "cardmarket_id": 9633,
+  "name": "Primordial Ooze",
+  "lang": "en",
+  "released_at": "1997-03-24",
+  "uri": "https://api.scryfall.com/cards/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f",
+  "scryfall_uri": "https://scryfall.com/card/5ed/261/primordial-ooze?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:48:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.jpg?1783946906",
+    "normal": "https://cards.scryfall.io/normal/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.jpg?1783946906",
+    "large": "https://cards.scryfall.io/large/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.jpg?1783946906",
+    "png": "https://cards.scryfall.io/png/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.png?1783946906",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.jpg?1783946906",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.jpg?1783946906",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.webp?1783946906",
+    "grid": "https://cards.scryfall.io/grid/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.webp?1783946906",
+    "display": "https://cards.scryfall.io/display/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.webp?1783946906",
+    "art": "https://cards.scryfall.io/art/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.webp?1783946906",
+    "crop": "https://cards.scryfall.io/crop/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.webp?1783946906",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/5/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f.jpg?1783946906"
+  },
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Creature — Ooze",
+  "oracle_text": "This creature attacks each combat if able.\nAt the beginning of your upkeep, put a +1/+1 counter on this creature. Then you may pay {X}, where X is the number of +1/+1 counters on it. If you don't, tap this creature and it deals X damage to you.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5afd2f4b-8309-4f45-a2b2-3785018474cb",
+  "set": "5ed",
+  "set_name": "Fifth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/5afd2f4b-8309-4f45-a2b2-3785018474cb",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A5ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/5ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a53d8d6d-b8d3-4f71-a88a-5d639ce2925f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A133109c3-a2ca-4231-b3b1-baa700800b07&unique=prints",
+  "collector_number": "261",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "aba1de4b-b710-48de-971e-8e4dd4650f47",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26374,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4082&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPrimordial%2BOoze",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPrimordial%2BOoze",
+    "edhrec": "https://edhrec.com/route/?cc=Primordial+Ooze"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F2328%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=9633&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Primordial+Ooze&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

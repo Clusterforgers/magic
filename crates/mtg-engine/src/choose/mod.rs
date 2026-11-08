@@ -10,6 +10,7 @@ mod cards;
 mod costs;
 mod divide;
 mod mode;
+mod name;
 mod number;
 mod option;
 mod order;
@@ -18,6 +19,7 @@ mod scry;
 mod sole;
 mod targets;
 mod triggers;
+pub(crate) mod values;
 mod yes_no;
 
 use mtg_cards::value::{CastWay, CounterKind};
@@ -32,6 +34,7 @@ pub use cards::{CardsChoice, CardsOptions};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};
 pub use divide::{DivideChoice, DivideOptions};
 pub use mode::{ModeChoice, ModeOption, ModeOptions};
+pub use name::{MAX_NAME_LEN, NameChoice, NameOptions, is_name};
 pub use number::{NumberChoice, NumberOptions};
 pub use option::{ChoiceOption, OptionChoice, OptionOptions};
 pub use order::{OrderChoice, OrderOptions};
@@ -44,10 +47,12 @@ pub use yes_no::{YesNoChoice, YesNoOptions};
 
 pub(crate) use ask::{Questions, Stop};
 pub(crate) use cards::check as check_cards;
+pub(crate) use cards::check_names as check_card_names;
+pub(crate) use cards::names_among;
 pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
 pub(crate) use mode::{
     C11dOnce, Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,
-    mode_options, targets_before,
+    mode_options, spec_bases, targets_before,
 };
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
 pub(crate) use targets::{
@@ -59,6 +64,7 @@ pub(crate) use cards::answer as cards_answer;
 pub(crate) use costs::answer as costs_answer;
 pub(crate) use divide::answer as divide_answer;
 pub(crate) use mode::answer as mode_answer;
+pub(crate) use name::answer as name_answer;
 pub(crate) use number::answer as number_answer;
 pub(crate) use option::answer as option_answer;
 pub(crate) use order::answer as order_answer;
@@ -174,6 +180,19 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<CounterKind>>", optional))]
     pub kinds: Vec<CounterKind>,
+    /// The sources of the mana spent to cast the spell and how much of it each supplied, for "mana from a Treasure was
+    /// spent"; the mana already in the pool when the spell was cast has no source and is not listed.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
+    )]
+    pub sources: Vec<mtg_cards::spend::SpentFrom>,
+    /// The creatures tapped to help cast the spell with convoke, as they were then (CR 702.51): "each creature that
+    /// convoked it" reads them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
+    pub convoked: Vec<ObjectRef>,
 }
 
 /// Whether a count is 0, so serialization can leave it out.
@@ -186,6 +205,20 @@ impl Choices {
     /// The mana spent to cast the spell, as it was paid (CR 601.2h).
     pub fn spent(&self) -> &[mtg_core::mana::ManaType] {
         self.spent.as_deref().map_or(&[], Vec::as_slice)
+    }
+
+    /// The sources of the mana spent to cast the spell.
+    pub fn spent_from(&self) -> &[mtg_cards::spend::SpentFrom] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.sources)
+    }
+
+    /// The creatures that convoked the spell (CR 702.51).
+    pub fn convoked(&self) -> &[ObjectRef] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.convoked)
     }
 
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.
@@ -270,6 +303,8 @@ impl Choices {
 pub enum Choice {
     /// A number (`ChooseNumber`).
     Number(u32),
+    /// A card name (`ChooseName`), empty for none.
+    Name(String),
     /// Cards chosen (`ChooseCards`).
     Cards(Vec<ObjectId>),
     /// Cards put in an order, first to last (`OrderCards`).
@@ -295,6 +330,7 @@ impl Choice {
             Choice::Cards(cards) | Choice::Order(cards) => cards.clone(),
             Choice::Scry(piles) => piles.top.iter().chain(&piles.bottom).copied().collect(),
             Choice::Number(_)
+            | Choice::Name(_)
             | Choice::YesNo(_)
             | Choice::Option(_)
             | Choice::Vote(_)

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fe8f5cc0-5849-437f-8d1f-cb191f2fc638",
+  "name": "Sacred Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacred Knight",
+      "oracle_fingerprint": "6b1442275c558f07307cd83fdbec9bae",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "ed622e71-f348-4e46-8fb9-05aae430983a",
+  "name": "Ugin's Binding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin's Binding",
+      "oracle_fingerprint": "11c15796b001ea354b7b4a5ebfcf985b",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "Not": { "ControlledBy": "You" } }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "Colorless",
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 7 } },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["ExileSelf"],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "Not": { "Type": "Land" } },
+                                  { "Not": { "ControlledBy": "You" } }
+                                ]
+                              },
+                              "to": "Hand"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

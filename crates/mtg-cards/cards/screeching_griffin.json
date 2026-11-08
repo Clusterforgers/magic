@@ -1,0 +1,29 @@
+{
+  "oracle_id": "beae83d2-20b8-47ef-83d9-25a7f90d1da2",
+  "name": "Screeching Griffin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Screeching Griffin",
+      "oracle_fingerprint": "01430448475ac4d2322790222e29abbd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CanBlockOnly": [{ "Not": { "Is": "This" } }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

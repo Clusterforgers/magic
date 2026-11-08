@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8bd2af55-5a48-4300-a893-ae6cd548db24",
+  "name": "Mortuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mortuary",
+      "oracle_fingerprint": "0347b4964c9e82bd9e013020b91101aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

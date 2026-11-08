@@ -41,16 +41,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             };
             let rules = ability_reader::ability(state, address)
                 .ok_or_else(|| invalid(format!("{source:?} has no ability {ability}")))?;
-            let once = matches!(
-                &*rules,
-                Ability::Activated {
-                    limit: Some(Limit::OncePerTurn),
-                    ..
-                }
-            );
-            if once && !state.limits_spent.insert((*source, *origin, *ability)) {
+            if let Ability::Activated {
+                limit: Some(limit), ..
+            } = &*rules
+                && !state.spend_limit(*limit, *source, *origin, *ability)
+            {
                 return Err(invalid(format!(
-                    "ability {ability} of {source:?} was already used this turn"
+                    "ability {ability} of {source:?} was already used"
                 )));
             }
             // A planeswalker has one loyalty ability activated each turn, whichever it is (CR 606.3).
@@ -73,12 +70,31 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             bound,
             snapshots,
         } => {
+            spend_when_done(state, bound);
             let resolving = resolving_mut(state)?;
             resolving.position.clone_from(position);
             for (name, targets) in bound {
                 // A repeat frees the names its body bound before its next pass, so they may be bound again.
                 if let Some(cleared) = name.strip_prefix(crate::resolve::CLEAR) {
                     resolving.bindings.remove(cleared);
+                    continue;
+                }
+                if let Some(kept) = name.strip_prefix(crate::resolve::LET) {
+                    let (value, kept) = kept
+                        .split_once(':')
+                        .and_then(|(value, kept)| Some((value.parse::<i64>().ok()?, kept)))
+                        .ok_or_else(|| invalid(format!("`{name}` names no kept number")))?;
+                    resolving.lets.retain(|(old, _)| old != kept);
+                    resolving.lets.push((kept.to_owned(), value));
+                    continue;
+                }
+                if let Some(value) = name.strip_prefix(crate::resolve::CHOSEN_VALUE) {
+                    let (key, json) = value
+                        .split_once('\t')
+                        .ok_or_else(|| invalid(format!("`{name}` names no chosen value")))?;
+                    let chosen = serde_json::from_str(json)
+                        .map_err(|_| invalid(format!("`{name}` names no chosen value")))?;
+                    resolving.chosen.insert(key.to_owned(), chosen);
                     continue;
                 }
                 if let Some(x) = name.strip_prefix(crate::resolve::W6C_PAID_X) {
@@ -90,6 +106,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 }
                 if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
                     && !renews(&old, targets)
+                    && !grows(&old, targets)
                 {
                     return Err(invalid(format!("`{name}` was bound twice")));
                 }
@@ -103,6 +120,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
     }
 }
 
+/// Whether `new` is `old` with more after it: an adding bind (`Effect::Bind` with `adds`) grows its name.
+fn grows(old: &[Target], new: &[Target]) -> bool {
+    new.len() > old.len() && new.starts_with(old)
+}
+
 /// Whether `new` names the same things as `old` with the objects that have moved on since: the only way a name is bound
 /// again, when the step that moved its cards onto the battlefield names the new objects (CR 400.7).
 fn renews(old: &[Target], new: &[Target]) -> bool {
@@ -114,6 +136,37 @@ fn renews(old: &[Target], new: &[Target]) -> bool {
             }
             (old, new) => old == new,
         })
+}
+
+/// "Do this only once each turn": the limit of the resolving triggered ability is spent when its first step, a choice,
+/// was done.
+fn spend_when_done(state: &mut GameState, bound: &[(String, Vec<Target>)]) {
+    let first = crate::resolve::first_step_done();
+    if !bound
+        .iter()
+        .any(|(name, who)| *name == first && !who.is_empty())
+    {
+        return;
+    }
+    let Some(ability) = state
+        .resolving
+        .as_ref()
+        .and_then(|resolving| state.objects.get(&resolving.object))
+        .and_then(|object| object.ability())
+    else {
+        return;
+    };
+    let counted = matches!(
+        ability.rules(),
+        Ability::Triggered {
+            limit: Some(Limit::OncePerTurnDone),
+            ..
+        }
+    );
+    let key = (ability.source(), ability.origin(), ability.index());
+    if counted {
+        state.spend_limit(Limit::OncePerTurnDone, key.0, key.1, key.2);
+    }
 }
 
 fn resolving_mut(state: &mut GameState) -> Result<&mut Resolving, EngineError> {
@@ -130,6 +183,14 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
     }
     for target in put.choices.targeted_objects() {
         state.tally_object(target, Some(put.controller), Tally::Targeted);
+    }
+    if put.cause.is_none() {
+        state.record(
+            mtg_cards::value::TallyEvent::Activated,
+            Some(put.controller),
+            (put.source.id, None),
+            1,
+        );
     }
     // The modes this ability chose are kept for the turn ("choose one that hasn't been chosen this turn").
     for mode in &put.choices.modes {
@@ -212,6 +273,29 @@ fn begin(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
     // A delayed trigger starts with the names the resolution that set it up had bound.
     if let Some(ability) = state.objects.get(&id).and_then(|o| o.ability()) {
         resolving.bindings.clone_from(ability.bindings());
+        // The numbers the setup kept come as `~let:<number>:<name>` names: they are kept numbers again.
+        let kept: Vec<String> = resolving
+            .bindings
+            .keys()
+            .filter(|name| name.starts_with(crate::resolve::LET))
+            .cloned()
+            .collect();
+        for name in kept {
+            resolving.bindings.remove(&name);
+            let parsed = name
+                .strip_prefix(crate::resolve::LET)
+                .and_then(|rest| rest.split_once(':'))
+                .and_then(|(value, kept)| Some((kept.to_owned(), value.parse::<i64>().ok()?)));
+            resolving.lets.extend(parsed);
+        }
+    }
+    let counted = state
+        .objects
+        .get(&id)
+        .and_then(|o| o.ability())
+        .map(|ability| (ability.source(), ability.origin(), ability.index()));
+    if let Some((source, origin, index)) = counted {
+        state.count_resolution(source, origin, index);
     }
     state.resolving = Some(resolving);
     Ok(())

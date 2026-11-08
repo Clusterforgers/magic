@@ -1,0 +1,40 @@
+{
+  "oracle_id": "179cc807-5150-4513-88b2-73cb05009b7d",
+  "name": "Purple Worm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purple Worm",
+      "oracle_fingerprint": "6b6b0fc6599941ed41074bb56caffc60",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": { "Ward": "{2}" } }
+      ]
+    }
+  ]
+}

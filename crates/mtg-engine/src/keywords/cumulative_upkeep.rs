@@ -53,6 +53,7 @@ impl KeywordRules for CumulativeUpkeep {
                         who: Ref::You,
                         filter: Selector::this(),
                         count: Amount::one(),
+                        bind: None,
                     }],
                 },
             ],

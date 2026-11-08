@@ -1,0 +1,40 @@
+{
+  "oracle_id": "efcbca5a-743c-4b16-a7cf-b07335b31ced",
+  "name": "Shower of Arrows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shower of Arrows",
+      "oracle_fingerprint": "4e1234f4aefa5595c1a9f6a8fa410d53",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "HasKeyword": "Flying" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

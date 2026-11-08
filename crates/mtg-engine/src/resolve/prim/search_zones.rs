@@ -40,6 +40,7 @@ fn label(zone: ZoneKind) -> &'static str {
         ZoneKind::Battlefield => "battlefield",
         ZoneKind::Stack => "stack",
         ZoneKind::Command => "command zone",
+        ZoneKind::Outside => "outside the game",
     }
 }
 
@@ -63,14 +64,17 @@ fn labelled(subset: &[ZoneKind]) -> String {
 /// give up what it holds (CR 701.23b), so the fewest is then 0. Each zone searched is one `CardsFound` for the
 /// searcher, also when it held nothing that matches, and the cards found are bound to the name. A player who has just
 /// one zone to search is not asked which. Nothing matching is no question.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
+        of: _,
         zone,
         also,
         filter,
         count,
         reveal,
+        distinct,
         bind,
     } = effect
     else {
@@ -121,17 +125,27 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .iter()
             .any(|kind| matches!(kind, ZoneKind::Library | ZoneKind::Hand));
         let fewest = if hidden { 0 } else { required };
-        let take = most.min(matches.len());
+        let offered = if *distinct {
+            crate::choose::names_among(state, &matches)
+        } else {
+            matches.len()
+        };
+        let take = most.min(offered);
         let cards = if take == 0 {
             Vec::new()
         } else if matches.len() <= fewest {
             matches
         } else {
             let text = wording::search_zones(&searched, filter, required, most);
-            match asked.cards(player, matches, (fewest, take.max(fewest)), text) {
+            match asked.cards_named(player, matches, (fewest, take.max(fewest)), text, *distinct) {
                 Ok(cards) => cards,
                 Err(stop) => return Stop::settle(Err(stop)),
             }
+        };
+        let cards = if *distinct {
+            super::search::one_per_name(state, cards)
+        } else {
+            cards
         };
         found.extend(
             cards

@@ -1,0 +1,69 @@
+{
+  "oracle_id": "b30d583b-e770-47e8-9f26-fca7ef43285c",
+  "name": "Idol of False Gods",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Idol of False Gods",
+      "oracle_fingerprint": "e68f81185c4e8c145421cc4a4f127d4d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{C}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Spawn",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Spawn"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Eldrazi" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 0, "toughness": 0 } },
+              { "AddKeyword": { "Annihilator": 2 } },
+              { "AddType": "Creature" }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 8 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

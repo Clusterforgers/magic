@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1af303ef-dd76-4684-97a1-355b7eee53e4",
+  "name": "Thran Weaponry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Weaponry",
+      "oracle_fingerprint": "f532532124eafbefb7b6ecdf065c27fe",
+      "abilities": [
+        { "Keyword": { "Echo": "{4}" } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

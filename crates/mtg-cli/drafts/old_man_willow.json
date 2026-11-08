@@ -1,0 +1,78 @@
+{
+  "oracle_id": "96c96842-42c2-4aa3-95e2-6186d4ab5693",
+  "name": "Old Man Willow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Old Man Willow",
+      "oracle_fingerprint": "c303e545d2fd51f9d1f4bed970579db2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              {
+                                "Not": {
+                                  "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }]
+                                }
+                              },
+                              "Token"
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

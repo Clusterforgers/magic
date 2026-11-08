@@ -1,0 +1,24 @@
+{
+  "oracle_id": "adc18cdb-fe35-4ca3-82c1-a723b17f8c6f",
+  "name": "Wingsteed Trainer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wingsteed Trainer",
+      "oracle_fingerprint": "df8884ed4b076b076d747a2406e59ae8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Conjure": { "name": "Stormfront Pegasus", "zone": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

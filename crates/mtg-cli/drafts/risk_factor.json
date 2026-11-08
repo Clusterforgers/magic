@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7f61a2a6-2fe2-48ec-8e2e-74d147be0a0a",
+  "name": "Risk Factor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Risk Factor",
+      "oracle_fingerprint": "9b5ff35e05d5128046081850c5455d8c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": [{ "DamageToYou": 4 }],
+                  "unpaid": [{ "Draw": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "JumpStart" }
+      ]
+    }
+  ]
+}

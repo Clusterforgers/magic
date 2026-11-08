@@ -33,6 +33,7 @@ pub(super) fn put_a_counter(cost: Cost, counter: CounterKind) -> Ability {
         timing: Timing::Sorcery,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Battlefield,
         targets: Vec::new(),
         effects: vec![Effect::PutCounters {

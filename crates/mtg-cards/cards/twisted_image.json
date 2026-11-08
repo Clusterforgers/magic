@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4a40cee1-fc09-4f97-aef8-440778d8c0ca",
+  "name": "Twisted Image",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twisted Image",
+      "oracle_fingerprint": "fbdea7910f625380148aa620e80e0635",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

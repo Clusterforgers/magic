@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d9f4af37-c85e-44ab-9fea-3c67e2f3cf27",
+  "name": "Dovescape",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dovescape",
+      "oracle_fingerprint": "e4391fab047e124b68dca190df931949",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }] } },
+            "effects": [
+              { "Counter": { "what": "Triggering" } },
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

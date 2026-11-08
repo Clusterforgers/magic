@@ -1,0 +1,23 @@
+{
+  "oracle_id": "68b06917-7f83-47d4-a466-4e6698cae56d",
+  "name": "Cloak of Invisibility",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloak of Invisibility",
+      "oracle_fingerprint": "029dfbc798fd5d94774cb4afb04ec40b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Phasing" },
+              { "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

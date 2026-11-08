@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c724dd2e-c62d-4a20-a1b9-54264d0b811a",
+  "name": "Liliana's Indignation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Indignation",
+      "oracle_fingerprint": "62edf517df956a9e22b8b675c9de97f7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "count": "X", "as": "milled" } },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Is": { "Bound": "milled" } },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

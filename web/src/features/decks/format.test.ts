@@ -1,4 +1,4 @@
-// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand or what blocks it and leaves a changed deck to its marker, and an import summary counts cards per zone; the format list is the one the server checks.
+// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand or what blocks it, and an import summary counts cards per zone; the format list is the one the server checks.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -93,6 +93,7 @@ describe('STATE_LABEL', () => {
 describe('SUPPORT_LABEL', () => {
   it.each([
     ['verified', 'Verified'],
+    ['forge', 'From Forge'],
     ['partial', 'Partial'],
     ['manual', 'Manual'],
     ['stale', 'Stale'],
@@ -123,6 +124,12 @@ describe('countsText', () => {
       'read cards beside the others (a read card is not played by hand)',
       counts({ total: 10, verified: 3, read: 2, partial: 1, manual: 2, stale: 1, unplayable: 1 }),
       '3 of 10 verified, 2 on reads, 4 played by hand, 1 unplayable',
+    ],
+    ['forge cards', counts({ verified: 96, forge: 4 }), '96 of 100 verified, 4 cards from Forge'],
+    [
+      'read and forge cards beside the others (neither is played by hand)',
+      counts({ total: 10, verified: 3, read: 2, forge: 1, manual: 3, unplayable: 1 }),
+      '3 of 10 verified, 2 on reads, 1 card from Forge, 3 played by hand, 1 unplayable',
     ],
     ['no cards', counts({ total: 0, verified: 0 }), '0 of 0 verified'],
   ] satisfies ReadonlyArray<[string, Counts, string]>)('words %s', (_what, given, text) => {
@@ -194,15 +201,10 @@ describe('checkNote', () => {
     expect(checkNote(deck)).toBe(`${what}${BLOCKED_MEANING}.`)
   })
 
-  it.each([
-    [true, null],
-    [false, 'Not checked yet'],
-  ])(
-    'for an unchecked deck with changed=%s says %j (a changed deck says it in its marker)',
-    (changed, note) => {
-      expect(checkNote(deckIn('unchecked', { changed }))).toBe(note)
-    },
-  )
+  it('says "Not checked yet" for an unchecked deck, whatever its changed flag holds', () => {
+    expect(checkNote(deckIn('unchecked', { changed: true }))).toBe('Not checked yet')
+    expect(checkNote(deckIn('unchecked', { changed: false }))).toBe('Not checked yet')
+  })
 })
 
 describe('importSummary', () => {

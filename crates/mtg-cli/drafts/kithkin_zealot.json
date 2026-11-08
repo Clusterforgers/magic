@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7445122d-a943-493c-b7b6-3699cc07db0e",
+  "name": "Kithkin Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kithkin Zealot",
+      "oracle_fingerprint": "f96b538d8013eb5d8d25620674284aed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "128170ed-c86a-4f02-9244-28197be90c10",
+  "name": "Frost Bite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frost Bite",
+      "oracle_fingerprint": "50fbf1d891c738371a07ff024fe897ea",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

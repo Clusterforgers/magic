@@ -1,0 +1,48 @@
+{
+  "oracle_id": "343833c1-19fd-4e8f-b82e-0f20903caaff",
+  "name": "Winter, Cursed Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter, Cursed Rider",
+      "oracle_fingerprint": "33e213aeadcef2e0c988b3e1412a86e7",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 2 }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": [{ "PayLife": 2 }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{U}{B}" },
+              "Tap",
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Artifact" }], "count": "X" } }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }, "Other"]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": -1, "of": "X" } },
+                        "toughness": { "Times": { "by": -1, "of": "X" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

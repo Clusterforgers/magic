@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2f9a5e7c-f463-4773-bf67-a07339ce9b5d",
+  "name": "Orcish Medicine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Medicine",
+      "oracle_fingerprint": "dd415776b81b941ef695ab26268ca630",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Amass": { "subtype": "Orc", "count": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

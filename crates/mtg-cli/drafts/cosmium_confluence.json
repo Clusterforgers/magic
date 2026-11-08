@@ -1,0 +1,72 @@
+{
+  "oracle_id": "798aaf78-16d9-474b-a963-f5e9c39aae6e",
+  "name": "Cosmium Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cosmium Confluence",
+      "oracle_fingerprint": "cdb79eaceead917b82a8749ca13292d9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Search": { "filter": [{ "Subtype": "Cave" }], "as": "found" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "found" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Subtype": "Cave" }, { "ControlledBy": "You" }] },
+                            "as": "card2"
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Bound": "card2" },
+                            "counter": "+1/+1",
+                            "count": 3
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "card2" },
+                            "mods": [
+                              { "SetPT": { "power": 0, "toughness": 0 } },
+                              { "AddSubtype": "Elemental" },
+                              { "AddType": "Creature" },
+                              { "AddKeyword": "Haste" }
+                            ],
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

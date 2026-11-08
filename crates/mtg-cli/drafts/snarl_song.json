@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3b6fb13b-f126-4697-90a1-64b14ffcecd6",
+  "name": "Snarl Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snarl Song",
+      "oracle_fingerprint": "583326a0c565668a0026c1709f32783a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "count": 2,
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": "ColorsSpent"
+                }
+              },
+              { "GainLife": { "amount": "ColorsSpent" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

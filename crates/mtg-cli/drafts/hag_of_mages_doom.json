@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0a0ea69d-6753-4222-8eee-d2bd73c7ff87",
+  "name": "Hag of Mage's Doom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hag of Mage's Doom",
+      "oracle_fingerprint": "226e60549a1dc5c8d2e7cf780168c15e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Warlock" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": [{ "PayLife": 2 }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

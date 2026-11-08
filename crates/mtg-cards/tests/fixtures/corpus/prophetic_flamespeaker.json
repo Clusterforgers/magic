@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "73326c79-f884-42d5-8546-3db46ce4fe52",
+  "oracle_id": "b290a59a-5752-46bb-90be-9792b57bd467",
+  "multiverse_ids": [
+    380475
+  ],
+  "mtgo_id": 52288,
+  "mtgo_foil_id": 52289,
+  "tcgplayer_id": 82234,
+  "cardmarket_id": 266628,
+  "name": "Prophetic Flamespeaker",
+  "lang": "en",
+  "released_at": "2014-05-02",
+  "uri": "https://api.scryfall.com/cards/73326c79-f884-42d5-8546-3db46ce4fe52",
+  "scryfall_uri": "https://scryfall.com/card/jou/106/prophetic-flamespeaker?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:43:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.jpg?1783939422",
+    "normal": "https://cards.scryfall.io/normal/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.jpg?1783939422",
+    "large": "https://cards.scryfall.io/large/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.jpg?1783939422",
+    "png": "https://cards.scryfall.io/png/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.png?1783939422",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.jpg?1783939422",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.jpg?1783939422",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.webp?1783939422",
+    "grid": "https://cards.scryfall.io/grid/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.webp?1783939422",
+    "display": "https://cards.scryfall.io/display/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.webp?1783939422",
+    "art": "https://cards.scryfall.io/art/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.webp?1783939422",
+    "crop": "https://cards.scryfall.io/crop/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.webp?1783939422",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/3/73326c79-f884-42d5-8546-3db46ce4fe52.jpg?1783939422"
+  },
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Shaman",
+  "oracle_text": "Double strike, trample\nWhenever this creature deals combat damage to a player, exile the top card of your library. You may play it this turn.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample",
+    "Double strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set": "jou",
+  "set_name": "Journey into Nyx",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajou&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jou?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/73326c79-f884-42d5-8546-3db46ce4fe52/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab290a59a-5752-46bb-90be-9792b57bd467&unique=prints",
+  "collector_number": "106",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "Fire to destroy. Fire to create.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cynthia Sheppard",
+  "artist_ids": [
+    "9dfbdd58-65e6-40cf-951a-80e141061939"
+  ],
+  "illustration_id": "3d6f2637-5561-4350-aabb-b7b5d3f686b6",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17643,
+  "penny_rank": 10218,
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": "2.11",
+    "usd_etched": null,
+    "eur": "0.52",
+    "eur_foil": "2.26",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=380475&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DProphetic%2BFlamespeaker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DProphetic%2BFlamespeaker",
+    "edhrec": "https://edhrec.com/route/?cc=Prophetic+Flamespeaker"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F82234%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=266628&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/52288?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

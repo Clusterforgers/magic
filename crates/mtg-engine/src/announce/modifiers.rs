@@ -14,17 +14,22 @@ use std::sync::Arc;
 use mtg_cards::ability::{Ability, CostChange};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::mana::ManaCostX;
-use mtg_cards::refs::{Pred, TargetSpec};
+use mtg_cards::modify::SpellBenefit;
+use mtg_cards::refs::{Pred, Selector, TargetSpec};
+use mtg_cards::value::CastWay;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
 use super::{Ctx, What, targets};
-use crate::ability_reader::{abilities_of, definition_has_cost_modifier};
+use crate::ability_reader::{
+    abilities_of, definition_has_cost_modifier, is_cost_modifier, may_hold,
+};
 use crate::characteristics::controller_of_object;
 use crate::choose::Choices;
 use crate::keywords::affinity;
 use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{CastTargets, Scope};
+use crate::rules::Rule;
 use crate::spell_keywords::given_to_spell;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -55,6 +60,7 @@ pub(crate) fn cheapest<'a>(
     state: &GameState,
     player: PlayerId,
     spell: ObjectId,
+    way: Option<CastWay>,
     printed: &'a ManaCost,
 ) -> Cow<'a, ManaCost> {
     if !state.possible.costs {
@@ -65,7 +71,10 @@ pub(crate) fn cheapest<'a>(
         player,
         spell,
         &[],
-        &Choices::default(),
+        &Choices {
+            way,
+            ..Choices::default()
+        },
         Some(printed.clone()),
         Some(&possible_specs(state, spell)),
     );
@@ -111,7 +120,12 @@ fn gathered(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifie
         else {
             continue;
         };
-        if !definition_has_cost_modifier(object.card()) {
+        if !may_hold(
+            state,
+            object,
+            definition_has_cost_modifier,
+            is_cost_modifier,
+        ) {
             continue;
         }
         let controller = if id == spell {
@@ -140,7 +154,101 @@ fn gathered(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifie
         }
     }
     found.extend(given_affinity(state, spell, caster));
+    found.extend(next_spell_costs(state, spell, caster));
+    found.extend(spell_cost_rules(state, spell));
     found
+}
+
+/// The cost changes of the `SpellCost` rules in force: each one is a modifier of its controller, whatever the caster.
+fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
+    let Some(target) = state
+        .object(spell)
+        .map(crate::object::GameObject::reference)
+    else {
+        return Vec::new();
+    };
+    state
+        .rule_effects
+        .iter()
+        .filter(|effect| state.is_alive(effect.controller))
+        .filter_map(|effect| {
+            let Rule::SpellCost {
+                applies_to,
+                change,
+                mana,
+            } = &effect.rule
+            else {
+                return None;
+            };
+            // The spell or permanent that made the rule may be gone (a sorcery in the graveyard is a new object); the
+            // rule still reads "you" as its controller.
+            let source = effect
+                .source
+                .filter(|source| {
+                    state
+                        .object(source.id)
+                        .is_some_and(|object| object.reference() == *source)
+                })
+                .unwrap_or(target);
+            Some(Modifier {
+                source,
+                controller: effect.controller,
+                ability: Arc::new(Ability::CostModifier {
+                    targeting: None,
+                    applies_to: applies_to.clone(),
+                    change: *change,
+                    mana: mana.clone(),
+                    per: mtg_cards::value::Amount::one(),
+                    condition: None,
+                    activating: None,
+                    least: 0,
+                }),
+            })
+        })
+        .collect()
+}
+
+/// The cost changes of the `NextSpell` rules in force for `caster`: each one is a modifier of the spell it selects.
+fn next_spell_costs(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifier> {
+    let Some(target) = state
+        .object(spell)
+        .map(crate::object::GameObject::reference)
+    else {
+        return Vec::new();
+    };
+    state
+        .rule_effects
+        .iter()
+        .filter(|effect| effect.controller == caster)
+        .filter_map(|effect| {
+            let Rule::NextSpell {
+                what,
+                benefit: SpellBenefit::Cost { change, mana, per },
+            } = &effect.rule
+            else {
+                return None;
+            };
+            let applies_to = if what.is_empty() {
+                Selector(vec![Pred::Spell])
+            } else {
+                what.clone()
+            };
+            Some(Modifier {
+                source: effect.source.unwrap_or(target),
+                controller: caster,
+                ability: Arc::new(Ability::CostModifier {
+                    targeting: None,
+                    applies_to,
+                    change: *change,
+                    mana: mana.clone(),
+                    per: per.clone(),
+                    condition: None,
+                    activating: None,
+                    least: 0,
+                }),
+            })
+        })
+        .collect()
 }
 
 /// The reductions of the affinity that static abilities give to `spell` ("Enchantment spells you cast have affinity for
@@ -184,14 +292,17 @@ pub(crate) fn modified(
         return mana;
     };
     let announced = Choices::default();
-    let (mut more, mut less) = (ManaCost::ZERO, ManaCost::ZERO);
+    let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
     for modifier in gathered(state, spell, player) {
         let Ability::CostModifier {
+            targeting: None,
             applies_to,
             change,
             mana: unit,
             per,
             condition,
+            activating: None,
+            least,
         } = &*modifier.ability
         else {
             continue;
@@ -202,6 +313,8 @@ pub(crate) fn modified(
         let scope = Scope {
             casting: Some((spell, player)),
             cast_targets: Some(CastTargets { choices, judging }),
+            affected: None,
+            candidate: std::cell::Cell::new(None),
             choices: if own { choices } else { &announced },
             specs: if own {
                 specs.iter().collect()
@@ -221,7 +334,10 @@ pub(crate) fn modified(
         let part = repeated(unit, times);
         match change {
             CostChange::Increase => more = joined(more, &part),
-            CostChange::Reduce => less = joined(less, &part),
+            CostChange::Reduce => {
+                floor = floor.max(*least);
+                less = joined(less, &part);
+            }
         }
     }
     // The commander tax is an increase of the cost like any other (CR 903.8).
@@ -238,7 +354,9 @@ pub(crate) fn modified(
         Some(joined(mana.unwrap_or(ManaCost::ZERO), &more))
     };
     match mana {
-        Some(cost) if !less.symbols().is_empty() => Some(reduced(&cost, &less)),
+        Some(cost) if !less.symbols().is_empty() => {
+            Some(floored(&cost, reduced(&cost, &less), floor))
+        }
         other => other,
     }
 }
@@ -246,6 +364,16 @@ pub(crate) fn modified(
 /// `cost` less `less`, as a spell's reductions take it (an activated ability's own reductions, `c11a_less`).
 pub(crate) fn c11a_reduced(cost: &ManaCost, less: &ManaCost) -> ManaCost {
     reduced(cost, less)
+}
+
+/// `after`, a reduction of `before`, raised to `least` mana (or to what `before` was when that is less): "This effect can't
+/// reduce the mana in that cost to less than one mana."
+pub(crate) fn floored(before: &ManaCost, after: ManaCost, least: u32) -> ManaCost {
+    let wanted = least.min(before.mana_value());
+    match wanted.checked_sub(after.mana_value()) {
+        Some(short) if short > 0 => after.with(ManaSymbol::Generic(short)),
+        _ => after,
+    }
 }
 
 /// The mana of `unit` `times` over; an `{X}` in it has no value here and is left out.
@@ -262,7 +390,7 @@ fn joined(cost: ManaCost, more: &ManaCost) -> ManaCost {
 
 /// `cost` less `less`: generic mana comes off the generic part, down to nothing, and a colored or colorless symbol
 /// takes one such symbol from the cost, if it has one. Whatever finds nothing to reduce is lost.
-fn reduced(cost: &ManaCost, less: &ManaCost) -> ManaCost {
+pub(super) fn reduced(cost: &ManaCost, less: &ManaCost) -> ManaCost {
     let mut generic = cost.generic();
     let mut rest: Vec<ManaSymbol> = cost
         .symbols()

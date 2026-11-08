@@ -1,0 +1,51 @@
+{
+  "oracle_id": "1a82be68-3b74-4dfc-9068-3abea61db709",
+  "name": "Fell Gravship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fell Gravship",
+      "oracle_fingerprint": "817ca241a62f83109078d8b686da7e50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Lifelink" },
+              { "AddType": "Creature" }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 8 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

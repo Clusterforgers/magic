@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "3e726fc7-36cf-405c-9b7c-d1e41cd6c68f",
+  "oracle_id": "16cb916d-bb19-42ec-9a01-969e9d067b40",
+  "multiverse_ids": [
+    513533
+  ],
+  "mtgo_id": 88589,
+  "arena_id": 76449,
+  "tcgplayer_id": 235925,
+  "cardmarket_id": 558018,
+  "name": "Symmetry Sage",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f",
+  "scryfall_uri": "https://scryfall.com/card/stx/56/symmetry-sage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:22:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.jpg?1783927373",
+    "normal": "https://cards.scryfall.io/normal/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.jpg?1783927373",
+    "large": "https://cards.scryfall.io/large/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.jpg?1783927373",
+    "png": "https://cards.scryfall.io/png/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.png?1783927373",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.jpg?1783927373",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.jpg?1783927373",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.webp?1783927373",
+    "grid": "https://cards.scryfall.io/grid/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.webp?1783927373",
+    "display": "https://cards.scryfall.io/display/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.webp?1783927373",
+    "art": "https://cards.scryfall.io/art/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.webp?1783927373",
+    "crop": "https://cards.scryfall.io/crop/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.webp?1783927373",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/e/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f.jpg?1783927373"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Flying\nMagecraft — Whenever you cast or copy an instant or sorcery spell, target creature you control has base power 2 until end of turn.",
+  "power": "0",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Magecraft"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "541c3c28-8747-40e5-a231-8e8f33234859",
+  "set": "stx",
+  "set_name": "Strixhaven: School of Mages",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/541c3c28-8747-40e5-a231-8e8f33234859",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Astx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/stx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3e726fc7-36cf-405c-9b7c-d1e41cd6c68f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A16cb916d-bb19-42ec-9a01-969e9d067b40&unique=prints",
+  "collector_number": "56",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"By my calculations, I should be able to achieve true enlightenment before graduation.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jehan Choo",
+  "artist_ids": [
+    "515df9fe-9c29-4e75-9e49-6ce5be4ec8c8"
+  ],
+  "illustration_id": "8fcccfb2-39e3-4704-84e2-8443ab8369ea",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25946,
+  "penny_rank": 6913,
+  "preview": {
+    "source": "Luis Scott-Vargas",
+    "source_uri": "https://twitter.com/lsv/status/1377668248557129735",
+    "previewed_at": "2021-04-01"
+  },
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.18",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=513533&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSymmetry%2BSage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSymmetry%2BSage",
+    "edhrec": "https://edhrec.com/route/?cc=Symmetry+Sage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F235925%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=558018&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/88589?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

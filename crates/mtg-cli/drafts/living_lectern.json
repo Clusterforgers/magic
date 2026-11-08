@@ -1,0 +1,60 @@
+{
+  "oracle_id": "061e7fb2-2c04-4845-b60a-0e2512a2dec1",
+  "name": "Living Lectern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Lectern",
+      "oracle_fingerprint": "222ca7d57d446e329ce12d6bab03ea10",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Draw": {} },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sorcerer",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": { "Attacks": { "what": ["This"] } },
+                                    "effects": [{ "Scry": {} }]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "73bddfdb-d1fb-4038-b676-201f6b82beb0",
+  "name": "Wanderlust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanderlust",
+      "oracle_fingerprint": "5763ae4193d94b15af164bc294cd43b1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

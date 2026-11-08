@@ -1,0 +1,84 @@
+{
+  "oracle_id": "169cf74a-07bf-4841-83f3-904df8a0a39b",
+  "name": "Jailbreak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jailbreak",
+      "oracle_fingerprint": "3a5fa33a354ad34952bf2be5db5ead4c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "Opponents" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Target": 0 } }], "to": "Battlefield" }
+                  },
+                  "effects": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "OwnedBy": "You" },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                                  }
+                                },
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Battle" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" }
+                                  ]
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "bounds": { "min": 0, "max": 1 }
+                          }
+                        ],
+                        "effects": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

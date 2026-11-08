@@ -1,0 +1,65 @@
+{
+  "oracle_id": "0feacc7c-b93e-4322-bc8b-b3c19006128e",
+  "name": "Sandbender Scavengers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandbender Scavengers",
+      "oracle_fingerprint": "b770dc477c60d5ad78563e8849c28198",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["Other"], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Is": { "Arrived": { "of": "This", "zone": "Graveyard" } } }],
+                        "any_player": true
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": { "Stat": { "of": "This", "stat": "Power" } }
+                                  }
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

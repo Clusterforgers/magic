@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2bace3ea-7d28-4a1c-857a-d3c3a1c11b59",
+  "name": "Wan Shi Tong, Librarian",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wan Shi Tong, Librarian",
+      "oracle_fingerprint": "36d55c745e7e9817561b5d06f54ed1ba",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "X" } },
+              { "Draw": { "count": { "Half": { "of": "X", "up": false } } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 117, "end": 214 }
+          }
+        }
+      ]
+    }
+  ]
+}

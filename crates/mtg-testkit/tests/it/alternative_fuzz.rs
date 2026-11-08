@@ -37,6 +37,7 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Miracle => "miracle",
                             CastWay::Suspend => "suspend",
                             CastWay::Foretold => "foretold",
+                            CastWay::Plotted => "plotted",
                             CastWay::Escape => "escape",
                             CastWay::Dash => "dash",
                             CastWay::Bestow => "bestow",
@@ -45,6 +46,7 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Mayhem => "mayhem",
                             CastWay::Disturb => "disturb",
                             CastWay::Spectacle => "spectacle",
+                            CastWay::Freerunning => "freerunning",
                             CastWay::Awaken => "awaken",
                             CastWay::JumpStart => "jump-start",
                             CastWay::Retrace => "retrace",
@@ -53,6 +55,13 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Free => "free",
                             CastWay::Emerge => "emerge",
                             CastWay::Harmonize => "harmonize",
+                            CastWay::Sneak
+                            | CastWay::Prototype
+                            | CastWay::Warp
+                            | CastWay::Surge
+                            | CastWay::WebSlinging
+                            | CastWay::Impending
+                            | CastWay::Alternative => "alt-cast",
                         });
                         *seen.entry(way.to_owned()).or_default() += 1;
                         if choices.way == Some(CastWay::Flashback) {

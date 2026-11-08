@@ -1,0 +1,14 @@
+{
+  "oracle_id": "20822aa7-5f84-442d-add3-b56167e6eb38",
+  "name": "Guardian of the Guildpact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian of the Guildpact",
+      "oracle_fingerprint": "f45f1eb1cae2bc16c0cd78115aea255a",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "oracle_id": "92acbbeb-f82b-413b-b243-f7a012f5400c",
+  "name": "Necromentia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromentia",
+      "oracle_fingerprint": "063e1a6ca1b425ef25ad2b2825e4353e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "CardName": [{ "Not": { "Supertype": "Basic" } }] },
+                  "as": "name"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "ChosenAs": "name" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "ChosenAs": "name" },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                  },
+                  "as": "picked3"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked3" }, "as": "exiled4" } },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [{ "ChosenAs": "name" }],
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] }
+                  },
+                  "as": "found5"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found5" } } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "Bound": "exiled4~moved" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

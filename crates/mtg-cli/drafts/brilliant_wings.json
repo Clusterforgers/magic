@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ed06b85a-e85f-47c4-ba90-1664e69a338f",
+  "name": "Brilliant Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brilliant Wings",
+      "oracle_fingerprint": "3ab59bfed61bd40a5677bbe6f012f217",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Hexproof" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [{ "Attach": { "what": "This", "to": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

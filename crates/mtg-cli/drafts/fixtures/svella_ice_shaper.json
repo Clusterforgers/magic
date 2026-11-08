@@ -1,0 +1,171 @@
+{
+  "object": "card",
+  "id": "a7054d48-5ed3-43a1-85e5-9f306b081b4f",
+  "oracle_id": "7fd8a508-335c-4d5a-9916-23bf26dfff38",
+  "multiverse_ids": [
+    503846
+  ],
+  "mtgo_id": 87803,
+  "arena_id": 75277,
+  "tcgplayer_id": 230753,
+  "cardmarket_id": 532187,
+  "name": "Svella, Ice Shaper",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/a7054d48-5ed3-43a1-85e5-9f306b081b4f",
+  "scryfall_uri": "https://scryfall.com/card/khm/230/svella-ice-shaper?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:36:30Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.jpg?1783928190",
+    "normal": "https://cards.scryfall.io/normal/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.jpg?1783928190",
+    "large": "https://cards.scryfall.io/large/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.jpg?1783928190",
+    "png": "https://cards.scryfall.io/png/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.png?1783928190",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.jpg?1783928190",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.jpg?1783928190",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.webp?1783928190",
+    "grid": "https://cards.scryfall.io/grid/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.webp?1783928190",
+    "display": "https://cards.scryfall.io/display/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.webp?1783928190",
+    "art": "https://cards.scryfall.io/art/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.webp?1783928190",
+    "crop": "https://cards.scryfall.io/crop/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.webp?1783928190",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/7/a7054d48-5ed3-43a1-85e5-9f306b081b4f.jpg?1783928190"
+  },
+  "mana_cost": "{1}{R}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Snow Creature — Troll Warrior",
+  "oracle_text": "{3}, {T}: Create a colorless snow artifact token named Icy Manalith with \"{T}: Add one mana of any color.\"\n{6}{R}{G}, {T}: Look at the top four cards of your library. You may cast a spell from among them without paying its mana cost. Put the rest on the bottom of your library in a random order.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "3db39e3b-fad4-4c9b-911f-69883ac7e0e1",
+      "component": "token",
+      "name": "Icy Manalith",
+      "type_line": "Token Snow Artifact",
+      "uri": "https://api.scryfall.com/cards/3db39e3b-fad4-4c9b-911f-69883ac7e0e1"
+    },
+    {
+      "object": "related_card",
+      "id": "5ec553af-5254-4812-bb68-cd6d853f693a",
+      "component": "combo_piece",
+      "name": "Svella, Ice Shaper",
+      "type_line": "Legendary Snow Creature — Troll Warrior",
+      "uri": "https://api.scryfall.com/cards/5ec553af-5254-4812-bb68-cd6d853f693a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a7054d48-5ed3-43a1-85e5-9f306b081b4f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7fd8a508-335c-4d5a-9916-23bf26dfff38&unique=prints",
+  "collector_number": "230",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Andrew Mar",
+  "artist_ids": [
+    "adad79bf-cd52-456a-b170-740ed8bff0fc"
+  ],
+  "illustration_id": "eb747dc6-43d5-44c7-89c2-e0f0b861a4a1",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "snow"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6767,
+  "penny_rank": 9358,
+  "preview": {
+    "source": "Arin Hanson",
+    "source_uri": "https://twitter.com/egoraptor/status/1350557412529377280",
+    "previewed_at": "2021-01-16"
+  },
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.26",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503846&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSvella%252C%2BIce%2BShaper",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSvella%252C%2BIce%2BShaper",
+    "edhrec": "https://edhrec.com/route/?cc=Svella%2C+Ice+Shaper"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230753%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=532187&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87803?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -9,18 +9,14 @@
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              { "Mana": "{1}{R}{G}" },
-              { "TapPermanents": { "filter": [] } },
-              { "TapPermanents": { "filter": [] } }
-            ],
+            "cost": [{ "Mana": "{1}{R}{G}" }, "Tap"],
             "targets": [
               {
                 "what": {
                   "Object": [
                     { "Type": "Creature" },
-                    { "Not": { "HasKeyword": "Flying" } },
-                    { "AttackingPlayer": "You" }
+                    { "AttackingPlayer": "You" },
+                    { "Not": { "HasKeyword": "Flying" } }
                   ]
                 }
               }

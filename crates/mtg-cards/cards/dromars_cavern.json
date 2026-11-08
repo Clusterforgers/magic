@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d8b57707-796d-4488-8f91-65bb75bc6281",
+  "name": "Dromar's Cavern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dromar's Cavern",
+      "oracle_fingerprint": "ea05d230be2cb903b3a48d0132a58802",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ReturnToHand": {
+                        "filter": [{ "Type": "Land" }, { "Not": { "Subtype": "Lair" } }]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

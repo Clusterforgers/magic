@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1cf82e44-99dd-48d3-a272-8df9835ebc0d",
+  "name": "Ruin Processor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruin Processor",
+      "oracle_fingerprint": "1cbef47446ca759afd83050193bb9e39",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }] } }],
+                  "paid": [{ "GainLife": { "amount": 5 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

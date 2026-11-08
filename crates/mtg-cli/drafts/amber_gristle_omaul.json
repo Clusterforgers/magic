@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d1435f7b-a694-4c7f-a0f2-34c4c646e04b",
+  "name": "Amber Gristle O'Maul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amber Gristle O'Maul",
+      "oracle_fingerprint": "a265a887ab66e10ba9670e5918b0171e",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    }
+                  ],
+                  "paid": [{ "Draw": { "count": { "Players": "Attacked" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

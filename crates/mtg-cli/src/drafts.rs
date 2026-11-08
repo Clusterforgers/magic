@@ -1,6 +1,6 @@
 //! Drafts of the read tier in this crate: the whole rules files under `drafts/` that `promote --draft` writes, embedded
 //! at build time; whether one fits its stored card, the smoke gate on one, and the store `compile` keeps in `card_drafts`
-//! (`docs/cards-dsl.md`, Model-assisted reading, Drafts).
+//! (`docs/cards-dsl.md`, Proposals and drafts, Drafts).
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
@@ -8,6 +8,7 @@ use std::fmt::Write as _;
 use mtg_cards::card::Card;
 use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, LoadError};
+use mtg_cards::proposal::partial::{LedgerLine, PartialProof};
 use mtg_cards::support::{Support, read_hash, support};
 use mtg_cards::{Caps, CardDefinition, DraftRules, PrintedCard, ReadState};
 use mtg_db::{Database, DraftKey, NewDraft};
@@ -21,6 +22,12 @@ use crate::status::missing_table;
 /// Every file under `drafts/` with its slug (the file name without `.json`), by slug.
 const FILES: &[(&str, &str)] = include!(concat!(env!("OUT_DIR"), "/draft_files.rs"));
 
+/// Every file under `drafts/meta/` with its slug, by slug.
+const META: &[(&str, &str)] = include!(concat!(env!("OUT_DIR"), "/draft_meta.rs"));
+
+/// The folder of the drafts' metadata below the drafts directory.
+pub const META_DIR: &str = "meta";
+
 /// Where `promote --draft` writes, seen from the repository root.
 pub const DEFAULT_DIR: &str = "crates/mtg-cli/drafts";
 
@@ -33,6 +40,48 @@ const INVALID_SHOWN: usize = 20;
 /// The embedded draft files: slug and text, by slug.
 pub fn embedded() -> &'static [(&'static str, &'static str)] {
     FILES
+}
+
+/// The embedded metadata files: slug and text, by slug.
+pub fn embedded_meta() -> &'static [(&'static str, &'static str)] {
+    META
+}
+
+/// Where a draft came from, which `drafts/meta/<slug>.json` and a proposal's `meta/<slug>.json` say; a draft without
+/// a file is a sweep draft whose text was not matched.
+#[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
+pub struct DraftMeta {
+    /// Who wrote it: `sweep` or `forge`; none leaves the choice to the caller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source: Option<String>,
+    /// The source's Oracle text equals the printed text after normalising; an absent key is false.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub oracle_matches: bool,
+    /// The constructs a translator could not express; a card with any is never a draft.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub gaps: Vec<String>,
+    /// The script lines of a Forge translation and what became of each, which the proof of a partial draft reads.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub lines: Vec<LedgerLine>,
+    /// The proof that lets the by-hand lines of a partial draft stand; none for a whole draft.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proof: Option<PartialProof>,
+}
+
+impl DraftMeta {
+    /// The metadata a file holds; anything unreadable is the default (a sweep draft).
+    pub fn parse(text: &str) -> DraftMeta {
+        serde_json::from_str(text).unwrap_or_default()
+    }
+
+    /// The source the draft is stored with: the file's, else `fallback`, else `sweep`.
+    pub fn source_or(&self, fallback: Option<&str>) -> String {
+        self.source
+            .as_deref()
+            .or(fallback)
+            .unwrap_or(mtg_db::SOURCE_SWEEP)
+            .to_owned()
+    }
 }
 
 /// Why a draft does not stand for its stored card.
@@ -57,14 +106,29 @@ impl Misfit {
     }
 }
 
-/// The row a library takes for a draft, with the read state it should have.
-fn row(printed: &PrintedCard, card: &Card, read: ReadState) -> DraftRules {
+/// The row a library takes for a draft, with the read state it should have; a draft with a proof is a trusted Forge
+/// translation.
+fn row(
+    printed: &PrintedCard,
+    card: &Card,
+    proof: Option<&PartialProof>,
+    read: ReadState,
+) -> DraftRules {
     DraftRules {
         oracle_id: printed.oracle_id.clone(),
         read_hash: read_hash(printed, card),
         rules: serde_json::to_value(card).unwrap_or_default(),
         read,
+        forge: proof.is_some(),
+        proof: proof.cloned(),
     }
+}
+
+/// A draft to check: the card it is for, its rules and the proof of its by-hand lines, if any.
+pub type DraftItem<'a> = (&'a PrintedCard, &'a Card, Option<&'a PartialProof>);
+
+fn unproved<'a>(items: &[(&'a PrintedCard, &'a Card)]) -> Vec<DraftItem<'a>> {
+    items.iter().map(|(p, c)| (*p, *c, None)).collect()
 }
 
 /// The first problem of each row the library left out, by oracle id.
@@ -87,15 +151,20 @@ pub fn misfits(
     caps: &Caps,
     items: &[(&PrintedCard, &Card)],
 ) -> Vec<Option<Misfit>> {
+    misfits_proved(library, caps, &unproved(items))
+}
+
+/// [`misfits`] for drafts that may carry a proof: a partial draft loads when its proof backs its by-hand lines.
+pub fn misfits_proved(library: &Library, caps: &Caps, items: &[DraftItem]) -> Vec<Option<Misfit>> {
     let rows: Vec<DraftRules> = items
         .iter()
-        .map(|(printed, card)| row(printed, card, ReadState::Pending))
+        .map(|(printed, card, proof)| row(printed, card, *proof, ReadState::Pending))
         .collect();
     let (_, left_out) = library.with_drafts(&rows);
     let broken = broken_rows(&left_out);
     items
         .iter()
-        .map(|(printed, card)| {
+        .map(|(printed, card, _)| {
             if let Some(message) = broken.get(printed.oracle_id.as_str()) {
                 return Some(Misfit::Unloadable(message.clone()));
             }
@@ -116,21 +185,33 @@ pub fn read_definitions(
     caps: &Caps,
     items: &[(&PrintedCard, &Card)],
 ) -> Vec<Result<CardDefinition, String>> {
+    read_definitions_proved(library, caps, &unproved(items))
+}
+
+/// [`read_definitions`] for drafts that may carry a proof: a partial draft runs as `Partial` on a read.
+pub fn read_definitions_proved(
+    library: &Library,
+    caps: &Caps,
+    items: &[DraftItem],
+) -> Vec<Result<CardDefinition, String>> {
     let rows: Vec<DraftRules> = items
         .iter()
-        .map(|(printed, card)| row(printed, card, ReadState::Approved))
+        .map(|(printed, card, proof)| row(printed, card, *proof, ReadState::Approved))
         .collect();
     let (library, left_out) = library.with_drafts(&rows);
     let broken = broken_rows(&left_out);
     items
         .iter()
-        .map(|(printed, _)| {
+        .map(|(printed, _, proof)| {
             if let Some(message) = broken.get(printed.oracle_id.as_str()) {
                 return Err(message.clone());
             }
             let assembled = library.assemble(printed, caps);
             match assembled.support.support {
-                Support::Read => Ok(assembled.definition),
+                Support::Read if proof.is_none() => Ok(assembled.definition),
+                Support::Partial if proof.is_some() && assembled.definition.read => {
+                    Ok(assembled.definition)
+                }
                 state => Err(format!("the engine runs it as {state:?}, not Read")),
             }
         })
@@ -243,8 +324,9 @@ impl DraftCounts {
 }
 
 /// The drafts of the build that fit a stored card, as rows to store, with the counts of those left out.
-fn fitting(
+pub fn fitting(
     files: &[(&str, &str)],
+    meta: &[(&str, &str)],
     library: &Library,
     caps: &Caps,
     cards: &[PrintedCard],
@@ -257,6 +339,10 @@ fn fitting(
         embedded: files.len(),
         ..DraftCounts::default()
     };
+    let metas: BTreeMap<&str, DraftMeta> = meta
+        .iter()
+        .map(|(slug, text)| (*slug, DraftMeta::parse(text)))
+        .collect();
     let mut parsed: Vec<(&PrintedCard, Card, &str)> = Vec::new();
     for (slug, text) in files {
         match serde_json::from_str::<Card>(text) {
@@ -270,9 +356,27 @@ fn fitting(
             },
         }
     }
-    let items: Vec<(&PrintedCard, &Card)> = parsed.iter().map(|(p, c, _)| (*p, c)).collect();
+    // Only a trusted Forge translation may carry a proof.
+    let proofs: Vec<Option<&PartialProof>> = parsed
+        .iter()
+        .map(|(_, _, slug)| {
+            let meta = metas.get(slug)?;
+            (meta.source.as_deref() == Some(mtg_db::SOURCE_FORGE) && meta.oracle_matches)
+                .then_some(meta.proof.as_ref())
+                .flatten()
+        })
+        .collect();
+    let items: Vec<DraftItem> = parsed
+        .iter()
+        .zip(&proofs)
+        .map(|((p, c, _), proof)| (*p, c, *proof))
+        .collect();
     let mut put = BTreeMap::new();
-    for ((printed, card, slug), misfit) in parsed.iter().zip(misfits(library, caps, &items)) {
+    for (((printed, card, slug), misfit), proof) in parsed
+        .iter()
+        .zip(misfits_proved(library, caps, &items))
+        .zip(&proofs)
+    {
         match misfit {
             Some(Misfit::Stale) => counts.stale += 1,
             Some(Misfit::Outranked) => counts.outranked += 1,
@@ -281,10 +385,14 @@ fn fitting(
                 problems: vec![message],
             }),
             None => {
+                let meta = metas.get(slug).cloned().unwrap_or_default();
                 let draft = NewDraft {
                     oracle_id: OracleId(printed.oracle_id.clone()),
                     read_hash: read_hash(printed, card),
                     rules: serde_json::to_value(card).unwrap_or_default(),
+                    source: meta.source_or(None),
+                    oracle_matches: meta.oracle_matches,
+                    proof: proof.and_then(|proof| serde_json::to_value(proof).ok()),
                 };
                 put.insert(draft.oracle_id.clone(), draft);
             }
@@ -348,18 +456,19 @@ pub async fn store(
     caps: &Caps,
     cards: &[PrintedCard],
 ) -> Result<DraftCounts, CliError> {
-    store_files(db, embedded(), library, caps, cards).await
+    store_files(db, embedded(), embedded_meta(), library, caps, cards).await
 }
 
 /// [`store`] for these draft files (slug and text) instead of the embedded ones.
 pub async fn store_files(
     db: &Database,
     files: &[(&str, &str)],
+    meta: &[(&str, &str)],
     library: &Library,
     caps: &Caps,
     cards: &[PrintedCard],
 ) -> Result<DraftCounts, CliError> {
-    let (held, mut counts) = fitting(files, library, caps, cards);
+    let (held, mut counts) = fitting(files, meta, library, caps, cards);
     let repo = db.drafts();
     let missing = |error: mtg_db::DbError| {
         if missing_table(&error) {
@@ -408,6 +517,9 @@ mod tests {
             oracle_id: OracleId(id.into()),
             read_hash: hash.into(),
             rules: json!({}),
+            source: "sweep".into(),
+            oracle_matches: false,
+            proof: None,
         }
     }
 

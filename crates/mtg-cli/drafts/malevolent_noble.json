@@ -1,0 +1,37 @@
+{
+  "oracle_id": "4c23ae3a-108f-4a09-b89f-8c43c33dd144",
+  "name": "Malevolent Noble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malevolent Noble",
+      "oracle_fingerprint": "9bf8c36d6a749063acc61012e728d932",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "dcaf3c6f-06e2-4762-82aa-625113e375a1",
+  "name": "Steward of Solidarity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steward of Solidarity",
+      "oracle_fingerprint": "648ef4bdaf9937e024fda3aa6bdaa925",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "Exert"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

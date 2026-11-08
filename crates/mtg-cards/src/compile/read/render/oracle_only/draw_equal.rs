@@ -23,6 +23,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                         of: Ref::Target(0),
                         stat,
                     },
+                ..
             },
         ],
     ) = (targets.as_slice(), effects.as_slice())

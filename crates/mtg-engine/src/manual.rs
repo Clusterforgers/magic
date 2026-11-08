@@ -280,7 +280,7 @@ impl CustomToken {
         if self.types.is_empty() || !self.types.iter().all(allowed) {
             return Err(bad("creature, artifact, enchantment or land as its types"));
         }
-        if self.subtypes.len() > MAX_SUBTYPES
+        if self.typed_subtypes().len() > MAX_SUBTYPES
             || self.subtypes.iter().any(|word| {
                 let word = word.trim();
                 word.is_empty()
@@ -313,15 +313,40 @@ impl CustomToken {
             colors,
             supertypes: Vec::new(),
             types,
-            subtypes: self
-                .subtypes
-                .iter()
-                .map(|word| Subtype(word.trim().to_owned()))
-                .collect(),
+            subtypes: self.typed_subtypes(),
             power: stats.map(|(power, _)| power),
             toughness: stats.map(|(_, toughness)| toughness),
             abilities: Vec::new(),
         })
+    }
+}
+
+impl CustomToken {
+    /// The typed subtypes as the engine spells them: split on whitespace, capitalised (also after a hyphen or
+    /// apostrophe), without repeats.
+    fn typed_subtypes(&self) -> Vec<Subtype> {
+        let mut out: Vec<Subtype> = Vec::new();
+        for word in self
+            .subtypes
+            .iter()
+            .flat_map(|typed| typed.split_whitespace())
+        {
+            let mut capital = true;
+            let mut spelled = String::new();
+            for c in word.chars() {
+                if capital {
+                    spelled.extend(c.to_uppercase());
+                } else {
+                    spelled.extend(c.to_lowercase());
+                }
+                capital = matches!(c, '-' | '\'');
+            }
+            let subtype = Subtype(spelled);
+            if !out.contains(&subtype) {
+                out.push(subtype);
+            }
+        }
+        out
     }
 }
 
@@ -446,6 +471,28 @@ pub enum ManualAction {
         /// Toughness change, from -99 to 99.
         toughness: i32,
     },
+    /// A transforming double-faced permanent of the seat is turned over to its other face.
+    Transform {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A double-faced card of the seat, not on the battlefield, is put onto it with its back face up.
+    MoveBack {
+        /// The card.
+        object: ObjectId,
+    },
+    /// A creature of the seat may attack this turn as though it did not have defender.
+    AttackDespiteDefender {
+        /// The creature.
+        object: ObjectId,
+    },
+    /// A creature of the seat can block extra creatures this turn.
+    BlockAdditional {
+        /// The creature.
+        object: ObjectId,
+        /// How many more creatures, 1 to 99.
+        count: u32,
+    },
     /// The seat looks at the top cards of its library, all of a shorter one; only it learns them.
     LookTop {
         /// How many, 1 to 10.
@@ -562,6 +609,12 @@ pub enum ManualRefusal {
     /// The object is not a creature on the battlefield.
     #[error("{0:?} is not a creature on the battlefield")]
     NotACreature(ObjectId),
+    /// The object is not a transforming double-faced permanent on the battlefield.
+    #[error("{0:?} is not a transforming double-faced permanent on the battlefield")]
+    NotTransformable(ObjectId),
+    /// The card is not a double-faced card outside the battlefield.
+    #[error("{0:?} is not a double-faced card outside the battlefield")]
+    NotDoubleFaced(ObjectId),
     /// A replacement choice is being made; the action waits until it is answered.
     #[error("a replacement choice is being made; try again once it is answered")]
     Settling,
@@ -651,6 +704,18 @@ pub(crate) fn events(
             power,
             toughness,
         } => crate::manual_effects::pump(state, player, *object, *power, *toughness)?,
+        ManualAction::Transform { object } => {
+            crate::manual_faces::transform(state, player, *object)?
+        }
+        ManualAction::MoveBack { object } => {
+            crate::manual_faces::move_back(state, player, *object)?
+        }
+        ManualAction::AttackDespiteDefender { object } => {
+            crate::manual_faces::attack_despite_defender(state, player, *object)?
+        }
+        ManualAction::BlockAdditional { object, count } => {
+            crate::manual_faces::block_additional(state, player, *object, *count)?
+        }
         ManualAction::LookTop { count } => crate::manual_library::look_top(state, player, *count)?,
         ManualAction::ArrangeTop {
             top,
@@ -767,7 +832,7 @@ fn own_seat(
         .ok_or(ManualRefusal::NotYours)
 }
 
-fn moves(
+pub(crate) fn moves(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
@@ -1065,6 +1130,22 @@ mod tests {
         assert_eq!(spec.colors, [Color::Blue, Color::Red]);
         assert_eq!(spec.types, [CardType::Creature]);
         assert_eq!(spec.subtypes, [Subtype("Imp".into())]);
+    }
+
+    #[rstest]
+    #[case::lower(&["egg"], &["Egg"])]
+    #[case::upper(&["EGG"], &["Egg"])]
+    #[case::padded_two_words(&[" dinosaur egg "], &["Dinosaur", "Egg"])]
+    #[case::canonical(&["Egg"], &["Egg"])]
+    #[case::hyphen(&["half-elf"], &["Half-Elf"])]
+    #[case::repeat(&["egg", "Egg"], &["Egg"])]
+    fn typed_subtypes_take_the_canonical_spelling(#[case] typed: &[&str], #[case] want: &[&str]) {
+        let spec = custom("dinosaur egg", &[CardType::Creature], typed, Some((0, 1)))
+            .spec()
+            .unwrap();
+        let want: Vec<Subtype> = want.iter().map(|s| Subtype((*s).into())).collect();
+        assert_eq!(spec.subtypes, want);
+        assert_eq!(spec.name, "dinosaur egg");
     }
 
     #[rstest]

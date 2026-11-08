@@ -1,0 +1,57 @@
+{
+  "oracle_id": "745fc118-ffab-45c6-b51a-7bef2f6931e8",
+  "name": "Ominous Roost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ominous Roost",
+      "oracle_fingerprint": "04347378323fc56c5ee88150dcb78869",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "SpellCast": {
+                    "what": [{ "WasCast": { "from": "Graveyard" } }, { "OwnedBy": "You" }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

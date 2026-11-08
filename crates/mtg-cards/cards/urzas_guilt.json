@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b0aeeeb6-490c-4638-a4ad-498e4d85413e",
+  "name": "Urza's Guilt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Guilt",
+      "oracle_fingerprint": "999c484546c6459b01a3ac694ed71ac6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "who": "EachPlayer", "count": 2 } },
+              { "Discard": { "who": "EachPlayer", "count": 3 } },
+              { "LoseLife": { "who": "EachPlayer", "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

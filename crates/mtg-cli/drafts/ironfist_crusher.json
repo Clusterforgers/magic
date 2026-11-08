@@ -1,0 +1,15 @@
+{
+  "oracle_id": "ba4c9337-4cdf-44d8-849b-ffd808e5407d",
+  "name": "Ironfist Crusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ironfist Crusher",
+      "oracle_fingerprint": "dda97c553ea26d833c07566040e8d854",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 99 }] } },
+        { "Keyword": { "Morph": "{3}{W}" } }
+      ]
+    }
+  ]
+}

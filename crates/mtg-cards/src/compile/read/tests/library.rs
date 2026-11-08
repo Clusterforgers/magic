@@ -413,6 +413,14 @@ fn a_shuffle_the_templates_do_not_model_stays_unread(#[case] text: &str) {
     "Put target nonland permanent on the bottom of its owner's library.",
     r#"{"Spell":{"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Library":{"place":"Bottom"}}}}]}}"#
 )]
+#[case::second_from_the_top_of_its_owners(
+    "Put target creature into its owner's library second from the top.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Library":{"place":{"Below":1}}}}}]}}"#
+)]
+#[case::third_from_the_top_from_the_graveyard(
+    "Put target card from your graveyard into your library third from the top.",
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Library":{"place":{"Below":2}}}}}]}}"#
+)]
 fn a_card_put_on_a_library_reads_in_the_shape_of_the_hand_written_files(
     #[case] text: &str,
     #[case] json: &str,
@@ -434,7 +442,9 @@ fn a_card_put_on_a_library_as_an_activated_ability_reads(#[case] text: &str) {
 #[case::a_spell("Put target spell on top of its owner's library.")]
 #[case::any_graveyard("Put target card from a graveyard on top of its owner's library.")]
 #[case::shuffled_in("Put target card from your graveyard into your library, then shuffle.")]
-#[case::in_the_middle("Put target card from your graveyard into your library third from the top.")]
+#[case::eleventh_from_the_top(
+    "Put target card from your graveyard into your library eleventh from the top."
+)]
 #[case::the_card_itself("Put ~ on top of your library.")]
 fn a_card_put_on_a_library_the_templates_do_not_model_stays_unread(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");

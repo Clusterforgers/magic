@@ -1,0 +1,59 @@
+{
+  "oracle_id": "9b7a0c9d-1045-4fc0-b5e3-18616106da08",
+  "name": "Orcish Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Healer",
+      "oracle_fingerprint": "90f4306cfd73b99685dd49b25490e141",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantBeRegenerated": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}{B}{R}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Green" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}{G}{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Green" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

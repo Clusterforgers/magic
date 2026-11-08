@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "4bd87c87-885c-4e30-9bbc-eccd75af5fbc",
+  "oracle_id": "be14d3be-295e-431c-b891-590164b730dd",
+  "multiverse_ids": [
+    633077
+  ],
+  "mtgo_id": 117320,
+  "tcgplayer_id": 513403,
+  "cardmarket_id": 730293,
+  "name": "Court of Ardenvale",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/4bd87c87-885c-4e30-9bbc-eccd75af5fbc",
+  "scryfall_uri": "https://scryfall.com/card/woc/21/court-of-ardenvale?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:56:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.jpg?1783914984",
+    "normal": "https://cards.scryfall.io/normal/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.jpg?1783914984",
+    "large": "https://cards.scryfall.io/large/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.jpg?1783914984",
+    "png": "https://cards.scryfall.io/png/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.png?1783914984",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.jpg?1783914984",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.jpg?1783914984",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.webp?1783914984",
+    "grid": "https://cards.scryfall.io/grid/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.webp?1783914984",
+    "display": "https://cards.scryfall.io/display/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.webp?1783914984",
+    "art": "https://cards.scryfall.io/art/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.webp?1783914984",
+    "crop": "https://cards.scryfall.io/crop/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.webp?1783914984",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/b/4bd87c87-885c-4e30-9bbc-eccd75af5fbc.jpg?1783914984"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, you become the monarch.\nAt the beginning of your upkeep, return target permanent card with mana value 3 or less from your graveyard to your hand. If you're the monarch, return that permanent card to the battlefield instead.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "11608fa5-2c53-4008-ad82-555380f5e6f1",
+      "component": "combo_piece",
+      "name": "The Monarch",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/11608fa5-2c53-4008-ad82-555380f5e6f1"
+    },
+    {
+      "object": "related_card",
+      "id": "af7f7659-1f20-45b6-bcd2-21879beb7849",
+      "component": "combo_piece",
+      "name": "Court of Ardenvale",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/af7f7659-1f20-45b6-bcd2-21879beb7849"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "51c0814a-2db2-4182-9aac-77340e9a540d",
+  "set": "woc",
+  "set_name": "Wilds of Eldraine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/51c0814a-2db2-4182-9aac-77340e9a540d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4bd87c87-885c-4e30-9bbc-eccd75af5fbc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abe14d3be-295e-431c-b891-590164b730dd&unique=prints",
+  "collector_number": "21",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Donato Giancola",
+  "artist_ids": [
+    "90332db2-aecb-4d79-917b-95cbeb8d0cb6"
+  ],
+  "illustration_id": "3c9fe4d3-244d-4075-8d39-095b98379f7a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3801,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1905659212",
+    "previewed_at": "2023-08-22"
+  },
+  "prices": {
+    "usd": "7.75",
+    "usd_foil": "12.69",
+    "usd_etched": null,
+    "eur": "5.17",
+    "eur_foil": "5.14",
+    "tix": "1.17"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=633077&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCourt%2Bof%2BArdenvale",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCourt%2Bof%2BArdenvale",
+    "edhrec": "https://edhrec.com/route/?cc=Court+of+Ardenvale"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F513403%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=730293&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117320?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0a45d8d4-2a5e-4b5b-b430-fc2fd5fd82c0",
+  "name": "Skarrgan Skybreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skarrgan Skybreaker",
+      "oracle_fingerprint": "6303aa5ca6ec0d4f165aa4c535b62c55",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bloodthirst", "amount": 3 } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "oracle_id": "a2b6faca-3321-45d2-a027-ff3a8ae61f10",
+  "name": "Ether Well",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ether Well",
+      "oracle_fingerprint": "b8d24e9983a53a3f8b44079214f814c0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "Type": "Creature" }, { "Color": "Red" }]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "Type": "Creature" }, { "Color": "Red" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Library": { "place": "Bottom" } }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Library": { "place": "Top" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

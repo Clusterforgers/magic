@@ -1,0 +1,108 @@
+{
+  "oracle_id": "1cf823e6-ef87-4aea-9166-70ed5d351f28",
+  "name": "Questing Cosplayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Questing Cosplayer",
+      "oracle_fingerprint": "c5adb0cca1248faaf395e144a8f373a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Questing",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "AddKeyword": "Vigilance" },
+                              { "AddKeyword": "Deathtouch" },
+                              { "AddKeyword": "Haste" },
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": {
+                                      "DealsDamage": {
+                                        "source": ["This"],
+                                        "to": "Opponents",
+                                        "combat": true
+                                      }
+                                    },
+                                    "targets": [
+                                      {
+                                        "what": {
+                                          "Object": [
+                                            { "Type": "Planeswalker" },
+                                            { "ControlledBy": "Triggering" }
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    "effects": [
+                                      {
+                                        "DealDamage": {
+                                          "to": { "Target": 0 },
+                                          "amount": "Triggering"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "GrantAbility": {
+                                  "Static": {
+                                    "affected": "This",
+                                    "mods": [
+                                      {
+                                        "CantBeBlockedBy": [
+                                          { "Type": "Creature" },
+                                          { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "GrantAbility": {
+                                  "Rule": {
+                                    "rule": {
+                                      "DamageCantBePrevented": {
+                                        "source": [
+                                          { "Type": "Creature" },
+                                          { "ControlledBy": "You" }
+                                        ],
+                                        "combat": true
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

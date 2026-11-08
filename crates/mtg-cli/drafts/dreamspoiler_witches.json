@@ -1,0 +1,36 @@
+{
+  "oracle_id": "822eb600-cfaf-4ea1-a016-0c1f0cfa6436",
+  "name": "Dreamspoiler Witches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamspoiler Witches",
+      "oracle_fingerprint": "8aaec8b4711adcee58a8cc2232d9e3e8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

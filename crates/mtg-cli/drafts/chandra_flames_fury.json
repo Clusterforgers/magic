@@ -1,0 +1,36 @@
+{
+  "oracle_id": "408966d2-08c0-4531-a3b4-e666840ee95c",
+  "name": "Chandra, Flame's Fury",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chandra, Flame's Fury",
+      "oracle_fingerprint": "a65fc73c4399feb44dda982f73495feb",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 132, "end": 216 }
+          }
+        }
+      ]
+    }
+  ]
+}

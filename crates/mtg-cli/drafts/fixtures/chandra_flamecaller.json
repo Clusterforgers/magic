@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "a83ca3a1-82a9-4f47-b0b8-21687afd705b",
+  "oracle_id": "0c2a9131-f3d7-4f71-8bcc-3c169574b2e3",
+  "multiverse_ids": [
+    482773
+  ],
+  "tcgplayer_id": 212476,
+  "cardmarket_id": 453893,
+  "name": "Chandra, Flamecaller",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/a83ca3a1-82a9-4f47-b0b8-21687afd705b",
+  "scryfall_uri": "https://scryfall.com/card/c20/145/chandra-flamecaller?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:26:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.jpg?1783931174",
+    "normal": "https://cards.scryfall.io/normal/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.jpg?1783931174",
+    "large": "https://cards.scryfall.io/large/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.jpg?1783931174",
+    "png": "https://cards.scryfall.io/png/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.png?1783931174",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.jpg?1783931174",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.jpg?1783931174",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.webp?1783931174",
+    "grid": "https://cards.scryfall.io/grid/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.webp?1783931174",
+    "display": "https://cards.scryfall.io/display/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.webp?1783931174",
+    "art": "https://cards.scryfall.io/art/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.webp?1783931174",
+    "crop": "https://cards.scryfall.io/crop/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.webp?1783931174",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/8/a83ca3a1-82a9-4f47-b0b8-21687afd705b.jpg?1783931174"
+  },
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Planeswalker — Chandra",
+  "oracle_text": "+1: Create two 3/1 red Elemental creature tokens with haste. Exile them at the beginning of the next end step.\n0: Discard all the cards in your hand, then draw that many cards plus one.\n−X: Chandra deals X damage to each creature.",
+  "loyalty": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e4a9051b-f964-43f9-877b-ea4f17620ecb",
+      "component": "token",
+      "name": "Elemental",
+      "type_line": "Token Creature — Elemental",
+      "uri": "https://api.scryfall.com/cards/e4a9051b-f964-43f9-877b-ea4f17620ecb"
+    },
+    {
+      "object": "related_card",
+      "id": "a83ca3a1-82a9-4f47-b0b8-21687afd705b",
+      "component": "combo_piece",
+      "name": "Chandra, Flamecaller",
+      "type_line": "Legendary Planeswalker — Chandra",
+      "uri": "https://api.scryfall.com/cards/a83ca3a1-82a9-4f47-b0b8-21687afd705b"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a83ca3a1-82a9-4f47-b0b8-21687afd705b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0c2a9131-f3d7-4f71-8bcc-3c169574b2e3&unique=prints",
+  "collector_number": "145",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Rainville",
+  "artist_ids": [
+    "6ed7e669-579b-443d-b223-e5cbcb2a7483"
+  ],
+  "illustration_id": "cfa43dc0-2fab-48ec-890c-448b9bf3ada7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8874,
+  "penny_rank": 2475,
+  "prices": {
+    "usd": "0.60",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.41",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=482773&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChandra%252C%2BFlamecaller",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChandra%252C%2BFlamecaller",
+    "edhrec": "https://edhrec.com/route/?cc=Chandra%2C+Flamecaller"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212476%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=453893&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Chandra%2C+Flamecaller&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

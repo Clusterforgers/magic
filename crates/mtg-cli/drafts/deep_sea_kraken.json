@@ -1,0 +1,29 @@
+{
+  "oracle_id": "54de4a7f-86f4-4029-80f7-bc25d6509cc8",
+  "name": "Deep-Sea Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep-Sea Kraken",
+      "oracle_fingerprint": "812e9678fdfc70d6ba9825a90d044548",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        { "Keyword": { "Suspend": { "time": 9, "cost": "{2}{U}" } } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", "Suspended", { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Exile",
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "time" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

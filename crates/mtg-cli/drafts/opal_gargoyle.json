@@ -1,0 +1,39 @@
+{
+  "oracle_id": "efef2d33-5354-4fce-880e-cb91fa60f730",
+  "name": "Opal Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal Gargoyle",
+      "oracle_fingerprint": "27d2f738c6d2ad36845dce7e3181b7a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "SetCreatureTypes": ["Gargoyle"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

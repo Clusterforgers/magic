@@ -1,0 +1,68 @@
+{
+  "oracle_id": "b8dab16c-681c-4abe-b164-fcfb5dc66678",
+  "name": "Nantuko Cultivator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nantuko Cultivator",
+      "oracle_fingerprint": "c30cec77ded1e7a9639c0d1e624e0e33",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "filter": [{ "Type": "Land" }],
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

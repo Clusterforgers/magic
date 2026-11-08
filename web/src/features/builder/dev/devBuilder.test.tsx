@@ -219,7 +219,7 @@ describe('/dev/builder in development', () => {
   it.each([
     ['?deck=verified', 'verified'],
     ['?deck=manual', 'manual_play'],
-    ['?deck=changed', 'changed'],
+    ['?deck=changed', 'unchecked'],
     ['?deck=unchecked', 'unchecked'],
     ['?deck=nonsense', 'blocked'],
   ])('reads %s', async (search, marker) => {

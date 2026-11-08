@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c7fca3f3-b48e-4ac5-be31-ce7ae3c7432c",
+  "name": "Rune of Protection: Green",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Protection: Green",
+      "oracle_fingerprint": "00c7aa9386226730506d1c49be8b39b6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Green" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

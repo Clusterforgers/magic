@@ -1,0 +1,20 @@
+{
+  "oracle_id": "504fac88-1674-4157-becb-0204ab8844bf",
+  "name": "Rohirrim Lancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rohirrim Lancer",
+      "oracle_fingerprint": "0034ae5142187a6cac8ae3b98b943c65",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

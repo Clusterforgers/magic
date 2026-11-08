@@ -1,0 +1,45 @@
+{
+  "oracle_id": "a3b66180-ee08-4bef-90aa-7859dc77cb10",
+  "name": "Orcish Veteran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Veteran",
+      "oracle_fingerprint": "1829d48d6ff61a96f3b7412ad69e3b2e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Color": "White" } },
+                      { "Not": { "Compare": { "stat": "Power", "op": "Ge", "to": 2 } } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

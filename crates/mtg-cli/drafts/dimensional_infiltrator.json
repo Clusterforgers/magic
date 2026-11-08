@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b93732e4-7aeb-4c37-a415-2b0ff46e2056",
+  "name": "Dimensional Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimensional Infiltrator",
+      "oracle_fingerprint": "dafe5f1858aa82b2daf2d0d11a65ad6e",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{C}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

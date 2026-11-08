@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a2fe1e2b-b621-4406-b5e0-f2eebd12c2ba",
+  "name": "Murderous Betrayal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murderous Betrayal",
+      "oracle_fingerprint": "51ba51b38679c3c9a981d70081b4a29b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}{B}" },
+              { "PayLife": { "Half": { "of": { "Life": "You" }, "up": true } } }
+            ],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

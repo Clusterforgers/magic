@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4e769107-0f32-4181-9e57-ffebc2228d3a",
+  "name": "Rise from the Grave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise from the Grave",
+      "oracle_fingerprint": "7a27216ae45e024b8cb49bd970f54a34",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Zombie" }, { "AddColors": ["Black"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

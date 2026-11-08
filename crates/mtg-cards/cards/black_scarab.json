@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2774d8b3-dc5f-4281-b4c5-cb003fef0ab2",
+  "name": "Black Scarab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Scarab",
+      "oracle_fingerprint": "fde9948df4c50706885de75e3e13426f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "Black" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "Black" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

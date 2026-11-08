@@ -111,6 +111,41 @@ pub(crate) fn identity_types(state: &GameState, player: PlayerId) -> Vec<ManaTyp
         .collect()
 }
 
+/// One mana of each colour among the objects `among` picks as `scope` reads it, in the order of the wheel; none while they
+/// have no colour.
+pub(crate) fn colors_among(scope: &Scope<'_>, among: &Selector) -> Vec<ManaType> {
+    let mut colors = mtg_core::color::ColorSet::EMPTY;
+    for object in scope.matching(among).unwrap_or_default() {
+        if let Some(chars) = characteristics(scope.state, object.id) {
+            for color in Color::ALL {
+                if chars.colors.contains(color) {
+                    colors = colors.with(color);
+                }
+            }
+        }
+    }
+    Color::ALL
+        .into_iter()
+        .filter(|color| colors.contains(*color))
+        .map(mana_of)
+        .collect()
+}
+
+/// For each colour the controller of `scope` has devotion to, that many mana of it (CR 700.5), in the order of the wheel.
+pub(crate) fn devotion_lists(scope: &Scope<'_>) -> Vec<Vec<ManaType>> {
+    Color::ALL
+        .into_iter()
+        .filter_map(|color| {
+            let devotion = scope
+                .amount(&mtg_cards::value::Amount::Devotion(vec![color]))
+                .ok()
+                .and_then(|count| usize::try_from(count).ok())
+                .filter(|count| *count > 0)?;
+            Some(vec![mana_of(color); devotion])
+        })
+        .collect()
+}
+
 /// The types of mana the permanents that match `among` could produce, for the ability `place` of `source` that `player`
 /// controls (no `place` means any of its abilities), in the order of the wheel and colourless last: colourless counts
 /// only with `colorless`.
@@ -185,6 +220,19 @@ fn types_of(
             ManaProduced::OneOfLists(lists) => found.extend(lists.iter().flatten().copied()),
             ManaProduced::AnyColor(_) | ManaProduced::AnyCombination { among: [], .. } => {
                 found.extend(COLORS);
+            }
+            // What the game holds now: the colours among the permanents, the colours of some devotion.
+            ManaProduced::EachColorAmong(among) => {
+                let scope = Scope::announcing(state, controller, object.reference());
+                found.extend(colors_among(&scope, among));
+            }
+            ManaProduced::Devotion => {
+                let scope = Scope::announcing(state, controller, object.reference());
+                found.extend(
+                    devotion_lists(&scope)
+                        .into_iter()
+                        .filter_map(|list| list.first().copied()),
+                );
             }
             // Either branch could be added.
             ManaProduced::Instead { base, instead, .. } => {

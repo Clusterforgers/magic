@@ -1,0 +1,21 @@
+{
+  "oracle_id": "594132ac-32a7-41d5-b7f0-3692bbed7f6f",
+  "name": "Prowcatcher Specialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prowcatcher Specialist",
+      "oracle_fingerprint": "3321377830207243581a79fa071fa5ed",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

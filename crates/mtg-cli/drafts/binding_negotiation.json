@@ -1,0 +1,60 @@
+{
+  "oracle_id": "86dc3a41-4fb9-4b1f-8279-2b5edbc7e170",
+  "name": "Binding Negotiation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Binding Negotiation",
+      "oracle_fingerprint": "0e6c739196f97a2c7c1d09dcdfa415e5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You",
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Not": "FaceDown" },
+                            { "OwnedBy": { "Target": 0 } },
+                            { "In": "Exile" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

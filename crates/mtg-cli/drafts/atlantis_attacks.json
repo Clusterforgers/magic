@@ -1,0 +1,64 @@
+{
+  "oracle_id": "b5c8e24a-f4d7-42dc-8117-905ad0bad888",
+  "name": "Atlantis Attacks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atlantis Attacks",
+      "oracle_fingerprint": "bb077b56e8290298052d683b6f845e23",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 4 } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    },
+                    "max": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": {
+                              "Custom": {
+                                "name": "Leviathan",
+                                "colors": ["Blue"],
+                                "types": ["Creature"],
+                                "subtypes": ["Leviathan"],
+                                "power": 6,
+                                "toughness": 5,
+                                "abilities": [{ "Keyword": "Hexproof" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "68c0c04e-b0d5-4721-83bf-bf18e8b7e680",
+  "name": "Scavenging Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scavenging Ghoul",
+      "oracle_fingerprint": "bfd7c24417a66342b985a91d8f8bafeb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "corpse" },
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "corpse" } } }],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

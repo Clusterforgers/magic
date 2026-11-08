@@ -1,0 +1,91 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, create a 2/1 white Cat Warrior creature token.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever one or more other Cats you control die, you may exile NICKNAME, then return him to the battlefield transformed under his owner's control.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Put a +1/+1 counter on each Cat you control.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Create a 2/1 white Cat Warrior creature token. When you do, if you control a red permanent other than CARDNAME, he deals damage equal to the number of creatures you control to any target.",
+      "abilities": [],
+      "gap": "key:Token.RememberOriginalTokens"
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Each opponent chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest.",
+      "abilities": [],
+      "gap": "key:ChooseCard.ChooseEach"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 65
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 66,
+          "end": 209
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 48
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 49,
+          "end": 236
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 237,
+          "end": 396
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

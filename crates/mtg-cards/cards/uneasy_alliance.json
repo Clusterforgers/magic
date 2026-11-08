@@ -1,0 +1,38 @@
+{
+  "oracle_id": "989b93fe-cad0-4890-a228-8a20ca666f10",
+  "name": "Uneasy Alliance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uneasy Alliance",
+      "oracle_fingerprint": "96c416871c6ad7f63b6fb730c937c716",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              { "Exile": { "what": "Attached" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ninja",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ninja"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

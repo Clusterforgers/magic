@@ -1,0 +1,54 @@
+{
+  "oracle_id": "91e49e8e-575f-43c8-9263-a8568697e7f4",
+  "name": "Rictus Robber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rictus Robber",
+      "oracle_fingerprint": "d839274a70be83e26586c10bfcb01077",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Rogue",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Rogue"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{2}{B}" } }
+      ]
+    }
+  ]
+}

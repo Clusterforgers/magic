@@ -1,0 +1,31 @@
+{
+  "oracle_id": "83df0f44-86ca-4adb-9f3a-da1ba6dd7a6d",
+  "name": "Mine Collapse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mine Collapse",
+      "oracle_fingerprint": "61efde65d1947dcd000608d5261907e2",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": "YourTurn",
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Mountain" }] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

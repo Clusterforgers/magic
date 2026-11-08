@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a28fc506-a98c-4b4d-a0f4-7d971489ccbb",
+  "name": "Arc-Slogger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arc-Slogger",
+      "oracle_fingerprint": "aa5403a26d3a585d54af6ce2aed3b1f7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, { "ExileTop": 10 }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

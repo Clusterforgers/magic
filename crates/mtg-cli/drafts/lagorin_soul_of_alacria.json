@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f7b6f5d4-b122-4ab4-a2c2-449ac781359a",
+  "name": "Lagorin, Soul of Alacria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lagorin, Soul of Alacria",
+      "oracle_fingerprint": "b984af5898fff331ead9ea00aedef612",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This", { "HasKeyword": "Saddled" }] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": { "Saddle": 1 } }
+      ]
+    }
+  ]
+}

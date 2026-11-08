@@ -1,0 +1,48 @@
+{
+  "oracle_id": "624bdbfb-b611-43b6-a3c5-cc8b11dbfaae",
+  "name": "Consign to Dream",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consign to Dream",
+      "oracle_fingerprint": "04e48658a65f2b9fc45f8bdb98a45cec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "AnyOf": [{ "Color": "Green" }, { "Color": "Red" }] }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "AnyOf": [{ "Color": "Green" }, { "Color": "Red" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

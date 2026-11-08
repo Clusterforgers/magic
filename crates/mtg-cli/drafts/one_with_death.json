@@ -1,0 +1,12 @@
+{
+  "oracle_id": "f60d0b8c-3086-425f-a53a-769c5badab45",
+  "name": "One with Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "One with Death",
+      "oracle_fingerprint": "7991776eb0fe5085d55c977374cb236e",
+      "abilities": [{ "Spell": { "effects": [{ "LoseGame": {} }] } }]
+    }
+  ]
+}

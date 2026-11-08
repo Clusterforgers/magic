@@ -1,0 +1,37 @@
+{
+  "oracle_id": "76d93d50-4fc1-4ed4-a6dc-5fb193286b54",
+  "name": "House Cartographer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "House Cartographer",
+      "oracle_fingerprint": "9b002bd1d931e9120b990026cd5a8e32",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

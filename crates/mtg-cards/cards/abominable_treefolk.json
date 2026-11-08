@@ -1,0 +1,46 @@
+{
+  "oracle_id": "9d341ed4-4f9b-40df-9bd9-3bfeaf0fe595",
+  "name": "Abominable Treefolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abominable Treefolk",
+      "oracle_fingerprint": "476c2dba7797d30f5d8420315c2c9d9a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

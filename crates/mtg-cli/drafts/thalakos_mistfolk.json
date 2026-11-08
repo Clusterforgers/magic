@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c836f8e4-6154-4c7a-a8dd-165ff74f9115",
+  "name": "Thalakos Mistfolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thalakos Mistfolk",
+      "oracle_fingerprint": "26f74656a5a9b917bc94cda01e22d19f",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

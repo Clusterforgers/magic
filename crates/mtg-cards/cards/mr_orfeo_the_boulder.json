@@ -1,0 +1,37 @@
+{
+  "oracle_id": "58447f16-1df9-4e9a-bb22-b9aad042055a",
+  "name": "Mr. Orfeo, the Boulder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mr. Orfeo, the Boulder",
+      "oracle_fingerprint": "e3f355ceddcc363cb88700f2f3414b85",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

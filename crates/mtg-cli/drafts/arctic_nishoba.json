@@ -1,0 +1,32 @@
+{
+  "oracle_id": "66ae3349-ad37-47da-8ccc-3e1cdddb32a9",
+  "name": "Arctic Nishoba",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arctic Nishoba",
+      "oracle_fingerprint": "08c57d2c76e8206b83855cb7aa03bd42",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "CumulativeUpkeep": "{G/W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
+  "name": "Surgical Suite // Hospital Room",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surgical Suite",
+      "oracle_fingerprint": "7b00b4e9f72c2d6e6867569173775233",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hospital Room",
+      "oracle_fingerprint": "b8d015412041e3fce75728b0476e6911",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

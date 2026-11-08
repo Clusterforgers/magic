@@ -1,0 +1,70 @@
+{
+  "oracle_id": "1b430f67-3686-4452-8594-b060f1a5a04e",
+  "name": "Fortune Teller's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fortune Teller's Talent",
+      "oracle_fingerprint": "44c4b7154f3848ae218056a6607dce56",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["TopOfLibrary"], "from": "Library", "play": true } },
+            "condition": {
+              "All": [
+                { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "SpellCast",
+                        "who": "EachPlayer",
+                        "filter": [{ "ControlledBy": "You" }]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              {
+                "AnyOf": [
+                  { "Not": { "WasCast": { "from": "Hand" } } },
+                  { "Not": { "OwnedBy": "You" } }
+                ]
+              },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 3 } }
+          }
+        }
+      ]
+    }
+  ]
+}

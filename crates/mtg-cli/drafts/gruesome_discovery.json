@@ -1,0 +1,79 @@
+{
+  "oracle_id": "ecdae60b-c594-4e70-909b-83483104a42c",
+  "name": "Gruesome Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruesome Discovery",
+      "oracle_fingerprint": "dc3740a6fa325652b2eb68d27f073648",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" }
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" }
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reveal": {
+                        "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                      }
+                    },
+                    { "Discard": { "who": { "Target": 0 }, "count": 2, "by": "You" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

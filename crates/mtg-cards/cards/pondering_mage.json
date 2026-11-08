@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3f278970-201d-4a93-b038-cc7218f2ac57",
+  "name": "Pondering Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pondering Mage",
+      "oracle_fingerprint": "6d4694c1774464d7d4469aaf898ddcc8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              { "May": { "effects": [{ "Shuffle": {} }] } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

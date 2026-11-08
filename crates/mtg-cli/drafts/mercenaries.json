@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9d96671c-7a98-48ec-b479-bc451e18264d",
+  "name": "Mercenaries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercenaries",
+      "oracle_fingerprint": "e6958c72f7b151279d6ae04aec9d6113",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": "This" }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

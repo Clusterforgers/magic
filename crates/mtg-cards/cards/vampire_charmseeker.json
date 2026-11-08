@@ -1,0 +1,37 @@
+{
+  "oracle_id": "993bc179-4e24-4161-866f-5e146cbdd2f5",
+  "name": "Vampire Charmseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Charmseeker",
+      "oracle_fingerprint": "26e21b99cf8e0c6dcbd944d31d5706d9",
+      "abilities": [
+        { "Keyword": "Assist" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" },
+                        { "Type": "Creature" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

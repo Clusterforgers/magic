@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5a647f28-6e26-4262-8593-d582e0a691f7",
+  "name": "Nature's Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Wrath",
+      "oracle_fingerprint": "f313ce3556d089e918ed71a1b710e378",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{G}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "AnyOf": [{ "Subtype": "Island" }, { "Color": "Blue" }] }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "filter": [{ "AnyOf": [{ "Subtype": "Island" }, { "Color": "Blue" }] }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "AnyOf": [{ "Subtype": "Swamp" }, { "Color": "Black" }] }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "filter": [{ "AnyOf": [{ "Subtype": "Swamp" }, { "Color": "Black" }] }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

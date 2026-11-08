@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "aca45c6b-8cce-44db-9f5b-fa66075db6f6",
+  "oracle_id": "c6a67820-5066-462f-a621-1ecab8bf4f97",
+  "multiverse_ids": [
+    625103
+  ],
+  "mtgo_id": 114507,
+  "tcgplayer_id": 505862,
+  "cardmarket_id": 722993,
+  "name": "Jaya's Phoenix",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/aca45c6b-8cce-44db-9f5b-fa66075db6f6",
+  "scryfall_uri": "https://scryfall.com/card/cmm/738/jayas-phoenix?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:04:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.jpg?1783915480",
+    "normal": "https://cards.scryfall.io/normal/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.jpg?1783915480",
+    "large": "https://cards.scryfall.io/large/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.jpg?1783915480",
+    "png": "https://cards.scryfall.io/png/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.png?1783915480",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.jpg?1783915480",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.jpg?1783915480",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.webp?1783915480",
+    "grid": "https://cards.scryfall.io/grid/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.webp?1783915480",
+    "display": "https://cards.scryfall.io/display/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.webp?1783915480",
+    "art": "https://cards.scryfall.io/art/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.webp?1783915480",
+    "crop": "https://cards.scryfall.io/crop/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.webp?1783915480",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/c/aca45c6b-8cce-44db-9f5b-fa66075db6f6.jpg?1783915480"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Phoenix",
+  "oracle_text": "Flying, haste\nWhenever this creature deals combat damage to a player or planeswalker, copy the next loyalty ability you activate this turn when you activate it. You may choose new targets for the copy.\nWhenever you cast a planeswalker spell, you may return this card from your graveyard to the battlefield.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aca45c6b-8cce-44db-9f5b-fa66075db6f6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac6a67820-5066-462f-a621-1ecab8bf4f97&unique=prints",
+  "collector_number": "738",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justyna Dura",
+  "artist_ids": [
+    "d2340aef-8ca9-4e0d-864c-6a4e8d5e350a"
+  ],
+  "illustration_id": "cec16599-7ba1-47df-9494-9d93920303ae",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8228,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1875252139",
+    "previewed_at": "2023-07-18"
+  },
+  "prices": {
+    "usd": "0.45",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": null,
+    "tix": "1.86"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=625103&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJaya%2527s%2BPhoenix",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJaya%2527s%2BPhoenix",
+    "edhrec": "https://edhrec.com/route/?cc=Jaya%27s+Phoenix"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F505862%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=722993&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114507?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

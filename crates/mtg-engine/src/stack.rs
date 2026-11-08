@@ -45,13 +45,39 @@ pub(crate) fn resolve_top(state: &GameState) -> Option<Vec<Event>> {
     })
 }
 
-/// A permanent spell resolving: the spell, then the loyalty counters a planeswalker and the lore counter a Saga enter with, and the host an Aura
+/// A permanent spell resolving: the spell, then the loyalty counters a planeswalker and the lore counter a Saga enter with, what the
+/// riders of the mana spent on it give it, and the host an Aura
 /// enters attached to (CR 303.4f).
 pub(crate) fn resolved(state: &GameState, id: ObjectId) -> Vec<Event> {
     let mut events = vec![Event::SpellResolved { object: id }];
+    events.extend(entering_counters(state, id));
+    events.extend(crate::spend_rider::entering(state, id));
+    events.extend(attach::entering(state, id));
+    events
+}
+
+/// The counters a permanent card enters with (loyalty, defense, lore), proposed with the event that moves it: a
+/// resolving spell and a played land both use it.
+pub(crate) fn entering_counters(state: &GameState, id: ObjectId) -> Vec<Event> {
+    let mut events = Vec::new();
     events.extend(loyalty::entering(state, id));
     events.extend(battle::entering(state, id));
     events.extend(saga::entering(state, id));
-    events.extend(attach::entering(state, id));
+    events
+}
+
+/// The land play of `object` with the counters it enters with.
+pub(crate) fn land_played(
+    state: &GameState,
+    player: PlayerId,
+    object: ObjectId,
+    face: Option<u8>,
+) -> Vec<Event> {
+    let mut events = vec![Event::LandPlayed {
+        player,
+        object,
+        face,
+    }];
+    events.extend(entering_counters(state, object));
     events
 }

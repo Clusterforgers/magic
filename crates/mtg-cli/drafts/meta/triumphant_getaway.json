@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Flash",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, heist target opponent's library twice.",
+      "abilities": [],
+      "gap": "effect:Heist"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you cast a spell you don't own, each opponent loses 2 life and you gain 2 life.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 5
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 6,
+          "end": 76
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 77,
+          "end": 165
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

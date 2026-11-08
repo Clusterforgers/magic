@@ -1,0 +1,39 @@
+{
+  "oracle_id": "896213bb-28a0-45a4-abbd-35af51f1d9aa",
+  "name": "Attentive Skywarden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Attentive Skywarden",
+      "oracle_fingerprint": "4047c1b4285466cbafa62461cfb8b942",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Battle" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Incubator" }, "Token", { "ControlledBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Transform": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

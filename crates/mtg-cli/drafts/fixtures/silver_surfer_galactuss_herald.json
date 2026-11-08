@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "b463462f-8044-4e57-b96e-408a9f4e0974",
+  "oracle_id": "be02005c-0e37-4dba-ac8e-3c69d06bbec2",
+  "multiverse_ids": [],
+  "resource_id": "658D7DC859993C7DFCACDC74A6082DDD2C107AF35FDD6ADCD3BD35293EDBB280",
+  "mtgo_id": 150459,
+  "arena_id": 105392,
+  "tcgplayer_id": 697580,
+  "cardmarket_id": 891865,
+  "name": "Silver Surfer, Galactus's Herald",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/b463462f-8044-4e57-b96e-408a9f4e0974",
+  "scryfall_uri": "https://scryfall.com/card/msc/10/silver-surfer-galactuss-herald?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.jpg?1783903299",
+    "normal": "https://cards.scryfall.io/normal/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.jpg?1783903299",
+    "large": "https://cards.scryfall.io/large/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.jpg?1783903299",
+    "png": "https://cards.scryfall.io/png/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.png?1783903299",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.jpg?1783903299",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.jpg?1783903299",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.webp?1783903299",
+    "grid": "https://cards.scryfall.io/grid/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.webp?1783903299",
+    "display": "https://cards.scryfall.io/display/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.webp?1783903299",
+    "art": "https://cards.scryfall.io/art/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.webp?1783903299",
+    "crop": "https://cards.scryfall.io/crop/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.webp?1783903299",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/4/b463462f-8044-4e57-b96e-408a9f4e0974.jpg?1783903299"
+  },
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Alien Hero",
+  "oracle_text": "Flying\nWhen Silver Surfer enters, you may search your library for a card named Galactus, Devourer of Worlds, reveal it, put it into your hand, then shuffle.\nWhenever Silver Surfer deals combat damage to a player, until the end of your next turn, target creature attacks that player each combat if able.",
+  "power": "4",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Flying"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d252b7b0-bdcd-48b8-a006-ec4f04032329",
+      "component": "combo_piece",
+      "name": "Galactus, Devourer of Worlds",
+      "type_line": "Legendary Creature — Elder Alien",
+      "uri": "https://api.scryfall.com/cards/d252b7b0-bdcd-48b8-a006-ec4f04032329"
+    },
+    {
+      "object": "related_card",
+      "id": "657cc9b4-eb02-4b68-b395-35538d4ccccf",
+      "component": "combo_piece",
+      "name": "Silver Surfer, Galactus's Herald",
+      "type_line": "Legendary Creature — Alien Hero",
+      "uri": "https://api.scryfall.com/cards/657cc9b4-eb02-4b68-b395-35538d4ccccf"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b463462f-8044-4e57-b96e-408a9f4e0974/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abe02005c-0e37-4dba-ac8e-3c69d06bbec2&unique=prints",
+  "collector_number": "10",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Irvin Rodriguez",
+  "artist_ids": [
+    "8143991c-e24c-490e-a9d4-a5464f14d25b"
+  ],
+  "illustration_id": "2836b74a-06e0-4454-869e-bd1130ac5f2a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 15966,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.42",
+    "eur_foil": null,
+    "tix": "0.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSilver%2BSurfer%252C%2BGalactus%2527s%2BHerald",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSilver%2BSurfer%252C%2BGalactus%2527s%2BHerald",
+    "edhrec": "https://edhrec.com/route/?cc=Silver+Surfer%2C+Galactus%27s+Herald"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697580%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891865&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150459?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

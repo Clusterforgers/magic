@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1b885600-def1-4b2c-a6cb-02df34d58a1b",
+  "name": "Shivan Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shivan Emissary",
+      "oracle_fingerprint": "e5a6dad245f170069476c99a6fbdf736",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

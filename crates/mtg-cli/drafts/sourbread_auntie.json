@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6b087ae1-1412-4dd9-9b96-3b45be52d386",
+  "name": "Sourbread Auntie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sourbread Auntie",
+      "oracle_fingerprint": "051ce1166852dfebcaefe4262438ef68",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Blight": 2 }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin",
+                            "colors": ["Black", "Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

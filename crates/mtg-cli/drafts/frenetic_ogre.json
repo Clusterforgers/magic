@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6eb4b649-c578-4b29-8da1-7c757412bec0",
+  "name": "Frenetic Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frenetic Ogre",
+      "oracle_fingerprint": "4607a4140d60aced7225465912e0843d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, { "DiscardRandom": 1 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

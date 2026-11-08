@@ -1,0 +1,14 @@
+{
+  "oracle_id": "12acd466-deb9-4e68-b75b-aed86680b917",
+  "name": "Ayumi, the Last Visitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ayumi, the Last Visitor",
+      "oracle_fingerprint": "26b9e827000f044450ff678ed4e3c31b",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Type": "Land" }, { "Supertype": "Legendary" }] } }
+      ]
+    }
+  ]
+}

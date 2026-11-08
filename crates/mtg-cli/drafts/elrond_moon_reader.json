@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3f4d6f91-95ad-4687-8899-5a21a0abb49e",
+  "name": "Elrond, Moon-Reader",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Elrond, Moon-Reader",
+      "oracle_fingerprint": "612dd9724fda43e1ef10603002485e08",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 103 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{U}{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }, "Other"]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

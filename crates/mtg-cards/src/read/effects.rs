@@ -71,22 +71,56 @@ fn bounds(ctx: &Ctx, bounds: &Bounds) -> String {
     }
 }
 
+/// The cards a discard takes: "a card", or "a creature card" when a filter limits them.
+fn discarded(ctx: &Ctx, count: &Amount, filter: Option<&Selector>) -> String {
+    let Some(filter) = filter else {
+        return phrase::counted(ctx, count, "card");
+    };
+    let what = phrase::selector(ctx, filter);
+    match count {
+        Amount::Fixed(1) => format!("a {what} card"),
+        other => format!("{} {what} cards", phrase::amount(ctx, other)),
+    }
+}
+
+/// A discard, with the player who chooses the cards when it is not the one who discards.
+fn discard_text(ctx: &Ctx, effect: &Effect) -> Option<String> {
+    let Effect::Discard {
+        who,
+        count,
+        random,
+        filter,
+        by,
+        optional,
+        ..
+    } = effect
+    else {
+        return None;
+    };
+    let at_random = if *random { " at random" } else { "" };
+    let cards = discarded(ctx, count, filter.as_ref());
+    let may = if *optional { " (may be none)" } else { "" };
+    let chosen = by.as_ref().map_or(String::new(), |by| {
+        format!(" chosen by {}{may}", phrase::who(ctx, by))
+    });
+    Some(act(
+        ctx,
+        who,
+        "discard",
+        &format!("{cards}{at_random}{chosen}"),
+    ))
+}
+
 /// The effects about cards in hands and libraries, and about life and damage.
 fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
     Some(match effect {
-        Effect::Draw { who, count } => act(ctx, who, "draw", &phrase::counted(ctx, count, "card")),
-        Effect::Discard {
-            who, count, random, ..
-        } => {
-            let at_random = if *random { " at random" } else { "" };
-            act(
-                ctx,
-                who,
-                "discard",
-                &format!("{}{at_random}", phrase::counted(ctx, count, "card")),
-            )
+        Effect::Draw { who, count, .. } => {
+            act(ctx, who, "draw", &phrase::counted(ctx, count, "card"))
         }
-        Effect::Mill { who, count } => act(ctx, who, "mill", &phrase::counted(ctx, count, "card")),
+        Effect::Discard { .. } => discard_text(ctx, effect)?,
+        Effect::Mill { who, count, .. } => {
+            act(ctx, who, "mill", &phrase::counted(ctx, count, "card"))
+        }
         Effect::Scry { who, count } => act(ctx, who, "scry", &phrase::amount(ctx, count)),
         Effect::Surveil { who, count } => act(ctx, who, "surveil", &phrase::amount(ctx, count)),
         Effect::GainLife { who, amount } => act(
@@ -101,7 +135,9 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
             "lose",
             &format!("{} life", phrase::amount(ctx, amount)),
         ),
-        Effect::DealDamage { source, to, amount } => {
+        Effect::DealDamage {
+            source, to, amount, ..
+        } => {
             let damage = format!(
                 "{} damage to {}",
                 phrase::amount(ctx, amount),
@@ -112,6 +148,7 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
                 None => format!("deal {damage}"),
             }
         }
+        Effect::LookAtHand { of } => format!("look at {} hand", phrase::whose(ctx, of)),
         Effect::Reveal { what } => format!("reveal {}", phrase::who(ctx, what)),
         Effect::Shuffle { who } => act(
             ctx,
@@ -134,6 +171,7 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
         }
         Effect::Search {
             who,
+            of,
             zone,
             filter,
             count,
@@ -145,7 +183,7 @@ fn cards(ctx: &Ctx, effect: &Effect) -> Option<String> {
             "search",
             &format!(
                 "{} {} for {} {}{}",
-                phrase::whose(ctx, who),
+                phrase::whose(ctx, of.as_ref().unwrap_or(who)),
                 phrase::zone_text(*zone).trim_start_matches("a "),
                 bounds(ctx, count),
                 found_cards(ctx, filter, count),
@@ -253,9 +291,10 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
         }
         Destination::Library { place, order } => {
             let place = match place {
-                Place::Top => "on top of",
-                Place::Bottom => "on the bottom of",
-                Place::Shuffled => "into",
+                Place::Top => "on top of".to_owned(),
+                Place::Bottom => "on the bottom of".to_owned(),
+                Place::Below(below) => format!("beneath the top {below} cards of"),
+                Place::Shuffled => "into".to_owned(),
             };
             let order = match order {
                 Some(Order::Random) => " in a random order",
@@ -276,8 +315,10 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
 /// The effects on permanents, spells and the cards they move.
 fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
     Some(match effect {
-        Effect::Move { what, to } => moved(ctx, what, to),
-        Effect::Destroy { what, regenerate } => format!(
+        Effect::Move { what, to, .. } => moved(ctx, what, to),
+        Effect::Destroy {
+            what, regenerate, ..
+        } => format!(
             "destroy {}{}",
             phrase::who(ctx, what),
             if *regenerate {
@@ -293,13 +334,13 @@ fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
                 .as_ref()
                 .map_or_else(String::new, |until| format!(" {}", phrase::duration(until)))
         ),
-        Effect::Sacrifice { who, filter, count } => {
-            act(ctx, who, "sacrifice", &sacrificed(ctx, count, filter))
-        }
-        Effect::Counter { what } => format!("counter {}", phrase::who(ctx, what)),
+        Effect::Sacrifice {
+            who, filter, count, ..
+        } => act(ctx, who, "sacrifice", &sacrificed(ctx, count, filter)),
+        Effect::Counter { what, .. } => format!("counter {}", phrase::who(ctx, what)),
         Effect::Tap { what, .. } => format!("tap {}", phrase::who(ctx, what)),
         Effect::Untap { what } => format!("untap {}", phrase::who(ctx, what)),
-        Effect::Attach { what, to } => format!(
+        Effect::Attach { what, to, .. } => format!(
             "attach {} to {}",
             phrase::who(ctx, what),
             phrase::who(ctx, to)
@@ -426,9 +467,16 @@ fn token_text(ctx: &Ctx, token: &TokenRef) -> String {
     match token {
         TokenRef::Named(name) => name.clone(),
         TokenRef::Custom(spec) => spec_text(ctx, spec),
-        TokenRef::Sized { size, token } => {
-            let size = phrase::amount(ctx, size);
-            format!("{size}/{size} {}", spec_text(ctx, token))
+        TokenRef::Sized {
+            size,
+            toughness,
+            token,
+        } => {
+            let power = phrase::amount(ctx, size);
+            let toughness = toughness
+                .as_ref()
+                .map_or_else(|| power.clone(), |t| phrase::amount(ctx, t));
+            format!("{power}/{toughness} {}", spec_text(ctx, token))
         }
         TokenRef::CopyOf {
             of, no_mana_cost, ..
@@ -507,6 +555,7 @@ fn block(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool {
                 list(ctx, otherwise, depth + 1, out);
             }
         }
+        Effect::Together { effects } => list(ctx, effects, depth, out),
         Effect::May { who, effects } => {
             out.push(Step::new(depth, format!("{} may:", phrase::who(ctx, who))));
             list(ctx, effects, depth + 1, out);
@@ -562,6 +611,15 @@ fn block(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool {
             out.push(Step::new(depth + 1, "or:"));
             list(ctx, second, depth + 1, out);
         }
+        Effect::OneOf { options, .. } => {
+            out.push(Step::new(depth, "choose one when this resolves:"));
+            for (at, option) in options.iter().enumerate() {
+                if at > 0 {
+                    out.push(Step::new(depth + 1, "or:"));
+                }
+                list(ctx, option, depth + 1, out);
+            }
+        }
         _ => return repeated(ctx, effect, depth, out),
     }
     true
@@ -585,8 +643,13 @@ fn repeated(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool 
             effects,
             once,
             this_turn,
+            until,
         } => {
-            let scope = if *this_turn { " this turn" } else { "" };
+            let scope = match until {
+                Some(until) => format!(" {}", phrase::duration(until)),
+                None if *this_turn => " this turn".to_owned(),
+                None => String::new(),
+            };
             let times = if *once { "the next time" } else { "each time" };
             out.push(Step::new(
                 depth,

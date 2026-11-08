@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9851f207-9f75-4ceb-8024-8f9bf21f90ad",
+  "name": "Shipwreck Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shipwreck Patrol",
+      "oracle_fingerprint": "62d7b888f46bc8ec6bd3e42cda7ba335",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

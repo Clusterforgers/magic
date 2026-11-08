@@ -1,0 +1,65 @@
+{
+  "oracle_id": "c7ec52b1-295a-4daa-86fd-dcbe6fb412d7",
+  "name": "Pippin's Bravery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pippin's Bravery",
+      "oracle_fingerprint": "6eecb353c8561da608ab9b35e6d58560",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Subtype": "Food" }], "as": "sacrificed" } }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Bound": "sacrificed~moved" },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 4,
+                            "otherwise": 2
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Bound": "sacrificed~moved" },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 4,
+                            "otherwise": 2
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

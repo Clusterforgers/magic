@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0b7e950a-89e1-4ec4-94af-5af2f1252b12",
+  "name": "Patched Plaything",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patched Plaything",
+      "oracle_fingerprint": "ed3b42cdb3e2cafe1c079af283234573",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 2 } },
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  "This",
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

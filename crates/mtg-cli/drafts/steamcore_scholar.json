@@ -1,0 +1,50 @@
+{
+  "oracle_id": "0fb9a928-9adb-4dc1-9761-857df7e6c643",
+  "name": "Steamcore Scholar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steamcore Scholar",
+      "oracle_fingerprint": "9731bad8c4794717fdca603593f7de78",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Discard": {
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              {
+                                "Not": {
+                                  "AnyOf": [
+                                    { "Not": { "Type": "Creature" } },
+                                    { "Not": { "HasKeyword": "Flying" } }
+                                  ]
+                                }
+                              },
+                              { "Type": "Instant" },
+                              { "Type": "Sorcery" }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

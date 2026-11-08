@@ -1,0 +1,49 @@
+{
+  "oracle_id": "726dbbce-cd5e-4605-aa1d-ae5ec80cc8cf",
+  "name": "Priest of the Blessed Graf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Priest of the Blessed Graf",
+      "oracle_fingerprint": "a97f1b063048dfd864f7cbc25cd6908e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                            "op": "Gt",
+                            "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "Asker" }] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

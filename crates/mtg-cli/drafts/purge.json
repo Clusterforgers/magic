@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d06f0f7c-0270-44be-991a-a5ebbddb0900",
+  "name": "Purge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purge",
+      "oracle_fingerprint": "a4be9368944d7883ddf44dcaee36329c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Color": "Black" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

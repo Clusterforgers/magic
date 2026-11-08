@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4a3f1110-919c-4fd0-8154-9c9441a7d770",
+  "name": "Lost Hours",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost Hours",
+      "oracle_fingerprint": "f0d646eab73d1e111cf29769ef8c2e56",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": { "Below": 2 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

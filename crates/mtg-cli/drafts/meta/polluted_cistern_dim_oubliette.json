@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever one or more cards are put into your graveyard from your library, each opponent loses 1 life for each card type among those cards.",
+      "abilities": [],
+      "gap": "amount:TriggerObjectsCards"
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "When you unlock this door, mill three cards, then return a creature card from your graveyard to the battlefield.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 138
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 112
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

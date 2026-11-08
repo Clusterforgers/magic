@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0e353a41-b523-4c22-9bda-d10460ba99c7",
+  "name": "Uruk-hai Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uruk-hai Berserker",
+      "oracle_fingerprint": "97b9119655097db91c670b9cd62e7976",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

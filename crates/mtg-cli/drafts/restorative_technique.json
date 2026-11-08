@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f7b2606c-42b8-46d6-bcaa-8d4506b348eb",
+  "name": "Restorative Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Restorative Technique",
+      "oracle_fingerprint": "3b5cbc4faaeea49568f554b4f09a6c79",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "GainLife": { "who": { "Target": 0 }, "amount": 2 } },
+              {
+                "Search": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "78c7c73f-847d-43bf-9e02-cf85357453f4",
+  "name": "Resilient Roadrunner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resilient Roadrunner",
+      "oracle_fingerprint": "c8c9619f793d499da785ad1f82fac542",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": { "Protection": [{ "Subtype": "Coyote" }] } },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Not": { "HasKeyword": "Haste" } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

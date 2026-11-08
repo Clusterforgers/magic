@@ -1,0 +1,45 @@
+{
+  "oracle_id": "044a169e-32ae-464a-a642-8d3409e82d9f",
+  "name": "Flailing Manticore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flailing Manticore",
+      "oracle_fingerprint": "ea5dcf15eb97cc3c2b1763023dafaad2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

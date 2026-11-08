@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9132d7e6-7190-45e1-9c57-8fe2e5d0f2f2",
+  "name": "Venom, Eddie Brock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venom, Eddie Brock",
+      "oracle_fingerprint": "d0eb87cc93d1a3be3978bc420f8406a4",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Subtype": "Villain" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

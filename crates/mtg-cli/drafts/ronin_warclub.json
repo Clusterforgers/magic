@@ -1,0 +1,31 @@
+{
+  "oracle_id": "11b969f2-ff68-4c9e-b3f3-839736084303",
+  "name": "Ronin Warclub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ronin Warclub",
+      "oracle_fingerprint": "b7cf0b0151b3fee747c828f43545b72f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

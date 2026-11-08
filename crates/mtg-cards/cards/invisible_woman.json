@@ -40,27 +40,33 @@
             "when": {
               "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
             },
-            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "Pay": {
                   "cost": "{W}{U}{R}{G}",
                   "paid": [
                     {
-                      "Continuous": {
-                        "affected": { "Target": 0 },
-                        "mods": [
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
                           {
-                            "ModifyPT": {
-                              "power": {
-                                "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
-                              },
-                              "toughness": 0
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [
+                                {
+                                  "ModifyPT": {
+                                    "power": {
+                                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                    },
+                                    "toughness": 0
+                                  }
+                                },
+                                "CantBeBlocked"
+                              ],
+                              "duration": "UntilEndOfTurn"
                             }
-                          },
-                          "CantBeBlocked"
-                        ],
-                        "duration": "UntilEndOfTurn"
+                          }
+                        ]
                       }
                     }
                   ]

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ca00eb17-e5c3-42c8-a665-431f5f95b67f",
+  "name": "Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seeker",
+      "oracle_fingerprint": "16cca205419143bcf44b74d682224b2b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Not": { "Type": "Artifact" } },
+                  { "Not": { "Color": "White" } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

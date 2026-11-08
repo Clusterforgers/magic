@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6a555c10-4dc2-455d-87b4-c7fdbf3d29a6",
+  "name": "Virulent Wound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Virulent Wound",
+      "oracle_fingerprint": "a7cf74002494d1cc52cc75fec19ea256",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "PutCounters": { "on": { "ControllerOf": "Triggering" }, "counter": "poison" }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

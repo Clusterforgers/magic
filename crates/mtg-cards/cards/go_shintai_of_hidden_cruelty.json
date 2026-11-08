@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ff8cf669-a38a-44ae-baff-420f59492371",
+  "name": "Go-Shintai of Hidden Cruelty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Go-Shintai of Hidden Cruelty",
+      "oracle_fingerprint": "c01fb5bbb0d1ae020364275a947d980e",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                {
+                                  "Compare": {
+                                    "stat": "Toughness",
+                                    "op": "Le",
+                                    "to": {
+                                      "Count": [{ "Subtype": "Shrine" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "642fa01d-025e-44dd-8360-5325e5a28282",
+  "name": "Dread Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Summons",
+      "oracle_fingerprint": "6b37c511f1e8b7380318f5b1f8d022ae",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": "X", "as": "milled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

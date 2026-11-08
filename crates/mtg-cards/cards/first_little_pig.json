@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ab711f51-71a8-4607-9e9b-aba2cb5d72b7",
+  "name": "First Little Pig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "First Little Pig",
+      "oracle_fingerprint": "7c0c340c0eb90bcb1b50b7a29a0f76e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{G/W}",
+            "limit": "OncePerGame",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

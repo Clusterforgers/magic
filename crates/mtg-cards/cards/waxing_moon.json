@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bbb4f08f-3016-40c2-ae7c-afc720eeb27a",
+  "name": "Waxing Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waxing Moon",
+      "oracle_fingerprint": "2f09ee9008d5f93f580c605510180a41",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Werewolf" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Transform": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

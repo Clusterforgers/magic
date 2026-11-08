@@ -42,9 +42,10 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 41] = [
+const TEMPLATES: [Template; 42] = [
     super::w13b_mill_rad::w13b_tapped_for_counters,
     super::w9d_exert::w9d_exert,
+    super::r6f_flash_sacrifice::r6f_flash_sacrifice,
     super::c11b_once::c11b_once,
     super::c8_eg_cast_itself::c8_eg_cast_itself,
     super::c6_blk_draws::c6_blk_draw_replacement,
@@ -314,6 +315,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     if r.words("choose a land type") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::LandType), None));
     }
+    if let Some(kind) = super::e15b_entering::read_choose_type(r) {
+        return Some(replacement(ReplaceBy::Choose(kind), None));
+    }
     if r.words("choose a player") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
@@ -521,6 +525,13 @@ pub(super) fn one_kind(r: &mut Reader<'_>) -> Option<Selector> {
 fn rule(r: &mut Reader<'_>) -> Option<Ability> {
     let rule = if r.words("play with the top card of your library revealed") {
         GameRule::RevealTop(Ref::You)
+    } else if r
+        .attempt(|r| {
+            (r.words("a deck can have any number of cards named") && r.source()).then_some(())
+        })
+        .is_some()
+    {
+        GameRule::AnyNumberInDeck
     } else if let Some(rule) = r.attempt(super::w17b_statics::w17b_read) {
         rule
     } else if let Some(rule) = r.attempt(player_rule) {
@@ -944,6 +955,7 @@ pub(super) fn given_text(mods: &[Modification]) -> Option<String> {
         {
             Some(format!("\"{}\"", render::ability(ability)?))
         }
+        [Modification::GrantAbility(_), ..] => super::e10c_granted::e10c_given_text(mods),
         [
             keyword @ Modification::AddKeyword(_),
             Modification::GrantAbility(ability),
@@ -1068,11 +1080,14 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
         (None, None) => r.attempt(cost_conditions::trailing),
     };
     Some(Ability::CostModifier {
+        targeting: None,
         applies_to,
         change,
         mana,
         per,
         condition,
+        activating: None,
+        least: 0,
     })
 }
 
@@ -1146,6 +1161,7 @@ fn cost_modifier_texts(
     let mut subjects = Vec::new();
     subjects.extend(cost_conditions::shared_subject_text(applies_to));
     subjects.extend(cost_conditions::cast_before_number(&subject));
+    subjects.extend(super::e15b_entering::cast_before_chosen(&subject));
     subjects.push(subject);
     subjects
         .into_iter()
@@ -1224,6 +1240,28 @@ pub(super) fn statics(
     }
 }
 
+/// "Creatures your opponents control enter tapped", "Lands you control enter untapped": a group, not the permanent itself.
+fn group_enters(ability: &Ability) -> Option<String> {
+    let Ability::Replacement {
+        when: ReplaceWhen::Enters { what },
+        by,
+        condition: None,
+        from: ZoneKind::Battlefield,
+    } = ability
+    else {
+        return None;
+    };
+    let how = match by {
+        ReplaceBy::Tapped => "tapped",
+        ReplaceBy::Untapped => "untapped",
+        _ => return None,
+    };
+    if *what == Selector::this() {
+        return None;
+    }
+    phrase_text(what, Form::All).map(|group| format!("{group} enter {how}"))
+}
+
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
 pub fn texts(ability: &Ability) -> Vec<String> {
@@ -1232,6 +1270,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
     group.extend(super::w14c_alt_costs::w14c_alt_cost_texts(ability));
     group.extend(super::t15a_alt_costs::t15a_alt_cost_texts(ability));
     group.extend(super::w17c_cast_only::w17c_cast_only_texts(ability));
+    group.extend(group_enters(ability));
     let sentences = match ability {
         _ if !group.is_empty() => group,
         Ability::Replacement {
@@ -1240,15 +1279,6 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition,
             from: ZoneKind::Battlefield,
         } if *what == Selector::this() => entering_texts(by, condition.as_ref()),
-        Ability::Replacement {
-            when: ReplaceWhen::Enters { what },
-            by: ReplaceBy::Tapped,
-            condition: None,
-            from: ZoneKind::Battlefield,
-        } => phrase_text(what, Form::All)
-            .map(|group| format!("{group} enter tapped"))
-            .into_iter()
-            .collect(),
         Ability::Replacement {
             when: ReplaceWhen::Enters { what },
             by:
@@ -1301,12 +1331,21 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             written
         }
         Ability::CostModifier {
+            targeting: None,
             applies_to,
             change,
             mana,
             per,
             condition,
-        } => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
+            activating,
+            least: 0,
+        } => match (activating, condition) {
+            (None, _) => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
+            (Some(kind), None) => super::g13g_activation_costs::g13g_activation_texts(
+                *kind, applies_to, *change, mana, per,
+            ),
+            _ => Vec::new(),
+        },
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },
             ..
@@ -1346,15 +1385,22 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             },
             None,
         ) => {
-            let tapped = if *tapped { " tapped" } else { "" };
+            // "enters tapped with two charge counters" and "enters tapped and with three coin counters".
+            let ways: &[&str] = if *tapped {
+                &[" tapped", " tapped and"]
+            } else {
+                &[""]
+            };
             // A counted number is X, named at the end of the sentence.
             let (shown, tail) = match defining::value_text(count) {
                 Some(said) => (Amount::X, format!(", where X is {said}")),
                 None => (count.clone(), String::new()),
             };
-            counters::entering_text(counter, &shown)
-                .map(|counters| format!("~ enters{tapped} with {counters} on it{tail}"))
-                .into_iter()
+            let Some(counters) = counters::entering_text(counter, &shown) else {
+                return Vec::new();
+            };
+            ways.iter()
+                .map(|way| format!("~ enters{way} with {counters} on it{tail}"))
                 .collect()
         }
         (
@@ -1386,13 +1432,28 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::Choose(EntersChoice::Opponent), None) => {
             vec!["As ~ enters, choose an opponent".to_owned()]
         }
+        (
+            ReplaceBy::Choose(
+                kind @ (EntersChoice::CardType
+                | EntersChoice::BasicLandType
+                | EntersChoice::CardTypeOf(_)),
+            ),
+            None,
+        ) => super::e15b_entering::choose_type_texts(*kind),
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
         (ReplaceBy::RevealOrTapped(of), None) => reveal_texts(of),
+        (ReplaceBy::PayOrGraveyard { cost, optional }, None) => {
+            super::e14b_entering::pay_or_graveyard_texts(cost, *optional)
+        }
+        (ReplaceBy::RevealOrTapped(of), Some(Condition::Not(held))) => {
+            reveal_unless_texts(of, held)
+        }
         (ReplaceBy::TappedForCounters { counter, count }, None) => {
             super::w13b_mill_rad::w13b_tapped_texts(counter, *count)
         }
+        (ReplaceBy::WithCounterOf(kinds), None) => super::e15b_entering::counter_of_texts(kinds),
         (ReplaceBy::DayIfNeither, None) => {
             vec!["If it's neither day nor night, it becomes day as ~ enters".to_owned()]
         }
@@ -1505,6 +1566,11 @@ pub(super) fn control_texts(condition: &Condition) -> Vec<String> {
             .into_iter()
             .map(|kind| format!("{verb} {kind}"))
             .collect(),
+        // r7d: one or more among the opponents' permanents is "an opponent controls a ...".
+        (Cmp::Ge, 1) => single_texts(&selector)
+            .into_iter()
+            .map(|kind| format!("an opponent controls {kind}"))
+            .collect(),
         (Cmp::Ge | Cmp::Le, 2..) | (Cmp::Le, 1) => {
             let (Some(words), Some(group)) =
                 (count_word(number), phrase_text(&selector, Form::All))
@@ -1544,8 +1610,12 @@ pub(super) fn single_texts(selector: &Selector) -> Vec<String> {
             format!("{} {first} or {}", article(first), others.join(" or ")),
         ];
     }
+    // "another Human": the card itself is left out of the count (t18); the phrase carries "another" as its article.
     if selector.0.contains(&Pred::Other) {
-        return Vec::new();
+        return phrase_text(selector, Form::Subject)
+            .filter(|text| text.starts_with("another "))
+            .into_iter()
+            .collect();
     }
     phrase_text(selector, Form::Subject)
         .map(|text| format!("{} {text}", article(&text)))
@@ -1555,8 +1625,11 @@ pub(super) fn single_texts(selector: &Selector) -> Vec<String> {
 
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
     // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
-    if from == ZoneKind::Graveyard {
-        return super::c8_eg_cast_itself::c8_eg_texts(rule, condition);
+    if matches!(from, ZoneKind::Graveyard | ZoneKind::Exile) {
+        return super::c8_eg_cast_itself::c8_eg_texts(rule, condition, from);
+    }
+    if let (GameRule::Cant { who, action }, ZoneKind::Battlefield) = (rule, from) {
+        return super::r9w_cant::r9w_cant_texts(who, action, condition);
     }
     if let Some(condition) = condition {
         return super::w14a_limits::w14a_limit_while_texts(rule, condition);
@@ -1611,8 +1684,15 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
+        (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
+        (GameRule::UntapDuring { .. }, ZoneKind::Battlefield) => {
+            super::e10c_granted::e10c_untap_during_texts(rule)
+        }
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
+        }
+        (GameRule::AnyNumberInDeck, ZoneKind::Battlefield) => {
+            vec!["A deck can have any number of cards named ~".to_owned()]
         }
         (GameRule::MustAttack(who), ZoneKind::Battlefield) => each_combat(who, "attack"),
         (GameRule::MustBlock(who), ZoneKind::Battlefield) => each_combat(who, "block"),
@@ -1620,7 +1700,12 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             prevention::static_texts(source, *combat)
         }
         (GameRule::AttackTax { .. }, ZoneKind::Battlefield) => {
-            super::attack_tax::static_texts(rule)
+            let mut written = super::attack_tax::static_texts(rule);
+            written.extend(super::g11c_taxes::g11c_self_attack_texts(rule));
+            written
+        }
+        (GameRule::BlockTax { .. }, ZoneKind::Battlefield) => {
+            super::g11c_taxes::g11c_block_texts(rule)
         }
         (
             GameRule::AttackLimit(_) | GameRule::AttackLimitAt { .. } | GameRule::BlockLimit(_),
@@ -1750,7 +1835,9 @@ fn static_texts(
         && mods.iter().all(|m| {
             matches!(
                 m,
-                Modification::GrantAbility(_) | Modification::AddKeyword(_)
+                Modification::GrantAbility(_)
+                    | Modification::AddKeyword(_)
+                    | Modification::SetChosenColor
             )
         })
         && mods
@@ -1833,7 +1920,8 @@ pub(super) fn predicate_variants(
     itself: bool,
     conditional: bool,
 ) -> Vec<String> {
-    let mut written = if itself && !conditional && !chosen_protection(mods) {
+    let mut written = if itself && !conditional && !chosen_protection(mods) && !entered_choice(mods)
+    {
         Vec::new()
     } else {
         static_parts::predicates(mods, plural)
@@ -1864,6 +1952,17 @@ pub(super) fn predicate_variants(
 
 /// Whether the changes are protection from what the card's controller chose as it entered, which a card gives itself
 /// without a printed keyword line: "This creature has protection from the chosen color."
+/// Whether every modification reads what the source chose as it entered: "~ is the chosen color".
+fn entered_choice(mods: &[Modification]) -> bool {
+    !mods.is_empty()
+        && mods.iter().all(|modification| {
+            matches!(
+                modification,
+                Modification::AddChosenSubtype | Modification::SetChosenColor
+            )
+        })
+}
+
 fn chosen_protection(mods: &[Modification]) -> bool {
     !mods.is_empty()
         && mods.iter().all(|modification| {
@@ -2048,6 +2147,24 @@ fn reveal_texts(of: &Selector) -> Vec<String> {
         .map(|tail| {
             format!(
                 "As ~ enters, you may reveal {article} {card}. If you don't, {tail} enters tapped"
+            )
+        })
+        .collect()
+}
+
+/// "As ~ enters, you may reveal a Dragon card from your hand. ~ enters tapped unless you revealed a Dragon card this way
+/// or you control a Dragon": the reveal and the permanent that makes it needless.
+fn reveal_unless_texts(of: &Selector, held: &Condition) -> Vec<String> {
+    let Some(card) = phrase_text(of, Form::Subject) else {
+        return Vec::new();
+    };
+    let article = article(&card);
+    let revealed = card.split(" from ").next().unwrap_or(&card).to_owned();
+    holds_texts(held)
+        .into_iter()
+        .map(|held| {
+            format!(
+                "As ~ enters, you may reveal {article} {card}. ~ enters tapped unless you revealed {article} {revealed} this way or {held}"
             )
         })
         .collect()

@@ -1,0 +1,92 @@
+{
+  "oracle_id": "39068bf1-cae4-4ac9-82ef-4e81bf59446e",
+  "name": "The Girl in the Fireplace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Girl in the Fireplace",
+      "oracle_fingerprint": "01a767e9502537042b6092263edb0261",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Noble",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Noble"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": { "Vanishing": 3 } },
+                        {
+                          "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "Prevent" }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Horse",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Horse"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": {
+                              "Each": [{ "Subtype": "Doctor" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "AddKeyword": "Horsemanship" }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "TimeTravel": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

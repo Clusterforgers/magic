@@ -1,0 +1,105 @@
+{
+  "oracle_id": "c2d04138-cc17-4dd0-9a4c-9c87df72ed01",
+  "name": "Saruman of Many Colors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saruman of Many Colors",
+      "oracle_fingerprint": "512c8a570c3ab986db00c463e559bbca",
+      "abilities": [
+        {
+          "Keyword": {
+            "Ward": [
+              {
+                "Discard": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Enchantment" },
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "effects": [
+              { "Mill": { "who": "Opponents", "count": 2, "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": "Triggering", "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Instant" },
+                                    { "Type": "Sorcery" }
+                                  ]
+                                },
+                                { "OwnedBy": "Opponents" },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": {
+                                      "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                                    }
+                                  }
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Exile": { "what": { "Target": 0 }, "as": "exiled3" } },
+                          {
+                            "RepeatEach": {
+                              "over": {
+                                "Each": [{ "Is": { "Bound": "exiled3" } }, { "In": "Exile" }]
+                              },
+                              "as": "card4",
+                              "effects": [
+                                { "CopyCard": { "what": { "Bound": "card4" }, "as": "copy5" } },
+                                { "CastFromZone": { "what": { "Bound": "copy5" }, "free": true } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

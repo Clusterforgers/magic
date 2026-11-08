@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8d9bd4cc-564b-4fdf-9462-b4bb30583642",
+  "name": "Fangs of Kalonia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fangs of Kalonia",
+      "oracle_fingerprint": "d2f1570a199fe806016ae4718d4d9543",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{4}{G}{G}" } }
+      ]
+    }
+  ]
+}

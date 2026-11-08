@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f2c8814b-581b-483b-a7ae-d3d7b962aec1",
+  "name": "Gorilla Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorilla Pack",
+      "oracle_fingerprint": "2d93c420ac94842305bd17f3c09a0ab4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

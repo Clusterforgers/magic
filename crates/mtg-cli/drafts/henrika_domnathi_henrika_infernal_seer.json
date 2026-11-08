@@ -1,0 +1,70 @@
+{
+  "oracle_id": "0c0845c3-f4b5-444e-8f42-da0c7dbf2841",
+  "name": "Henrika Domnathi // Henrika, Infernal Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Henrika Domnathi",
+      "oracle_fingerprint": "04dc7394ca2dedad8dd08dd1c561ec92",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } }
+                      ]
+                    },
+                    { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }] },
+                    { "effects": [{ "Transform": { "what": "This" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Henrika, Infernal Seer",
+      "oracle_fingerprint": "c6abb9d349a4e147ad1ecaa3d8b2ac9c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": "{1}{B}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "HasKeyword": "Flying" },
+                          { "HasKeyword": "Lifelink" },
+                          { "HasKeyword": "Deathtouch" }
+                        ]
+                      }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

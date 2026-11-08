@@ -1,0 +1,51 @@
+{
+  "oracle_id": "96fd3ee0-84fb-439b-9e2d-b55afe6850a7",
+  "name": "Sawblade Skinripper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sawblade Skinripper",
+      "oracle_fingerprint": "146d024e69512f744be3b7d160c9865e",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Sacrificed" } },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Tallied": { "who": "You", "what": "Sacrificed" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

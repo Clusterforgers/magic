@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9a53ef0d-8e29-4128-9cc4-fbdd3e4fdb84",
+  "name": "Nightmare Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightmare Void",
+      "oracle_fingerprint": "76b864df2abaf136c8ae1fad0b7891f4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              { "Discard": { "who": { "Target": 0 }, "by": "You" } }
+            ]
+          }
+        },
+        { "Keyword": { "Dredge": 2 } }
+      ]
+    }
+  ]
+}

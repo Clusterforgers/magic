@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "d873c678-c8f2-40f0-ab03-a2fdf5187aea",
+  "oracle_id": "300f17a2-1594-40cb-9187-952898a83622",
+  "multiverse_ids": [],
+  "resource_id": "4E2EBB0B387F0B870C7F4A9AF002A74B258A717868E2A70EC42851C16948AE92",
+  "mtgo_id": 145710,
+  "arena_id": 98695,
+  "tcgplayer_id": 662077,
+  "cardmarket_id": 857887,
+  "name": "Earthshape",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/d873c678-c8f2-40f0-ab03-a2fdf5187aea",
+  "scryfall_uri": "https://scryfall.com/card/tle/67/earthshape?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.jpg?1783904839",
+    "normal": "https://cards.scryfall.io/normal/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.jpg?1783904839",
+    "large": "https://cards.scryfall.io/large/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.jpg?1783904839",
+    "png": "https://cards.scryfall.io/png/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.png?1783904839",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.jpg?1783904839",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.jpg?1783904839",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.webp?1783904839",
+    "grid": "https://cards.scryfall.io/grid/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.webp?1783904839",
+    "display": "https://cards.scryfall.io/display/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.webp?1783904839",
+    "art": "https://cards.scryfall.io/art/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.webp?1783904839",
+    "crop": "https://cards.scryfall.io/crop/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.webp?1783904839",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/8/d873c678-c8f2-40f0-ab03-a2fdf5187aea.jpg?1783904839"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Earthbend 3. Then each creature you control with power less than or equal to that land's power gains hexproof and indestructible until end of turn. You gain hexproof until end of turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Earthbend"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d873c678-c8f2-40f0-ab03-a2fdf5187aea/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A300f17a2-1594-40cb-9187-952898a83622&unique=prints",
+  "collector_number": "67",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fahmi Fauzi",
+  "artist_ids": [
+    "71e0cca2-5ded-4a60-91aa-65a131b35987"
+  ],
+  "illustration_id": "476e4624-14ef-48c6-9562-a2025e02914e",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 6738,
+  "preview": {
+    "source": "Dexerto",
+    "source_uri": "https://www.dexerto.com/magic-the-gathering/magic-the-gathering-avatar-the-last-airbender-black-sun-invasion-scene-box-3278271/",
+    "previewed_at": "2025-11-03"
+  },
+  "prices": {
+    "usd": "7.45",
+    "usd_foil": "6.53",
+    "usd_etched": null,
+    "eur": "4.74",
+    "eur_foil": "5.70",
+    "tix": "3.07"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEarthshape",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEarthshape",
+    "edhrec": "https://edhrec.com/route/?cc=Earthshape"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662077%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857887&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145710?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

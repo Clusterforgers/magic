@@ -1,0 +1,50 @@
+{
+  "oracle_id": "646e68c8-cc42-4d6c-8363-a18b10a10eae",
+  "name": "Oketra the True",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oketra the True",
+      "oracle_fingerprint": "00cee89e48bfdcb22817ede1166f1d84",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Le",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

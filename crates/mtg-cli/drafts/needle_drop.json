@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8622a2b2-fe07-41bd-bef3-e60731e0d701",
+  "name": "Needle Drop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Needle Drop",
+      "oracle_fingerprint": "cfb968f859b1ca499b3d0e7376b52af3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["DamagedThisTurn"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

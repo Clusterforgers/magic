@@ -1,0 +1,40 @@
+{
+  "oracle_id": "87424e20-00ab-4f6d-a905-1955897b358e",
+  "name": "Ravenous Amulet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Amulet",
+      "oracle_fingerprint": "eb59256b02fe7ee04b2b34c5151e111b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              { "Draw": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "soul" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "soul" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "85d81888-8df7-4826-891e-a14fb8bf6549",
+  "name": "Kumano's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kumano's Blessing",
+      "oracle_fingerprint": "094c67604ea79ed1d9bc989032ca4a4b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

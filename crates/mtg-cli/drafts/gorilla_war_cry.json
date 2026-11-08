@@ -1,0 +1,37 @@
+{
+  "oracle_id": "60a7f61c-41ad-4dce-b556-a99bf38c3d73",
+  "name": "Gorilla War Cry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorilla War Cry",
+      "oracle_fingerprint": "873d078c32e2c29b16bd42cc60e2a479",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "Any": [{ "Step": "BeginCombat" }, { "Step": "DeclareAttackers" }] }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

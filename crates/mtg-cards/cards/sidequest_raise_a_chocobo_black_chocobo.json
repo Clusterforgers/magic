@@ -1,0 +1,108 @@
+{
+  "oracle_id": "aebeaf0b-4df1-4c34-919b-740bfab19e56",
+  "name": "Sidequest: Raise a Chocobo // Black Chocobo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sidequest: Raise a Chocobo",
+      "oracle_fingerprint": "a313d514aaf5f50e4dc22391bb12c906",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                "to": "Battlefield"
+                              }
+                            },
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": "This",
+                                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Bird" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Black Chocobo",
+      "oracle_fingerprint": "9f7ac41214aa0d5a0e86c1f1144f047b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Land" }], "as": "found" } },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Bird" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

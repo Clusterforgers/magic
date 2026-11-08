@@ -71,11 +71,13 @@ pub(super) fn searches(
 ) -> (Vec<Effect>, Vec<Ref>) {
     let search = |filter, count, bind: String| Effect::Search {
         who: who.clone(),
+        of: None,
         zone: ZoneKind::Library,
         also: Vec::new(),
         filter,
         count,
         reveal,
+        distinct: false,
         bind,
     };
     let (filter, count, bind) = first;

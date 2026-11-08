@@ -1,0 +1,63 @@
+{
+  "oracle_id": "84eaac2e-74ce-4a16-9faa-409df7c58eb3",
+  "name": "Winter, Tormented Loner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter, Tormented Loner",
+      "oracle_fingerprint": "6382ea2339c550a80d1a6e503d892f05",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

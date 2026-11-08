@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e16cbcbd-b03a-404c-8d1e-0a05848181d9",
+  "name": "Showstopping Surprise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Showstopping Surprise",
+      "oracle_fingerprint": "d0cd95d77b109872815bd66218f2e7e5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "TurnFaceUp": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }]
+                        },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

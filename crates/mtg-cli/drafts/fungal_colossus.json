@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ce25dd89-dcc7-4576-b148-ef4c1cd5290c",
+  "name": "Fungal Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fungal Colossus",
+      "oracle_fingerprint": "14d39902990255c5b41014628e86a21d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Distinct": { "of": [{ "Type": "Land" }, { "ControlledBy": "You" }], "stat": "Name" }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

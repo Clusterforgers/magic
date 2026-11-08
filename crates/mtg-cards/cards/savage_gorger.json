@@ -1,0 +1,27 @@
+{
+  "oracle_id": "307d20fd-a9c9-4da9-b990-26c653054640",
+  "name": "Savage Gorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savage Gorger",
+      "oracle_fingerprint": "fe5b335f20c04eb446d87a27ee516bc6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

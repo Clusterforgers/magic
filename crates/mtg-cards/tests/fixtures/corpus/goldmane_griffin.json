@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "67edcb9b-f56b-4a34-b4bd-d22ee929041a",
+  "oracle_id": "e32573e8-91a8-438b-966f-1c6d098d54ae",
+  "multiverse_ids": [
+    469836
+  ],
+  "mtgo_id": 73483,
+  "arena_id": 70067,
+  "tcgplayer_id": 192749,
+  "cardmarket_id": 379185,
+  "name": "Goldmane Griffin",
+  "lang": "en",
+  "released_at": "2019-07-12",
+  "uri": "https://api.scryfall.com/cards/67edcb9b-f56b-4a34-b4bd-d22ee929041a",
+  "scryfall_uri": "https://scryfall.com/card/m20/283/goldmane-griffin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:55:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.jpg?1783932923",
+    "normal": "https://cards.scryfall.io/normal/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.jpg?1783932923",
+    "large": "https://cards.scryfall.io/large/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.jpg?1783932923",
+    "png": "https://cards.scryfall.io/png/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.png?1783932923",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.jpg?1783932923",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.jpg?1783932923",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.webp?1783932923",
+    "grid": "https://cards.scryfall.io/grid/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.webp?1783932923",
+    "display": "https://cards.scryfall.io/display/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.webp?1783932923",
+    "art": "https://cards.scryfall.io/art/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.webp?1783932923",
+    "crop": "https://cards.scryfall.io/crop/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.webp?1783932923",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/7/67edcb9b-f56b-4a34-b4bd-d22ee929041a.jpg?1783932923"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Griffin",
+  "oracle_text": "Flying, vigilance\nWhen this creature enters, you may search your library and/or graveyard for a card named Ajani, Inspiring Leader, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "dba41e5f-66b8-4459-8a07-bbe893216f1e",
+      "component": "combo_piece",
+      "name": "Ajani, Inspiring Leader",
+      "type_line": "Legendary Planeswalker — Ajani",
+      "uri": "https://api.scryfall.com/cards/dba41e5f-66b8-4459-8a07-bbe893216f1e"
+    },
+    {
+      "object": "related_card",
+      "id": "67edcb9b-f56b-4a34-b4bd-d22ee929041a",
+      "component": "combo_piece",
+      "name": "Goldmane Griffin",
+      "type_line": "Creature — Griffin",
+      "uri": "https://api.scryfall.com/cards/67edcb9b-f56b-4a34-b4bd-d22ee929041a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set": "m20",
+  "set_name": "Core Set 2020",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/67edcb9b-f56b-4a34-b4bd-d22ee929041a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae32573e8-91a8-438b-966f-1c6d098d54ae&unique=prints",
+  "collector_number": "283",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paul Scott Canavan",
+  "artist_ids": [
+    "c19bfb77-5099-4f7c-8585-6eaf367712c9"
+  ],
+  "illustration_id": "48e330d8-952b-4003-b319-5711ddd4964e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "planeswalkerdeck"
+  ],
+  "edhrec_rank": 26279,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-preview/core-set-2020-planeswalker-decks-and-spellslinger-starter-kit",
+    "previewed_at": "2019-06-25"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=469836&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGoldmane%2BGriffin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGoldmane%2BGriffin",
+    "edhrec": "https://edhrec.com/route/?cc=Goldmane+Griffin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F192749%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=379185&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/73483?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

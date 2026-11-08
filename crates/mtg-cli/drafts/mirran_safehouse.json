@@ -1,0 +1,19 @@
+{
+  "oracle_id": "08826de5-a2d7-4732-a5f7-f580507a7844",
+  "name": "Mirran Safehouse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirran Safehouse",
+      "oracle_fingerprint": "6ad02935ffae4903a8701ce0d88f17c5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "GainAbilitiesOf": { "Each": [{ "Type": "Land" }, { "In": "Graveyard" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

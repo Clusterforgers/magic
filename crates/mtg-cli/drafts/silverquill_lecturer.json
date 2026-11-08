@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ac230b68-f945-4a1a-bd89-33e6d62e3c36",
+  "name": "Silverquill Lecturer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silverquill Lecturer",
+      "oracle_fingerprint": "d41d76f73a5dd1f06323a532e9825ff6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Demonstrate" }]
+          }
+        }
+      ]
+    }
+  ]
+}

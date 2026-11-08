@@ -9,10 +9,27 @@
       "abilities": [
         {
           "Spell": {
+            "targets": [{ "what": "Opponent" }],
             "effects": [
-              { "Search": { "filter": [], "as": "searched" } },
-              { "Move": { "what": { "Bound": "searched" }, "to": "Graveyard" } },
-              { "Shuffle": { "who": "Opponents" } }
+              { "Search": { "of": { "Target": 0 }, "filter": [], "as": "found" } },
+              { "ExileHidden": { "what": { "Bound": "found" }, "sealed": true, "as": "exiled2" } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled2" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "LookAtExiled": { "what": [{ "In": "Exile" }], "only": { "Bound": "exiled2" } }
+                  },
+                  "duration": "Forever"
+                }
+              }
             ]
           }
         }

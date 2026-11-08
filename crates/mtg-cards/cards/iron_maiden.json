@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e0351638-9224-4779-8f7c-f2b11d134a5f",
+  "name": "Iron Maiden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Maiden",
+      "oracle_fingerprint": "6dc3617dae9c27b8b8d83a42039172e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Sum": [{ "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }, -4]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

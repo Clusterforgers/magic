@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e6ad1be9-f13d-4590-b3db-e2d0fff46f03",
+  "name": "Waterlogged Teachings // Inundated Archive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waterlogged Teachings",
+      "oracle_fingerprint": "0607058c7bdf8bbd5a6a393fdaea9163",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "HasKeyword": "Flash" }] }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inundated Archive",
+      "oracle_fingerprint": "adcef9247851409ed59f22cffa7ed8fb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

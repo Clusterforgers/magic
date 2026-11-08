@@ -1,0 +1,60 @@
+{
+  "oracle_id": "0788fdd2-6fab-460c-b054-a736df670f96",
+  "name": "Colossus of the Blood Age",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossus of the Blood Age",
+      "oracle_fingerprint": "7087b3482d9d0b49026c5be56580eedd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Is": { "Bound": "discarded" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

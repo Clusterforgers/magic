@@ -1,0 +1,48 @@
+{
+  "oracle_id": "4fb83127-00cf-4ce7-aedf-cb0b2740c66f",
+  "name": "Reckless Bushwhacker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Bushwhacker",
+      "oracle_fingerprint": "50b2eb3905b94115c2daedc7f8b13ad2",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{1}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["This", { "CastWith": "Surge" }], "to": "Battlefield" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

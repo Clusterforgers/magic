@@ -1,0 +1,85 @@
+{
+  "oracle_id": "7fc9e800-da66-4dda-a56d-79daec9e943e",
+  "name": "Kianne, Corrupted Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kianne, Corrupted Memory",
+      "oracle_fingerprint": "c23d395b575a685e31670bee83198d62",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Not": { "Type": "Creature" } }], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Eq",
+                        "right": {
+                          "Times": {
+                            "by": 2,
+                            "of": {
+                              "Half": {
+                                "of": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                "up": false
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Ne",
+                        "right": {
+                          "Times": {
+                            "by": 2,
+                            "of": {
+                              "Half": {
+                                "of": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                "up": false
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

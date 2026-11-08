@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ecfa6791-938a-4159-92bf-ff2b0ce69523",
+  "name": "Stonewise Fortifier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonewise Fortifier",
+      "oracle_fingerprint": "8fa36fd31cffcabad0ec0dc6fe67a728",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Is": "This" }] },
+                      "source": [{ "Is": { "Target": 0 } }]
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

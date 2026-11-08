@@ -234,6 +234,8 @@ pub fn one_target(what: Targetable) -> TargetSpec {
 /// An effect that deals `amount` damage to what `to` names.
 pub fn damage(to: Ref, amount: i32) -> Effect {
     Effect::DealDamage {
+        excess: None,
+        unpreventable: false,
         source: None,
         to,
         amount: Amount::Fixed(amount),
@@ -251,6 +253,7 @@ pub fn gain_life(amount: i32) -> Effect {
 /// An effect that makes its controller draw `count` cards.
 pub fn draw(count: i32) -> Effect {
     Effect::Draw {
+        bind: None,
         who: Ref::You,
         count: Amount::Fixed(count),
     }
@@ -284,6 +287,7 @@ fn tap_ability(timing: Timing, targets: Vec<TargetSpec>, effects: Vec<Effect>) -
         timing,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Battlefield,
         targets,
         effects,
@@ -392,6 +396,7 @@ pub fn edict(name: &str) -> Arc<CardDefinition> {
                     who: Ref::Target(0),
                     filter: Selector(vec![Pred::Type(CardType::Creature)]),
                     count: Amount::Fixed(1),
+                    bind: None,
                 }],
             }),
     )
@@ -409,6 +414,9 @@ pub fn mind_rot(name: &str) -> Arc<CardDefinition> {
                     who: Ref::Target(0),
                     count: Amount::Fixed(2),
                     random: false,
+                    filter: None,
+                    by: None,
+                    optional: false,
                     bind: None,
                 }],
             }),
@@ -535,8 +543,22 @@ pub fn bottomer(name: &str) -> Arc<CardDefinition> {
                             place: Place::Bottom,
                             order: Some(Order::Chosen),
                         },
+                        bind: None,
                     },
                 ],
+            }),
+    )
+}
+
+/// An instant for `{U}` with "Look at each opponent's hand."
+pub fn hand_peeker(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::LookAtHand { of: Ref::Opponents }],
             }),
     )
 }
@@ -582,6 +604,7 @@ pub fn revealer(name: &str) -> Arc<CardDefinition> {
                             place: Place::Bottom,
                             order: None,
                         },
+                        bind: None,
                     },
                 ],
             }),

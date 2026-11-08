@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4eb24ae3-da1a-4565-934f-e25f56036d71",
+  "name": "Silverskin Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silverskin Armor",
+      "oracle_fingerprint": "3ac9ae60eb3542e00d8c1c856c8054d0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddType": "Artifact" }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

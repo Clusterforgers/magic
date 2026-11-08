@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c7ecaa1a-fbf7-436b-a1c9-d7810b0dc5dc",
+  "name": "Malicious Malfunction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malicious Malfunction",
+      "oracle_fingerprint": "d2b3e2c80c2e4e25b37923f1b893b275",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

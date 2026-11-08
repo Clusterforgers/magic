@@ -1,0 +1,55 @@
+{
+  "oracle_id": "fb85d8d1-6938-48bf-9a6d-d4616b05b4f6",
+  "name": "Halam Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halam Djinn",
+      "oracle_fingerprint": "7bc59b2bdd6298565cb76bf45a8cd3c0",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Red" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "White" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Red" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Blue" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Red" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Black" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Red" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Green" }] }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

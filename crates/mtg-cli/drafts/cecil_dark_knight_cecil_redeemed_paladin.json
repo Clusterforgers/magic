@@ -1,0 +1,67 @@
+{
+  "oracle_id": "e4719557-d94e-490f-8a56-c1867a01d2ef",
+  "name": "Cecil, Dark Knight // Cecil, Redeemed Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cecil, Dark Knight",
+      "oracle_fingerprint": "44aa72f6155f00f9eea8589a063324f5",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+            "effects": [
+              { "LoseLife": { "amount": "Triggering" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Le",
+                      "right": { "Half": { "of": { "StartingLife": "You" }, "up": false } }
+                    }
+                  },
+                  "then": [{ "Untap": { "what": "This" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Le",
+                      "right": { "Half": { "of": { "StartingLife": "You" }, "up": false } }
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cecil, Redeemed Paladin",
+      "oracle_fingerprint": "7838da9e096d1609925bbd723e6d2c1c",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

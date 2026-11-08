@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1b06a75f-a67b-4184-97e8-3a8d989639b8",
+  "name": "Ichor Aberration",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ichor Aberration",
+      "oracle_fingerprint": "f6aa7b9521097e05a5e8107d9abbe220",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": ["This", { "Compare": { "stat": "Power", "op": "Ge", "to": 7 } }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 119, "end": 296 }
+          }
+        }
+      ]
+    }
+  ]
+}

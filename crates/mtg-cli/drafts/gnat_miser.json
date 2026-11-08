@@ -1,0 +1,12 @@
+{
+  "oracle_id": "cfb5da72-9f00-4ae2-8d59-f997faab451b",
+  "name": "Gnat Miser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnat Miser",
+      "oracle_fingerprint": "036609f348dbf55c1f1e69465efdf025",
+      "abilities": [{ "Rule": { "rule": { "HandSizeChange": { "who": "Opponents", "by": -1 } } } }]
+    }
+  ]
+}

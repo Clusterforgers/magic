@@ -1,0 +1,73 @@
+{
+  "oracle_id": "b6f52260-9ad5-4024-acf9-d77f3c08c872",
+  "name": "Ashiok, Nightmare Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashiok, Nightmare Weaver",
+      "oracle_fingerprint": "b2badf19003705ea12ddeb7a8e8a380c",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "ExileTop": { "who": { "Target": 0 }, "count": 3, "as": "exiled" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card" },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [{ "AddSubtype": "Nightmare" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "Opponents" },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }] }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "bf034a20-e362-4f38-9bf9-857777c62598",
+  "name": "Acidic Dagger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acidic Dagger",
+      "oracle_fingerprint": "4585747cac73a7c70ba1880473951a64",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "condition": {
+              "Any": [
+                { "Step": "Upkeep" },
+                { "Step": "Draw" },
+                { "Step": "Main1" },
+                { "Step": "BeginCombat" },
+                { "Step": "DeclareAttackers" }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }],
+                      "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }] },
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Destroy": { "what": "Triggering" } }]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }],
+                      "from": "Battlefield"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

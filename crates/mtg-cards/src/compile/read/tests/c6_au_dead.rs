@@ -65,6 +65,7 @@ fn the_card_that_died_returns_under_your_control(#[case] text: &str) {
                 transformed: false,
                 counters: Vec::new(),
             },
+            bind: None,
         }],
         "{text}"
     );
@@ -122,6 +123,7 @@ fn dk1b_the_card_that_died_returns_to_its_owner(
                 transformed: false,
                 counters: Vec::new(),
             },
+            bind: None,
         }],
         "{text}"
     );

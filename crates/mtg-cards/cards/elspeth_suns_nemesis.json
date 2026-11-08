@@ -1,0 +1,64 @@
+{
+  "oracle_id": "faf296b0-59e5-4ec9-9912-e5e21c0ce9f5",
+  "name": "Elspeth, Sun's Nemesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elspeth, Sun's Nemesis",
+      "oracle_fingerprint": "69d30be450a8a961f728fc9638276d19",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "GainLife": { "amount": 5 } }] } },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{4}{W}{W}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

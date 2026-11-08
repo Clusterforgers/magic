@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3aafbf63-35c0-4f62-9281-a4d460e8d6f3",
+  "name": "Mannichi, the Fevered Dream",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mannichi, the Fevered Dream",
+      "oracle_fingerprint": "b5b8e95452ae4444c8fab07cc85eccf4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

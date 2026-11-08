@@ -37,6 +37,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   MulliganDeclared: [{ MulliganDeclared: { player: 1 } }, 'Bo decides to mulligan'],
   MulliganTaken: [{ MulliganTaken: { player: 1, library_order: [] } }, 'Bo takes a mulligan'],
   MulliganKept: [{ MulliganKept: { player: 0 } }, 'Ana keeps their hand'],
+  OpeningCardsPlayed: [
+    { OpeningCardsPlayed: { player: 0, cards: [] } },
+    'Ana begins the game with no cards on the battlefield',
+  ],
   CardsBottomed: [
     { CardsBottomed: { player: 0, cards: [1, 2] } },
     'Ana puts 2 cards on the bottom of their library',
@@ -45,7 +49,12 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { LibraryBottomed: { player: 0, cards: [1, 2], random: false } },
     'Ana puts 2 cards on the bottom of their library',
   ],
+  LibraryInserted: [
+    { LibraryInserted: { player: 0, cards: [1], below: 2 } },
+    'Ana puts 1 card beneath the top 2 cards of their library',
+  ],
   ChosenAtRandom: [{ ChosenAtRandom: { cards: [3] } }, 'Forest is picked at random'],
+  PlayersChosenAtRandom: [{ PlayersChosenAtRandom: { players: [1] } }, 'Bo is picked at random'],
   Entered: [
     { Entered: { object: 3, tapped: true, controller: 1 } },
     "Forest enters tapped under Bo's control",
@@ -65,6 +74,9 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Flipped: [{ Flipped: { object: 3 } }, 'Forest flips'],
   Prepared: [{ Prepared: { object: 3 } }, 'Forest becomes prepared'],
   Unprepared: [{ Unprepared: { object: 3 } }, 'Forest is no longer prepared'],
+  Suspected: [{ Suspected: { object: 3 } }, 'Forest becomes suspected'],
+  Unsuspected: [{ Unsuspected: { object: 3 } }, 'Forest is no longer suspected'],
+  Solved: [{ Solved: { object: 3 } }, 'Forest is solved'],
   BecameCopy: [
     { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
     'Forest becomes a copy of Serra Angel',
@@ -76,6 +88,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   AbilityCopied: [
     { AbilityCopied: { object: 9, of: { id: 5, counter: 0 }, controller: 0 } },
     'Ana copies the ability of Serra Angel',
+  ],
+  TargetsChanged: [
+    { TargetsChanged: { object: { id: 5, counter: 0 }, controller: 0, added: [] } },
+    'The targets of Serra Angel change',
   ],
   CopyEnded: [{ CopyEnded: { object: 3 } }, 'Forest stops being a copy'],
   CardCopied: [{ CardCopied: { object: 9, of: { id: 5, counter: 0 }, owner: 0 } }, 'Ana copies Serra Angel'],
@@ -93,6 +109,12 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   Clashed: [{ Clashed: { player: 1, opponent: 2, won: false } }, 'Bo loses a clash with Cy'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
+  SpeedChanged: [{ SpeedChanged: { player: 1, speed: 2 } }, "Bo's speed becomes 2"],
+  RingTempted: [
+    { RingTempted: { player: 1, level: 2, bearer: 3 } },
+    'The Ring tempts Bo (level 2) and chooses Forest as their Ring-bearer',
+  ],
+  RingBearerLost: [{ RingBearerLost: { player: 1 } }, 'Bo loses their Ring-bearer'],
   Ventured: [
     {
       Ventured: {
@@ -289,6 +311,18 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana chooses Grizzly Bears and Hill Giant',
   ],
   StepDone: [{ StepDone: { position: [1], bound: [], snapshots: [] } }, 'A step of the resolution is done'],
+  Remembered: [
+    {
+      Remembered: {
+        source: { id: 3, counter: 0 },
+        slot: 'exiled',
+        objects: [{ id: 1, counter: 1 }],
+        values: [],
+        replace: false,
+      },
+    },
+    'A source remembers objects',
+  ],
   ResolutionEnded: [
     { ResolutionEnded: { object: 4, outcome: 'Resolved' } },
     'Lightning Bolt finishes resolving',
@@ -311,9 +345,18 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { TokenCreated: { object: 91, controller: 2, name: 'Treasure' } },
     'Cy creates a Treasure token',
   ],
+  CardConjured: [
+    { CardConjured: { object: 92, owner: 1, zone: { Hand: 1 }, name: 'Lightning Bolt' } },
+    "Bo conjures Lightning Bolt into Bo's hand",
+  ],
+  Sought: [{ Sought: { player: 1, count: 2 } }, 'Bo seeks 2 cards'],
   LibraryLooked: [
     { LibraryLooked: { player: 0, cards: [1, 2, 3] } },
     'Ana looks at 3 cards of their library',
+  ],
+  HandLooked: [
+    { HandLooked: { player: 0, of: 1, cards: [1, 2] } },
+    "Ana looks at Bo's hand: Grizzly Bears and Hill Giant",
   ],
   CardsFound: [{ CardsFound: { player: 1, zone: { Library: 1 }, cards: [3] } }, 'Bo finds 1 card'],
   Scried: [{ Scried: { player: 0, top: [1], bottom: [2, 3] } }, 'Ana scries 3'],
@@ -347,6 +390,7 @@ const MORE: [Event, string][] = [
   ],
   [{ ZoneChanged: { object: 3, from: 'Battlefield', to: 'Exile', cause: 'Moved' } }, 'Forest moves to exile'],
   [{ ZoneChanged: { object: 3, from: { Hand: 0 }, to: 'Exile', cause: 'Foretold' } }, 'Forest is foretold'],
+  [{ ZoneChanged: { object: 3, from: { Hand: 0 }, to: 'Exile', cause: 'Plotted' } }, 'Forest is plotted'],
   [
     { ZoneChanged: { object: 3, from: { Library: 0 }, to: 'Battlefield', cause: { Manifested: { by: 0 } } } },
     'Forest is manifested',
@@ -359,9 +403,31 @@ const MORE: [Event, string][] = [
     {
       ZoneChanged: {
         object: 3,
+        from: { Graveyard: 0 },
+        to: 'Exile',
+        cause: { Haunting: { of: { id: 9, counter: 1 } } },
+      },
+    },
+    'Forest is exiled haunting a creature',
+  ],
+  [
+    {
+      ZoneChanged: {
+        object: 3,
         from: { Library: 0 },
         to: 'Exile',
         cause: { Hideaway: { by: { id: 9, counter: 1 } } },
+      },
+    },
+    'Forest is exiled face down',
+  ],
+  [
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Library: 0 },
+        to: 'Exile',
+        cause: { Sealed: { by: { id: 9, counter: 1 } } },
       },
     },
     'Forest is exiled face down',
@@ -432,6 +498,7 @@ function snapshotOf(id: number): Snapshot {
 
 const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   CardDrawn: [{ CardDrawn: { player: 1 } }, 'Bo draws a card'],
+  CardConjured: [{ CardConjured: { player: 1 } }, 'Bo conjures a card'],
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
@@ -444,8 +511,14 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
     { CardsBottomed: { player: 1, count: 1 } },
     'Bo puts 1 card on the bottom of their library',
   ],
+  CardsInserted: [
+    { CardsInserted: { player: 1, count: 1, below: 1 } },
+    'Bo puts 1 card beneath the top 1 card of their library',
+  ],
   ObjectLeftGame: ['ObjectLeftGame', 'A card leaves the game'],
+  Remembered: [{ Remembered: { count: 1 } }, 'A source remembers objects'],
   LibraryLooked: [{ LibraryLooked: { player: 1, count: 2 } }, 'Bo looks at 2 cards of their library'],
+  HandLooked: [{ HandLooked: { player: 1, of: 0, count: 2 } }, "Bo looks at 2 cards of Ana's hand"],
   CardsFound: [{ CardsFound: { player: 1, count: 1 } }, 'Bo finds 1 card'],
   Scried: [{ Scried: { player: 1, top: 1, bottom: 1 } }, 'Bo scries 2'],
   Surveilled: [{ Surveilled: { player: 1, top: 1, graveyard: 2 } }, 'Bo surveils 3'],
@@ -523,6 +596,10 @@ function effect(
 const say = (event: Event): string => describeEvent({ Public: event }, names).text
 
 describe('describeEvent', () => {
+  it('leaves the Ring-bearer out when the player controls no creature', () => {
+    expect(say({ RingTempted: { player: 1, level: 1 } })).toBe('The Ring tempts Bo (level 1)')
+  })
+
   it.each(Object.entries(PUBLIC))('says the public event %s in one sentence', (_name, [event, text]) => {
     expect(describeEvent({ Public: event }, names).text).toBe(text)
   })
@@ -712,8 +789,17 @@ describe('events with more than one shape', () => {
       'Creatures controlled by Bo become white and black while Jace Beleren stays',
     ],
     [
+      effect(objects(2), { AddColors: 0b00100 }, 'UntilEndOfTurn'),
+      'Hill Giant becomes black in addition to its other colors until end of turn',
+    ],
+    [
       effect(objects(2), { SetColors: 0 }, 'UntilEndOfTurn'),
       'Hill Giant becomes colorless until end of turn',
+    ],
+    [effect(objects(2), { SetPower: 0 }, 'UntilEndOfTurn'), 'Hill Giant becomes 0 power until end of turn'],
+    [
+      effect(objects(2), { SetToughness: 4 }, 'UntilEndOfTurn'),
+      'Hill Giant becomes 4 toughness until end of turn',
     ],
     [
       effect(objects(2), { SetPowerToughness: { power: 0, toughness: 1 } }, 'UntilEndOfTurn'),
@@ -735,6 +821,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { RemoveKeyword: 'Flying' }, 'UntilEndOfTurn'),
       'Hill Giant loses flying until end of turn',
+    ],
+    [
+      effect(objects(2), { LockKeyword: 'Flying' }, 'UntilEndOfTurn'),
+      "Hill Giant loses flying and can't have or gain it until end of turn",
     ],
     [effect('AllCreatures', 'LoseAbilities', 'Forever'), 'All creatures lose all abilities'],
     [
@@ -800,6 +890,10 @@ describe('events with more than one shape', () => {
       "Hill Giant can't attack Ana until end of turn",
     ],
     [
+      effect(objects(2), { AddSupertype: 'Legendary' }, 'UntilEndOfTurn'),
+      'Hill Giant becomes legendary too until end of turn',
+    ],
+    [
       effect(objects(2), { AddSubtype: 'Elf' }, 'UntilEndOfTurn'),
       'Hill Giant becomes Elf too until end of turn',
     ],
@@ -820,6 +914,10 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller while its controller controls Jace Beleren',
     ],
     [
+      effect(objects(2), { SetController: 1 }, 'WhileSourceTapped', { id: 6, counter: 0 }),
+      'Hill Giant changes controller while Jace Beleren stays tapped',
+    ],
+    [
       effect(
         objects(2),
         { CantAttackYou: { you: 0, attacked: 'Both' } },
@@ -832,12 +930,24 @@ describe('events with more than one shape', () => {
       "Grizzly Bears and Hill Giant can't attack Ana while each has a charge counter",
     ],
     [
+      effect(objects(2), { AddSubtype: 'Aura' }, { UntilPaid: '{W}' }),
+      'Hill Giant becomes Aura too until its controller pays {W} to end it',
+    ],
+    [
+      effect(objects(2), { LoseAbility: { object: 2, ability: 0 } }, { UntilPaid: '{1}' }),
+      'Hill Giant loses one of its abilities until its controller pays {1} to end it',
+    ],
+    [
       effect(objects(2), { SetController: 1 }, 'NextUntapStep'),
       "Hill Giant changes controller through its controller's next untap step",
     ],
     [
       effect(objects(1, 2), { ModifyPowerToughness: { power: 3, toughness: 3 } }, 'UntilYourNextTurn'),
       "Grizzly Bears and Hill Giant get +3/+3 until their controller's next turn",
+    ],
+    [
+      effect(objects(2), { Goaded: { by: 1 } }, 'UntilYourNextEndStep'),
+      "Hill Giant is goaded until their controller's next end step",
     ],
     [
       effect(objects(2), { Goaded: { by: 1 } }, 'UntilYourNextTurn'),
@@ -877,8 +987,37 @@ describe('events with more than one shape', () => {
       "Lightning Bolt can't be countered",
     ],
     [
+      ruleEffect(
+        { EntersWith: { spell: { id: 4, counter: 0 }, counters: 1, keyword: null, this_turn: false } },
+        'UntilEndOfTurn',
+      ),
+      'Lightning Bolt enters with 1 additional +1/+1 counter until end of turn',
+    ],
+    [
+      ruleEffect(
+        { EntersWith: { spell: { id: 4, counter: 0 }, counters: 0, keyword: 'Haste', this_turn: true } },
+        'Forever',
+      ),
+      'Lightning Bolt gains haste until end of turn',
+    ],
+    [
+      ruleEffect({ LifeFloor: { players: [0], floor: 1 } }, 'Forever'),
+      "Damage can't reduce Ana below 1 life",
+    ],
+    [
       ruleEffect({ RadiationGainsLife: [0] }, 'Forever'),
       'Radiation makes Ana gain life rather than lose life',
+    ],
+    [
+      ruleEffect(
+        { MayCastRather: { casts: [[1, { id: 4, counter: 0 }]], cost: [{ Generic: 2 }] } },
+        'Forever',
+      ),
+      'Bo may cast Lightning Bolt for a different cost',
+    ],
+    [
+      ruleEffect({ ManaProduced: { what: [], who: [0, 1], change: { Times: 2 } } }, 'UntilEndOfTurn'),
+      'Taps for mana by Ana and Bo produce changed mana until end of turn',
     ],
     [
       ruleEffect({ CantDraw: [1] }, 'UntilYourNextTurn'),
@@ -940,10 +1079,57 @@ describe('events with more than one shape', () => {
       ),
       "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
     ],
-    [ruleEffect({ TriggerAgain: null }, 'Forever'), 'Triggered abilities trigger an additional time'],
+    [
+      ruleEffect({ TriggerAgain: { cause: null, source: null } }, 'Forever'),
+      'Triggered abilities trigger an additional time',
+    ],
+    [
+      ruleEffect(
+        { SpellCost: { applies_to: ['Spell'], change: 'Increase', mana: '{1}' } },
+        'UntilYourNextTurn',
+      ),
+      "Some spells cost {1} more to cast until their controller's next turn",
+    ],
     [
       ruleEffect({ BlockLimitEach: { most: 1, who: [1] } }, 'UntilEndOfCombat'),
       "Bo can't block with more than 1 creature until end of combat",
+    ],
+    [
+      ruleEffect(
+        { BlockTax: { blockers: [], attackers: [], mana: [{ Generic: 2 }], life: 0 } },
+        'UntilEndOfTurn',
+      ),
+      "Some creatures can't block unless their controller pays {2} for each until end of turn",
+    ],
+    [
+      ruleEffect(
+        { AttackTax: { players: [1], attacked: 'Both', creatures: [], mana: [], life: 2 } },
+        'UntilYourNextTurn',
+      ),
+      "Creatures can't attack Bo unless their controller pays 2 life for each until their controller's next turn",
+    ],
+    [
+      ruleEffect(
+        {
+          PreventDamage: {
+            to: null,
+            source: [],
+            combat: null,
+            left: 1,
+            once: false,
+            redirect: { Object: { id: 2, counter: 0 } },
+          },
+        },
+        'UntilEndOfTurn',
+      ),
+      'The next 1 damage is dealt to Hill Giant instead until end of turn',
+    ],
+    [
+      ruleEffect(
+        { PreventDamage: { to: null, source: [], combat: null, left: 3, once: false } },
+        'UntilEndOfTurn',
+      ),
+      'The next 3 damage is prevented until end of turn',
     ],
   ])('says what a change to a rule does (%#)', (created, text) => {
     expect(say({ RuleCreated: { effect: created } })).toBe(text)
@@ -968,6 +1154,12 @@ describe('the choice a permanent enters with', () => {
       "Forest enters under Ana's control, choosing red",
     ],
     [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { Colors: ['Red', 'Green'] } },
+      },
+      "Forest enters under Ana's control, choosing red and green",
+    ],
+    [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Player: 1 } } },
       "Forest enters under Ana's control, choosing Bo",
     ],
@@ -978,6 +1170,22 @@ describe('the choice a permanent enters with', () => {
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { LandType: 'Swamp' } } },
       "Forest enters under Ana's control, choosing Swamp",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { CardType: 'Creature' } } },
+      "Forest enters under Ana's control, choosing creature",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Name: 'Llanowar Elves' } } },
+      "Forest enters under Ana's control, choosing Llanowar Elves",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Number: 7 } } },
+      "Forest enters under Ana's control, choosing 7",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Word: 'odd' } } },
+      "Forest enters under Ana's control, choosing odd",
     ],
   ])('%j reads "%s"', (event, text) => {
     expect(say(event)).toBe(text)

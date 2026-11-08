@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ad1d8eca-e3bf-479f-a442-bcd8c31bfe7f",
+  "name": "I'm a Doctor, Not a . . .",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "I'm a Doctor, Not a . . .",
+      "oracle_fingerprint": "e5f14d5cb2bced2851ad8c3f32697bc2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetCreatureTypes": ["Doctor"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

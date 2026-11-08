@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c5c2d209-e3ef-4b0d-85f5-e7402dcf09eb",
+  "name": "Hostage Taker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hostage Taker",
+      "oracle_fingerprint": "089f04d706e996f3720fc5568637380b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Target": 0 },
+                  "as": "exiled",
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

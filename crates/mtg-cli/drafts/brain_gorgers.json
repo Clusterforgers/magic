@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3b9369ae-8827-45d1-af85-c777cde8e1bc",
+  "name": "Brain Gorgers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brain Gorgers",
+      "oracle_fingerprint": "a1e599aafe7346b13df8d36d28ce6a90",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{1}{B}" } }
+      ]
+    }
+  ]
+}

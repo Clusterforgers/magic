@@ -1,0 +1,74 @@
+{
+  "oracle_id": "c6d89c4a-351f-4d63-ba57-b978a695191e",
+  "name": "Seedship Impact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedship Impact",
+      "oracle_fingerprint": "c6c9236181f5a23604d7e873b67c66cf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Lander",
+                            "types": ["Artifact"],
+                            "subtypes": ["Lander"],
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                                  "effects": [
+                                    {
+                                      "Search": {
+                                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                        "as": "found"
+                                      }
+                                    },
+                                    {
+                                      "Move": {
+                                        "what": { "Bound": "found" },
+                                        "to": { "Battlefield": { "tapped": true } }
+                                      }
+                                    },
+                                    { "Shuffle": {} }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

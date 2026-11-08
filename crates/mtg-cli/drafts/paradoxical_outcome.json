@@ -1,0 +1,61 @@
+{
+  "oracle_id": "2cce7250-f8f9-4c0a-87b1-ba3c5b8ed6b3",
+  "name": "Paradoxical Outcome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paradoxical Outcome",
+      "oracle_fingerprint": "cf233f3e68536699938a0342ff1f834b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "Not": "Token" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": "Token" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "moved" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "OwnedBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

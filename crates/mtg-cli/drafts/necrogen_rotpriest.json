@@ -1,0 +1,55 @@
+{
+  "oracle_id": "7d9a424e-cab1-410f-9c04-ee0025d04169",
+  "name": "Necrogen Rotpriest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrogen Rotpriest",
+      "oracle_fingerprint": "e8f95a7720df47b6701ee6c3e3eb39bc",
+      "abilities": [
+        { "Keyword": { "Toxic": 2 } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeywordNamed": "Toxic" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "poison" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}{G}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasKeywordNamed": "Toxic" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

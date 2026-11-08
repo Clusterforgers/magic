@@ -46,6 +46,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     };
     let counter = Effect::Counter {
         what: Ref::Target(0),
+        bind: None,
     };
     let Some(said) =
         wording(selector).filter(|_| bounds.is_one() && effects.as_slice() == [counter.clone()])

@@ -116,7 +116,14 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         StatKind::Power => Some("power"),
         StatKind::Toughness => Some("toughness"),
         StatKind::ManaValue => Some("mana value"),
-        StatKind::Loyalty | StatKind::Colors | StatKind::BasicLandTypes => None,
+        StatKind::Loyalty
+        | StatKind::Colors
+        | StatKind::BasicLandTypes
+        | StatKind::Name
+        | StatKind::CreatureType
+        | StatKind::BasePower
+        | StatKind::BaseToughness
+        | StatKind::ManaSpent => None,
     }
 }
 
@@ -282,6 +289,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             super::t17b_attached::of_its_colors_text(counted)?
         }
         Amount::Players(Ref::Opponents) => "opponent".to_owned(),
+        Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_each_text(counted)?,
         Amount::Players(Ref::Bound(_)) => super::vote::w2d_tally_text(counted, false)?,
         Amount::Party(Ref::You) => "creature in your party".to_owned(),
         Amount::Devoured => "creature it devoured".to_owned(),
@@ -302,6 +310,9 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             counter,
         } => super::w13b_mill_rad::w13b_you_have_text(counter)?,
         Amount::Tallied { .. } => defining::died_text(counted, true)?,
+        Amount::Tally { .. } => {
+            super::r11w_tallies::each(counted).or_else(|| super::e16a_history::each(counted))?
+        }
         Amount::Destroyed(_) | Amount::Exiled(_) => {
             super::w2c_counts::w2c_destroyed_each_text(counted)?
         }

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "060076e7-3705-4f8e-8fac-59402835902b",
+  "name": "Mind Raker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Raker",
+      "oracle_fingerprint": "78da20f6fd999f82a1ca3af95ee724c9",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }] } }],
+                  "paid": [{ "Discard": { "who": "Opponents" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

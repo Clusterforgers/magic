@@ -24,6 +24,7 @@ impl Writer<'_> {
             Effect::Destroy {
                 what: Ref::Each(Selector(preds)),
                 regenerate: true,
+                ..
             },
             ..,
         ] = effects

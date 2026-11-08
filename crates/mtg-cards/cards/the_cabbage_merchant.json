@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e31808bb-fb6e-487b-a973-db44961c84ee",
+  "name": "The Cabbage Merchant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Cabbage Merchant",
+      "oracle_fingerprint": "99c333fc883de3caf96a69d4f4f31088",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "You", "combat": true }
+            },
+            "effects": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }, "Token"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Food" }], "count": 2 } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "786b3657-b595-4b38-83f2-d40915e51e2b",
+  "name": "Phyrexian Revoker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Revoker",
+      "oracle_fingerprint": "fe3e5b2bce981ec072b7c046fa1f3807",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "NonlandCardName" }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "ActivateKind": { "kind": "Every", "sources": ["ChosenName"] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

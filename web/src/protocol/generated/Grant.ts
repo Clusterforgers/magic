@@ -8,7 +8,15 @@ import type { ObjectId } from "./ObjectId";
  * The name holds as long as the grant does, and it resolves to the very ability the effect grants whether or not the
  * object that has it is still there: a registered effect by its id, a static by the card it is printed on.
  */
-export type Grant = { "Effect": EffectId } | { "Static": { 
+export type Grant = { "Effect": EffectId } | { "Borrowed": { 
+/**
+ * The card the ability is printed on.
+ */
+donor: ObjectId, 
+/**
+ * The ability's index among the rules of that card.
+ */
+ability: number, } } | { "Static": { 
 /**
  * The object with the static ability.
  */

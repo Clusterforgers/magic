@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9503c801-eb6f-4f34-9062-c56105509b7b",
+  "name": "Burn the Impure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burn the Impure",
+      "oracle_fingerprint": "9abcb54cd34f5b4cb1ff1aaeb6106f84",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }, { "HasKeyword": "Infect" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

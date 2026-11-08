@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1ef3b48a-55ef-422e-ac7f-e1c1057eec2c",
+  "name": "Trazyn the Infinite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trazyn the Infinite",
+      "oracle_fingerprint": "308e206d610b509c61969e929732447c",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

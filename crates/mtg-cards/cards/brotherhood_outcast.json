@@ -1,0 +1,51 @@
+{
+  "oracle_id": "79d0cdc1-2e27-48c5-8840-430490068f68",
+  "name": "Brotherhood Outcast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brotherhood Outcast",
+      "oracle_fingerprint": "e360a6895ba19bfce384415b370972d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                              { "OwnedBy": "You" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

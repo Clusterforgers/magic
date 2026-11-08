@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0fb90df6-a62b-4a9f-ae79-db71d40466ce",
+  "name": "Grand Warlord Radha",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grand Warlord Radha",
+      "oracle_fingerprint": "e5b161c670ad5c0783361785118012be",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": "Triggering", "among": ["Red", "Green"] } },
+                  "lasts": "Turn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

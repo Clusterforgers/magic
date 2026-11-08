@@ -1,0 +1,50 @@
+{
+  "oracle_id": "3449b0e5-532c-4b4b-9d1b-1b6672f560d7",
+  "name": "Wickerwing Effigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wickerwing Effigy",
+      "oracle_fingerprint": "a16c86e54be5bf79aa4d89d390482059",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Creature" }, "TopOfLibrary"], "from": "Library" }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "WasCast": { "from": "Library" } },
+                  { "OwnedBy": "You" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "AddColors": ["Black"] },
+                    { "AddSubtype": "Bird" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

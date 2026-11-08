@@ -1,0 +1,66 @@
+{
+  "oracle_id": "56fd8895-3be2-4591-86fa-87567d9cdc14",
+  "name": "Commit // Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commit",
+      "oracle_fingerprint": "afb1dcf0a1de014f0c5b663714b6d21d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Not": { "Type": "Land" } } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        },
+                        "Spell"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": { "Below": 1 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Memory",
+      "oracle_fingerprint": "f7e2a3a063b607e74727c83def39c53f",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

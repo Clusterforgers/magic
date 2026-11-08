@@ -1,0 +1,57 @@
+{
+  "oracle_id": "43a6de3e-152e-4af1-acec-53405742425c",
+  "name": "Otterball Antics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otterball Antics",
+      "oracle_fingerprint": "9e467e9f26eb0517692b8df5914fb8b9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Otter",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Otter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        { "WasCast": {} },
+                        {
+                          "AnyOf": [
+                            { "Not": { "WasCast": { "from": "Hand" } } },
+                            { "Not": { "OwnedBy": "You" } }
+                          ]
+                        }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Bound": "token" }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{U}" } }
+      ]
+    }
+  ]
+}

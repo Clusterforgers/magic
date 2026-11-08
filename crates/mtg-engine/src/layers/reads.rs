@@ -29,6 +29,8 @@ impl Traits {
     pub(crate) const RULES: Traits = Traits(1 << 7);
     /// Whether it is goaded (CR 701.15), which a selector of goaded creatures reads.
     pub(crate) const GOADED: Traits = Traits(1 << 8);
+    /// The supertypes effects gave it (CR 205.4).
+    pub(crate) const SUPERTYPES: Traits = Traits(1 << 9);
 
     /// Both sets together.
     pub(crate) const fn or(self, other: Traits) -> Traits {
@@ -47,21 +49,29 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::AddType(_) | Modification::RemoveType(_) | Modification::SetTypes(_) => {
             Traits::TYPES.or(Traits::SUBTYPES)
         }
+        Modification::AddSupertype(_) => Traits::SUPERTYPES,
         Modification::AddSubtype(_)
         | Modification::SetCreatureTypes(_)
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
         // The land loses its abilities with its land types.
         Modification::SetLandTypes(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
-        Modification::SetColors(_) => Traits::COLORS,
-        Modification::AddKeyword(_) | Modification::RemoveKeyword(_) => Traits::KEYWORDS,
-        Modification::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
+        Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
+        Modification::AddKeyword(_)
+        | Modification::RemoveKeyword(_)
+        | Modification::LockKeyword(_) => Traits::KEYWORDS,
+        Modification::LoseAbilities | Modification::LoseAbility(_) => {
+            Traits::KEYWORDS.or(Traits::RULES)
+        }
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
+        | Modification::SetPower(_)
+        | Modification::SetToughness(_)
         | Modification::ModifyPowerToughness { .. }
         | Modification::SwitchPowerToughness => Traits::POWER.or(Traits::TOUGHNESS),
         // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
         Modification::GrantAbility(_)
         | Modification::GrantText(_)
+        | Modification::GainAbilities(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
         | Modification::CantBlock
@@ -86,19 +96,31 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::AddSubtype(_) | Wanted::SetCreatureTypes(_) | Wanted::AddAllCreatureTypes => {
             Traits::SUBTYPES
         }
-        Wanted::SetLandTypes(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
-        Wanted::SetColors(_) => Traits::COLORS,
+        Wanted::SetLandTypes(_) | Wanted::SetLandTypesChosen(_) => {
+            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
+        }
+        Wanted::SetCreatureTypesChosen(_) | Wanted::AddChosenSubtype => Traits::SUBTYPES,
+        Wanted::SetColors(_)
+        | Wanted::AddColors(_)
+        | Wanted::SetColorsChosen(_)
+        | Wanted::SetChosenColor => Traits::COLORS,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
-        | Wanted::RemoveKeyword(_) => Traits::KEYWORDS,
-        Wanted::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
+        | Wanted::RemoveKeyword(_)
+        | Wanted::LockKeyword(_) => Traits::KEYWORDS,
+        Wanted::LoseAbilities | Wanted::LoseThisAbility => Traits::KEYWORDS.or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
-        Wanted::SetPT { .. } | Wanted::ModifyPT { .. } | Wanted::SwitchPT => {
-            Traits::POWER.or(Traits::TOUGHNESS)
-        }
+        Wanted::SetPT { .. }
+        | Wanted::SetPower(_)
+        | Wanted::SetToughness(_)
+        | Wanted::ModifyPT { .. }
+        | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
         Wanted::GrantAbility(_)
+        | Wanted::GainAbilitiesOf(_)
         | Wanted::RemoveSupertype(_)
+        | Wanted::SetName(_)
+        | Wanted::ThisAbility
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
         | Wanted::CantBlock
@@ -111,6 +133,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::MaxBlockers(_)
         | Wanted::BlocksAdditional(_) => Traits::NONE,
         Wanted::Goaded => Traits::GOADED,
+        Wanted::AddSupertype(_) => Traits::SUPERTYPES,
     }
 }
 
@@ -120,7 +143,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::ModifyPT { power, toughness } | Wanted::SetPT { power, toughness } => {
             reads_of_amount(power).or(reads_of_amount(toughness))
         }
-        Wanted::SetController(who) => reads_of_ref(who),
+        Wanted::SetPower(value) | Wanted::SetToughness(value) => reads_of_amount(value),
+        Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
         }
@@ -129,15 +153,26 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)
         | Wanted::RemoveSupertype(_)
+        | Wanted::AddSupertype(_)
+        | Wanted::SetName(_)
+        | Wanted::ThisAbility
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
+        | Wanted::SetLandTypesChosen(_)
+        | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::SetColorsChosen(_)
+        | Wanted::AddChosenSubtype
+        | Wanted::SetChosenColor
         | Wanted::AddAllCreatureTypes
         | Wanted::SetColors(_)
+        | Wanted::AddColors(_)
         | Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
+        | Wanted::LockKeyword(_)
+        | Wanted::LoseThisAbility
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
         | Wanted::CantAttack
@@ -161,8 +196,12 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::This
         | Ref::Target(_)
         | Ref::Triggering
+        | Ref::TriggeringPlayer
+        | Ref::TriggeringFirst
         | Ref::Dealer
+        | Ref::Against
         | Ref::Attached
+        | Ref::Granter
         | Ref::AttachedPlayer
         | Ref::Monarch
         | Ref::Chosen
@@ -170,11 +209,22 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Defending
         | Ref::Attacked
         | Ref::MostLife
+        | Ref::ActivePlayer
+        | Ref::Chooser
+        | Ref::Asker
         | Ref::Bound(_)
-        | Ref::Paid => Traits::NONE,
-        Ref::ControllerOf(inner) => Traits::CONTROL.or(reads_of_ref(inner)),
+        | Ref::Affected
+        | Ref::Candidate
+        | Ref::Paid
+        | Ref::Convoked => Traits::NONE,
+        Ref::Remembered { on, .. } => reads_of_ref(on),
+        Ref::ControllerOf(inner) | Ref::OrController(inner) => {
+            Traits::CONTROL.or(reads_of_ref(inner))
+        }
         Ref::OwnerOf(inner) => reads_of_ref(inner),
+        Ref::Arrived { of, .. } | Ref::Departed(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
+        Ref::PlayersWhere { who, test } => reads_of_ref(who).or(reads_of_condition(test)),
     }
 }
 
@@ -188,9 +238,9 @@ pub(crate) fn reads_of_selector(selector: &Selector) -> Traits {
 
 fn reads_of_pred(pred: &Pred) -> Traits {
     match pred {
+        Pred::Supertype(_) => Traits::SUPERTYPES,
         Pred::This
         | Pred::Other
-        | Pred::Supertype(_)
         | Pred::Token
         | Pred::Commander
         | Pred::Spell
@@ -199,30 +249,67 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Untapped
         | Pred::Monstrous
         | Pred::Renowned
+        | Pred::Prepared
+        | Pred::Suspected
+        | Pred::Solved
+        | Pred::DoubleFaced
+        | Pred::Transformed
         | Pred::Paired
         | Pred::EnteredThisTurn
+        | Pred::SummoningSick
         | Pred::MilledThisTurn
+        | Pred::HasAdventure
         | Pred::DamagedThisTurn
         | Pred::AttackedThisTurn
         | Pred::Attacking
+        | Pred::AttackingAlone
         | Pred::Blocking
         | Pred::Unblocked
         | Pred::In(_)
         | Pred::CastFrom(_)
         | Pred::HasCounter(_)
+        | Pred::CounterCount { .. }
+        | Pred::CanEnchantSource
         | Pred::XInCost
+        | Pred::GenericCost(_)
+        | Pred::SingleTarget
         | Pred::HasAnyCounter
         | Pred::Named(_)
+        | Pred::ChosenName
         | Pred::FaceDown
-        | Pred::GravedThisTurn => Traits::NONE,
-        Pred::Modified => Traits::CONTROL,
+        | Pred::SpentFrom { .. }
+        | Pred::GravedThisTurn
+        | Pred::ArrivedFrom(_)
+        | Pred::CastWith(_)
+        | Pred::TopOfLibrary
+        | Pred::BottomOfLibrary
+        | Pred::TopOfGraveyard
+        | Pred::TopCreatureOfGraveyard
+        | Pred::Kicked
+        | Pred::AdditionalCostPaid
+        | Pred::Suspended => Traits::NONE,
+        Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
+        Pred::DidThisTurn { by, to, .. } => by
+            .iter()
+            .chain(to)
+            .fold(Traits::NONE, |read, who| read.or(reads_of_ref(who))),
+        Pred::GreatestAmong { stat, group } | Pred::LeastAmong { stat, group } => {
+            reads_of_stat(*stat).or(reads_of_selector(group))
+        }
+        Pred::Modified | Pred::RingBearer => Traits::CONTROL,
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
+        | Pred::BlockedBy(who)
+        | Pred::Blocks(who)
+        | Pred::TargetedBy(who)
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)
+        | Pred::AttackingPlaneswalkerOf(who)
+        | Pred::AttackingPlayerOrPlaneswalker(who)
         | Pred::ExiledWith(who)
         | Pred::EncodedWith(who)
+        | Pred::HauntedBy(who)
         | Pred::Crewed(who)
         | Pred::Saddled(who)
         | Pred::SharesName(who)
@@ -233,12 +320,15 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
-        Pred::Subtype(_) | Pred::ChosenSubtype => Traits::SUBTYPES,
+        Pred::Subtype(_) => Traits::SUBTYPES,
+        Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),
+        Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
         Pred::Color(_) | Pred::Colorless | Pred::ChosenColor => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
-        Pred::HasKeyword(_) => Traits::KEYWORDS,
+        Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
+        Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
         Pred::Targeting(inner) | Pred::HasAttached(inner) => reads_of_selector(inner),
         Pred::AnyOf(any) => any
@@ -249,11 +339,14 @@ fn reads_of_pred(pred: &Pred) -> Traits {
 
 fn reads_of_stat(stat: StatKind) -> Traits {
     match stat {
-        StatKind::Power => Traits::POWER,
-        StatKind::Toughness => Traits::TOUGHNESS,
+        // The base after the effects that set it still depends on the layers that set power and toughness.
+        StatKind::Power | StatKind::BasePower => Traits::POWER,
+        StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
-        StatKind::BasicLandTypes => Traits::SUBTYPES,
-        StatKind::ManaValue | StatKind::Loyalty => Traits::NONE,
+        StatKind::BasicLandTypes | StatKind::CreatureType => Traits::SUBTYPES,
+        StatKind::ManaValue | StatKind::Loyalty | StatKind::ManaSpent | StatKind::Name => {
+            Traits::NONE
+        }
     }
 }
 
@@ -266,38 +359,68 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TargetCount(_)
         | Amount::Kicks
         | Amount::Promised
+        | Amount::ResolvedThisTurn
         | Amount::Devoured
+        | Amount::Bound(_)
         | Amount::CastWith(_)
         | Amount::ColorsSpent
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
+        | Amount::DamageDealtThisWay
         | Amount::Destroyed(_)
         | Amount::Exiled(_)
         | Amount::PhasedOut(_)
         | Amount::DieResult(_)
+        | Amount::TurnNumber
+        | Amount::ManaSpent { .. }
+        | Amount::ManaColors(_)
+        | Amount::ManaInPool(_)
+        | Amount::Random { .. }
+        | Amount::TriggeringTargets
+        | Amount::Chosen
+        | Amount::ChosenAs(_)
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
         | Amount::CommanderCasts(who)
+        | Amount::Speed(who)
         | Amount::Counters { on: who, .. }
         | Amount::AnyCounters(who)
         | Amount::Mutations(who)
         | Amount::Players(who)
         | Amount::Tallied { who, .. }
+        | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
+        | Amount::CastLastTurn(who)
+        | Amount::HighestCounters { who, .. }
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)
         | Amount::HighestLife(who) => reads_of_ref(who),
-        Amount::Sum(parts) => parts
+        Amount::Sum(parts) | Amount::Product(parts) => parts
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
+        Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         Amount::EvenShare(total) => reads_of_amount(total),
         Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
+        Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
+            reads_of_amount(of).or(reads_of_amount(by))
+        }
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::Greatest { of, stat }
         | Amount::Total { of, stat }
-        | Amount::Distinct { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
+        | Amount::Distinct { of, stat }
+        | Amount::MostCommon { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
+        Amount::Doors(of) => reads_of_selector(of),
+        Amount::When {
+            condition,
+            then,
+            otherwise,
+        } => reads_of_condition(condition)
+            .or(reads_of_amount(then))
+            .or(reads_of_amount(otherwise)),
+        Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
+        Amount::Remembered { on, .. } => reads_of_ref(on),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
         Amount::Party(who) => reads_of_ref(who)
@@ -310,7 +433,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
 /// What a condition reads when it is checked.
 pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
     match condition {
-        Condition::Not(inner) => reads_of_condition(inner),
+        Condition::Not(inner) | Condition::AtTrigger(inner) => reads_of_condition(inner),
         Condition::All(all) | Condition::Any(all) => all
             .iter()
             .fold(Traits::NONE, |sum, inner| sum.or(reads_of_condition(inner))),
@@ -318,12 +441,22 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::Matches { subject, selector } => {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
+        Condition::CountOf {
+            subject,
+            selector,
+            right,
+            ..
+        } => reads_of_ref(subject)
+            .or(reads_of_selector(selector))
+            .or(reads_of_amount(right)),
         Condition::YourTurn => Traits::CONTROL,
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::Kicked
         | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)
+        | Condition::CastOffSorceryTiming
+        | Condition::AsCast(_)
         | Condition::ManaSpent(_)
         | Condition::IsDay
         | Condition::IsNight
@@ -332,13 +465,42 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::InCombat
         | Condition::FirstCombat
         | Condition::NeitherDayNorNight
+        | Condition::ChosenWord { .. }
+        | Condition::EnteredAs(_)
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
+        | Condition::MaxSpeed(who)
+        | Condition::Among(who)
+        | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. } => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a `Pred::Test` reports to the layers what its amounts read, so a filter that compares power to base power waits for the effects that set them.
+    use mtg_cards::refs::{Pred, Selector};
+
+    use super::*;
+
+    #[test]
+    fn a_test_reads_the_stats_it_compares() {
+        let pred: Pred = serde_json::from_str(
+            r#"{"Test":{"left":{"Stat":{"of":"Candidate","stat":"Power"}},"op":"Gt","right":{"Stat":{"of":"Candidate","stat":"BasePower"}}}}"#,
+        )
+        .unwrap();
+        let power: Pred =
+            serde_json::from_str(r#"{"Compare":{"stat":"Power","op":"Gt","to":0}}"#).unwrap();
+        let reads = reads_of_selector(&Selector(vec![pred]));
+        assert_ne!(reads, Traits::NONE);
+        assert_eq!(
+            reads,
+            reads_of_selector(&Selector(vec![power])).or(reads_of_stat(StatKind::BasePower))
+        );
     }
 }

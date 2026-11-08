@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c0afbb32-dc50-436a-bd24-2990c103a4f8",
+  "name": "The Black Breath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Black Breath",
+      "oracle_fingerprint": "56b8488026d4cd074bc112f421b563cb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

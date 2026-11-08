@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5c4f1f94-9916-49aa-956a-c1c6b299b24f",
+  "name": "Jason Bright, Glowing Prophet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jason Bright, Glowing Prophet",
+      "oracle_fingerprint": "7f0aa2f236f4511d9fc7cc1e17b6e242",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Zombie" }, { "Subtype": "Mutant" }] },
+                  { "ControlledBy": "You" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                      "op": "Ne",
+                      "right": { "Stat": { "of": "Candidate", "stat": "BasePower" } }
+                    }
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "oracle_id": "2c49d24a-98a4-43c2-bb59-1ef13d4214c2",
+  "name": "Untimely Malfunction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Untimely Malfunction",
+      "oracle_fingerprint": "0ed60ab7c9ecf06beeabfe003ba84e78",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  "Spell",
+                                  { "Ability": "Activated" },
+                                  { "Ability": "Triggered" }
+                                ]
+                              },
+                              "SingleTarget"
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }] },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["CantBlock"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

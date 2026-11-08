@@ -1,0 +1,25 @@
+{
+  "oracle_id": "48c127f0-2857-4c36-97bc-1291b6fe4a82",
+  "name": "Steely Resolve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steely Resolve",
+      "oracle_fingerprint": "06838906d437b38ff2624602d6ee40ec",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "ChosenSubtype"] },
+            "mods": [{ "AddKeyword": "Shroud" }]
+          }
+        }
+      ]
+    }
+  ]
+}

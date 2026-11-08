@@ -1,0 +1,50 @@
+{
+  "oracle_id": "48b891b6-3175-4864-bb98-af131098c557",
+  "name": "Fblthp, Knows the Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fblthp, Knows the Way",
+      "oracle_fingerprint": "00cd3dce4ba17fff825d3b19a5a1716e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "toughness": 2
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": { "min": 0, "max": "X" },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

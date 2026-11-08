@@ -1,0 +1,55 @@
+{
+  "oracle_id": "c52fc8a1-43c6-41f8-b010-03be7c89ef1d",
+  "name": "Bloodsoaked Insight // Sanguine Morass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodsoaked Insight",
+      "oracle_fingerprint": "818b8e03808efb0b57d187ac10a7be54",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Tallied": { "who": "Opponents", "what": "LifeLost" } }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": 3, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sanguine Morass",
+      "oracle_fingerprint": "18618bf03c8f47b7aacca9fc544575d6",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

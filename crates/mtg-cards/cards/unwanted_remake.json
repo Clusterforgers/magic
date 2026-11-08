@@ -1,0 +1,38 @@
+{
+  "oracle_id": "90aa9113-5148-486b-a1c6-b4230e6d3e41",
+  "name": "Unwanted Remake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unwanted Remake",
+      "oracle_fingerprint": "ba5b638b8db716ef81dacc72fb7d9172",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "LookAtTop": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "count": 2,
+                  "as": "looked"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "from": { "Bound": "looked" },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

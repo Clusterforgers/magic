@@ -1,0 +1,68 @@
+{
+  "oracle_id": "ef764497-800e-4cbd-805e-7635919a983c",
+  "name": "Innocuous Researcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Innocuous Researcher",
+      "oracle_fingerprint": "e9402c942f06c54918d7584dcbfc250e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "clue" },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  }
+                }
+              },
+              { "Draw": { "who": "EachPlayer" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": "You", "action": { "Cast": {} } } },
+                        "duration": "UntilYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

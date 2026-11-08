@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1d569df1-23cf-4e01-8ef9-a1a8b815f11e",
+  "name": "Fervent Paincaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fervent Paincaster",
+      "oracle_fingerprint": "8d7f9b1b165d66eb4a9c5824cfd7fab7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "Exert"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

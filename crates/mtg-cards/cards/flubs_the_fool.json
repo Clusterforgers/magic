@@ -1,0 +1,44 @@
+{
+  "oracle_id": "29356966-652d-4456-84c8-7aeab5fc8d05",
+  "name": "Flubs, the Fool",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flubs, the Fool",
+      "oracle_fingerprint": "dcb5b7e01a4235109a9fe53986d015b4",
+      "abilities": [
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                { "SpellCast": { "by": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

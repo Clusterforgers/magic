@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4d324f8c-2139-4910-b3c3-731a2e820d6b",
+  "name": "Deathknell Kami",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathknell Kami",
+      "oracle_fingerprint": "072a20d7a00810aa3ab580bad6c0c6b8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": "This" },
+                        "filter": [{ "Is": "This" }],
+                        "count": { "Count": [{ "Is": "This" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Macro": { "name": "soulshift", "amount": 1 } } }
+      ]
+    }
+  ]
+}

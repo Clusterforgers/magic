@@ -1,0 +1,55 @@
+{
+  "oracle_id": "84be8354-0bfa-4df1-868a-13197bd49191",
+  "name": "Tayam, Luminous Enigma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tayam, Luminous Enigma",
+      "oracle_fingerprint": "fdb3b2a5a82a07b61a439e248c9e109c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+            },
+            "by": { "WithCounters": { "counter": { "Other": "vigilance" }, "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              { "RemoveCountersAmong": { "count": 3, "from": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

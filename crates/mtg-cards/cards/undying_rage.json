@@ -1,0 +1,28 @@
+{
+  "oracle_id": "622d783d-4201-4769-8a0f-442b358d8bf1",
+  "name": "Undying Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undying Rage",
+      "oracle_fingerprint": "e3488d2e8f6d30dabc4a78c792f4a2aa",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "CantBlock"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

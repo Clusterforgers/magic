@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ed3b80eb-8915-4428-89b8-90f4278f2733",
+  "name": "La'An Noonien-Singh, Security",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "La'An Noonien-Singh, Security",
+      "oracle_fingerprint": "145d95e0044ae70345172a259ee4260c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "op": "Ge",
+                  "right": 8
+                }
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

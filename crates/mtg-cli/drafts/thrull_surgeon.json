@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ead5a2bf-f48a-43a2-89bb-df3cc587c843",
+  "name": "Thrull Surgeon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrull Surgeon",
+      "oracle_fingerprint": "a62d0e8ddd5545ab73062604fc89f99a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "by": "You" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "40ac0cb0-bdf7-447d-9875-0eb3cc5d0adc",
+  "name": "Cyclops Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclops Tyrant",
+      "oracle_fingerprint": "853332f95a005b21c385cf3d373ffa1b",
+      "abilities": [
+        { "Keyword": "Intimidate" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Compare": { "stat": "Power", "op": "Le", "to": 2 } } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "25edb501-11b5-4617-8a65-2eb4869cccd5",
+  "name": "Act of Heroism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Act of Heroism",
+      "oracle_fingerprint": "9a6abac825eaeb130153828492a511ea",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "BlocksAdditional": 1 }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

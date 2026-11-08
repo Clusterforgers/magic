@@ -10,6 +10,11 @@ export type DamageShield = {
  */
 to: Array<Target> | null, 
 /**
+ * The kind of object it protects ("creatures you control"), judged when the damage would be dealt (CR 611.2c);
+ * no limit when absent.
+ */
+each?: unknown, 
+/**
  * The sources of the damage it prevents, judged when the damage would be dealt; any source when empty.
  */
 source: unknown, 
@@ -28,4 +33,16 @@ left: number | null,
 /**
  * What happens as it prevents damage, reading the damage as `ReplaceBy::PreventAnd` does; nothing when empty.
  */
-then?: unknown, };
+then?: unknown, 
+/**
+ * It prevents the next damage event it covers and ends ("the next time a source of your choice would deal damage").
+ */
+once: boolean, 
+/**
+ * What it does to the damage it covers in place of preventing it: scales it or sends it elsewhere.
+ */
+instead?: unknown, 
+/**
+ * The player or object the damage it redirects is dealt to, fixed when it was made (`ReplaceBy::RedirectUpTo`).
+ */
+redirect?: Target, };

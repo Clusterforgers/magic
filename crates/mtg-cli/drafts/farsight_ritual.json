@@ -1,0 +1,43 @@
+{
+  "oracle_id": "7de66ba3-6e97-4e0a-928e-7ce45dee278b",
+  "name": "Farsight Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farsight Ritual",
+      "oracle_fingerprint": "09e800445aea9ab22bf1cc2f0ac8fb9e",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 8, "otherwise": 4 }
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "70987216-f84d-43b9-8d75-bb21ff37747b",
+  "name": "Prairie Dog",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Prairie Dog",
+      "oracle_fingerprint": "dfb7383a5d6d49d74270da4dd373d041",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "WasCast": { "by": "You", "from": "Hand" } }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 136, "end": 286 }
+          }
+        }
+      ]
+    }
+  ]
+}

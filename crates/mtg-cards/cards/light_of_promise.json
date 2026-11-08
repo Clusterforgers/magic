@@ -1,0 +1,31 @@
+{
+  "oracle_id": "64c54c9f-0550-41e2-a44a-5892a199f670",
+  "name": "Light of Promise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light of Promise",
+      "oracle_fingerprint": "8bc4a17eb5943a6189becb46eb1b6cf1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "LifeGained": { "who": "You" } },
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

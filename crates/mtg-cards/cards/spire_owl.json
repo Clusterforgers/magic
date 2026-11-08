@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7fa1eca4-0db1-446b-b3cb-15a619ffa97b",
+  "name": "Spire Owl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spire Owl",
+      "oracle_fingerprint": "21fb05a99dbf7d3abfd0be86e4a493c9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

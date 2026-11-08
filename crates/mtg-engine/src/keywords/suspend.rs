@@ -71,6 +71,7 @@ impl KeywordRules for Suspend {
                 from: ZoneKind::Exile,
                 targets: Vec::new(),
                 effects: vec![Effect::CastFromZone {
+                    rather: None,
                     who: Ref::You,
                     what: Ref::This,
                     free: true,

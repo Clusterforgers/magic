@@ -1,0 +1,51 @@
+{
+  "oracle_id": "71a756f3-cd1e-4047-90ac-eda096b90647",
+  "name": "Barrage of Boulders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barrage of Boulders",
+      "oracle_fingerprint": "f7060ba13f14eba7a84f9106b0238242",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                  "amount": 1
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }] },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

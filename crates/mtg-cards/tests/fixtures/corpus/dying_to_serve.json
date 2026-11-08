@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "c2ea16cd-801e-478a-b924-5431582b70d1",
+  "oracle_id": "2b719057-1bc0-4c3a-97c3-8377844570dd",
+  "multiverse_ids": [
+    540957
+  ],
+  "mtgo_id": 94542,
+  "arena_id": 78905,
+  "tcgplayer_id": 253535,
+  "cardmarket_id": 582689,
+  "name": "Dying to Serve",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/c2ea16cd-801e-478a-b924-5431582b70d1",
+  "scryfall_uri": "https://scryfall.com/card/vow/109/dying-to-serve?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:41:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.jpg?1783924866",
+    "normal": "https://cards.scryfall.io/normal/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.jpg?1783924866",
+    "large": "https://cards.scryfall.io/large/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.jpg?1783924866",
+    "png": "https://cards.scryfall.io/png/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.png?1783924866",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.jpg?1783924866",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.jpg?1783924866",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.webp?1783924866",
+    "grid": "https://cards.scryfall.io/grid/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.webp?1783924866",
+    "display": "https://cards.scryfall.io/display/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.webp?1783924866",
+    "art": "https://cards.scryfall.io/art/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.webp?1783924866",
+    "crop": "https://cards.scryfall.io/crop/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.webp?1783924866",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/2/c2ea16cd-801e-478a-b924-5431582b70d1.jpg?1783924866"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you discard one or more cards, create a tapped 2/2 black Zombie creature token. This ability triggers only once each turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f813e70a-c00c-4c9e-8a52-e69a94103594",
+      "component": "combo_piece",
+      "name": "Dying to Serve",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/f813e70a-c00c-4c9e-8a52-e69a94103594"
+    },
+    {
+      "object": "related_card",
+      "id": "c84e21cd-079d-493f-ab8d-e62f16ec1581",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/c84e21cd-079d-493f-ab8d-e62f16ec1581"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set": "vow",
+  "set_name": "Innistrad: Crimson Vow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avow&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vow?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c2ea16cd-801e-478a-b924-5431582b70d1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2b719057-1bc0-4c3a-97c3-8377844570dd&unique=prints",
+  "collector_number": "109",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I used to have hired hands, but I discovered they make better waitstaff with the rest of the body attached.\"\n—Olivia Voldaren",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steven Belledin",
+  "artist_ids": [
+    "f07d73b9-52a0-4fe5-858b-61f7b42174a5"
+  ],
+  "illustration_id": "204ac48d-c8e7-45bd-a197-b9db61d86ef0",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9840,
+  "penny_rank": 10321,
+  "preview": {
+    "source": "Corocoro",
+    "source_uri": "https://corocoro.jp/310884/",
+    "previewed_at": "2021-11-01"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": "0.35",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=540957&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDying%2Bto%2BServe",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDying%2Bto%2BServe",
+    "edhrec": "https://edhrec.com/route/?cc=Dying+to+Serve"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F253535%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=582689&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/94542?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

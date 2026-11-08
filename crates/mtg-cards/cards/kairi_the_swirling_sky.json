@@ -1,0 +1,64 @@
+{
+  "oracle_id": "85aa53e8-f062-4d02-bc69-1413f7f0dcf1",
+  "name": "Kairi, the Swirling Sky",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kairi, the Swirling Sky",
+      "oracle_fingerprint": "263942fc99bfa19c78439eb1fe334691",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Together": {
+                              "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                              "rule": { "TotalManaValueAtMost": 6 }
+                            }
+                          },
+                          "bounds": {
+                            "min": 0,
+                            "max": { "Count": [{ "Not": { "Type": "Land" } }] }
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "effects": [
+                        { "Mill": { "count": 6 } },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 2 },
+                            "as": "picked"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

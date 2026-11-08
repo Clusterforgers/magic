@@ -1,0 +1,49 @@
+{
+  "oracle_id": "40c1375b-1d15-4525-894a-16b7a0ac02b4",
+  "name": "Renowned Weaponsmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renowned Weaponsmith",
+      "oracle_fingerprint": "79620500d1de5a9b8b999f208974e13c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [
+                    { "Spell": { "types": ["Artifact"] } },
+                    { "Ability": { "types": ["Artifact"], "facts": ["OnBattlefield"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [{ "Named": "Heart-Piercer Bow" }, { "Named": "Vial of Dragonfire" }]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

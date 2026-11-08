@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c0b1fba1-4338-4671-934b-098689ad2085",
+  "name": "Fynn, the Fangbearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fynn, the Fangbearer",
+      "oracle_fingerprint": "8f163fbabd7a32f8b50547e0b19a2398",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Deathtouch" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "poison", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

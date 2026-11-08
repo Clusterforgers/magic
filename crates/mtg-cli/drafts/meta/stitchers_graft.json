@@ -1,0 +1,76 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Equip:2",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever equipped creature attacks, it doesn't untap during its controller's next untap step.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME becomes unattached from a permanent, sacrifice that permanent.",
+      "abilities": [],
+      "gap": "trigger:Unattached"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Equipped creature gets +3/+3.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 29
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 30,
+          "end": 123
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 124,
+          "end": 210
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 211,
+          "end": 220
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

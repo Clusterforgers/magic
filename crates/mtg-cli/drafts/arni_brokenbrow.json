@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3dce6c6c-599f-4e35-ae15-728c5e78dee1",
+  "name": "Arni Brokenbrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arni Brokenbrow",
+      "oracle_fingerprint": "22aca75ce83ea99d11682c57eaba8a2c",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetPower": {
+                        "Sum": [
+                          {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                              "stat": "Power"
+                            }
+                          },
+                          1
+                        ]
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

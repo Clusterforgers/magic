@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a5d02339-9f6d-486e-87d8-5ec2274cf680",
+  "name": "Meddling Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meddling Mage",
+      "oracle_fingerprint": "3826e449b2662635b951acfc7deb02b0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "NonlandCardName" }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "EachPlayer", "action": { "Cast": { "filter": ["ChosenName"] } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

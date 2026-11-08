@@ -52,6 +52,14 @@ pub struct PermanentView {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub prepared: bool,
+    /// Whether the permanent is suspected (CR 701.60): it has menace and can't block. Left out while it is not.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub suspected: bool,
+    /// Whether the permanent is a solved Case (CR 719.3): its "Solved" abilities work. Left out while it is not.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub solved: bool,
     /// Whether a player exerted the permanent and it still holds back its untap (CR 701.43). Left out while it is not.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
@@ -368,6 +376,12 @@ const fn is_false(flag: &bool) -> bool {
     !*flag
 }
 
+/// Whether a Ring level is 0, which the view leaves out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero_level(level: &u8) -> bool {
+    *level == 0
+}
+
 /// A commander a seat owns and what casting it from the command zone costs more now (public).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct CommanderView {
@@ -428,6 +442,18 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub citys_blessing: bool,
+    /// The player's speed (CR 702.179), 1 to 4 with 4 max speed; public, and left out while they have none.
+    #[serde(default, skip_serializing_if = "is_zero_level")]
+    #[ts(as = "Option<u8>", optional)]
+    pub speed: u8,
+    /// The level of the player.s Ring (CR 701.54); public, and left out while the Ring has not tempted them.
+    #[serde(default, skip_serializing_if = "is_zero_level")]
+    #[ts(as = "Option<u8>", optional)]
+    pub ring_level: u8,
+    /// The creature that is the player.s Ring-bearer; public, and left out while they have none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(as = "Option<ObjectId>", optional)]
+    pub ring_bearer: Option<ObjectId>,
     /// The Auras that enchant the player, in id order; public, and left out while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]

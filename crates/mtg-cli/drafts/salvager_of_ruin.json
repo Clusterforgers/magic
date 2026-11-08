@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c6dc70de-4fa5-466b-af28-0ced885d4e12",
+  "name": "Salvager of Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Salvager of Ruin",
+      "oracle_fingerprint": "d255b9da89b70e767d29a3f9bd64abab",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "ArrivedFrom": "Battlefield" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

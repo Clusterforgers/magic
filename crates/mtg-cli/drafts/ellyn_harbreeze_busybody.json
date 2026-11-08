@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ca5ecc26-5ed8-4466-bb8f-df2b39bddd18",
+  "name": "Ellyn Harbreeze, Busybody",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ellyn Harbreeze, Busybody",
+      "oracle_fingerprint": "b1b642ce76110b1c80c97d4bdae8bd15",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Tally": {
+                      "event": "Entered",
+                      "who": "EachPlayer",
+                      "filter": ["Token", { "OwnedBy": "You" }]
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

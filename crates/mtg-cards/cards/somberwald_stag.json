@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b1b67851-23d3-4799-ab29-15bce7bb2c39",
+  "name": "Somberwald Stag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Somberwald Stag",
+      "oracle_fingerprint": "40b86870e0e10a7499f9621a861b95a4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

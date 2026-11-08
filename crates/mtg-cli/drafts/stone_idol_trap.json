@@ -1,0 +1,48 @@
+{
+  "oracle_id": "47cd98e2-0eaf-4292-a840-c5e8d035c83c",
+  "name": "Stone Idol Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stone Idol Trap",
+      "oracle_fingerprint": "c35b80e09c47125835045120ac959cc4",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 6,
+                      "toughness": 12,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

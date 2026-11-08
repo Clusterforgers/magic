@@ -1,0 +1,66 @@
+{
+  "oracle_id": "b8ee0dfc-f588-43b6-ab96-f3a3c58a8a3d",
+  "name": "Nightmare Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightmare Shepherd",
+      "oracle_fingerprint": "82ade581ae79707027455f3b2b1ac1a2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "Triggering", "as": "exiled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "CopyOf": {
+                                  "of": "Triggering",
+                                  "except": [
+                                    { "SetPT": { "power": 1, "toughness": 1 } },
+                                    { "AddSubtype": "Nightmare" }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

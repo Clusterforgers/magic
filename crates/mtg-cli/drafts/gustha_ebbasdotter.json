@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a0a8c04e-3ce7-4945-a6af-7e40a990c82c",
+  "name": "Gustha Ebbasdotter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gustha Ebbasdotter",
+      "oracle_fingerprint": "e85ca4c28af907a7a42d68763f9da902",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

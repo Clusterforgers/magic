@@ -59,6 +59,10 @@ pub enum Support {
     /// A whole draft the checker could not prove, read and found correct by a player; the game runs it like `Verified`
     /// but counts it apart (`docs/cards-dsl.md`, Read tier).
     Read,
+    /// A whole translation of a Forge script that the checker could not prove but whose Oracle text equals ours: the
+    /// game runs it like `Read` without a player's read and counts it apart; a `wrong` verdict ends it
+    /// (`docs/cards-dsl.md`, Read tier).
+    Forge,
     /// Rules exist except the listed clauses.
     Partial,
     /// No rules, or the engine runs none of them: the table resolves the card by hand.
@@ -70,9 +74,9 @@ pub enum Support {
 }
 
 impl Support {
-    /// Whether the game runs every rule of the card, so nothing is played by hand: `Verified` or `Read`.
+    /// Whether the game runs every rule of the card, so nothing is played by hand: `Verified`, `Read` or `Forge`.
     pub const fn runs_whole(self) -> bool {
-        matches!(self, Support::Verified | Support::Read)
+        matches!(self, Support::Verified | Support::Read | Support::Forge)
     }
 }
 
@@ -234,6 +238,7 @@ fn state_tag(state: Support) -> &'static str {
     match state {
         Support::Verified => "verified",
         Support::Read => "read",
+        Support::Forge => "forge",
         Support::Partial => "partial",
         Support::Manual => "manual",
         Support::Stale => "stale",
@@ -405,6 +410,45 @@ pub fn support(card: Option<&Card>, printed: &PrintedCard, caps: &Caps) -> Suppo
     }
 }
 
+/// The name of the reason a card plays by hand when its rules read back as other text than the card.
+pub const READBACK_DIFFERS: &str = "readback:Differs";
+
+/// The `Manual` record of rules that read back as other text than the card (`differs`, the clauses
+/// [`crate::proposal::differing`] finds): rules that may play wrong never play automatically, and each such clause
+/// names the reason.
+pub fn held_back(
+    printed: &PrintedCard,
+    card: Option<&Card>,
+    differs: &[crate::proposal::ClauseReport],
+) -> SupportRecord {
+    let clauses: Vec<Clause> = differs
+        .iter()
+        .map(|clause| Clause {
+            face: clause.face,
+            span: clause.span,
+            reason: match &clause.state {
+                crate::proposal::ClauseState::Differs { written, .. } => format!(
+                    "{READBACK_DIFFERS}: the rules read back as \u{201c}{written}\u{201d}, not as the card's text"
+                ),
+                _ => format!("{READBACK_DIFFERS}: the rules read back as other text than the card"),
+            },
+        })
+        .collect();
+    let current = current_fingerprints(printed);
+    SupportRecord {
+        oracle_id: printed.oracle_id.clone(),
+        fingerprint: fingerprint(
+            &printed.oracle_id,
+            Support::Manual,
+            &clauses,
+            card,
+            &current,
+        ),
+        support: Support::Manual,
+        clauses,
+    }
+}
+
 /// The `Read` record of a draft the engine can run whole: what `Verified` would be for it, as `Read`. `None` while the
 /// draft is not whole, its text drifted, or the engine lacks a primitive it uses; whether a player approved it is the
 /// caller's question.
@@ -412,6 +456,7 @@ pub(crate) fn read_support(
     draft: &Card,
     printed: &PrintedCard,
     caps: &Caps,
+    tier: Support,
 ) -> Option<SupportRecord> {
     if draft.impl_status != ImplStatus::Full {
         return None;
@@ -420,14 +465,33 @@ pub(crate) fn read_support(
     (proven.support == Support::Verified).then(|| SupportRecord {
         fingerprint: fingerprint(
             &printed.oracle_id,
-            Support::Read,
+            tier,
             &proven.clauses,
             Some(draft),
             &current_fingerprints(printed),
         ),
-        support: Support::Read,
+        support: tier,
         ..proven
     })
+}
+
+/// The `Partial` record of a proved partial draft: its lines left by hand are the `Manual` abilities, and the engine must
+/// run every other one, so no line turns by hand behind the proof. `None` while the draft is not `partial`, its text
+/// drifted, or a primitive of an automatic line is missing from `caps`.
+pub(crate) fn partial_support(
+    draft: &Card,
+    printed: &PrintedCard,
+    caps: &Caps,
+) -> Option<SupportRecord> {
+    if draft.impl_status != ImplStatus::Partial {
+        return None;
+    }
+    let runs = draft
+        .abilities()
+        .filter(|(_, ability)| !ability.is_manual())
+        .all(|(_, ability)| caps.missing(&used_primitives(ability)).is_empty());
+    let record = support(Some(draft), printed, caps);
+    (runs && record.support == Support::Partial).then_some(record)
 }
 
 #[cfg(test)]
@@ -453,6 +517,8 @@ mod tests {
                 divide: None,
             }],
             effects: vec![Effect::DealDamage {
+                excess: None,
+                unpreventable: false,
                 source: None,
                 to: Ref::Target(0),
                 amount: Amount::Fixed(3),
@@ -522,7 +588,7 @@ mod tests {
         #[case] expected: Option<Support>,
     ) {
         let rules = card(ImplStatus::Full, vec![bolt_ability()], TEXT);
-        let record = read_support(&rules, &printed(TEXT), &caps);
+        let record = read_support(&rules, &printed(TEXT), &caps, Support::Read);
         assert_eq!(record.as_ref().map(|r| r.support), expected);
         if let Some(record) = record {
             let verified = support(Some(&rules), &printed(TEXT), &caps);
@@ -538,7 +604,7 @@ mod tests {
     fn only_a_full_draft_has_a_read_record(#[case] status: ImplStatus) {
         let rules = card(status, vec![bolt_ability()], TEXT);
         assert_eq!(
-            read_support(&rules, &printed(TEXT), &Caps::everything()),
+            read_support(&rules, &printed(TEXT), &Caps::everything(), Support::Read),
             None
         );
     }

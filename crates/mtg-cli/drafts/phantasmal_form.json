@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d21facb6-27c2-49cb-9f13-7d6079096eda",
+  "name": "Phantasmal Form",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantasmal Form",
+      "oracle_fingerprint": "3b79c207810a59914824e4e3449e8722",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "AddColors": ["Blue"] },
+                    { "AddSubtype": "Illusion" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

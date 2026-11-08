@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8ae3562f-28b7-4462-96ed-be0cf7052ccc",
+  "name": "Kor Outfitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kor Outfitter",
+      "oracle_fingerprint": "ef116f127ad4e5d7e241f40e4fcb6b31",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

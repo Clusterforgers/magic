@@ -1,0 +1,37 @@
+{
+  "oracle_id": "59642d6f-8a25-4f79-9e81-643eac775658",
+  "name": "Time to Feed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time to Feed",
+      "oracle_fingerprint": "ef942117905a0e6357169e25cea78e18",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "GainLife": { "amount": 3 } }]
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

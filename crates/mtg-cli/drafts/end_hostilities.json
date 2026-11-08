@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7b2e2c4b-b8fd-440c-8a79-de6532022745",
+  "name": "End Hostilities",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "End Hostilities",
+      "oracle_fingerprint": "e9638176b0fb923bea9959bbffd44800",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Creature" },
+                          { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "9633730d-c41f-4597-b806-55ce2dd848e9",
+  "name": "Surveyor's Scope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surveyor's Scope",
+      "oracle_fingerprint": "030f705078828dd505bf5e527d851076",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "ExileSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Players": {
+                        "PlayersWhere": {
+                          "who": "EachPlayer",
+                          "test": {
+                            "Compare": {
+                              "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                              "op": "Ge",
+                              "right": {
+                                "Sum": [
+                                  { "Count": [{ "Type": "Land" }, { "ControlledBy": "Asker" }] },
+                                  2
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

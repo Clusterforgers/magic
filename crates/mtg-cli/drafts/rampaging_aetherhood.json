@@ -1,0 +1,52 @@
+{
+  "oracle_id": "9b1f0780-072a-4fe6-91d8-e546a8aaea20",
+  "name": "Rampaging Aetherhood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampaging Aetherhood",
+      "oracle_fingerprint": "62a2f5456e99c351339fd923ae31c1c8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "number"
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "times": { "ChosenAs": "number" },
+                  "paid": [
+                    {
+                      "PutCounters": {
+                        "on": "This",
+                        "counter": "+1/+1",
+                        "count": { "ChosenAs": "number" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

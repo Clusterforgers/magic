@@ -1,0 +1,22 @@
+{
+  "oracle_id": "84904dd3-8987-47c2-b508-f87519157b00",
+  "name": "Stadium Vendors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stadium Vendors",
+      "oracle_fingerprint": "ba3cc6ebd22ece1da003cf9dc66404f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Choose": { "from": "EachPlayer", "as": "player" } },
+              { "AddMana": { "who": { "Bound": "player" }, "mana": { "AnyColor": 2 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

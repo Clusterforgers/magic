@@ -1,0 +1,28 @@
+{
+  "oracle_id": "13a3f2c1-0454-4661-a462-542254f8360d",
+  "name": "Whirlpool Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirlpool Rider",
+      "oracle_fingerprint": "8afe692513d9db9207f5de6f6ea75d3f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } },
+                  "as": "moved"
+                }
+              },
+              { "Draw": { "count": { "Bound": "moved~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

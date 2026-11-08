@@ -46,6 +46,7 @@ fn activation(cost: &Cost) -> Ability {
         timing: Timing::Sorcery,
         condition: None,
         limit: None,
+        by: mtg_cards::ability::Activators::Controller,
         from: ZoneKind::Graveyard,
         targets: Vec::new(),
         effects: vec![
@@ -64,6 +65,7 @@ fn activation(cost: &Cost) -> Ability {
                     transformed: false,
                     counters: Vec::new(),
                 },
+                bind: None,
             },
             // Only the permanent that arrived is in play: a card that was moved away in response stays where it is.
             Effect::If {
@@ -81,6 +83,7 @@ fn activation(cost: &Cost) -> Ability {
                         duration: Duration::Forever,
                     },
                     Effect::DelayedTrigger {
+                        until: None,
                         when: TriggerPattern::StepBegins {
                             step: Step::End,
                             whose: Ref::EachPlayer,

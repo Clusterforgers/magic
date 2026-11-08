@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a9abed25-9256-4fc7-8afb-edb4286e18f4",
+  "name": "Dina's Guidance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dina's Guidance",
+      "oracle_fingerprint": "80026c7cd83d242c190a315c4023b22c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Creature" }], "reveal": true, "as": "found" } },
+              { "ChooseValue": { "kind": { "Options": ["Hand", "Graveyard"] }, "as": "way2" } },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way2", "word": "Graveyard" } },
+                  "then": [{ "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } }],
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

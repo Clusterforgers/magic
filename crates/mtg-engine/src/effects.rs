@@ -6,14 +6,14 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 pub use mtg_cards::modify::Duration;
 use mtg_cards::value::CounterKind;
-use mtg_core::card::{CardType, CardTypes, Subtype};
+use mtg_core::card::{CardType, CardTypes, Subtype, Supertype};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::characteristics::Characteristics;
 use crate::land_types::is_land_type;
-use crate::object::{GameObject, ObjectRef};
+use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::state::GameState;
 use crate::turn::Step;
 use crate::zones::Zone;
@@ -84,6 +84,19 @@ impl Selector {
     }
 }
 
+/// An activated ability printed on a card, which another object has (`Modification::GainAbilities`).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Borrowed {
+    /// The card the ability is printed on.
+    pub donor: ObjectId,
+    /// The ability's index among the rules of that card.
+    pub index: usize,
+    /// The ability.
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub body: Arc<Ability>,
+}
+
 /// What an effect changes.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -94,6 +107,8 @@ pub enum Modification {
     RemoveType(CardType),
     /// Makes these the card types (layer 4); the creature types go when it is no longer a creature.
     SetTypes(CardTypes),
+    /// Adds a supertype (layer 4): "enchanted permanent is legendary".
+    AddSupertype(Supertype),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
@@ -107,15 +122,26 @@ pub enum Modification {
     SetColors(ColorSet),
     /// A line of text the table follows by hand (layer 6): it changes nothing the engine runs and `granted_text` lists it.
     GrantText(String),
+    /// Adds colours to the ones it has (layer 5).
+    AddColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
     RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
+    /// Removes a keyword ability and keeps the object from having or gaining it afterwards (layer 6).
+    LockKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Gives an activated or a triggered ability (layer 6); `ability_reader` lists it under an address of its own.
     GrantAbility(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Arc<Ability>),
+    /// Gives the activated abilities printed on other cards (layer 6): the cards the static ability named when the layers
+    /// were worked out, each with its ability and its place among the rules of its card; `ability_reader` lists each under an
+    /// address of its own.
+    GainAbilities(Vec<Borrowed>),
     /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
     /// those granted earlier. What is granted after it still counts.
     LoseAbilities,
+    /// Takes away the one ability at this address (layer 6): "~ loses this ability". The object of the address is the one
+    /// the ability was activated from; the others of its abilities stay.
+    LoseAbility(crate::abilities::AbilityRef),
     /// Changes the controller (layer 2).
     SetController(PlayerId),
     /// Sets power and toughness (layer 7b).
@@ -125,6 +151,10 @@ pub enum Modification {
         /// New toughness.
         toughness: i32,
     },
+    /// Sets the power alone (layer 7b).
+    SetPower(i32),
+    /// Sets the toughness alone (layer 7b).
+    SetToughness(i32),
     /// Adds to power and toughness (layer 7c).
     ModifyPowerToughness {
         /// Power delta.
@@ -200,17 +230,23 @@ impl Modification {
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
+            | Modification::AddSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => Layer::Type,
-            Modification::SetColors(_) => Layer::Color,
+            Modification::SetColors(_) | Modification::AddColors(_) => Layer::Color,
             Modification::AddKeyword(_)
+            | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantText(_)
             | Modification::GrantAbility(_)
+            | Modification::LoseAbility(_)
+            | Modification::GainAbilities(_)
             | Modification::LoseAbilities => Layer::Ability,
-            Modification::SetPowerToughness { .. } => Layer::PtSet,
+            Modification::SetPowerToughness { .. }
+            | Modification::SetPower(_)
+            | Modification::SetToughness(_) => Layer::PtSet,
             Modification::ModifyPowerToughness { .. } => Layer::PtModify,
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
@@ -241,6 +277,11 @@ impl Modification {
                     chars.creature_types_set = true;
                 }
             }
+            Modification::AddSupertype(supertype) => {
+                if !chars.supertypes.contains(supertype) {
+                    chars.supertypes.push(*supertype);
+                }
+            }
             Modification::AddSubtype(subtype) => {
                 if !chars.subtypes.contains(subtype) {
                     chars.subtypes.push(subtype.clone());
@@ -269,11 +310,18 @@ impl Modification {
             }
             Modification::AddAllCreatureTypes => chars.all_creature_types = true,
             Modification::SetColors(colors) => chars.colors = *colors,
+            Modification::AddColors(colors) => {
+                chars.colors = colors
+                    .iter()
+                    .fold(chars.colors, mtg_core::color::ColorSet::with);
+            }
             Modification::LoseAbilities => chars.abilities.clear(),
             Modification::SetPowerToughness { power, toughness } => {
                 chars.power = Some(*power);
                 chars.toughness = Some(*toughness);
             }
+            Modification::SetPower(power) => chars.power = Some(*power),
+            Modification::SetToughness(toughness) => chars.toughness = Some(*toughness),
             Modification::ModifyPowerToughness { power, toughness } => {
                 chars.power = chars.power.map(|p| p.saturating_add(*power));
                 chars.toughness = chars.toughness.map(|t| t.saturating_add(*toughness));
@@ -289,7 +337,10 @@ impl Modification {
             | Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantText(_)
+            | Modification::LockKeyword(_)
+            | Modification::LoseAbility(_)
             | Modification::GrantAbility(_)
+            | Modification::GainAbilities(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
             | Modification::CantBlock
@@ -327,6 +378,19 @@ pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {
         .collect()
 }
 
+/// The turn number an effect of `duration` that `controller` controls records as it begins now: the current turn, but for
+/// "until your next end step" begun before the end step of the controller's own turn the one before, so that the end step of
+/// this turn is the one it lasts until.
+pub(crate) fn began_turn(state: &GameState, duration: &Duration, controller: PlayerId) -> u32 {
+    let turn = state.turn();
+    let before_end = turn.active() == controller && turn.step() < Step::End;
+    if *duration == Duration::UntilYourNextEndStep && before_end {
+        turn.number().saturating_sub(1)
+    } else {
+        turn.number()
+    }
+}
+
 /// Whether an effect of a spell or ability that `controller` controlled, made by `source` in turn `began`, still lasts
 /// in `state` by its duration (CR 611.2): the one rule for the durations of continuous effects and of rules.
 pub(crate) fn lasts(
@@ -341,8 +405,21 @@ pub(crate) fn lasts(
         // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2); `UntilEndOfYourNextTurn` ends
         // the same way, in the cleanup step of the next turn its controller has.
         // `NextUntapStep` ends with the untap step that the permanent it holds down would untap in (`c7_untap`).
-        Duration::UntilEndOfTurn | Duration::Forever | Duration::NextUntapStep => true,
+        // `UntilTurnSkipped` ends with the turn it skips (`prohibit::skipped_turn_rules`).
+        Duration::UntilEndOfTurn
+        | Duration::Forever
+        // A payment ends it (`e15g_paid.rs`).
+        | Duration::UntilPaid(_)
+        | Duration::NextUntapStep
+        | Duration::UntilTurnSkipped => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
+        // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
+        Duration::UntilYourNextEndStep => {
+            state.is_alive(controller)
+                && !(turn.number() > began
+                    && turn.active() == controller
+                    && turn.step() >= Step::End)
+        }
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
         Duration::UntilYourNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && turn.active() == controller)
@@ -351,6 +428,15 @@ pub(crate) fn lasts(
             state
                 .object(source.id)
                 .is_some_and(|o| o.counter() == source.counter && o.zone().is_permanent_zone())
+        }),
+        // "For as long as ~ remains tapped" (CR 611.2b): the housekeeping that follows the untap removes the effect at once,
+        // so tapping the source again does not bring it back.
+        Duration::WhileSourceTapped => source.is_some_and(|source| {
+            state.object(source.id).is_some_and(|o| {
+                o.counter() == source.counter
+                    && o.zone() == Zone::Battlefield
+                    && o.permanent().is_some_and(PermanentState::tapped)
+            })
         }),
         // The control of the source is derived by the layers. The pass that decides which effects apply asks only that the
         // source is there (`lasts_before_control`) and checks the control itself after the control layer, so this full
@@ -516,6 +602,25 @@ impl ContinuousEffect {
     }
 }
 
+/// When a permanent spell has resolved (`resolved`), moves the effects that name it to the permanent it became: it is the
+/// same object for what was done to it on the stack (CR 400.7, 608.3).
+pub(crate) fn follow_spell(effects: &mut [ContinuousEffect], entered: ObjectRef, resolved: bool) {
+    if !resolved {
+        return;
+    }
+    let spell = ObjectRef {
+        id: entered.id,
+        counter: entered.counter.saturating_sub(1),
+    };
+    for effect in effects {
+        if let Selector::Objects(named) = &mut effect.selector {
+            for reference in named.iter_mut().filter(|r| **r == spell) {
+                *reference = entered;
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: an effect applies while its duration lasts and no longer, each duration ends by its own rule (end of turn by the cleanup step's event, end of combat by the step, "your next turn" by the controller's turn, "while the source stays" by that very object, for ever not at all), and an effect that names objects is spent when none of them is the object it named.
@@ -605,6 +710,33 @@ mod tests {
     ) {
         let mut game = game();
         let effect = effect(&game, duration, ME);
+        at(&mut game, now.0, now.1, now.2);
+        assert_eq!(effect.is_active(&game), active);
+    }
+
+    #[rstest]
+    #[case::before_the_end_step_of_your_turn(
+        (3, ME, Step::Main1), (3, ME, Step::Main2), true
+    )]
+    #[case::until_that_end_step((3, ME, Step::Main1), (3, ME, Step::End), false)]
+    #[case::not_back_in_that_turn((3, ME, Step::Main1), (3, ME, Step::Cleanup), false)]
+    #[case::begun_in_the_end_step_it_waits_for_the_next_one(
+        (3, ME, Step::End), (3, ME, Step::Cleanup), true
+    )]
+    #[case::then_through_the_other_turn((3, ME, Step::End), (4, FOE, Step::End), true)]
+    #[case::before_the_next_end_step((3, ME, Step::End), (5, ME, Step::Main1), true)]
+    #[case::the_next_end_step((3, ME, Step::End), (5, ME, Step::End), false)]
+    #[case::begun_in_another_turn_through_it((4, FOE, Step::Main1), (4, FOE, Step::End), true)]
+    #[case::begun_in_another_turn_to_your_end_step((4, FOE, Step::Main1), (5, ME, Step::End), false)]
+    fn until_your_next_end_step_is_the_first_end_step_of_yours_after_it_begins(
+        #[case] began: (u32, PlayerId, Step),
+        #[case] now: (u32, PlayerId, Step),
+        #[case] active: bool,
+    ) {
+        let mut game = game();
+        at(&mut game, began.0, began.1, began.2);
+        let turn = began_turn(&game, &Duration::UntilYourNextEndStep, ME);
+        let effect = effect(&game, Duration::UntilYourNextEndStep, ME).begun(ME, turn);
         at(&mut game, now.0, now.1, now.2);
         assert_eq!(effect.is_active(&game), active);
     }

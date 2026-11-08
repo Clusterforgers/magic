@@ -21,8 +21,9 @@ pub(super) fn label(ability: &Ability) -> String {
         Ability::Replacement { .. } => "replacement effect".to_owned(),
         Ability::CostModifier { .. } => "cost change".to_owned(),
         Ability::AdditionalCost { .. } => "additional cost".to_owned(),
-        Ability::FreeCast { .. } => "alternative cost".to_owned(),
+        Ability::FreeCast { .. } | Ability::AltCast { .. } => "alternative cost".to_owned(),
         Ability::CastOnly { .. } => "casting restriction".to_owned(),
+        Ability::OpeningHand | Ability::OpeningReveal { .. } => "opening-hand ability".to_owned(),
         Ability::Keyword(keyword) => format!("keyword {}", parts::keyword(&ctx, keyword)),
         Ability::Manual { .. } => "played by hand".to_owned(),
     }
@@ -97,6 +98,7 @@ pub(super) fn ability_into(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             timing,
             condition,
             limit,
+            by: _,
             from,
             targets: specs,
             effects: list,
@@ -198,38 +200,53 @@ fn other(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
     }
 }
 
+/// A cost modifier: "this spell costs {1} less to cast", "activated abilities of artifacts cost {1} less to activate".
+fn cost_modifier(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
+    let ctx = Ctx::none();
+    let Ability::CostModifier {
+        applies_to,
+        change,
+        mana,
+        per,
+        condition,
+        activating,
+        ..
+    } = ability
+    else {
+        return;
+    };
+    let more = if *change == CostChange::Increase {
+        "more"
+    } else {
+        "less"
+    };
+    let each = if *per == Amount::one() {
+        String::new()
+    } else {
+        format!(", times {}", phrase::amount(&ctx, per))
+    };
+    let words = if activating.is_some() {
+        format!(
+            "activated abilities of {} cost {mana} {more} to activate{each}",
+            phrase::selectors(&ctx, applies_to)
+        )
+    } else if *applies_to == Selector::this() {
+        format!("this spell costs {mana} {more} to cast{each}")
+    } else {
+        format!(
+            "{} cost {mana} {more} to cast{each}",
+            phrase::selectors(&ctx, applies_to)
+        )
+    };
+    out.push(Step::new(depth, words));
+    gate(&ctx, "while", condition.as_ref(), depth, out);
+}
+
 /// The abilities about the cost of casting a spell, and the keywords and clauses left to the table.
 fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
     let ctx = Ctx::none();
     match ability {
-        Ability::CostModifier {
-            applies_to,
-            change,
-            mana,
-            per,
-            condition,
-        } => {
-            let more = if *change == CostChange::Increase {
-                "more"
-            } else {
-                "less"
-            };
-            let each = if *per == Amount::one() {
-                String::new()
-            } else {
-                format!(", times {}", phrase::amount(&ctx, per))
-            };
-            let spells = if *applies_to == Selector::this() {
-                "this spell costs".to_owned()
-            } else {
-                format!("{} cost", phrase::selectors(&ctx, applies_to))
-            };
-            out.push(Step::new(
-                depth,
-                format!("{spells} {mana} {more} to cast{each}"),
-            ));
-            gate(&ctx, "while", condition.as_ref(), depth, out);
-        }
+        Ability::CostModifier { .. } => cost_modifier(ability, depth, out),
         Ability::AdditionalCost { cost, required } => {
             let how = if *required { "must pay" } else { "may pay" };
             out.push(Step::new(
@@ -247,6 +264,43 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             out.push(Step::new(
                 depth,
                 format!("may be cast without paying its mana cost{by}"),
+            ));
+            gate(&ctx, "if", condition.as_ref(), depth, out);
+        }
+        Ability::OpeningHand => out.push(Step::new(
+            depth,
+            "may begin the game on the battlefield if in the opening hand".to_owned(),
+        )),
+        Ability::OpeningReveal {
+            when,
+            effects: list,
+        } => {
+            out.push(Step::new(
+                depth,
+                format!(
+                    "may be revealed from the opening hand; then once, when: {}",
+                    parts::trigger(&ctx, when)
+                ),
+            ));
+            effects::list(&ctx, list, depth, out);
+        }
+        Ability::AltCast {
+            cost,
+            condition,
+            from,
+            ..
+        } => {
+            let by = cost.as_ref().map_or_else(String::new, |cost| {
+                format!(" by paying {}", parts::cost(&ctx, cost))
+            });
+            let place = if from.is_hand() {
+                String::new()
+            } else {
+                format!(" from {from:?}")
+            };
+            out.push(Step::new(
+                depth,
+                format!("may be cast{place} in place of its mana cost{by}"),
             ));
             gate(&ctx, "if", condition.as_ref(), depth, out);
         }
@@ -329,6 +383,7 @@ mod tests {
             r#"{"CostModifier":{"applies_to":[{"Type":"Creature"}],"change":"Reduce","mana":"{1}"}}"#,
             r#"{"AdditionalCost":{"cost":[{"PayLife":2}],"required":true}}"#,
             r#"{"FreeCast":{}}"#,
+            r#"{"AltCast":{"way":"Surge","cost":[{"Mana":"{1}{R}"}]}}"#,
             r#"{"CastOnly":{"condition":"YourTurn"}}"#,
         ] {
             let parsed: Ability = serde_json::from_str(json).unwrap();

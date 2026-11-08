@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0fc0554d-da45-49d2-941b-3f6c6458e823",
+  "name": "Refraction Trap",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Refraction Trap",
+      "oracle_fingerprint": "5f42fe5792b54feb2c15c7df92ced9cf",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Color": "Red" },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{W}"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 118, "end": 318 }
+          }
+        }
+      ]
+    }
+  ]
+}

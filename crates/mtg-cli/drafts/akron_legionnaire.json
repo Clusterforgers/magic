@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c5f50a78-9dc4-4f3c-aa11-b41c8278bc16",
+  "name": "Akron Legionnaire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akron Legionnaire",
+      "oracle_fingerprint": "69afe2b65ea8e867a01e82224d50a1d2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Not": { "Type": "Artifact" } },
+                { "Not": { "Named": "Akron Legionnaire" } }
+              ]
+            },
+            "mods": ["CantAttack"]
+          }
+        }
+      ]
+    }
+  ]
+}

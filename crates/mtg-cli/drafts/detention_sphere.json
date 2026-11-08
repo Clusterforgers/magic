@@ -1,0 +1,63 @@
+{
+  "oracle_id": "0a0b376d-7824-4ba5-8bc9-bc0be12800c5",
+  "name": "Detention Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Detention Sphere",
+      "oracle_fingerprint": "014808a0e0020223f21c8791d20b020e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "Not": { "Named": "Detention Sphere" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Is": { "Target": 0 } },
+                                { "SharesName": { "Target": 0 } }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

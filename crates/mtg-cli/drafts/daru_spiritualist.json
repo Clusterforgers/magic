@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e58a5631-dd00-4b1b-a2aa-2558bb0ff62f",
+  "name": "Daru Spiritualist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daru Spiritualist",
+      "oracle_fingerprint": "19cb4b8fa00244484cbb9bc4dfc7829d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  { "Subtype": "Cleric" },
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "TriggeringFirst",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 //! The deck check: whether a deck is legal in its format, how far the game plays each of its cards,
-//! and the two hashes the Verified marker is derived from. One pure function, [`deck_report`], serves
+//! and the two hashes a save stores. One pure function, [`deck_report`], serves
 //! the server, the CLI and the tests (`docs/deck-check.md`).
 //!
 //! The report keeps "illegal" (`legality`) apart from "not implemented" (`cards`), reports every
@@ -8,7 +8,7 @@
 mod companion;
 mod hashes;
 mod legality;
-mod marker;
+mod stored;
 
 use std::collections::BTreeMap;
 
@@ -21,7 +21,7 @@ use crate::support::{Caps, PrintedCard, Reason, Support, SupportRecord};
 
 pub use hashes::{coverage_hash, deck_hash};
 pub use legality::{Issue, IssueCode, SUPPORTED_FORMATS, can_pair, is_supported_format};
-pub use marker::{Marker, StoredCheck, marker};
+pub use stored::StoredCheck;
 
 /// A part of a deck.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -120,6 +120,10 @@ pub struct Counts {
     /// before the Read tier has none.
     #[serde(default)]
     pub read: u32,
+    /// Copies of `forge` cards: trusted translations of Forge scripts, which the game runs like `read` ones. A check
+    /// stored before this tier has none.
+    #[serde(default)]
+    pub forge: u32,
     /// Copies of `partial` cards.
     pub partial: u32,
     /// Copies of `manual` cards.
@@ -136,6 +140,7 @@ impl Counts {
         let slot = match support {
             Support::Verified => &mut self.verified,
             Support::Read => &mut self.read,
+            Support::Forge => &mut self.forge,
             Support::Partial => &mut self.partial,
             Support::Manual => &mut self.manual,
             Support::Stale => &mut self.stale,
@@ -162,37 +167,29 @@ pub struct ZoneCounts {
 pub enum DeckState {
     /// Legal, and every card of every zone is `verified`.
     Verified,
-    /// Legal, and every card of every zone is `verified` or `read`, at least one `read`: the game runs all of it, part
-    /// of it on the reads of players.
+    /// Legal, and every card of every zone is `verified`, `read` or `forge`, at least one of the last two: the game
+    /// runs all of it, part of it on the reads of players or translated from Forge.
     Read,
     /// Legal, with some cards that are neither `verified` nor `read`; the table resolves them by hand.
     ManualPlay,
     /// Illegal in its format, or holds an `unplayable` card.
     Blocked,
-    /// Never checked, or changed since: a report is never in this state.
+    /// Kept for older clients: no report and no deck is in this state.
     Unchecked,
 }
 
 impl DeckState {
-    /// How bad the state is for playing: `verified` < `read` < `manual_play` < `blocked`; `unchecked` has no rank.
-    const fn rank(self) -> Option<u8> {
-        match self {
-            DeckState::Verified => Some(0),
-            DeckState::Read => Some(1),
-            DeckState::ManualPlay => Some(2),
-            DeckState::Blocked => Some(3),
-            DeckState::Unchecked => None,
-        }
-    }
-
     /// The state of a deck from whether it has legality issues and its copies by support state.
     fn of(has_issues: bool, counts: &Counts) -> DeckState {
-        let runs_whole = counts.verified.saturating_add(counts.read);
+        let runs_whole = counts
+            .verified
+            .saturating_add(counts.read)
+            .saturating_add(counts.forge);
         if has_issues || counts.unplayable > 0 {
             DeckState::Blocked
         } else if runs_whole < counts.total {
             DeckState::ManualPlay
-        } else if counts.read > 0 {
+        } else if counts.read > 0 || counts.forge > 0 {
             DeckState::Read
         } else {
             DeckState::Verified

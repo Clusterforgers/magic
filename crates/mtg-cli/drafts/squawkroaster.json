@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6b79404b-2fae-41fb-994c-d4cd895e8f09",
+  "name": "Squawkroaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squawkroaster",
+      "oracle_fingerprint": "5870b11a1c253ebe72ccbbccfb4da40f",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

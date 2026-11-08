@@ -1,0 +1,30 @@
+{
+  "oracle_id": "49f1dd11-aa10-442d-aaca-dd94d1ca108a",
+  "name": "Coalborn Entity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coalborn Entity",
+      "oracle_fingerprint": "b0b92b25ae5ed6aa7b4493615173dbcf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }, "Token"] },
+                    "Player",
+                    { "Object": [{ "Type": "Planeswalker" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

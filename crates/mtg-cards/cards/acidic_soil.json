@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4ccc1ac5-db90-4fc9-9795-7afaf7466c3e",
+  "name": "Acidic Soil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acidic Soil",
+      "oracle_fingerprint": "8d75332ec49ada4e05a3296955a653f2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Bound": "each" },
+                              "amount": {
+                                "Count": [
+                                  { "Type": "Land" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

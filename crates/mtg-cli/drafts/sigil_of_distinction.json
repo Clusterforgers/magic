@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3aa3526b-bd06-417f-af29-5a9ff0844923",
+  "name": "Sigil of Distinction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigil of Distinction",
+      "oracle_fingerprint": "5468fc31326f68dc20e3d9e581b50fa2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": "X" } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": "charge" } },
+                  "toughness": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": [{ "RemoveCounters": { "counter": "charge" } }] } }
+      ]
+    }
+  ]
+}

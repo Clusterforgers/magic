@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d41b2a4f-e137-4e61-99eb-6261ab3edd03",
+  "name": "Stalwarts of Osgiliath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stalwarts of Osgiliath",
+      "oracle_fingerprint": "58467b779ffdd068797992f09b74f50a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

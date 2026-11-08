@@ -1,0 +1,55 @@
+{
+  "oracle_id": "b60aff46-2d5a-47e2-9340-39d34a47c3e1",
+  "name": "Ruthless Instincts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruthless Instincts",
+      "oracle_fingerprint": "21fb7db3cde01b12cc894c8b5128d45b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Creature" }, { "Not": "Attacking" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Reach" }, { "AddKeyword": "Deathtouch" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        { "Untap": { "what": { "Target": 0 } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 2, "toughness": 2 } },
+                              { "AddKeyword": "Trample" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

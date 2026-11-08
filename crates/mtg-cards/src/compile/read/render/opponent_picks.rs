@@ -36,10 +36,12 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
         Effect::Move {
             what: Ref::Bound(taken),
             to: first,
+            ..
         },
         Effect::Move {
             what: Ref::Bound(left),
             to: second,
+            ..
         },
         ..,
     ] = effects

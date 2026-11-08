@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Creatures your opponents control block this turn if able, and you choose how those creatures block.",
+      "abilities": [],
+      "gap": "static:MustBlock"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature you control attacks, defending player loses 1 life and you gain 1 life.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 91
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 92,
+          "end": 206
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

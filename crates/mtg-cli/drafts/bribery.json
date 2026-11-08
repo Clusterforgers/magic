@@ -11,8 +11,19 @@
           "Spell": {
             "targets": [{ "what": "Opponent" }],
             "effects": [
-              { "Search": { "filter": [{ "Type": "Creature" }], "as": "c" } },
-              { "Move": { "what": { "Bound": "c" }, "to": { "Battlefield": { "under": "You" } } } },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
               { "Shuffle": { "who": { "Target": 0 } } }
             ]
           }

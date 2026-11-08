@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fb7070ab-c234-4d54-8cdc-caf106bf24a6",
+  "name": "Mild-Mannered Librarian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mild-Mannered Librarian",
+      "oracle_fingerprint": "e85f8b0f094cd5931c066a42fbb574d0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypes": ["Werewolf"] }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

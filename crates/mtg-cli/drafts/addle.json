@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3745aea4-4455-4859-9772-bcfd14e4067b",
+  "name": "Addle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Addle",
+      "oracle_fingerprint": "01ace7e05ef18bcede26b7c3e65ea915",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "ChosenAs": "chosen" }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

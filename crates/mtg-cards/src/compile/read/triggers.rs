@@ -5,6 +5,7 @@
 use super::amounts::{count_word, number_word};
 use super::batches;
 use super::counters;
+use super::g9c_blocks::g9c_happening;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::keyword::Keyword;
@@ -56,6 +57,9 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
             source.0 == [Pred::This] || *to == Some(Ref::This)
         }
         TriggerPattern::AnyOf(patterns) => patterns.iter().all(itself_acts),
+        // "Whenever ~ is dealt damage, it deals that much damage to any target", "When you do, it gets +1/+0".
+        TriggerPattern::Batch(inner) => itself_acts(inner),
+        TriggerPattern::Did { .. } => super::r7e_events::r7e_did_itself(pattern),
         _ => false,
     }
 }
@@ -66,11 +70,12 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
 pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
     let (what, named_by_the_cause) = match pattern {
         TriggerPattern::Attacks { what }
-        | TriggerPattern::BecomesBlocked { what }
+        | TriggerPattern::BecomesBlocked { what, .. }
         | TriggerPattern::Unblocked { what }
         | TriggerPattern::Mutates { what }
         | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
+        | TriggerPattern::TappedNotAttacking { what }
         | TriggerPattern::Untapped { what }
         | TriggerPattern::PhasedOut { what }
         | TriggerPattern::PhasedIn { what }
@@ -79,7 +84,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
             to: Some(ZoneKind::Battlefield),
             ..
         } => (what, true),
-        TriggerPattern::Blocks { what } => (what, false),
+        TriggerPattern::Blocks { what, .. } => (what, false),
         // The card that dies, or is put into a graveyard, is "it" in what the card does about itself.
         TriggerPattern::ZoneChange {
             what,
@@ -121,6 +126,18 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         {
             return Some(Ref::Triggering);
         }
+        // "Whenever equipped creature is dealt damage, it deals that much damage": the creature dealt the damage.
+        TriggerPattern::Batch(inner)
+            if matches!(
+                &**inner,
+                TriggerPattern::DealsDamage {
+                    to: Some(Ref::Attached),
+                    ..
+                }
+            ) =>
+        {
+            return Some(Ref::Attached);
+        }
         _ => return None,
     };
     if what.0 == [Pred::This] {
@@ -134,9 +151,9 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
 /// its own, the creature of the event otherwise.
 pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
     let (TriggerPattern::Attacks { what }
-    | TriggerPattern::BecomesBlocked { what }
+    | TriggerPattern::BecomesBlocked { what, .. }
     | TriggerPattern::Unblocked { what }
-    | TriggerPattern::Blocks { what }
+    | TriggerPattern::Blocks { what, .. }
     | TriggerPattern::ZoneChange { what, .. }) = pattern
     else {
         return None;
@@ -546,16 +563,50 @@ fn draw_event(r: &mut Reader<'_>, by: Ref, whose: &str) -> Option<TriggerPattern
         let event = TriggerPattern::Drew {
             who: by,
             what: Selector::default(),
+            first_in_draw_step: None,
         };
         return Some(TriggerPattern::Nth {
             event: Box::new(event),
             nth,
         });
     }
-    r.need("a card")?;
+    let they = if whose == "your" { "you" } else { "they" };
+    // "your first card during each of your draw steps".
+    let first = if r.words(&format!(
+        "{whose} first card during each of {whose} draw steps"
+    )) {
+        Some(true)
+    } else {
+        r.need("a card")?;
+        // "except the first one they draw in each of their draw steps".
+        r.words(&format!(
+            "except the first one {they} draw in each of {whose} draw steps"
+        ))
+        .then_some(false)
+    };
     Some(TriggerPattern::Drew {
         who: by,
         what: Selector::default(),
+        first_in_draw_step: first,
+    })
+}
+
+/// "Whenever you draw a card", with the first card of each draw step or every other card when the pattern names one.
+fn draw_text(who: &Ref, first: Option<bool>) -> Option<String> {
+    let verb = player_verb(who, "draw")?;
+    let (they, whose) = if *who == Ref::You {
+        ("you", "your")
+    } else {
+        ("they", "their")
+    };
+    Some(match first {
+        None => format!("Whenever {verb} a card"),
+        Some(true) => {
+            format!("Whenever {verb} {whose} first card during each of {whose} draw steps")
+        }
+        Some(false) => format!(
+            "Whenever {verb} a card except the first one {they} draw in each of {whose} draw steps"
+        ),
     })
 }
 
@@ -702,6 +753,9 @@ fn each_turn(r: &mut Reader<'_>, noun: &str, whose: &str) -> Option<u32> {
 /// The ordinals a count of a turn names.
 const ORDINALS: [&str; 5] = ["first", "second", "third", "fourth", "fifth"];
 
+/// A tap other than to attack (`TriggerPattern::TappedNotAttacking`).
+const NOT_ATTACKING: &str = "becomes tapped, if it isn't being declared as an attacker";
+
 /// The card itself, or an object with its article: "a creature you control", "another creature".
 pub(super) fn subject(r: &mut Reader<'_>) -> Option<Selector> {
     if r.source() {
@@ -728,6 +782,7 @@ pub(super) fn subject(r: &mut Reader<'_>) -> Option<Selector> {
 /// joined by "or".
 fn verbs(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     let mut found = verb_list(r, what)?;
+    super::g9c_blocks::g9c_shared_kind(&mut found);
     if found.len() == 1 {
         found.pop()
     } else if found
@@ -800,21 +855,11 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("becomes the target of a spell or ability") {
         return becomes_target(r, what);
     } else if r.words("is dealt damage") {
-        let to = match what.0.as_slice() {
-            [Pred::This] => Ref::This,
-            [Pred::Is(Ref::Attached)] => Ref::Attached,
-            _ => Ref::Each(what.clone()),
-        };
-        let damaged = TriggerPattern::DealsDamage {
-            source: Selector::default(),
-            to: Some(to),
-            combat: None,
-        };
-        return Some(first_time(r, damaged));
+        return dealt_damage(r, what);
     } else if r.word("blocks") {
-        return Some(TriggerPattern::Blocks { what: what.clone() });
+        return Some(super::g9c_blocks::g9c_blocks(r, what));
     } else if r.words("becomes blocked") {
-        return Some(TriggerPattern::BecomesBlocked { what: what.clone() });
+        return Some(super::g9c_blocks::g9c_blocked(r, what));
     } else if r.words("becomes tapped") {
         return Some(TriggerPattern::Tapped { what: what.clone() });
     } else if r.words("phases out") || r.words("phase out") {
@@ -860,7 +905,7 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
             to: subject(r)?,
         });
     } else if r.word("deals") {
-        return damage_dealt(r, what);
+        return deals_damage(r, what);
     } else {
         return None;
     };
@@ -909,6 +954,41 @@ fn first_time(r: &mut Reader<'_>, event: TriggerPattern) -> TriggerPattern {
     }
 }
 
+/// "is dealt damage": one object is dealt damage once for all the damage dealt to it at the same time, from any number
+/// of sources (the batch, of which only the first of a turn is counted); a group per source and creature.
+fn dealt_damage(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
+    let to = match what.0.as_slice() {
+        [Pred::This] => Ref::This,
+        [Pred::Is(Ref::Attached)] => Ref::Attached,
+        _ => Ref::Each(what.clone()),
+    };
+    let one = !matches!(&to, Ref::Each(group) if !super::r7e_events::one_object(group));
+    let damaged = TriggerPattern::DealsDamage {
+        source: Selector::default(),
+        to: Some(to),
+        combat: None,
+    };
+    if !one {
+        return Some(first_time(r, damaged));
+    }
+    match first_time(r, TriggerPattern::Batch(Box::new(damaged))) {
+        TriggerPattern::Nth { nth, .. } if nth != 1 => None,
+        counted => Some(counted),
+    }
+}
+
+/// "deals damage": one object deals damage once for all the damage it deals at the same time, to any number of
+/// recipients (the batch), unless the recipient is named.
+fn deals_damage(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
+    let dealt = damage_dealt(r, what)?;
+    if matches!(&dealt, TriggerPattern::DealsDamage { to: None, .. })
+        && super::r7e_events::one_object(what)
+    {
+        return Some(TriggerPattern::Batch(Box::new(dealt)));
+    }
+    Some(dealt)
+}
+
 /// What follows "deals": "combat damage to a player", "damage to an opponent", "noncombat damage".
 fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern> {
     let combat = if r.words("combat damage") {
@@ -943,7 +1023,13 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(paid) = r.attempt(|r| cost_paid(r, false)) {
         return Some(paid);
     }
+    if let Some(presence) = r.attempt(super::e16b_presence::read) {
+        return Some(presence);
+    }
     if let Some(spent) = r.attempt(|r| super::spent::was_spent(r, false)) {
+        return Some(spent);
+    }
+    if let Some(spent) = r.attempt(super::spent::amount_spent) {
         return Some(spent);
     }
     if let Some(monarch) = monarch_condition(r) {
@@ -983,11 +1069,12 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
 }
 
 /// The alternative costs a permanent or spell can be asked about: "its prowl cost was paid".
-const PAID_WAYS: [(&str, CastWay); 5] = [
+const PAID_WAYS: [(&str, CastWay); 6] = [
     ("prowl", CastWay::Prowl),
     ("emerge", CastWay::Emerge),
     ("mayhem", CastWay::Mayhem),
     ("spectacle", CastWay::Spectacle),
+    ("freerunning", CastWay::Freerunning),
     ("madness", CastWay::Madness),
 ];
 
@@ -1126,7 +1213,13 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     if let Some(paid) = cost_paid_text(condition, false) {
         return Some(paid);
     }
+    if let Some(presence) = super::e16b_presence::text(condition) {
+        return Some(presence);
+    }
     if let Some(spent) = super::spent::was_spent_text(condition, false) {
+        return Some(spent);
+    }
+    if let Some(spent) = super::spent::amount_spent_text(condition) {
         return Some(spent);
     }
     if let Some(monarch) = monarch_text(condition) {
@@ -1143,6 +1236,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     }
     if let Some(fact) = super::facts::texts(condition).into_iter().next() {
         return Some(fact);
+    }
+    if let Some(kind) = super::r6d_kind::own_text(condition) {
+        return Some(kind);
     }
     if let Some(control) = super::statics::control_texts(condition).into_iter().next() {
         return Some(control);
@@ -1238,8 +1334,17 @@ pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
     })
 }
 
-/// The subject of a pattern that is about one thing happening to it, and what happens.
-fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
+/// The subject of a pattern that is about one thing happening to it, and what happens. The damage one object is dealt
+/// or deals in one event has no such words: the singular wording is the batch's (`r7e_events`).
+pub(super) fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
+    if super::r7e_events::fix10_one_object_event(pattern) {
+        return None;
+    }
+    one_happening(pattern)
+}
+
+/// The subject and the verb of `happening`.
+fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
     let said = |what: &Selector, verb: &str| Some((what.clone(), verb.to_owned()));
     match pattern {
         TriggerPattern::ZoneChange { what, from, to } => {
@@ -1277,25 +1382,15 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             )
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::AttachedPlayer,
-        } => said(what, "attacks enchanted player"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::Monarch,
-        } => said(what, "attacks the monarch"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::Opponents,
-        } => said(what, "attacks one of your opponents"),
+        TriggerPattern::AttacksPlayer { what, at } => {
+            said(what, super::e16c_attacks::e16c_attacks_player(at)?)
+        }
         TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
             said(what, "attacks you or a planeswalker you control")
         }
-        TriggerPattern::Blocks { what } => said(what, "blocks"),
-        TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
+        TriggerPattern::TappedNotAttacking { what } => said(what, NOT_ATTACKING),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::PhasedOut { what } => said(what, "phases out"),
         TriggerPattern::PhasedIn { what } => said(what, "phases in"),
@@ -1338,7 +1433,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             source,
             &format!("deals {}", damage_text(*combat, to.as_ref())?),
         ),
-        _ => None,
+        // An action of `Did`, or nothing.
+        _ => g9c_happening(pattern).or_else(|| super::r7e_events::r7e_did_happening(pattern)),
     }
 }
 
@@ -1443,13 +1539,14 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
+        TriggerPattern::BecomesBlocked {
+            by, once: false, ..
+        } if !by.0.is_empty() => super::g9a_blocks::g9a_pair_text(pattern),
         TriggerPattern::StepBegins { step, whose } => {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
         }
-        TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::This] => {
-            Some("When you cast ~".to_owned())
-        }
-        TriggerPattern::SpellCast { what, by } => super::c4_cast_hand::cast_text(what, by),
+        TriggerPattern::SpellCast { what, by } => spell_cast_text(pattern, what, by),
+        TriggerPattern::Did { .. } => super::r7e_events::r7e_did_text(pattern),
         TriggerPattern::SpellCopied { what, by } => super::w2e_copied::w2e_copy_text(what, by),
         TriggerPattern::Sacrificed { what, by } => Some(format!(
             "Whenever {} {}",
@@ -1465,6 +1562,13 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             w11d_dungeon_text(pattern)
         }
         TriggerPattern::DoorUnlocked { .. } => super::dk1c5_rooms::dk1c5_door_text(pattern),
+        TriggerPattern::ZoneChange {
+            what,
+            from: Some(ZoneKind::Battlefield),
+            to: Some(ZoneKind::Graveyard),
+        } if what.0 == [Pred::HauntedBy(Ref::This)] => {
+            Some("When the creature ~ haunts dies".to_owned())
+        }
         TriggerPattern::DayNightChanges { to } => Some(super::day_night::changes_text(*to)),
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
@@ -1487,9 +1591,11 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::LifeLost { who } => {
             Some(format!("Whenever {} life", player_verb(who, "lose")?))
         }
-        TriggerPattern::Drew { who, what } if what.is_empty() => {
-            Some(format!("Whenever {} a card", player_verb(who, "draw")?))
-        }
+        TriggerPattern::Drew {
+            who,
+            what,
+            first_in_draw_step,
+        } if what.is_empty() => draw_text(who, *first_in_draw_step),
         TriggerPattern::Discarded { what, by } if what.is_empty() => {
             Some(format!("Whenever {} a card", player_verb(by, "discard")?))
         }
@@ -1509,26 +1615,41 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             counter_text(what, counter.as_ref(), "removed from")
         }
         TriggerPattern::Nth { event, nth } => nth_text(event, *nth),
-        TriggerPattern::Batch(inner) => batch_text(inner),
+        TriggerPattern::Batch(inner) => super::r7e_events::r7e_one_object_damage(inner)
+            .or_else(|| batch_text(inner))
+            .or_else(|| super::r7e_events::r7e_player_batch(inner)),
         TriggerPattern::GroupAttacks { what, at_least } => {
-            let count = if *at_least == 1 {
-                "one"
-            } else {
-                count_word(*at_least)?
-            };
-            Some(format!(
-                "Whenever {count} or more {} attack",
-                phrase_text(what, Form::All)?
-            ))
+            super::g13d_attacked::g13d_attacked_text(&what.0, *at_least)
+                .or_else(|| group_attacks_text(what, *at_least))
         }
-        TriggerPattern::AnyOf(patterns) => super::w2e_copied::w2e_cast_or_copy_text(patterns)
+        TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
+            .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
             .or_else(|| any_of_text(patterns))
-            .or_else(|| super::w6e_control::w6e_joined_step(patterns)),
+            .or_else(|| super::w6e_control::w6e_joined_step(patterns))
+            .or_else(|| super::r7e_events::r7e_any_of(patterns)),
         _ => {
+            if let Some(each) = super::r7e_events::fix10_each_source(pattern)
+                .or_else(|| super::e16c_attacks::e16c_group_at_text(pattern))
+            {
+                return Some(each);
+            }
             let (what, verb) = happening(pattern)?;
             about(&what, &[verb])
         }
     }
+}
+
+/// "Whenever one or more creatures you control attack", "Whenever two or more Knights attack".
+pub(super) fn group_attacks_text(what: &Selector, at_least: u32) -> Option<String> {
+    let count = if at_least == 1 {
+        "one"
+    } else {
+        count_word(at_least)?
+    };
+    Some(format!(
+        "Whenever {count} or more {} attack",
+        phrase_text(what, Form::All)?
+    ))
 }
 
 /// "Whenever you cycle a card", "Whenever a player cycles another card" and "When you cycle ~".
@@ -1536,7 +1657,10 @@ fn cycled_text(what: &Selector, by: &Ref) -> Option<String> {
     let card = match what.0.as_slice() {
         [] => "a card",
         [Pred::Other] => "another card",
-        [Pred::This] if *by == Ref::You => return Some("When you cycle ~".to_owned()),
+        // Only the owner cycles the card in their hand, so any player is you.
+        [Pred::This] if matches!(by, Ref::You | Ref::EachPlayer) => {
+            return Some("When you cycle ~".to_owned());
+        }
         _ => return None,
     };
     Some(format!("Whenever {} {card}", player_verb(by, "cycle")?))
@@ -1592,7 +1716,11 @@ fn damaged_subject(to: &Ref) -> Option<Selector> {
 fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
     let ordinal = ORDINALS.get(usize::try_from(nth.checked_sub(1)?).ok()?)?;
     let (by, verb, noun) = match event {
-        TriggerPattern::Drew { who, what } if what.is_empty() => (who, "draw", "card"),
+        TriggerPattern::Drew {
+            who,
+            what,
+            first_in_draw_step: None,
+        } if what.is_empty() => (who, "draw", "card"),
         TriggerPattern::SpellCast { what, by } if what.is_empty() => (by, "cast", "spell"),
         // "Whenever you cast your fourth noncreature spell each turn".
         TriggerPattern::SpellCast { what, by } => {
@@ -1617,6 +1745,12 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         | TriggerPattern::Surveilled { .. } => {
             let counted = pattern_text(event)?;
             return Some(format!("{counted} for the {ordinal} time each turn"));
+        }
+        // The damage of one batch is one time, and the engine counts only the first batch of a turn.
+        TriggerPattern::Batch(inner) if nth == 1 => {
+            let counted = super::r7e_events::r7e_one_object_damage(inner)
+                .or_else(|| super::e16a_history::first_discards(inner))?;
+            return Some(format!("{counted} for the first time each turn"));
         }
         // The counters of one batch are one time: the first counter put in the turn is the one that counts.
         TriggerPattern::CountersPut { counter: None, .. } => {
@@ -1645,6 +1779,9 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
 /// into your graveyard from your library".
 fn batch_text(inner: &TriggerPattern) -> Option<String> {
     match inner {
+        TriggerPattern::PlayerCountersPut { .. } => {
+            super::e16c_attacks::e16c_player_counters_text(inner)
+        }
         TriggerPattern::DealsDamage { source, to, combat } => Some(format!(
             "Whenever one or more {} deal {}",
             phrase_text(source, Form::All)?,
@@ -1719,4 +1856,14 @@ fn about(what: &Selector, verbs: &[String]) -> Option<String> {
         subject_text(what)?,
         verbs.join(" or ")
     ))
+}
+
+/// The words of a cast trigger: "When you cast ~", or the first cast writer that words the pattern.
+fn spell_cast_text(pattern: &TriggerPattern, what: &Selector, by: &Ref) -> Option<String> {
+    if *by == Ref::You && what.0 == [Pred::This] {
+        return Some("When you cast ~".to_owned());
+    }
+    super::r7e_events::r7e_cast_text(pattern)
+        .or_else(|| super::c4_cast_hand::cast_text(what, by))
+        .or_else(|| super::r9w_players::r9w_cast_text(what, by))
 }

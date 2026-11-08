@@ -1,0 +1,59 @@
+{
+  "oracle_id": "56ba78c1-d1eb-4cc1-b70d-98c35d2972ba",
+  "name": "Everquill Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Everquill Phoenix",
+      "oracle_fingerprint": "ce252e984ca21d9b676a6b96aa449954",
+      "abilities": [
+        { "Keyword": { "Mutate": "{3}{R}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Mutated", "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Feather",
+                      "colors": ["Red"],
+                      "types": ["Artifact"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [
+                                    { "Subtype": "Phoenix" },
+                                    { "OwnedBy": "You" },
+                                    { "In": "Graveyard" }
+                                  ]
+                                }
+                              }
+                            ],
+                            "effects": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

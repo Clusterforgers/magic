@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0accfb04-bc8b-4cab-997a-2337ac42db8f",
+  "name": "Parallax Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parallax Wave",
+      "oracle_fingerprint": "2115e617fedd442b30ef2203aa1af4fe",
+      "abilities": [
+        { "Keyword": { "Fading": 5 } },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "fade" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9542bd7f-bb99-4b59-a4e3-b88ed9f798bf",
+  "name": "Thing from the Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thing from the Deep",
+      "oracle_fingerprint": "708108b999f437d7849864a2d2717c67",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Island" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

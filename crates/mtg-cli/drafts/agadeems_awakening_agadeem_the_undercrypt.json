@@ -1,0 +1,59 @@
+{
+  "oracle_id": "562d71b9-1646-474e-9293-55da6947a758",
+  "name": "Agadeem's Awakening // Agadeem, the Undercrypt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agadeem's Awakening",
+      "oracle_fingerprint": "7a39b8714f0980102e02af27aecf5c1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "OwnedBy": "You" },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "rule": "DifferentManaValues"
+                  }
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agadeem, the Undercrypt",
+      "oracle_fingerprint": "d03d30cf3df5768f6aaa16e7f0b41d78",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 3 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

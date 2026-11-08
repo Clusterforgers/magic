@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7b77fb85-a6d8-4f3e-8493-99ec5b5a6d67",
+  "name": "Enshrined Memories",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enshrined Memories",
+      "oracle_fingerprint": "1f3d082015a3bcf5857298634da1a573",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

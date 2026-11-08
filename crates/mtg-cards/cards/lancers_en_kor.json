@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ef49dc78-9fd9-4cf8-af10-5a6b8ef7fc57",
+  "name": "Lancers en-Kor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lancers en-Kor",
+      "oracle_fingerprint": "7c541a609def1a37cfa5a753d64761d6",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

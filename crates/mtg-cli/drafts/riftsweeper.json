@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1ba0dce5-e767-47cc-9967-174e52bce120",
+  "name": "Riftsweeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riftsweeper",
+      "oracle_fingerprint": "898248c86225fa804dc8ea4a6a80fbab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Not": "FaceDown" }, { "In": "Exile" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

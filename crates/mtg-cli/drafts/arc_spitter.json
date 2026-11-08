@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9376ccf6-1b18-44e9-8f9d-c5ad38927e2f",
+  "name": "Arc Spitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arc Spitter",
+      "oracle_fingerprint": "b91ff082e7fc5e0ac68eb018e5c2be08",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{1}",
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Blocks": "This" }] } }
+                    ],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

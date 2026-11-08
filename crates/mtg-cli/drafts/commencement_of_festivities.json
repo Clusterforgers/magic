@@ -1,0 +1,26 @@
+{
+  "oracle_id": "56ea8f6b-a765-44e7-bf0e-4d4a2405684b",
+  "name": "Commencement of Festivities",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commencement of Festivities",
+      "oracle_fingerprint": "39f1b2789c75c3cd94f467c96ef7be58",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "EachPlayer", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

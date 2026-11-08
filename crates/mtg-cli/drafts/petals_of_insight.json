@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1eb88d87-e024-47fe-bd63-0eac69c106f6",
+  "name": "Petals of Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Petals of Insight",
+      "oracle_fingerprint": "c81ee04ac4e671572e4b2e678a0b14b5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Either": {
+                  "first": [
+                    { "LookAtTop": { "count": 3, "as": "top2" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top2" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    },
+                    { "Move": { "what": "This", "to": "Hand" } }
+                  ],
+                  "second": [{ "Draw": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

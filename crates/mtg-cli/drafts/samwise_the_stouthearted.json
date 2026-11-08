@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0e26b429-0469-474a-818a-2d4696c38a05",
+  "name": "Samwise the Stouthearted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samwise the Stouthearted",
+      "oracle_fingerprint": "510c32fa1e76fa2ee35768e889f2eb62",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "ArrivedFrom": "Battlefield" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,7 @@
           "Keyword": {
             "Enchant": [
               { "Type": "Creature" },
-              { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }
+              { "AnyOf": [{ "Color": "Green" }, { "Color": "Red" }] }
             ]
           }
         },

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "14ebedd1-7a2d-413b-9b76-8610511292a4",
+  "name": "Circle of Solace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Solace",
+      "oracle_fingerprint": "3b18bf0ac7743fa31800b0712c8199f8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": "You", "source": ["ChosenSubtype", { "In": "Battlefield" }] }
+                  },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

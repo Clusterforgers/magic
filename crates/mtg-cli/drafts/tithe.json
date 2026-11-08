@@ -1,0 +1,60 @@
+{
+  "oracle_id": "318304f5-0929-4cd3-97e6-08ac1ac48aa6",
+  "name": "Tithe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tithe",
+      "oracle_fingerprint": "332a46f109fd81c46e8202fd1f7c3df2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Plains" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          { "Count": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] },
+                          {
+                            "Times": {
+                              "by": -1,
+                              "of": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "filter": [{ "Subtype": "Plains" }],
+                              "reveal": true,
+                              "as": "found2"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

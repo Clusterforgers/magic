@@ -1,0 +1,24 @@
+{
+  "oracle_id": "6804e329-800b-4aa4-9a00-b9a1f4b9537b",
+  "name": "Malboro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malboro",
+      "oracle_fingerprint": "118b1872cdba077c3f5d1c07842e221a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Discard": { "who": "Opponents" } },
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "ExileTop": { "who": "Opponents", "count": 3, "as": "exiled" } }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Swamp" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

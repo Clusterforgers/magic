@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0f2d038e-6dab-4352-9ba7-ed9e063bb304",
+  "name": "Force of Despair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Force of Despair",
+      "oracle_fingerprint": "0303bf671169b90ff6b1ab83164aba7c",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": { "Not": "YourTurn" },
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Black" }, "Other"] } }]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "EnteredThisTurn"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

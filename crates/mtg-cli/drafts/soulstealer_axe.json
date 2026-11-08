@@ -1,0 +1,33 @@
+{
+  "oracle_id": "379f6017-b891-4ab0-9c37-fd1ceeafcacf",
+  "name": "Soulstealer Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulstealer Axe",
+      "oracle_fingerprint": "4866a2c9b5857078faedae631a7c4501",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Trample" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [{ "Compare": { "stat": "ManaValue", "op": "Eq", "to": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

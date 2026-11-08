@@ -1,0 +1,17 @@
+{
+  "oracle_id": "9fb2eb66-d33b-40e8-9d0d-06d73650a9ac",
+  "name": "Golgari Decoy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golgari Decoy",
+      "oracle_fingerprint": "bdb2be5790266055947211b046df8543",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        },
+        { "Keyword": { "Scavenge": "{3}{G}{G}" } }
+      ]
+    }
+  ]
+}

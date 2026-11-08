@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "145d6d7b-1e87-47b7-baf3-d201458ad996",
+  "oracle_id": "dcf438a7-adc4-4658-b75a-2dd633f595a7",
+  "multiverse_ids": [
+    278196
+  ],
+  "mtgo_id": 45574,
+  "mtgo_foil_id": 45575,
+  "tcgplayer_id": 59815,
+  "cardmarket_id": 256663,
+  "name": "Diabolic Revelation",
+  "lang": "en",
+  "released_at": "2012-07-13",
+  "uri": "https://api.scryfall.com/cards/145d6d7b-1e87-47b7-baf3-d201458ad996",
+  "scryfall_uri": "https://scryfall.com/card/m13/87/diabolic-revelation?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:01:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.jpg?1783940497",
+    "normal": "https://cards.scryfall.io/normal/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.jpg?1783940497",
+    "large": "https://cards.scryfall.io/large/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.jpg?1783940497",
+    "png": "https://cards.scryfall.io/png/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.png?1783940497",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.jpg?1783940497",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.jpg?1783940497",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.webp?1783940497",
+    "grid": "https://cards.scryfall.io/grid/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.webp?1783940497",
+    "display": "https://cards.scryfall.io/display/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.webp?1783940497",
+    "art": "https://cards.scryfall.io/art/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.webp?1783940497",
+    "crop": "https://cards.scryfall.io/crop/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.webp?1783940497",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/4/145d6d7b-1e87-47b7-baf3-d201458ad996.jpg?1783940497"
+  },
+  "mana_cost": "{X}{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for up to X cards, put those cards into your hand, then shuffle.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f9b0c6f4-8a4f-4f36-ad3c-e1e16fb8535d",
+  "set": "m13",
+  "set_name": "Magic 2013",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/f9b0c6f4-8a4f-4f36-ad3c-e1e16fb8535d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am13&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m13?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/145d6d7b-1e87-47b7-baf3-d201458ad996/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adcf438a7-adc4-4658-b75a-2dd633f595a7&unique=prints",
+  "collector_number": "87",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"There are some secrets so dark no human mind should ever contain them. Interested?\"\n—Nefarox, Overlord of Grixis",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Raymond Swanland",
+  "artist_ids": [
+    "e956bacc-077d-4c12-b6bc-ba798b718af9"
+  ],
+  "illustration_id": "8ec4d531-b66a-46b1-9b7f-7a555f3525b1",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8733,
+  "penny_rank": 8786,
+  "prices": {
+    "usd": "3.29",
+    "usd_foil": "21.11",
+    "usd_etched": null,
+    "eur": "5.59",
+    "eur_foil": "18.26",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=278196&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDiabolic%2BRevelation",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDiabolic%2BRevelation",
+    "edhrec": "https://edhrec.com/route/?cc=Diabolic+Revelation"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F59815%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=256663&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/45574?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

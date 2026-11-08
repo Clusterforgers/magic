@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6",
+  "oracle_id": "e310c3ab-a729-404d-944f-9b477258495c",
+  "multiverse_ids": [
+    4897
+  ],
+  "mtgo_id": 9925,
+  "mtgo_foil_id": 9926,
+  "tcgplayer_id": 5704,
+  "cardmarket_id": 8986,
+  "name": "Safeguard",
+  "lang": "en",
+  "released_at": "1997-10-14",
+  "uri": "https://api.scryfall.com/cards/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6",
+  "scryfall_uri": "https://scryfall.com/card/tmp/39/safeguard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:44:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.jpg?1783946662",
+    "normal": "https://cards.scryfall.io/normal/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.jpg?1783946662",
+    "large": "https://cards.scryfall.io/large/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.jpg?1783946662",
+    "png": "https://cards.scryfall.io/png/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.png?1783946662",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.jpg?1783946662",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.jpg?1783946662",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.webp?1783946662",
+    "grid": "https://cards.scryfall.io/grid/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.webp?1783946662",
+    "display": "https://cards.scryfall.io/display/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.webp?1783946662",
+    "art": "https://cards.scryfall.io/art/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.webp?1783946662",
+    "crop": "https://cards.scryfall.io/crop/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.webp?1783946662",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/c/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6.jpg?1783946662"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "{2}{W}: Prevent all combat damage that would be dealt by target creature this turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set": "tmp",
+  "set_name": "Tempest",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2c8e174c-7abb-4a93-aa1d-8c2a2e815ba6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae310c3ab-a729-404d-944f-9b477258495c&unique=prints",
+  "collector_number": "39",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I'm amused by wasted effort when it's not my own.\"\n—Hanna, *Weatherlight* navigator",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Thomas M. Baxa",
+  "artist_ids": [
+    "ff346569-557d-4043-ae44-97c2c7cabd7d"
+  ],
+  "illustration_id": "f386521f-9bd5-467d-ba09-1272d0833217",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31274,
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4897&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSafeguard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSafeguard",
+    "edhrec": "https://edhrec.com/route/?cc=Safeguard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5704%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8986&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/9925?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

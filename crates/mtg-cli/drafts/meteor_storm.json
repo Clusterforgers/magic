@@ -1,0 +1,20 @@
+{
+  "oracle_id": "03f96c23-de0b-4b85-81f8-febc850aa621",
+  "name": "Meteor Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meteor Storm",
+      "oracle_fingerprint": "20776bf58c113f4486480b9a15e6c925",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}{G}" }, { "DiscardRandom": 2 }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

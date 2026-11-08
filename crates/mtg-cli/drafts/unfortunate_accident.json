@@ -1,0 +1,76 @@
+{
+  "oracle_id": "011558f3-3c23-430e-a08b-8f91238e7971",
+  "name": "Unfortunate Accident",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unfortunate Accident",
+      "oracle_fingerprint": "e2fd16a8a9ab84aea32c77126e37d2e0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{2}{B}", "{1}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Mercenary",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Mercenary"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [
+                                  {
+                                    "Activated": {
+                                      "cost": ["Tap"],
+                                      "timing": "Sorcery",
+                                      "targets": [
+                                        {
+                                          "what": {
+                                            "Object": [
+                                              { "Type": "Creature" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "effects": [
+                                        {
+                                          "Continuous": {
+                                            "affected": { "Target": 0 },
+                                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                            "duration": "UntilEndOfTurn"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a0c4eb78-bee0-42c6-ab1e-64bacde87960",
+  "name": "Phantom Train",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantom Train",
+      "oracle_fingerprint": "546f5e702a4b86b8ba9182f1d02915e8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Spirit" },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

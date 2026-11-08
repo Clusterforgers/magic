@@ -1,0 +1,41 @@
+{
+  "oracle_id": "158aaeab-1646-4160-9615-bc8747620a03",
+  "name": "Choking Miasma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Choking Miasma",
+      "oracle_fingerprint": "aac2aebd74a699a04b10a6a5630141f5",
+      "abilities": [
+        { "Keyword": { "Kicker": "{G}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "card"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "card" }, "counter": "+1/+1" } }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

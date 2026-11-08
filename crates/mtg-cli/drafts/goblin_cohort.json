@@ -1,0 +1,32 @@
+{
+  "oracle_id": "88f9a7e3-0b35-43e4-b16a-19c54a1e4e2c",
+  "name": "Goblin Cohort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Cohort",
+      "oracle_fingerprint": "80565782745ce8fe9e2ed20885c86744",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

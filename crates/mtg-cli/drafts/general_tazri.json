@@ -1,0 +1,80 @@
+{
+  "oracle_id": "b0f19cba-1339-4518-8320-d7b1dcaf2eb0",
+  "name": "General Tazri",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "General Tazri",
+      "oracle_fingerprint": "821d18d852b43437f0b1dcb6ebe3f322",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Creature" }, { "Subtype": "Ally" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}{B}{R}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Ally" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Distinct": {
+                            "of": [
+                              { "Type": "Creature" },
+                              { "Subtype": "Ally" },
+                              { "ControlledBy": "You" }
+                            ],
+                            "stat": "Colors"
+                          }
+                        },
+                        "toughness": {
+                          "Distinct": {
+                            "of": [
+                              { "Type": "Creature" },
+                              { "Subtype": "Ally" },
+                              { "ControlledBy": "You" }
+                            ],
+                            "stat": "Colors"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

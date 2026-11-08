@@ -1,0 +1,59 @@
+{
+  "oracle_id": "3e44226b-51a2-4099-aff8-a5befab720cb",
+  "name": "Bristlebud Farmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bristlebud Farmer",
+      "oracle_fingerprint": "52d486feecf730d9bb40946ea7ffc23d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" }, "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+                  "paid": [
+                    { "Mill": { "count": 3, "as": "milled" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            { "OwnedBy": "You" },
+                            { "Is": { "Bound": "milled" } },
+                            { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

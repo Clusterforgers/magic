@@ -1,0 +1,52 @@
+{
+  "oracle_id": "e6c9a699-0468-42f8-aad5-b9d45a3c1d37",
+  "name": "Gorgon Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorgon Recluse",
+      "oracle_fingerprint": "d323e32c028520477ac47eba7eebb959",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{B}{B}" } },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

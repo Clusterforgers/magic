@@ -98,6 +98,13 @@ fn is_verified(card: &PrintedCard, caps: &Caps) -> bool {
     support(compiled.card.as_ref(), card, caps).support == Support::Verified
 }
 
+/// Whether a sweep would take the card: it has a text, no hand-written file and is not `Verified` by the compiler.
+pub fn in_sweep_scope(card: &PrintedCard, library: &Library, caps: &Caps) -> bool {
+    library.card(&card.oracle_id).is_none()
+        && card.faces.iter().any(|face| !face.oracle_text.is_empty())
+        && !is_verified(card, caps)
+}
+
 /// The positions of at most `count` cards for a sample: cards with a text, no hand-written file and a support state other
 /// than `Verified` (among the oracle ids of `within` when given), short ones first (by buckets of 100 characters), within
 /// a bucket in the order of the seed. The same seed gives the same cards whatever order the cards come in.

@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "de95250d-294d-4a0e-8049-e0a877078e2e",
+  "oracle_id": "7857c7b6-9676-47ac-bb28-d0b4cbda5fa7",
+  "multiverse_ids": [],
+  "resource_id": "83E8593BA111ECA458D8B3E08E32CA8C6357AE0BE01808B482A1FB5904632D73",
+  "tcgplayer_id": 656780,
+  "cardmarket_id": 851621,
+  "name": "The Destined Thief",
+  "lang": "en",
+  "released_at": "2025-12-05",
+  "uri": "https://api.scryfall.com/cards/de95250d-294d-4a0e-8049-e0a877078e2e",
+  "scryfall_uri": "https://scryfall.com/card/fic/446/the-destined-thief?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:04:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.jpg?1783904655",
+    "normal": "https://cards.scryfall.io/normal/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.jpg?1783904655",
+    "large": "https://cards.scryfall.io/large/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.jpg?1783904655",
+    "png": "https://cards.scryfall.io/png/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.png?1783904655",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.jpg?1783904655",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.jpg?1783904655",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.webp?1783904655",
+    "grid": "https://cards.scryfall.io/grid/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.webp?1783904655",
+    "display": "https://cards.scryfall.io/display/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.webp?1783904655",
+    "art": "https://cards.scryfall.io/art/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.webp?1783904655",
+    "crop": "https://cards.scryfall.io/crop/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.webp?1783904655",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/e/de95250d-294d-4a0e-8049-e0a877078e2e.jpg?1783904655"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Rogue",
+  "oracle_text": "The Destined Thief can't be blocked.\n{U}, {T}: Another target creature you control can't be blocked this turn.\nWhenever one or more creatures you control deal combat damage to one or more players, draw a card, then discard a card. If you have a full party, instead draw three cards.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo",
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/de95250d-294d-4a0e-8049-e0a877078e2e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7857c7b6-9676-47ac-bb28-d0b4cbda5fa7&unique=prints",
+  "collector_number": "446",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Rapoza",
+  "artist_ids": [
+    "c5a2318d-5d04-499f-b121-57dee5a9dfe6"
+  ],
+  "illustration_id": "236ea0ab-ce0f-4899-8701-7b9a09f11659",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffi",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11683,
+  "prices": {
+    "usd": "3.87",
+    "usd_foil": "3.04",
+    "usd_etched": null,
+    "eur": "3.30",
+    "eur_foil": "3.45",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BDestined%2BThief",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BDestined%2BThief",
+    "edhrec": "https://edhrec.com/route/?cc=The+Destined+Thief"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F656780%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=851621&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Destined+Thief&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

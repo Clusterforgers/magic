@@ -1,0 +1,33 @@
+{
+  "oracle_id": "831b7dad-ab5a-4980-a52d-65c5633d474a",
+  "name": "Infernal Pet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Pet",
+      "oracle_fingerprint": "d71d0fac5df800e2582c71e95c389941",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

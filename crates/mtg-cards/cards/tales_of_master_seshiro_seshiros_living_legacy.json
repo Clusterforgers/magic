@@ -1,0 +1,57 @@
+{
+  "oracle_id": "096fbb51-be73-4edc-a051-770a12c09005",
+  "name": "Tales of Master Seshiro // Seshiro's Living Legacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tales of Master Seshiro",
+      "oracle_fingerprint": "1dad60906d5c9100af3810f3f7fdc955",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seshiro's Living Legacy",
+      "oracle_fingerprint": "c458ab0f23ba483d84eda10041a748b1",
+      "abilities": [{ "Keyword": "Vigilance" }, { "Keyword": "Haste" }]
+    }
+  ]
+}

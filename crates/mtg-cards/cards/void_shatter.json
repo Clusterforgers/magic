@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3d9f854e-1ee5-4aa1-a33b-d3ae08f15dd0",
+  "name": "Void Shatter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Void Shatter",
+      "oracle_fingerprint": "ff7e26bf3c5ad54d2c58e06c72c30df3",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

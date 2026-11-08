@@ -1,0 +1,28 @@
+{
+  "oracle_id": "af8eb20a-dfa2-49a4-892b-26d7e276fcd2",
+  "name": "Hand of Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hand of Justice",
+      "oracle_fingerprint": "f5e5bba93d74d26e7ed85cb021944629",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Color": "White" }],
+                  "count": 3
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

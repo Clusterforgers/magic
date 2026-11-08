@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "fc3a4e7d-6667-4c2f-b6b4-484f401b0455",
+  "oracle_id": "e65769f4-50ae-482b-933b-ac5cf3843f2a",
+  "multiverse_ids": [
+    391927
+  ],
+  "mtgo_id": 55614,
+  "mtgo_foil_id": 55615,
+  "tcgplayer_id": 95256,
+  "cardmarket_id": 271476,
+  "name": "Soulfire Grand Master",
+  "lang": "en",
+  "released_at": "2015-01-23",
+  "uri": "https://api.scryfall.com/cards/fc3a4e7d-6667-4c2f-b6b4-484f401b0455",
+  "scryfall_uri": "https://scryfall.com/card/frf/27/soulfire-grand-master?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:31:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.jpg?1783938709",
+    "normal": "https://cards.scryfall.io/normal/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.jpg?1783938709",
+    "large": "https://cards.scryfall.io/large/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.jpg?1783938709",
+    "png": "https://cards.scryfall.io/png/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.png?1783938709",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.jpg?1783938709",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.jpg?1783938709",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.webp?1783938709",
+    "grid": "https://cards.scryfall.io/grid/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.webp?1783938709",
+    "display": "https://cards.scryfall.io/display/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.webp?1783938709",
+    "art": "https://cards.scryfall.io/art/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.webp?1783938709",
+    "crop": "https://cards.scryfall.io/crop/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.webp?1783938709",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/c/fc3a4e7d-6667-4c2f-b6b4-484f401b0455.jpg?1783938709"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Monk",
+  "oracle_text": "Lifelink\nInstant and sorcery spells you control have lifelink.\n{2}{U/R}{U/R}: The next time you cast an instant or sorcery spell from your hand this turn, put that card into your hand instead of into your graveyard as it resolves.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7bb5cb2b-081a-4c8c-b7e1-494046e6baa1",
+  "set": "frf",
+  "set_name": "Fate Reforged",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/7bb5cb2b-081a-4c8c-b7e1-494046e6baa1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afrf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/frf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fc3a4e7d-6667-4c2f-b6b4-484f401b0455/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae65769f4-50ae-482b-933b-ac5cf3843f2a&unique=prints",
+  "collector_number": "27",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "jeskai",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Johannes Voss",
+  "artist_ids": [
+    "3593dd7e-c547-4a32-81cd-7da725f60118"
+  ],
+  "illustration_id": "51db4f73-7cfc-4ee0-997c-6d100202fe7d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12337,
+  "penny_rank": 4205,
+  "prices": {
+    "usd": "0.85",
+    "usd_foil": "4.07",
+    "usd_etched": null,
+    "eur": "0.96",
+    "eur_foil": "3.73",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=391927&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSoulfire%2BGrand%2BMaster",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSoulfire%2BGrand%2BMaster",
+    "edhrec": "https://edhrec.com/route/?cc=Soulfire+Grand+Master"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F95256%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=271476&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/55614?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

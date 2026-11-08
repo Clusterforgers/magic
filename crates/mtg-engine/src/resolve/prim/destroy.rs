@@ -15,7 +15,10 @@ use crate::zones::Zone;
 /// naming nothing destroys nothing. A destruction that can be regenerated carries `ZoneCause::Destroyed`, which a
 /// regeneration shield replaces; one that can't (`regenerate: false`) carries `ZoneCause::Buried`.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Destroy { what, regenerate } = effect else {
+    let Effect::Destroy {
+        what, regenerate, ..
+    } = effect
+    else {
         return Err(wrong_effect("Destroy"));
     };
     let state = cx.state();

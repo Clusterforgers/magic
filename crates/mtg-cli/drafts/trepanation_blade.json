@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f0031ef3-d5f5-4114-97aa-4beabd11ff8d",
+  "name": "Trepanation Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trepanation Blade",
+      "oracle_fingerprint": "d8a28874972c22859604e51360c9d89e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "Defending",
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard", "as": "revealed3" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "ModifyPT": { "power": { "Bound": "revealed3~moved" }, "toughness": 0 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

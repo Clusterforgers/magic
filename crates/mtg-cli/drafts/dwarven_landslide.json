@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5231a7d6-b6cf-4fa8-8da8-f0ecf023e054",
+  "name": "Dwarven Landslide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Landslide",
+      "oracle_fingerprint": "9a6614002f64760eb27361a69c019e48",
+      "abilities": [
+        {
+          "Keyword": {
+            "Kicker": [{ "Mana": "{2}{R}" }, { "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] } },
+              {
+                "what": { "Object": [{ "Type": "Land" }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Destroy": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

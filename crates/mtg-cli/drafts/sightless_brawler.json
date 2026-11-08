@@ -1,0 +1,22 @@
+{
+  "oracle_id": "0f7d76a9-3f47-4cfa-882b-1790256d15b2",
+  "name": "Sightless Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sightless Brawler",
+      "oracle_fingerprint": "04d122401700eee7182ee140926987e4",
+      "abilities": [
+        { "Keyword": { "Bestow": "{4}{W}" } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }]
+          }
+        },
+        { "Rule": { "rule": { "Combat": { "who": "Attached", "quirk": "CantAttackAlone" } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "477f5011-aaeb-4a5f-8a65-5fb45cb06389",
+  "name": "Breath of Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breath of Dreams",
+      "oracle_fingerprint": "a1e358b7b0b1c5286bb4cf75f8b02364",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{U}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "Green" }] },
+            "mods": [{ "AddKeyword": { "CumulativeUpkeep": "{1}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

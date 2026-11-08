@@ -1,0 +1,62 @@
+{
+  "oracle_id": "54866c25-b332-46c8-a2c5-1a71b702ddc0",
+  "name": "Mindsparker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindsparker",
+      "oracle_fingerprint": "8fadbdaeb90237c8158ad49597b802e1",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Instant" } },
+                            { "Not": { "Color": "Blue" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Instant" } },
+                            { "Not": { "Color": "White" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Sorcery" } },
+                            { "Not": { "Color": "Blue" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Sorcery" } },
+                            { "Not": { "Color": "White" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "by": "Opponents"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

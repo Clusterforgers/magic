@@ -1,0 +1,52 @@
+{
+  "oracle_id": "0ea58cfe-b37c-49a6-a3be-7e60065b8238",
+  "name": "Tom, Bert, and William",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tom, Bert, and William",
+      "oracle_fingerprint": "e5d92bf88714686bf147cee10b741b1f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              { "Draw": { "count": { "Stat": { "of": "Paid", "stat": "Power" } } } },
+              { "Discard": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetTypes": ["Artifact"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

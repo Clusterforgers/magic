@@ -1,0 +1,90 @@
+{
+  "oracle_id": "eb37496e-374f-41b9-bd52-f52f37bdac31",
+  "name": "Calamity, Galloping Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calamity, Galloping Inferno",
+      "oracle_fingerprint": "235b3b5aba57610529487274786b3554",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This", { "HasKeyword": "Saddled" }] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Supertype": "Legendary" } },
+                      { "Saddled": "This" }
+                    ]
+                  },
+                  "as": "copied"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Bound": "copied" } } },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy2"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "copy2" } },
+                        "filter": [{ "Is": { "Bound": "copy2" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy2" } }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Supertype": "Legendary" } },
+                      { "Saddled": "This" }
+                    ]
+                  },
+                  "as": "copied3"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Bound": "copied3" } } },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy4"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "copy4" } },
+                        "filter": [{ "Is": { "Bound": "copy4" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy4" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 1 } }
+      ]
+    }
+  ]
+}

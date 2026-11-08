@@ -1,0 +1,34 @@
+{
+  "oracle_id": "63305fd4-068f-498b-a01e-0b375c592797",
+  "name": "Sensei Golden-Tail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sensei Golden-Tail",
+      "oracle_fingerprint": "496bbfb4dedee1ff509aafcaa9a5218c",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "training" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddSubtype": "Samurai" },
+                    { "AddKeyword": { "Macro": { "name": "bushido", "amount": 1 } } }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

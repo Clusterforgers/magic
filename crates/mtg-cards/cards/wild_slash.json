@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f76a0e5b-74c1-4ee8-b502-e8b988086de4",
+  "name": "Wild Slash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Slash",
+      "oracle_fingerprint": "a6676440a20c4e7f7bcdb307efaa3b93",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "DamageCantBePrevented": {} },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

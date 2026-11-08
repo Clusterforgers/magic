@@ -12,16 +12,34 @@
             "targets": [
               {
                 "what": {
-                  "Either": [
-                    { "Object": [{ "Type": "Artifact" }] },
-                    { "Object": [{ "Type": "Creature" }] }
-                  ]
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }]
                 }
               }
             ],
             "effects": [
-              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
-              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
             ]
           }
         }

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f5d62baa-648d-4030-87f9-e795ed665084",
+  "name": "Cryptborn Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptborn Horror",
+      "oracle_fingerprint": "4bd2aaf819e3f04079028f58b81daec0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Tallied": { "who": "Opponents", "what": "LifeLost" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

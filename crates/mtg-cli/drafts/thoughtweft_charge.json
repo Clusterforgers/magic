@@ -1,0 +1,45 @@
+{
+  "oracle_id": "a8cdcaa0-8e25-4c17-b5ce-16f72b535123",
+  "name": "Thoughtweft Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtweft Charge",
+      "oracle_fingerprint": "b24c1be0ce3492c0c57431d111ee644a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Entered",
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d2abfcd1-c00c-43fa-a9ca-a9577b3c8a60",
+  "name": "Charisma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charisma",
+      "oracle_fingerprint": "47e4129b76edaa7b7bec86b63a0790a1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": { "Each": [{ "Type": "Creature" }] }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "efbc9b9c-2b8c-4121-b232-350c80f12a2a",
+  "name": "Angelheart Vial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelheart Vial",
+      "oracle_fingerprint": "d24192665ee078dcb7f72923cb4b70f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "You" } } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": "charge", "count": "Triggering" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "RemoveCounters": { "counter": "charge", "count": 4 } }
+            ],
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

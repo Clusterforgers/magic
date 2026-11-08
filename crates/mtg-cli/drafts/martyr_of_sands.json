@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f2048140-b691-4753-8239-1aa75059e389",
+  "name": "Martyr of Sands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr of Sands",
+      "oracle_fingerprint": "2d373f73b376ec8717681aa5fb29284c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RevealFromHand": { "filter": [{ "Color": "White" }], "count": "X" } },
+              "SacrificeSelf"
+            ],
+            "effects": [{ "GainLife": { "amount": { "Times": { "by": 3, "of": "X" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "903bb1dc-09cc-4dc2-8400-5a36ce9c8d6e",
+  "name": "Galathul Galecaller // Corvid Squall",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Galathul Galecaller",
+      "oracle_fingerprint": "83b39884c2c8df16d588483aa30ebc23",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Corvid Squall",
+      "oracle_fingerprint": "f1466b16c03654e54893ec9015d33f14",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 53 } }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

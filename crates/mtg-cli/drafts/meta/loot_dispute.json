@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, you take the initiative and create a Treasure token.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you attack the player who has the initiative, create a Treasure token.",
+      "abilities": [],
+      "gap": "trigger:AttackersDeclaredOneTarget"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you complete a dungeon, create a 5/5 red Dragon creature token with flying.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 82
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 83,
+          "end": 162
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 163,
+          "end": 261
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

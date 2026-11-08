@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "3c3745c2-5509-4d6b-8f49-5cb93374edea",
+  "oracle_id": "3029df1d-d02a-4fed-8ab4-000a2096f823",
+  "multiverse_ids": [
+    675975
+  ],
+  "mtgo_id": 130827,
+  "tcgplayer_id": 578981,
+  "cardmarket_id": 788598,
+  "name": "Return to Dust",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/3c3745c2-5509-4d6b-8f49-5cb93374edea",
+  "scryfall_uri": "https://scryfall.com/card/dsc/102/return-to-dust?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.jpg?1783909632",
+    "normal": "https://cards.scryfall.io/normal/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.jpg?1783909632",
+    "large": "https://cards.scryfall.io/large/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.jpg?1783909632",
+    "png": "https://cards.scryfall.io/png/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.png?1783909632",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.jpg?1783909632",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.jpg?1783909632",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.webp?1783909632",
+    "grid": "https://cards.scryfall.io/grid/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.webp?1783909632",
+    "display": "https://cards.scryfall.io/display/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.webp?1783909632",
+    "art": "https://cards.scryfall.io/art/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.webp?1783909632",
+    "crop": "https://cards.scryfall.io/crop/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.webp?1783909632",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/c/3c3745c2-5509-4d6b-8f49-5cb93374edea.jpg?1783909632"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile target artifact or enchantment. If you cast this spell during your main phase, you may exile up to one other target artifact or enchantment.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3c3745c2-5509-4d6b-8f49-5cb93374edea/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3029df1d-d02a-4fed-8ab4-000a2096f823&unique=prints",
+  "collector_number": "102",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Some timelines forever fray, branch, and intermingle. Others end abruptly.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anato Finnstark",
+  "artist_ids": [
+    "05d233e7-4958-4f79-83e6-f9bf8b6ff78e"
+  ],
+  "illustration_id": "c602429a-c18e-4b01-9d45-c3bfbb0fbc42",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1644,
+  "penny_rank": 6728,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": null,
+    "tix": "0.09"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675975&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReturn%2Bto%2BDust",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReturn%2Bto%2BDust",
+    "edhrec": "https://edhrec.com/route/?cc=Return+to+Dust"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F578981%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788598&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130827?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

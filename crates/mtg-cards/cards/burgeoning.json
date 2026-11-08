@@ -1,0 +1,41 @@
+{
+  "oracle_id": "88cf4c1a-5863-45fc-b76d-7ad33b175b2b",
+  "name": "Burgeoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burgeoning",
+      "oracle_fingerprint": "f422b4c79dbbf44a067677953cd901c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PlayedLand",
+                "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

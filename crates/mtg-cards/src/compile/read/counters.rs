@@ -21,23 +21,36 @@ const RULES_COUNTERS: [&str; 7] = [
     "decayed", "exalted", "finality", "shield", "stun", "defense", "lore",
 ];
 
+/// A counter named for the numbers it adds: "+1/+1", "-1/-1", or others such as "-0/-1" (CR 122.1a).
+pub(super) fn sized(r: &mut Reader<'_>) -> Option<CounterKind> {
+    let half = |r: &mut Reader<'_>| {
+        let sign = if r.punct('+') {
+            '+'
+        } else {
+            r.punct('-').then_some('-')?
+        };
+        Some((sign, r.number()?))
+    };
+    let power = half(r)?;
+    r.punct('/').then_some(())?;
+    let toughness = half(r)?;
+    Some(match (power, toughness) {
+        (('+', 1), ('+', 1)) => CounterKind::PlusOnePlusOne,
+        (('-', 1), ('-', 1)) => CounterKind::MinusOneMinusOne,
+        ((power_sign, power), (toughness_sign, toughness)) => {
+            CounterKind::Other(format!("{power_sign}{power}/{toughness_sign}{toughness}"))
+        }
+    })
+}
+
 /// "+1/+1" or "-1/-1", the counters that change a creature's size, or a word that names another
 /// kind: "charge", "poison", "time".
 pub(super) fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
-    let size = r.attempt(|r| {
-        let plus = r.punct('+');
-        if !plus {
-            r.punct('-').then_some(())?;
-        }
-        (r.number()? == 1).then_some(())?;
-        r.punct('/').then_some(())?;
-        r.punct(if plus { '+' } else { '-' }).then_some(())?;
-        (r.number()? == 1).then_some(())?;
-        Some(if plus {
-            CounterKind::PlusOnePlusOne
-        } else {
-            CounterKind::MinusOneMinusOne
-        })
+    let size = r.attempt(sized).filter(|counter| {
+        matches!(
+            counter,
+            CounterKind::PlusOnePlusOne | CounterKind::MinusOneMinusOne
+        )
     });
     if size.is_some() {
         return size;
@@ -180,7 +193,7 @@ pub fn additional_text(counter: &CounterKind, number: i32) -> Option<String> {
 }
 
 /// The object counters are on, leave or go onto: "~" or one target.
-fn place(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn place(r: &mut Reader<'_>) -> Option<Ref> {
     if r.source() || (r.it == Some(Ref::This) && r.word("it")) {
         Some(Ref::This)
     } else if r.it == Some(Ref::Triggering) && r.word("it") {
@@ -325,6 +338,8 @@ pub fn multiply(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The words for a kind of counter.
 pub(super) fn kind_text(counter: &CounterKind) -> Option<&str> {
     match counter {
+        // A counter named for its numbers: "-0/-1", "+2/+0".
+        CounterKind::Other(name) if counter.power_toughness() != (0, 0) => Some(name),
         // A keyword counter may have two words: "double strike", "first strike".
         CounterKind::Other(name) if !name.chars().all(|c| c.is_ascii_lowercase() || c == ' ') => {
             None

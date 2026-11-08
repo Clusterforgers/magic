@@ -1,0 +1,30 @@
+{
+  "oracle_id": "54400ec3-f2ab-4cdf-9731-e04281bf7e90",
+  "name": "Overencumbered",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Overencumbered",
+      "oracle_fingerprint": "59425d53ea43b915a911deee59285eae",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": { "opponent": true } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "CreateToken": { "who": "AttachedPlayer", "token": { "Named": "clue" } } },
+              { "CreateToken": { "who": "AttachedPlayer", "token": { "Named": "food" } } },
+              { "CreateToken": { "who": "AttachedPlayer", "token": { "Named": "junk" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 113, "end": 276 }
+          }
+        }
+      ]
+    }
+  ]
+}

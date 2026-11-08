@@ -1,0 +1,64 @@
+{
+  "oracle_id": "22504fd0-0353-4ef0-baf4-4b7be28d1a66",
+  "name": "Spark of Creativity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spark of Creativity",
+      "oracle_fingerprint": "d2d3530d4b66174bcd81f98d0c01098d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": {
+                          "Total": {
+                            "of": [
+                              { "Is": { "Bound": "exiled" } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

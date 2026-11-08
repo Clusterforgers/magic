@@ -13,11 +13,12 @@ use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
 use crate::decision::Unplayable;
 use crate::effects::ContinuousEffect;
-use crate::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
+use crate::library::{CardsFound, HandLooked, LibraryLooked, Revealed, Scried, Surveilled};
 use crate::manual::{ManualAction, ManualRoll};
 use crate::object::{Chosen, FaceDown, ObjectRef};
 use crate::player::LossReason;
 use crate::resolve::LeftToTable;
+use crate::retargeted::TargetsChanged;
 use crate::rules::RuleEffect;
 use crate::snapshot::Snapshot;
 use crate::spend::Restricted;
@@ -108,6 +109,13 @@ pub enum Event {
         /// Whose cards.
         player: PlayerId,
         /// Cards in the order placed (the last is the bottom).
+        cards: Vec<ObjectId>,
+    },
+    /// Cards that begin the game on the battlefield were put there from the opening hand (CR 103.6).
+    OpeningCardsPlayed {
+        /// Whose cards.
+        player: PlayerId,
+        /// The cards, from the hand.
         cards: Vec<ObjectId>,
     },
     /// All players kept; the game proper begins.
@@ -367,6 +375,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "is_zero")]
         #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
         toxic: u32,
+        /// The damage can't be prevented (CR 614.17): no prevention effect applies to it.
+        #[serde(default, skip_serializing_if = "is_false")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        unpreventable: bool,
     },
     /// Combat ended and its state was cleared.
     CombatEnded,
@@ -553,6 +565,8 @@ pub enum Event {
     EmblemCreated(crate::w6b_emblems::EmblemCreated),
     /// A player looked at cards in a library.
     LibraryLooked(LibraryLooked),
+    /// A player looked at a hand.
+    HandLooked(HandLooked),
     /// A player found cards by searching.
     CardsFound(CardsFound),
     /// A player scried.
@@ -568,6 +582,22 @@ pub enum Event {
         /// The cards picked.
         cards: Vec<ObjectId>,
     },
+    /// Players were picked at random with the next substream of the generator ("choose an opponent at random"): the
+    /// players picked, in the order they were drawn.
+    PlayersChosenAtRandom {
+        /// The players picked.
+        players: Vec<PlayerId>,
+    },
+    /// A card was conjured into a zone (Alchemy).
+    CardConjured(crate::conjure::CardConjured),
+    /// A player seeks (Alchemy): `count` random cards of their library that match go to their hand, chosen with the
+    /// next substream of the generator; the `ZoneChanged` events that move them follow in the same batch.
+    Sought {
+        /// Who seeks.
+        player: PlayerId,
+        /// How many cards were picked.
+        count: u32,
+    },
     /// Cards of a library were put on its bottom.
     LibraryBottomed {
         /// Whose library.
@@ -577,6 +607,15 @@ pub enum Event {
         /// The order was drawn at random, with the next substream of the generator (CR 702.85a).
         #[serde(default)]
         random: bool,
+    },
+    /// Cards of a library were put beneath its top `below` cards (on the bottom when it has fewer).
+    LibraryInserted {
+        /// Whose library.
+        player: PlayerId,
+        /// The cards, top to bottom as they lie after the move.
+        cards: Vec<ObjectId>,
+        /// How many cards of the library stay above them.
+        below: u32,
     },
     /// A card an effect put onto the battlefield entered tapped or under another player's control; it follows the
     /// `ZoneChanged` that moved it, in the same batch.
@@ -657,6 +696,21 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A creature on the battlefield became suspected (CR 701.60): while it is, it has menace and can't block.
+    Suspected {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A permanent stopped being suspected (CR 701.60d).
+    Unsuspected {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A Case on the battlefield became solved (CR 719.3): it stays solved until it leaves.
+    Solved {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
     BecameCopy(BecameCopy),
     /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
@@ -671,6 +725,10 @@ pub enum Event {
     },
     /// An activated or triggered ability was copied (CR 707.10): the copy is put on the stack above it, not activated or triggered.
     AbilityCopied(Box<AbilityCopy>),
+    /// The targets of a spell or ability on the stack changed (CR 115.7).
+    TargetsChanged(Box<TargetsChanged>),
+    /// A source remembered objects, or forgot a slot (`Effect::Remember`, `Effect::Forget`; the exiles of a permanent too).
+    Remembered(Box<crate::memory::Remembered>),
     /// A permanent's copy effect that lasted until end of turn, or until a player's next turn, ended.
     CopyEnded {
         /// The permanent.
@@ -684,6 +742,30 @@ pub enum Event {
     MonarchChanged {
         /// The new monarch.
         player: PlayerId,
+    },
+    /// The Ring tempted a player (CR 701.54): their Ring level rose to `level`, and they chose `bearer`, if they controlled a creature.
+    RingTempted {
+        /// The tempted player.
+        player: PlayerId,
+        /// Their Ring level now.
+        level: u8,
+        /// The creature they chose as their Ring-bearer.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        bearer: Option<ObjectId>,
+    },
+    /// A player's Ring-bearer stopped being it (CR 701.54c): another player gained control of it.
+    RingBearerLost {
+        /// The player whose creature it was.
+        player: PlayerId,
+    },
+    /// A player's speed became `speed` (CR 702.179): start your engines! started it, or an opponent's life loss on their
+    /// turn raised it.
+    SpeedChanged {
+        /// Whose speed.
+        player: PlayerId,
+        /// The new speed, 1 to 4.
+        speed: u8,
     },
     /// A player got the city's blessing (CR 702.131): a designation they keep for the rest of the game.
     CitysBlessingGained {
@@ -966,6 +1048,8 @@ pub enum ZoneCause {
     Exiled,
     /// It was exiled face down by foretelling (CR 702.143a): it lies face down, and only its owner may look at it.
     Foretold,
+    /// It was exiled face up by plotting (CR 702.170a): it lies in exile and its owner may cast it on a later turn.
+    Plotted,
     /// It was manifested by `by` (CR 701.40a): it entered the battlefield face down under the control of `by`, who alone may look at it.
     Manifested {
         /// The player who manifested it and controls it.
@@ -980,6 +1064,19 @@ pub enum ZoneCause {
     /// controller of the permanent may look at it.
     Hideaway {
         /// The permanent that hides it.
+        by: ObjectRef,
+    },
+    /// It was exiled face down by an effect of the source `by`, and `looker` alone may look at it for as long as it lies
+    /// exiled, whatever becomes of the source (not its owner, unless that is `looker`).
+    Held {
+        /// The source of the effect.
+        by: ObjectRef,
+        /// The player who exiled it and may look at it.
+        looker: PlayerId,
+    },
+    /// It was exiled face down by an effect of the source `by`, and no player may look at it (CR 406.3).
+    Sealed {
+        /// The source of the effect.
         by: ObjectRef,
     },
     /// It was exiled until the permanent `by` leaves the battlefield (CR 610.3): it returns once that permanent is gone.
@@ -998,6 +1095,11 @@ pub enum ZoneCause {
         /// The creature it is encoded on.
         by: ObjectRef,
     },
+    /// It was exiled haunting the creature `of` (haunt, CR 702.55a): it lies face up in exile linked to the creature.
+    Haunting {
+        /// The creature it haunts.
+        of: ObjectRef,
+    },
     /// It resolved as an Adventure (CR 715.4) and was exiled instead of going to its owner's graveyard: its controller may cast the card from exile.
     Adventure,
     /// It was countered (CR 701.6).
@@ -1008,6 +1110,9 @@ pub enum ZoneCause {
     StateBased,
     /// It was discarded and a replacement effect sent it somewhere other than the graveyard (CR 701.9).
     Discarded,
+    /// It was played as its owner's land and a replacement effect put it here instead of onto the battlefield: the land
+    /// play is used (CR 305.2).
+    LandPlayed,
 }
 
 impl ZoneCause {
@@ -1017,6 +1122,8 @@ impl ZoneCause {
         match self {
             ZoneCause::Foretold => Some(FaceDown::Foretold { turn }),
             ZoneCause::Hideaway { by } => Some(FaceDown::Hideaway { by }),
+            ZoneCause::Held { by, looker } => Some(FaceDown::Held { by, looker }),
+            ZoneCause::Sealed { by } => Some(FaceDown::Sealed { by }),
             ZoneCause::Manifested { .. } => Some(FaceDown::Manifest),
             ZoneCause::Cloaked { .. } => Some(FaceDown::Cloak),
             _ => None,
@@ -1061,6 +1168,9 @@ impl Event {
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
+            | Event::SpeedChanged { .. }
+            | Event::RingTempted { .. }
+            | Event::RingBearerLost { .. }
             | Event::DungeonCompleted { .. }
             | Event::Learned { .. }
             | Event::DieRolled { .. }
@@ -1098,8 +1208,11 @@ impl Event {
             | Event::CommanderStayed { .. }
             | Event::CompanionRevealed { .. }
             | Event::LibraryLooked(_)
+            | Event::HandLooked(_)
             | Event::CardsFound(_)
             | Event::ChosenAtRandom { .. }
+            | Event::PlayersChosenAtRandom { .. }
+            | Event::Sought { .. }
             | Event::Revealed(_) => Vec::new(),
             Event::CountersChanged(changed) => changed
                 .on
@@ -1110,6 +1223,8 @@ impl Event {
             Event::LibraryRefilled { order: cards, .. }
             | Event::HandDealt { cards, .. }
             | Event::CardsBottomed { cards, .. }
+            | Event::OpeningCardsPlayed { cards, .. }
+            | Event::LibraryInserted { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::Surveilled(surveilled) => surveilled
@@ -1119,12 +1234,15 @@ impl Event {
                 .copied()
                 .collect(),
             Event::TokenCreated(token) => vec![token.object],
+            Event::CardConjured(card) => vec![card.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
             Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
+            Event::TargetsChanged(change) => vec![change.object.id],
+            Event::Remembered(change) => vec![change.source.id],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }
@@ -1139,6 +1257,9 @@ impl Event {
             | Event::Flipped { object }
             | Event::Prepared { object }
             | Event::Unprepared { object }
+            | Event::Suspected { object }
+            | Event::Unsuspected { object }
+            | Event::Solved { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::PermanentPhasedOut { object, .. }
@@ -1242,6 +1363,7 @@ mod tests {
             deathtouch: false,
             form: crate::combat::DamageForm::Normal,
             toxic: 0,
+            unpreventable: false,
         };
         let json = r#"{"DamageDealt":{"source":4,"target":{"Player":1},"amount":3}}"#;
         assert_eq!(serde_json::to_string(&plain).unwrap(), json);
@@ -1278,6 +1400,7 @@ mod tests {
             deathtouch: true,
             form: crate::combat::DamageForm::Normal,
             toxic: 0,
+            unpreventable: false,
         };
         let json = serde_json::to_string(&touched).unwrap();
         assert_eq!(

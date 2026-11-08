@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d7d59fef-1401-464b-b1bb-ee5da92cde51",
+  "name": "Hunter's Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunter's Axe",
+      "oracle_fingerprint": "e82d9c90e1f11994247bb35258b6bbef",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Either": {
+                          "first": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "AddKeyword": "Trample" }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ],
+                          "second": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "AddKeyword": "Deathtouch" }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

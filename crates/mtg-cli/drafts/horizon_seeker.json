@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e0610ab1-88d3-4502-84b7-3a08d0170167",
+  "name": "Horizon Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horizon Seeker",
+      "oracle_fingerprint": "43afe3f1a0242ef9af6554c6828a3990",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

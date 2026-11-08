@@ -1,0 +1,42 @@
+{
+  "oracle_id": "55f9a9a2-2842-4555-8b54-03aebc8d6fb8",
+  "name": "Llawan, Cephalid Empress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llawan, Cephalid Empress",
+      "oracle_fingerprint": "c7d7bf344dae2e4c1e4850712931305a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Color": "Blue" },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": { "Cast": { "filter": [{ "Type": "Creature" }, { "Color": "Blue" }] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

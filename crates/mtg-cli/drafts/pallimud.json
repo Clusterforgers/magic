@@ -1,0 +1,33 @@
+{
+  "oracle_id": "cad0f865-62e0-47ba-84ae-8e97cb52bbd1",
+  "name": "Pallimud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pallimud",
+      "oracle_fingerprint": "ffb5102d6d50651072774dfdb83c27a6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, "Tapped", { "ControlledBy": "Chosen" }] },
+                  "toughness": 3
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

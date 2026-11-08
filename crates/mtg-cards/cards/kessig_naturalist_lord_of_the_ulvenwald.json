@@ -1,0 +1,45 @@
+{
+  "oracle_id": "54f8acb1-58f3-49d1-bff8-c1b578245936",
+  "name": "Kessig Naturalist // Lord of the Ulvenwald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kessig Naturalist",
+      "oracle_fingerprint": "ef19c11bc5ab41db74a8dcde96f1e904",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] }, "lasts": "Turn" } }]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Lord of the Ulvenwald",
+      "oracle_fingerprint": "6e47fcace152fcd6beeae68077de2d9b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] }, "lasts": "Turn" } }]
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

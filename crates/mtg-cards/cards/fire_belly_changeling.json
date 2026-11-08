@@ -1,0 +1,29 @@
+{
+  "oracle_id": "65c1cac7-87d1-4687-86ba-f7c63c4f8549",
+  "name": "Fire-Belly Changeling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire-Belly Changeling",
+      "oracle_fingerprint": "8d252f98853f1d857f42083390100823",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "limit": { "TimesPerTurn": 2 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

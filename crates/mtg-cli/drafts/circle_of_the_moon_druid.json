@@ -1,0 +1,24 @@
+{
+  "oracle_id": "90569b99-8b63-4d2e-b7de-b578b8adbdcb",
+  "name": "Circle of the Moon Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of the Moon Druid",
+      "oracle_fingerprint": "1f8ba772fc33cefbf6f35552ec277dee",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 2 } },
+              { "AddType": "Creature" },
+              { "SetCreatureTypes": ["Bear"] }
+            ],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

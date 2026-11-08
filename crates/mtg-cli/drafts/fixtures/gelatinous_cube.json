@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "1c472e70-300c-4881-86e7-c5ca690ab9b6",
+  "oracle_id": "3c2e2e69-cd44-458f-a5b0-8591baa24e65",
+  "multiverse_ids": [
+    527392
+  ],
+  "mtgo_id": 91712,
+  "arena_id": 77210,
+  "tcgplayer_id": 243075,
+  "cardmarket_id": 571072,
+  "name": "Gelatinous Cube",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/1c472e70-300c-4881-86e7-c5ca690ab9b6",
+  "scryfall_uri": "https://scryfall.com/card/afr/105/gelatinous-cube?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:08:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.jpg?1783926493",
+    "normal": "https://cards.scryfall.io/normal/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.jpg?1783926493",
+    "large": "https://cards.scryfall.io/large/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.jpg?1783926493",
+    "png": "https://cards.scryfall.io/png/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.png?1783926493",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.jpg?1783926493",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.jpg?1783926493",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.webp?1783926493",
+    "grid": "https://cards.scryfall.io/grid/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.webp?1783926493",
+    "display": "https://cards.scryfall.io/display/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.webp?1783926493",
+    "art": "https://cards.scryfall.io/art/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.webp?1783926493",
+    "crop": "https://cards.scryfall.io/crop/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.webp?1783926493",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/c/1c472e70-300c-4881-86e7-c5ca690ab9b6.jpg?1783926493"
+  },
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Ooze",
+  "oracle_text": "Engulf — When this creature enters, exile target non-Ooze creature an opponent controls until this creature leaves the battlefield.\nDissolve — {X}{B}: Put target creature card with mana value X exiled with this creature into its owner's graveyard.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e1ef87ba-ba92-4573-817f-543b996d2851",
+  "set": "afr",
+  "set_name": "Adventures in the Forgotten Realms",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e1ef87ba-ba92-4573-817f-543b996d2851",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1c472e70-300c-4881-86e7-c5ca690ab9b6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3c2e2e69-cd44-458f-a5b0-8591baa24e65&unique=prints",
+  "collector_number": "105",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Olivier Bernard",
+  "artist_ids": [
+    "11c6f325-68c2-4f2a-972d-98d2ffe6c224"
+  ],
+  "illustration_id": "1ae415d3-d4e2-41af-ac65-866e86c2e107",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13803,
+  "penny_rank": 10493,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/magic-the-gathering-dungeons-and-dragons-card-reveal-gelatinous-cube-spoiler",
+    "previewed_at": "2021-06-29"
+  },
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.30",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=527392&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGelatinous%2BCube",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGelatinous%2BCube",
+    "edhrec": "https://edhrec.com/route/?cc=Gelatinous+Cube"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243075%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=571072&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/91712?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4327225e-140f-45a4-a56f-dcf472f6c062",
+  "name": "Witch's Mist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch's Mist",
+      "oracle_fingerprint": "001000e2e55c4f0a7ff34de8a0424bda",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

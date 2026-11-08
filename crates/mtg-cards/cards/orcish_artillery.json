@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c000811e-bde7-4840-a3bb-9714d5c977eb",
+  "name": "Orcish Artillery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Artillery",
+      "oracle_fingerprint": "d97e8dd164e52a17f3f3a24c7c7ffb82",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": "You", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

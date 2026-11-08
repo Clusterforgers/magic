@@ -1,0 +1,32 @@
+{
+  "oracle_id": "67ff2880-1998-48e9-88c7-2aa012697401",
+  "name": "Littjara Kinseekers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Littjara Kinseekers",
+      "oracle_fingerprint": "0b3728f12fe4a8156cbc287dad907411",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "MostCommon": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "CreatureType"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

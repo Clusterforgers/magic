@@ -1,0 +1,41 @@
+{
+  "oracle_id": "26e75f0b-3a02-4989-8429-b6276e98ac33",
+  "name": "Pitfall Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pitfall Trap",
+      "oracle_fingerprint": "16d01bc36780473ce4a64ab22ad53e14",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking"] },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "cost": "{W}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "Not": { "HasKeyword": "Flying" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

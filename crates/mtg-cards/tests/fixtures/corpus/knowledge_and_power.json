@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7",
+  "oracle_id": "ed68b5ca-c52a-40e0-89ac-6276a3c4fdeb",
+  "multiverse_ids": [
+    380445
+  ],
+  "mtgo_id": 51964,
+  "mtgo_foil_id": 51965,
+  "tcgplayer_id": 82336,
+  "cardmarket_id": 266722,
+  "name": "Knowledge and Power",
+  "lang": "en",
+  "released_at": "2014-05-02",
+  "uri": "https://api.scryfall.com/cards/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7",
+  "scryfall_uri": "https://scryfall.com/card/jou/101/knowledge-and-power?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:43:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.jpg?1783939422",
+    "normal": "https://cards.scryfall.io/normal/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.jpg?1783939422",
+    "large": "https://cards.scryfall.io/large/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.jpg?1783939422",
+    "png": "https://cards.scryfall.io/png/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.png?1783939422",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.jpg?1783939422",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.jpg?1783939422",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.webp?1783939422",
+    "grid": "https://cards.scryfall.io/grid/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.webp?1783939422",
+    "display": "https://cards.scryfall.io/display/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.webp?1783939422",
+    "art": "https://cards.scryfall.io/art/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.webp?1783939422",
+    "crop": "https://cards.scryfall.io/crop/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.webp?1783939422",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/c/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7.jpg?1783939422"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you scry, you may pay {2}. If you do, this enchantment deals 2 damage to any target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set": "jou",
+  "set_name": "Journey into Nyx",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajou&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jou?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7cd48a18-df3d-4381-a7e7-a3e9ae18d4d7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aed68b5ca-c52a-40e0-89ac-6276a3c4fdeb&unique=prints",
+  "collector_number": "101",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Information is a powerful weapon.\"\n—Cymede, queen of Akros",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jung Park",
+  "artist_ids": [
+    "269392ac-4c06-4650-98e2-d49a5a7f2371"
+  ],
+  "illustration_id": "b4105b68-ed3f-436c-9a6f-923f7c5e60c5",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29970,
+  "penny_rank": 17412,
+  "prices": {
+    "usd": "0.06",
+    "usd_foil": "0.15",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.36",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=380445&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKnowledge%2Band%2BPower",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKnowledge%2Band%2BPower",
+    "edhrec": "https://edhrec.com/route/?cc=Knowledge+and+Power"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F82336%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=266722&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/51964?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

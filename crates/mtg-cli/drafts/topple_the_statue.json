@@ -15,7 +15,12 @@
               {
                 "If": {
                   "condition": {
-                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Artifact" }] }
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
                   },
                   "then": [{ "Destroy": { "what": { "Target": 0 } } }]
                 }

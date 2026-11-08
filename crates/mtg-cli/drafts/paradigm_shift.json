@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7179c2c5-c59c-4793-a3b5-28d26d755157",
+  "name": "Paradigm Shift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paradigm Shift",
+      "oracle_fingerprint": "eafe81c9f5fa16a862b23285ca325f59",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Library" }] } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

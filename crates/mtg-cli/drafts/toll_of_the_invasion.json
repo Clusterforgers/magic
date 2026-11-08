@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3a7c2e32-8585-4f7f-8635-199e3c6cd8a9",
+  "name": "Toll of the Invasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toll of the Invasion",
+      "oracle_fingerprint": "12a1e13bf2f6c0787589b328d281b45a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              },
+              { "Amass": { "subtype": "Zombie", "count": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

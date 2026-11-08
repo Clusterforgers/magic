@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5e674793-6586-44a4-b936-a71203c5850a",
+  "name": "Sparkshaper Visionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sparkshaper Visionary",
+      "oracle_fingerprint": "d40a8be058084ed566911f1499534d37",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetColors": ["Blue"] },
+                    { "AddSubtype": "Bird" },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "Hexproof" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Scry": {} }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

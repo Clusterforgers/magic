@@ -1,0 +1,54 @@
+{
+  "oracle_id": "877c34ca-6eff-42ce-b4d7-8a2071d0290a",
+  "name": "Blood Oath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Oath",
+      "oracle_fingerprint": "07510d053fe8263d0b9c930b842e13ba",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": "CardType", "as": "chosen" } },
+              {
+                "Bind": {
+                  "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Count": [
+                          { "Is": { "Bound": "revealed2" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "ChosenAs": "chosen" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

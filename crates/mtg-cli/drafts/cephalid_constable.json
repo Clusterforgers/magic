@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a5236bf7-c84f-4c64-bf6b-3a89c05e161a",
+  "name": "Cephalid Constable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Constable",
+      "oracle_fingerprint": "dff0f61840dc84c557858515c854671f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": { "Object": [{ "ControlledBy": "Triggering" }] },
+                "bounds": { "min": 0, "max": { "Stat": { "of": "Dealer", "stat": "Power" } } }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

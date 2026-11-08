@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f8601f5f-0f7c-4689-9d15-137f1e82c49c",
+  "name": "Generous Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Generous Revival",
+      "oracle_fingerprint": "87bf1482fe0ebddcc126b9c8ca408541",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{W}" } }
+      ]
+    }
+  ]
+}

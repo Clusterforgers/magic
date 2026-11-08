@@ -16,17 +16,18 @@
         {
           "Triggered": {
             "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
-            "targets": [{ "what": "Player" }],
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
             "effects": [
               {
-                "If": {
-                  "condition": { "Monarch": "You" },
-                  "then": [{ "Mill": { "who": { "Target": 0 }, "count": 10 } }],
-                  "otherwise": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }]
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "When": { "condition": { "Monarch": "You" }, "then": 10, "otherwise": 2 }
+                  }
                 }
-              },
-              { "TakeInitiative": {} },
-              { "AddPhase": { "phases": ["Beginning"] } }
+              }
             ]
           }
         }

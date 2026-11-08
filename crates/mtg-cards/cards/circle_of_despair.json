@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4ad57fbf-69f3-4367-b061-ed8e0b83b9af",
+  "name": "Circle of Despair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Despair",
+      "oracle_fingerprint": "3ffcce991a838af20d1adf4b0ef008b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

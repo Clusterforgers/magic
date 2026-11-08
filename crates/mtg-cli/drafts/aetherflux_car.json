@@ -1,0 +1,40 @@
+{
+  "oracle_id": "58e7e904-a925-48fb-998a-17c647a2c448",
+  "name": "Aetherflux Car",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherflux Car",
+      "oracle_fingerprint": "4ca884d7b6ab1b323c2d8ffe0f529b8d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "charge",
+                  "count": {
+                    "Times": {
+                      "by": 4,
+                      "of": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "charge", "count": 121 } }],
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f43c68f1-97ac-47a4-82d3-a41277259388",
+  "name": "Sonic Seizure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sonic Seizure",
+      "oracle_fingerprint": "d6f93ebc288d07653f1413e2d884fb87",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "DiscardRandom": 1 }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

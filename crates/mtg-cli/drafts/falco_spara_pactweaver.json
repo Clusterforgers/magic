@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b9c1ca24-5696-4777-8465-13a8f78e4fb5",
+  "name": "Falco Spara, Pactweaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falco Spara, Pactweaver",
+      "oracle_fingerprint": "ba59347f8c690f3f588964899317532a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["TopOfLibrary", { "Not": { "Type": "Land" } }],
+                "from": "Library",
+                "additional": [{ "RemoveCountersAmong": { "from": [{ "Type": "Creature" }] } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

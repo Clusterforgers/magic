@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c3006be3-a796-4238-95dd-1e8e47c063b5",
+  "name": "Glacial Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glacial Grasp",
+      "oracle_fingerprint": "c9679f2e2377b3d8192541a258e6d7fc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Mill": { "who": { "ControllerOf": { "Target": 0 } }, "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

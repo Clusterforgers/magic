@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d20b62fc-e248-4c84-87ac-7319b92531d4",
+  "name": "Saprazzan Legate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saprazzan Legate",
+      "oracle_fingerprint": "22d7258f7bf442e8ce64c190e1c377a6",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "Opponents" }]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

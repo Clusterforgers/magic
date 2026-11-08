@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3d081701-514b-4611-b5a1-239b8f335fb6",
+  "name": "Insectoid Exterminator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insectoid Exterminator",
+      "oracle_fingerprint": "8703cd0a30d8c35e6e3bdb7a6f8e9348",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

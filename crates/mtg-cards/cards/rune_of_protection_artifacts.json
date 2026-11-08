@@ -1,0 +1,39 @@
+{
+  "oracle_id": "469c4b77-733e-472b-aeae-6015b409beb2",
+  "name": "Rune of Protection: Artifacts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Protection: Artifacts",
+      "oracle_fingerprint": "9927a60f073db7b8ac915b49a77b1ec3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

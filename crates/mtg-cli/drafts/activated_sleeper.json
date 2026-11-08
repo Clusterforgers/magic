@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e12da2a1-e390-4487-b154-69e439cb7b05",
+  "name": "Activated Sleeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Activated Sleeper",
+      "oracle_fingerprint": "27a09a72f52c430dae1f02d2403f4b2b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [
+                  { "Type": "Creature" },
+                  { "ArrivedFrom": "Battlefield" },
+                  { "In": "Graveyard" }
+                ],
+                "except": [{ "AddSubtype": "Phyrexian" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

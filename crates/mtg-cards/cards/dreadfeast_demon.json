@@ -1,0 +1,40 @@
+{
+  "oracle_id": "aa364a33-7c72-4096-b8ed-ca9d5515c3fe",
+  "name": "Dreadfeast Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreadfeast Demon",
+      "oracle_fingerprint": "6316727c472e4db287abeb6914035076",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Demon" } }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

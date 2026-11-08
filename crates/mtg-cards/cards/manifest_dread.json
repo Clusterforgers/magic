@@ -1,0 +1,23 @@
+{
+  "oracle_id": "df5a66d1-61f6-44d9-b464-3ee739e78dce",
+  "name": "Manifest Dread",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manifest Dread",
+      "oracle_fingerprint": "342c0c2572cdcb390c42ed00e51b165a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

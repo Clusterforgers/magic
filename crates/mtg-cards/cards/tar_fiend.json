@@ -1,0 +1,21 @@
+{
+  "oracle_id": "82bc2ee1-9b51-4b3b-804b-1b4e8aab9a4f",
+  "name": "Tar Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tar Fiend",
+      "oracle_fingerprint": "5fa5f3c01b78460d7b145dbe23153f1f",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 2, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": "Devoured" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

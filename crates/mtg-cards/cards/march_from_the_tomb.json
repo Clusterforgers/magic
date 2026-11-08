@@ -1,0 +1,46 @@
+{
+  "oracle_id": "9d2b9f3b-9ba1-4f28-8cd9-490803190e24",
+  "name": "March from the Tomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "March from the Tomb",
+      "oracle_fingerprint": "c9691a542b13a54369f5b9b38b4ac3ea",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "Subtype": "Ally" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "rule": { "TotalManaValueAtMost": 8 }
+                  }
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Ally" },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -29,4 +29,8 @@ text?: string,
  * Whether the cast or activation may still be backed out of by answering with no cards: nothing is logged until
  * it is paid for. Asked only for an announcement, whose questions take at least one card.
  */
-can_cancel?: boolean, };
+can_cancel?: boolean, 
+/**
+ * No two cards chosen may share a name ("with different names", CR 201.3).
+ */
+one_per_name?: boolean, };

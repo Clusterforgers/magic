@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3debfa0d-9945-4a85-a714-7c3d3d74de4e",
+  "name": "Waterveil Cavern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waterveil Cavern",
+      "oracle_fingerprint": "1b7a891177ba12db509cee2dc8ba1e92",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

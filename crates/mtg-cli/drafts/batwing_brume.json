@@ -1,0 +1,63 @@
+{
+  "oracle_id": "fc8247f5-f7b2-4fc4-a9ea-90babad5fa42",
+  "name": "Batwing Brume",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Batwing Brume",
+      "oracle_fingerprint": "70023d8c0efed8199441a3f9c68d4031",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "White" },
+                  "then": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "combat": true } },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": { "ManaSpent": "Black" },
+                        "then": [
+                          {
+                            "LoseLife": {
+                              "who": { "Bound": "each" },
+                              "amount": {
+                                "Largest": {
+                                  "who": { "Bound": "each" },
+                                  "of": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": "You" },
+                                    "Attacking"
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

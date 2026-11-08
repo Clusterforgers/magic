@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1caa8c8a-ff45-4eee-a834-6e5e1fb54721",
+  "name": "Sugar Coat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sugar Coat",
+      "oracle_fingerprint": "4c7dada576312d0d6344fcbf7bf8f877",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Food" }] }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              "LoseAbilities",
+              { "SetColors": [] },
+              { "AddSubtype": "Food" },
+              { "SetTypes": ["Artifact"] },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                    "effects": [{ "GainLife": { "amount": 3 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

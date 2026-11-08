@@ -1,0 +1,42 @@
+{
+  "oracle_id": "367bb252-41e1-4f98-9d22-442dd332cccf",
+  "name": "Parting Gust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parting Gust",
+      "oracle_fingerprint": "7ee8f78fc93e33eea9187a158574b073",
+      "abilities": [
+        { "Keyword": { "Gift": "TappedFish" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 0 } },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "exiled" },
+                              "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

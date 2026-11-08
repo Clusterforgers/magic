@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "1097264b-e383-4864-a587-dc7d5468f359",
+  "oracle_id": "280e05c5-7ab4-45bf-aa15-e594cec49ef3",
+  "multiverse_ids": [
+    562960
+  ],
+  "mtgo_id": 100154,
+  "tcgplayer_id": 272697,
+  "cardmarket_id": 659052,
+  "name": "Imoen, Mystic Trickster",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/1097264b-e383-4864-a587-dc7d5468f359",
+  "scryfall_uri": "https://scryfall.com/card/clb/77/imoen-mystic-trickster?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.jpg?1783922786",
+    "normal": "https://cards.scryfall.io/normal/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.jpg?1783922786",
+    "large": "https://cards.scryfall.io/large/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.jpg?1783922786",
+    "png": "https://cards.scryfall.io/png/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.png?1783922786",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.jpg?1783922786",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.jpg?1783922786",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.webp?1783922786",
+    "grid": "https://cards.scryfall.io/grid/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.webp?1783922786",
+    "display": "https://cards.scryfall.io/display/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.webp?1783922786",
+    "art": "https://cards.scryfall.io/art/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.webp?1783922786",
+    "crop": "https://cards.scryfall.io/crop/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.webp?1783922786",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/0/1097264b-e383-4864-a587-dc7d5468f359.jpg?1783922786"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Rogue Wizard",
+  "oracle_text": "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nAt the beginning of your end step, if you have the initiative, draw a card. Draw another card if you've completed a dungeon.\nChoose a Background (You can have a Background as a second commander.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Choose a background",
+    "Ward"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1097264b-e383-4864-a587-dc7d5468f359/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A280e05c5-7ab4-45bf-aa15-e594cec49ef3&unique=prints",
+  "collector_number": "77",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alix Branwyn",
+  "artist_ids": [
+    "4f0a0e38-d74c-4e0b-ad91-fecccb1afa5d"
+  ],
+  "illustration_id": "ac9c881f-724a-42dd-a2ab-03fbf8fc6edf",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10185,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=j-tXZ1DwYIU",
+    "previewed_at": "2022-05-18"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.19",
+    "tix": "0.37"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562960&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DImoen%252C%2BMystic%2BTrickster",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DImoen%252C%2BMystic%2BTrickster",
+    "edhrec": "https://edhrec.com/route/?cc=Imoen%2C+Mystic+Trickster"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272697%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659052&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100154?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

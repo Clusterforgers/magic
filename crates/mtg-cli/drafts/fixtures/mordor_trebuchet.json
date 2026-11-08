@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "648bc8ae-1798-4c2f-a372-0487a90ba4d3",
+  "oracle_id": "8a8e0d0a-1101-45b6-8f70-1de2c07bc369",
+  "multiverse_ids": [
+    616927
+  ],
+  "mtgo_id": 112104,
+  "arena_id": 84789,
+  "tcgplayer_id": 498353,
+  "cardmarket_id": 715905,
+  "name": "Mordor Trebuchet",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/648bc8ae-1798-4c2f-a372-0487a90ba4d3",
+  "scryfall_uri": "https://scryfall.com/card/ltr/97/mordor-trebuchet?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:18:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.jpg?1783916299",
+    "normal": "https://cards.scryfall.io/normal/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.jpg?1783916299",
+    "large": "https://cards.scryfall.io/large/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.jpg?1783916299",
+    "png": "https://cards.scryfall.io/png/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.png?1783916299",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.jpg?1783916299",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.jpg?1783916299",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.webp?1783916299",
+    "grid": "https://cards.scryfall.io/grid/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.webp?1783916299",
+    "display": "https://cards.scryfall.io/display/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.webp?1783916299",
+    "art": "https://cards.scryfall.io/art/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.webp?1783916299",
+    "crop": "https://cards.scryfall.io/crop/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.webp?1783916299",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/4/648bc8ae-1798-4c2f-a372-0487a90ba4d3.jpg?1783916299"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Wall",
+  "oracle_text": "Defender\nWhenever you attack with one or more Goblins and/or Orcs, create a 2/1 colorless Construct artifact creature token with flying named Ballistic Boulder that's tapped and attacking. Sacrifice that token at end of combat.",
+  "power": "1",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Defender"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2dad8e6d-c49a-489c-ac1a-25b5919ecba8",
+      "component": "combo_piece",
+      "name": "Mordor Trebuchet",
+      "type_line": "Artifact Creature — Wall",
+      "uri": "https://api.scryfall.com/cards/2dad8e6d-c49a-489c-ac1a-25b5919ecba8"
+    },
+    {
+      "object": "related_card",
+      "id": "389a6f88-0c90-4b67-a72c-7e9674f00898",
+      "component": "token",
+      "name": "Ballistic Boulder",
+      "type_line": "Token Artifact Creature — Construct",
+      "uri": "https://api.scryfall.com/cards/389a6f88-0c90-4b67-a72c-7e9674f00898"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "08078706-ac5d-439b-8f01-894d38751367",
+  "set": "ltr",
+  "set_name": "The Lord of the Rings: Tales of Middle-earth",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/08078706-ac5d-439b-8f01-894d38751367",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/648bc8ae-1798-4c2f-a372-0487a90ba4d3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8a8e0d0a-1101-45b6-8f70-1de2c07bc369&unique=prints",
+  "collector_number": "97",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alexander Forssberg",
+  "artist_ids": [
+    "85908891-3cc7-42b0-9b54-27ed0fe89c53"
+  ],
+  "illustration_id": "8ed26994-f260-4cc5-a86a-1db099510da3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14089,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.16",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=616927&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMordor%2BTrebuchet",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMordor%2BTrebuchet",
+    "edhrec": "https://edhrec.com/route/?cc=Mordor+Trebuchet"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F498353%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=715905&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/112104?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

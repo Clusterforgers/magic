@@ -1,0 +1,27 @@
+{
+  "oracle_id": "33117d34-ea70-4566-92a3-5dec9bfe529a",
+  "name": "Krotiq Nestguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krotiq Nestguard",
+      "oracle_fingerprint": "ff275b61ce2e513166774110442a2cc3",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

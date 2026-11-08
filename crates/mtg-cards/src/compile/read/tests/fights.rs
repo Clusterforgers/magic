@@ -123,7 +123,7 @@ fn a_trigger_makes_creatures_fight(
 #[rstest]
 #[case::enrage(
     "Whenever ~ is dealt damage, it fights up to one target creature you don't control.",
-    r#"{"Triggered":{"when":{"DealsDamage":{"source":[],"to":"This"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]},"bounds":{"min":0,"max":1}}],"effects":[{"Fight":{"what":"This","with":{"Target":0}}}]}}"#
+    r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]},"bounds":{"min":0,"max":1}}],"effects":[{"Fight":{"what":"This","with":{"Target":0}}}]}}"#
 )]
 #[case::the_card_or_another_that_enters(
     "Whenever ~ or another Vampire you control enters, ~ fights up to one target creature an opponent controls.",

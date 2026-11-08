@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "e8890fc6-45e9-443d-ae86-f1acb1ebd0aa",
+  "oracle_id": "5eb0d8dc-be4b-4a20-b480-f70514ffb299",
+  "multiverse_ids": [
+    394693
+  ],
+  "mtgo_id": 56224,
+  "mtgo_foil_id": 56225,
+  "tcgplayer_id": 96492,
+  "cardmarket_id": 273137,
+  "name": "Shorecrasher Elemental",
+  "lang": "en",
+  "released_at": "2015-03-27",
+  "uri": "https://api.scryfall.com/cards/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa",
+  "scryfall_uri": "https://scryfall.com/card/dtk/73/shorecrasher-elemental?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:30:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.jpg?1783938604",
+    "normal": "https://cards.scryfall.io/normal/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.jpg?1783938604",
+    "large": "https://cards.scryfall.io/large/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.jpg?1783938604",
+    "png": "https://cards.scryfall.io/png/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.png?1783938604",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.jpg?1783938604",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.jpg?1783938604",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.webp?1783938604",
+    "grid": "https://cards.scryfall.io/grid/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.webp?1783938604",
+    "display": "https://cards.scryfall.io/display/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.webp?1783938604",
+    "art": "https://cards.scryfall.io/art/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.webp?1783938604",
+    "crop": "https://cards.scryfall.io/crop/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.webp?1783938604",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/8/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa.jpg?1783938604"
+  },
+  "mana_cost": "{U}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "{U}: Exile this creature, then return it to the battlefield face down under its owner's control.\n{1}: This creature gets +1/-1 or -1/+1 until end of turn.\nMegamorph {4}{U} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its megamorph cost and put a +1/+1 counter on it.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Megamorph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e8890fc6-45e9-443d-ae86-f1acb1ebd0aa",
+      "component": "combo_piece",
+      "name": "Shorecrasher Elemental",
+      "type_line": "Creature — Elemental",
+      "uri": "https://api.scryfall.com/cards/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa"
+    },
+    {
+      "object": "related_card",
+      "id": "5f29231c-dd21-4a45-a1f0-464d338128ed",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/5f29231c-dd21-4a45-a1f0-464d338128ed"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7e72625f-f320-4552-a719-d11e2f1853bd",
+  "set": "dtk",
+  "set_name": "Dragons of Tarkir",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/7e72625f-f320-4552-a719-d11e2f1853bd",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adtk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dtk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e8890fc6-45e9-443d-ae86-f1acb1ebd0aa/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5eb0d8dc-be4b-4a20-b480-f70514ffb299&unique=prints",
+  "collector_number": "73",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Igor Kieryluk",
+  "artist_ids": [
+    "9c3e9d17-509f-485c-9360-46d897ce716b"
+  ],
+  "illustration_id": "b12bb256-dca4-4024-acf6-6d7ba80f581d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28619,
+  "penny_rank": 11960,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.94",
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": "0.72",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=394693&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShorecrasher%2BElemental",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShorecrasher%2BElemental",
+    "edhrec": "https://edhrec.com/route/?cc=Shorecrasher+Elemental"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F96492%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=273137&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56224?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

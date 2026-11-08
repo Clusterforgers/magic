@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ffd6f55f-2592-46a5-94da-cb9424783004",
+  "name": "Polis Crusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Polis Crusher",
+      "oracle_fingerprint": "c780d43730acccf7c7b851cac3a546ad",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Protection": [{ "Type": "Enchantment" }] } },
+        { "Activated": { "cost": "{4}{R}{G}", "effects": [{ "Monstrosity": { "count": 3 } }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": { "left": { "Count": ["This", "Monstrous"] }, "op": "Ge", "right": 1 }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Enchantment" }, { "ControlledBy": "Triggering" }] }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

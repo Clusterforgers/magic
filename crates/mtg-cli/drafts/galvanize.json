@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9b44c005-6799-47fd-8b0d-7179b5281d78",
+  "name": "Galvanize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galvanize",
+      "oracle_fingerprint": "ac6406d688164d95917fd68b13f346d7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

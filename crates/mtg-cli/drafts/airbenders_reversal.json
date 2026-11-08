@@ -1,0 +1,47 @@
+{
+  "oracle_id": "64e3791b-de99-4eed-af49-cbec218c28aa",
+  "name": "Airbender's Reversal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Airbender's Reversal",
+      "oracle_fingerprint": "2d2b910c11fa72b13d341fdd5c5a1263",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 }, "as": "airbent" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" }
+                            },
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

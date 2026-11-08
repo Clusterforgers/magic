@@ -1,0 +1,52 @@
+{
+  "oracle_id": "fef67393-9b7b-495d-8b03-865537386d42",
+  "name": "Ferocious Werefox // Guard Change",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ferocious Werefox",
+      "oracle_fingerprint": "06d375c77047aa371fc0cbdea553e466",
+      "abilities": [{ "Keyword": "Trample" }]
+    },
+    {
+      "name": "Guard Change",
+      "oracle_fingerprint": "b86aa450f6720df934d901055546473d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monster",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "Trample" }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

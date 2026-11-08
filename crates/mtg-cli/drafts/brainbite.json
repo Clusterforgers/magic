@@ -1,0 +1,25 @@
+{
+  "oracle_id": "fef94125-aa8d-4147-a609-1e990961bde2",
+  "name": "Brainbite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brainbite",
+      "oracle_fingerprint": "04e079f120f7bc1449278ecade7358e4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              { "Discard": { "who": { "Target": 0 }, "by": "You" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

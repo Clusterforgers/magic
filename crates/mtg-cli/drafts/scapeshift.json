@@ -11,14 +11,24 @@
           "Spell": {
             "effects": [
               {
-                "Search": {
+                "SacrificeUpTo": {
                   "filter": [{ "Type": "Land" }],
-                  "count": { "min": 0, "max": 1 },
-                  "as": "land"
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
                 }
               },
               {
-                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+                "Search": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "min": 0, "max": { "Bound": "sacrificed~moved" } },
+                  "as": "found2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
               },
               { "Shuffle": {} }
             ]

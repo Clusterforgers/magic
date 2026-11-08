@@ -9,7 +9,27 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": { "Object": [{ "AnyOf": ["Spell", { "Type": "Creature" }] }] } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "In": "Battlefield" } }
+                            ]
+                          }
+                        },
+                        "Spell"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
             "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
           }
         }

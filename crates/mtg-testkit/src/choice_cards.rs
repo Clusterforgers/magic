@@ -58,6 +58,7 @@ pub fn gift(name: &str) -> Arc<CardDefinition> {
                     Effect::May {
                         who: Ref::Target(0),
                         effects: vec![Effect::Draw {
+                            bind: None,
                             who: Ref::Target(0),
                             count: Amount::Fixed(1),
                         }],
@@ -106,15 +107,19 @@ pub fn charm(name: &str, min: u32, max: u32, repeat: bool) -> Arc<CardDefinition
         1,
         &[Color::Red],
         vec![Effect::Modal {
+            who: mtg_cards::refs::Ref::You,
             choose: Bounds {
                 min: Amount::Fixed(i32::try_from(min).unwrap_or(i32::MAX)),
                 max: Some(Amount::Fixed(i32::try_from(max).unwrap_or(i32::MAX))),
             },
             repeat,
             at_random: false,
+            different_players: false,
             once_each_turn: false,
             once_ever: false,
             all_if: None,
+            mode_costs: Vec::new(),
+            extra_mode_cost: None,
             modes: vec![
                 mode(
                     "Damage",

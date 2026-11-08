@@ -1,0 +1,37 @@
+{
+  "oracle_id": "25933e8b-fa48-4152-9eae-388aef10ad37",
+  "name": "Sky Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sky Weaver",
+      "oracle_fingerprint": "dbbaedaaab5097f91d8bdb27340b4183",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Black" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "oracle_id": "6927bd2e-cb05-487a-af86-89ede6e8dabd",
+  "name": "Wan Shi Tong, All-Knowing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wan Shi Tong, All-Knowing",
+      "oracle_fingerprint": "1635fc703bc321e91c70cc95de8774d4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Second from the top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": { "Below": 1 } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "ZoneChange": { "what": [{ "Not": "Token" }], "to": "Library" } } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              { "CanBlockOnly": [{ "Type": "Creature" }, { "Subtype": "Spirit" }] },
+                              {
+                                "CantBeBlockedBy": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "Subtype": "Spirit" } }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

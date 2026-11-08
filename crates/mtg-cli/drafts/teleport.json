@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9efcf3d1-a0be-4a34-90c6-85a46b48fb83",
+  "name": "Teleport",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teleport",
+      "oracle_fingerprint": "83be55223f617784997ea5e848afaab6",
+      "abilities": [
+        { "CastOnly": { "condition": { "Step": "DeclareAttackers" } } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -20,11 +20,14 @@ impl KeywordRules for Undaunted {
             return Vec::new();
         }
         vec![Ability::CostModifier {
+            targeting: None,
             applies_to: Selector::this(),
             change: CostChange::Reduce,
             mana: ManaCostX::new(0, ManaCost::from_symbols([ManaSymbol::Generic(1)])),
             per: Amount::Players(Ref::Opponents),
             condition: None,
+            activating: None,
+            least: 0,
         }]
     }
 }

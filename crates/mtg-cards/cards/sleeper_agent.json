@@ -1,0 +1,34 @@
+{
+  "oracle_id": "627c9546-85b0-4b4d-93c6-e2ca8c3adf4f",
+  "name": "Sleeper Agent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sleeper Agent",
+      "oracle_fingerprint": "72146a370e92471e1999095356fa216b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

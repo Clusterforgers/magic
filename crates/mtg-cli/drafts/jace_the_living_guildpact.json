@@ -1,0 +1,50 @@
+{
+  "oracle_id": "55259de3-561d-4a9e-bb28-63c6a7ac5c68",
+  "name": "Jace, the Living Guildpact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace, the Living Guildpact",
+      "oracle_fingerprint": "05f057bd8e0add327226a5a0c9a335db",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": ["Other", { "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "count": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

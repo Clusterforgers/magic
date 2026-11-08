@@ -1,0 +1,41 @@
+{
+  "oracle_id": "dfa95c0e-393d-4b22-9de3-45a7efc0ba14",
+  "name": "Saheeli, Consul of Oversight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saheeli, Consul of Oversight",
+      "oracle_fingerprint": "00c7f6aa92bd648fb67437c36a95344b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Scried", "who": "You" } },
+                { "Did": { "action": "Surveilled", "who": "You" } }
+              ]
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

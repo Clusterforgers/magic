@@ -1,0 +1,25 @@
+{
+  "oracle_id": "97dcf9fb-3f2f-4aa6-959a-e3c4889c1673",
+  "name": "Tinybones, Pocket Nuisance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tinybones, Pocket Nuisance",
+      "oracle_fingerprint": "51feabc62af2dae423038cbccc19428f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": {} } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

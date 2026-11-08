@@ -47,6 +47,7 @@ pub(super) fn c5_af_add(ability: &Ability, texts: &mut Vec<String>) {
     {
         *intervening_if = None;
         *effects = vec![Effect::Draw {
+            bind: None,
             who: crate::refs::Ref::You,
             count: Amount::Fixed(1),
         }];

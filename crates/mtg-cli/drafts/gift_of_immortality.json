@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2c11c72f-5b04-47d8-bdf8-8d9d197ebc1b",
+  "name": "Gift of Immortality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gift of Immortality",
+      "oracle_fingerprint": "cb26a49ff01d3d077bd6f00384b710c1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "BattlefieldAttached": { "to": { "Bound": "moved" } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

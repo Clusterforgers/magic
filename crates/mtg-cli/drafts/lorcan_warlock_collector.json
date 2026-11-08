@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6c87c261-00a8-46f2-92c8-42009a0a2faf",
+  "name": "Lorcan, Warlock Collector",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lorcan, Warlock Collector",
+      "oracle_fingerprint": "07ab7712c0462362cd3765e30f2e06f2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 230 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Warlock" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

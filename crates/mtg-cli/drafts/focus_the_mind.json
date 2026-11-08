@@ -1,0 +1,34 @@
+{
+  "oracle_id": "695a84b5-96b0-4e48-b615-15624efab3b7",
+  "name": "Focus the Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Focus the Mind",
+      "oracle_fingerprint": "617b38329d14474fd0cc08db570133f2",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 3 } }, { "Discard": {} }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ec1e69b1-f664-494b-8da2-c7199872b08b",
+  "name": "Canopy Gargantuan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canopy Gargantuan",
+      "oracle_fingerprint": "e18e48051a30036ab02e3b38669f965c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "each" },
+                        "counter": "+1/+1",
+                        "count": { "Stat": { "of": { "Bound": "each" }, "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

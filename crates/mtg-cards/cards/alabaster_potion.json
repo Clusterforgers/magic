@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2fcca686-03c8-4407-9f9f-2b7462470044",
+  "name": "Alabaster Potion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alabaster Potion",
+      "oracle_fingerprint": "72b35ce8e19d9f4db43004f5ee45a7ac",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": "X" } }]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": { "Target": 0 } } },
+                            "by": { "PreventCounted": "X" },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

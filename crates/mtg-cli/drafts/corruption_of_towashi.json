@@ -1,0 +1,41 @@
+{
+  "oracle_id": "242c39b4-5ef0-469a-a852-738f79d93bd6",
+  "name": "Corruption of Towashi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corruption of Towashi",
+      "oracle_fingerprint": "02671ba94279ec80b17f04ebd1c0ad35",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Incubate": { "count": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Did": {
+                    "action": "Transformed",
+                    "what": [{ "ControlledBy": "You" }, { "In": "Battlefield" }]
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": ["Transformed", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

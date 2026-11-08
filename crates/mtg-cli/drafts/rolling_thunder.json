@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9c47888b-28a5-4c43-9ee4-a9059e3c367d",
+  "name": "Rolling Thunder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rolling Thunder",
+      "oracle_fingerprint": "735c0c4bf1598f760aa62fca6b9d111b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": {
+                  "min": 0,
+                  "max": { "Sum": [{ "Players": "EachPlayer" }, { "Count": [] }] }
+                },
+                "divide": "X"
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

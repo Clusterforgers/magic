@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b4eb3d7e-a234-4ed5-8611-fcb818686fcf",
+  "name": "Lithophage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lithophage",
+      "oracle_fingerprint": "090e1f3ad3e680ac08165dfeafd11fbb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Mountain" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

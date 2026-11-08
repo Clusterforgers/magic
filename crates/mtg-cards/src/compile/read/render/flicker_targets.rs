@@ -23,6 +23,7 @@ impl Writer<'_> {
                         transformed: false,
                         counters,
                     },
+                ..
             },
             ..,
         ] = effects

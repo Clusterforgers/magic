@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1ecde43f-e418-437b-8b8f-efe120f96cb3",
+  "name": "Fateful Handoff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fateful Handoff",
+      "oracle_fingerprint": "e27c03052f54bb7490f5b4bcec4bcb44",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Draw": { "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } } } },
+              { "Choose": { "from": "Opponents", "as": "player" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": { "Bound": "player" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

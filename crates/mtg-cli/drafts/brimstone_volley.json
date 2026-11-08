@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d12e374d-ed09-4d5e-bb7a-6c7d9ea80a1e",
+  "name": "Brimstone Volley",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brimstone Volley",
+      "oracle_fingerprint": "83f88e6f2947d95d79ec362e9f972dda",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

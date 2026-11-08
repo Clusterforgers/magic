@@ -1,0 +1,44 @@
+{
+  "oracle_id": "74027d31-6efb-471d-9499-cdb1cefc9eae",
+  "name": "Goma Fada Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goma Fada Vanguard",
+      "oracle_fingerprint": "6d94e1a4afa32d4384ede76b42e816e3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Le",
+                        "to": { "Count": [{ "Subtype": "Warrior" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "78a7bb30-fc60-410c-b086-862b5521c1aa",
+  "name": "Admonition Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Admonition Angel",
+      "oracle_fingerprint": "02cb358768b44b09c6d4f3443adeaf8d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": ["Other", { "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

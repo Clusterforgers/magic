@@ -1,0 +1,40 @@
+{
+  "oracle_id": "eb50b5f2-4840-4f90-9c85-40fc581be9c7",
+  "name": "Autarch Mammoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Autarch Mammoth",
+      "oracle_fingerprint": "deea0c49e35b5980c6f136bf073668cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This", { "HasKeyword": "Saddled" }] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elephant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elephant"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 5 } }
+      ]
+    }
+  ]
+}

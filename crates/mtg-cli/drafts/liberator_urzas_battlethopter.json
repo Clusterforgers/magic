@@ -1,0 +1,31 @@
+{
+  "oracle_id": "798a4a6f-7443-4e8e-afcb-0a694fdfcbb3",
+  "name": "Liberator, Urza's Battlethopter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Liberator, Urza's Battlethopter",
+      "oracle_fingerprint": "bef83d1f5fa1a3c20f1687fa60992649",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Type": "Artifact" }, "Colorless"] }],
+                "flash": true
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 89, "end": 231 }
+          }
+        }
+      ]
+    }
+  ]
+}

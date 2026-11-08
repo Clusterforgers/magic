@@ -1,0 +1,91 @@
+{
+  "oracle_id": "370c5e5f-709b-415b-9b65-3f224d6ef1c7",
+  "name": "Nightshade Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightshade Assassin",
+      "oracle_fingerprint": "d2a5cee7c6531e0a53ae44cdab006ecf",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Color": "Black" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "count": { "min": 0, "max": null },
+                        "as": "revealed"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed" } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Count": [
+                                      { "Is": { "Bound": "revealed" } },
+                                      {
+                                        "AnyOf": [
+                                          { "In": "Battlefield" },
+                                          { "In": "Hand" },
+                                          { "In": "Library" },
+                                          { "In": "Graveyard" },
+                                          { "In": "Exile" },
+                                          { "In": "Stack" }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              "toughness": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Count": [
+                                      { "Is": { "Bound": "revealed" } },
+                                      {
+                                        "AnyOf": [
+                                          { "In": "Battlefield" },
+                                          { "In": "Hand" },
+                                          { "In": "Library" },
+                                          { "In": "Graveyard" },
+                                          { "In": "Exile" },
+                                          { "In": "Stack" }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{1}{B}" } }
+      ]
+    }
+  ]
+}

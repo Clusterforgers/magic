@@ -1,0 +1,101 @@
+{
+  "oracle_id": "c9cd57f6-1f69-4ea1-9672-ca944759c7e8",
+  "name": "Desecrate Reality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desecrate Reality",
+      "oracle_fingerprint": "ab1ac5a1df6d2ec7bc8b915a8001038c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [
+                      {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                          "op": "Eq",
+                          "right": {
+                            "Times": {
+                              "by": 2,
+                              "of": {
+                                "Half": {
+                                  "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                  "up": false
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "ManaSpent": { "of": "Colorless" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Ne",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Half": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            { "OwnedBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

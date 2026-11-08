@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d604c75e-9d81-49de-80bc-08f4ef3ee975",
+  "name": "Potioner's Trove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Potioner's Trove",
+      "oracle_fingerprint": "7e1e859ae12d1f597ba5c63425b73442",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

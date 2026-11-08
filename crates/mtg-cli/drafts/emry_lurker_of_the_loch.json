@@ -16,11 +16,11 @@
         },
         {
           "Activated": {
-            "cost": [{ "TapPermanents": { "filter": [] } }],
+            "cost": ["Tap"],
             "targets": [
               {
                 "what": {
-                  "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
                 }
               }
             ],
@@ -28,39 +28,11 @@
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "what": [{ "Is": { "Target": 0 } }], "from": "Graveyard" }
-                  },
-                  "duration": "UntilEndOfTurn"
-                }
-              },
-              {
-                "Rule": {
-                  "rule": {
-                    "MayCast": { "what": [{ "Is": { "Target": 0 } }], "from": "Graveyard" }
-                  },
-                  "duration": "UntilEndOfTurn"
-                }
-              },
-              {
-                "Rule": {
-                  "rule": {
-                    "MayCast": { "what": [{ "Is": { "Target": 0 } }], "from": "Graveyard" }
-                  },
-                  "duration": "UntilEndOfTurn"
-                }
-              },
-              {
-                "Rule": {
-                  "rule": {
-                    "MayCast": { "what": [{ "Is": { "Target": 0 } }], "from": "Graveyard" }
-                  },
-                  "duration": "UntilEndOfTurn"
-                }
-              },
-              {
-                "Rule": {
-                  "rule": {
-                    "MayCast": { "what": [{ "Is": { "Target": 0 } }], "from": "Graveyard" }
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Graveyard",
+                      "only": { "Target": 0 }
+                    }
                   },
                   "duration": "UntilEndOfTurn"
                 }

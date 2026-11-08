@@ -1,0 +1,42 @@
+{
+  "oracle_id": "3a97bc8d-bd81-468e-9277-eba4fac11ee0",
+  "name": "Vastlands Scavenger // Bind to Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vastlands Scavenger",
+      "oracle_fingerprint": "ee6052b13bb697abd8d6e28cbe8d9d27",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } }
+      ]
+    },
+    {
+      "name": "Bind to Life",
+      "oracle_fingerprint": "baba407f99eca8e00b182420533a87bd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 7, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "89d1cd45-8148-4396-a9b8-e0f495e94b5b",
+  "name": "Savage Beating",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savage Beating",
+      "oracle_fingerprint": "9cc10b989e3d65e0f6524ad38b3b4ad7",
+      "abilities": [
+        { "CastOnly": { "condition": { "All": ["YourTurn", "InCombat"] } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "AddKeyword": "DoubleStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Untap": {
+                            "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        { "AddPhase": { "phases": ["Combat"] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{1}{R}" } }
+      ]
+    }
+  ]
+}

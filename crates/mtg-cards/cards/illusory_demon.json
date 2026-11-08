@@ -1,0 +1,20 @@
+{
+  "oracle_id": "91d0a557-7a80-46d5-b823-392a84a6be44",
+  "name": "Illusory Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusory Demon",
+      "oracle_fingerprint": "96e485e23c33dc45614831d65e96aee4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

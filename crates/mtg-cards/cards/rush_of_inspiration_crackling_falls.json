@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bbd569cc-bc21-46df-b8eb-5b5bcd8fe762",
+  "name": "Rush of Inspiration // Crackling Falls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rush of Inspiration",
+      "oracle_fingerprint": "0e0cbb74880d59498ed255a57bade9e7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 2 }],
+                  "unpaid": [{ "Discard": { "random": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crackling Falls",
+      "oracle_fingerprint": "6a7100ee9643d1f284ff8f7ed45e0c47",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

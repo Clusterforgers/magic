@@ -1,0 +1,54 @@
+{
+  "oracle_id": "457705c9-5b0c-4c3a-89dd-80286fac6a6c",
+  "name": "Jungle Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jungle Wurm",
+      "oracle_fingerprint": "0f5bbd269907d4ecedb2aa0c0e978833",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                                -1
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                                -1
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

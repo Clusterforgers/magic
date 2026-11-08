@@ -1,0 +1,54 @@
+{
+  "oracle_id": "058062c7-071b-4b14-903d-ae8d2876b37f",
+  "name": "Minion of the Mighty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minion of the Mighty",
+      "oracle_fingerprint": "1bc585663b8ab72474e5ddf1a640eebf",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                  },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Dragon" },
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved2"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

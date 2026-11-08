@@ -1,0 +1,29 @@
+{
+  "oracle_id": "22d059fc-4e47-44b5-9e21-4a56f1dff6a7",
+  "name": "Explosive Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Explosive Prodigy",
+      "oracle_fingerprint": "e2518abcb1fc11526dfe5126791deca9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

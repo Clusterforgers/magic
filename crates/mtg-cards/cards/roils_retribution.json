@@ -1,0 +1,27 @@
+{
+  "oracle_id": "38e43d06-33f1-4672-b0be-b0ea8bf36291",
+  "name": "Roil's Retribution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roil's Retribution",
+      "oracle_fingerprint": "9a097d32cbf1f43d32b914cfa353e4a6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                },
+                "bounds": { "min": 0, "max": 5 },
+                "divide": 5
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

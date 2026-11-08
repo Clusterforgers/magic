@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9fe9650d-6c9b-4988-9ea4-79ba0d55a77b",
+  "name": "Lethal Vapors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lethal Vapors",
+      "oracle_fingerprint": "b5f5950cba03236ba3081761e9d5a096",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "by": "Anyone",
+            "effects": [
+              { "Destroy": { "what": "This" } },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "dc20b29b-856e-4d45-99cd-5e12cfc2324d",
+  "name": "The Notary Hobbits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Notary Hobbits",
+      "oracle_fingerprint": "62d85a17f1f65f0a0d51bd8dd07a8830",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", { "Not": "Token" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Triggering", "except": [{ "RemoveSupertype": "Legendary" }] }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "Count": [{ "Subtype": "Halfling" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

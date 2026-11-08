@@ -1,0 +1,47 @@
+{
+  "oracle_id": "dabd0867-ee3f-40cb-8314-b4a3966f8b24",
+  "name": "Shark Shredder, Killer Clone",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shark Shredder, Killer Clone",
+      "oracle_fingerprint": "f5718e0da5899f626f740ef483857cd8",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{3}{B}{B}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 234 }
+          }
+        }
+      ]
+    }
+  ]
+}

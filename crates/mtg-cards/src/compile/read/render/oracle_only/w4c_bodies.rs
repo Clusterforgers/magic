@@ -91,6 +91,7 @@ fn put_from_zone(ability: &Ability, steps: &[Effect]) -> Option<String> {
                 transformed: false,
                 counters,
             },
+        ..
     } = moved
     else {
         return None;
@@ -171,6 +172,7 @@ fn flicker(target: &str, steps: &[Effect]) -> Option<String> {
                     transformed: false,
                     counters,
                 },
+            ..
         },
     ] = steps
     else {
@@ -247,7 +249,8 @@ fn counter_targeting(ability: &Ability, steps: &[Effect]) -> Option<String> {
     matches!(
         steps,
         [Effect::Counter {
-            what: Ref::Triggering
+            what: Ref::Triggering,
+            bind: None,
         }]
     )
     .then(|| "counter that spell or ability".to_owned())
@@ -260,6 +263,7 @@ fn damage_to_itself(steps: &[Effect]) -> Option<String> {
             source: Some(Ref::This),
             to: Ref::This,
             amount: Amount::Fixed(amount),
+            ..
         },
     ] = steps
     else {

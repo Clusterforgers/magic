@@ -1,0 +1,49 @@
+{
+  "oracle_id": "364e8bd6-52e5-4397-8d2a-10c4706e5a45",
+  "name": "Hag Hedge-Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hag Hedge-Mage",
+      "oracle_fingerprint": "3e59bf3c4bb36484c490614057cdb226",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "May": { "effects": [{ "Discard": { "who": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

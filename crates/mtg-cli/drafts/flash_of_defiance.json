@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9f66855d-3ae8-4163-a5f1-aa23a9cd06a5",
+  "name": "Flash of Defiance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flash of Defiance",
+      "oracle_fingerprint": "e3c36317397ec217fecec0076f4ec576",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": [{ "Mana": "{1}{R}" }, { "PayLife": 3 }] } }
+      ]
+    }
+  ]
+}

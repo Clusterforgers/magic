@@ -1,0 +1,63 @@
+{
+  "oracle_id": "9c45682f-48b5-4e58-9277-ff4211f389ae",
+  "name": "Antiquities on the Loose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Antiquities on the Loose",
+      "oracle_fingerprint": "0bc264f5149dc9e093aef650fb41ddb1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        { "WasCast": {} },
+                        {
+                          "AnyOf": [
+                            { "Not": { "WasCast": { "from": "Hand" } } },
+                            { "Not": { "OwnedBy": "You" } }
+                          ]
+                        }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{W}{W}" } }
+      ]
+    }
+  ]
+}

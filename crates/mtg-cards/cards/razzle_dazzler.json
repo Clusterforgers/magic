@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a1ac6d5c-b2d0-4ca4-8af8-16fd3dd3b3b5",
+  "name": "Razzle-Dazzler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razzle-Dazzler",
+      "oracle_fingerprint": "0943bac889980e44e0190c372b885dfc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

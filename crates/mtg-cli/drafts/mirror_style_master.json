@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6a871d70-a46d-4357-8c7d-876f7a004eb7",
+  "name": "Mirror-Style Master",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mirror-Style Master",
+      "oracle_fingerprint": "d993168f0a2beede174d24ccc5412f1e",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 156, "end": 406 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "562f7f99-ee67-4a14-b5e2-1a4ae710726d",
+  "name": "Wake of Destruction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wake of Destruction",
+      "oracle_fingerprint": "205e5c961ab9e4054364a88be4186ba4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Land" } },
+                                { "Not": { "Not": { "Is": { "Target": 0 } } } },
+                                { "Not": { "SharesName": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

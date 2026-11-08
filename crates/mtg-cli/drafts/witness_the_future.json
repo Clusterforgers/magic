@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fc7f00ad-7cc1-4be4-9924-16531e4fb829",
+  "name": "Witness the Future",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witness the Future",
+      "oracle_fingerprint": "99eff823fc9a7fc0a35c5b3dcfd765f1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Shuffled" } } } },
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "cfcd60dc-9534-412d-af48-31fcd8ea0843",
+  "oracle_id": "a25308ae-d757-4868-883d-62bbb00d6cbe",
+  "multiverse_ids": [
+    563136
+  ],
+  "mtgo_id": 100544,
+  "tcgplayer_id": 272782,
+  "cardmarket_id": 660746,
+  "name": "Sharpshooter Elf",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/cfcd60dc-9534-412d-af48-31fcd8ea0843",
+  "scryfall_uri": "https://scryfall.com/card/clb/253/sharpshooter-elf?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:05:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.jpg?1783922703",
+    "normal": "https://cards.scryfall.io/normal/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.jpg?1783922703",
+    "large": "https://cards.scryfall.io/large/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.jpg?1783922703",
+    "png": "https://cards.scryfall.io/png/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.png?1783922703",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.jpg?1783922703",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.jpg?1783922703",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.webp?1783922703",
+    "grid": "https://cards.scryfall.io/grid/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.webp?1783922703",
+    "display": "https://cards.scryfall.io/display/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.webp?1783922703",
+    "art": "https://cards.scryfall.io/art/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.webp?1783922703",
+    "crop": "https://cards.scryfall.io/crop/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.webp?1783922703",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/f/cfcd60dc-9534-412d-af48-31fcd8ea0843.jpg?1783922703"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Elf Ranger",
+  "oracle_text": "Reach\nSharpshooter Elf's power is equal to the number of creatures you control.\nWhen this creature enters, it deals damage equal to its power to target creature with flying an opponent controls.",
+  "power": "*",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cfcd60dc-9534-412d-af48-31fcd8ea0843/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa25308ae-d757-4868-883d-62bbb00d6cbe&unique=prints",
+  "collector_number": "253",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Caroline Gariba",
+  "artist_ids": [
+    "61a4c572-3d1b-4b71-aeb0-1a5a6b82c524"
+  ],
+  "illustration_id": "665e934d-5a77-4fae-a95d-865103cd1652",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16644,
+  "preview": {
+    "source": "The Commander's House",
+    "source_uri": "https://www.youtube.com/watch?v=ucI67L4DFjo",
+    "previewed_at": "2022-05-19"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.26",
+    "tix": "1.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563136&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSharpshooter%2BElf",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSharpshooter%2BElf",
+    "edhrec": "https://edhrec.com/route/?cc=Sharpshooter+Elf"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272782%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=660746&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100544?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

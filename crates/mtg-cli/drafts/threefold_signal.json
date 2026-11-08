@@ -1,0 +1,31 @@
+{
+  "oracle_id": "bc48da27-77e0-440f-b47b-4bdea3c3cc5e",
+  "name": "Threefold Signal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Threefold Signal",
+      "oracle_fingerprint": "2b99f0ee11358b5cec95a5d4117f6dd6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "Compare": { "stat": "Colors", "op": "Eq", "to": 3 } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Replicate": "{3}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

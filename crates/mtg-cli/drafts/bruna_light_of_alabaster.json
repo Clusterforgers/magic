@@ -1,0 +1,73 @@
+{
+  "oracle_id": "e8f213eb-58db-4fab-bd0b-2acfd0a86ac3",
+  "name": "Bruna, Light of Alabaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bruna, Light of Alabaster",
+      "oracle_fingerprint": "7ffcaee094103d8fa23b7acbcc7433f0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      "CanEnchantSource",
+                      { "Not": { "AttachedTo": "This" } }
+                    ]
+                  },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [{ "Attach": { "what": { "Bound": "each" }, "to": "This" } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      "CanEnchantSource",
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Subtype": "Aura" },
+                        "CanEnchantSource",
+                        { "OwnedBy": "You" },
+                        { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                      ]
+                    }
+                  },
+                  "as": "picked2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked2" },
+                  "to": { "BattlefieldAttached": { "to": "This" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "640c0424-b862-438f-a527-ff606151040a",
+  "name": "Ghoulflesh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghoulflesh",
+      "oracle_fingerprint": "f3136d838b5658b5ccef063d36e3970c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": -1, "toughness": -1 } },
+              { "AddColors": ["Black"] },
+              { "AddSubtype": "Zombie" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

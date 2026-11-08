@@ -1,0 +1,32 @@
+{
+  "oracle_id": "90109cb4-1e16-4d54-9332-b5fb1e71042c",
+  "name": "Ravenous Necrotitan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Necrotitan",
+      "oracle_fingerprint": "3e33781472843e8db801f7f6e4be24ad",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                      "op": "Lt",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

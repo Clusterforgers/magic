@@ -1,0 +1,49 @@
+{
+  "oracle_id": "5f67698a-28db-43cd-aaf1-52371b0b47eb",
+  "name": "Temporal Cleansing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Cleansing",
+      "oracle_fingerprint": "deba71db00b592258443c6448bf56785",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Second from the top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": { "Below": 1 } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

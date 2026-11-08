@@ -1,0 +1,33 @@
+{
+  "oracle_id": "df8fe368-00eb-42fa-89d6-794fc61f8f8c",
+  "name": "Unholy Indenture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unholy Indenture",
+      "oracle_fingerprint": "7d468f832616216fefbe7a438c01affb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "under": "You", "counters": [["+1/+1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -18,7 +18,7 @@ fn may_move(effects: &[Effect], to: &Destination) -> bool {
     matches!(
         effects,
         [Effect::May { who: Ref::You, effects }]
-            if matches!(effects.as_slice(), [Effect::Move { what: Ref::Target(0), to: found }] if found == to)
+            if matches!(effects.as_slice(), [Effect::Move { what: Ref::Target(0), to: found, .. }] if found == to)
     )
 }
 

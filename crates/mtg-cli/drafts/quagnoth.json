@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9250eb9e-690f-4563-8132-d737f6d22883",
+  "name": "Quagnoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quagnoth",
+      "oracle_fingerprint": "9e834ae8d1a4e635544b4096bf452ec2",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        { "Keyword": "Shroud" },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": { "inner": { "Discarded": { "what": ["This"] } }, "by": "Opponents" }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

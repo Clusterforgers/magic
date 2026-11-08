@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bc0da02c-2b85-4ddc-9ce0-63934dd14164",
+  "name": "Sozin's Comet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sozin's Comet",
+      "oracle_fingerprint": "01c5eb2a895635adf8297429c7bec964",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": { "Macro": { "name": "firebending", "amount": 5 } } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{2}{R}" } }
+      ]
+    }
+  ]
+}

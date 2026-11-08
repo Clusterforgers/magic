@@ -1,0 +1,43 @@
+{
+  "oracle_id": "7a80212a-aae3-483b-abb6-7271a62dff8a",
+  "name": "Gandalf, White Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gandalf, White Rider",
+      "oracle_fingerprint": "ccaafed59a10fffd8b29f9803ed59a75",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": { "Below": 4 } } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

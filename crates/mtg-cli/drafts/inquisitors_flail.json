@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a89ae357-b5aa-4256-beb3-a2e5e7f43200",
+  "name": "Inquisitor's Flail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inquisitor's Flail",
+      "oracle_fingerprint": "2b602305c16eb927cd6ebf47a477ea18",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": [{ "Type": "Creature" }, { "Is": "Attached" }], "combat": true }
+            },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "Attached",
+                "source": [{ "Type": "Creature" }, "Other"],
+                "combat": true
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

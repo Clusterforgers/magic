@@ -1,0 +1,156 @@
+{
+  "oracle_id": "16d40f56-691b-42a7-a5ab-157568921e03",
+  "name": "Ral, Monsoon Mage // Ral, Leyline Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ral, Monsoon Mage",
+      "oracle_fingerprint": "0de355e6436bcccacf32cc72d70e404d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    { "May": { "effects": [{ "Exile": { "what": "This", "as": "exiled" } }] } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "transformed": true } }
+                      }
+                    }
+                  ],
+                  "lose": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ral, Leyline Prodigy",
+      "oracle_fingerprint": "8894a85fbcf310c85ef056e861c55f92",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "loyalty",
+                "count": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": [
+                        "Spell",
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        { "ControlledBy": "You" }
+                      ],
+                      "change": "Reduce",
+                      "mana": "{1}"
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 2 }, "divide": 2 }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }, "Other"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              { "ExileTop": { "count": 8, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [
+                        {
+                          "AnyOf": [
+                            {
+                              "Not": {
+                                "AnyOf": [
+                                  { "Not": { "Type": "Instant" } },
+                                  { "Not": { "Is": { "Bound": "exiled" } } }
+                                ]
+                              }
+                            },
+                            { "Type": "Sorcery" }
+                          ]
+                        }
+                      ],
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

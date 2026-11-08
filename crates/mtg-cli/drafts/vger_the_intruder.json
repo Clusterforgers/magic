@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f50ec16b-13f5-4e20-ae09-9c7dee9d223b",
+  "name": "V'Ger, the Intruder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "V'Ger, the Intruder",
+      "oracle_fingerprint": "0ab8a5188612a231540478c16a9fdb58",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }, { "Draw": {} }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                            "duration": "UntilYourNextTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

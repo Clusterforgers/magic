@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6299d18e-a6a7-414c-85c0-d57a8e7d2627",
+  "name": "Passionate Archaeologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Passionate Archaeologist",
+      "oracle_fingerprint": "1233a0c4c7a757642ccfb6e5137904e6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }], "by": "You" }
+                    },
+                    "targets": [{ "what": "Opponent" }],
+                    "effects": [
+                      {
+                        "DealDamage": {
+                          "to": { "Target": 0 },
+                          "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

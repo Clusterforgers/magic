@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d78654fc-7d90-40ce-9c36-a211424d1a88",
+  "name": "Cover of Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cover of Darkness",
+      "oracle_fingerprint": "73e07a6ba578882ec327a9a920cae6a4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "ChosenSubtype"] },
+            "mods": [{ "AddKeyword": "Fear" }]
+          }
+        }
+      ]
+    }
+  ]
+}

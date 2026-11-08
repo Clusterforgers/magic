@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1b94ee87-a2f4-47f1-9fc7-4a167cad1b3b",
+  "name": "Shinestriker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shinestriker",
+      "oracle_fingerprint": "35aef845c6adfd235678000ac1ca123d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

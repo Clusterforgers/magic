@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "ddc2386e-18a4-49f0-9c08-da870dc6f96e",
+  "oracle_id": "5a824aff-52fe-4402-b074-884afb5286d4",
+  "multiverse_ids": [],
+  "resource_id": "954C53CC16BF0F04730F786BE0DC2F568BEC36D6D91954BAC9CFE8B15A3AC15B",
+  "tcgplayer_id": 646025,
+  "cardmarket_id": 839918,
+  "name": "Amazing Alliance",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/ddc2386e-18a4-49f0-9c08-da870dc6f96e",
+  "scryfall_uri": "https://scryfall.com/card/spe/2/amazing-alliance?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:16:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.jpg?1783905375",
+    "normal": "https://cards.scryfall.io/normal/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.jpg?1783905375",
+    "large": "https://cards.scryfall.io/large/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.jpg?1783905375",
+    "png": "https://cards.scryfall.io/png/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.png?1783905375",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.jpg?1783905375",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.jpg?1783905375",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.webp?1783905375",
+    "grid": "https://cards.scryfall.io/grid/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.webp?1783905375",
+    "display": "https://cards.scryfall.io/display/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.webp?1783905375",
+    "art": "https://cards.scryfall.io/art/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.webp?1783905375",
+    "crop": "https://cards.scryfall.io/crop/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.webp?1783905375",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/d/ddc2386e-18a4-49f0-9c08-da870dc6f96e.jpg?1783905375"
+  },
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control get +1/+1.\nWhenever you attack with one or more legendary creatures, you gain that much life.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set": "spe",
+  "set_name": "Marvel's Spider-Man Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ddc2386e-18a4-49f0-9c08-da870dc6f96e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5a824aff-52fe-4402-b074-884afb5286d4&unique=prints",
+  "collector_number": "2",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"You know, we should really do this more often.\"\n—Spider-Man, Peter Parker",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Filipe Pagliuso",
+  "artist_ids": [
+    "64c537b4-a864-4051-9a24-fbdd22cb40b4"
+  ],
+  "illustration_id": "bb0f0527-c658-4ab5-aeb5-05a7367b45e2",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11509,
+  "prices": {
+    "usd": "3.69",
+    "usd_foil": "4.42",
+    "usd_etched": null,
+    "eur": "1.63",
+    "eur_foil": "2.56",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAmazing%2BAlliance",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAmazing%2BAlliance",
+    "edhrec": "https://edhrec.com/route/?cc=Amazing+Alliance"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F646025%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=839918&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Amazing+Alliance&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "oracle_id": "7cdc9df9-ac6c-49c7-a521-921588696b17",
+  "name": "Hedron Alignment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hedron Alignment",
+      "oracle_fingerprint": "5a0cbe5ed77df13a64f6afbc7c043d97",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Reveal": { "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Sum": [
+                                {
+                                  "Sum": [
+                                    {
+                                      "When": {
+                                        "condition": {
+                                          "Compare": {
+                                            "left": {
+                                              "Count": [
+                                                { "OwnedBy": "You" },
+                                                { "Not": "Token" },
+                                                { "Named": "Hedron Alignment" }
+                                              ]
+                                            },
+                                            "op": "Gt",
+                                            "right": 1
+                                          }
+                                        },
+                                        "then": 1,
+                                        "otherwise": {
+                                          "Count": [
+                                            { "OwnedBy": "You" },
+                                            { "Not": "Token" },
+                                            { "Named": "Hedron Alignment" }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "When": {
+                                        "condition": {
+                                          "Compare": {
+                                            "left": {
+                                              "Count": [
+                                                { "OwnedBy": "You" },
+                                                { "Named": "Hedron Alignment" },
+                                                { "In": "Hand" }
+                                              ]
+                                            },
+                                            "op": "Gt",
+                                            "right": 1
+                                          }
+                                        },
+                                        "then": 1,
+                                        "otherwise": {
+                                          "Count": [
+                                            { "OwnedBy": "You" },
+                                            { "Named": "Hedron Alignment" },
+                                            { "In": "Hand" }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Sum": [
+                                    {
+                                      "When": {
+                                        "condition": {
+                                          "Compare": {
+                                            "left": {
+                                              "Count": [
+                                                { "OwnedBy": "You" },
+                                                { "Named": "Hedron Alignment" },
+                                                { "In": "Graveyard" }
+                                              ]
+                                            },
+                                            "op": "Gt",
+                                            "right": 1
+                                          }
+                                        },
+                                        "then": 1,
+                                        "otherwise": {
+                                          "Count": [
+                                            { "OwnedBy": "You" },
+                                            { "Named": "Hedron Alignment" },
+                                            { "In": "Graveyard" }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "When": {
+                                        "condition": {
+                                          "Compare": {
+                                            "left": {
+                                              "Count": [
+                                                { "OwnedBy": "You" },
+                                                { "Named": "Hedron Alignment" },
+                                                { "In": "Exile" }
+                                              ]
+                                            },
+                                            "op": "Gt",
+                                            "right": 1
+                                          }
+                                        },
+                                        "then": 1,
+                                        "otherwise": {
+                                          "Count": [
+                                            { "OwnedBy": "You" },
+                                            { "Named": "Hedron Alignment" },
+                                            { "In": "Exile" }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "op": "Eq",
+                            "right": 4
+                          }
+                        },
+                        "then": [{ "WinGame": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{1}{U}", "effects": [{ "Scry": {} }] } }
+      ]
+    }
+  ]
+}

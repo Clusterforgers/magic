@@ -1,0 +1,37 @@
+{
+  "oracle_id": "77b7277d-90a1-4774-a998-8c35c3f94e4a",
+  "name": "Aspect of Wolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aspect of Wolf",
+      "oracle_fingerprint": "acb516e21efbda80e621188be266099d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Half": {
+                      "of": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                      "up": false
+                    }
+                  },
+                  "toughness": {
+                    "Half": {
+                      "of": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

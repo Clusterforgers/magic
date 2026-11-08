@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f4170db0-3adf-4744-b0ec-e889c713bb93",
+  "name": "Primeval Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primeval Force",
+      "oracle_fingerprint": "49c61f78e592a0f6839ac20952699a44",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Forest" }], "count": 3 } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "19a2f0a0-9e68-4982-a5f5-b77d805befd7",
+  "name": "Demonic Pact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Pact",
+      "oracle_fingerprint": "fc316e99661c2be38ae790d7ca24c3eb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+                        { "GainLife": { "amount": 4 } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+                    },
+                    { "effects": [{ "Draw": { "count": 2 } }] },
+                    { "effects": [{ "LoseGame": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "2d98d8d8-e277-42c4-bf94-dd7d7f2047c3",
+  "name": "Scandalmonger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scandalmonger",
+      "oracle_fingerprint": "1cec9e7d1f0814a0e3a26746f4dd9f1b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "timing": "Sorcery",
+            "by": "Anyone",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

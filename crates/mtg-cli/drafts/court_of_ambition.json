@@ -18,13 +18,45 @@
             "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
             "effects": [
               {
-                "If": {
-                  "condition": { "Monarch": "You" },
-                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 6 } }],
-                  "otherwise": [{ "LoseLife": { "who": "Opponents", "amount": 3 } }]
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": [
+                          {
+                            "Discard": {
+                              "count": {
+                                "When": {
+                                  "condition": { "Monarch": "You" },
+                                  "then": 2,
+                                  "otherwise": 1
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "unpaid": [
+                          {
+                            "LoseLife": {
+                              "who": { "Bound": "each" },
+                              "amount": {
+                                "When": {
+                                  "condition": { "Monarch": "You" },
+                                  "then": 6,
+                                  "otherwise": 3
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
-              },
-              { "If": { "condition": { "Monarch": "You" }, "then": [] } }
+              }
             ]
           }
         }

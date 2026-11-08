@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6",
+  "oracle_id": "a02ac6f9-7551-4f4b-b73e-fc5e9ffd90b0",
+  "multiverse_ids": [],
+  "name": "Preponderant Pearl",
+  "lang": "en",
+  "released_at": "2026-02-03",
+  "uri": "https://api.scryfall.com/cards/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6",
+  "scryfall_uri": "https://scryfall.com/card/yecl/5/preponderant-pearl?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:57:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.jpg?1783904260",
+    "normal": "https://cards.scryfall.io/normal/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.jpg?1783904260",
+    "large": "https://cards.scryfall.io/large/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.jpg?1783904260",
+    "png": "https://cards.scryfall.io/png/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.png?1783904260",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.jpg?1783904260",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.jpg?1783904260",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.webp?1783904260",
+    "grid": "https://cards.scryfall.io/grid/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.webp?1783904260",
+    "display": "https://cards.scryfall.io/display/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.webp?1783904260",
+    "art": "https://cards.scryfall.io/art/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.webp?1783904260",
+    "crop": "https://cards.scryfall.io/crop/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.webp?1783904260",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/c/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6.jpg?1783904260"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Kindred Artifact — Merfolk",
+  "oracle_text": "When this artifact enters, conjure a card named Ponder into your hand.\nWhenever one or more Merfolk you control deal combat damage to a player, sacrifice this artifact. If you do, conjure a card named Flooded Strand into your hand.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Conjure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b1951e0a-893c-4c89-93c7-601b579acb1d",
+      "component": "combo_piece",
+      "name": "Ponder",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/b1951e0a-893c-4c89-93c7-601b579acb1d"
+    },
+    {
+      "object": "related_card",
+      "id": "9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6",
+      "component": "combo_piece",
+      "name": "Preponderant Pearl",
+      "type_line": "Kindred Artifact — Merfolk",
+      "uri": "https://api.scryfall.com/cards/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6"
+    },
+    {
+      "object": "related_card",
+      "id": "b817ec56-51cb-42b0-a46b-914a6d4b5582",
+      "component": "combo_piece",
+      "name": "Flooded Strand",
+      "type_line": "Land",
+      "uri": "https://api.scryfall.com/cards/b817ec56-51cb-42b0-a46b-914a6d4b5582"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "1898a31a-88cb-48ef-9d6b-f91822e509b7",
+  "set": "yecl",
+  "set_name": "Alchemy: Lorwyn Eclipsed",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/1898a31a-88cb-48ef-9d6b-f91822e509b7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ayecl&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/yecl?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9ce9c2e1-3e8a-4b9a-8da6-7b7fc5a897f6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa02ac6f9-7551-4f4b-b73e-fc5e9ffd90b0&unique=prints",
+  "collector_number": "5",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Genel Jumalon",
+  "artist_ids": [
+    "a8062128-ec16-46da-90ac-b5cd29f18f9d"
+  ],
+  "illustration_id": "5127c4af-b25a-4724-b7ff-ab5582eb8d5c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPreponderant%2BPearl",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPreponderant%2BPearl",
+    "edhrec": "https://edhrec.com/route/?cc=Preponderant+Pearl"
+  }
+}

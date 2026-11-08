@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "1a516bce-3d2d-4e0f-afc7-27be3d88848c",
+  "oracle_id": "f18799c4-ec54-4435-be51-03ea25809289",
+  "multiverse_ids": [
+    214028
+  ],
+  "mtgo_id": 39483,
+  "mtgo_foil_id": 39484,
+  "tcgplayer_id": 39099,
+  "cardmarket_id": 245382,
+  "name": "Hero of Oxid Ridge",
+  "lang": "en",
+  "released_at": "2011-02-04",
+  "uri": "https://api.scryfall.com/cards/1a516bce-3d2d-4e0f-afc7-27be3d88848c",
+  "scryfall_uri": "https://scryfall.com/card/mbs/66/hero-of-oxid-ridge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:16:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.jpg?1783941379",
+    "normal": "https://cards.scryfall.io/normal/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.jpg?1783941379",
+    "large": "https://cards.scryfall.io/large/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.jpg?1783941379",
+    "png": "https://cards.scryfall.io/png/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.png?1783941379",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.jpg?1783941379",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.jpg?1783941379",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.webp?1783941379",
+    "grid": "https://cards.scryfall.io/grid/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.webp?1783941379",
+    "display": "https://cards.scryfall.io/display/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.webp?1783941379",
+    "art": "https://cards.scryfall.io/art/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.webp?1783941379",
+    "crop": "https://cards.scryfall.io/crop/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.webp?1783941379",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/a/1a516bce-3d2d-4e0f-afc7-27be3d88848c.jpg?1783941379"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Haste\nBattle cry (Whenever this creature attacks, each other attacking creature gets +1/+0 until end of turn.)\nWhenever this creature attacks, creatures with power 1 or less can't block this turn.",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Battle Cry",
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f46c57e3-9301-4006-a6ca-06f3f65961fb",
+  "set": "mbs",
+  "set_name": "Mirrodin Besieged",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/f46c57e3-9301-4006-a6ca-06f3f65961fb",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambs&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbs?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1a516bce-3d2d-4e0f-afc7-27be3d88848c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af18799c4-ec54-4435-be51-03ea25809289&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "mirran",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Deschamps",
+  "artist_ids": [
+    "37970e22-9cee-44c1-af44-5ee27cf26b76"
+  ],
+  "illustration_id": "88e3bfb0-5381-4e98-bdee-ea8a72e12e7f",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20382,
+  "penny_rank": 5673,
+  "prices": {
+    "usd": "0.57",
+    "usd_foil": "26.71",
+    "usd_etched": null,
+    "eur": "0.75",
+    "eur_foil": "2.40",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=214028&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHero%2Bof%2BOxid%2BRidge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHero%2Bof%2BOxid%2BRidge",
+    "edhrec": "https://edhrec.com/route/?cc=Hero+of+Oxid+Ridge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F39099%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=245382&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/39483?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

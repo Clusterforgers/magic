@@ -1,0 +1,46 @@
+{
+  "oracle_id": "cb660c6d-dc8b-4779-8613-6acf19418baa",
+  "name": "Security Bypass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Security Bypass",
+      "oracle_fingerprint": "001531c13e310e90605e0a5bdadf5f73",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }, "Attacking"] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, "Attacking", { "Not": { "Is": "Attached" } }]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "Connive": { "what": "This" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

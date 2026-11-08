@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f8d1fbec-6ec1-47fa-ba02-fcee906db0d7",
+  "name": "Festival of the Guildpact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Festival of the Guildpact",
+      "oracle_fingerprint": "5bd9292c19b42dc7283c994a34752d36",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "PreventCounted": "X" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

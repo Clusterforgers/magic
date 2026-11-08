@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d1edb950-a118-4b4d-a0ef-9a6683d74c9f",
+  "name": "Purple Dragon Punks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purple Dragon Punks",
+      "oracle_fingerprint": "f7366631fcc730231daac33d0520dac1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "only": [{ "Spell": { "types": ["Artifact"] } }, { "Ability": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

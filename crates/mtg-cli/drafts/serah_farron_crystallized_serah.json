@@ -1,0 +1,101 @@
+{
+  "oracle_id": "a8a7a3b7-015c-4fbd-8b90-e0ddf71663e4",
+  "name": "Serah Farron // Crystallized Serah",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serah Farron",
+      "oracle_fingerprint": "3a56d1cbf689bde389a4d664d81c9521",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Type": "Creature" },
+              { "Supertype": "Legendary" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    "Other",
+                    { "Supertype": "Legendary" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crystallized Serah",
+      "oracle_fingerprint": "007f443bd20266332618aad1ce81a5e6",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Type": "Creature" },
+              { "Supertype": "Legendary" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Supertype": "Legendary" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

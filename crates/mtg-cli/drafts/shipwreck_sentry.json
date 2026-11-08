@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f05575f8-4961-4780-83fc-3584d9146a14",
+  "name": "Shipwreck Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shipwreck Sentry",
+      "oracle_fingerprint": "a1327e2f72b98231fe9b239bae4a300c",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

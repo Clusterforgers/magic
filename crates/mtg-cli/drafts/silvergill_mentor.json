@@ -1,0 +1,40 @@
+{
+  "oracle_id": "dcf07f38-422f-46c3-aee9-50540b9c9115",
+  "name": "Silvergill Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silvergill Mentor",
+      "oracle_fingerprint": "1f3dd03a8197131949abc5917010763f",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "OneOf": [[{ "Behold": { "filter": [{ "Subtype": "Merfolk" }] } }], "{2}"] }],
+            "required": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Merfolk",
+                      "colors": ["White", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Merfolk"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

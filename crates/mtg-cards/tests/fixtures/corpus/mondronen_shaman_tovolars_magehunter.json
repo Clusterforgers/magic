@@ -1,0 +1,199 @@
+{
+  "object": "card",
+  "id": "b150d71f-11c9-40d6-a461-4967ef437315",
+  "oracle_id": "f94cb722-7e46-4569-b474-9654ecf7ec14",
+  "multiverse_ids": [
+    253433,
+    253429
+  ],
+  "mtgo_id": 43481,
+  "mtgo_foil_id": 43482,
+  "tcgplayer_id": 57603,
+  "cardmarket_id": 252486,
+  "name": "Mondronen Shaman // Tovolar's Magehunter",
+  "lang": "en",
+  "released_at": "2012-02-03",
+  "uri": "https://api.scryfall.com/cards/b150d71f-11c9-40d6-a461-4967ef437315",
+  "scryfall_uri": "https://scryfall.com/card/dka/98/mondronen-shaman-tovolars-magehunter?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:07:01Z",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Shaman Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Mondronen Shaman",
+      "mana_cost": "{3}{R}",
+      "type_line": "Creature — Human Shaman Werewolf",
+      "oracle_text": "At the beginning of each upkeep, if no spells were cast last turn, transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "power": "3",
+      "toughness": "2",
+      "flavor_text": "\"Tovolar, my master. Gather the howlpack, for the Hunter's Moon is nigh and Thraben's walls grow weak.\"",
+      "artist": "Mike Sass",
+      "artist_id": "155bc2cb-038d-4b1f-9990-6178db1d1a21",
+      "illustration_id": "7a2726a7-213e-469c-aca7-f19b251ca06e",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "normal": "https://cards.scryfall.io/normal/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "large": "https://cards.scryfall.io/large/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "png": "https://cards.scryfall.io/png/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.png?1783940821",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "thumb": "https://cards.scryfall.io/thumb/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "grid": "https://cards.scryfall.io/grid/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "display": "https://cards.scryfall.io/display/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "art": "https://cards.scryfall.io/art/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "crop": "https://cards.scryfall.io/crop/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "jpeg": "https://cards.scryfall.io/normal/front/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Tovolar's Magehunter",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "Whenever an opponent casts a spell, this creature deals 2 damage to that player.\nAt the beginning of each upkeep, if a player cast two or more spells last turn, transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "color_indicator": [
+        "R"
+      ],
+      "power": "5",
+      "toughness": "5",
+      "artist": "Mike Sass",
+      "artist_id": "155bc2cb-038d-4b1f-9990-6178db1d1a21",
+      "illustration_id": "2b3e804d-ec35-4cdd-8608-7216d7e4a934",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "normal": "https://cards.scryfall.io/normal/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "large": "https://cards.scryfall.io/large/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "png": "https://cards.scryfall.io/png/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.png?1783940821",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821",
+        "thumb": "https://cards.scryfall.io/thumb/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "grid": "https://cards.scryfall.io/grid/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "display": "https://cards.scryfall.io/display/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "art": "https://cards.scryfall.io/art/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "crop": "https://cards.scryfall.io/crop/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.webp?1783940821",
+        "jpeg": "https://cards.scryfall.io/normal/back/b/1/b150d71f-11c9-40d6-a461-4967ef437315.jpg?1783940821"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "825c61e7-bf33-45ea-af78-97ab3bc96753",
+      "component": "combo_piece",
+      "name": "Dark Ascension Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/825c61e7-bf33-45ea-af78-97ab3bc96753"
+    },
+    {
+      "object": "related_card",
+      "id": "b150d71f-11c9-40d6-a461-4967ef437315",
+      "component": "combo_piece",
+      "name": "Mondronen Shaman // Tovolar's Magehunter",
+      "type_line": "Creature — Human Shaman Werewolf // Creature — Werewolf",
+      "uri": "https://api.scryfall.com/cards/b150d71f-11c9-40d6-a461-4967ef437315"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8052750a-aaf2-46fc-b46d-633f14124017",
+  "set": "dka",
+  "set_name": "Dark Ascension",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8052750a-aaf2-46fc-b46d-633f14124017",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adka&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dka?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b150d71f-11c9-40d6-a461-4967ef437315/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af94cb722-7e46-4569-b474-9654ecf7ec14&unique=prints",
+  "collector_number": "98",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Mike Sass",
+  "artist_ids": [
+    "155bc2cb-038d-4b1f-9990-6178db1d1a21"
+  ],
+  "border_color": "black",
+  "frame": "2003",
+  "frame_effects": [
+    "sunmoondfc"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14418,
+  "penny_rank": 12540,
+  "prices": {
+    "usd": "0.55",
+    "usd_foil": "1.88",
+    "usd_etched": null,
+    "eur": "0.47",
+    "eur_foil": "2.03",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=253433&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMondronen%2BShaman%2B%252F%252F%2BTovolar%2527s%2BMagehunter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMondronen%2BShaman%2B%252F%252F%2BTovolar%2527s%2BMagehunter",
+    "edhrec": "https://edhrec.com/route/?cc=Mondronen+Shaman"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F57603%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=252486&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/43481?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

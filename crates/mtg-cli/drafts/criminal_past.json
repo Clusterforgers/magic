@@ -1,0 +1,42 @@
+{
+  "oracle_id": "54ad73d1-a17d-468c-a0ba-05c532a02cb2",
+  "name": "Criminal Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Criminal Past",
+      "oracle_fingerprint": "379dc70082005433f264cbd11aaacb0a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              { "AddKeyword": "Menace" },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "This",
+                    "mods": [
+                      {
+                        "ModifyPT": {
+                          "power": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          },
+                          "toughness": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

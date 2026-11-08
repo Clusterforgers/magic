@@ -1,0 +1,58 @@
+{
+  "oracle_id": "39f2a632-30d2-4b35-9e7f-fef27713a4f7",
+  "name": "Widow's Bite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Widow's Bite",
+      "oracle_fingerprint": "b00d4bd978ba66920aa8a7081055eae8",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 3 } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    },
+                    "max": {
+                      "When": { "condition": "AdditionalCostPaid", "then": 2, "otherwise": 1 }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Deathtouch" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

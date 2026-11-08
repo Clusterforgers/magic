@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2ca969eb-3d79-4d1f-8d9d-7b8204ad166a",
+  "name": "Starving Revenant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Starving Revenant",
+      "oracle_fingerprint": "0e6551aaf6cf36d533b203d5a5a79cca",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 125 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

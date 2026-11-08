@@ -1,0 +1,31 @@
+{
+  "oracle_id": "283bfc53-afd3-4d21-b7d5-5baba4232422",
+  "name": "Disa the Restless",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Disa the Restless",
+      "oracle_fingerprint": "b34aef15f0d2665d17c501eb9e86a34d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChangeExcept": {
+                "what": [{ "Subtype": "Lhurgoyf" }, { "OwnedBy": "You" }],
+                "except": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 133, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

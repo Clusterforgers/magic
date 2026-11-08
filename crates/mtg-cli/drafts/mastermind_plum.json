@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4605d8b3-b714-4717-8ff3-155fabfc1999",
+  "name": "Mastermind Plum",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mastermind Plum",
+      "oracle_fingerprint": "f47b6a699b61517ae8d8e85696f07953",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 226, "end": 335 }
+          }
+        }
+      ]
+    }
+  ]
+}

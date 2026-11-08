@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "2fea0356-6684-4730-9eb4-0262856bc1f9",
+  "oracle_id": "e31808bb-fb6e-487b-a973-db44961c84ee",
+  "multiverse_ids": [],
+  "resource_id": "1B80B8BB7934DC4EF26B3CE07C45B0CBDCA2B879D7D6E78AC2DE472E257CE129",
+  "mtgo_id": 145666,
+  "arena_id": 98279,
+  "tcgplayer_id": 648732,
+  "cardmarket_id": 842885,
+  "name": "The Cabbage Merchant",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/2fea0356-6684-4730-9eb4-0262856bc1f9",
+  "scryfall_uri": "https://scryfall.com/card/tle/134/the-cabbage-merchant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:06:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.jpg?1783904816",
+    "normal": "https://cards.scryfall.io/normal/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.jpg?1783904816",
+    "large": "https://cards.scryfall.io/large/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.jpg?1783904816",
+    "png": "https://cards.scryfall.io/png/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.png?1783904816",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.jpg?1783904816",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.jpg?1783904816",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.webp?1783904816",
+    "grid": "https://cards.scryfall.io/grid/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.webp?1783904816",
+    "display": "https://cards.scryfall.io/display/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.webp?1783904816",
+    "art": "https://cards.scryfall.io/art/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.webp?1783904816",
+    "crop": "https://cards.scryfall.io/crop/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.webp?1783904816",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/f/2fea0356-6684-4730-9eb4-0262856bc1f9.jpg?1783904816"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Citizen",
+  "oracle_text": "Whenever an opponent casts a noncreature spell, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nWhenever a creature deals combat damage to you, sacrifice a Food token.\nTap two untapped Foods you control: Add one mana of any color.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d0e54f01-1301-481f-ace0-87966b5135f0",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/d0e54f01-1301-481f-ace0-87966b5135f0"
+    },
+    {
+      "object": "related_card",
+      "id": "65ffb473-0a11-44c2-9311-f39d69eef713",
+      "component": "combo_piece",
+      "name": "The Cabbage Merchant",
+      "type_line": "Legendary Creature — Human Citizen",
+      "uri": "https://api.scryfall.com/cards/65ffb473-0a11-44c2-9311-f39d69eef713"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2fea0356-6684-4730-9eb4-0262856bc1f9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae31808bb-fb6e-487b-a973-db44961c84ee&unique=prints",
+  "collector_number": "134",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"My cabbages...\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Patrick Gañas",
+  "artist_ids": [
+    "8f2eb04d-c74c-46b7-9b5a-a7a501b00920"
+  ],
+  "illustration_id": "0ee46b1a-45a7-4ad8-8f09-d0d89be9f032",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2205,
+  "prices": {
+    "usd": "31.01",
+    "usd_foil": "30.79",
+    "usd_etched": null,
+    "eur": "26.80",
+    "eur_foil": "27.44",
+    "tix": "3.62"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BCabbage%2BMerchant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BCabbage%2BMerchant",
+    "edhrec": "https://edhrec.com/route/?cc=The+Cabbage+Merchant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F648732%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=842885&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145666?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

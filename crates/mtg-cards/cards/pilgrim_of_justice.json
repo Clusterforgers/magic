@@ -1,0 +1,39 @@
+{
+  "oracle_id": "959b672e-d4e4-49a1-874a-5148f040fadd",
+  "name": "Pilgrim of Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pilgrim of Justice",
+      "oracle_fingerprint": "3e34f346692e46ed1b58db833f24a6f1",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Red" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

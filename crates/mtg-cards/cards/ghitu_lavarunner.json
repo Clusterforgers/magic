@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8e3f4987-6f31-4bc5-8bcd-6adb0440ee7c",
+  "name": "Ghitu Lavarunner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghitu Lavarunner",
+      "oracle_fingerprint": "95bccb71bcd5ad2c61baa35d5d35b827",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

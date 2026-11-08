@@ -1,0 +1,52 @@
+{
+  "oracle_id": "1b162dd3-3be6-406d-bf86-f7cc9eff098d",
+  "name": "Eshki, Temur's Roar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eshki, Temur's Roar",
+      "oracle_fingerprint": "974e2d0983c8bfeabfb0196f30fcbadb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                      "op": "Ge",
+                      "right": 6
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": "Opponents",
+                        "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

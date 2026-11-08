@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bc1c2203-4cc6-4131-9d3c-6f3da88b97ce",
+  "name": "Spiteful Shadows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiteful Shadows",
+      "oracle_fingerprint": "8a9bcf74c2fed7439f9e12b9a948aa15",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "ControllerOf": "Triggering" },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

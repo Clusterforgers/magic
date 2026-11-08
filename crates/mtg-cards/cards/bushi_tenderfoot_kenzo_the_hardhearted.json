@@ -1,0 +1,33 @@
+{
+  "oracle_id": "82959ca2-cd96-4cca-9ce0-afb8db209860",
+  "name": "Bushi Tenderfoot // Kenzo the Hardhearted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bushi Tenderfoot",
+      "oracle_fingerprint": "dd5530f141f1d4dcee7830ad3def9125",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Flip": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kenzo the Hardhearted",
+      "oracle_fingerprint": "e8f8fd4230f7dc2d0ca09e553e844592",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 2 } } }
+      ]
+    }
+  ]
+}

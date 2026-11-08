@@ -1,0 +1,34 @@
+{
+  "oracle_id": "eb414a8f-566f-4635-80a1-77b2e18ac8dc",
+  "name": "Runaway Steam-Kin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runaway Steam-Kin",
+      "oracle_fingerprint": "0a3db6827598e555e05ac7ba652c17b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Red" }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "CounterCount": { "kind": "+1/+1", "op": "Le", "to": 2 } }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1", "count": 3 } }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

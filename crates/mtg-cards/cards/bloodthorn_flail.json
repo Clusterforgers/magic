@@ -1,0 +1,39 @@
+{
+  "oracle_id": "01ab7724-1967-4da6-aebd-3729983d6a0e",
+  "name": "Bloodthorn Flail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodthorn Flail",
+      "oracle_fingerprint": "8bb2918e3ad8aa28700a2cdd72584318",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "55332b21-32ab-43dd-8046-9568e2dba6ac",
+  "oracle_id": "873e739c-edf4-46a7-9024-5caaf87f507e",
+  "multiverse_ids": [],
+  "resource_id": "E391EB992FEB7A898C2BF16FCF36C8A0B6BF8BEF6955E083C8DB8124910903E0",
+  "mtgo_id": 151853,
+  "arena_id": 105712,
+  "tcgplayer_id": 697327,
+  "cardmarket_id": 892144,
+  "name": "Pick Up the Pace",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/55332b21-32ab-43dd-8046-9568e2dba6ac",
+  "scryfall_uri": "https://scryfall.com/card/msc/702/pick-up-the-pace?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.jpg?1783903046",
+    "normal": "https://cards.scryfall.io/normal/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.jpg?1783903046",
+    "large": "https://cards.scryfall.io/large/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.jpg?1783903046",
+    "png": "https://cards.scryfall.io/png/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.png?1783903046",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.jpg?1783903046",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.jpg?1783903046",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.webp?1783903046",
+    "grid": "https://cards.scryfall.io/grid/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.webp?1783903046",
+    "display": "https://cards.scryfall.io/display/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.webp?1783903046",
+    "art": "https://cards.scryfall.io/art/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.webp?1783903046",
+    "crop": "https://cards.scryfall.io/crop/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.webp?1783903046",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/5/55332b21-32ab-43dd-8046-9568e2dba6ac.jpg?1783903046"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature you control that entered this turn attacks, exile the top card of your library.\nYou may play cards exiled with this enchantment as long as you attacked this turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/55332b21-32ab-43dd-8046-9568e2dba6ac/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A873e739c-edf4-46a7-9024-5caaf87f507e&unique=prints",
+  "collector_number": "702",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Care for a little race, Tommy?\"\n—Quicksilver, Pietro Maximoff",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Irvin Rodriguez",
+  "artist_ids": [
+    "8143991c-e24c-490e-a9d4-a5464f14d25b"
+  ],
+  "illustration_id": "4536fdfe-41c2-4444-8071-4bb031eab1da",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 24908,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.49",
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": "0.39",
+    "tix": "0.86"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPick%2BUp%2Bthe%2BPace",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPick%2BUp%2Bthe%2BPace",
+    "edhrec": "https://edhrec.com/route/?cc=Pick+Up+the+Pace"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697327%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892144&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151853?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

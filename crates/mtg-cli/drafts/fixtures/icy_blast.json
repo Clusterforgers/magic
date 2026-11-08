@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "b098f029-6b5d-49e4-9a81-f497ebbdb5ce",
+  "oracle_id": "f49302c5-8510-4360-841c-a59f53f87e0b",
+  "multiverse_ids": [
+    386563
+  ],
+  "mtgo_id": 54314,
+  "mtgo_foil_id": 54315,
+  "arena_id": 58021,
+  "tcgplayer_id": 92981,
+  "cardmarket_id": 269323,
+  "name": "Icy Blast",
+  "lang": "en",
+  "released_at": "2014-09-26",
+  "uri": "https://api.scryfall.com/cards/b098f029-6b5d-49e4-9a81-f497ebbdb5ce",
+  "scryfall_uri": "https://scryfall.com/card/ktk/42/icy-blast?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:38:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.jpg?1783939087",
+    "normal": "https://cards.scryfall.io/normal/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.jpg?1783939087",
+    "large": "https://cards.scryfall.io/large/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.jpg?1783939087",
+    "png": "https://cards.scryfall.io/png/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.png?1783939087",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.jpg?1783939087",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.jpg?1783939087",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.webp?1783939087",
+    "grid": "https://cards.scryfall.io/grid/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.webp?1783939087",
+    "display": "https://cards.scryfall.io/display/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.webp?1783939087",
+    "art": "https://cards.scryfall.io/art/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.webp?1783939087",
+    "crop": "https://cards.scryfall.io/crop/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.webp?1783939087",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/0/b098f029-6b5d-49e4-9a81-f497ebbdb5ce.jpg?1783939087"
+  },
+  "mana_cost": "{X}{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Tap X target creatures.\nFerocious — If you control a creature with power 4 or greater, those creatures don't untap during their controllers' next untap steps.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Ferocious"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "6c7a715c-ded9-449e-89b0-c665773e9c3c",
+  "set": "ktk",
+  "set_name": "Khans of Tarkir",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/6c7a715c-ded9-449e-89b0-c665773e9c3c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aktk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ktk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b098f029-6b5d-49e4-9a81-f497ebbdb5ce/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af49302c5-8510-4360-841c-a59f53f87e0b&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "temur",
+  "flavor_text": "\"Do not think the sand or the sun will hold back the breath of winter.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Deschamps",
+  "artist_ids": [
+    "37970e22-9cee-44c1-af44-5ee27cf26b76"
+  ],
+  "illustration_id": "393432d3-54fc-47e6-8ba3-5bfae0fd80ef",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 7237,
+  "penny_rank": 12161,
+  "prices": {
+    "usd": "1.08",
+    "usd_foil": "2.04",
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": "0.80",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=386563&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIcy%2BBlast",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIcy%2BBlast",
+    "edhrec": "https://edhrec.com/route/?cc=Icy+Blast"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F92981%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=269323&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/54314?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

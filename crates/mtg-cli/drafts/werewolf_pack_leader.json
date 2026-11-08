@@ -1,0 +1,36 @@
+{
+  "oracle_id": "086a911f-9ed4-4260-ae46-58c9333b95f5",
+  "name": "Werewolf Pack Leader",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Werewolf Pack Leader",
+      "oracle_fingerprint": "eb73faf668633d641170ed33b143ae7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                  },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 134, "end": 242 }
+          }
+        }
+      ]
+    }
+  ]
+}

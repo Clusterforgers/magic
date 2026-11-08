@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a7c6f07c-3cc3-4271-bbc7-9f7d5bbed3e8",
+  "name": "Wheel and Deal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wheel and Deal",
+      "oracle_fingerprint": "629bae3a24daccffa4dd653457e03152",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Opponent", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              },
+              { "Draw": { "who": { "Target": 0 }, "count": 7 } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

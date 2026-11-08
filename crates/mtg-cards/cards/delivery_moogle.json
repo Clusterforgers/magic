@@ -1,0 +1,40 @@
+{
+  "oracle_id": "60043b87-6008-4cfa-9d8f-6ee6e3f70766",
+  "name": "Delivery Moogle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delivery Moogle",
+      "oracle_fingerprint": "879dd82318a389e0a17815cc8e6f9d98",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

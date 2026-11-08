@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3c032e74-69c6-48ca-95d4-51aa3d894c14",
+  "name": "Trusty Boomerang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trusty Boomerang",
+      "oracle_fingerprint": "13d2346ef026dfeb40620c1bd036a733",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{1}" }, "Tap"],
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      { "Tap": { "what": { "Target": 0 } } },
+                      { "Move": { "what": "Granter", "to": "Hand" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

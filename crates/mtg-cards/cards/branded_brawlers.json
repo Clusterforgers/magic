@@ -1,0 +1,50 @@
+{
+  "oracle_id": "e975a8b3-f817-42f3-84da-b03ebf95cf25",
+  "name": "Branded Brawlers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Branded Brawlers",
+      "oracle_fingerprint": "eefb44e23d2aa476d67a84fc6e9ffeae",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Not": {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Type": "Land" }, "Untapped", { "ControlledBy": "You" }]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }, "Untapped"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

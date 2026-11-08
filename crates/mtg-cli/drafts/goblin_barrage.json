@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0071723e-388d-4ae7-bc99-c143dd356c63",
+  "name": "Goblin Barrage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Barrage",
+      "oracle_fingerprint": "34ff0fd488aeef8033f3c5e8d941844e",
+      "abilities": [
+        {
+          "Keyword": {
+            "Kicker": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Subtype": "Goblin" }] }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [{ "DealDamage": { "to": { "Target": 1 }, "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

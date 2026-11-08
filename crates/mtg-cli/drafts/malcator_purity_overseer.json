@@ -1,0 +1,66 @@
+{
+  "oracle_id": "0d1c6a82-943a-46bd-97ed-6055226ef2ab",
+  "name": "Malcator, Purity Overseer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malcator, Purity Overseer",
+      "oracle_fingerprint": "835da469a547469f2913d2b593648d38",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Golem"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Golem"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

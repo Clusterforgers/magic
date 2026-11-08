@@ -1,0 +1,32 @@
+{
+  "oracle_id": "083ea8b0-ff2a-406e-90f1-668f33443747",
+  "name": "Ichor Shade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ichor Shade",
+      "oracle_fingerprint": "8800c0bf8bf1236ac858b2ab860e2d82",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

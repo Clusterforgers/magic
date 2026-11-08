@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6f78d21b-1959-4edc-9f28-d7ada539abef",
+  "name": "Thoughtpicker Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtpicker Witch",
+      "oracle_fingerprint": "3de055c9cd74601b02c9227d2ce7bc00",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Exile": { "what": { "Bound": "kept2" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

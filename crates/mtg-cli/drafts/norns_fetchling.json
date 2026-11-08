@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b613ab11-e173-4a68-8d0a-ac5f09a4db28",
+  "name": "Norn's Fetchling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norn's Fetchling",
+      "oracle_fingerprint": "44b0709ffca07eac930ea2f79ab54a49",
+      "abilities": [
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [{ "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }],
+                        "second": [{ "Conjure": { "name": "Plains", "zone": "Hand" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Conjure": { "name": "Plains", "zone": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -27,12 +27,20 @@
                 "at_least": 2
               }
             },
-            "if": {
-              "Not": {
-                "Matches": { "subject": "This", "selector": [{ "AttackingPlayer": "You" }] }
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": { "who": { "ControllerOf": "Triggering" } } }]
+                }
               }
-            },
-            "effects": [{ "Draw": {} }]
+            ]
           }
         }
       ]

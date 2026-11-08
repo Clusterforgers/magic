@@ -1,4 +1,5 @@
-//! `Effect::Encode`: the card of the resolving spell is exiled encoded on a creature (cipher, CR 702.99a).
+//! `Effect::Encode`: the card of the resolving spell is exiled encoded on a creature (cipher, CR 702.99a); `Effect::Haunt`:
+//! a card in a graveyard is exiled haunting a creature (CR 702.55a).
 
 use mtg_cards::effect::Effect;
 
@@ -16,6 +17,9 @@ use crate::zones::Zone;
 /// creature any more, and one the controller no longer controls pass the step with nothing done, so the card goes to the
 /// graveyard as an instant or sorcery does.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    if let Effect::Haunt { what, on } = effect {
+        return haunt(cx, what, on);
+    }
     let Effect::Encode { what, on } = effect else {
         return Err(wrong_effect("Encode"));
     };
@@ -48,6 +52,37 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// The first card `what` names that lies in a graveyard moves to exile with `ZoneCause::Haunting` naming the first
+/// creature of `on` on the battlefield, and the fold links them (haunt, CR 702.55a). A card that left its graveyard, and
+/// no creature, pass the step with nothing done.
+fn haunt(
+    cx: &Cx<'_>,
+    what: &mtg_cards::refs::Ref,
+    on: &mtg_cards::refs::Ref,
+) -> Result<Run, ResolveError> {
+    let state = cx.state();
+    let card =
+        cx.scope.live_objects(what)?.into_iter().find(|card| {
+            matches!(card.zone(), Zone::Graveyard(_)) && card.kind() == ObjectKind::Card
+        });
+    let creature = cx.scope.live_objects(on)?.into_iter().find(|creature| {
+        creature.zone() == Zone::Battlefield
+            && seen_as(state, creature.id()).is_some_and(|(chars, _)| chars.is_creature())
+    });
+    let events = match (card, creature) {
+        (Some(card), Some(creature)) => vec![Event::ZoneChanged {
+            object: card.id(),
+            from: card.zone(),
+            to: Zone::Exile,
+            cause: ZoneCause::Haunting {
+                of: creature.reference(),
+            },
+        }],
+        _ => Vec::new(),
+    };
+    Ok(Run::events(events))
 }
 
 #[cfg(test)]

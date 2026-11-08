@@ -1,0 +1,47 @@
+{
+  "oracle_id": "95b337ae-e15c-457d-bcc2-0c738cb94b1e",
+  "name": "Yuan-Ti Scaleshield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yuan-Ti Scaleshield",
+      "oracle_fingerprint": "dd74fcf846527feb309e844df946982d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "EachPlayer",
+                          "filter": [
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                            { "ControlledBy": "Opponents" }
+                          ]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Seek": { "filter": [{ "Type": "Creature" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

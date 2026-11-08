@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d69594fc-9250-41e7-a170-d4705615312c",
+  "name": "Quicksmith Rebel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksmith Rebel",
+      "oracle_fingerprint": "5da2edcf9e743041a3e220975263f28a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": "AnyTarget" }],
+                          "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6e5f50b2-0acc-42be-b9fd-32ea390c07fc",
+  "name": "Oracle of Dust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oracle of Dust",
+      "oracle_fingerprint": "971ddebe85e6a2b4686e3f992f525ff7",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

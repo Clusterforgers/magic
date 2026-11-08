@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "e468d528-6cf0-4563-9da2-e388ba56cb9d",
+  "oracle_id": "ab1379b7-0016-4d2a-a83b-952666e43b89",
+  "multiverse_ids": [],
+  "resource_id": "B17A58EC577CDA6A9B71A98C79446B0B647B75EE464E80EB577FAEC77E2FF6C1",
+  "mtgo_id": 142827,
+  "arena_id": 96681,
+  "tcgplayer_id": 644284,
+  "cardmarket_id": 836319,
+  "name": "Hymn of the Faller",
+  "lang": "en",
+  "released_at": "2025-08-01",
+  "uri": "https://api.scryfall.com/cards/e468d528-6cf0-4563-9da2-e388ba56cb9d",
+  "scryfall_uri": "https://scryfall.com/card/eoe/107/hymn-of-the-faller?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:26:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.jpg?1783905964",
+    "normal": "https://cards.scryfall.io/normal/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.jpg?1783905964",
+    "large": "https://cards.scryfall.io/large/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.jpg?1783905964",
+    "png": "https://cards.scryfall.io/png/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.png?1783905964",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.jpg?1783905964",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.jpg?1783905964",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.webp?1783905964",
+    "grid": "https://cards.scryfall.io/grid/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.webp?1783905964",
+    "display": "https://cards.scryfall.io/display/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.webp?1783905964",
+    "art": "https://cards.scryfall.io/art/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.webp?1783905964",
+    "crop": "https://cards.scryfall.io/crop/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.webp?1783905964",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/4/e468d528-6cf0-4563-9da2-e388ba56cb9d.jpg?1783905964"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Surveil 1, then you draw a card and lose 1 life. (To surveil 1, look at the top card of your library. You may put it into your graveyard.)\nVoid — If a nonland permanent left the battlefield this turn or a spell was warped this turn, draw another card.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Surveil",
+    "Void"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "452951cf-378b-4472-b7fe-572fe2af2ac0",
+  "set": "eoe",
+  "set_name": "Edge of Eternities",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/452951cf-378b-4472-b7fe-572fe2af2ac0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eoe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e468d528-6cf0-4563-9da2-e388ba56cb9d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aab1379b7-0016-4d2a-a83b-952666e43b89&unique=prints",
+  "collector_number": "107",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Does truth lie in the void between stanzas?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Danny Schwartz",
+  "artist_ids": [
+    "48e30a4a-5b4d-48e2-9c53-03125085374e"
+  ],
+  "illustration_id": "36700405-b3c5-45db-8ab2-ac0222f65125",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12095,
+  "penny_rank": 9439,
+  "preview": {
+    "source": "ScreenHub",
+    "source_uri": "https://www.screenhub.com.au/news/features/mtg-edge-of-eternities-preview-2672547/",
+    "previewed_at": "2025-07-16"
+  },
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.32",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHymn%2Bof%2Bthe%2BFaller",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHymn%2Bof%2Bthe%2BFaller",
+    "edhrec": "https://edhrec.com/route/?cc=Hymn+of+the+Faller"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F644284%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=836319&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/142827?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

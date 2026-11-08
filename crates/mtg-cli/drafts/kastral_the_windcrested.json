@@ -1,0 +1,74 @@
+{
+  "oracle_id": "ced5fe9a-4237-4c89-9dd6-b133b966ebcc",
+  "name": "Kastral, the Windcrested",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kastral, the Windcrested",
+      "oracle_fingerprint": "c7be3c6fdf2d85fb63d82bcac533a598",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Bird" },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "Subtype": "Bird" },
+                                { "OwnedBy": "You" },
+                                { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 1 },
+                            "as": "picked"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "picked" },
+                            "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Each": [{ "Subtype": "Bird" }, { "ControlledBy": "You" }] },
+                            "counter": "+1/+1"
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

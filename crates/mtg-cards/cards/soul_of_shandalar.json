@@ -1,0 +1,79 @@
+{
+  "oracle_id": "ac96d27c-dbae-4094-9209-3ef143f64713",
+  "name": "Soul of Shandalar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul of Shandalar",
+      "oracle_fingerprint": "9463855e545457a9a2677370d7db8bbd",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": "{3}{R}{R}",
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "ControlledBy": { "Target": 0 } },
+                        { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}{R}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "ControlledBy": { "Target": 0 } },
+                        { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

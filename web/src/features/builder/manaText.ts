@@ -7,7 +7,7 @@ const COLOR_OF: Readonly<Record<string, Color>> = { W: 'White', U: 'Blue', B: 'B
 const colorOf = (letter: string | undefined): Color | undefined =>
   letter !== undefined && Object.hasOwn(COLOR_OF, letter) ? COLOR_OF[letter] : undefined
 
-// The shapes of CR 107.4 that the engine's `ManaSymbol` has; anything else (X, snow) is drawn as a plain disc.
+// The shapes of CR 107.4 that the engine's `ManaSymbol` has; anything else (X) is drawn as a plain disc.
 function symbolOf(text: string): ManaSymbol | null {
   if (/^\d{1,2}$/.test(text)) return { Generic: Number(text) }
   const [a, b, c, ...rest] = text.split('/')
@@ -16,6 +16,7 @@ function symbolOf(text: string): ManaSymbol | null {
   const second = colorOf(b)
   if (b === undefined) {
     if (a === 'C') return 'Colorless'
+    if (a === 'S') return 'Snow'
     return first === undefined ? null : { Colored: first }
   }
   if (c === undefined) {

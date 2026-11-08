@@ -1,0 +1,31 @@
+{
+  "oracle_id": "05a1e1ee-67f0-4158-a012-01612bc9cc70",
+  "name": "Infernal Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Rebirth",
+      "oracle_fingerprint": "cff7925716f69a1289b4dda311dc90ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 1, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Supertype": "Basic" }], "cost": "{2}" }
+          }
+        }
+      ]
+    }
+  ]
+}

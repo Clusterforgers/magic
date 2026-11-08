@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f1352a81-6fd5-4c4d-ada4-b81d3a9f74c0",
+  "name": "Dagger Caster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dagger Caster",
+      "oracle_fingerprint": "8b46cde412059c45fc2f2c821c43e6c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

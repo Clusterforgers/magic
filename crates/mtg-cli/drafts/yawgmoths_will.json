@@ -1,0 +1,37 @@
+{
+  "oracle_id": "322f0459-f394-44f0-977b-55fd0cbe0712",
+  "name": "Yawgmoth's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yawgmoth's Will",
+      "oracle_fingerprint": "26e7c703882ada1b570db63eecb4158e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Graveyard", "play": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Not": "Token" }, { "OwnedBy": "You" }],
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

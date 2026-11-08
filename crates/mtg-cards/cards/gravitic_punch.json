@@ -1,0 +1,31 @@
+{
+  "oracle_id": "90ea4c57-e0ff-4697-912c-c6e2dc873529",
+  "name": "Gravitic Punch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravitic Punch",
+      "oracle_fingerprint": "aa91fd18c70574a2878ce44a6e5880b2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": "Player" }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "JumpStart" }
+      ]
+    }
+  ]
+}

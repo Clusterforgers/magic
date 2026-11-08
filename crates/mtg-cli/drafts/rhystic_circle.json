@@ -1,0 +1,51 @@
+{
+  "oracle_id": "bffb7d30-b9a4-4529-a3fc-c82d6cd4b599",
+  "name": "Rhystic Circle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Circle",
+      "oracle_fingerprint": "b368c0396bb16bbcdc348820d8dee090",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{1}",
+                  "unpaid": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Stack" },
+                                { "In": "Command" }
+                              ]
+                            }
+                          ]
+                        },
+                        "as": "source"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

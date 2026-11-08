@@ -1,0 +1,57 @@
+{
+  "oracle_id": "acab4fa9-d9ab-4a89-a50f-0cee9d7ca0c3",
+  "name": "Archery Training",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archery Training",
+      "oracle_fingerprint": "888f79946f2c0d36c6b94cbb55195885",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "arrow" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                        }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "DealDamage": {
+                          "to": { "Target": 0 },
+                          "amount": {
+                            "Counters": { "on": "Granter", "counter": { "Other": "arrow" } }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

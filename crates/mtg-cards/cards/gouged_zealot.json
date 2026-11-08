@@ -1,0 +1,34 @@
+{
+  "oracle_id": "35b30274-bf8c-4d3c-b738-f9e62cdd5156",
+  "name": "Gouged Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gouged Zealot",
+      "oracle_fingerprint": "b957bbb6356d1b3f1df53f881fb1bdee",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

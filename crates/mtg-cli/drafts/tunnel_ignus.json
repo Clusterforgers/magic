@@ -1,0 +1,40 @@
+{
+  "oracle_id": "41353001-eba4-45b5-8dd2-09d49b63b6b1",
+  "name": "Tunnel Ignus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tunnel Ignus",
+      "oracle_fingerprint": "6591e476a6b76e78d1dbeee93caf8c65",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "Type": "Land" },
+                      { "ControlledBy": { "ControllerOf": "Triggering" } }
+                    ]
+                  }
+                },
+                "op": "Gt",
+                "right": 1
+              }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

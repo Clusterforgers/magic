@@ -1,0 +1,59 @@
+{
+  "oracle_id": "0c3d86b6-5dcd-4016-9b4a-d4f66b1e963f",
+  "name": "Yathan Roadwatcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yathan Roadwatcher",
+      "oracle_fingerprint": "a640bfe4f175b4100f95ff060731a34d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "WasCast": { "by": "You" } }, "This"],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

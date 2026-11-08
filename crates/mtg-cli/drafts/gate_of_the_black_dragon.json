@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0c4f9284-8b68-46c1-913c-9bd5b2653d06",
+  "name": "Gate of the Black Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate of the Black Dragon",
+      "oracle_fingerprint": "474fffe9eb15b7819a4e266eb76386ba",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}" }, "Tap"],
+            "limit": "OncePerGame",
+            "effects": [{ "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

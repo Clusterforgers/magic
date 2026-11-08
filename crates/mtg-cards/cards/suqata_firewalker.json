@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c9c0bb7e-8dfc-481c-80f7-b6652b63df39",
+  "name": "Suq'Ata Firewalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suq'Ata Firewalker",
+      "oracle_fingerprint": "fa7f38b17c444eff7f43ca823ebd2580",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "This", "action": { "BeTargeted": [{ "Color": "Red" }] } } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

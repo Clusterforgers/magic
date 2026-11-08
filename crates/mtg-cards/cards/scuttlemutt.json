@@ -1,0 +1,35 @@
+{
+  "oracle_id": "564c785b-c2fb-4857-a5bf-a14ae2cf6c93",
+  "name": "Scuttlemutt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scuttlemutt",
+      "oracle_fingerprint": "0f5cab463caee99092d04a8602f41616",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Colors", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

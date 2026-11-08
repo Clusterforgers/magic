@@ -1,0 +1,20 @@
+{
+  "oracle_id": "94d5c904-6504-4df2-b242-daf88a988475",
+  "name": "The Pandorica",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Pandorica",
+      "oracle_fingerprint": "0feb4a37592b27441ce943f4a25ea855",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 318 }
+          }
+        }
+      ]
+    }
+  ]
+}

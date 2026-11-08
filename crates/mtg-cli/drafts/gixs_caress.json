@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0180bed7-892a-4af9-ac4b-96c9cd4beb42",
+  "name": "Gix's Caress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gix's Caress",
+      "oracle_fingerprint": "7ad204c69a60d414377ef6046356bfc4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              },
+              { "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

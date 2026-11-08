@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3901bf30-b7c1-4977-a7b1-fcdafcc266cd",
+  "name": "Chimney Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chimney Imp",
+      "oracle_fingerprint": "50964cdf831120e2b6653f40dba8154e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

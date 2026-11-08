@@ -1,0 +1,82 @@
+{
+  "oracle_id": "29423a9a-31a6-4605-8b49-a75895038a3a",
+  "name": "Wick's Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wick's Patrol",
+      "oracle_fingerprint": "9d2e138c4221474ead473fa51067099a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [
+                                {
+                                  "ModifyPT": {
+                                    "power": {
+                                      "Times": {
+                                        "by": -1,
+                                        "of": {
+                                          "Greatest": {
+                                            "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                                            "stat": "ManaValue"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "toughness": {
+                                      "Times": {
+                                        "by": -1,
+                                        "of": {
+                                          "Greatest": {
+                                            "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                                            "stat": "ManaValue"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

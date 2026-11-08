@@ -1,0 +1,21 @@
+{
+  "oracle_id": "25b0876e-c995-486e-8536-6e68b76b9c86",
+  "name": "Voracious Tome-Skimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voracious Tome-Skimmer",
+      "oracle_fingerprint": "4dd304fcb17a1b8d0ba7639700743bd2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [{ "Pay": { "cost": [{ "PayLife": 1 }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

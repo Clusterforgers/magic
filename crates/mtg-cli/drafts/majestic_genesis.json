@@ -1,0 +1,83 @@
+{
+  "oracle_id": "15039c85-31e2-4a2b-82f8-2f8270ff9a00",
+  "name": "Majestic Genesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Majestic Genesis",
+      "oracle_fingerprint": "1fce51fb66b0fdcce7211d9e7c2a8707",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Greatest": {
+                      "of": [
+                        {
+                          "AnyOf": [
+                            {
+                              "Not": {
+                                "AnyOf": [
+                                  { "Not": "Commander" },
+                                  { "Not": { "OwnedBy": "You" } },
+                                  { "Not": { "In": "Battlefield" } }
+                                ]
+                              }
+                            },
+                            {
+                              "Not": {
+                                "AnyOf": [
+                                  { "Not": "Commander" },
+                                  { "Not": { "OwnedBy": "You" } },
+                                  { "Not": { "In": "Command" } }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

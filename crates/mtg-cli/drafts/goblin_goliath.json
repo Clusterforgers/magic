@@ -1,0 +1,49 @@
+{
+  "oracle_id": "131069a6-8f30-4caf-8934-3588837b5f7f",
+  "name": "Goblin Goliath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Goliath",
+      "oracle_fingerprint": "a8ad62d1a4a846ca74bab4906b2bca49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Players": "Opponents" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}" }, "Tap"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "Opponents", "source": [{ "ControlledBy": "You" }] } },
+                  "by": { "Multiply": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e69252a6-8c27-4af9-8cbe-11eb416a6a46",
+  "name": "Krosan Reclamation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krosan Reclamation",
+      "oracle_fingerprint": "ecfadf987f628bd512ac426449df78e1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{G}" } }
+      ]
+    }
+  ]
+}

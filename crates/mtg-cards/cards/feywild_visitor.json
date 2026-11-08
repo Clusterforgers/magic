@@ -1,0 +1,56 @@
+{
+  "oracle_id": "cbc93912-2c36-4554-9b42-1dcca059fbb5",
+  "name": "Feywild Visitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feywild Visitor",
+      "oracle_fingerprint": "cb8f14c0a62cf7944dcc85051f090641",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "Batch": {
+                        "DealsDamage": {
+                          "source": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "Not": "Token" }
+                          ],
+                          "to": "EachPlayer",
+                          "combat": true
+                        }
+                      }
+                    },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Faerie Dragon",
+                              "colors": ["Blue"],
+                              "types": ["Creature"],
+                              "subtypes": ["Faerie", "Dragon"],
+                              "power": 1,
+                              "toughness": 1,
+                              "abilities": [{ "Keyword": "Flying" }]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

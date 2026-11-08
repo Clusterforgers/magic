@@ -1,0 +1,58 @@
+{
+  "oracle_id": "4940783f-2534-41c1-b614-5dabb0dff405",
+  "name": "Animist's Might",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animist's Might",
+      "oracle_fingerprint": "141e2b6ae950430a2e10a66832ec791b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              {
+                "Targeting": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

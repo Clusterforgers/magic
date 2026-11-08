@@ -1,0 +1,55 @@
+{
+  "oracle_id": "3bc47eae-cf6f-4b5e-96e1-94a4f307f474",
+  "name": "Lost Days",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost Days",
+      "oracle_fingerprint": "114fe4c5d0f66d42efe3c8b3be986c72",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "kind": { "Options": ["Second from the top", "Bottom"] },
+                  "as": "way"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": { "Below": 1 } } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

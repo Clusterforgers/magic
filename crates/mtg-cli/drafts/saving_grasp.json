@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f7a4458a-7e8a-46bb-b62d-991c606c7a15",
+  "name": "Saving Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saving Grasp",
+      "oracle_fingerprint": "6b306aee78586b53fc3aa064bfc843bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Flashback": "{W}" } }
+      ]
+    }
+  ]
+}

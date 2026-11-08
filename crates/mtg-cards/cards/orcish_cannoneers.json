@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9ebf3eeb-1a1b-4b88-a760-887c2188d287",
+  "name": "Orcish Cannoneers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Cannoneers",
+      "oracle_fingerprint": "d97e8dd164e52a17f3f3a24c7c7ffb82",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": "You", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

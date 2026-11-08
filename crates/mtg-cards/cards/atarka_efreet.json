@@ -1,0 +1,21 @@
+{
+  "oracle_id": "177c1f2d-abb9-40ea-afe4-141b08fdeabb",
+  "name": "Atarka Efreet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atarka Efreet",
+      "oracle_fingerprint": "de51aed14b63acf65caae31f3e30ad60",
+      "abilities": [
+        { "Keyword": { "Megamorph": "{2}{R}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

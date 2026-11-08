@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f5bd96dd-0d1f-4923-a014-6c8dcb3b2266",
+  "name": "Compy Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Compy Swarm",
+      "oracle_fingerprint": "1eb41fea7e265c2252d413991578dc48",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": "This" } }, "tapped": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

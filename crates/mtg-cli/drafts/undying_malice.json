@@ -28,7 +28,7 @@
                           "effects": [
                             {
                               "Move": {
-                                "what": "Triggering",
+                                "what": "This",
                                 "to": {
                                   "Battlefield": { "tapped": true, "counters": [["+1/+1", 1]] }
                                 }

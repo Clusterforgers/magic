@@ -1,0 +1,37 @@
+{
+  "oracle_id": "f74888ee-5086-49a6-ae74-fd9894f46332",
+  "name": "Bright-Palm, Soul Awakener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bright-Palm, Soul Awakener",
+      "oracle_fingerprint": "8fbf05403ca3d48658f98c881299846c",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1 } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "37162c6e-ac31-4386-9d1e-76aa66070b35",
+  "name": "Angelic Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Favor",
+      "oracle_fingerprint": "3f2717e270f7924b14d42cb5f6195907",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        { "CastOnly": { "condition": "InCombat" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

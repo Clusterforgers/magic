@@ -78,6 +78,18 @@ impl Spend {
                 Zone::Stack => object.cast_from_graveyard(),
                 _ => false,
             };
+            traits.from_exile = match object.zone() {
+                Zone::Exile => true,
+                Zone::Stack => object
+                    .cast_record()
+                    .is_some_and(|(zone, _)| zone == mtg_cards::refs::ZoneKind::Exile),
+                _ => false,
+            };
+            traits.not_from_hand = match object.zone() {
+                Zone::Hand(_) => false,
+                Zone::Stack => !object.cast_from_hand(),
+                _ => true,
+            };
         }
         Spend {
             kind: SpendKind::Spell,
@@ -119,9 +131,13 @@ impl Spend {
 
     /// Activating an ability of `source`; `has_x` when its cost has {X}.
     pub fn for_ability(state: &GameState, source: ObjectId, has_x: bool) -> Self {
+        let mut traits = traits_of(state, source);
+        traits.on_battlefield = state
+            .object(source)
+            .is_some_and(|object| matches!(object.zone(), Zone::Battlefield));
         Spend {
             kind: SpendKind::Ability,
-            traits: traits_of(state, source),
+            traits,
             has_x,
         }
     }
@@ -138,8 +154,12 @@ impl Spend {
                     self.kind == SpendKind::Ability && filter.holds(&self.traits)
                 }
                 SpendOn::CostWithX => self.kind != SpendKind::Other && self.has_x,
+                SpendOn::OtherCosts => self.kind == SpendKind::Other,
                 // A rider limits nothing, so it neither allows nor refuses a payment.
-                SpendOn::When(_) => false,
+                SpendOn::When(_)
+                | SpendOn::Uncounterable(_)
+                | SpendOn::Snow
+                | SpendOn::Enters(_) => false,
             })
     }
 
@@ -149,8 +169,19 @@ impl Spend {
     }
 }
 
+/// The kind of a mana source that a filter of sources reads: its types, supertypes and subtypes as the game sees it now.
+pub(crate) fn source_kind(state: &GameState, id: ObjectId) -> SpendTraits {
+    let full = traits_of(state, id);
+    SpendTraits {
+        types: full.types,
+        supertypes: full.supertypes,
+        subtypes: full.subtypes,
+        ..SpendTraits::default()
+    }
+}
+
 /// What a restriction reads of the object: its types, supertypes, subtypes and number of colors as the game sees it now.
-fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
+pub(crate) fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
     let (Some(object), Some(chars)) = (state.object(id), characteristics(state, id)) else {
         return SpendTraits::default();
     };
@@ -166,6 +197,7 @@ fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
             subtypes.push(subtype);
         }
     }
+    let keywords = crate::keywords::keywords_of(state, id);
     SpendTraits {
         types: chars.types,
         supertypes: card.supertypes.iter().copied().collect(),
@@ -174,6 +206,10 @@ fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
         color_set: chars.colors,
         value: object.mana_value(),
         x_in_cost: card.x_in_cost > 0,
+        devoid: keywords.contains(&&mtg_cards::keyword::Keyword::Devoid),
+        flashback: keywords
+            .iter()
+            .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Flashback(_))),
         ..SpendTraits::default()
     }
 }
@@ -238,4 +274,10 @@ pub struct Spent {
     pub restricted: Vec<Restricted>,
     /// The sources the payment taps, in the order they are activated.
     pub steps: Vec<Step>,
+}
+
+/// The rider a snow source's mana carries (CR 107.4h): it pays for `{S}` and counts as snow mana spent.
+pub(crate) fn snow_rider(state: &GameState, source: ObjectId) -> Option<SpendOn> {
+    crate::characteristics::has_supertype(state, source, mtg_core::card::Supertype::Snow)
+        .then_some(SpendOn::Snow)
 }

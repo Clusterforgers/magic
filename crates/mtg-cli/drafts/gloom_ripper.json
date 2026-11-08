@@ -1,0 +1,110 @@
+{
+  "oracle_id": "78e1beca-840d-47b2-8759-cc31454fdf5a",
+  "name": "Gloom Ripper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gloom Ripper",
+      "oracle_fingerprint": "690b582baaf616ca9d27520b778daf4b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            {
+                              "AnyOf": [
+                                {
+                                  "Not": {
+                                    "AnyOf": [
+                                      { "Not": { "Subtype": "Elf" } },
+                                      { "Not": { "ControlledBy": "You" } },
+                                      { "Not": { "In": "Battlefield" } }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Not": {
+                                    "AnyOf": [
+                                      { "Not": { "Subtype": "Elf" } },
+                                      { "Not": { "OwnedBy": "You" } },
+                                      { "Not": { "In": "Graveyard" } }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": 0,
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [
+                                {
+                                  "AnyOf": [
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "Not": { "Subtype": "Elf" } },
+                                          { "Not": { "ControlledBy": "You" } },
+                                          { "Not": { "In": "Battlefield" } }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "Not": { "Subtype": "Elf" } },
+                                          { "Not": { "OwnedBy": "You" } },
+                                          { "Not": { "In": "Graveyard" } }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

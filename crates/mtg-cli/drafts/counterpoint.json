@@ -1,0 +1,55 @@
+{
+  "oracle_id": "dad4af15-5b26-417d-a41b-29e671e878f4",
+  "name": "Counterpoint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Counterpoint",
+      "oracle_fingerprint": "a2d7c3026595fe9429eb5123b8bee846",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "RememberValue": {
+                  "value": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Creature" },
+                          { "Type": "Instant" },
+                          { "Type": "Sorcery" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

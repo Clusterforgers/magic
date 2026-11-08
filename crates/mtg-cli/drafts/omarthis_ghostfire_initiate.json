@@ -1,0 +1,50 @@
+{
+  "oracle_id": "50676eba-a55a-4749-bb07-74a30e015781",
+  "name": "Omarthis, Ghostfire Initiate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omarthis, Ghostfire Initiate",
+      "oracle_fingerprint": "2ab91a960e1c11dc18fa8de89901d226",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": {
+                      "what": [
+                        { "Type": "Creature" },
+                        "Other",
+                        { "In": "Battlefield" },
+                        "Colorless"
+                      ],
+                      "counter": "+1/+1"
+                    }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Manifest": { "count": { "AnyCounters": "This" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

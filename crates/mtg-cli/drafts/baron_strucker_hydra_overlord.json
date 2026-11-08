@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c91e64d4-e687-4ccd-a56e-796cff6e052c",
+  "name": "Baron Strucker, HYDRA Overlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baron Strucker, HYDRA Overlord",
+      "oracle_fingerprint": "a3571867183d246d013e281c7f1aee19",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Villain" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Villain" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [{ "May": { "effects": [{ "Connive": { "what": "Triggering" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

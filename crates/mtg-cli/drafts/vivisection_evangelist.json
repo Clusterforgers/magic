@@ -1,0 +1,37 @@
+{
+  "oracle_id": "007f3b20-d58b-4986-8de8-9e419af88628",
+  "name": "Vivisection Evangelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivisection Evangelist",
+      "oracle_fingerprint": "970bc71c5caaf406ecb6706016fffa6f",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

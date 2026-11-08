@@ -1,0 +1,42 @@
+{
+  "oracle_id": "fd335b2f-e6a2-45ac-949e-a67278b21cb6",
+  "name": "Tinybones, Bauble Burglar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tinybones, Bauble Burglar",
+      "oracle_fingerprint": "e402db0028c66996a617a3ff42554ec1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "stash" } } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Not": { "OwnedBy": "You" } }, { "HasCounter": { "Other": "stash" } }],
+                "from": "Exile",
+                "play": true,
+                "spend_as": "AnyType"
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

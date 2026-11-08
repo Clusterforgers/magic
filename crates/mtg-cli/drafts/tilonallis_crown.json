@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fbc2f469-09a5-4641-b990-b483d5d15c0d",
+  "name": "Tilonalli's Crown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tilonalli's Crown",
+      "oracle_fingerprint": "56ec4bd2aa59a1a0795b95041c438a9d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "DealDamage": { "to": "Attached", "amount": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, { "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

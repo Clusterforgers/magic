@@ -1,0 +1,35 @@
+{
+  "oracle_id": "de4678f8-a441-4e4a-a339-9b62ebfb0100",
+  "name": "Vanguard of the Rose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanguard of the Rose",
+      "oracle_fingerprint": "fd26d49c01ece3c0de164afaf8b2d2cd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "867c5592-50d5-420c-ac71-50014bc390eb",
+  "name": "Barrow-Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barrow-Blade",
+      "oracle_fingerprint": "dca63f8de4e480ec08b770da7e3d8770",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }],
+                "by": [{ "Type": "Creature" }, { "Is": "Attached" }]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["LoseAbilities"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "by": [{ "Type": "Creature" }]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Dealer",
+                  "mods": ["LoseAbilities"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

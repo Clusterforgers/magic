@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1be58157-186e-48e4-b375-dc5f10d785ac",
+  "name": "Dormant Grove // Gnarled Grovestrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dormant Grove",
+      "oracle_fingerprint": "aec6c796ed5fafabd4bda293a6695fff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Toughness", "op": "Ge", "to": 6 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gnarled Grovestrider",
+      "oracle_fingerprint": "66ed2f0587d4332890476fd24d0a4a04",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        }
+      ]
+    }
+  ]
+}

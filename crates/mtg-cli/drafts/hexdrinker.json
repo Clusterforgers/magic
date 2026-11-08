@@ -1,0 +1,57 @@
+{
+  "oracle_id": "69bc2afd-9f53-47f2-b9c8-f12732784e10",
+  "name": "Hexdrinker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hexdrinker",
+      "oracle_fingerprint": "e37d5bb25587d5dee74af30f721ff685",
+      "abilities": [
+        { "Keyword": { "LevelUp": "{1}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": { "Protection": [{ "Type": "Instant" }] } }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "level" }, "op": "Ge", "to": 3 } },
+                    { "CounterCount": { "kind": { "Other": "level" }, "op": "Lt", "to": 8 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 6, "toughness": 6 } },
+              { "AddKeyword": { "Protection": [] } }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "level" }, "op": "Ge", "to": 8 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

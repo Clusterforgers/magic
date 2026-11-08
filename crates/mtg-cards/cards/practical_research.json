@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9110480b-a5d6-4cf8-a72c-dc1a50f11fac",
+  "name": "Practical Research",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Practical Research",
+      "oracle_fingerprint": "554de8ea66c6bdcb6c54d8c6a0892e4b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 4 } },
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Discard": {
+                        "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "63f05280-74de-4fe3-a507-07fb125685c0",
+  "name": "Dakra Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dakra Mystic",
+      "oracle_fingerprint": "99fefc387ce952d4640f8d745495aef8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "top" }, "to": "Graveyard", "as": "moved2" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": { "who": "EachPlayer" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

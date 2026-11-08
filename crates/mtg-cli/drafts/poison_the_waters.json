@@ -1,0 +1,55 @@
+{
+  "oracle_id": "2c9bf40b-ddcb-4f46-a81e-56b91dfc784f",
+  "name": "Poison the Waters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poison the Waters",
+      "oracle_fingerprint": "41e1d4c9a55e605346eeae19d4489a7d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }] },
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "filter": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                            ],
+                            "by": "You"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

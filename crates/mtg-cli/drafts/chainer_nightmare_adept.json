@@ -1,0 +1,62 @@
+{
+  "oracle_id": "14f6fcb0-bed4-4a38-b7df-1e438d81bedb",
+  "name": "Chainer, Nightmare Adept",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chainer, Nightmare Adept",
+      "oracle_fingerprint": "5fcc80e54d48791e1caf385078dbc011",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Type": "Creature" }, { "Not": { "Type": "Land" } }],
+                      "from": "Graveyard",
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" },
+                  {
+                    "AnyOf": [
+                      { "Not": { "WasCast": { "by": "You", "from": "Hand" } } },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "698098b8-b8e4-4e88-b13a-6b039579d192",
+  "name": "Ray Fillet, Man Ray",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ray Fillet, Man Ray",
+      "oracle_fingerprint": "fcc4478f3024022cca224b1af9fea00d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutagen",
+                      "types": ["Artifact"],
+                      "subtypes": ["Mutagen"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                            "timing": "Sorcery",
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [
+                              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "RemoveCounters": {
+                  "counter": "+1/+1",
+                  "from": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

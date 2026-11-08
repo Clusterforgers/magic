@@ -5,10 +5,15 @@ use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
 use crate::keyword::Keyword;
-use crate::value::{Amount, Cmp, CounterKind, StatKind};
+use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
+
+/// The slot of `Ref::Remembered` that holds what the source exiled (`Pred::ExiledWith` reads it).
+pub const EXILED_SLOT: &str = "exiled";
 
 /// A zone a selector or a pattern can name.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
 pub enum ZoneKind {
     /// The battlefield (the default place to look).
     #[default]
@@ -25,12 +30,24 @@ pub enum ZoneKind {
     Exile,
     /// The command zone.
     Command,
+    /// Outside the game (a sideboard): a Commander game has none, so nothing is ever found there.
+    Outside,
 }
 
 impl ZoneKind {
     /// Whether this is the default zone, so serialization can leave it out.
     pub const fn is_battlefield(&self) -> bool {
         matches!(self, ZoneKind::Battlefield)
+    }
+
+    /// The default zone a cast comes from.
+    pub const fn hand() -> ZoneKind {
+        ZoneKind::Hand
+    }
+
+    /// Whether this is a hand, the default zone of a cast.
+    pub const fn is_hand(&self) -> bool {
+        matches!(self, ZoneKind::Hand)
     }
 
     /// The default zone a search looks in.
@@ -60,11 +77,22 @@ pub enum Ref {
     Target(u8),
     /// The player or object the trigger event is about ("that creature", "that player").
     Triggering,
+    /// The player the trigger event is about, never the object it also holds ("that player" of an activation: damage to it spares the activated permanent).
+    TriggeringPlayer,
+    /// The first of the things the trigger event is about: the object that became a target (the spell or ability that targets it
+    /// and its controller follow it among the subjects, and `Dealer` names that spell or ability).
+    TriggeringFirst,
     /// The object that did what the trigger event is about: the source of the damage ("Whenever a Vampire you control deals
     /// combat damage to a player, put a +1/+1 counter on it"); nobody for an event with no such object.
     Dealer,
+    /// What the subject of the trigger event went against: the player, planeswalker or battle an attacker attacks, the
+    /// attacker a creature blocks; nobody for an event with no such thing.
+    Against,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,
+    /// The permanent whose static ability gave the source the ability being run ("this Equipment", "this Aura" in the
+    /// words the Equipment gives the creature); nobody for an ability the source has of its own, or once that permanent has left the battlefield.
+    Granter,
     /// The player the source is attached to ("enchanted player").
     AttachedPlayer,
     /// The monarch ("the monarch"); nobody while no player is the monarch.
@@ -74,24 +102,71 @@ pub enum Ref {
     /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
     Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it
-    /// attacks, or controls the planeswalker it attacks (CR 506.3); still named once the creature has left combat.
+    /// attacks, or controls the planeswalker it attacks (CR 506.3); still named once the creature has left combat. For
+    /// a source that is not attacking, every player but the active one during combat (CR 506.2, 802.2).
     Defending,
     /// The opponents of the controller that their creatures attacked this combat, directly or through a planeswalker
     /// ("each opponent you attacked this combat"); a creature that left combat still counts.
     Attacked,
     /// The player with the most life, or each of the players tied for it.
     MostLife,
+    /// The player whose turn it is; nobody once they have left the game.
+    ActivePlayer,
+    /// The player making the choice of an `Effect::Choose` whose candidates are worked out for each chooser ("each player
+    /// chooses a creature they control"); nobody anywhere else.
+    Chooser,
+    /// Inside the test of a `PlayersWhere`, the player whose ability asks it, while "you" is the player tested ("an
+    /// opponent who controls more lands than you"); the controller everywhere else.
+    Asker,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they
     /// have as the ability resolves, and none is named when the cost picks nothing.
     Paid,
+    /// The creatures tapped to help cast the spell the source is or became, with convoke (CR 702.51): "each creature that
+    /// convoked it"; none for a spell cast without convoking and once a creature has changed zones.
+    Convoked,
+    /// The object a static ability's change applies to, worked out for each such object ("for each other creature that shares a type with it").
+    Affected,
+    /// The object a `Pred::Test` is judging: "a creature you control with power greater than its base power".
+    Candidate,
+    /// The objects the source named by `on` remembers in `slot` (`Effect::Remember`; the slot `exiled` holds what the source
+    /// exiled), as the objects they are now: one that has changed zones since is another object and drops out.
+    Remembered {
+        /// The object whose memory is read.
+        on: Box<Ref>,
+        /// The name of the memory.
+        slot: String,
+    },
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
     /// The owner of the referenced object.
     OwnerOf(Box<Ref>),
+    /// The player the reference names, or the controller of the object it names ("target player or planeswalker" read as
+    /// that player or that planeswalker's controller).
+    OrController(Box<Ref>),
+    /// The object an object named one zone change ago has become, when it is now in this zone ("return it to the battlefield"
+    /// after it died): the same card one incarnation on (CR 400.7). Nobody when it moved twice, moved elsewhere or is gone.
+    Arrived {
+        /// The reference to the object as it was before it moved.
+        of: Box<Ref>,
+        /// The zone it must be in now.
+        zone: ZoneKind,
+    },
+    /// The objects `of` names as they were before they last moved (CR 400.7, 608.2h): "its controller" over permanents
+    /// an earlier step destroyed reads the controller they had. Each is named by what it was, as the resolution saw it
+    /// leave; one with no such record (it moved twice, or came from a hidden zone) is nobody.
+    Departed(Box<Ref>),
     /// Every object matching the selector when the effect runs.
     Each(Selector),
+    /// The players `who` names for whom the condition holds, each taken as "you" ("each opponent who lost life this turn",
+    /// "a player with seven or more cards in their graveyard"); nobody when it holds for none.
+    PlayersWhere {
+        /// The players tested.
+        who: Box<Ref>,
+        /// What must hold, written for "you".
+        test: Box<Condition>,
+    },
 }
 
 impl Ref {
@@ -144,8 +219,13 @@ pub enum Pred {
     SharesType(Ref),
     /// Shares a color with one of the objects the reference names ("that shares a color with it").
     SharesColor(Ref),
+    /// Is an Aura card that could enchant the source ("an Aura card in your hand that could enchant this creature", CR 303.4).
+    CanEnchantSource,
     /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
     XInCost,
+    /// Has a mana cost of exactly that many generic mana and nothing else ("with mana cost {1}"): `{0}` is a cost, no cost
+    /// is not, and a coloured, hybrid, Phyrexian or {X} symbol is another cost with the same mana value.
+    GenericCost(u32),
     /// Is a creature on the battlefield that some player goads (CR 701.15).
     Goaded,
     /// Has a permanent attached to it that matches the selector ("enchanted": `[{"Subtype":"Aura"}]`, "enchanted by an
@@ -154,18 +234,26 @@ pub enum Pred {
     /// Is a permanent attached to one of the objects the reference names ("Aura attached to it", "Equipment attached to
     /// equipped creature").
     AttachedTo(Ref),
-    /// Is a card exiled face down by one of the permanents the reference names, which has not left since (hideaway, CR 702.75a).
+    /// Is a card exiled by one of the permanents the reference names, which has not left since: face down by hideaway
+    /// (CR 702.75a), or by any effect of that permanent (CR 607.2a), read from its `exiled` memory.
     ExiledWith(Ref),
     /// Is a creature on the battlefield that one of the cards the reference names is encoded on, which has not left since (cipher, CR 702.99).
     EncodedWith(Ref),
+    /// Is the creature one of the cards the reference names haunts (CR 702.55b): the card lies in exile, exiled haunting
+    /// this creature as it then was; a creature that has died is judged as it last was on the battlefield.
+    HauntedBy(Ref),
     /// Is a creature tapped this turn to crew one of the Vehicles the reference names ("creature that crewed it this turn").
     Crewed(Ref),
     /// Is a creature tapped this turn to saddle one of the Mounts the reference names ("creature that saddled it this turn").
     Saddled(Ref),
     /// Entered the battlefield this turn, from anywhere and under any control (a token made this turn included).
     EnteredThisTurn,
+    /// Is a permanent that summoning sickness holds back from attacking and from {T} abilities (CR 302.6).
+    SummoningSick,
     /// Is a card in a graveyard that a mill put there this turn ("a land card in a graveyard that was milled this turn").
     MilledThisTurn,
+    /// Is a card with an Adventure (CR 715): a card of the Adventure layout, in any zone and on the stack as either half.
+    HasAdventure,
     /// Has the card type.
     Type(CardType),
     /// Has the supertype.
@@ -192,6 +280,16 @@ pub enum Pred {
     Monstrous,
     /// Is renowned (CR 702.112): a permanent on the battlefield that has become renowned since it entered.
     Renowned,
+    /// Is prepared: a permanent on the battlefield whose controller may cast a copy of the spell face of its card.
+    Prepared,
+    /// Is suspected (CR 701.60): a permanent on the battlefield that has been suspected and is not yet no longer suspected.
+    Suspected,
+    /// Is solved (CR 719.3): a Case on the battlefield that has been solved.
+    Solved,
+    /// Is a double-faced card (CR 712.1): a transforming or a modal double-faced card in any zone; a permanent that is a copy of one is not.
+    DoubleFaced,
+    /// Is transformed (CR 701.28): a transforming double-faced permanent with its back face up; a copy of one is not.
+    Transformed,
     /// Is paired with another creature (CR 702.95): a creature on the battlefield that a soulbond pairing holds.
     Paired,
     /// Is the creature paired with one of the objects the reference names (the partner: "each of those creatures" is `AnyOf` of `This` and `PairedWith(This)`).
@@ -200,6 +298,14 @@ pub enum Pred {
     Attacking,
     /// Is attacking the player, not a planeswalker of theirs ("attacking that player").
     AttackingPlayer(Ref),
+    /// Is attacking a planeswalker one of the players controls ("attacking you or a planeswalker you control" is `AnyOf`
+    /// of this and `AttackingPlayer`).
+    AttackingPlaneswalkerOf(Ref),
+    /// Is the only creature attacking ("attacking alone", CR 506.5).
+    AttackingAlone,
+    /// Is attacking the player or a planeswalker they control ("whenever an opponent attacks you and/or a planeswalker you
+    /// control").
+    AttackingPlayerOrPlaneswalker(Ref),
     /// Is blocking.
     Blocking,
     /// Is an attacking creature that no creature was declared to block, once its defending player has declared blockers (CR 509.1h).
@@ -214,16 +320,33 @@ pub enum Pred {
     CastFrom(ZoneKind),
     /// Has the keyword.
     HasKeyword(Keyword),
+    /// Has the keyword at any value of its parameter ("with toxic", "with cycling"); the name is Scryfall's spelling
+    /// (`Keyword::NAMES`).
+    HasKeywordNamed(String),
     /// Has at least one counter of the kind on it.
     HasCounter(CounterKind),
     /// Has at least one counter of any kind on it (CR 122.1).
     HasAnyCounter,
+    /// The number of counters of the kind on it compares to `to` ("three or more +1/+1 counters"); none at all counts as zero.
+    CounterCount {
+        /// The kind of counter counted.
+        kind: CounterKind,
+        /// The comparison of the number held with `to`.
+        op: Cmp,
+        /// The number compared with.
+        to: u32,
+    },
     /// Has exactly this card name.
     Named(String),
     /// Is the colour the controller of the source chose as the source entered the battlefield.
     ChosenColor,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
     ChosenSubtype,
+    /// Has the card name the controller of the source chose as the source entered the battlefield.
+    ChosenName,
+    /// Matches the value the resolution remembered under the name (`Effect::ChooseValue`): has the colour, the creature,
+    /// land or card type or the card name; a number or a word matches nothing.
+    ChosenAs(String),
     /// Its power, toughness, mana value or loyalty compares to the amount.
     Compare {
         /// The characteristic.
@@ -232,6 +355,15 @@ pub enum Pred {
         op: Cmp,
         /// The amount compared with.
         to: Amount,
+    },
+    /// Two amounts of the object compare: `Ref::Candidate` in them is the object itself ("power less than toughness").
+    Test {
+        /// The amount on the left.
+        left: Amount,
+        /// The comparison.
+        op: Cmp,
+        /// The amount on the right.
+        right: Amount,
     },
     /// A spell or ability on the stack with a target that matches the selector. A spell being cast reads the targets
     /// announced so far; the cost judged before any target holds it where some object in play matches.
@@ -242,18 +374,97 @@ pub enum Pred {
     AttackedThisTurn,
     /// Was dealt damage this turn by one of the objects the reference names (the object as it is now: one that left and came back is another).
     DamagedBy(Ref),
+    /// Was the object that did the event this turn ("creature that blocked this turn", "creature that dealt damage to you
+    /// this turn", "creature that attacked this combat"): the turn's records of the kind, with the object as the one
+    /// that did it (the dealer of damage, the attacker, the blocker, the source of an activated ability, the permanent
+    /// that got counters). A record of a hidden object names no one.
+    DidThisTurn {
+        /// The kind of event.
+        event: crate::value::TallyEvent,
+        /// The players it counts for (the controller of the dealer, the attacker, the blocker or the source; the player
+        /// who put the counters); anyone when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// What it was done to (the player or object damaged, attacked or blocked); anything when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        to: Option<Ref>,
+        /// Only in the combat phase now going on or the latest one.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        combat: bool,
+    },
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
     /// new object there (CR 400.7), and this finds it again by its card.
     SameCard(Ref),
+    /// Is the Ring-bearer of its controller (CR 701.54).
+    RingBearer,
     /// Is modified (CR 700.9): a permanent with a counter on it, an Equipment attached, or an Aura its controller controls attached.
     Modified,
     /// Lies face down: a face-down permanent, or a card exiled face down.
     FaceDown,
     /// A spell or ability on the stack with a target that is one of the players the reference names ("spell that targets you").
     TargetsPlayer(Ref),
+    /// A spell on the stack with at least `least` mana from sources of the kind spent to cast it ("if mana from a Treasure
+    /// was spent to cast it", "if three or more mana from creatures was spent to cast it").
+    SpentFrom {
+        /// The kind of source.
+        from: crate::spend::SpendFilter,
+        /// The fewest mana from such sources.
+        least: u32,
+    },
     /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
     /// put there from the battlefield this turn").
     GravedThisTurn,
+    /// Went into the zone it is in now this turn from a zone of the kind ("creature cards put into your graveyard from your
+    /// library this turn"); an object that moved again counts only for its latest move, and a token made there came from nowhere.
+    ArrivedFrom(ZoneKind),
+    /// Is a spell cast, or a permanent that entered as a spell cast, by one of the players `by` names (anyone when absent)
+    /// from the kind of zone `from` (anywhere when absent); a copy or a token was never cast.
+    WasCast {
+        /// The players who cast it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// The zone it was cast from.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        from: Option<ZoneKind>,
+    },
+    /// Is a spell, or a permanent that entered as a spell, cast for the alternative cost (kicked, flashed back, evoked).
+    CastWith(CastWay),
+    /// Is the top card of its owner's library.
+    TopOfLibrary,
+    /// Is the bottom card of its owner's library.
+    BottomOfLibrary,
+    /// Is the top card of its owner's graveyard.
+    TopOfGraveyard,
+    /// Is the topmost creature card of its owner's graveyard.
+    TopCreatureOfGraveyard,
+    /// Is an attacking creature blocked by one of the creatures the reference names.
+    BlockedBy(Ref),
+    /// Is a creature blocking one of the creatures the reference names.
+    Blocks(Ref),
+    /// Is a target of one of the spells or abilities on the stack the reference names.
+    TargetedBy(Ref),
+    /// Is a spell or ability on the stack with exactly one target (CR 115.7: "a spell with a single target").
+    SingleTarget,
+    /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
+    GreatestAmong {
+        /// The characteristic compared.
+        stat: StatKind,
+        /// The objects compared; the object itself counts when it matches.
+        group: Selector,
+    },
+    /// Has the least value of the characteristic among the objects the group selector matches (a tie counts for each).
+    LeastAmong {
+        /// The characteristic compared.
+        stat: StatKind,
+        /// The objects compared; the object itself counts when it matches.
+        group: Selector,
+    },
+    /// Is a card in exile with a time counter on it and suspend (CR 702.62).
+    Suspended,
+    /// Is a spell, or a permanent that entered as a spell, cast with at least one kicker cost paid (CR 702.33).
+    Kicked,
+    /// Is a spell, or a permanent that entered as a spell, cast with an additional cost paid (bargain, casualty, gift; CR 601.2b).
+    AdditionalCostPaid,
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.
@@ -277,6 +488,21 @@ impl Selector {
     }
 }
 
+/// What the targets chosen for one specification must have in common or differ in.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum TargetSet {
+    /// One player controls them all (owns them all, outside the battlefield).
+    SameController,
+    /// No two have one controller (owner, outside the battlefield).
+    DifferentControllers,
+    /// No two have one name.
+    DifferentNames,
+    /// No two have one mana value.
+    DifferentManaValues,
+    /// Their mana values add up to at most this ("with total mana value 3 or less").
+    TotalManaValueAtMost(Amount),
+}
+
 /// What a target can be.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -298,6 +524,29 @@ pub enum Targetable {
         players: Ref,
         /// What each may be, without the player.
         what: Selector,
+    },
+    /// Targets of `what` that together obey `rule` ("two target creatures controlled by the same player").
+    Together {
+        /// What each may be.
+        what: Box<Targetable>,
+        /// What the chosen targets share or differ in.
+        rule: TargetSet,
+    },
+    /// "Another target": what `what` allows except the targets chosen for the earlier specifications `earlier`,
+    /// players among them (CR 115.3).
+    Another {
+        /// What each may be.
+        what: Box<Targetable>,
+        /// The indices of the earlier specifications whose targets are left out.
+        earlier: Vec<u8>,
+    },
+    /// "Target creature of their choice": what `what` allows, chosen by the first player `who` names in turn order from
+    /// the controller, though the spell or ability of the controller targets it.
+    ChosenBy {
+        /// Who chooses.
+        who: Ref,
+        /// What may be chosen.
+        what: Box<Targetable>,
     },
 }
 
@@ -428,6 +677,34 @@ mod tests {
         r#"{"Not":{"HasCounter":"poison"}}"#
     )]
     fn predicates_over_counters_have_stable_json(#[case] value: Pred, #[case] json: &str) {
+        assert_eq!(serde_json::to_string(&value).unwrap(), json);
+        assert_eq!(serde_json::from_str::<Pred>(json).unwrap(), value);
+    }
+
+    #[rstest]
+    #[case::any_cast(Pred::WasCast { by: None, from: None }, r#"{"WasCast":{}}"#)]
+    #[case::cast_by_you_from_hand(
+        Pred::WasCast { by: Some(Ref::You), from: Some(ZoneKind::Hand) },
+        r#"{"WasCast":{"by":"You","from":"Hand"}}"#
+    )]
+    #[case::cast_with(Pred::CastWith(CastWay::Flashback), r#"{"CastWith":"Flashback"}"#)]
+    #[case::top(Pred::TopOfLibrary, r#""TopOfLibrary""#)]
+    #[case::bottom(Pred::BottomOfLibrary, r#""BottomOfLibrary""#)]
+    #[case::top_grave(Pred::TopOfGraveyard, r#""TopOfGraveyard""#)]
+    #[case::blocked_by(Pred::BlockedBy(Ref::This), r#"{"BlockedBy":"This"}"#)]
+    #[case::blocks(Pred::Blocks(Ref::This), r#"{"Blocks":"This"}"#)]
+    #[case::targeted_by(Pred::TargetedBy(Ref::Triggering), r#"{"TargetedBy":"Triggering"}"#)]
+    #[case::greatest(
+        Pred::GreatestAmong { stat: StatKind::Power, group: Selector(vec![Pred::Other]) },
+        r#"{"GreatestAmong":{"stat":"Power","group":["Other"]}}"#
+    )]
+    #[case::suspended(Pred::Suspended, r#""Suspended""#)]
+    #[case::kicked(Pred::Kicked, r#""Kicked""#)]
+    #[case::additional_cost_paid(Pred::AdditionalCostPaid, r#""AdditionalCostPaid""#)]
+    fn the_cast_library_combat_and_greatest_atoms_have_stable_json(
+        #[case] value: Pred,
+        #[case] json: &str,
+    ) {
         assert_eq!(serde_json::to_string(&value).unwrap(), json);
         assert_eq!(serde_json::from_str::<Pred>(json).unwrap(), value);
     }

@@ -35,7 +35,13 @@ export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks }: U
           <p className="min-w-0 text-base font-semibold break-words">{card.name}</p>
           <SupportMark support={card.support} />
           {fixMarks === undefined ? null : (
-            <FixMarkButton oracleId={card.oracleId} name={card.name} api={fixMarks} emphasis="prominent" />
+            <FixMarkButton
+              oracleId={card.oracleId}
+              name={card.name}
+              api={fixMarks}
+              emphasis="prominent"
+              support={card.support}
+            />
           )}
         </div>
         {showDecks ? (

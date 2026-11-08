@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e9a7dede-3968-4b0e-a707-419d46a6fec9",
+  "name": "Crosis's Catacombs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crosis's Catacombs",
+      "oracle_fingerprint": "1a83ac1d5a5b0d8950822140d213c211",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ReturnToHand": {
+                        "filter": [{ "Type": "Land" }, { "Not": { "Subtype": "Lair" } }]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

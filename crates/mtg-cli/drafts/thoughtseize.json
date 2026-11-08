@@ -1,0 +1,31 @@
+{
+  "oracle_id": "edd8d1e8-be43-4c38-bb3a-83081fbaf0b5",
+  "name": "Thoughtseize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtseize",
+      "oracle_fingerprint": "9db4202085457fc2e687c39a501f61ff",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              },
+              { "LoseLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c15e5e93-2eff-407d-ae75-437e36ef85ba",
+  "name": "Allies at Last",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Allies at Last",
+      "oracle_fingerprint": "7e6581c90c1c524f55c2e86b03fc372d",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Ally" }] } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

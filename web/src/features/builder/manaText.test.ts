@@ -22,7 +22,7 @@ describe('pipsOf', () => {
     ['{C/W}', [{ tone: 'colorless', split: 'white', text: 'C', text2: 'W' }]],
     ['{C/P}', [{ tone: 'colorless', text: 'ϕ', phyrexian: true }]],
     ['{X}{R}{R}', [{ tone: 'generic', text: 'X', name: 'X' }, { tone: 'red' }, { tone: 'red' }]],
-    ['{S}', [{ tone: 'generic', text: 'S', name: 'snow' }]],
+    ['{S}', [{ tone: 'colorless', text: 'S', name: 'mana from a snow source' }]],
     ['{HW}', [{ tone: 'generic', text: 'HW', name: 'HW' }]],
     ['{W/X}', [{ tone: 'generic', symbol: 'W/X' }]],
     ['{A/B/C/D}', [{ tone: 'generic', text: 'A/' }]],

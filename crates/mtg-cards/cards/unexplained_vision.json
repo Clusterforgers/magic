@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9f693483-f4df-497a-a6c7-fc269fc60ea8",
+  "name": "Unexplained Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unexplained Vision",
+      "oracle_fingerprint": "682b7ab9c2c7f90088417a9709384fd8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "ManaSpent": { "of": "Blue" } },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Scry": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

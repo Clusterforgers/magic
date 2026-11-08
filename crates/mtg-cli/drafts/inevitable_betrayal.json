@@ -14,14 +14,18 @@
             "effects": [
               {
                 "Search": {
-                  "filter": [{ "Type": "Creature" }, { "OwnedBy": { "Target": 0 } }],
-                  "as": "card"
+                  "of": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found"
                 }
               },
               {
-                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": { "under": "You" } } }
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
               },
-              { "Shuffle": {} }
+              { "Shuffle": { "who": { "Target": 0 } } }
             ]
           }
         }

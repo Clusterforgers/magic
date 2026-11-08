@@ -1,0 +1,54 @@
+{
+  "oracle_id": "6fc26faa-94a8-433f-8863-126c2d2e73b0",
+  "name": "Electrostatic Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electrostatic Bolt",
+      "oracle_fingerprint": "46fbce424f4649007e6f0f5b95763872",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "Type": "Creature" }, { "Type": "Artifact" }]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "Type": "Creature" }, { "Type": "Artifact" }]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

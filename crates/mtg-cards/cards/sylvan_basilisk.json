@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4f348e7a-fe13-4621-bd88-5d2fb5b597f2",
+  "name": "Sylvan Basilisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Basilisk",
+      "oracle_fingerprint": "e885faeb0d5abe211dd33cc2e2e83abb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "Destroy": { "what": "Dealer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

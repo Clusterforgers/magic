@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5e816472-561d-43d1-ad28-80a829e2a91a",
+  "name": "Iona, Shield of Emeria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iona, Shield of Emeria",
+      "oracle_fingerprint": "8b053252478366a58d4a62d3d4db8593",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "Opponents", "action": { "Cast": { "filter": ["ChosenColor"] } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

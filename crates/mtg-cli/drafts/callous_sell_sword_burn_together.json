@@ -1,0 +1,68 @@
+{
+  "oracle_id": "0e7405e3-e9e6-4213-a73f-e0c01a7d6721",
+  "name": "Callous Sell-Sword // Burn Together",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Callous Sell-Sword",
+      "oracle_fingerprint": "d0a3b51f1da3172fa96b757855e563cf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Burn Together",
+      "oracle_fingerprint": "99ef38b53bfa0824adf08798f42818c7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "Not": { "Is": { "Target": 0 } } }] },
+                    { "Object": [{ "Type": "Battle" }, { "Not": { "Is": { "Target": 0 } } }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Is": { "Target": 0 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

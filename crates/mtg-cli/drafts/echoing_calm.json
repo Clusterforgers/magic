@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d0bc217b-1149-4a33-a4a1-29e07597dc41",
+  "name": "Echoing Calm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echoing Calm",
+      "oracle_fingerprint": "e8041945e0329cb7d0d099ef2f3f9c9b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Enchantment" } },
+                                { "Not": { "Not": { "Is": { "Target": 0 } } } },
+                                { "Not": { "SharesName": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "53d7722a-b60b-4520-abce-f31b1e6bba00",
+  "name": "Armed Assailant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armed Assailant",
+      "oracle_fingerprint": "b52ae64e11dad475080dd3e05ce3143e",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Menace" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

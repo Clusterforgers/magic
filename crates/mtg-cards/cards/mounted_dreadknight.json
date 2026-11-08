@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b5e42be3-6bfc-4905-9237-cb8d53e2349e",
+  "name": "Mounted Dreadknight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mounted Dreadknight",
+      "oracle_fingerprint": "ab3a515af1166ecbcaad5b01a0bd1eae",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

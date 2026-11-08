@@ -1,0 +1,81 @@
+{
+  "oracle_id": "9f148f1f-53c5-477d-ba91-a2415db65adf",
+  "name": "Evershrike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evershrike",
+      "oracle_fingerprint": "8facf92401f2d860ac65a1d2d42d9b04",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }] }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}{W/B}{W/B}",
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": {} } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      "CanEnchantSource",
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "BattlefieldAttached": { "to": "This" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Subtype": "Aura" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Exile": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

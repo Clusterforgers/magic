@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a896cedb-f10a-48ac-82e7-6ae1e8b5a439",
+  "name": "Dwarven Scorcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Scorcher",
+      "oracle_fingerprint": "199cc7f9f7e235f6644a3252e6354e48",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "DamageToYou": 2 }],
+                  "unpaid": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

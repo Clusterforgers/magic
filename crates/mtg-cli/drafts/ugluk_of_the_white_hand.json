@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ebd6a3a0-ae8d-44e6-8d0b-048da6dd1f03",
+  "name": "Uglúk of the White Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uglúk of the White Hand",
+      "oracle_fingerprint": "c7eb2fd5d1e2dcb3da6a80c20090b394",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      {
+                        "CountOf": {
+                          "of": "Triggering",
+                          "filter": [{ "AnyOf": [{ "Subtype": "Orc" }, { "Subtype": "Goblin" }] }]
+                        }
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

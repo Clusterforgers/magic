@@ -1,0 +1,63 @@
+{
+  "oracle_id": "9b3bcd57-bf3f-4d72-810a-fdb5c8ea1551",
+  "name": "Run Ashore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Run Ashore",
+      "oracle_fingerprint": "1be59d07a74ef162851f26c1f4d64582",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [
+                        {
+                          "ChooseValue": {
+                            "who": { "OwnerOf": { "Target": 0 } },
+                            "kind": { "Options": ["Top", "Bottom"] },
+                            "as": "way"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                            "then": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Bottom" } }
+                                }
+                              }
+                            ],
+                            "otherwise": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Top" } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b2b78623-5a10-4ef7-b983-3d82478269c3",
+  "name": "Snapdax, Apex of the Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snapdax, Apex of the Hunt",
+      "oracle_fingerprint": "29cd085cf35bbbf40ac62618cd4ca69d",
+      "abilities": [
+        { "Keyword": { "Mutate": "{2}{W}{W}{B/R}" } },
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Mutated", "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "GainLife": { "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

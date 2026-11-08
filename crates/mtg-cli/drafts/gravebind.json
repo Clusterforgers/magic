@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0ce01e24-42db-42db-9ba2-38f653383991",
+  "name": "Gravebind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravebind",
+      "oracle_fingerprint": "6b127007d497747338180fbe361692bb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantBeRegenerated": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

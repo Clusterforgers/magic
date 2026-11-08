@@ -576,3 +576,29 @@ fn a_bestowed_creature_spell_is_an_aura_spell_for_the_mana_restrictions(
     assert_eq!(bestowed.allows(&only_for(restricted_to)), allowed);
     assert!(bestowed.traits.subtypes.iter().any(|s| s.0 == "Aura"));
 }
+
+#[rstest]
+#[case::on_the_battlefield("Source", true)]
+#[case::in_the_hand("Held", false)]
+fn an_ability_source_knows_whether_it_is_on_the_battlefield(
+    #[case] name: &str,
+    #[case] on_battlefield: bool,
+) {
+    use crate::fixtures::{creature, state};
+    let game = state(
+        vec![vec![creature("Held", 1, 1)], Vec::new()],
+        vec![vec![creature("Source", 1, 1)], Vec::new()],
+    );
+    let id = game
+        .objects()
+        .find(|object| object.card().name == name)
+        .map(crate::object::GameObject::id)
+        .unwrap();
+    let spend = Spend::for_ability(&game, id, false);
+    assert_eq!(spend.traits.on_battlefield, on_battlefield);
+    let only = [SpendOn::Ability(SpendFilter {
+        facts: vec![mtg_cards::spend::SpendFact::OnBattlefield],
+        ..SpendFilter::default()
+    })];
+    assert_eq!(spend.allows(&only), on_battlefield);
+}

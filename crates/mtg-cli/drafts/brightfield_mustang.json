@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1b05e355-38a5-4307-9d8b-e99ec30f8ed3",
+  "name": "Brightfield Mustang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brightfield Mustang",
+      "oracle_fingerprint": "eb0093bc7fc23044e1d90ae66bf26ead",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This", { "HasKeyword": "Saddled" }] } },
+            "effects": [
+              { "Untap": { "what": "This" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 1 } }
+      ]
+    }
+  ]
+}

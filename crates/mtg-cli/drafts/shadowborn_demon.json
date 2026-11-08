@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7dacc5aa-ea4d-414e-8324-6a7d24bb7671",
+  "name": "Shadowborn Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadowborn Demon",
+      "oracle_fingerprint": "77f56965de91a875e4e5702593535209",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Subtype": "Demon" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Lt",
+                "right": 6
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,480 @@
+//! `Effect`: Forge's pseudo-object that holds a static ability for a while ("target creature can't be blocked this turn")
+//! as a continuous effect or rule of the DSL.
+
+use serde_json::{Value, json};
+
+use super::amount::amount;
+use super::ctx::{Ctx, Tr, check_keys, only, unmapped};
+use super::effects_obj::duration;
+use super::keyword::keyword_list;
+use super::valid::{defined, objects, selector_any, subject};
+use crate::forge::script::Params;
+
+/// The effects of an `Effect` line.
+#[allow(clippy::too_many_lines)]
+pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(
+        p,
+        "Effect",
+        &[
+            "RememberObjects",
+            "StaticAbilities",
+            "ExileOnMoved",
+            "ForgetOnMoved",
+            "Duration",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+            "Name",
+            "Stackable",
+            "Defined",
+            "ReplacementEffects",
+            "Triggers",
+            "Boon",
+            "ForgetCounter",
+            "ForgetOnCast",
+            "EffectOwner",
+            "SetChosenNumber",
+            "AtEOT",
+        ],
+    )?;
+    if p.has("AtEOT")
+        && [
+            "RememberObjects",
+            "ValidTgts",
+            "Triggers",
+            "ReplacementEffects",
+        ]
+        .iter()
+        .any(|key| p.has(key))
+    {
+        return unmapped("key:Effect.AtEOT");
+    }
+    if let Some(out) = fixed_as_it_begins(ctx, p) {
+        return out;
+    }
+    // The Forge effect object ends when what it remembers changes zones; our references to remembered objects drop out the
+    // same way, so the keys only matter beside `RememberObjects`.
+    // Who holds the effect: only a permission to cast reads it, as the player who may cast.
+    let owner = match p.get("EffectOwner") {
+        None | Some("You") => None,
+        Some(word) => Some(defined(ctx, word)?),
+    };
+    // "Your next end step" is the end step of the effect's owner, which the engine's duration reads as the controller's.
+    if owner.is_some()
+        && p.get("Duration").is_some_and(|word| {
+            word.starts_with("UntilYour") || word.starts_with("UntilTheEndOfYour")
+        })
+    {
+        return unmapped("key:Effect.EffectOwner-with-a-turn-duration");
+    }
+    let remembering = p.has("RememberObjects") || p.has("ValidTgts");
+    if owner.is_some()
+        && (p.has("Triggers")
+            || p.has("ReplacementEffects")
+            || !remembering
+            || super::effects_emblem::is_emblem(p))
+    {
+        return unmapped("key:Effect.EffectOwner");
+    }
+    if (p.has("ExileOnMoved") || p.has("ForgetOnMoved")) && !p.has("RememberObjects") {
+        return unmapped("key:Effect.ExileOnMoved-without-RememberObjects");
+    }
+    if super::effects_emblem::is_emblem(p) {
+        return super::effects_emblem::emblem(ctx, p);
+    }
+    if p.has("Triggers") {
+        if p.has("ReplacementEffects") {
+            return unmapped("key:Effect.Triggers-and-ReplacementEffects");
+        }
+        let remembered = super::replacements_damage::remembered_of(ctx, p)?;
+        let mut out = ambient_with(ctx, p, remembered.as_ref())?;
+        out.extend(super::effects_ambient::delayed_triggers(
+            ctx,
+            p,
+            remembered.as_ref(),
+        )?);
+        return Ok(out);
+    }
+    if let Some(name) = p
+        .get("ReplacementEffects")
+        .filter(|name| !name.contains(','))
+        && ctx.sub(name.trim())?.get("Event") == Some("Untap")
+    {
+        return super::replacements::stays_tapped(ctx, p);
+    }
+    if let Some(name) = p
+        .get("ReplacementEffects")
+        .filter(|name| !name.contains(','))
+        .filter(|_| !p.has("RememberObjects") && !p.has("ValidTgts") && !p.has("StaticAbilities"))
+        .map(str::trim)
+        .filter(|name| {
+            ctx.sub(name)
+                .is_ok_and(|sub| sub.get("Event") == Some("ProduceMana"))
+        })
+    {
+        return super::replacements_mana::effect(ctx, p, name);
+    }
+    if p.has("ReplacementEffects") {
+        let remembered = super::replacements_damage::remembered_of(ctx, p)?;
+        let mut out = ambient_with(ctx, p, remembered.as_ref())?;
+        out.extend(super::replacements_damage::shield(
+            ctx,
+            p,
+            remembered.as_ref(),
+        )?);
+        return Ok(out);
+    }
+    if !p.has("RememberObjects") && !p.has("ValidTgts") {
+        let mut out = super::effects_ambient::continuous_statics(ctx, p)?;
+        // "Exile it at the beginning of the next end step": the clean-up of the source itself.
+        if let Some(word) = p.get("AtEOT") {
+            out.push(super::tokens_copy::at_eot(word, &json!("This"))?);
+        }
+        return Ok(out);
+    }
+    remembered_statics(ctx, p, owner.as_ref(), None)
+}
+
+/// An `Effect` line whose parts read a value of the ability that made it, translated with that value held: the number
+/// `SetChosenNumber$` fixes (CR 611.2c), or the card name the ability chose ("choose a card name; until your next turn,
+/// spells with the chosen name can't be cast"), which the engine fixes as the rule begins; or a line about the next spell
+/// cast (`ForgetOnCast$`). `None` for any other line.
+fn fixed_as_it_begins(ctx: &mut Ctx, p: &Params) -> Option<Tr<Vec<Value>>> {
+    if let Some(word) = p.get("SetChosenNumber") {
+        let number = match amount(ctx, word) {
+            Ok(number) => number,
+            Err(gap) => return Some(Err(gap)),
+        };
+        let before = ctx.set_number.replace(number);
+        let out = effects(ctx, &p.without(&["SetChosenNumber"]));
+        ctx.set_number = before;
+        return Some(out);
+    }
+    if ctx.effect_name.is_none()
+        && !p.has("Triggers")
+        && !p.has("ReplacementEffects")
+        && let (Some(name), None) = (ctx.chosen.clone(), ctx.chosen_kind)
+    {
+        ctx.effect_name = Some(name);
+        let out = effects(ctx, p);
+        ctx.effect_name = None;
+        return Some(out);
+    }
+    // "The next spell you cast": the effect ends when that spell is cast.
+    p.has("ForgetOnCast")
+        .then(|| super::effects_next_spell::effects(ctx, p))
+}
+
+/// The statics of an `Effect` line about the objects it remembers.
+fn remembered_statics(
+    ctx: &mut Ctx,
+    p: &Params,
+    owner: Option<&Value>,
+    known: Option<&Value>,
+) -> Tr<Vec<Value>> {
+    let Some(names) = p.get("StaticAbilities") else {
+        return unmapped("key:Effect.no-StaticAbilities");
+    };
+    let duration = lasting(p)?;
+    let who = match known {
+        Some(who) => who.clone(),
+        None => remembered(ctx, p)?,
+    };
+    let mut out = Vec::new();
+    for name in names.split(',').map(str::trim) {
+        out.extend(remembered_static(ctx, name, &who, &duration, owner)?);
+    }
+    Ok(out)
+}
+
+/// The statics of an `Effect` line that has no remembered objects, when the line also holds a trigger or a replacement.
+fn ambient_with(ctx: &mut Ctx, p: &Params, known: Option<&Value>) -> Tr<Vec<Value>> {
+    if !p.has("StaticAbilities") {
+        return Ok(Vec::new());
+    }
+    if known.is_some() {
+        return remembered_statics(ctx, p, None, known);
+    }
+    if p.has("RememberObjects") || p.has("ValidTgts") {
+        return unmapped("key:Effect.static-with-remembered-and-more");
+    }
+    super::effects_ambient::continuous_statics(ctx, p)
+}
+
+/// How long the objects stay remembered: the `Duration$`, or for as long as every one of them has a counter of the kind
+/// `ForgetCounter$` names (an object that leaves the battlefield is a new one, CR 400.7, so it drops out the same way).
+pub(super) fn lasting(p: &Params) -> Tr<Value> {
+    let Some(kind) = p.get("ForgetCounter") else {
+        return duration(p.get("Duration")).map(|word| json!(word));
+    };
+    if !p.has("RememberObjects")
+        || p.get("Duration") != Some("Permanent")
+        || p.get("ForgetOnMoved") != Some("Battlefield")
+    {
+        return unmapped("key:Effect.ForgetCounter-beyond-a-permanent-effect-on-the-battlefield");
+    }
+    match super::amount::counter_kind(kind) {
+        Some(kind) => Ok(json!({"WhileHasCounter": kind})),
+        None => unmapped(format!("key:Effect.ForgetCounter={kind}")),
+    }
+}
+
+/// "You may look at that card for as long as it remains exiled", alone or beside the permission to play it: the look rule
+/// of the objects the effect remembers, for the player it belongs to.
+fn remembered_look(
+    ctx: &mut Ctx,
+    part: &Params,
+    who: &Value,
+    duration: &Value,
+    owner: Option<&Value>,
+) -> Tr<Vec<Value>> {
+    let mut look =
+        super::statics_look::exiled(&part.without(&["Mode", "AffectedZone"]), Some(who))?;
+    if let Some(owner) = owner
+        && part.get("MayLookAt") == Some("You")
+    {
+        look["LookAtExiled"]["who"] = owner.clone();
+    }
+    let mut rules = vec![json!({"Rule": {"rule": look, "duration": duration}})];
+    if part.has("MayPlay") {
+        let rule = remembered_play(ctx, &part.without(&["MayLookAt"]), who, owner)?;
+        rules.insert(0, json!({"Rule": {"rule": rule, "duration": duration}}));
+    } else {
+        check_keys(
+            part,
+            "Effect.static.MayLookAt",
+            &["Mode", "Affected", "AffectedZone", "MayLookAt"],
+            |_, _| false,
+        )?;
+    }
+    Ok(rules)
+}
+
+/// The `MayCast` rule of a `MayPlay` static of an `Effect` about the objects `who` it remembers, for its `owner`.
+fn remembered_play(ctx: &mut Ctx, part: &Params, who: &Value, owner: Option<&Value>) -> Tr<Value> {
+    let when = super::condition::check_svar(ctx, part)?;
+    let part = part.without(&super::condition::CHECK_KEYS);
+    let mut rule = super::mayplay::may_cast(ctx, &part, Some(who))?;
+    if let Some(when) = when {
+        rule["MayCast"]["when"] = when;
+    }
+    if let Some(owner) = owner {
+        rule["MayCast"]["who"] = owner.clone();
+    }
+    Ok(rule)
+}
+
+/// One static of an `Effect` line about the objects it remembers.
+#[allow(clippy::too_many_lines)]
+fn remembered_static(
+    ctx: &mut Ctx,
+    name: &str,
+    who: &Value,
+    duration: &Value,
+    owner: Option<&Value>,
+) -> Tr<Vec<Value>> {
+    let part = ctx.sub(name)?;
+    if owner.is_some() && !part.has("MayPlay") {
+        return unmapped("key:Effect.EffectOwner");
+    }
+    // A prohibition on the remembered players ("target player cannot cast spells this turn").
+    // "Its activated abilities can't be activated this turn": `Card.IsRemembered` names the remembered objects.
+    let before = ctx.pinned.replace(who.clone());
+    let found = super::statics_cant::rule_for(ctx, &part, Some(who));
+    ctx.pinned = before;
+    if let Some(found) = found {
+        let mut rule = found?;
+        rule["Rule"]["duration"] = duration.clone();
+        return Ok(vec![rule]);
+    }
+    if let Some(found) = super::effects_effect_combat::statics(ctx, &part, who, duration) {
+        return found;
+    }
+    let who = &objects(who.clone())?;
+    if part.has("MayLookAt") && part.get("AffectedZone") == Some("Exile") {
+        return remembered_look(ctx, &part, who, duration, owner);
+    }
+    if part.has("MayPlay") {
+        let rule = remembered_play(ctx, &part, who, owner)?;
+        return Ok(vec![json!({"Rule": {"rule": rule, "duration": duration}})]);
+    }
+    let read = [
+        "Mode",
+        "ValidAttacker",
+        "ValidBlocker",
+        "ValidCreature",
+        "ValidCard",
+        "Affected",
+        "AddKeyword",
+        "AddType",
+        "AddPower",
+        "AddToughness",
+        "SetPower",
+        "SetToughness",
+        "SetColor",
+        "RemoveCreatureTypes",
+        "GainControl",
+    ];
+    // `ValidTarget$` and `Activator$` belong to a `CantTarget` line alone.
+    let cant_target = part.get("Mode") == Some("CantTarget");
+    let read: Vec<&str> = if cant_target {
+        [read.as_slice(), &["ValidTarget", "Activator"]].concat()
+    } else {
+        read.to_vec()
+    };
+    check_keys(&part, "Effect.static", &read, |_, _| false)?;
+    let on_remembered = |key: &str| {
+        matches!(
+            part.get(key),
+            Some("Card.IsRemembered" | "Creature.IsRemembered")
+        )
+    };
+    match part.get("Mode").unwrap_or_default() {
+        "CantBlockBy" if on_remembered("ValidAttacker") && !part.has("ValidBlocker") => {
+            Ok(vec![continuous(who, &[json!("CantBeBlocked")], duration)])
+        }
+        "CantBlockBy" if on_remembered("ValidAttacker") => {
+            let blockers = selector_any(ctx, part.get("ValidBlocker").unwrap_or_default())?;
+            let by = json!({"CantBeBlockedBy": blockers});
+            Ok(vec![continuous(who, &[by], duration)])
+        }
+        // "Can't block EFFECTSOURCE": the remembered creature blocks only what is not the source.
+        "CantBlockBy"
+            if part.get("ValidAttacker") == Some("Creature.EffectSource")
+                && on_remembered("ValidBlocker") =>
+        {
+            let only = json!({"CanBlockOnly": [{"Not": {"Is": "This"}}]});
+            Ok(vec![continuous(who, &[only], duration)])
+        }
+        "AssignNoCombatDamage" if on_remembered("ValidCard") => Ok(vec![json!({"Rule": {
+            "rule": {"Combat": {"who": who, "quirk": "AssignsNoCombatDamage"}}, "duration": duration}})]),
+        "CantRegenerate" if on_remembered("ValidCard") => Ok(vec![
+            json!({"Rule": {"rule": {"CantBeRegenerated": who}, "duration": duration}}),
+        ]),
+        "MustBlock" if on_remembered("ValidCreature") => Ok(vec![
+            json!({"Rule": {"rule": {"MustBlock": who}, "duration": duration}}),
+        ]),
+        "CantAttack" if on_remembered("ValidCard") => {
+            Ok(vec![continuous(who, &[json!("CantAttack")], duration)])
+        }
+        "CantBlock" if on_remembered("ValidCard") => {
+            Ok(vec![continuous(who, &[json!("CantBlock")], duration)])
+        }
+        // What the opponents of the effect's controller can't target is what hexproof says (CR 702.11b).
+        "CantTarget"
+            if on_remembered("ValidTarget") && part.get("Activator") == Some("Player.Opponent") =>
+        {
+            Ok(vec![continuous(
+                who,
+                &[json!({"AddKeyword": "Hexproof"})],
+                duration,
+            )])
+        }
+        "MustAttack" if on_remembered("ValidCreature") => Ok(vec![
+            json!({"Rule": {"rule": {"MustAttack": who}, "duration": duration}}),
+        ]),
+        "Continuous" if on_remembered("Affected") => {
+            // The engine gives a shield counter no meaning, so a rule that waits on one would run without it.
+            if duration.to_string().contains("shield") {
+                return unmapped("key:Effect.static.shield-counter");
+            }
+            let mods = pump_like(ctx, &part)?;
+            Ok(vec![continuous(who, &mods, duration)])
+        }
+        other => unmapped(format!("effect:Effect-static-{other}")),
+    }
+}
+
+fn continuous(affected: &Value, mods: &[Value], duration: &Value) -> Value {
+    json!({"Continuous": {"affected": affected, "mods": mods, "duration": duration}})
+}
+
+/// The objects an effect is about: `RememberObjects$` names them (the target, the source, or what an earlier step
+/// moved).
+pub(super) fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let word = p.get("RememberObjects").unwrap_or_default();
+    // `Defined$` names the same objects the effect remembers.
+    if let Some(defined) = p
+        .get("Defined")
+        .filter(|defined| Some(*defined) != p.get("RememberObjects"))
+    {
+        return unmapped(format!(
+            "key:Effect.Defined={defined}-beside-RememberObjects"
+        ));
+    }
+    let who = match word {
+        "Targeted" | "ThisTargetedCard" if p.has("ValidTgts") => subject(ctx, p, "", None)?,
+        "Self" => json!("This"),
+        "Targeted" => ctx.last_target()?,
+        "Remembered" | "RememberedCard" => defined(ctx, "Remembered")?,
+        // A word another step of the line already reads as an object: the choice, the imprint, the enchanted creature.
+        "ChosenCard" | "Imprinted" | "Enchanted" => defined(ctx, word)?,
+        "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
+        word if super::triggered::is_word(word) => {
+            super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?
+        }
+        "ParentTarget" => ctx.parent()?,
+        other => return unmapped(format!("key:Effect.RememberObjects={other}")),
+    };
+    Ok(who)
+}
+
+/// `SetPower$` with `SetToughness$`: the base power and toughness; one alone is a gap.
+fn set_stats(ctx: &Ctx, part: &Params) -> Tr<Vec<Value>> {
+    match (part.get("SetPower"), part.get("SetToughness")) {
+        (None, None) => Ok(Vec::new()),
+        (Some(power), Some(toughness)) => {
+            let (power, toughness) = (amount(ctx, power)?, amount(ctx, toughness)?);
+            Ok(vec![
+                json!({"SetPT": {"power": power, "toughness": toughness}}),
+            ])
+        }
+        _ => unmapped("key:Effect.static.SetPower-alone"),
+    }
+}
+
+/// The types and the color of a continuous static line: `AddType$` (replacing the creature types with
+/// `RemoveCreatureTypes$`) and one `SetColor$`.
+fn set_types(part: &Params) -> Tr<Vec<Value>> {
+    let mut mods = super::effects_zone::added_types(part.get("AddType").unwrap_or_default());
+    if part.get("RemoveCreatureTypes") == Some("True") {
+        let kept: Vec<Value> = mods
+            .iter()
+            .filter_map(|m| m.get("AddSubtype").cloned())
+            .collect();
+        mods.retain(|m| m.get("AddSubtype").is_none());
+        mods.push(json!({ "SetCreatureTypes": kept }));
+    }
+    if let Some(color) = part.get("SetColor") {
+        if !matches!(color, "White" | "Blue" | "Black" | "Red" | "Green") {
+            return unmapped("key:Effect.static.SetColor");
+        }
+        mods.push(json!({ "SetColors": [color] }));
+    }
+    Ok(mods)
+}
+
+/// Power, toughness and keywords of a continuous static line.
+fn pump_like(ctx: &Ctx, part: &Params) -> Tr<Vec<Value>> {
+    let mut mods = Vec::new();
+    if part.has("AddPower") || part.has("AddToughness") {
+        let power = amount(ctx, part.get("AddPower").unwrap_or("0"))?;
+        let toughness = amount(ctx, part.get("AddToughness").unwrap_or("0"))?;
+        mods.push(json!({"ModifyPT": {"power": power, "toughness": toughness}}));
+    }
+    mods.extend(set_stats(ctx, part)?);
+    mods.extend(set_types(part)?);
+    if part.get("GainControl") == Some("You") {
+        mods.push(json!({"SetController": "You"}));
+    }
+    if let Some(keywords) = part.get("AddKeyword") {
+        for keyword in keyword_list(ctx, keywords)? {
+            mods.push(json!({ "AddKeyword": keyword }));
+        }
+    }
+    if mods.is_empty() {
+        return unmapped("effect:Effect-static-nothing");
+    }
+    Ok(mods)
+}

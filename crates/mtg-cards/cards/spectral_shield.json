@@ -1,0 +1,25 @@
+{
+  "oracle_id": "37d9c065-598d-4ee3-abfc-625bd6169ff1",
+  "name": "Spectral Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Shield",
+      "oracle_fingerprint": "eb34032153b4fc1ac90bfd978ddeed1e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Attached", "action": { "BeTargeted": ["Spell"] } } }
+          }
+        }
+      ]
+    }
+  ]
+}

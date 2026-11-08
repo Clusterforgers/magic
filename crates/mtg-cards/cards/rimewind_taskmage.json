@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f5d9248e-9cff-4f80-b6ed-7d368099e97b",
+  "name": "Rimewind Taskmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rimewind Taskmage",
+      "oracle_fingerprint": "e32d50b20506819fb8e8fdf313fc00d4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

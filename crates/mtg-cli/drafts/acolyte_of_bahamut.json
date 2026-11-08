@@ -1,0 +1,42 @@
+{
+  "oracle_id": "38477748-bc57-449c-afe1-c5f34caf8eff",
+  "name": "Acolyte of Bahamut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acolyte of Bahamut",
+      "oracle_fingerprint": "0faa0cb44622d469f59101102dc54fba",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "CostModifier": {
+                    "applies_to": ["Spell", { "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                    "change": "Reduce",
+                    "mana": "{2}",
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "Tally": {
+                            "event": "SpellCast",
+                            "who": "You",
+                            "filter": [{ "Subtype": "Dragon" }]
+                          }
+                        },
+                        "op": "Eq",
+                        "right": 0
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

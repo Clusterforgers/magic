@@ -9,15 +9,23 @@
       "abilities": [
         {
           "Static": {
-            "affected": "This",
+            "affected": { "Each": [{ "Type": "Creature" }] },
             "mods": [
               {
                 "ModifyPT": {
                   "power": {
-                    "Count": [{ "Type": "Creature" }, { "SharesSubtype": "This" }, "Other"]
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "SharesSubtype": "Affected" },
+                      { "Not": { "Is": "Affected" } }
+                    ]
                   },
                   "toughness": {
-                    "Count": [{ "Type": "Creature" }, { "SharesSubtype": "This" }, "Other"]
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "SharesSubtype": "Affected" },
+                      { "Not": { "Is": "Affected" } }
+                    ]
                   }
                 }
               }

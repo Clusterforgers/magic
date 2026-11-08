@@ -1,0 +1,175 @@
+{
+  "object": "card",
+  "id": "222102d0-fed3-41fd-87b0-f6d22766d7fd",
+  "oracle_id": "d3278ddb-c198-450d-946e-8547e5c96dd1",
+  "multiverse_ids": [
+    527440
+  ],
+  "mtgo_id": 91808,
+  "arena_id": 77258,
+  "tcgplayer_id": 243187,
+  "cardmarket_id": 571292,
+  "name": "Kick in the Door",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/222102d0-fed3-41fd-87b0-f6d22766d7fd",
+  "scryfall_uri": "https://scryfall.com/card/afr/153/kick-in-the-door?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:07:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.jpg?1783926475",
+    "normal": "https://cards.scryfall.io/normal/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.jpg?1783926475",
+    "large": "https://cards.scryfall.io/large/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.jpg?1783926475",
+    "png": "https://cards.scryfall.io/png/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.png?1783926475",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.jpg?1783926475",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.jpg?1783926475",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.webp?1783926475",
+    "grid": "https://cards.scryfall.io/grid/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.webp?1783926475",
+    "display": "https://cards.scryfall.io/display/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.webp?1783926475",
+    "art": "https://cards.scryfall.io/art/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.webp?1783926475",
+    "crop": "https://cards.scryfall.io/crop/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.webp?1783926475",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/2/222102d0-fed3-41fd-87b0-f6d22766d7fd.jpg?1783926475"
+  },
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Put a +1/+1 counter on target creature. That creature gains haste until end of turn and can't be blocked by Walls this turn. Venture into the dungeon. (Enter the first room or advance to the next room.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Venture into the dungeon"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6f509dbe-6ec7-4438-ab36-e20be46c9922",
+      "component": "combo_piece",
+      "name": "Dungeon of the Mad Mage",
+      "type_line": "Dungeon",
+      "uri": "https://api.scryfall.com/cards/6f509dbe-6ec7-4438-ab36-e20be46c9922"
+    },
+    {
+      "object": "related_card",
+      "id": "59b11ff8-f118-4978-87dd-509dc0c8c932",
+      "component": "combo_piece",
+      "name": "Lost Mine of Phandelver",
+      "type_line": "Dungeon",
+      "uri": "https://api.scryfall.com/cards/59b11ff8-f118-4978-87dd-509dc0c8c932"
+    },
+    {
+      "object": "related_card",
+      "id": "70b284bd-7a8f-4b60-8238-f746bdc5b236",
+      "component": "combo_piece",
+      "name": "Tomb of Annihilation",
+      "type_line": "Dungeon",
+      "uri": "https://api.scryfall.com/cards/70b284bd-7a8f-4b60-8238-f746bdc5b236"
+    },
+    {
+      "object": "related_card",
+      "id": "222102d0-fed3-41fd-87b0-f6d22766d7fd",
+      "component": "combo_piece",
+      "name": "Kick in the Door",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/222102d0-fed3-41fd-87b0-f6d22766d7fd"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e1ef87ba-ba92-4573-817f-543b996d2851",
+  "set": "afr",
+  "set_name": "Adventures in the Forgotten Realms",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e1ef87ba-ba92-4573-817f-543b996d2851",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/222102d0-fed3-41fd-87b0-f6d22766d7fd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad3278ddb-c198-450d-946e-8547e5c96dd1&unique=prints",
+  "collector_number": "153",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"We tried your way. Now we do it my way!\"\n—Jym, barbarian of Baldur's Gate",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justine Cruz",
+  "artist_ids": [
+    "4d6acc42-7bac-42cb-ac57-a56355292e89"
+  ],
+  "illustration_id": "3e354c70-340f-4208-99f7-de24186d7e28",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12198,
+  "penny_rank": 11870,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=iIUKOyC5rSo",
+    "previewed_at": "2021-07-01"
+  },
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.19",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.18",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=527440&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKick%2Bin%2Bthe%2BDoor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKick%2Bin%2Bthe%2BDoor",
+    "edhrec": "https://edhrec.com/route/?cc=Kick+in+the+Door"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243187%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=571292&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/91808?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

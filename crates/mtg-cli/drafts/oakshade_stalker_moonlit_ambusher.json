@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1b639537-a8fe-4615-b937-afa478fdec0f",
+  "name": "Oakshade Stalker // Moonlit Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oakshade Stalker",
+      "oracle_fingerprint": "3a2f15cec6e81627d59f8d6b5280cfd1",
+      "abilities": [
+        { "AltCast": { "way": "Alternative", "cost": "{4}{G}", "flash": true } },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Moonlit Ambusher",
+      "oracle_fingerprint": "bdaab066eb6b8ec7beeccc316b01f527",
+      "abilities": [{ "Keyword": "Nightbound" }]
+    }
+  ]
+}

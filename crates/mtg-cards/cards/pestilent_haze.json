@@ -1,0 +1,47 @@
+{
+  "oracle_id": "b24d1540-ed8b-4df3-abfe-1b8492a58388",
+  "name": "Pestilent Haze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pestilent Haze",
+      "oracle_fingerprint": "58ea74fb8ca945e4a6bb8bf3e949f7f2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }] },
+                            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Each": [{ "Type": "Planeswalker" }] },
+                            "counter": "loyalty",
+                            "count": 2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7a5a8414-4da4-4dd0-93ae-210d50f4d6f6",
+  "name": "Circle of Protection: Black",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Protection: Black",
+      "oracle_fingerprint": "1baa66f223a6f7f219c8ced907e27cec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Black" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

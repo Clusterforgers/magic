@@ -14,14 +14,15 @@ use std::sync::OnceLock;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::modify::{Attacked, GameRule};
+use mtg_cards::modify::{Attacked, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
-use mtg_cards::trigger::TriggerPattern;
+use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
+use mtg_cards::value::Condition;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
 
-use crate::ability_reader::{abilities_of, definition_has_rule};
+use crate::ability_reader::{abilities_of, definition_has_rule, is_rule, may_hold};
 use crate::characteristics::controller_of_object;
 use crate::choose::Target;
 use crate::combat::AttackTarget;
@@ -44,9 +45,37 @@ pub enum Rule {
     MustAttackPlayers(Vec<(ObjectRef, PlayerId)>),
     /// The creatures block each combat if able (CR 509.1c).
     MustBlock(Vec<ObjectRef>),
+    /// The creatures block the attacker if able (Provoke, CR 509.1c).
+    MustBlockAttacker {
+        /// The creatures that must block it.
+        blockers: Vec<ObjectRef>,
+        /// The attacking creature.
+        attacker: ObjectRef,
+    },
+    /// A permission or a limit on how the creatures take part in combat.
+    Combat {
+        /// What the rule says of them.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        quirk: mtg_cards::modify::CombatQuirk,
+        /// The creatures.
+        creatures: Vec<ObjectRef>,
+    },
+    /// The players may target the permanents and the players as though they did not have hexproof, and shroud when `shroud`.
+    IgnoreHexproof {
+        /// The players whose spells and abilities may.
+        by: Vec<PlayerId>,
+        /// The permanents covered.
+        what: Vec<ObjectRef>,
+        /// The players covered.
+        players: Vec<PlayerId>,
+        /// Shroud is ignored too.
+        shroud: bool,
+    },
     /// Creatures can't attack the players unless their controller pays for each of them as the attack is declared
     /// (CR 508.1h).
     AttackTax(AttackTax),
+    /// Creatures can't block unless their controller pays for each of them as blockers are declared (CR 509.1d).
+    BlockTax(crate::block_tax::BlockTax),
     /// No more than this many creatures can attack each combat (CR 508.1c).
     AttackLimit(u32),
     /// No more than `most` creatures can attack each of the players or planeswalkers each combat (CR 508.1c).
@@ -67,10 +96,31 @@ pub enum Rule {
     },
     /// The spells can't be countered.
     CantBeCountered(Vec<ObjectRef>),
+    /// The spell enters with additional +1/+1 counters and gains a keyword: mana with such a rider was spent to cast it.
+    EntersWith {
+        /// The spell, on the stack.
+        spell: ObjectRef,
+        /// The additional +1/+1 counters it enters with.
+        counters: u32,
+        /// The keyword the permanent gains.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        keyword: Option<Keyword>,
+        /// The keyword lasts until end of turn; otherwise while the permanent stays.
+        this_turn: bool,
+    },
+    /// The permanents can't be regenerated.
+    CantBeRegenerated(Vec<ObjectRef>),
     /// The players can't gain life.
     CantGainLife(Vec<PlayerId>),
     /// Damage dealt to the players causes no loss of life.
     NoLifeLossFromDamage(Vec<PlayerId>),
+    /// Damage can't take the life total of the players below the floor while it is at least that much (CR 614.1, 120.3a).
+    LifeFloor {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// The life total damage leaves them at least at.
+        floor: i32,
+    },
     /// The players gain life rather than lose life from radiation.
     RadiationGainsLife(Vec<PlayerId>),
     /// The players' life totals can't change (CR 119.7, 119.8).
@@ -82,6 +132,17 @@ pub enum Rule {
         /// The keyword they have.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         keyword: Keyword,
+    },
+    /// The mana the permanents the selector picks add as the players tap them for mana changes (CR 106.6, 614.1).
+    ManaProduced {
+        /// The permanents, judged as they are tapped.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The players whose taps are changed.
+        who: Vec<PlayerId>,
+        /// The change.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        change: ManaChange,
     },
     /// The players can't draw cards.
     CantDraw(Vec<PlayerId>),
@@ -95,10 +156,38 @@ pub enum Rule {
     RevealTop(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
+    /// The players' maximum hand size is this many cards (CR 402.2).
+    MaxHandSize(Vec<(PlayerId, u32)>),
+    /// The players' maximum hand size changes by this many cards, after any size that is set (CR 402.2).
+    HandSizeChange(Vec<(PlayerId, i64)>),
+    /// The legend rule does not apply to the players' permanents (CR 704.5j).
+    NoLegendRule(Vec<PlayerId>),
+    /// The legend rule does not apply to the permanents the selector picks, judged for the rule's controller (CR
+    /// 704.5j).
+    NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
+    /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
+    /// (CR 502.3).
+    UntapDuring {
+        /// The permanents, judged when the step untaps.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The players whose untap steps untap them.
+        whose: Vec<PlayerId>,
+    },
     /// The players skip their draw steps (CR 614.10).
     SkipDrawStep(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
+    /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
+    LookAtExiled {
+        /// The players who may look.
+        who: Vec<PlayerId>,
+        /// The cards, judged when a seat looks; every face-down card in exile when empty.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// Only these objects, as they were named when the rule began; every card `what` selects when absent.
+        only: Option<Vec<ObjectRef>>,
+    },
     /// Each player may play this many lands more on each of their turns (CR 305.2).
     AdditionalLandPlays(Vec<(PlayerId, u32)>),
     /// The players may cast the cards the selector picks from a zone, without paying their mana costs or as though they
@@ -128,10 +217,58 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         additional: Option<Box<Cost>>,
+        /// What a cast through it pays rather than the mana cost; an amount in it counts the card cast.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        rather: Option<Box<Cost>>,
+        /// How the mana of a cast through it may be spent.
+        #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        spend_as: SpendAs,
+        /// The permission is open only while this holds for the controller of the rule; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        when: Option<Box<Condition>>,
+    },
+    /// Each owner may cast the exiled card paired with them for `cost` rather than its mana cost (CR 118.9, 601.2f), while it
+    /// stays exiled.
+    MayCastRather {
+        /// The owner of each card and the card, as it was named when the rule began.
+        casts: Vec<(PlayerId, ObjectRef)>,
+        /// The mana paid in place of the mana cost.
+        cost: ManaCost,
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
-    TriggerAgain(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<TriggerPattern>),
+    TriggerAgain {
+        /// The event that causes the trigger; every event when absent.
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        cause: Option<Box<TriggerPattern>>,
+        /// Only abilities of the permanents it selects trigger again; every permanent of the controller when absent.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        source: Option<Selector>,
+    },
+    /// The next spell its controller casts that `what` selects gets the benefit; the cast ends the rule.
+    NextSpell {
+        /// The cards the cast must match, judged when it is cast; every card when empty.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// What the spell gets; a cost change counts its times (`per`) as a fixed number.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        benefit: mtg_cards::modify::SpellBenefit,
+    },
+    /// The spells `applies_to` selects cost `mana` more or less to cast (CR 601.2f); "you" is the rule's controller.
+    SpellCost {
+        /// The spells, judged as they are cast.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        applies_to: Selector,
+        /// More or less.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        change: mtg_cards::ability::CostChange,
+        /// The mana added or removed.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        mana: mtg_cards::mana::ManaCostX,
+    },
     /// Damage from the sources can't be prevented (CR 614.17); every source when the selector is empty.
     DamageCantBePrevented {
         /// The sources, judged when the damage would be dealt.
@@ -145,14 +282,37 @@ pub enum Rule {
     /// A regeneration shield (CR 701.19): the next time the permanent would be destroyed, it regenerates instead.
     Regenerate(ObjectRef),
     /// A shield over deaths (CR 614): each of the permanents or spells, fixed when it was made, that would go from the
-    /// battlefield or the stack to a graveyard goes to the zone instead ("if that creature would die this turn, exile it
-    /// instead", "if that spell would be put into your graveyard, exile it instead").
+    /// battlefield or the stack to a graveyard, or with `leaves` from the battlefield to any other zone, goes to the zone
+    /// instead ("if that creature would die this turn, exile it instead", "if it would leave the battlefield, exile it
+    /// instead").
     DiesInstead {
         /// The permanents and spells it covers.
         objects: Vec<ObjectRef>,
         /// Where they go instead.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         to: ZoneKind,
+        /// It covers a spell that is countered only, not one that resolves or fizzles.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        countered: bool,
+        /// A card named in another zone is covered as the spell it becomes when cast, one zone change on (CR 400.7).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        cast: bool,
+        /// It covers any move from the battlefield ("if it would leave the battlefield"), not only one to a graveyard.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        leaves: bool,
+    },
+    /// A shield over any event of a kind, judged when the event would happen: "if a creature would die this turn, exile it
+    /// instead", "permanents enter tapped this turn". The controller and source of the effect that made it read its references.
+    Replaces {
+        /// The event it replaces.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        when: ReplaceWhen,
+        /// What happens instead.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        by: ReplaceBy,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
@@ -172,6 +332,14 @@ pub enum Rule {
     },
     /// Each creature the players control assigns combat damage equal to its toughness (CR 510.1a).
     ToughnessAssignsDamage(Vec<PlayerId>),
+    /// The players and objects can't do the action (CR 101.2): `GameRule::Cant`.
+    Cant {
+        /// The players and objects it is about.
+        who: Vec<Target>,
+        /// What they can't do.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        action: Box<Prohibited>,
+    },
 }
 
 /// A tax on attacking: whom it protects, which attackers it taxes and what each costs.
@@ -199,6 +367,11 @@ pub struct AttackTax {
 pub struct DamageShield {
     /// The players and objects it protects, fixed when it was made; anything when absent.
     pub to: Option<Vec<Target>>,
+    /// The kind of object it protects ("creatures you control"), judged when the damage would be dealt (CR 611.2c);
+    /// no limit when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+    pub each: Option<Selector>,
     /// The sources of the damage it prevents, judged when the damage would be dealt; any source when empty.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub source: Selector,
@@ -214,6 +387,17 @@ pub struct DamageShield {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
     pub then: Vec<mtg_cards::effect::Effect>,
+    /// It prevents the next damage event it covers and ends ("the next time a source of your choice would deal damage").
+    #[serde(default)]
+    pub once: bool,
+    /// What it does to the damage it covers in place of preventing it: scales it or sends it elsewhere.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+    pub instead: Option<mtg_cards::trigger::ReplaceBy>,
+    /// The player or object the damage it redirects is dealt to, fixed when it was made (`ReplaceBy::RedirectUpTo`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub redirect: Option<Target>,
 }
 
 impl DamageShield {
@@ -252,7 +436,7 @@ pub struct RuleEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
         )
     )]
     pub duration: Duration,
@@ -285,12 +469,30 @@ impl RuleEffect {
             Rule::MustAttack(named)
             | Rule::MustBlock(named)
             | Rule::CantBeCountered(named)
-            | Rule::DiesInstead { objects: named, .. }
+            | Rule::CantBeRegenerated(named)
             | Rule::MayCast {
                 only: Some(named), ..
             } => named.iter().all(gone),
+            Rule::EntersWith { spell, .. } => gone(spell),
+            Rule::DiesInstead { objects, cast, .. } => objects.iter().all(|named| {
+                // A card named in another zone is the spell on the stack one zone change on (CR 400.7).
+                let cast_now = *cast
+                    && state
+                        .object(named.id)
+                        .is_some_and(|o| o.counter() == named.counter + 1);
+                gone(named) && !cast_now
+            }),
             Rule::MustAttackPlayers(pairs) => pairs.iter().all(|(named, _)| gone(named)),
+            Rule::MustBlockAttacker { blockers, attacker } => {
+                gone(attacker) || blockers.iter().all(gone)
+            }
+            Rule::Combat { creatures, .. } => creatures.iter().all(gone),
             Rule::Regenerate(named) => gone(named),
+            // A prohibition about objects alone ends once each has become a new object (CR 400.7).
+            Rule::Cant { who, .. } => who.iter().all(|subject| match subject {
+                Target::Object(named) => gone(named),
+                Target::Player(_) => false,
+            }),
             Rule::PreventDamage(shield) => shield.spent(state),
             _ => false,
         }
@@ -304,23 +506,47 @@ pub(crate) struct Again {
     pub(crate) controller: PlayerId,
     /// The object that has the rule, for the pattern's `This`.
     pub(crate) source: ObjectRef,
-    pub(crate) cause: TriggerPattern,
+    /// The permanents whose abilities trigger again; every one of the controller when absent.
+    pub(crate) from: Option<Selector>,
+    /// The event that causes the trigger; every event when absent.
+    pub(crate) cause: Option<TriggerPattern>,
+}
+
+/// A change to the mana of a tap that a permanent in play or an effect has in force.
+#[derive(Debug, Clone)]
+pub(crate) struct ManaRule {
+    /// The player who controls the rule.
+    pub(crate) controller: PlayerId,
+    /// The permanent or effect that has the rule.
+    pub(crate) source: ObjectRef,
+    /// The players whose taps are changed.
+    pub(crate) who: Vec<PlayerId>,
+    /// The permanents tapped that it covers.
+    pub(crate) what: Selector,
+    /// The change.
+    pub(crate) change: ManaChange,
 }
 
 /// The rules in force in a state.
 #[derive(Debug, Default)]
 pub(crate) struct RulesInForce {
+    /// The combat permissions and requirements of `combat_quirks`.
+    pub(crate) quirks: crate::combat_quirks::QuirkRules,
     must_attack: BTreeSet<ObjectId>,
     attack_players: Vec<(ObjectId, PlayerId)>,
     must_block: BTreeSet<ObjectId>,
     uncounterable: BTreeSet<ObjectId>,
+    unregenerable: BTreeSet<ObjectId>,
     no_life_gain: BTreeSet<PlayerId>,
     no_damage_loss: BTreeSet<PlayerId>,
+    life_floors: BTreeMap<PlayerId, Vec<i32>>,
     radiation_gains: BTreeSet<PlayerId>,
     no_life_change: BTreeSet<PlayerId>,
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
+    /// The changes to the mana of a tap.
+    pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
     skip_extra_turns: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
@@ -329,13 +555,22 @@ pub(crate) struct RulesInForce {
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
+    max_hand: BTreeMap<PlayerId, u32>,
+    hand_change: BTreeMap<PlayerId, i64>,
+    no_legend: BTreeSet<PlayerId>,
+    no_legend_for: Vec<NoLegendFor>,
+    untap_during: Vec<UntapDuring>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
+    block_taxes: Vec<crate::block_tax::BlockTaxing>,
+    looks: Vec<Look>,
     attack_limit: Option<u32>,
     attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
     block_limit_each: BTreeMap<PlayerId, u32>,
+    /// The prohibitions (`prohibit.rs`).
+    pub(crate) cants: Vec<crate::prohibit::Banned>,
     /// The rules about targets in graveyards, losing, casting and combat damage.
     pub(crate) w17b: crate::w17b_statics::W17bRules,
 }
@@ -349,6 +584,21 @@ pub(crate) struct Taxing {
     pub(crate) source: Option<ObjectRef>,
     /// The tax.
     pub(crate) tax: AttackTax,
+}
+
+/// A permission to look at face-down cards in exile, with whose it is.
+#[derive(Debug, Clone)]
+pub(crate) struct Look {
+    /// The controller of the effect or permanent that gives it, for the selector's "you".
+    controller: PlayerId,
+    /// The object that gives it.
+    source: ObjectRef,
+    /// The players who may look.
+    who: Vec<PlayerId>,
+    /// The cards they may look at; every face-down card in exile when empty.
+    what: Selector,
+    /// Only these objects; every card `what` selects when absent.
+    only: Option<Vec<ObjectRef>>,
 }
 
 /// A permission to cast cards, with whose it is.
@@ -378,12 +628,27 @@ pub(crate) struct Cast {
     pub(crate) once: bool,
     /// What the caster pays in addition to the other costs of a cast through it.
     pub(crate) additional: Option<Cost>,
+    /// How the mana of a cast through it may be spent.
+    pub(crate) spend_as: SpendAs,
+    /// The permission is open only while this holds for the controller.
+    pub(crate) when: Option<Condition>,
+    /// The mana paid in place of the mana cost of the card.
+    pub(crate) rather: Option<ManaCost>,
+    /// What is paid in place of the mana cost of the card, its amounts counted for the card cast.
+    pub(crate) instead: Option<Cost>,
 }
 
 impl Cast {
+    /// Whether a cast through the permission from `zone` is for the printed mana cost, with what the permission adds: not a free
+    /// cast and not one for another mana cost.
+    pub(crate) fn adds_to_printed(&self, zone: ZoneKind) -> bool {
+        !self.free && self.rather.is_none() && self.instead.is_none() && self.from == Some(zone)
+    }
+
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         self.c11b_open(state)
+            && self.when_holds(state)
             && self.who.contains(&player)
             && self
                 .only
@@ -398,6 +663,15 @@ impl Cast {
                     .unwrap_or(false))
     }
 
+    /// Whether the condition of the permission holds for its controller now; a condition that cannot be read does not.
+    fn when_holds(&self, state: &GameState) -> bool {
+        self.when.as_ref().is_none_or(|condition| {
+            Scope::announcing(state, self.controller, self.source)
+                .holds(condition)
+                .unwrap_or(false)
+        })
+    }
+
     /// Whether a permission that works once each turn is open: it is its controller's turn and no spell was cast through
     /// it this turn (`Tally::C11bOnceUsed` of its source). Any other permission is always open.
     fn c11b_open(&self, state: &GameState) -> bool {
@@ -410,6 +684,30 @@ impl Cast {
     pub(crate) fn plays(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         self.play && self.covers(state, player, card)
     }
+}
+
+/// Permanents the legend rule does not apply to: whose rule it is and which permanents.
+#[derive(Debug, Clone)]
+pub(crate) struct NoLegendFor {
+    /// The player the selector is judged for.
+    pub(crate) controller: PlayerId,
+    /// The object that has the rule.
+    pub(crate) source: ObjectRef,
+    /// The permanents.
+    pub(crate) what: Selector,
+}
+
+/// Permanents that untap in other untap steps: whose rule it is, which permanents, and whose steps.
+#[derive(Debug, Clone)]
+pub(crate) struct UntapDuring {
+    /// The player whose permanents untap.
+    pub(crate) controller: PlayerId,
+    /// The object that has the rule.
+    pub(crate) source: ObjectRef,
+    /// The permanents, among those the controller controls.
+    pub(crate) what: Selector,
+    /// The players whose untap steps untap them.
+    pub(crate) whose: Vec<PlayerId>,
 }
 
 /// Damage that can't be prevented: whose rule it is, and which damage it covers.
@@ -444,7 +742,98 @@ impl RulesInForce {
         }
     }
 
+    /// Puts a rule about hands, the legend rule or the untap step in force.
+    fn put_option(&mut self, rule: &Rule, controller: PlayerId, source: Option<ObjectRef>) {
+        match rule {
+            Rule::MaxHandSize(sizes) => {
+                for (player, size) in sizes {
+                    let least = self
+                        .max_hand
+                        .get(player)
+                        .map_or(*size, |was| (*was).min(*size));
+                    self.max_hand.insert(*player, least);
+                }
+            }
+            Rule::HandSizeChange(changes) => {
+                for (player, by) in changes {
+                    *self.hand_change.entry(*player).or_insert(0) += by;
+                }
+            }
+            Rule::NoLegendRule(players) => self.no_legend.extend(players),
+            Rule::TriggerAgain {
+                cause,
+                source: from,
+            } => {
+                if let Some(source) = source {
+                    self.again.push(Again {
+                        controller,
+                        source,
+                        from: from.clone(),
+                        cause: cause.as_deref().cloned(),
+                    });
+                }
+            }
+            Rule::NoLegendRuleFor(what) => {
+                if let Some(source) = source {
+                    self.no_legend_for.push(NoLegendFor {
+                        controller,
+                        source,
+                        what: what.clone(),
+                    });
+                }
+            }
+            Rule::UntapDuring { what, whose } => {
+                if let Some(source) = source {
+                    self.untap_during.push(UntapDuring {
+                        controller,
+                        source,
+                        what: what.clone(),
+                        whose: whose.clone(),
+                    });
+                }
+            }
+            _ => {}
+        }
+    }
+
+    /// Opens the flash or free cast of a `NextSpell` rule; costs and keywords are read from the rule when a spell is
+    /// announced.
+    fn put_next_spell(
+        &mut self,
+        what: &Selector,
+        benefit: &mtg_cards::modify::SpellBenefit,
+        controller: PlayerId,
+        source: Option<ObjectRef>,
+    ) {
+        use mtg_cards::modify::SpellBenefit;
+        let (free, flash) = match benefit {
+            SpellBenefit::Free => (true, false),
+            SpellBenefit::Flash => (false, true),
+            SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) => return,
+        };
+        if let Some(source) = source {
+            self.casts.push(Cast {
+                controller,
+                source,
+                who: vec![controller],
+                what: what.clone(),
+                from: None,
+                free,
+                flash,
+                only: None,
+                play: false,
+                once: false,
+                additional: None,
+                spend_as: SpendAs::Normal,
+                when: None,
+                rather: None,
+                instead: None,
+            });
+        }
+    }
+
     /// Puts a rule in force. `controller` and `source` are those of the effect or the permanent that has the rule.
+    #[allow(clippy::too_many_lines)]
     fn put(&mut self, rule: &Rule, controller: PlayerId, source: Option<ObjectRef>) {
         let ids = |named: &[ObjectRef]| named.iter().map(|r| r.id).collect::<Vec<_>>();
         match rule {
@@ -453,7 +842,15 @@ impl RulesInForce {
                 .attack_players
                 .extend(pairs.iter().map(|(named, player)| (named.id, *player))),
             Rule::MustBlock(named) => self.must_block.extend(ids(named)),
+            Rule::MustBlockAttacker { .. } | Rule::Combat { .. } | Rule::IgnoreHexproof { .. } => {
+                self.quirks.put(rule);
+            }
             Rule::AttackTax(tax) => self.taxes.push(Taxing {
+                controller,
+                source,
+                tax: tax.clone(),
+            }),
+            Rule::BlockTax(tax) => self.block_taxes.push(crate::block_tax::BlockTaxing {
                 controller,
                 source,
                 tax: tax.clone(),
@@ -467,8 +864,14 @@ impl RulesInForce {
             }
             Rule::BlockLimitEach { most, who } => self.w14a_limit_blocks(*most, who),
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
+            Rule::CantBeRegenerated(named) => self.unregenerable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
+            Rule::LifeFloor { players, floor } => {
+                for player in players {
+                    self.life_floors.entry(*player).or_default().push(*floor);
+                }
+            }
             Rule::RadiationGainsLife(players) => self.radiation_gains.extend(players),
             Rule::LifeTotalCantChange(players) => self.no_life_change.extend(players),
             Rule::PlayersHave { who, keyword } => self
@@ -476,27 +879,48 @@ impl RulesInForce {
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
+            Rule::ManaProduced { what, who, change } => {
+                if let Some(source) = source {
+                    self.mana.push(ManaRule {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        change: *change,
+                    });
+                }
+            }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
+            Rule::MaxHandSize(_)
+            | Rule::HandSizeChange(_)
+            | Rule::NoLegendRule(_)
+            | Rule::NoLegendRuleFor(_)
+            | Rule::UntapDuring { .. } => {
+                self.put_option(rule, controller, source);
+            }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
             Rule::LookAtTop(players) => self.look_top.extend(players),
+            Rule::LookAtExiled { who, what, only } => {
+                if let Some(source) = source {
+                    self.looks.push(Look {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        only: only.clone(),
+                    });
+                }
+            }
             Rule::AdditionalLandPlays(plays) => {
                 for (player, count) in plays {
                     let total = self.extra_lands.entry(*player).or_default();
                     *total = total.saturating_add(*count);
                 }
             }
-            Rule::TriggerAgain(cause) => {
-                if let Some(source) = source {
-                    self.again.push(Again {
-                        controller,
-                        source,
-                        cause: (**cause).clone(),
-                    });
-                }
-            }
+            Rule::TriggerAgain { .. } => self.put_option(rule, controller, source),
             Rule::DamageCantBePrevented {
                 source: from,
                 combat,
@@ -520,6 +944,9 @@ impl RulesInForce {
                 play,
                 once,
                 additional,
+                rather,
+                spend_as,
+                when,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
@@ -534,17 +961,95 @@ impl RulesInForce {
                         play: *play,
                         once: *once,
                         additional: additional.as_deref().cloned(),
+                        spend_as: *spend_as,
+                        when: when.as_deref().cloned(),
+                        rather: None,
+                        instead: rather.as_deref().cloned(),
                     });
                 }
             }
-            // Shields are read by the replacement step from the rule changes themselves.
-            Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. } => {}
+            Rule::MayCastRather { casts, cost } => {
+                if let Some(source) = source {
+                    for (owner, card) in casts {
+                        self.casts.push(Cast {
+                            controller,
+                            source,
+                            who: vec![*owner],
+                            what: Selector::default(),
+                            from: Some(ZoneKind::Exile),
+                            free: false,
+                            flash: false,
+                            only: Some(vec![*card]),
+                            play: false,
+                            once: false,
+                            additional: None,
+                            spend_as: SpendAs::Normal,
+                            when: None,
+                            rather: Some(cost.clone()),
+                            instead: None,
+                        });
+                    }
+                }
+            }
+            Rule::NextSpell { what, benefit } => {
+                self.put_next_spell(what, benefit, controller, source);
+            }
+            Rule::Cant { who, action } => self.cants.push(crate::prohibit::Banned::new(
+                who, action, controller, source,
+            )),
+            // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
+            // where it resolves (`spend_rider::entering`), from the rule changes themselves.
+            Rule::EntersWith { .. }
+            | Rule::SpellCost { .. }
+            | Rule::PreventDamage(_)
+            | Rule::Regenerate(_)
+            | Rule::DiesInstead { .. }
+            | Rule::Replaces { .. } => {}
             Rule::GraveyardCardsUntargetable
             | Rule::CantLoseGame { .. }
             | Rule::CantCastSpells { .. }
             | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule),
         }
     }
+}
+
+/// The exiled cards `only` names, each with its owner, to be cast for `cost` rather than their mana costs.
+fn may_cast_rather(
+    scope: &Scope<'_>,
+    only: &Ref,
+    cost: &mtg_cards::mana::ManaCostX,
+) -> Result<Rule, ResolveError> {
+    let casts = w17b_rule_objects(scope, only, Zone::Exile)?
+        .into_iter()
+        .filter_map(|named| Some((scope.state.object(named.id)?.owner(), named)))
+        .collect();
+    Ok(Rule::MayCastRather {
+        casts,
+        cost: cost.rest().clone(),
+    })
+}
+
+/// The benefit of a `NextSpell` rule with the times of a cost change counted now.
+fn next_spell(
+    scope: &Scope<'_>,
+    what: &Selector,
+    benefit: &mtg_cards::modify::SpellBenefit,
+) -> Result<Rule, ResolveError> {
+    use mtg_cards::modify::SpellBenefit;
+    let benefit = match benefit {
+        SpellBenefit::Cost { change, mana, per } => SpellBenefit::Cost {
+            change: *change,
+            mana: mana.clone(),
+            per: mtg_cards::value::Amount::Fixed(
+                i32::try_from(scope.amount(per)?.clamp(0, 100)).unwrap_or(0),
+            ),
+        },
+        other => other.clone(),
+    };
+    Ok(Rule::NextSpell {
+        what: what.clone(),
+        benefit,
+    })
 }
 
 /// The players and planeswalkers `at` names, as what creatures attack.
@@ -582,13 +1087,7 @@ fn w17b_rule_objects(
     zone: Zone,
 ) -> Result<Vec<ObjectRef>, ResolveError> {
     let named = if matches!(who, Ref::Attached) {
-        scope
-            .state
-            .host_of(scope.source.id)
-            .and_then(|host| scope.state.object(host))
-            .map(GameObject::reference)
-            .into_iter()
-            .collect()
+        scope.host().into_iter().collect()
     } else {
         scope.objects(who)?
     };
@@ -604,8 +1103,14 @@ fn w17b_rule_objects(
         .collect())
 }
 
+/// The battlefield objects `who` names in `scope`.
+pub(crate) fn lower_objects(scope: &Scope<'_>, who: &Ref) -> Result<Vec<ObjectRef>, ResolveError> {
+    w17b_rule_objects(scope, who, Zone::Battlefield)
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
+#[allow(clippy::too_many_lines)] // one arm for every rule
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
     let objects = |who: &Ref, zone: Zone| w17b_rule_objects(scope, who, zone);
     Ok(match wanted {
@@ -621,6 +1126,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .collect(),
         ),
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
+        GameRule::MustBlockAttacker { .. }
+        | GameRule::Combat { .. }
+        | GameRule::IgnoreHexproof { .. } => crate::combat_quirks::lower(scope, wanted)?,
         GameRule::AttackTax {
             who,
             attacked,
@@ -638,13 +1146,21 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
             })
         }
+        GameRule::BlockTax { .. } => crate::block_tax::lower(scope, wanted)?,
         GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
         GameRule::AttackLimitAt { most, at } => attack_limit_at(scope, *most, at)?,
         GameRule::BlockLimit(most) => Rule::BlockLimit(*most),
         GameRule::BlockLimitEach { most, who } => w14a_block_limit_each(scope, *most, who)?,
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
+        GameRule::CantBeRegenerated(who) => {
+            Rule::CantBeRegenerated(objects(who, Zone::Battlefield)?)
+        }
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
+        GameRule::LifeFloor { who, floor } => Rule::LifeFloor {
+            players: scope.players(who)?,
+            floor: *floor,
+        },
         GameRule::RadiationGainsLife(who) => Rule::RadiationGainsLife(scope.players(who)?),
         GameRule::LifeTotalCantChange(who) => Rule::LifeTotalCantChange(scope.players(who)?),
         GameRule::PlayersHave { who, keyword } => Rule::PlayersHave {
@@ -653,6 +1169,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
+        GameRule::ManaProduced { what, who, change } => Rule::ManaProduced {
+            what: what.clone(),
+            who: scope.players(who)?,
+            change: *change,
+        },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
@@ -670,9 +1191,39 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             play: permission.play,
             once: permission.once,
             additional: permission.additional.clone().map(Box::new),
+            rather: permission.rather.clone().map(Box::new),
+            spend_as: permission.spend_as,
+            when: permission.when.clone().map(Box::new),
         },
-        GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
+        GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
+        GameRule::SpellCost {
+            applies_to,
+            change,
+            mana,
+        } => Rule::SpellCost {
+            applies_to: applies_to.clone(),
+            change: *change,
+            mana: mana.clone(),
+        },
+        GameRule::MayCastRather { only, cost } => may_cast_rather(scope, only, cost)?,
+        GameRule::TriggerAgain { cause, source } => Rule::TriggerAgain {
+            cause: cause.clone().map(Box::new),
+            source: source.clone(),
+        },
+        GameRule::MaxHandSize { .. }
+        | GameRule::HandSizeChange { .. }
+        | GameRule::NoLegendRule(_)
+        | GameRule::NoLegendRuleFor(_)
+        | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
+        GameRule::LookAtExiled { who, what, only } => Rule::LookAtExiled {
+            who: scope.players(who)?,
+            what: what.clone(),
+            only: only
+                .as_ref()
+                .map(|named| scope.objects(named))
+                .transpose()?,
+        },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
@@ -687,12 +1238,54 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         }
         // Eligibility is read from the definition when a seat is checked (`CardDefinition::can_be_commander`); no
         // rule is ever in force and an effect cannot start one.
+        GameRule::Cant { who, action } => {
+            let (who, action) = crate::cant_named::lower(scope, scope.refs(who)?, action)?;
+            Rule::Cant {
+                who,
+                action: Box::new(action),
+            }
+        }
         GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
+        // The deck check reads it from the card; nothing changes in a game.
+        GameRule::AnyNumberInDeck => return Err(ResolveError::Unsupported("Rule.AnyNumberInDeck")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
         | GameRule::ToughnessAssignsDamage(_)
         | GameRule::CountersRemain => crate::w17b_statics::w17b_lower(scope, wanted)?,
+    })
+}
+
+/// The rules about hands, the legend rule and the untap step, with their players and amounts resolved.
+fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
+    Ok(match wanted {
+        GameRule::MaxHandSize { who, size } => {
+            let size = u32::try_from(scope.amount(size)?.max(0)).unwrap_or(u32::MAX);
+            Rule::MaxHandSize(
+                scope
+                    .players(who)?
+                    .into_iter()
+                    .map(|player| (player, size))
+                    .collect(),
+            )
+        }
+        GameRule::HandSizeChange { who, by } => {
+            let by = scope.amount(by)?;
+            Rule::HandSizeChange(
+                scope
+                    .players(who)?
+                    .into_iter()
+                    .map(|player| (player, by))
+                    .collect(),
+            )
+        }
+        GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
+        GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
+        GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
+            what: what.clone(),
+            whose: scope.players(whose)?,
+        },
+        _ => return Err(ResolveError::Unsupported("Rule")),
     })
 }
 
@@ -713,11 +1306,22 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::AttackTax(tax) => {
             tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
         }
-        Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
-            named.is_empty()
-        }
+        Rule::BlockTax(tax) => tax.mana.symbols().is_empty() && tax.life == 0,
+        Rule::MustAttack(named)
+        | Rule::MustBlock(named)
+        | Rule::CantBeCountered(named)
+        | Rule::CantBeRegenerated(named) => named.is_empty(),
+        Rule::EntersWith {
+            counters, keyword, ..
+        } => *counters == 0 && keyword.is_none(),
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
-        Rule::CantGainLife(players)
+        Rule::MustBlockAttacker { blockers, .. } => blockers.is_empty(),
+        Rule::Combat { creatures, .. } => creatures.is_empty(),
+        Rule::IgnoreHexproof {
+            by, what, players, ..
+        } => by.is_empty() || (what.is_empty() && players.is_empty()),
+        Rule::LifeFloor { players, .. }
+        | Rule::CantGainLife(players)
         | Rule::NoLifeLossFromDamage(players)
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
@@ -728,18 +1332,30 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
+        | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
+        Rule::MayCastRather { casts, .. } => casts.is_empty(),
+        Rule::MaxHandSize(sizes) => sizes.is_empty(),
+        Rule::HandSizeChange(changes) => changes.is_empty(),
+        Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
-        Rule::MayCast { who, only, .. } => {
+        Rule::LookAtExiled { who, only, .. } | Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
-        Rule::BlockLimitEach { who, .. } | Rule::PlayersHave { who, .. } => who.is_empty(),
-        Rule::TriggerAgain(_)
+        Rule::BlockLimitEach { who, .. }
+        | Rule::PlayersHave { who, .. }
+        | Rule::ManaProduced { who, .. } => who.is_empty(),
+        Rule::Cant { who, .. } => who.is_empty(),
+        Rule::TriggerAgain { .. }
+        | Rule::NextSpell { .. }
+        | Rule::SpellCost { .. }
         | Rule::DamageCantBePrevented { .. }
         | Rule::Regenerate(_)
+        | Rule::Replaces { .. }
         | Rule::AttackLimit(_)
-        | Rule::BlockLimit(_) => false,
+        | Rule::BlockLimit(_)
+        | Rule::NoLegendRuleFor(_) => false,
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
@@ -787,7 +1403,7 @@ fn gather(state: &GameState) -> RulesInForce {
         return found;
     }
     // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
-    // permission to cast itself from its owner's graveyard (CR 601.2a, 113.6) from there.
+    // permission to cast itself from its owner's graveyard or from exile (CR 601.2a, 113.6) from there.
     let graveyards = state
         .players()
         .iter()
@@ -795,6 +1411,7 @@ fn gather(state: &GameState) -> RulesInForce {
     for (zone, from) in [
         (Zone::Battlefield, ZoneKind::Battlefield),
         (Zone::Stack, ZoneKind::Stack),
+        (Zone::Exile, ZoneKind::Exile),
     ]
     .into_iter()
     .chain(graveyards)
@@ -803,8 +1420,7 @@ fn gather(state: &GameState) -> RulesInForce {
             let Some(object) = state.object(id).filter(|o| o.kind() != ObjectKind::Ability) else {
                 continue;
             };
-            // A rule can only be printed, so a card that prints none has none whatever the layers did.
-            if !definition_has_rule(object.card()) {
+            if !may_hold(state, object, definition_has_rule, is_rule) {
                 continue;
             }
             let controller = controller_of_object(state, object);
@@ -840,17 +1456,21 @@ fn gather(state: &GameState) -> RulesInForce {
 /// The rules of a game in which none can be in force, and of one whose rules are being gathered (the gathering reads
 /// objects, never the rules).
 static NONE: RulesInForce = RulesInForce {
+    quirks: crate::combat_quirks::QuirkRules::NONE,
     must_attack: BTreeSet::new(),
     attack_players: Vec::new(),
     must_block: BTreeSet::new(),
     uncounterable: BTreeSet::new(),
+    unregenerable: BTreeSet::new(),
     no_life_gain: BTreeSet::new(),
     no_damage_loss: BTreeSet::new(),
+    life_floors: BTreeMap::new(),
     radiation_gains: BTreeSet::new(),
     no_life_change: BTreeSet::new(),
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
+    mana: Vec::new(),
     vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
@@ -859,13 +1479,21 @@ static NONE: RulesInForce = RulesInForce {
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
+    max_hand: BTreeMap::new(),
+    hand_change: BTreeMap::new(),
+    no_legend: BTreeSet::new(),
+    no_legend_for: Vec::new(),
+    untap_during: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
+    block_taxes: Vec::new(),
+    looks: Vec::new(),
     attack_limit: None,
     attack_limit_at: BTreeMap::new(),
     block_limit: None,
     block_limit_each: BTreeMap::new(),
+    cants: Vec::new(),
     w17b: crate::w17b_statics::W17B_NONE,
 };
 
@@ -937,7 +1565,10 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
     state.next_effect = state.next_effect.max(effect.id.0 + 1);
     if matches!(
         effect.rule,
-        Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. }
+        Rule::PreventDamage(_)
+            | Rule::Regenerate(_)
+            | Rule::DiesInstead { .. }
+            | Rule::Replaces { .. }
     ) {
         state.possible.replacements = true;
     }
@@ -950,8 +1581,23 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
     ) {
         state.possible.protection = true;
     }
+    if changes_costs(effect) {
+        state.possible.costs = true;
+    }
     state.rule_effects.push(effect.clone());
     Ok(())
+}
+
+/// Whether a rule in force changes the costs of spells (`GameState::possible`): a cost change of the next spell or of
+/// every matching spell for a time.
+pub(crate) const fn changes_costs(effect: &RuleEffect) -> bool {
+    matches!(
+        effect.rule,
+        Rule::NextSpell {
+            benefit: mtg_cards::modify::SpellBenefit::Cost { .. },
+            ..
+        } | Rule::SpellCost { .. }
+    )
 }
 
 /// Folds `ShieldUsed`: the shield prevents no more than `left`.
@@ -970,6 +1616,33 @@ pub(crate) fn fold_used(state: &mut GameState, id: EffectId, left: u32) -> Resul
         }
         None => Err(invalid(format!("unknown prevention shield {id:?}"))),
     }
+}
+
+/// Ends the `NextSpell` rules the cast of `spell` by `player` spends (the card is judged where it is cast from, as the
+/// announcement judged it).
+pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: ObjectId) {
+    let Some(target) = state.object(spell).map(GameObject::reference) else {
+        return;
+    };
+    let spent: Vec<EffectId> = state
+        .rule_effects
+        .iter()
+        .filter_map(|effect| {
+            let Rule::NextSpell { what, .. } = &effect.rule else {
+                return None;
+            };
+            let scope = Scope {
+                casting: Some((spell, player)),
+                ..Scope::announcing(state, effect.controller, effect.source.unwrap_or(target))
+            };
+            (effect.controller == player
+                && (what.is_empty() || scope.selects(what, target).unwrap_or(false)))
+            .then_some(effect.id)
+        })
+        .collect();
+    state
+        .rule_effects
+        .retain(|effect| !spent.contains(&effect.id));
 }
 
 /// Folds `RuleExpired`: the change leaves the state.
@@ -1041,6 +1714,11 @@ pub fn cant_be_countered(state: &GameState, id: ObjectId) -> bool {
     state.rules().uncounterable.contains(&id)
 }
 
+/// Whether the permanent `id` can't be regenerated: the one place a regeneration shield reads this rule.
+pub fn cant_be_regenerated(state: &GameState, id: ObjectId) -> bool {
+    state.rules().unregenerable.contains(&id)
+}
+
 /// Whether `player` can't gain life: the one place a gain of life reads this rule. A life total that can't change
 /// gains none either.
 pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
@@ -1052,6 +1730,16 @@ pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
 /// this rule.
 pub fn life_total_cant_change(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_life_change.contains(&player)
+}
+
+/// The life total damage can't take `player` below at `life`, if a rule sets one: the highest floor the total is at or above,
+/// since a floor that is not yet reached has nothing to hold (CR 614.1); the one place the damage events read this rule.
+pub fn damage_life_floor(state: &GameState, player: PlayerId, life: i32) -> Option<i32> {
+    state
+        .rules()
+        .life_floors
+        .get(&player)
+        .and_then(|floors| floors.iter().copied().filter(|floor| life >= *floor).max())
 }
 
 /// Whether damage dealt to `player` causes no loss of life: the one place the damage events read this rule.
@@ -1136,6 +1824,23 @@ pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, comb
     })
 }
 
+/// Whether a rule in force lets `viewer` look at `card`, a face-down card in exile (CR 406.3): the one place the sight of
+/// a seat reads this rule.
+pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject) -> bool {
+    card.zone() == Zone::Exile
+        && state.rules().looks.iter().any(|look| {
+            look.who.contains(&viewer)
+                && look
+                    .only
+                    .as_ref()
+                    .is_none_or(|only| only.contains(&card.reference()))
+                && (look.what.is_empty()
+                    || Scope::announcing(state, look.controller, look.source)
+                        .selects(&look.what, card.reference())
+                        .unwrap_or(false))
+        })
+}
+
 /// The permissions to cast cards in force: the one place a cast reads them (`ways`).
 pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
@@ -1158,7 +1863,7 @@ pub(crate) fn c11b_once_source(
     let zone = crate::resolve::zone_kind(from);
     let covering: Vec<&Cast> = cast_permissions(state)
         .iter()
-        .filter(|cast| !cast.free && cast.from == Some(zone) && cast.covers(state, player, card))
+        .filter(|cast| cast.adds_to_printed(zone) && cast.covers(state, player, card))
         .collect();
     if covering.iter().any(|cast| !cast.once) {
         return None;
@@ -1166,9 +1871,77 @@ pub(crate) fn c11b_once_source(
     covering.first().map(|cast| cast.source)
 }
 
+/// The taxes on blocking in force: the one place the block declaration reads this rule (`block_tax`).
+pub(crate) fn block_taxes(state: &GameState) -> &[crate::block_tax::BlockTaxing] {
+    &state.rules().block_taxes
+}
+
 /// The taxes on attacking in force: the one place the attack declaration reads this rule (`attack_tax`).
 pub(crate) fn attack_taxes(state: &GameState) -> &[Taxing] {
     &state.rules().taxes
+}
+
+/// The maximum hand size of `player` under the rules in force, `base` when no rule sets one: the one place cleanup reads
+/// it, beside `no_max_hand_size`.
+pub(crate) fn max_hand_size(state: &GameState, player: PlayerId, base: usize) -> usize {
+    let set = state
+        .rules()
+        .max_hand
+        .get(&player)
+        .map_or(base, |size| usize::try_from(*size).unwrap_or(usize::MAX));
+    let change = state.rules().hand_change.get(&player).copied().unwrap_or(0);
+    let size = i64::try_from(set)
+        .unwrap_or(i64::MAX)
+        .saturating_add(change)
+        .max(0);
+    usize::try_from(size).unwrap_or(usize::MAX)
+}
+
+/// Whether the legend rule does not apply to the permanents `player` controls: the one place the state-based actions
+/// read this rule.
+pub fn no_legend_rule(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_legend.contains(&player)
+}
+
+/// Whether a rule says the legend rule does not apply to the permanent `id`, judged for the rule's controller: the
+/// one place the state-based actions read these rules.
+pub fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
+    let Some(object) = state.object(id) else {
+        return false;
+    };
+    state.rules().no_legend_for.iter().any(|rule| {
+        Scope::announcing(state, rule.controller, rule.source)
+            .selects(&rule.what, object.reference())
+            .unwrap_or(false)
+    })
+}
+
+/// The permanents that untap during the untap step of `active` besides its own: those each rule in force selects among
+/// the permanents its controller controls, in battlefield order.
+pub(crate) fn untap_during(state: &GameState, active: PlayerId) -> Vec<ObjectId> {
+    let mut found = Vec::new();
+    for rule in state
+        .rules()
+        .untap_during
+        .iter()
+        .filter(|rule| rule.whose.contains(&active))
+    {
+        let scope = Scope::announcing(state, rule.controller, rule.source);
+        for &id in state.zone(Zone::Battlefield) {
+            let Some(object) = state.object(id) else {
+                continue;
+            };
+            if crate::characteristics::controller_of(state, id) == Some(rule.controller)
+                && !found.contains(&id)
+                && scope
+                    .selects(&rule.what, object.reference())
+                    .unwrap_or(false)
+            {
+                found.push(id);
+            }
+        }
+    }
+    found
 }
 
 /// The triggers that trigger an additional time: the one place trigger detection reads this rule.
@@ -1496,6 +2269,7 @@ mod tests {
 
     fn permission(only: Option<Vec<ObjectRef>>, play: bool) -> Rule {
         Rule::MayCast {
+            rather: None,
             who: vec![ME],
             what: mtg_cards::refs::Selector::default(),
             from: Some(ZoneKind::Exile),
@@ -1505,6 +2279,8 @@ mod tests {
             play,
             once: false,
             additional: None,
+            spend_as: SpendAs::Normal,
+            when: None,
         }
     }
 
@@ -1526,6 +2302,28 @@ mod tests {
         let object = game.object(named[card].id).unwrap();
         assert_eq!(permission.covers(&game, player, object), covered);
         assert_eq!(permission.plays(&game, player, object), covered);
+    }
+
+    #[rstest]
+    #[case::while_it_holds(Condition::YourTurn, true)]
+    #[case::while_it_fails(Condition::Not(Box::new(Condition::YourTurn)), false)]
+    fn a_permission_with_a_condition_covers_only_while_it_holds(
+        #[case] when: Condition,
+        #[case] covered: bool,
+    ) {
+        let mut game = game(Vec::new());
+        let wolf = exiled(&mut game, "Wolf");
+        let mut rule = permission(Some(vec![wolf]), false);
+        if let Rule::MayCast { when: slot, .. } = &mut rule {
+            *slot = Some(Box::new(when));
+        }
+        put_in_force(&mut game, rule);
+        let [permission] = cast_permissions(&game) else {
+            panic!("one permission");
+        };
+        let mine = game.turn().active() == permission.controller;
+        let object = game.object(wolf.id).unwrap();
+        assert_eq!(permission.covers(&game, ME, object), covered == mine);
     }
 
     #[test]
@@ -1692,7 +2490,7 @@ mod tests {
         assert_eq!(again[0].source, named(&game, "Holder"));
         assert_eq!(
             again[0].cause,
-            serde_json::from_str::<TriggerPattern>(cause).unwrap()
+            Some(serde_json::from_str::<TriggerPattern>(cause).unwrap())
         );
     }
 
@@ -1895,5 +2693,63 @@ mod tests {
         leaves(&mut game, "Holder");
         assert!(!holds(&game, Draw(ME)));
         assert!(holds(&copy, Draw(ME)), "the copy still has the holder");
+    }
+
+    /// Seat 0 controls the holder with the grant; the top card of seat 0's library is exiled face down sealed by `by`
+    /// (the holder, or another permanent when `by_holder` is false); returns the card.
+    fn sealed(game: &mut GameState, by_holder: bool) -> ObjectId {
+        let by = if by_holder {
+            game.zone(Zone::Battlefield)[0]
+        } else {
+            game.zone(Zone::Hand(ME))[0]
+        };
+        let by = game.object(by).unwrap().reference();
+        let card = *game.zone(Zone::Library(ME)).last().unwrap();
+        let seal = Event::ZoneChanged {
+            object: card,
+            from: Zone::Library(ME),
+            to: Zone::Exile,
+            cause: ZoneCause::Sealed { by },
+        };
+        apply_event(game, &seal).unwrap();
+        card
+    }
+
+    #[rstest]
+    #[case::no_grant(None, true, &[])]
+    #[case::you_look_at_what_it_exiled(Some("{}"), true, &[0])]
+    #[case::not_at_what_another_exiled(Some("{}"), false, &[])]
+    #[case::each_player(Some(r#"{"who":"EachPlayer"}"#), true, &[0, 1, 2, 3])]
+    #[case::opponents(Some(r#"{"who":"Opponents"}"#), true, &[1, 2, 3])]
+    fn a_sealed_card_is_looked_at_only_through_a_grant_while_the_grant_is_in_force(
+        #[values(2, 3, 4)] seats: usize,
+        #[case] grant: Option<&str>,
+        #[case] by_holder: bool,
+        #[case] lookers: &[usize],
+    ) {
+        let rules = grant
+            .map(|who| {
+                let mut rule: serde_json::Value = serde_json::from_str(who).unwrap();
+                rule["what"] = serde_json::json!([{"ExiledWith": "This"}]);
+                rule_ability(&format!(r#"{{"LookAtExiled":{rule}}}"#))
+            })
+            .into_iter()
+            .collect();
+        let mut game = table(seats, rules);
+        let card = sealed(&mut game, by_holder);
+        let sees = |game: &GameState| -> Vec<usize> {
+            (0..seats)
+                .filter(|seat| game.may_look_at(PlayerId::from_index(*seat), card))
+                .collect()
+        };
+        let expected: Vec<usize> = lookers
+            .iter()
+            .copied()
+            .filter(|seat| *seat < seats)
+            .collect();
+        assert_eq!(sees(&game), expected);
+        // The grant ends with the holder: the card is sealed for every seat again.
+        leaves(&mut game, "Holder");
+        assert_eq!(sees(&game), Vec::<usize>::new());
     }
 }

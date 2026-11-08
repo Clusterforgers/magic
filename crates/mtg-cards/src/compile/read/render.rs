@@ -27,6 +27,10 @@ mod exiled_until;
 mod flicker_targets;
 mod free_casts;
 mod from_graveyard;
+mod g10d_colors;
+mod g11b_redirect;
+mod g11b_unpreventable;
+mod g8e_prevent;
 mod graveyards;
 mod group_becomes;
 mod hand_returns;
@@ -44,6 +48,13 @@ mod otherwise;
 mod player_events;
 mod populated;
 mod put_onto;
+mod r11w_batch;
+mod r11w_leaves;
+mod r11w_returned_as;
+mod r7d;
+mod r9w_dread;
+mod r9w_manifest;
+mod r9w_shields;
 mod revealed;
 mod shuffled_in;
 mod stolen;
@@ -64,6 +75,7 @@ mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
 mod w9b_clash;
+pub(super) use r7d::WHILE_TAPPED;
 
 mod dk1d_gift_target;
 
@@ -83,7 +95,7 @@ use super::counters;
 use super::create;
 use super::defining;
 use super::draws;
-use super::effects::{BACK, RETURNED, dead_card, other_dead_card, returns_itself};
+use super::effects::{dead_card, other_dead_card, returns_itself};
 use super::event_wordings;
 use super::exiled_kind;
 use super::flicker;
@@ -112,15 +124,16 @@ use super::triggers::{
     leaves_itself, pattern_text, targeted_itself,
 };
 use super::where_x;
-use crate::ability::{Ability, Limit, Timing};
+use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::compile::classify;
-use crate::cost::Cost;
+use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::TriggerPattern;
-use crate::value::{Amount, Condition, CounterKind};
+use crate::value::{Amount, Condition, CounterKind, StatKind};
+use g11b_unpreventable::is as unpreventable;
 
 /// "draws a card for each card in your hand" is also "draws X cards, where X is the number of cards in your hand".
 fn where_x_draws(texts: &[String]) -> Vec<String> {
@@ -172,10 +185,22 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants) {
+        return texts;
+    }
+    if let Some(texts) = super::fix16_kicked::fix16_kicked_variants(ability, variants) {
+        return texts;
+    }
+    if let Some(texts) = super::fix16_kicked::fix16_each_target_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::c11a_ability_less::c11a_variants(ability) {
         return texts;
     }
     if let Some(texts) = super::w9d_exert::w9d_variants(ability) {
+        return texts;
+    }
+    if let Some(texts) = super::r6f_flash_sacrifice::r6f_variants(ability) {
         return texts;
     }
     if let Some(texts) = c10_dice_per_player::c10_dice_variants(ability) {
@@ -209,6 +234,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(incubated);
     let regenerating = regeneration_wordings(&texts);
     texts.extend(regenerating);
+    let kept_down = super::r5c_order::r5c_held_wordings(&texts);
+    texts.extend(kept_down);
     // A card may count the casts of "a commander" for those of "your commander" (Jirina Kudro).
     let commanders: Vec<String> = texts
         .iter()
@@ -373,9 +400,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
-    // A trigger about the card itself may say "it explores" or "it connives" for the card (Seekers' Squire).
+    // A trigger about the card itself may say "it explores", "it connives" or "it endures" for the card (Seekers' Squire).
     if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when)) {
-        for verb in ["explores", "connives"] {
+        for verb in ["explores", "connives", "endures"] {
             let (named, pronoun) = (format!(", ~ {verb}"), format!(", it {verb}"));
             let pronouns: Vec<String> = texts
                 .iter()
@@ -397,6 +424,19 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     pronouns::they(ability, &mut texts);
     pronouns::of_the_group(ability, &mut texts);
     pronouns::that_creature_after_an_attach(ability, &mut texts);
+    // A trigger about the damage equipped creature is dealt says "it deals" for that creature (Blazing Sunsteel).
+    if matches!(
+        ability,
+        Ability::Triggered { when: when @ TriggerPattern::Batch(_), .. }
+            if super::triggers::event_creature(when) == Some(Ref::Attached)
+    ) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", equipped creature deals "))
+            .map(|text| text.replacen(", equipped creature deals ", ", it deals ", 1))
+            .collect();
+        texts.extend(pronouns);
+    }
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
         ability,
@@ -425,6 +465,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = super::w11a_joins::w11a_wordings(&texts);
     texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
+    texts.extend(more);
+    let more = super::g10d_spell_costs::g10d_spell_cost_wordings(&texts);
     texts.extend(more);
     let more = super::leave_combat::wordings(&texts);
     texts.extend(more);
@@ -467,16 +509,196 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    super::written_memo::written(ability, written_anew)
+}
+
+/// [`written_variants`] without the table of abilities written already.
+fn written_anew(ability: &Ability) -> Vec<String> {
+    let mut texts = written_ordered(ability);
+    // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
+    if let Some(plain) = r11w_batch::flat_ability(ability) {
+        for text in written_variants(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    // "S1. If C, instead S2." for a step and its replacement (r7c); the twin has no pair left, so this recurses once.
+    if let Some(joined) = super::r7c_when::r7c_instead(ability) {
+        for text in written_variants(&joined) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    // Protection with an exception reads as plain protection and the exception's sentence; the plain twin has no
+    // exception left, so this recurses once.
+    if let Some((plain, sentence)) = super::e14d_sparing::e14d_plain(ability) {
+        for text in written_variants(&plain) {
+            let text = format!("{}. {sentence}", text.trim_end_matches('.'));
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    // A table of one row printed inline; the twin has no table left, so this recurses once.
+    if let Some(inline) = super::fix23_dice::fix23_inline_roll(ability) {
+        for text in written_variants(&inline) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    // Numbered bookkeeping names read as the plain ones; the twin has none left, so this recurses once.
+    if let Some(plain) = super::t18_binds::t18_unnumbered(ability) {
+        for text in written_variants(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    // The card that died named by the event reads as the card in the graveyard.
+    if let Some(card) = super::t18_dead::t18_dead_card(ability) {
+        for text in written_variants(&card) {
+            let card_text = text
+                .replace(", return it to", ", return that card to")
+                .replace(", return that creature to", ", return that card to");
+            for text in [text, card_text] {
+                if !texts.contains(&text) {
+                    texts.push(text);
+                }
+            }
+        }
+    }
+    // "not (not a or not b)" in a list of conditions reads as "a" and "b".
+    if let Some(flat) = super::t18_demorgan::t18_flattened(ability) {
+        for text in written_variants(&flat) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    let more = super::t18_words::t18_wordings(&texts);
+    for text in more {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
+    let six_sided: Vec<String> = texts
+        .iter()
+        .filter_map(|text| super::fix23_dice::fix23_six_sided(text))
+        .collect();
+    for text in six_sided {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
+    texts
+}
+
+/// The wordings of the ability as given, else of its selectors in the readers' order and of its plain twins.
+fn written_ordered(ability: &Ability) -> Vec<String> {
+    let texts = written_as_given(ability);
+    if !texts.is_empty() {
+        return texts;
+    }
+    // A selector is a conjunction: the same parts in the readers' order are the same rule.
+    let mut texts: Vec<String> = Vec::new();
+    for ordered in super::r5c_order::r5c_reordered(ability) {
+        for text in written_as_given(&ordered) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    if let Some(plain) = super::r5a_order::renamed(ability) {
+        for text in written_as_given(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    if let Some(ordered) = super::r5a_order::canonical(ability) {
+        for text in written_as_given(&ordered) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    if texts.is_empty() {
+        texts = super::r6d_heads::normal(ability).map_or_else(
+            || super::r6d_heads::cast_wordings(ability, written_variants),
+            |normal| written_variants(&normal),
+        );
+    }
+    // A condition held as a number is the condition (r7c); the twin has none left, so this recurses once.
+    if texts.is_empty()
+        && let Some(plain) = super::r7c_when::r7c_unwrapped(ability)
+    {
+        texts = written_variants(&plain);
+    }
+    texts
+}
+
+/// Every wording of an ability, its selectors in the order given.
+fn written_as_given(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::e15a_max_speed::e15a_variants(ability, written_variants) {
+        return texts;
+    }
+    if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants) {
+        return texts;
+    }
+    if let Some(texts) = super::e15g_licid::e15g_licid_texts(ability, written_variants) {
+        return texts;
+    }
     let mut texts = variants(ability);
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
+    super::r7e_events::r7e_add(ability, &mut texts);
     those::add(ability, &mut texts);
     together::add(&mut texts);
+    r11w_batch::add(&mut texts);
+    r11w_batch::add_players(&mut texts);
     and_lists::add(ability, &mut texts);
     twins::add(ability, &mut texts);
     super::shortened::add(&mut texts);
     oracle_only::add(ability, &mut texts);
+    done_once_kept(ability, &mut texts);
+    texts.extend(super::r5b_performed::variants(ability, written_variants));
+    super::r5a_wordings::add(&mut texts);
+    super::r6a_wordings::add(ability, &mut texts);
+    super::r6c_wordings::add(ability, &mut texts);
+    g8e_prevent::g8e_wordings(&mut texts);
+    super::r6b_wordings::add(ability, &mut texts);
+    super::r7a_wordings::add(ability, &mut texts);
+    super::r7d_statics::wordings(&mut texts);
+    for text in super::r7d_statics::creature_attached(ability, written_variants) {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
+    super::r7b_wordings::add(ability, &mut texts);
+    r11w_batch::add_any_other(ability, &mut texts);
+    super::r11w_tallies::add(&mut texts);
+    super::g13a_wordings::add(&mut texts);
+    super::w14_trailing_if::add(&mut texts);
+    super::e16c_attacks::add(ability, &mut texts);
+    oracle_only::add_last(ability, &mut texts);
     texts
+}
+
+/// "Do this only once each turn" after a choice counts the times it is done (`Limit::done_once`): a trigger that spends its
+/// limit as it triggers does not say it.
+fn done_once_kept(ability: &Ability, texts: &mut Vec<String>) {
+    if let Ability::Triggered {
+        limit: Some(limit),
+        effects,
+        ..
+    } = ability
+        && *limit != Limit::done_once(effects)
+    {
+        texts.retain(|text| !text.contains("o this only once each turn"));
+    }
 }
 
 /// The wordings of an ability the card has in its graveyard: it returns itself "from your graveyard to your hand", and
@@ -560,6 +782,12 @@ fn head_wordings(head: Vec<String>, condition: Option<&Condition>) -> Vec<Vec<St
             .collect();
         others
     }));
+    // The spell of a cast is "it" or "that spell" ("if no mana was spent to cast that spell").
+    if let Some(spent) = condition.and_then(super::spent::amount_spent_text)
+        && let Some(spell) = spent.strip_suffix(" it")
+    {
+        heads.push(vec![head[0].clone(), format!("if {spell} that spell,")]);
+    }
     if head[0].contains("equipped creature") {
         heads.push(
             head.iter()
@@ -623,6 +851,10 @@ fn mana_trigger_texts(ability: &Ability) -> Vec<String> {
 fn written_from(when: &TriggerPattern, effects: &[Effect]) -> ZoneKind {
     if cast_itself(when) {
         ZoneKind::Stack
+    } else if matches!(when, TriggerPattern::ZoneChange { what, .. } if what.0 == [Pred::HauntedBy(Ref::This)])
+    {
+        // "When the creature ~ haunts dies" works from exile (CR 702.55b).
+        ZoneKind::Exile
     } else if cycled_itself(when)
         || graveyard_itself(when)
         || returns_itself(effects)
@@ -632,6 +864,22 @@ fn written_from(when: &TriggerPattern, effects: &[Effect]) -> ZoneKind {
     } else {
         ZoneKind::Battlefield
     }
+}
+
+/// The spell a cast trigger is about gains a keyword as "that spell" ("Whenever you cast an instant spell, that spell
+/// gains rebound"): the same words with "it" named, for a cast trigger only.
+fn e15g_that_spell(when: &TriggerPattern, texts: impl Iterator<Item = String>) -> Vec<String> {
+    let cast = matches!(when, TriggerPattern::SpellCast { .. });
+    let mut out = Vec::new();
+    for text in texts {
+        let named = text
+            .replacen(", it gains ", ", that spell gains ", 1)
+            .replacen("\n• It gains ", "\n• That spell gains ", 1);
+        let more = (cast && named != text).then_some(named);
+        out.push(text);
+        out.extend(more);
+    }
+    out
 }
 
 fn ability_texts(ability: &Ability) -> Vec<String> {
@@ -655,7 +903,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         Ability::Triggered {
             when,
             intervening_if,
-            limit: limit @ (None | Some(Limit::OncePerTurn)),
+            limit: limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone)),
             from,
             targets,
             effects,
@@ -680,7 +928,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                     let equipped =
                         text.replace("copy of enchanted creature", "copy of equipped creature");
                     let others = (equipped != text).then_some(equipped);
-                    std::iter::once(text).chain(others)
+                    e15g_that_spell(when, std::iter::once(text).chain(others))
                 })
                 .collect()
         }
@@ -689,6 +937,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             timing,
             condition,
             limit,
+            by: Activators::Controller,
             from: from @ (ZoneKind::Battlefield | ZoneKind::Graveyard),
             targets,
             effects,
@@ -731,9 +980,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => loyalty::texts(*cost, targets, effects),
-        Ability::AdditionalCost { cost, required } => costs::additional_text(cost, *required)
-            .into_iter()
-            .collect(),
+        Ability::AdditionalCost { cost, required } => costs::additional_texts(cost, *required),
         _ => statics::texts(ability),
     }
 }
@@ -766,22 +1013,33 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     if effects.is_empty() {
         return Vec::new();
     }
+    if let Some(implied) = g11b_unpreventable::implied(effects) {
+        return alternatives(targets, &implied);
+    }
+    // A batch only makes its steps one event for the triggers that look at them: it reads as its steps.
+    if let Some(steps) = r11w_batch::flat(effects) {
+        return alternatives(targets, &steps);
+    }
     if targets.len() > 1 {
         return multi::alternatives(targets, effects);
     }
     if let [
         Effect::Modal {
             choose,
+            who: crate::refs::Ref::You,
             repeat,
             modes,
             at_random,
+            different_players: false,
             once_each_turn,
             once_ever,
             all_if,
+            mode_costs,
+            extra_mode_cost: None,
         },
     ] = effects
     {
-        if !targets.is_empty() || modes.len() < 2 {
+        if !targets.is_empty() || modes.len() < 2 || !mode_costs.is_empty() {
             return Vec::new();
         }
         let flags = choices::C11dFlags {
@@ -789,7 +1047,25 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             at_random: *at_random,
             once: (*once_each_turn, *once_ever),
         };
-        return choices::texts(choose, modes, flags, all_if.as_ref())
+        let one = Bounds::default();
+        // "choose one. If ..., you may choose both instead.": one, or every mode while the condition holds (r5b).
+        let (choose, all_if) = match (&choose.max, all_if) {
+            (
+                Some(Amount::When {
+                    condition,
+                    then,
+                    otherwise,
+                }),
+                None,
+            ) if choose.min.is_one()
+                && otherwise.is_one()
+                && **then == Amount::Fixed(i32::try_from(modes.len()).unwrap_or(0)) =>
+            {
+                (&one, Some(&**condition))
+            }
+            _ => (choose, all_if.as_ref()),
+        };
+        return choices::texts(choose, modes, flags, all_if)
             .into_iter()
             .chain(either::texts(choose, modes).into_iter().filter(|_| !repeat))
             .map(|text| vec![text])
@@ -835,11 +1111,15 @@ fn wheel_text(effects: &[Effect]) -> Option<(String, usize)> {
             who: Ref::EachPlayer,
             count: hand,
             random: false,
+            filter: None,
+            by: None,
+            optional: false,
             bind,
         },
         Effect::Draw {
             who: Ref::EachPlayer,
             count,
+            ..
         },
         ..,
     ] = effects
@@ -873,6 +1153,7 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
                     | Amount::Party(_)
                     | Amount::Times { .. }
                     | Amount::Tallied { .. }
+                    | Amount::Tally { .. }
                     | Amount::Distinct { .. }
                     | Amount::CommanderCasts(_),
                 ..
@@ -900,7 +1181,11 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
     let conditions = effects
         .iter()
         .filter_map(|effect| match effect {
-            Effect::If { condition, .. } => Some(conditional::condition_texts(condition).len()),
+            Effect::If { condition, .. } => Some(
+                conditional::condition_texts(condition)
+                    .len()
+                    .max(super::r6d_kind::all_texts(condition).len()),
+            ),
             _ => None,
         })
         .max()
@@ -1008,9 +1293,8 @@ fn written(
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
-            .or_else(|| w15c_clash::w15c_clash(&effects[start..]))
-            .or_else(|| writer.w11c_clash(&effects[start..]))
-            .or_else(|| writer.w9b_clash(&effects[start..]))
+            .or_else(|| writer.clashes(&effects[start..]))
+            .or_else(|| writer.g10d_colors(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -1039,9 +1323,9 @@ fn written(
             [effect] => {
                 sentences.push(writer.effect(effect)?);
                 if let Effect::Destroy {
-                    what,
-                    regenerate: false,
+                    what, regenerate, ..
                 } = effect
+                    && !regenerate
                 {
                     let pronoun = if writer.single(what) { "it" } else { "they" };
                     sentences.push(format!("{pronoun} can't be regenerated"));
@@ -1049,7 +1333,8 @@ fn written(
             }
             group => sentences.push(
                 writer
-                    .damage_group(group)
+                    .r11w_damage_pair(group)
+                    .or_else(|| writer.damage_group(group))
                     .or_else(|| writer.mana_group(group))
                     .or_else(|| writer.compound(group))?,
             ),
@@ -1087,13 +1372,13 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
                     place: Place::Top,
                     order,
                 },
+            ..
         },
     ) = (choose, moved)
     else {
         return None;
     };
-    if bind != BACK || name != BACK || from.0 != [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]
-    {
+    if bind != name || from.0 != [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] {
         return None;
     }
     let Some(Amount::Fixed(most)) = &count.max else {
@@ -1131,12 +1416,21 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
         Effect::Move {
             what: Ref::Bound(name),
             to: Destination::Hand,
+            ..
         },
     ) = (choose, moved)
     else {
         return None;
     };
-    if bind != RETURNED || name != RETURNED {
+    if bind != name {
+        return None;
+    }
+    // Cards of another zone are returned in other words ("from your graveyard to your hand").
+    if from
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::In(zone) if *zone != ZoneKind::Battlefield))
+    {
         return None;
     }
     if *count == (Bounds::up_to(None)) {
@@ -1145,13 +1439,11 @@ fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
             "you may return any number of {phrase} to their owner's hand"
         ));
     }
-    if !count.is_one() {
-        return None;
-    }
-    let phrase = phrase_text(from, Form::Subject)?;
+    let q = hand_returns::quantity(count, from)?;
+    let owner = if q.plural { "their" } else { "its" };
     Some(format!(
-        "return {} {phrase} to its owner's hand",
-        article(&phrase)
+        "{}return {} to {owner} owner's hand",
+        q.lead, q.noun
     ))
 }
 
@@ -1174,7 +1466,10 @@ fn closed(sentences: &[String], capital_first: bool) -> Vec<String> {
 /// The sentences after the event of a triggered ability, and the one about how often it triggers.
 fn triggered_tail(sentences: &[String], limit: Option<Limit>) -> Vec<String> {
     let mut tail = closed(sentences, false);
-    tail.extend(limit.map(|_| "This ability triggers only once each turn.".to_owned()));
+    tail.extend(limit.map(|limit| match limit {
+        Limit::OncePerTurnDone => "Do this only once each turn.".to_owned(),
+        _ => "This ability triggers only once each turn.".to_owned(),
+    }));
     tail
 }
 
@@ -1224,19 +1519,24 @@ fn your_cards(effect: &Effect) -> Option<String> {
         Effect::Draw {
             who: Ref::You,
             count,
+            ..
         } => format!("draw {}", cards_text(count)?),
         Effect::Mill {
             who: Ref::You,
             count,
+            ..
         } => format!("mill {}", cards_text(count)?),
         Effect::Discard {
             who: Ref::You,
             count,
             random,
+            filter,
+            by: None,
+            optional: false,
             bind: None,
         } => format!(
             "discard {}{}",
-            draws::discarded_text(&Ref::You, count)?,
+            draws::discarded_filtered_text(&Ref::You, count, filter.as_ref())?,
             at_random(*random)
         ),
         _ => return None,
@@ -1263,6 +1563,34 @@ fn sacrifice_text(filter: &Selector) -> Option<String> {
     Some(format!("{} {text}", article(&text)))
 }
 
+/// "conjure a card named Ponder into your hand" and "seek a creature card": the digital verbs of the player themselves.
+fn digital_text(effect: &Effect) -> Option<String> {
+    match effect {
+        Effect::Conjure {
+            name, zone, count, ..
+        } => {
+            let place = match zone {
+                ZoneKind::Hand => "your hand",
+                ZoneKind::Library => "your library",
+                ZoneKind::Graveyard => "your graveyard",
+                ZoneKind::Exile => "exile",
+                _ => return None,
+            };
+            Some(format!(
+                "conjure {} named {name} into {place}",
+                cards_text(count)?
+            ))
+        }
+        Effect::Seek { filter, count, .. } if count.is_one() => {
+            let text = phrase_text(filter, Form::Subject)?;
+            // Only a plain card kind reads as "a creature card"; any other filter is not worded.
+            text.chars().all(|c| c.is_ascii_lowercase()).then_some(())?;
+            Some(format!("seek {} {text} card", article(&text)))
+        }
+        _ => None,
+    }
+}
+
 /// Whether the effect puts energy counters on you, which a card writes "you get {E}{E}".
 fn gets_energy(effect: &Effect) -> bool {
     matches!(
@@ -1286,6 +1614,19 @@ fn c10_vp_planar_text(effect: &Effect) -> Option<String> {
     )
 }
 
+/// Whether the effect puts, removes, moves or multiplies counters: the writer words them together.
+fn is_counters(effect: &Effect) -> bool {
+    matches!(
+        effect,
+        Effect::PutCounters { .. }
+            | Effect::RemoveCounters { .. }
+            | Effect::RemoveAllCounters { .. }
+            | Effect::MoveCounters { .. }
+            | Effect::MultiplyCounters { .. }
+            | Effect::PutCountersOf { .. }
+    )
+}
+
 /// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
 fn is_imperative(effect: &Effect) -> bool {
     !gets_energy(effect)
@@ -1296,6 +1637,8 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Proliferate { who: Ref::You }
                 | Effect::Venture { who: Ref::You, .. }
                 | Effect::Incubate { who: Ref::You, .. }
+                | Effect::Conjure { who: Ref::You, .. }
+                | Effect::Seek { who: Ref::You, .. }
                 | Effect::TimeTravel { who: Ref::You }
                 | Effect::Draw { who: Ref::You, .. }
                 | Effect::Mill { who: Ref::You, .. }
@@ -1310,6 +1653,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Untap { .. }
                 | Effect::TapOrUntap { .. }
                 | Effect::Goad { .. }
+                | Effect::Suspect { .. }
                 | Effect::RemoveFromCombat { .. }
                 | Effect::Regenerate { .. }
                 | Effect::Counter { .. }
@@ -1317,12 +1661,45 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::CreateToken { who: Ref::You, .. }
                 | Effect::PutCounters { .. }
                 | Effect::RemoveCounters { .. }
+                | Effect::RemoveAllCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::MultiplyCounters { .. }
+                | Effect::PutCountersOf { .. }
                 | Effect::Transform { .. }
                 | Effect::Flip { .. }
+                | Effect::TurnFaceUp { .. }
                 | Effect::CopySpell { .. }
         )
+}
+
+/// The sentences of mana counted from the game: "for each color among permanents you control, add one mana of that
+/// color", "choose a color. Add an amount of mana of that color equal to your devotion to that color"; `None` for any
+/// other mana or another kind of permanent.
+fn e14g_counted_mana(mana: &Produce) -> Option<String> {
+    match mana {
+        Produce::EachColorAmong(among) => {
+            let kind = match among.0.as_slice() {
+                [Pred::ControlledBy(Ref::You)] => "",
+                [
+                    Pred::ControlledBy(Ref::You),
+                    Pred::Compare {
+                        stat: StatKind::Colors,
+                        op: crate::value::Cmp::Eq,
+                        to: Amount::Fixed(1),
+                    },
+                ] => "monocolored ",
+                _ => return None,
+            };
+            Some(format!(
+                "for each color among {kind}permanents you control, add one mana of that color"
+            ))
+        }
+        Produce::Devotion => Some(
+            "choose a color. Add an amount of mana of that color equal to your devotion to that color"
+                .to_owned(),
+        ),
+        _ => None,
+    }
 }
 
 /// "{G}{G}", "one mana of any color": the mana an effect adds.
@@ -1334,6 +1711,10 @@ fn add_text(
     lasts: ManaLasts,
     also: &str,
 ) -> Option<String> {
+    if let Some(text) = e14g_counted_mana(mana) {
+        return (times.is_one() && only.is_empty() && lasts.is_step() && also.is_empty())
+            .then_some(text);
+    }
     // "Add {G}. If you control four or more creatures, add {G}{G} instead."
     if let Produce::Instead {
         base,
@@ -1498,6 +1879,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
                 [] => return None,
             }
         }
+        _ if *mana == Produce::two_different_colors() => "two mana of different colors".to_owned(),
         Produce::OneOfLists(lists) if lists.len() > 1 => {
             let texts: Vec<String> = lists.iter().map(|list| symbols_text(list)).collect();
             match texts.as_slice() {
@@ -1518,10 +1900,30 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
         (Timing::Instant, None) => words(""),
         (Timing::Sorcery, None) => words("Activate only as a sorcery."),
         (Timing::Instant, Some(Limit::OncePerTurn)) => words("Activate only once each turn."),
+        (Timing::Instant, Some(Limit::OncePerGame)) => words("Activate only once."),
+        (Timing::Sorcery, Some(Limit::OncePerGame)) => vec![
+            "Activate only as a sorcery and only once.".to_owned(),
+            "Activate only once and only as a sorcery.".to_owned(),
+        ],
         (Timing::Sorcery, Some(Limit::OncePerTurn)) => vec![
             "Activate only as a sorcery and only once each turn.".to_owned(),
             "Activate only once each turn and only as a sorcery.".to_owned(),
         ],
+        // A limit counted as a triggered ability's choice is done, which no activation has.
+        (_, Some(Limit::OncePerTurnDone)) => Vec::new(),
+        (timing, Some(Limit::TimesPerTurn(most))) => {
+            let times = match most {
+                2 => "twice".to_owned(),
+                // "Activate no more than three times each turn."
+                n => count_word(n)
+                    .map_or_else(|| format!("{n} times"), |word| format!("{word} times")),
+            };
+            let lead = match timing {
+                Timing::Sorcery => "Activate only as a sorcery and no more than",
+                Timing::Instant => "Activate no more than",
+            };
+            vec![format!("{lead} {times} each turn.")]
+        }
     }
 }
 
@@ -1581,6 +1983,15 @@ fn at_random(random: bool) -> &'static str {
     if random { " at random" } else { "" }
 }
 
+/// "amass Orcs 2".
+fn amass_text(subtype: &mtg_core::card::Subtype, count: &Amount) -> Option<String> {
+    Some(format!(
+        "amass {} {}",
+        plural_subtype(&subtype.0),
+        points_text(count)?
+    ))
+}
+
 /// Writes effects in order, remembering whether the clause's target has been named yet.
 struct Writer<'a> {
     targets: &'a [TargetSpec],
@@ -1627,7 +2038,14 @@ impl Writer<'_> {
 
     /// Whether the target is of this kind.
     fn target_is(&self, wanted: impl Fn(&Targetable) -> bool) -> bool {
-        self.targets.first().is_some_and(|spec| wanted(&spec.what))
+        // A most for the total mana value is a rule on the set (`name_target` words it), not on what each target is.
+        self.targets.first().is_some_and(|spec| match &spec.what {
+            Targetable::Together {
+                what,
+                rule: TargetSet::TotalManaValueAtMost(_),
+            } => wanted(what),
+            what => wanted(what),
+        })
     }
 
     /// Whether the reference is the one target and it is a card in the controller's graveyard.
@@ -1706,9 +2124,36 @@ impl Writer<'_> {
             Ref::Each(selector) if several => {
                 Some(format!("each {}", phrase_text(selector, Form::Each)?))
             }
+            Ref::Convoked if several => Some("each creature that convoked it".to_owned()),
             // Several targets: "each of up to three target creatures".
             Ref::Target(0) if several && self.are_permanents(place) => {
                 Some(format!("each of {}", self.name_target()?))
+            }
+            _ => None,
+        }
+    }
+
+    /// "put its counters on target creature you control"; "for each kind of counter on target permanent or player, give
+    /// that permanent or player another counter of that kind".
+    fn g12b_counters_of(&mut self, on: &Ref, of: &Ref, each: Option<&Amount>) -> Option<String> {
+        match (each, on, of) {
+            (None, on, of) => {
+                let whose = match of {
+                    Ref::This => "~'s",
+                    Ref::Triggering => "its",
+                    _ => return None,
+                };
+                Some(format!(
+                    "put {whose} counters on {}",
+                    self.counter_place(on, false)?
+                ))
+            }
+            (Some(Amount::Fixed(1)), Ref::Target(0), Ref::Target(0)) if self.single(on) => {
+                let target = self.name_target()?;
+                let noun = target.strip_prefix("target ")?.to_owned();
+                Some(format!(
+                    "for each kind of counter on {target}, give that {noun} another counter of that kind"
+                ))
             }
             _ => None,
         }
@@ -1750,6 +2195,16 @@ impl Writer<'_> {
                     self.counter_place(from, true)?
                 )
             }
+            Effect::RemoveAllCounters { from, counter } => {
+                let kind = match counter {
+                    Some(counter) => format!("{} ", counters::kind_text(counter)?),
+                    None => String::new(),
+                };
+                format!(
+                    "remove all {kind}counters from {}",
+                    self.counter_place(from, true)?
+                )
+            }
             Effect::MultiplyCounters {
                 on,
                 counter,
@@ -1776,6 +2231,9 @@ impl Writer<'_> {
                         )
                     }
                 }
+            }
+            Effect::PutCountersOf { on, of, each } => {
+                self.g12b_counters_of(on, of, each.as_ref())?
             }
             Effect::MoveCounters {
                 from,
@@ -1806,7 +2264,30 @@ impl Writer<'_> {
             } => library::look_text(count, bind)?,
             Effect::Move {
                 what,
+                to:
+                    Destination::Library {
+                        place: Place::Below(below),
+                        order: None,
+                    },
+                ..
+            } => {
+                let whose = if self.in_your_graveyard(what) {
+                    "your"
+                } else if self.is_a_permanent(what) || self.in_another_graveyard(what) {
+                    "its owner's"
+                } else {
+                    return None;
+                };
+                format!(
+                    "put {} into {whose} library {}",
+                    self.object(what)?,
+                    library::below_text(*below)?
+                )
+            }
+            Effect::Move {
+                what,
                 to: Destination::Library { place, order: None },
+                ..
             } => {
                 let whose = if self.in_your_graveyard(what) {
                     "your"
@@ -2029,6 +2510,8 @@ impl Writer<'_> {
             Effect::TapOrUntap { what } => format!("tap or untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
             Effect::Goad { what } => format!("goad {}", self.object(what)?),
+            Effect::Suspect { what } if self.named && self.single(what) => "suspect it".to_owned(),
+            Effect::Suspect { what } => format!("suspect {}", self.object(what)?),
             Effect::Fight {
                 what: Ref::Triggering,
                 with,
@@ -2037,7 +2520,7 @@ impl Writer<'_> {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
             Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
-            Effect::Counter { what } => format!("counter {}", self.object(what)?),
+            Effect::Counter { what, bind: None } => format!("counter {}", self.object(what)?),
             _ => return None,
         })
     }
@@ -2066,12 +2549,14 @@ impl Writer<'_> {
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
+            Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }
             Effect::DelayedTrigger {
                 this_turn: true, ..
-            } => super::w2g_next_cast::w2g_next_cast_text(effect)?,
+            } => super::w2g_next_cast::w2g_next_cast_text(effect)
+                .or_else(|| self.r11w_leaves_this_turn(effect))?,
             Effect::Scry { who: Ref::You, .. }
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
@@ -2086,6 +2571,7 @@ impl Writer<'_> {
                 who: Ref::You,
                 filter,
                 count,
+                ..
             } if filter.0 == [Pred::This] && count.is_one() => "sacrifice ~".to_owned(),
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
@@ -2100,6 +2586,7 @@ impl Writer<'_> {
             Effect::Move {
                 what,
                 to: Destination::Hand,
+                ..
             } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana { .. } => self.mana_added_by(effect)?,
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
@@ -2113,10 +2600,7 @@ impl Writer<'_> {
             } if super::w7b_player_counters::w7b_player_kind(counter) => {
                 super::w7b_player_counters::w7b_player_gets(effect)?
             }
-            Effect::PutCounters { .. }
-            | Effect::RemoveCounters { .. }
-            | Effect::MoveCounters { .. }
-            | Effect::MultiplyCounters { .. } => self.counters(effect)?,
+            effect if is_counters(effect) => self.counters(effect)?,
             Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
                 amount: Amount::Divided,
@@ -2129,6 +2613,7 @@ impl Writer<'_> {
                 source: None,
                 to,
                 amount,
+                ..
             } => format!(
                 "~ deals {} damage to {}",
                 points_text(amount)?,
@@ -2139,6 +2624,7 @@ impl Writer<'_> {
             | Effect::Untap { .. }
             | Effect::TapOrUntap { .. }
             | Effect::Goad { .. }
+            | Effect::Suspect { .. }
             | Effect::Fight { .. }
             | Effect::Regenerate { .. }
             | Effect::Counter { .. } => self.on_objects(effect)?,
@@ -2217,8 +2703,38 @@ impl Writer<'_> {
         Some(format!("remove {} from combat", self.object(what)?))
     }
 
+    /// {1} paid X times is "{X}" (r5b).
+    fn r5b_x_payment(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::Pay {
+            who,
+            cost,
+            times: Amount::X,
+            paid,
+            unpaid,
+        } = effect
+        else {
+            return None;
+        };
+        let [CostItem::Mana(mana)] = cost.0.as_slice() else {
+            return None;
+        };
+        (mana.to_string() == "{1}").then_some(())?;
+        let x = Cost(vec![CostItem::Mana("{X}".parse().ok()?)]);
+        self.w20c_payment(who, &x, paid, unpaid)
+    }
+
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
+        if let Effect::Continuous {
+            affected,
+            mods,
+            duration: Duration::NextUntapStep,
+        } = effect
+            && matches!(mods.as_slice(), [Modification::DoesntUntap])
+        {
+            return self.r5c_held_down(affected);
+        }
         self.graveyard_exile(effect)
+            .or_else(|| self.r5b_x_payment(effect))
             .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
             .or_else(|| self.left_combat(effect))
@@ -2232,6 +2748,32 @@ impl Writer<'_> {
             .or_else(|| self.control_for_good(effect))
             .or_else(|| self.w6e_exchanged(effect))
             .or_else(|| Self::w20c_owners(effect))
+            .or_else(|| self.r7d_combat(effect))
+            .or_else(|| self.r7d_die_exiled(effect))
+            .or_else(|| self.r7d_blocks_source(effect))
+            .or_else(|| self.r7d_while_tapped(effect))
+            .or_else(|| self.e10b_sealed(effect))
+            .or_else(|| r11w_batch::each_player_damage(effect))
+    }
+
+    /// An exile face down that no player may look at (CR 406.3) reads as the same exile with "face down" after it: "exile
+    /// all cards from your hand face down". A card hidden for a player to look at reads otherwise.
+    fn e10b_sealed(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::ExileHidden {
+            what,
+            bind,
+            held: false,
+            sealed: true,
+        } = effect
+        else {
+            return None;
+        };
+        let plain = Effect::Exile {
+            what: what.clone(),
+            bind: bind.clone(),
+            duration: None,
+        };
+        Some(format!("{} face down", self.other_effect(&plain)?))
     }
 
     /// The cast of the target during the resolution and the exile of that spell (`c11b_cast_target`).
@@ -2263,6 +2805,7 @@ impl Writer<'_> {
                     transformed: false,
                     counters,
                 },
+            ..
         } = effect
         else {
             return None;
@@ -2380,22 +2923,26 @@ impl Writer<'_> {
                 Ref::You => format!("incubate {}", points_text(count)?),
                 _ => format!("{} {}", self.player(who)?, self.predicate(effect, true)?),
             },
+            Effect::Conjure { who: Ref::You, .. } | Effect::Seek { who: Ref::You, .. } => {
+                digital_text(effect)?
+            }
             Effect::TimeTravel { who: Ref::You } => "time travel".to_owned(),
             Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),
             Effect::Bolster { count } => format!("bolster {}", points_text(count)?),
-            Effect::Amass { subtype, count } => format!(
-                "amass {} {}",
-                plural_subtype(&subtype.0),
-                points_text(count)?
-            ),
+            Effect::Amass {
+                subtype,
+                count,
+                bind: None,
+            } => amass_text(subtype, count)?,
             Effect::Explore {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} explores", self.object(what)?),
             Effect::Connive {
-                what: what @ (Ref::This | Ref::Target(0)),
-            } => format!("{} connives", self.object(what)?),
+                what: what @ (Ref::This | Ref::Target(0) | Ref::Convoked),
+                count,
+            } => format!("{} connives{}", self.object(what)?, connive_count(count)?),
             Effect::PhaseOut {
                 what,
                 duration,
@@ -2404,9 +2951,11 @@ impl Writer<'_> {
             Effect::Attach {
                 what: Ref::This,
                 to: to @ Ref::Target(0),
+                bind: None,
             } => format!("attach ~ to {}", self.object(to)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),
+            Effect::TurnFaceUp { what } => format!("turn {} face up", self.object(what)?),
             Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),
@@ -2417,7 +2966,8 @@ impl Writer<'_> {
                 then,
                 otherwise,
             } if otherwise.is_empty() => {
-                let texts = conditional::condition_texts(condition);
+                let texts = super::r6d_kind::texts(condition, self.targets)
+                    .unwrap_or_else(|| conditional::condition_texts(condition));
                 let text = texts.get(self.condition).or(texts.first())?;
                 format!("if {text}, {}", self.consequence(condition, then)?)
             }
@@ -2480,6 +3030,7 @@ impl Writer<'_> {
                         transformed: false,
                         counters,
                     },
+                ..
             } if counters.is_empty() => Some(format!(
                 "return ~ from your graveyard to the battlefield{}",
                 if *tapped { " tapped" } else { "" }
@@ -2491,6 +3042,7 @@ impl Writer<'_> {
                         place: Place::Shuffled,
                         order: None,
                     },
+                ..
             } if *what == Ref::This || *what == dead_card() => {
                 Some("shuffle ~ into its owner's library".to_owned())
             }
@@ -2509,7 +3061,12 @@ impl Writer<'_> {
         match (paid, unpaid) {
             ([], [inner]) => {
                 let happens = self.effect(inner)?;
-                let payer = self.player(who)?;
+                // The players are asked in turn until one pays: "unless any player pays".
+                let payer = if *who == Ref::EachPlayer {
+                    "any player".to_owned()
+                } else {
+                    self.player(who)?
+                };
                 let unless = payments::unless_text(&payer, who, cost)
                     .or_else(|| payments::unless_sacrifice_text(who, cost))?;
                 Some(format!("{happens} {unless}"))
@@ -2528,6 +3085,7 @@ impl Writer<'_> {
     /// Two steps that are one sentence, which no joint splits: an explore twice, or a mill and the change it counts.
     fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         self.explore_twice(effects)
+            .or_else(|| self.g8e_shield_pair(effects))
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
@@ -2539,6 +3097,7 @@ impl Writer<'_> {
             .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
             .or_else(|| self.w2b_you_and_each(effects))
+            .or_else(|| self.you_and_each_create(effects))
             .or_else(|| untapped::text(effects))
             .or_else(|| free_casts::text(effects))
             .or_else(|| self.opponent_exiles(effects))
@@ -2553,14 +3112,24 @@ impl Writer<'_> {
             .or_else(|| self.w6e_stolen(effects))
             .or_else(|| self.c10_uc_held(effects))
             .or_else(|| self.c7_untap_held(effects))
+            .or_else(|| self.r7d_countered_exiled(effects))
+            .or_else(|| self.r7d_tapped_held(effects))
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))
             .or_else(|| self.owner_shuffles(effects))
             .or_else(|| super::w7e_phase::w7e_phased_and_protected_text(effects))
             .or_else(|| super::w7e_phase::w7e_protected_text(effects))
             .or_else(|| super::w11b_phase::w11b_untap_then_phase_out_text(effects))
+            .or_else(|| self.macro_action(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
+    }
+
+    /// A keyword action of the macro table; earthbend names its target without writing it.
+    fn macro_action(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let found = super::keyword_actions::text(effects, |on| self.object(on))?;
+        self.named |= found.0.starts_with("earthbend");
+        Some(found)
     }
 
     /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.
@@ -2620,6 +3189,9 @@ impl Writer<'_> {
             let lead = self.name_target();
             return Some(super::w9c_replaced::w9c_shield_text(lead));
         }
+        if let Some(text) = self.g8e_shield(effect) {
+            return Some(text);
+        }
         if let Some(named) = prevention::c9_fight_named_source(effect) {
             let source = self.object(named)?;
             return Some(format!("prevent all damage {source} would deal this turn"));
@@ -2627,7 +3199,9 @@ impl Writer<'_> {
         prevention::effect_text(effect)
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
+            .or_else(|| super::g12f_taxes::g12f_x_tax_text(effect))
             .or_else(|| super::w14a_limits::w14a_block_limit_each_text(effect))
+            .or_else(|| super::g10d_spell_costs::g10d_spell_cost_text(effect))
             .or_else(|| super::w14a_wanderer::w14a_keep_one_text(effect))
             .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))
@@ -2654,7 +3228,7 @@ impl Writer<'_> {
             {
                 "its controller".to_owned()
             }
-            Ref::Triggering => "that player".to_owned(),
+            Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()
             }
@@ -2669,6 +3243,28 @@ impl Writer<'_> {
                 format!("life equal to its {}", stat_name(*stat)?)
             }
             Amount::LifeLostThisWay => "life equal to the life lost this way".to_owned(),
+            Amount::DamageDealtThisWay => "life equal to the damage dealt this way".to_owned(),
+            Amount::Tallied {
+                who: Ref::Target(0),
+                what: crate::value::TurnTally::DamageTaken,
+            } => "life equal to the damage already dealt to that player this turn".to_owned(),
+            Amount::Difference(power, toughness) => {
+                let (
+                    Amount::Stat {
+                        of: Ref::Triggering,
+                        stat: StatKind::Power,
+                    },
+                    Amount::Stat {
+                        of: Ref::Triggering,
+                        stat: StatKind::Toughness,
+                    },
+                ) = (power.as_ref(), toughness.as_ref())
+                else {
+                    return None;
+                };
+                "life equal to the difference between that creature's power and its toughness"
+                    .to_owned()
+            }
             Amount::Half { of, up } => {
                 let Amount::Life(whose) = of.as_ref() else {
                     return None;
@@ -2700,9 +3296,12 @@ impl Writer<'_> {
                 who,
                 count,
                 random,
+                filter,
+                by: None,
+                optional: false,
                 bind: None,
             } => {
-                let cards = draws::discarded_text(who, count)?;
+                let cards = draws::discarded_filtered_text(who, count, filter.as_ref())?;
                 format!("discard{s} {cards}{}", at_random(*random))
             }
             Effect::GainLife { amount, .. } => format!("gain{s} {}", self.life(amount)?),
@@ -2734,6 +3333,9 @@ impl Writer<'_> {
     /// Several effects as one sentence, one clause for each run of effects of one player: "target opponent discards a
     /// card and loses 3 life", "you create a Wolf token and that player mills ten cards".
     fn compound(&mut self, group: &[Effect]) -> Option<String> {
+        if let Some(text) = self.r7d_changed_and_ruled(group) {
+            return Some(text);
+        }
         let mut clauses = Vec::new();
         let mut rest = group;
         while let Some(first) = rest.first() {
@@ -2845,6 +3447,8 @@ impl Writer<'_> {
                 source: None,
                 to,
                 amount,
+                unpreventable: false,
+                ..
             } = effect
             else {
                 return None;
@@ -2894,6 +3498,7 @@ impl Writer<'_> {
             Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),
             Ref::This => Some("~".to_owned()),
             Ref::Attached => Some("enchanted creature".to_owned()),
+            Ref::Convoked => Some("each creature that convoked ~".to_owned()),
             _ => None,
         }
     }
@@ -2905,19 +3510,71 @@ impl Writer<'_> {
             Ref::Opponents => Some("each opponent".to_owned()),
             Ref::EachPlayer => Some("each player".to_owned()),
             Ref::You => Some("you".to_owned()),
-            Ref::Triggering => Some("that player".to_owned()),
+            Ref::Triggering | Ref::TriggeringPlayer => Some("that player".to_owned()),
             Ref::Each(selector) => Some(format!("each {}", phrase_text(selector, Form::Each)?)),
+            // The opponents but the one the trigger is about.
+            Ref::PlayersWhere { who, test }
+                if **who == Ref::Opponents
+                    && **test == Condition::Not(Box::new(Condition::Among(Ref::Triggering))) =>
+            {
+                Some("each other opponent".to_owned())
+            }
             _ => None,
         }
     }
 
     /// "target creature gets +2/+2 and gains flying until end of turn".
+    /// "Target creature doesn't untap during its controller's next untap step", "lands you control don't untap during
+    /// your next untap step": a rule that holds permanents down through the next untap step of their controller.
+    fn r5c_held_down(&mut self, affected: &Ref) -> Option<String> {
+        let (subject, plural, yours) = match affected {
+            Ref::This => ("~".to_owned(), false, true),
+            Ref::Triggering => ("that creature".to_owned(), false, false),
+            Ref::Target(0) if self.target_is(|what| matches!(what, Targetable::Object(_))) => {
+                let single = self.at_most_one(affected);
+                let subject = if self.named && self.single(affected) {
+                    "it".to_owned()
+                } else {
+                    self.name_target()?
+                };
+                (subject, !single, false)
+            }
+            Ref::Each(selector) => {
+                let phrase = phrase_text(selector, Form::All)?;
+                let all = selector.0.iter().all(is_a_type);
+                let subject = if all { format!("all {phrase}") } else { phrase };
+                (
+                    subject,
+                    true,
+                    selector.0.contains(&Pred::ControlledBy(Ref::You)),
+                )
+            }
+            _ => return None,
+        };
+        let verb = if plural { "don't" } else { "doesn't" };
+        let step = match (yours, plural) {
+            (true, _) => "your next untap step",
+            (false, false) => "its controller's next untap step",
+            (false, true) => "their controllers' next untap steps",
+        };
+        Some(format!("{subject} {verb} untap during {step}"))
+    }
+
     fn pump(
         &mut self,
         affected: &Ref,
         mods: &[Modification],
         duration: &Duration,
     ) -> Option<String> {
+        if let Some(sentence) = self.r7d_land_type(affected, mods, duration).or_else(|| {
+            self.r7d_blocks_source(&Effect::Continuous {
+                affected: affected.clone(),
+                mods: mods.to_vec(),
+                duration: duration.clone(),
+            })
+        }) {
+            return Some(sentence);
+        }
         if let Some(sentence) = self.switched(affected, mods, duration) {
             return Some(sentence);
         }
@@ -3020,4 +3677,13 @@ pub(super) fn while_held(when: &TriggerPattern) -> bool {
         when,
         TriggerPattern::DealsDamage { .. } | TriggerPattern::Batch(_) | TriggerPattern::AnyOf(_)
     )
+}
+
+/// The count after "connives": nothing for one, " X" for X (the where-X writer adds what X is).
+fn connive_count(count: &Amount) -> Option<&'static str> {
+    match count {
+        Amount::Fixed(1) => Some(""),
+        Amount::X => Some(" X"),
+        _ => None,
+    }
 }

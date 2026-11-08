@@ -10,10 +10,7 @@
         {
           "Triggered": {
             "when": { "Blocks": { "what": [{ "Type": "Creature" }] } },
-            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
-            "effects": [
-              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 1 } }
-            ]
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": 1 } }]
           }
         }
       ]

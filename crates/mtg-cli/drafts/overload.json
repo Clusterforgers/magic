@@ -1,0 +1,33 @@
+{
+  "oracle_id": "07159efc-c69f-4164-a8ca-9da641dbf702",
+  "name": "Overload",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overload",
+      "oracle_fingerprint": "7f785bf8e2efe78475f467bb1c8ab71d",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": { "When": { "condition": "Kicked", "then": 5, "otherwise": 2 } }
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

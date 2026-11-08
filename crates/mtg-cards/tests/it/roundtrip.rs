@@ -8,7 +8,7 @@ use mtg_cards::effect::{Destination, Effect, Mode, Order, PhaseKind, Place, Prod
 use mtg_cards::keyword::Keyword;
 use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
-use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification};
+use mtg_cards::modify::{CastPermission, Duration, GameRule, Modification, Prohibited};
 use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::spend::{ManaLasts, SpendFact, SpendFilter, SpendOn, WhenSpent};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
@@ -97,6 +97,7 @@ fn stat() -> impl Strategy<Value = StatKind> {
         StatKind::Toughness,
         StatKind::ManaValue,
         StatKind::Loyalty,
+        StatKind::ManaSpent,
     ])
 }
 
@@ -133,6 +134,8 @@ fn leaf_pred() -> impl Strategy<Value = Pred> {
         text().prop_map(Pred::Named),
         Just(Pred::ChosenColor),
         Just(Pred::ChosenSubtype),
+        Just(Pred::ChosenName),
+        "[a-z]{1,4}".prop_map(Pred::ChosenAs),
     ]
 }
 
@@ -170,6 +173,7 @@ fn simple_amount() -> impl Strategy<Value = Amount> {
         leaf_ref().prop_map(Amount::Players),
         leaf_ref().prop_map(Amount::LowestLife),
         Just(Amount::Kicks),
+        bound_name().prop_map(Amount::Bound),
     ]
 }
 
@@ -199,8 +203,13 @@ fn cost_item() -> impl Strategy<Value = CostItem> {
             .prop_map(|(filter, count)| CostItem::TapPermanents { filter, count }),
         (leaf_selector(), 0..20u32)
             .prop_map(|(filter, power)| CostItem::TapPower { filter, power }),
-        (leaf_selector(), simple_amount())
-            .prop_map(|(filter, count)| CostItem::ExileFromGraveyard { filter, count }),
+        (leaf_selector(), simple_amount()).prop_map(|(filter, count)| {
+            CostItem::ExileFromGraveyard {
+                filter,
+                any_player: false,
+                count,
+            }
+        }),
         (leaf_selector(), simple_amount())
             .prop_map(|(filter, count)| CostItem::ReturnToHand { filter, count }),
     ]
@@ -283,6 +292,9 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Foretell),
         cost().prop_map(Keyword::Echo),
         cost().prop_map(Keyword::CumulativeUpkeep),
+        cost().prop_map(Keyword::Recover),
+        (1u32..9).prop_map(Keyword::Ripple),
+        Just(Keyword::Epic),
         cost().prop_map(Keyword::Ward),
         cost().prop_map(Keyword::Equip),
         (leaf_selector(), cost()).prop_map(|(to, cost)| Keyword::EquipTo {
@@ -351,7 +363,7 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
                 select(vec![
                     SpendFact::XInCost,
                     SpendFact::NotOwned,
-                    SpendFact::FromGraveyard,
+                    SpendFact::FromYourGraveyard,
                     SpendFact::SharesCommanderType,
                 ]),
                 0..3,
@@ -498,6 +510,7 @@ fn granted() -> impl Strategy<Value = Ability> {
             },
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: gain(),
@@ -561,6 +574,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         )
             .prop_map(|(who, what, from, free, flash, only, play)| {
                 GameRule::MayCast(CastPermission {
+                    rather: None,
                     who,
                     what,
                     from,
@@ -570,9 +584,42 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     play,
                     once: false,
                     additional: None,
+                    spend_as: mtg_cards::modify::SpendAs::Normal,
+                    when: None,
                 })
             }),
-        trigger_pattern().prop_map(|cause| GameRule::TriggerAgain { cause }),
+        (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {
+            GameRule::TriggerAgain {
+                cause: Some(cause),
+                source,
+            }
+        }),
+        (reference(), amount()).prop_map(|(who, size)| GameRule::MaxHandSize { who, size }),
+        reference().prop_map(GameRule::NoLegendRule),
+        (selector(), reference()).prop_map(|(what, whose)| GameRule::UntapDuring { what, whose }),
+        (reference(), prohibited()).prop_map(|(who, action)| GameRule::Cant { who, action }),
+    ]
+}
+
+/// Every prohibition, the ones with a selector or a pattern over generated ones.
+fn prohibited() -> impl Strategy<Value = Prohibited> {
+    prop_oneof![
+        selector().prop_map(Prohibited::Activate),
+        selector().prop_map(Prohibited::BeTargeted),
+        trigger_pattern().prop_map(Prohibited::Trigger),
+        Just(Prohibited::PlayLand),
+        Just(Prohibited::Sacrifice),
+        Just(Prohibited::PutCounter),
+        Just(Prohibited::PutCounterOf(
+            mtg_cards::value::CounterKind::lore()
+        )),
+        selector().prop_map(Prohibited::BeAttachedBy),
+        Just(Prohibited::Attach),
+        Just(Prohibited::Discard),
+        Just(Prohibited::Exile),
+        Just(Prohibited::Transform),
+        Just(Prohibited::SkipTurn),
+        Just(Prohibited::SkipStep(Step::Draw)),
     ]
 }
 
@@ -613,12 +660,25 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
             }),
         reference().prop_map(|who| TriggerPattern::LifeGained { who }),
         reference().prop_map(|who| TriggerPattern::LifeLost { who }),
-        (reference(), selector()).prop_map(|(who, what)| TriggerPattern::Drew { who, what }),
+        (reference(), selector(), proptest::option::of(any::<bool>())).prop_map(
+            |(who, what, first_in_draw_step)| TriggerPattern::Drew {
+                who,
+                what,
+                first_in_draw_step
+            }
+        ),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Discarded { what, by }),
         selector().prop_map(|what| TriggerPattern::Tapped { what }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
-        selector().prop_map(|what| TriggerPattern::Blocks { what }),
-        selector().prop_map(|what| TriggerPattern::BecomesBlocked { what }),
+        selector().prop_map(|what| TriggerPattern::Blocks {
+            what,
+            blocking: Selector::default()
+        }),
+        selector().prop_map(|what| TriggerPattern::BecomesBlocked {
+            what,
+            by: Selector::default(),
+            once: false
+        }),
         selector().prop_map(|what| TriggerPattern::Unblocked { what }),
         (selector(), 1u32..5)
             .prop_map(|(what, at_least)| TriggerPattern::GroupAttacks { what, at_least }),
@@ -722,14 +782,31 @@ fn token_ref() -> impl Strategy<Value = TokenRef> {
 fn leaf_effect() -> impl Strategy<Value = Effect> {
     let who = || reference();
     let part1 = prop_oneof![
-        (who(), amount()).prop_map(|(who, count)| Effect::Draw { who, count }),
-        (who(), amount(), any::<bool>()).prop_map(|(who, count, random)| Effect::Discard {
+        (who(), amount()).prop_map(|(who, count)| Effect::Draw {
+            bind: None,
+            who,
+            count
+        }),
+        (
+            who(),
+            amount(),
+            any::<bool>(),
+            proptest::option::of(leaf_selector())
+        )
+            .prop_map(|(who, count, random, filter)| Effect::Discard {
+                who,
+                count,
+                random,
+                filter,
+                by: None,
+                optional: false,
+                bind: None
+            }),
+        (who(), amount()).prop_map(|(who, count)| Effect::Mill {
             who,
             count,
-            random,
             bind: None
         }),
-        (who(), amount()).prop_map(|(who, count)| Effect::Mill { who, count }),
         (who(), amount()).prop_map(|(who, count)| Effect::Scry { who, count }),
         (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::LookAtTop {
             who,
@@ -749,11 +826,13 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             .prop_map(
                 |(who, zone, also, filter, count, reveal, bind)| Effect::Search {
                     who,
+                    of: None,
                     zone,
                     also,
                     filter,
                     count,
                     reveal,
+                    distinct: false,
                     bind
                 }
             ),
@@ -772,9 +851,16 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 rest_as
             }),
         who().prop_map(|who| Effect::Shuffle { who }),
-        (reference(), destination()).prop_map(|(what, to)| Effect::Move { what, to }),
-        (reference(), any::<bool>())
-            .prop_map(|(what, regenerate)| Effect::Destroy { what, regenerate }),
+        (reference(), destination()).prop_map(|(what, to)| Effect::Move {
+            what,
+            to,
+            bind: None
+        }),
+        (reference(), any::<bool>()).prop_map(|(what, regenerate)| Effect::Destroy {
+            what,
+            regenerate,
+            bind: None
+        }),
         (
             reference(),
             proptest::option::of("[a-z]{1,6}"),
@@ -785,8 +871,15 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 bind,
                 duration
             }),
-        reference().prop_map(|what| Effect::ExileHidden { what }),
+        (reference(), any::<bool>()).prop_map(|(what, sealed)| Effect::ExileHidden {
+            what,
+            bind: None,
+            held: false,
+            sealed,
+        }),
         (reference(), reference()).prop_map(|(what, on)| Effect::Encode { what, on }),
+        (reference(), "[a-z]{1,6}").prop_map(|(what, slot)| Effect::Remember { what, slot }),
+        "[a-z]{1,6}".prop_map(|slot| Effect::Forget { slot }),
         (who(), reference(), "[a-z]{1,6}").prop_map(|(who, what, bind)| Effect::CopyCard {
             who,
             what,
@@ -795,13 +888,22 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (who(), selector(), amount()).prop_map(|(who, filter, count)| Effect::Sacrifice {
             who,
             filter,
-            count
+            count,
+            bind: None
         }),
-        reference().prop_map(|what| Effect::Counter { what }),
+        (reference(), proptest::option::of("[a-z]{1,6}"))
+            .prop_map(|(what, bind)| Effect::Counter { what, bind }),
     ];
     let part2 = prop_oneof![
-        (proptest::option::of(reference()), reference(), amount())
-            .prop_map(|(source, to, amount)| Effect::DealDamage { source, to, amount }),
+        (proptest::option::of(reference()), reference(), amount()).prop_map(
+            |(source, to, amount)| Effect::DealDamage {
+                excess: None,
+                unpreventable: false,
+                source,
+                to,
+                amount
+            }
+        ),
         (who(), amount()).prop_map(|(who, amount)| Effect::GainLife { who, amount }),
         (who(), amount()).prop_map(|(who, amount)| Effect::LoseLife { who, amount }),
         (
@@ -884,7 +986,11 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         reference().prop_map(|what| Effect::Tap { what, bind: None }),
         reference().prop_map(|what| Effect::Untap { what }),
         reference().prop_map(|what| Effect::TapOrUntap { what }),
-        (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),
+        (reference(), reference()).prop_map(|(what, to)| Effect::Attach {
+            what,
+            to,
+            bind: None
+        }),
         reference().prop_map(|what| Effect::Transform { what }),
         who().prop_map(|who| Effect::WinGame { who }),
         (who(), amount()).prop_map(|(who, count)| Effect::Surveil { who, count }),
@@ -899,6 +1005,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         )
             .prop_map(|(who, what, count, new_targets, except)| {
                 Effect::CopySpell {
+                    each_target: None,
                     who,
                     what,
                     count,
@@ -927,16 +1034,21 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             }),
         (reference(), reference()).prop_map(|(what, with)| Effect::Fight { what, with }),
         who().prop_map(|who| Effect::BecomeMonarch { who }),
-        (text(), amount()).prop_map(|(subtype, count)| Effect::Amass {
-            subtype: Subtype(subtype),
-            count
-        }),
+        (text(), amount(), proptest::option::of("[a-z]{1,6}")).prop_map(
+            |(subtype, count, bind)| {
+                Effect::Amass {
+                    subtype: Subtype(subtype),
+                    count,
+                    bind,
+                }
+            }
+        ),
         amount().prop_map(|count| Effect::Monstrosity { count }),
         (2u32..=3).prop_map(|level| Effect::BecomeLevel { level }),
         amount().prop_map(|count| Effect::Adapt { count }),
         amount().prop_map(|count| Effect::Bolster { count }),
         reference().prop_map(|what| Effect::Explore { what }),
-        reference().prop_map(|what| Effect::Connive { what }),
+        (reference(), simple_amount()).prop_map(|(what, count)| Effect::Connive { what, count }),
         (who(), selector(), bound_name(), bound_name()).prop_map(
             |(who, filter, bind, exiled_as)| Effect::ExileUntil {
                 who,
@@ -954,10 +1066,13 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 revealed_as
             }
         ),
-        (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::ExileTop {
-            who,
-            count,
-            bind
+        (who(), amount(), bound_name(), any::<bool>()).prop_map(|(who, count, bind, sealed)| {
+            Effect::ExileTop {
+                who,
+                count,
+                bind,
+                sealed,
+            }
         }),
         (
             who(),
@@ -981,6 +1096,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     bind,
                 }
             }),
+        Just(Effect::EndTurn),
         who().prop_map(|who| Effect::TimeTravel { who }),
         (who(), amount(), any::<bool>()).prop_map(|(who, count, skip_untap)| Effect::ExtraTurn {
             who,
@@ -1003,6 +1119,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count,
                 tapped,
                 attacking,
+                against: None,
                 bind: None
             }
         ),
@@ -1055,6 +1172,7 @@ fn effect() -> impl Strategy<Value = Effect> {
             )
                 .prop_map(|(who, what, free, play, otherwise, way)| {
                     Effect::CastFromZone {
+                        rather: None,
                         who,
                         what,
                         free,
@@ -1076,8 +1194,10 @@ fn effect() -> impl Strategy<Value = Effect> {
                     }
                 }
             ),
+            (bound_name(), amount()).prop_map(|(bind, amount)| Effect::Let { bind, amount }),
             (trigger_pattern(), any::<bool>(), list()).prop_map(|(when, once, effects)| {
                 Effect::DelayedTrigger {
+                    until: None,
                     when,
                     once,
                     this_turn: false,
@@ -1087,6 +1207,7 @@ fn effect() -> impl Strategy<Value = Effect> {
             (
                 bounds(),
                 any::<bool>(),
+                reference(),
                 vec(
                     (
                         proptest::option::of(text()),
@@ -1096,13 +1217,17 @@ fn effect() -> impl Strategy<Value = Effect> {
                     1..3
                 )
             )
-                .prop_map(|(choose, repeat, modes)| Effect::Modal {
+                .prop_map(|(choose, repeat, who, modes)| Effect::Modal {
                     choose,
+                    who,
                     repeat,
                     at_random: false,
+                    different_players: false,
                     once_each_turn: false,
                     once_ever: false,
                     all_if: None,
+                    mode_costs: Vec::new(),
+                    extra_mode_cost: None,
                     modes: modes
                         .into_iter()
                         .map(|(label, targets, effects)| Mode {
@@ -1133,6 +1258,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 },
                 condition: None,
                 limit,
+                by: mtg_cards::ability::Activators::Controller,
                 from,
                 targets,
                 effects
@@ -1280,11 +1406,14 @@ fn ability() -> impl Strategy<Value = Ability> {
         )
             .prop_map(
                 |(applies_to, change, mana, per, condition)| Ability::CostModifier {
+                    targeting: None,
                     applies_to,
                     change,
                     mana,
                     per,
-                    condition
+                    condition,
+                    activating: None,
+                    least: 0
                 }
             ),
         keyword().prop_map(Ability::Keyword),

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "17408ccd-d13c-46f7-adee-1d49832a9c50",
+  "name": "Geistpack Alpha",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geistpack Alpha",
+      "oracle_fingerprint": "6b6db47ba0fa4d63ee9dd57d30d29773",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

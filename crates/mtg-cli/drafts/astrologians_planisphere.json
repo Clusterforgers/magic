@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4dcd0583-cee0-46a6-ba43-93bca5eb0428",
+  "name": "Astrologian's Planisphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astrologian's Planisphere",
+      "oracle_fingerprint": "8a98d937bf746de9d3a2ff26c4e38a18",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddSubtype": "Wizard" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                    },
+                    "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 3 } },
+                    "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

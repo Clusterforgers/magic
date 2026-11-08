@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Fading:7",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Create a green Saproling creature token. It has \"This token's power and toughness are each equal to the number of fade counters on CARDNAME.\"",
+      "abilities": [],
+      "gap": "key:Token.ImprintTokens"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME leaves the battlefield, destroy all tokens created with CARDNAME. They can't be regenerated.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 158
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 159,
+          "end": 352
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 353,
+          "end": 475
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

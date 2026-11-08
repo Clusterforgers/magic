@@ -1,0 +1,33 @@
+{
+  "oracle_id": "27d5b2eb-94fe-45fb-806c-354044de7ba5",
+  "name": "Room of Refuge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Room of Refuge",
+      "oracle_fingerprint": "3bbf78ad641560608ff1b0a8c72ac9a0",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

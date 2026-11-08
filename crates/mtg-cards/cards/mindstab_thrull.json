@@ -1,0 +1,26 @@
+{
+  "oracle_id": "43abe1f3-7b92-411a-bf93-e158f949685c",
+  "name": "Mindstab Thrull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindstab Thrull",
+      "oracle_fingerprint": "8579f9dcaae0b025a5601f3f8982a13c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [{ "Discard": { "who": "Defending", "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

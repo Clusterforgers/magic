@@ -1,0 +1,32 @@
+{
+  "oracle_id": "df059974-2cf4-471e-a1e6-17d053113062",
+  "name": "Oni Possession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oni Possession",
+      "oracle_fingerprint": "2e821c0188f84814f9e3fd24b6b6a8af",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetCreatureTypes": ["Demon", "Spirit"] }]
+          }
+        }
+      ]
+    }
+  ]
+}

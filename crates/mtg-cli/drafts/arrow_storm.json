@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a0ce2f5a-9c0b-4801-9105-72f84d8a4a1f",
+  "name": "Arrow Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arrow Storm",
+      "oracle_fingerprint": "340b513e7ca03de399e1ab5d8bceb538",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 5, "unpreventable": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "3477e1cc-46af-46f4-9ea2-bdf0bf1f880e",
+  "name": "Avengers Assemble!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avengers Assemble!",
+      "oracle_fingerprint": "0e432ba5337a7dd688bf129f87d463cc",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    {
+                      "Tally": {
+                        "event": "Entered",
+                        "who": "EachPlayer",
+                        "filter": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }]
+                      }
+                    },
+                    {
+                      "Tally": {
+                        "event": "Attacked",
+                        "who": "EachPlayer",
+                        "filter": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }]
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

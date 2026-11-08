@@ -4,12 +4,14 @@ import type {
   AttackTarget,
   Choice,
   ContinuousEffect,
+  Chosen,
   CounterKind,
   DamageTarget,
   DeathCause,
   Event,
   EventView,
   HiddenEvent,
+  ManaCost,
   ManualAction,
   ManualZone,
   Modification,
@@ -21,7 +23,7 @@ import type {
   Zone,
   ZoneCause,
 } from '@/protocol/generated'
-import { colorsInSet, counterName, manaLetter } from './cardModel'
+import { colorsInSet, costText, counterName, manaLetter } from './cardModel'
 import type { EventContext } from './eventContext'
 import { distinctTargets } from './prompt/targetText'
 import { sameHost } from '@/play/hosts'
@@ -53,6 +55,20 @@ export interface LogLine {
 
 const line = (text: string): LogLine => ({ text, minor: false })
 const quiet = (text: string): LogLine => ({ text, minor: true })
+
+/** What a permanent chose as it entered, in words: ", choosing red". */
+function chosenWords(chosen: Chosen, n: EventNames): string {
+  if ('Chapter' in chosen) return `, reading ahead to chapter ${chosen.Chapter}`
+  if ('Color' in chosen) return `, choosing ${chosen.Color.toLowerCase()}`
+  if ('Colors' in chosen) return `, choosing ${joinWords(chosen.Colors.map((color) => color.toLowerCase()))}`
+  if ('Player' in chosen) return `, choosing ${n.seat(chosen.Player)}`
+  if ('LandType' in chosen) return `, choosing ${chosen.LandType}`
+  if ('CardType' in chosen) return `, choosing ${chosen.CardType.toLowerCase()}`
+  if ('Name' in chosen) return `, choosing ${chosen.Name}`
+  if ('Number' in chosen) return `, choosing ${chosen.Number}`
+  if ('Word' in chosen) return `, choosing ${chosen.Word}`
+  return `, choosing ${chosen.CreatureType}`
+}
 
 /**
  * A spell or ability on the stack by name: a spell as its card is named, an ability as "an ability of" its source
@@ -129,6 +145,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if ('SetTypes' in modification) {
     return `${becomes} only ${joinWords(cardTypeNames(modification.SetTypes))}`
   }
+  if ('AddSupertype' in modification) {
+    return `${becomes} ${modification.AddSupertype.toLowerCase()} too`
+  }
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`
@@ -138,15 +157,26 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     const colors = colorsInSet(modification.SetColors).map((color) => color.toLowerCase())
     return `${becomes} ${colors.length === 0 ? 'colorless' : joinWords(colors)}`
   }
+  if ('AddColors' in modification) {
+    const colors = colorsInSet(modification.AddColors).map((color) => color.toLowerCase())
+    return `${becomes} ${joinWords(colors)} in addition to its other colors`
+  }
   if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
   if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
-  if ('GrantAbility' in modification) return `${gains} an ability`
+  if ('LockKeyword' in modification) {
+    const word = keywordWords(modification.LockKeyword)
+    return `${loses} ${word} and can't have or gain it`
+  }
+  if ('GrantAbility' in modification || 'GainAbilities' in modification) return `${gains} an ability`
   if ('GrantText' in modification) return `${gains} “${modification.GrantText}”`
   if ('SetController' in modification) return `${group ? 'change' : 'changes'} controller`
+  if ('SetPower' in modification) return `${becomes} ${modification.SetPower} power`
+  if ('SetToughness' in modification) return `${becomes} ${modification.SetToughness} toughness`
   if ('SetPowerToughness' in modification) {
     const { power, toughness } = modification.SetPowerToughness
     return `${becomes} ${power}/${toughness}`
   }
+  if ('LoseAbility' in modification) return `${loses} one of its abilities`
   if ('Goaded' in modification) return `${group ? 'are' : 'is'} goaded`
   if ('CantAttackYou' in modification) {
     const { you, attacked } = modification.CantAttackYou
@@ -186,6 +216,7 @@ function durationWords(
   several = false,
 ): string {
   if (typeof duration === 'object') {
+    if ('UntilPaid' in duration) return ` until its controller pays ${duration.UntilPaid} to end it`
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -193,6 +224,7 @@ function durationWords(
     UntilEndOfTurn: ' until end of turn',
     UntilEndOfCombat: ' until end of combat',
     UntilYourNextTurn: " until their controller's next turn",
+    UntilYourNextEndStep: " until their controller's next end step",
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
@@ -200,11 +232,22 @@ function durationWords(
       source === null
         ? ' while its controller controls its source'
         : ` while its controller controls ${n.card(source.id)}`,
+    WhileSourceTapped:
+      source === null ? ' while its source stays tapped' : ` while ${n.card(source.id)} stays tapped`,
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
+    UntilTurnSkipped: ' until the turn it skips',
     Forever: '',
   }
   return UNTIL[duration]
+}
+
+/** The price of one taxed creature: its mana, its life or both. */
+function taxPrice(mana: ManaCost, life: number): string {
+  const parts = [mana.length > 0 ? costText(mana) : '', life > 0 ? `${life} life` : ''].filter(
+    (part) => part !== '',
+  )
+  return parts.join(' and ')
 }
 
 /** What a change to a rule of the game says, for the players or cards it names. */
@@ -222,11 +265,28 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     ).join(', ')
   else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
   else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
-  else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
+  else if ('EntersWith' in rule) {
+    const { spell, counters, keyword, this_turn } = rule.EntersWith
+    const gets = [
+      counters > 0
+        ? `enters with ${counters} additional +1/+1 ${counters === 1 ? 'counter' : 'counters'}`
+        : '',
+      typeof keyword === 'string'
+        ? `gains ${keyword.toLowerCase()}${this_turn ? ' until end of turn' : ''}`
+        : '',
+    ].filter((part) => part !== '')
+    what = `${n.card(spell.id)} ${gets.join(' and ')}`
+  } else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
   else if ('NoLifeLossFromDamage' in rule)
     what = `Damage doesn't cause ${seats(rule.NoLifeLossFromDamage)} to lose life`
+  else if ('LifeFloor' in rule)
+    what = `Damage can't reduce ${seats(rule.LifeFloor.players)} below ${rule.LifeFloor.floor} life`
   else if ('RadiationGainsLife' in rule)
     what = `Radiation makes ${seats(rule.RadiationGainsLife)} gain life rather than lose life`
+  else if ('MayCastRather' in rule)
+    what = `${seats(rule.MayCastRather.casts.map(([owner]) => owner))} may cast ${named(rule.MayCastRather.casts.map(([, card]) => card))} for a different cost`
+  else if ('ManaProduced' in rule)
+    what = `Taps for mana by ${seats(rule.ManaProduced.who)} produce changed mana`
   else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
   else if ('VoteAgain' in rule) what = `${seats(rule.VoteAgain)} may vote an additional time`
@@ -241,12 +301,23 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     what = `${seats(who)} may ${play ? 'play' : 'cast'} ${only === null ? 'cards they could not' : named(only)}`
   } else if ('DamageCantBePrevented' in rule) what = "Damage can't be prevented"
   else if ('PreventDamage' in rule) {
-    const { left } = rule.PreventDamage
-    what = left === null ? 'Damage is prevented' : `The next ${left} damage is prevented`
+    const { left, redirect } = rule.PreventDamage
+    if (redirect !== undefined && left !== null)
+      what = `The next ${left} damage is dealt to ${targetName(redirect, n)} instead`
+    else what = left === null ? 'Damage is prevented' : `The next ${left} damage is prevented`
   } else if ('Regenerate' in rule) what = `${n.card(rule.Regenerate.id)} gets a regeneration shield`
   else if ('BlockLimitEach' in rule) {
     const { most, who } = rule.BlockLimitEach
     what = `${seats(who)} can't block with more than ${most} ${most === 1 ? 'creature' : 'creatures'}`
+  } else if ('AttackTax' in rule) {
+    const { players, mana, life } = rule.AttackTax
+    what = `Creatures can't attack ${seats(players)} unless their controller pays ${taxPrice(mana, life)} for each`
+  } else if ('BlockTax' in rule) {
+    const { mana, life } = rule.BlockTax
+    what = `Some creatures can't block unless their controller pays ${taxPrice(mana, life)} for each`
+  } else if ('SpellCost' in rule) {
+    const { change, mana } = rule.SpellCost
+    what = `Some spells cost ${String(mana)} ${change === 'Reduce' ? 'less' : 'more'} to cast`
   } else what = 'Triggered abilities trigger an additional time'
   return `${what}${durationWords(duration, source, n)}`
 }
@@ -436,6 +507,17 @@ export function describeManual(
     const what = 'Keyword' in grant ? grantKeywordWords(grant.Keyword) : `“${grant.Text.trim()}”`
     return `${who} gives ${n.card(object)} ${what} ${until_end_of_turn ? 'until end of turn' : 'for good'} (by hand)`
   }
+  if ('Transform' in action) return `${who} turns ${n.card(action.Transform.object)} over (by hand)`
+  if ('AttackDespiteDefender' in action) {
+    return `${who} lets ${n.card(action.AttackDespiteDefender.object)} attack despite defender this turn (by hand)`
+  }
+  if ('BlockAdditional' in action) {
+    const { object, count } = action.BlockAdditional
+    return `${who} lets ${n.card(object)} block ${count} more ${count === 1 ? 'creature' : 'creatures'} this turn (by hand)`
+  }
+  if ('MoveBack' in action) {
+    return `${who} puts ${n.card(action.MoveBack.object)} onto the battlefield back face up (by hand)`
+  }
   return describeControl(who, action, n, from)
 }
 
@@ -488,9 +570,12 @@ const BECAUSE: Record<
   Exclude<
     ZoneCause,
     | { Hideaway: unknown }
+    | { Held: unknown }
+    | { Sealed: unknown }
     | { ExiledUntil: unknown }
     | { ExiledUntilMonarch: unknown }
     | { Encoded: unknown }
+    | { Haunting: unknown }
     | { Manifested: unknown }
     | { Cloaked: unknown }
   >,
@@ -506,13 +591,16 @@ const BECAUSE: Record<
   StateBased: 'is put into the graveyard',
   Discarded: 'is discarded',
   Foretold: 'is foretold',
+  Plotted: 'is plotted',
   Adventure: 'is exiled on an adventure',
+  LandPlayed: 'is played and put into the graveyard',
 }
 
 /** The words for a cause that carries a player or a permanent. */
 function objectCause(cause: Extract<ZoneCause, object>): string {
-  if ('Hideaway' in cause) return 'is exiled face down'
+  if ('Hideaway' in cause || 'Held' in cause || 'Sealed' in cause) return 'is exiled face down'
   if ('Encoded' in cause) return 'is exiled encoded on a creature'
+  if ('Haunting' in cause) return 'is exiled haunting a creature'
   if ('Manifested' in cause) return 'is manifested'
   if ('Cloaked' in cause) return 'is cloaked'
   return 'is exiled for a while'
@@ -530,6 +618,7 @@ const PIPELINE = [
   'ResolutionBegan',
   'ChoiceMade',
   'StepDone',
+  'Remembered',
   'ResolutionEnded',
   'AbilityLeftToTable',
   'ZoneChanged',
@@ -537,7 +626,10 @@ const PIPELINE = [
   'LifeLost',
   'CountersChanged',
   'TokenCreated',
+  'CardConjured',
+  'Sought',
   'LibraryLooked',
+  'HandLooked',
   'CardsFound',
   'Scried',
   'Surveilled',
@@ -606,6 +698,12 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     const { player, choice } = event.ChoiceMade
     return quiet(`${n.seat(player)} ${describeChoice(choice, n)}`)
   }
+  if ('Remembered' in event)
+    return quiet(
+      event.Remembered.objects.length === 0 && event.Remembered.values.length > 0
+        ? 'A source remembers a value'
+        : 'A source remembers objects',
+    )
   if ('StepDone' in event) return quiet('A step of the resolution is done')
   if ('ResolutionEnded' in event) {
     const { object, outcome } = event.ResolutionEnded
@@ -659,9 +757,21 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
   if ('TokenCreated' in event) {
     return line(`${n.seat(event.TokenCreated.controller)} creates a ${event.TokenCreated.name} token`)
   }
+  if ('CardConjured' in event) {
+    const { owner, name, zone } = event.CardConjured
+    return line(`${n.seat(owner)} conjures ${name} into ${zoneWord(zone, n)}`)
+  }
+  if ('Sought' in event) {
+    return line(`${n.seat(event.Sought.player)} seeks ${cards(event.Sought.count)}`)
+  }
   if ('LibraryLooked' in event) {
     const { player, cards: looked } = event.LibraryLooked
     return line(`${n.seat(player)} looks at ${cards(looked.length)} of their library`)
+  }
+  if ('HandLooked' in event) {
+    const { player, of, cards: looked } = event.HandLooked
+    const whose = of === player ? 'their' : `${n.seat(of)}'s`
+    return line(`${n.seat(player)} looks at ${whose} hand: ${joinWords(looked.map(n.card))}`)
   }
   if ('CardsFound' in event) {
     return line(`${n.seat(event.CardsFound.player)} finds ${cards(event.CardsFound.cards.length)}`)
@@ -710,6 +820,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('MulliganDeclared' in event) return line(`${n.seat(event.MulliganDeclared.player)} decides to mulligan`)
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
+  if ('OpeningCardsPlayed' in event) {
+    const { player, cards: begun } = event.OpeningCardsPlayed
+    const names = begun.map((id) => n.card(id)).join(', ')
+    return line(
+      `${n.seat(player)} begins the game with ${names === '' ? 'no cards' : names} on the battlefield`,
+    )
+  }
   if ('MulliganKept' in event) return line(`${n.seat(event.MulliganKept.player)} keeps their hand`)
   if ('CardsBottomed' in event) {
     const { player, cards: bottomed } = event.CardsBottomed
@@ -719,17 +836,24 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, cards: bottomed } = event.LibraryBottomed
     return line(`${n.seat(player)} puts ${cards(bottomed.length)} on the bottom of their library`)
   }
+  if ('LibraryInserted' in event) {
+    const { player, cards: inserted, below } = event.LibraryInserted
+    return line(
+      `${n.seat(player)} puts ${cards(inserted.length)} beneath the top ${cards(below)} of their library`,
+    )
+  }
   if ('ChosenAtRandom' in event) {
     return line(`${event.ChosenAtRandom.cards.map((id) => n.card(id)).join(', ')} is picked at random`)
   }
+  if ('PlayersChosenAtRandom' in event) {
+    const players = event.PlayersChosenAtRandom.players.map((seat) => n.seat(seat)).join(', ')
+    return line(
+      `${players} ${event.PlayersChosenAtRandom.players.length === 1 ? 'is' : 'are'} picked at random`,
+    )
+  }
   if ('Entered' in event) {
     const { object, tapped, controller, chosen } = event.Entered
-    const chose =
-      chosen === undefined
-        ? ''
-        : 'Chapter' in chosen
-          ? `, reading ahead to chapter ${chosen.Chapter}`
-          : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : 'Player' in chosen ? n.seat(chosen.Player) : 'LandType' in chosen ? chosen.LandType : chosen.CreatureType}`
+    const chose = chosen === undefined ? '' : chosenWords(chosen, n)
     return quiet(
       `${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control${chose}`,
     )
@@ -741,6 +865,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Flipped' in event) return line(`${n.card(event.Flipped.object)} flips`)
   if ('Prepared' in event) return line(`${n.card(event.Prepared.object)} becomes prepared`)
   if ('Unprepared' in event) return line(`${n.card(event.Unprepared.object)} is no longer prepared`)
+  if ('Suspected' in event) return line(`${n.card(event.Suspected.object)} becomes suspected`)
+  if ('Unsuspected' in event) return line(`${n.card(event.Unsuspected.object)} is no longer suspected`)
+  if ('Solved' in event) return line(`${n.card(event.Solved.object)} is solved`)
   if ('BecameCopy' in event) {
     const { object, of } = event.BecameCopy
     return line(`${n.card(object)} becomes a copy of ${n.card(of.id)}`)
@@ -752,6 +879,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('AbilityCopied' in event) {
     const { controller, of } = event.AbilityCopied
     return line(`${n.seat(controller)} copies the ability of ${n.card(n.ability?.(of.id) ?? of.id)}`)
+  }
+  if ('TargetsChanged' in event) {
+    const { object } = event.TargetsChanged
+    return line(`The targets of ${n.card(n.ability?.(object.id) ?? object.id)} change`)
   }
   if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
   if ('CardCopied' in event) {
@@ -794,8 +925,20 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('DungeonCompleted' in event) {
     return line(`${n.seat(event.DungeonCompleted.player)} completes a dungeon`)
   }
+  if ('SpeedChanged' in event) {
+    const { player, speed } = event.SpeedChanged
+    return line(`${n.seat(player)}'s speed becomes ${speed}${speed >= 4 ? ' (max speed)' : ''}`)
+  }
   if ('CitysBlessingGained' in event) {
     return line(`${n.seat(event.CitysBlessingGained.player)} gets the city's blessing`)
+  }
+  if ('RingTempted' in event) {
+    const { player, level, bearer } = event.RingTempted
+    const chosen = bearer === undefined ? '' : ` and chooses ${n.card(bearer)} as their Ring-bearer`
+    return line(`The Ring tempts ${n.seat(player)} (level ${level})${chosen}`)
+  }
+  if ('RingBearerLost' in event) {
+    return line(`${n.seat(event.RingBearerLost.player)} loses their Ring-bearer`)
   }
   if ('Explored' in event) return line(`${n.card(event.Explored.object)} explores`)
   if ('Connived' in event) return line(`${n.card(event.Connived.object)} connives`)
@@ -973,7 +1116,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
 
 function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if (typeof event === 'string') return quiet('A card leaves the game')
+  if ('Remembered' in event) return quiet('A source remembers objects')
   if ('CardDrawn' in event) return line(`${n.seat(event.CardDrawn.player)} draws a card`)
+  if ('CardConjured' in event) return line(`${n.seat(event.CardConjured.player)} conjures a card`)
   if ('HandDealt' in event)
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.count)}`)
   if ('LibraryShuffled' in event)
@@ -986,9 +1131,18 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     const { player, count } = event.CardsBottomed
     return line(`${n.seat(player)} puts ${cards(count)} on the bottom of their library`)
   }
+  if ('CardsInserted' in event) {
+    const { player, count, below } = event.CardsInserted
+    return line(`${n.seat(player)} puts ${cards(count)} beneath the top ${cards(below)} of their library`)
+  }
   if ('LibraryLooked' in event) {
     const { player, count } = event.LibraryLooked
     return line(`${n.seat(player)} looks at ${cards(count)} of their library`)
+  }
+  if ('HandLooked' in event) {
+    const { player, of, count } = event.HandLooked
+    const whose = of === player ? 'their' : `${n.seat(of)}'s`
+    return line(`${n.seat(player)} looks at ${cards(count)} of ${whose} hand`)
   }
   if ('CardsFound' in event)
     return line(`${n.seat(event.CardsFound.player)} finds ${cards(event.CardsFound.count)}`)

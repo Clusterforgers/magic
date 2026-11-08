@@ -1,0 +1,27 @@
+{
+  "oracle_id": "489a60f1-83f8-465b-918f-7d63d4f76d14",
+  "name": "Blossoming Calm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blossoming Calm",
+      "oracle_fingerprint": "4bfd14bce5e89affb58f332043d1de4e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "PlayersHave": { "who": "You", "keyword": "Hexproof" } },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

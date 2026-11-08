@@ -1,0 +1,21 @@
+{
+  "oracle_id": "915bd598-c3dd-4982-bdcc-5904a6f17436",
+  "name": "Verduran Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verduran Emissary",
+      "oracle_fingerprint": "630ac97db9e45008cb9544517705e814",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

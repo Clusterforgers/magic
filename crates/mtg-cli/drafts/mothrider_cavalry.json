@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7fd0fe87-81d6-48b8-8d04-a233ed446d0f",
+  "name": "Mothrider Cavalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mothrider Cavalry",
+      "oracle_fingerprint": "d41d088c3e00005ff79ed49751e751b2",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Not": { "Named": "Mothrider Cavalry" } },
+                    { "In": "Hand" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

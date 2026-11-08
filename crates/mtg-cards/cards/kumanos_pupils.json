@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f7f8a186-313e-4a29-bf4e-b6a200dfd1ed",
+  "name": "Kumano's Pupils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kumano's Pupils",
+      "oracle_fingerprint": "5dc0a9ede775732061aa07c043f7c36f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

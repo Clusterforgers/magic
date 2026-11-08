@@ -1,0 +1,52 @@
+{
+  "oracle_id": "98066238-28f8-41e3-903a-d367927f23ca",
+  "name": "Chimeric Mass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chimeric Mass",
+      "oracle_fingerprint": "062db42a2a4de7cc5f6572992fab618a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetCreatureTypes": ["Construct"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "SetPT": {
+                                "power": { "Counters": { "on": "This", "counter": "charge" } },
+                                "toughness": { "Counters": { "on": "This", "counter": "charge" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

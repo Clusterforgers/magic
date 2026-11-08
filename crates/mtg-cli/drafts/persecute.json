@@ -1,0 +1,37 @@
+{
+  "oracle_id": "676c4cfa-f929-43aa-95cc-df81a596c2a2",
+  "name": "Persecute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Persecute",
+      "oracle_fingerprint": "58aa9c9e8ed59a6d551cdc23d5a2ce81",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "ChosenAs": "chosen" }
+                    ]
+                  },
+                  "filter": [{ "ChosenAs": "chosen" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

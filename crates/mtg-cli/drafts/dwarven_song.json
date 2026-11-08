@@ -1,0 +1,32 @@
+{
+  "oracle_id": "29b7a220-cfcf-4b44-a5fb-737fd47d46cb",
+  "name": "Dwarven Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Song",
+      "oracle_fingerprint": "b5ef89887293bdb7b1918ac49838422c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Red"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c04dd88f-fb7f-43be-b586-7fc5642073dc",
+  "name": "Avoid Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avoid Fate",
+      "oracle_fingerprint": "3e18307ae327621731ba33ed5c7260c9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Subtype": "Aura" }] },
+                    { "Targeting": [{ "ControlledBy": "You" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

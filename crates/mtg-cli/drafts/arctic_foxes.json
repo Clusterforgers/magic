@@ -1,0 +1,39 @@
+{
+  "oracle_id": "898f0824-cf4c-4e34-8407-9a32fdae6dcb",
+  "name": "Arctic Foxes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arctic Foxes",
+      "oracle_fingerprint": "b5aadbaa33e5302d1c5f13b4f3e9b6f1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 2 } }
+                ]
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Land" },
+                    { "Supertype": "Snow" },
+                    { "ControlledBy": "Defending" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "ab42fb8b-c463-45db-b71d-ed847c9abf1f",
+  "name": "Lunar Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lunar Avenger",
+      "oracle_fingerprint": "6d977c9fb16eb83a224d7eda6b8afac6",
+      "abilities": [
+        { "Keyword": "Sunburst" },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "FirstStrike" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

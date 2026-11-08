@@ -1,0 +1,41 @@
+{
+  "oracle_id": "473c9f27-2091-4d87-b279-64b3662c9af8",
+  "name": "Sawtooth Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sawtooth Ogre",
+      "oracle_fingerprint": "dbedf4c3ad888d1f21a4783f0c2e77c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "DealDamage": { "to": { "Bound": "event" }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "DealDamage": { "to": { "Bound": "event" }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

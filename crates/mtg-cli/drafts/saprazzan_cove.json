@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f7dda04a-c9c6-4952-9bbc-87e3c7480347",
+  "name": "Saprazzan Cove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saprazzan Cove",
+      "oracle_fingerprint": "42bd979e8e60b2f648ee7aa9efff3e6d",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

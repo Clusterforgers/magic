@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fdd4b3a9-83ce-41bf-82e2-7808657e2c09",
+  "name": "Transcendent Archaic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transcendent Archaic",
+      "oracle_fingerprint": "0b546a9038186ddbca26fce9383a8aa1",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "Draw": { "count": "ColorsSpent", "as": "drawn" } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "drawn" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

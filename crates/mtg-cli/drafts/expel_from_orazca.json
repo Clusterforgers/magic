@@ -1,0 +1,71 @@
+{
+  "oracle_id": "a6e12be3-4166-4bd7-8254-e28b7c8588c7",
+  "name": "Expel from Orazca",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expel from Orazca",
+      "oracle_fingerprint": "80d6b5cc9a820585502e8bfba48001dd",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "CitysBlessing": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "CitysBlessing": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }],
+                        "second": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Library": { "place": "Top" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

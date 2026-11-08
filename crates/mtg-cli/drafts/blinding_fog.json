@@ -1,0 +1,33 @@
+{
+  "oracle_id": "50555471-a03c-4735-a6ce-6ae96e27d7c0",
+  "name": "Blinding Fog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blinding Fog",
+      "oracle_fingerprint": "a28366ee7b25c091b9cb651b427735f8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Each": [{ "Type": "Creature" }] } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

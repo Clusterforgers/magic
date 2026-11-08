@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8d231d2f-5274-4b55-8262-9eb95654d183",
+  "name": "Mirror Universe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Universe",
+      "oracle_fingerprint": "f237a59963877aadb2c02f3c19307daf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "ExchangeLife": { "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

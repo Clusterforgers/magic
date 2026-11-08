@@ -1,0 +1,44 @@
+{
+  "oracle_id": "98dd8231-5679-404a-b976-0bbfa6a8493c",
+  "name": "Miles \"Tails\" Prower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Miles \"Tails\" Prower",
+      "oracle_fingerprint": "0e61ad073e9e1446330d52ce60503ac5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": { "of": "Triggering", "filter": [{ "HasKeyword": "Flying" }] }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [
+                    { "PutCounters": { "on": "Triggering", "counter": { "Other": "flying" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

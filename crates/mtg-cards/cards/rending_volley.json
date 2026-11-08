@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0324941f-484c-4656-8d1c-66e919c2bc7c",
+  "name": "Rending Volley",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rending Volley",
+      "oracle_fingerprint": "a3b1987d012ef4574254326ae6897237",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

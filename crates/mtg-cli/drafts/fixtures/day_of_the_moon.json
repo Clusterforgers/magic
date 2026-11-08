@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "adc53534-f362-4871-a594-9855a4923cd0",
+  "oracle_id": "7ec3aaa4-8b6a-4046-b599-654f9844ca6c",
+  "multiverse_ids": [
+    634774
+  ],
+  "tcgplayer_id": 518820,
+  "cardmarket_id": 738628,
+  "name": "Day of the Moon",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/adc53534-f362-4871-a594-9855a4923cd0",
+  "scryfall_uri": "https://scryfall.com/card/who/79/day-of-the-moon?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.jpg?1783914658",
+    "normal": "https://cards.scryfall.io/normal/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.jpg?1783914658",
+    "large": "https://cards.scryfall.io/large/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.jpg?1783914658",
+    "png": "https://cards.scryfall.io/png/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.png?1783914658",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.jpg?1783914658",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.jpg?1783914658",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.webp?1783914658",
+    "grid": "https://cards.scryfall.io/grid/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.webp?1783914658",
+    "display": "https://cards.scryfall.io/display/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.webp?1783914658",
+    "art": "https://cards.scryfall.io/art/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.webp?1783914658",
+    "crop": "https://cards.scryfall.io/crop/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.webp?1783914658",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/d/adc53534-f362-4871-a594-9855a4923cd0.jpg?1783914658"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI, II, III — Choose a creature card name, then goad all creatures with a name chosen for this enchantment. (Until your next turn, they attack each combat if able and attack a player other than you if able.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Goad"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/adc53534-f362-4871-a594-9855a4923cd0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7ec3aaa4-8b6a-4046-b599-654f9844ca6c&unique=prints",
+  "collector_number": "79",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Skinnyelbows",
+  "artist_ids": [
+    "34cb1f13-e2d7-4e27-8a3f-0e3bec090598"
+  ],
+  "illustration_id": "d08cece3-dc6c-4885-9b1a-6c697e32fe90",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14168,
+  "preview": {
+    "source": "BBC",
+    "source_uri": "",
+    "previewed_at": "2023-10-02"
+  },
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "1.92",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "0.56",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634774&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDay%2Bof%2Bthe%2BMoon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDay%2Bof%2Bthe%2BMoon",
+    "edhrec": "https://edhrec.com/route/?cc=Day+of+the+Moon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F518820%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738628&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Day+of+the+Moon&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

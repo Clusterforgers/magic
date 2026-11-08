@@ -1,0 +1,36 @@
+{
+  "oracle_id": "dfa8c557-f2f5-4763-85c7-e2ec14d9e6b6",
+  "name": "Murasa Sproutling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murasa Sproutling",
+      "oracle_fingerprint": "3a9a8adfbf2d37683cf4997d05050c01",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "HasKeywordNamed": "Kicker" },
+                        { "HasKeywordNamed": "Multikicker" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

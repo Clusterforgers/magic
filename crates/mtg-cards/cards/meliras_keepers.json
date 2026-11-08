@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6f2f4c31-74dc-4a52-96ad-94c3d51398d1",
+  "name": "Melira's Keepers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melira's Keepers",
+      "oracle_fingerprint": "9375e25068b11df3b2a8c78970fd25bc",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": ["This", { "In": "Battlefield" }] },
+                "action": "PutCounter"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

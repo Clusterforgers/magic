@@ -1,0 +1,33 @@
+{
+  "oracle_id": "feb00c6d-ff43-49bc-84d5-57e2d4651258",
+  "name": "Swampbenders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swampbenders",
+      "oracle_fingerprint": "de9d94cc98eb9546d9f0e32ed8fbcc54",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Swamp" }] },
+                  "toughness": { "Count": [{ "Subtype": "Swamp" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddSubtype": "Swamp" }]
+          }
+        }
+      ]
+    }
+  ]
+}

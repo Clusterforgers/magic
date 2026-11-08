@@ -1,0 +1,17 @@
+{
+  "oracle_id": "20f3388f-0931-4a09-bcda-96deb01e1787",
+  "name": "Cuboid Colony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cuboid Colony",
+      "oracle_fingerprint": "f4ae1f336c93eadc28b22157f60c6101",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ca411184-3413-492c-ab87-08c9fa1d4806",
+  "name": "Syr Gwyn, Hero of Ashvale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syr Gwyn, Hero of Ashvale",
+      "oracle_fingerprint": "371fcee2ce09233f6de7067fdafab5af",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasAttached": [{ "Subtype": "Equipment" }] }
+                ]
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": { "EquipTo": { "to": [{ "Subtype": "Knight" }], "cost": "{0}" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

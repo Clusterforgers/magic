@@ -1,0 +1,19 @@
+{
+  "oracle_id": "35a17b42-9d3f-49ef-8218-2780c5ef5f08",
+  "name": "Soothing of Sméagol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soothing of Sméagol",
+      "oracle_fingerprint": "3b1e6896eff3baa0553f2f5af4602bb2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

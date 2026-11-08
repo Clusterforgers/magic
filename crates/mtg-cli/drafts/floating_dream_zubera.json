@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3d2e9712-d546-40ac-a5ea-2dd7b7d9e0c1",
+  "name": "Floating-Dream Zubera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Floating-Dream Zubera",
+      "oracle_fingerprint": "b0a924649decde37f528797863cc1f1d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Subtype": "Zubera" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

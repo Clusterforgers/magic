@@ -1,0 +1,64 @@
+{
+  "oracle_id": "60d0c941-39f6-4144-abef-02b0a84d602e",
+  "name": "Angelic Aberration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Aberration",
+      "oracle_fingerprint": "588cd7a40cdbaed3c7757961dd1d6734",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "Compare": { "stat": "BasePower", "op": "Le", "to": 1 } },
+                        { "Compare": { "stat": "BaseToughness", "op": "Le", "to": 1 } }
+                      ]
+                    }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          { "Compare": { "stat": "BasePower", "op": "Le", "to": 1 } },
+                          { "Compare": { "stat": "BaseToughness", "op": "Le", "to": 1 } }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Angel",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": { "Bound": "sacrificed~moved" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b6ec5a5c-144d-4ac3-bd05-2dc360c670fd",
+  "name": "Tempest Caller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempest Caller",
+      "oracle_fingerprint": "6c57e78288cf6c3473c0affb37095f21",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5eb0d8dc-be4b-4a20-b480-f70514ffb299",
+  "name": "Shorecrasher Elemental",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shorecrasher Elemental",
+      "oracle_fingerprint": "ddbd9c3f5704b2031192b4cceb51676d",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 96 } }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Megamorph": "{4}{U}" } }
+      ]
+    }
+  ]
+}

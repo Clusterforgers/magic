@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8165acd4-ac62-47f1-97dd-01860aee29ee",
+  "name": "Scorch Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scorch Rider",
+      "oracle_fingerprint": "12ac65cbf72d791f52969857a05f6a67",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

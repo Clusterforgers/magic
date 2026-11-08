@@ -142,6 +142,7 @@ mod flash_casts;
 mod flash_permission;
 mod flash_rule;
 mod for_each_card;
+mod g9d_may_shuffle;
 mod goaded;
 mod graveyard_cards;
 mod graveyard_shuffle;
@@ -259,6 +260,7 @@ mod w16a_entry_if;
 mod w16a_named_yours;
 // dk1b
 mod dk1b_attached;
+mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;
 mod w16a_state_trigger;
@@ -336,6 +338,17 @@ mod t20a_greatest;
 // t20c
 mod t20c_pay;
 mod t20c_rule;
+// r5b
+mod f25_wordings;
+mod f26_wordings;
+mod f29_wordings;
+mod fix20_each_then;
+mod fix8_tap_or_untap;
+mod fix9_wordings;
+mod r5b_flow;
+// r7c
+mod r7c_conditions;
+mod r7c_searches;
 
 use crate::ability::Ability;
 
@@ -443,6 +456,25 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     // t20c
     t20c_pay::add(ability, texts);
     t20c_rule::add(ability, texts);
+    // r5b
+    r5b_flow::add(ability, texts);
+    fix8_tap_or_untap::add(texts);
+    add_latest(ability, texts);
+}
+
+/// Adds the wordings of fix29, which read the wordings every other writer has added.
+pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
+    f29_wordings::add(ability, texts);
+}
+
+/// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's
+/// "each player ..., then ..." join.
+fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
+    fix9_wordings::add(ability, texts);
+    r7c_searches::add(ability, texts);
+    fix20_each_then::add(texts);
+    f25_wordings::add(ability, texts);
+    f26_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
@@ -512,6 +544,7 @@ fn add_w8c(ability: &Ability, texts: &mut Vec<String>) {
     w8c_snow::add(ability, texts);
     w8c_damage_and::add(ability, texts);
     w8c_prevent_next::add(ability, texts);
+    r9w_countered_value::add(ability, texts);
     w8c_kind_controller::add(ability, texts);
     w8c_opponent_graveyard::add(ability, texts);
     w8c_on_top::add(ability, texts);
@@ -651,6 +684,7 @@ fn w4e_with_effects(ability: &Ability, sentence: &str) -> Vec<String> {
     {
         targets.clear();
         *effects = vec![crate::effect::Effect::Draw {
+            bind: None,
             who: crate::refs::Ref::You,
             count: crate::value::Amount::one(),
         }];
@@ -811,6 +845,7 @@ fn add_more(ability: &Ability, texts: &mut Vec<String>) {
     other_than::add(ability, texts);
     pump_untap::add(ability, texts);
     put_back_order::add(ability, texts);
+    g9d_may_shuffle::add(ability, texts);
     put_graveyard::add(ability, texts);
     search_put::add(texts);
     sized_condition::add(ability, texts);

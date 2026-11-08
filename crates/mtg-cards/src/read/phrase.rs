@@ -2,7 +2,7 @@
 
 use super::{generic, parts};
 use crate::modify::Duration;
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 
 /// What a phrase needs to know about the ability it sits in: the targets its `Target(n)` references name.
@@ -46,8 +46,12 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::This => "this permanent".to_owned(),
         Ref::Target(index) => target(ctx, *index),
         Ref::Triggering => "the triggering object".to_owned(),
+        Ref::TriggeringPlayer => "the triggering player".to_owned(),
+        Ref::TriggeringFirst => "the first triggering object".to_owned(),
         Ref::Dealer => "the source of the damage".to_owned(),
+        Ref::Against => "what it went against".to_owned(),
         Ref::Attached => "the permanent it is attached to".to_owned(),
+        Ref::Granter => "the permanent that gave it this ability".to_owned(),
         Ref::AttachedPlayer => "the player it is attached to".to_owned(),
         Ref::Monarch => "the monarch".to_owned(),
         Ref::Chosen => "the chosen object".to_owned(),
@@ -55,10 +59,25 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::MostLife => "the player with the most life".to_owned(),
+        Ref::ActivePlayer => "the active player".to_owned(),
+        Ref::Chooser => "the player choosing".to_owned(),
+        Ref::Asker => "the player asking".to_owned(),
         Ref::Bound(name) => format!("\u{201c}{name}\u{201d}"),
         Ref::Paid => "what was paid".to_owned(),
+        Ref::Convoked => "the creatures that convoked it".to_owned(),
+        Ref::Affected => "the object it applies to".to_owned(),
+        Ref::Candidate => "the object being judged".to_owned(),
+        Ref::Remembered { on, slot } => format!("what {} remembers as {slot}", who(ctx, on)),
         Ref::ControllerOf(inner) => format!("the controller of {}", who(ctx, inner)),
         Ref::OwnerOf(inner) => format!("the owner of {}", who(ctx, inner)),
+        Ref::PlayersWhere { who: players, test } => format!(
+            "{} for whom \u{201c}{}\u{201d} holds",
+            who(ctx, players),
+            condition(ctx, test)
+        ),
+        Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
+        Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
+        Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),
     }
 }
@@ -163,10 +182,35 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
             })
             .collect::<Vec<_>>()
             .join(" or "),
+        Targetable::Together { what, rule } => format!(
+            "{} {}",
+            targetable(ctx, what, plural),
+            match rule {
+                TargetSet::SameController => "controlled by the same player".to_owned(),
+                TargetSet::DifferentControllers => "controlled by different players".to_owned(),
+                TargetSet::DifferentNames => "with different names".to_owned(),
+                TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::TotalManaValueAtMost(most) => {
+                    format!("with total mana value {} or less", amount(ctx, most))
+                }
+            }
+        ),
+        Targetable::Another { what, .. } => {
+            let inner = targetable(ctx, what, plural);
+            match inner.strip_prefix("target ") {
+                Some(rest) => format!("another target {rest}"),
+                None => format!("another {inner}"),
+            }
+        }
         Targetable::PerPlayer { players, what } => format!(
             "{} controlled by each of {}",
             noun(&selector(ctx, what)),
             who(ctx, players)
+        ),
+        Targetable::ChosenBy { who: chooser, what } => format!(
+            "{} chosen by {}",
+            targetable(ctx, what, plural),
+            who(ctx, chooser)
         ),
     }
 }
@@ -349,6 +393,7 @@ pub(super) fn zone_text(zone: ZoneKind) -> &'static str {
         ZoneKind::Stack => "the stack",
         ZoneKind::Exile => "exile",
         ZoneKind::Command => "the command zone",
+        ZoneKind::Outside => "outside the game",
     }
 }
 
@@ -373,6 +418,11 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::Loyalty => "loyalty",
         StatKind::Colors => "number of colors",
         StatKind::BasicLandTypes => "number of basic land types",
+        StatKind::Name => "name",
+        StatKind::CreatureType => "creature type",
+        StatKind::BasePower => "base power",
+        StatKind::BaseToughness => "base toughness",
+        StatKind::ManaSpent => "mana spent",
     }
 }
 
@@ -484,8 +534,11 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
             format!("{} is {} {noun}", who(ctx, subject), article(&noun))
         }
         Condition::Kicked => "this spell was kicked".to_owned(),
+        Condition::EnteredAs(word) => format!("{word} was chosen as it entered"),
         Condition::AdditionalCostPaid => "the additional cost was paid".to_owned(),
+        Condition::AsCast(inner) => format!("{} as this spell was cast", condition(ctx, inner)),
         Condition::YourTurn => "it is your turn".to_owned(),
+        Condition::Among(players) => format!("you are among {}", who(ctx, players)),
         Condition::IsDay => "it is day".to_owned(),
         Condition::IsNight => "it is night".to_owned(),
         Condition::InCombat => "it is combat".to_owned(),
@@ -501,14 +554,18 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilEndOfTurn => "until end of turn".to_owned(),
         Duration::UntilEndOfCombat => "until end of combat".to_owned(),
         Duration::UntilYourNextTurn => "until your next turn".to_owned(),
+        Duration::UntilYourNextEndStep => "until your next end step".to_owned(),
         Duration::UntilEndOfYourNextTurn => "until the end of your next turn".to_owned(),
         Duration::WhileSourceOnBattlefield => "while this stays on the battlefield".to_owned(),
         Duration::WhileYouControlSource => "while you control this".to_owned(),
+        Duration::WhileSourceTapped => "while this stays tapped".to_owned(),
         Duration::UntilOpponentBecomesMonarch => "until an opponent becomes the monarch".to_owned(),
         Duration::NextUntapStep => "until the next untap step".to_owned(),
+        Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))
         }
+        Duration::UntilPaid(cost) => format!("until you pay {cost}"),
         Duration::Forever => "permanently".to_owned(),
     }
 }
@@ -614,5 +671,16 @@ mod tests {
         assert_eq!(counted(&Ctx::none(), &Amount::Fixed(1), "card"), "a card");
         assert_eq!(counted(&Ctx::none(), &Amount::Fixed(3), "card"), "3 cards");
         assert_eq!(counted(&Ctx::none(), &Amount::X, "card"), "X cards");
+    }
+
+    #[rstest]
+    #[case::e15f_a_word_chosen_as_it_entered(
+        r#"{"EnteredAs":"Khans"}"#,
+        "Khans was chosen as it entered"
+    )]
+    #[case::kicked(r#""Kicked""#, "this spell was kicked")]
+    fn e15f_conditions_read_as_clauses(#[case] json: &str, #[case] shown: &str) {
+        let cond: Condition = serde_json::from_str(json).unwrap();
+        assert_eq!(condition(&Ctx::none(), &cond), shown);
     }
 }

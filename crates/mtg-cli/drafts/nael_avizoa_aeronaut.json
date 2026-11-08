@@ -1,0 +1,64 @@
+{
+  "oracle_id": "6044696a-0f64-474a-840e-8ed4dbd30221",
+  "name": "Nael, Avizoa Aeronaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nael, Avizoa Aeronaut",
+      "oracle_fingerprint": "4c7ae00a4fea93852f3e858454317441",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "BasicLandTypes"
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

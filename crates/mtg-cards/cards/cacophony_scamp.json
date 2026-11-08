@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4854a41e-db49-462f-ae57-0ba4005bae75",
+  "name": "Cacophony Scamp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cacophony Scamp",
+      "oracle_fingerprint": "bd0258425de7d9eadb2557635a679df5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "May": { "effects": [{ "Sacrifice": { "filter": ["This"] } }] } },
+              { "If": { "condition": "Performed", "then": [{ "Proliferate": {} }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

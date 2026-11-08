@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "42006bd4-f6f0-4638-a50e-46d9d7a54b6e",
+  "oracle_id": "6d42e81a-84d3-4c90-9c69-c0d562c66cac",
+  "multiverse_ids": [],
+  "resource_id": "EB2439A6C8ACA738A59F95F598A25BFEF059F54CF7AD710BB3928FC2F94FCC2F",
+  "mtgo_id": 140163,
+  "tcgplayer_id": 631320,
+  "cardmarket_id": 824714,
+  "name": "Kimahri, Valiant Guardian",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/42006bd4-f6f0-4638-a50e-46d9d7a54b6e",
+  "scryfall_uri": "https://scryfall.com/card/fic/85/kimahri-valiant-guardian?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.jpg?1783906346",
+    "normal": "https://cards.scryfall.io/normal/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.jpg?1783906346",
+    "large": "https://cards.scryfall.io/large/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.jpg?1783906346",
+    "png": "https://cards.scryfall.io/png/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.png?1783906346",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.jpg?1783906346",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.jpg?1783906346",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.webp?1783906346",
+    "grid": "https://cards.scryfall.io/grid/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.webp?1783906346",
+    "display": "https://cards.scryfall.io/display/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.webp?1783906346",
+    "art": "https://cards.scryfall.io/art/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.webp?1783906346",
+    "crop": "https://cards.scryfall.io/crop/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.webp?1783906346",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/2/42006bd4-f6f0-4638-a50e-46d9d7a54b6e.jpg?1783906346"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Cat Warrior",
+  "oracle_text": "Vigilance\nRonso Rage — At the beginning of combat on your turn, put a +1/+1 counter on Kimahri and tap target creature an opponent controls. Then you may have Kimahri become a copy of that creature, except its name is Kimahri, Valiant Guardian and it has vigilance and this ability.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Ronso Rage"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/42006bd4-f6f0-4638-a50e-46d9d7a54b6e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6d42e81a-84d3-4c90-9c69-c0d562c66cac&unique=prints",
+  "collector_number": "85",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christian Angel",
+  "artist_ids": [
+    "ed4192ab-736c-4639-b991-28f8617a1fd4"
+  ],
+  "illustration_id": "d58f7f3a-6994-4bdc-9761-591400af3161",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "ffx",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6915,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": null,
+    "tix": "1.01"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKimahri%252C%2BValiant%2BGuardian",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKimahri%252C%2BValiant%2BGuardian",
+    "edhrec": "https://edhrec.com/route/?cc=Kimahri%2C+Valiant+Guardian"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631320%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824714&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140163?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

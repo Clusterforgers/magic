@@ -1,0 +1,65 @@
+{
+  "oracle_id": "d56f24a1-04dc-4769-9941-05bd99508e40",
+  "name": "Hidetsugu, Devouring Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidetsugu, Devouring Chaos",
+      "oracle_fingerprint": "6637428479d7ff42f0ab17a5ab2e7c3e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "exiled" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": {
+                                "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

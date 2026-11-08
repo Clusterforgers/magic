@@ -1,0 +1,56 @@
+{
+  "oracle_id": "cfc023e0-9e9d-48ac-bfb5-74bfd5977dee",
+  "name": "Alpha Brawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alpha Brawl",
+      "oracle_fingerprint": "1600cb7faaa375f7c9c9b0ab431ad8aa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Target": 0 } } },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Target": 0 } } },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -45,12 +45,13 @@ const COST_WORDS: [&str; 17] = [
 ];
 
 /// Lines of a spell that are rules about the spell itself rather than what it does.
-const SPELL_RULES: [&str; 5] = [
+const SPELL_RULES: [&str; 6] = [
     "This spell ",
     "~ costs ",
     "~ can't be countered",
     "As an additional cost",
     "Cast this spell only ",
+    "If ~ would be put into a graveyard from anywhere, ",
 ];
 
 /// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
@@ -72,14 +73,28 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     if text.starts_with("LEVEL ")
         || super::clauses::is_station_block(text)
         || super::clauses::is_class_block(text)
+        || super::clauses::word_block(text).is_some()
     {
         return ClauseKind::Static;
     }
     let head = text.lines().next().unwrap_or_default();
+    // "Max speed — A" grants A to its object while you have max speed (CR 702.179): a static ability.
+    if head.starts_with("Max speed \u{2014} ") {
+        return ClauseKind::Static;
+    }
+    let head = text.lines().next().unwrap_or_default();
+    // A cost change of the equip or cycling abilities a player activates opens with the keyword's name but is a rule.
+    if ((head.starts_with("Equip ") || head.starts_with("Cycling "))
+        && head.contains(" abilities you activate "))
+        || head.starts_with("Equip costs you pay ")
+    {
+        return ClauseKind::Static;
+    }
     if !text.contains('\n') && keywords::is_keyword_line(head) {
         return ClauseKind::Keyword;
     }
-    if is_chapter(head) {
+    // A Case's "To solve — <condition>" is a triggered ability at its controller's end step (CR 719.2).
+    if is_chapter(head) || head.starts_with("To solve \u{2014} ") {
         return ClauseKind::Triggered;
     }
     let body = head
@@ -87,7 +102,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         .unwrap_or(head);
     if is_loyalty(body) {
         ClauseKind::Loyalty
-    } else if is_triggered(body) && !(spell && body.starts_with("When you next cast ")) {
+    } else if is_triggered(body) && !(spell && r6e_delayed(body)) {
         // A spell that sets up a delayed trigger ("When you next cast an instant spell this turn, copy it") is its effect.
         ClauseKind::Triggered
     } else if is_activated(body) {
@@ -104,6 +119,17 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     } else {
         ClauseKind::Static
     }
+}
+
+/// Whether a trigger line of a spell is a delayed trigger the spell sets up: "When you next cast ...", a trigger event
+/// limited to this turn ("Whenever a creature blocks this turn, ...") or the next upkeep ("At the beginning of your next
+/// upkeep, pay {2}{B}. If you don't, you lose the game.").
+fn r6e_delayed(body: &str) -> bool {
+    let event = body.split_once(", ").map_or(body, |(event, _)| event);
+    body.starts_with("When you next cast ")
+        || body.starts_with("At the beginning of your next ")
+        || body.starts_with("At the beginning of the next ")
+        || event.ends_with(" this turn")
 }
 
 /// Whether the characters can be those of an ability word: letters, a space, an apostrophe, a hyphen, "!", the card's
@@ -134,6 +160,12 @@ fn t16a_flavour_name(word: &str) -> bool {
         })
 }
 
+/// Whether the word is the ability word Descend with its number ("Descend 4", CR 207.2c).
+fn r6e_descend(word: &str) -> bool {
+    word.strip_prefix("Descend ")
+        .is_some_and(|number| !number.is_empty() && number.chars().all(|c| c.is_ascii_digit()))
+}
+
 /// The byte length of an ability word and its dash ("Landfall — "), when the line starts with one. Any name of up to
 /// forty characters is one, known or not ("Genomic Enhancement — "): it is flavor and the line reads without it.
 pub(super) fn ability_word_len(line: &str) -> Option<usize> {
@@ -145,7 +177,7 @@ pub(super) fn ability_word_len(line: &str) -> Option<usize> {
         .next()
         .is_some_and(|c| c.is_uppercase() || c == '~')
         && word.chars().count() <= 40
-        && (w20b_ability_letters(word) || t16a_flavour_name(word))
+        && (w20b_ability_letters(word) || t16a_flavour_name(word) || r6e_descend(word))
         && !word.starts_with("Choose");
     let end = at + DASH.len();
     (is_word && end < line.len()).then_some(end)
@@ -249,6 +281,17 @@ mod tests {
     )]
     #[case::list("Vigilance, deathtouch, haste", false, Keyword)]
     #[case::equip("Equip {1}", false, Keyword)]
+    #[case::equip_cost_change(
+        "Equip abilities you activate cost {1} less to activate.",
+        false,
+        Static
+    )]
+    #[case::equip_costs_you_pay("Equip costs you pay cost {1} less.", false, Static)]
+    #[case::cycling_cost_change(
+        "Cycling abilities you activate cost {2} less to activate.",
+        false,
+        Static
+    )]
     #[case::equip_with_a_colon_free_cost("Equip {1}", true, Keyword)]
     #[case::unread_keyword("Undying", false, Keyword)]
     #[case::level_up("Level up {1}{U}", false, Keyword)]
@@ -269,6 +312,10 @@ mod tests {
     #[case::when("When ~ enters, draw a card.", Triggered)]
     #[case::whenever("Whenever you cast a spell, you may draw a card.", Triggered)]
     #[case::at("At the beginning of your upkeep, you win the game.", Triggered)]
+    #[case::case_to_solve(
+        "To solve \u{2014} You control seven or more lands. (If unsolved, solve at the beginning of your end step.)",
+        Triggered
+    )]
     #[case::at_the_end("At the beginning of the next end step, sacrifice it.", Triggered)]
     #[case::at_least("At least two creatures must attack each combat if able.", Static)]
     #[case::ability_word(
@@ -381,6 +428,11 @@ mod tests {
     )]
     #[case::cost_with_name("~ costs {1} less to cast.", true, Static)]
     #[case::uncounterable("~ can't be countered.", true, Static)]
+    #[case::to_graveyard_instead(
+        "If ~ would be put into a graveyard from anywhere, reveal ~ and shuffle it into its owner's library instead.",
+        true,
+        Static
+    )]
     #[case::additional_cost(
         "As an additional cost to cast this spell, discard a card.",
         true,

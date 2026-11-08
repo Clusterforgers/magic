@@ -1,0 +1,172 @@
+//! Effects that read sub-abilities or card faces: `GenericChoice` between two parts, `Branch` on a number and `SetState`.
+
+use mtg_cards::effect::MOST_OPTIONS;
+use serde_json::{Value, json};
+
+use super::amount::amount;
+use super::ctx::{Ctx, Tr, only, unmapped};
+use super::effects::chain_at;
+use super::valid::{cmp, defined, subject};
+use crate::forge::script::Params;
+
+/// The effects of a verb this module reads; `None` for any other API.
+pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
+    let node = match api {
+        "GenericChoice" => generic_choice(ctx, p),
+        "Branch" => branch(ctx, p),
+        "SetState" => set_state(ctx, p),
+        "VillainousChoice" => villainous_choice(ctx, p),
+        _ => return None,
+    };
+    Some(node.map(|node| vec![node]))
+}
+
+/// `VillainousChoice`: the player `Defined$` names (an opponent, a chosen or remembered player) chooses one of the two
+/// parts of `Choices$`.
+fn villainous_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(p, "VillainousChoice", &["Choices", "Defined"])?;
+    let Some(word) = p.get("Defined") else {
+        return unmapped("key:VillainousChoice.no-Defined");
+    };
+    let who = defined(ctx, word)?;
+    // Exactly one player faces the choice: a group of opponents is not one.
+    if matches!(who.as_str(), Some("Opponents" | "EachPlayer")) {
+        return unmapped(format!("key:VillainousChoice.Defined={word}"));
+    }
+    let names: Vec<&str> = p.get("Choices").unwrap_or_default().split(',').collect();
+    let [first, second] = names[..] else {
+        return unmapped("key:VillainousChoice.Choices");
+    };
+    let first = part(ctx, first)?;
+    let second = part(ctx, second)?;
+    Ok(json!({"VillainousChoice": {"who": who, "first": first, "second": second}}))
+}
+
+/// The effects of the named part.
+fn part(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
+    let sub = ctx.sub(name)?;
+    chain_at(ctx, &sub, false)
+}
+
+/// `GenericChoice`: the controller (or the one player `Defined$` names) chooses one of the parts as the effect resolves;
+/// two parts chosen by the controller are an `Either`, any other choice a `OneOf`.
+fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "GenericChoice",
+        &["Choices", "Defined", "ValidTgts", "FallbackAbility"],
+    )?;
+    // A target is declared for the parts to read; without `Defined$` the targeted player chooses ("target opponent may
+    // have you draw three cards").
+    let mut chooser = None;
+    if p.has("ValidTgts") {
+        let target = subject(ctx, p, "You", None)?;
+        match p.get("Defined") {
+            Some("You") => {}
+            None if p.get("ValidTgts").is_some_and(|valid| {
+                matches!(valid, "Opponent" | "Player" | "Player.Opponent")
+            }) =>
+            {
+                chooser = Some(target);
+            }
+            _ => return unmapped("key:GenericChoice.ValidTgts-chooser"),
+        }
+    }
+    let who = match (chooser, p.get("Defined")) {
+        (Some(target), _) => target,
+        (None, None | Some("You")) => json!("You"),
+        (None, Some(word)) => match defined(ctx, word)? {
+            // Exactly one player chooses: for a group Forge asks each in turn, which is not one choice.
+            group if matches!(group.as_str(), Some("Opponents" | "EachPlayer")) => {
+                return unmapped(format!("key:GenericChoice.Defined={word}"));
+            }
+            single => single,
+        },
+    };
+    let names: Vec<&str> = p.get("Choices").unwrap_or_default().split(',').collect();
+    if !(2..=MOST_OPTIONS).contains(&names.len()) {
+        return unmapped("key:GenericChoice.Choices");
+    }
+    // The fallback is for a choice no one can make; a part that asks to pay (or lose the life) already covers that.
+    if p.has("FallbackAbility")
+        && !names.iter().all(|name| {
+            ctx.svar(name)
+                .is_some_and(|text| Params::parse(text).has("UnlessCost"))
+        })
+    {
+        return unmapped("key:GenericChoice.FallbackAbility");
+    }
+    let mut options = Vec::new();
+    for name in names {
+        options.push(part(ctx, name)?);
+    }
+    let by_you = who == json!("You");
+    if let ([first, second], true) = (&options[..], by_you) {
+        return Ok(json!({"Either": {"first": first, "second": second}}));
+    }
+    let mut node = json!({ "options": options });
+    if !by_you {
+        node["who"] = who;
+    }
+    Ok(json!({"OneOf": node}))
+}
+
+/// `Branch` on a named number against a comparison (at least one by default), as `If`.
+fn branch(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "Branch",
+        &[
+            "BranchConditionSVar",
+            "BranchConditionSVarCompare",
+            "TrueSubAbility",
+            "FalseSubAbility",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+        ],
+    )?;
+    let (Some(name), Some(yes)) = (p.get("BranchConditionSVar"), p.get("TrueSubAbility")) else {
+        return unmapped("key:Branch.shape");
+    };
+    // The target is chosen before the condition is read: the condition and both parts may name it (`Defined$ Targeted`).
+    if p.has("ValidTgts") {
+        subject(ctx, p, "", None)?;
+    }
+    let word = p.get("BranchConditionSVarCompare").unwrap_or("GE1");
+    let Some(op) = word.get(..2).and_then(cmp) else {
+        return unmapped(format!("compare:{word}"));
+    };
+    let left = amount(ctx, name)?;
+    let right = amount(ctx, word.get(2..).unwrap_or_default())?;
+    let then = part(ctx, yes)?;
+    let mut node = json!({"If": {
+        "condition": {"Compare": {"left": left, "op": op, "right": right}},
+        "then": then,
+    }});
+    if let Some(no) = p.get("FalseSubAbility") {
+        node["If"]["otherwise"] = Value::Array(part(ctx, no)?);
+    }
+    Ok(node)
+}
+
+/// `SetState` with `Mode$ Transform` or `Flip`; the other modes (face up or down, unspecialize) are gaps.
+fn set_state(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    only(
+        p,
+        "SetState",
+        &["Mode", "Defined", "ValidTgts", "TargetMin", "TargetMax"],
+    )?;
+    let node = match p.get("Mode") {
+        Some("Transform") => "Transform",
+        Some("Flip") => "Flip",
+        Some("TurnFaceUp") => "TurnFaceUp",
+        _ => return unmapped("key:SetState.Mode"),
+    };
+    let what = subject(ctx, p, "Self", None)?;
+    // The engine turns face-down permanents face up; a card turned face up in exile would stay hidden.
+    if node == "TurnFaceUp" && what.to_string().contains(r#"{"In":"Exile"}"#) {
+        return unmapped("key:SetState.TurnFaceUp-in-exile");
+    }
+    Ok(json!({node: {"what": what}}))
+}

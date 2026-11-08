@@ -19,6 +19,7 @@ impl Anchor {
             What::Spell(card) => vec![*card],
             What::Ability(ability) => vec![ability.object],
             What::Attack(attackers, _) => attackers.iter().map(|(object, _)| *object).collect(),
+            What::Block(blocks) => blocks.iter().map(|(object, _)| *object).collect(),
             What::Trigger(_) => Vec::new(),
         };
         Anchor(

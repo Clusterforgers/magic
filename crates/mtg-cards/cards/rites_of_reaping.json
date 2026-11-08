@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ed1a1c04-1b2b-4616-abb2-8bd19c47b589",
+  "name": "Rites of Reaping",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rites of Reaping",
+      "oracle_fingerprint": "78aff52ac96a4aabe0b4dd17fbebf871",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "64ab6dfe-ed87-47ec-afd5-a7f2e7e6bbd2",
+  "name": "Rending Vines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rending Vines",
+      "oracle_fingerprint": "0377a50392f108d9230e6b36eb3ace61",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "c19849f9-cb47-42c9-aaf8-e2e90e157f6e",
+  "oracle_id": "68845200-5346-473d-becd-27315879443d",
+  "multiverse_ids": [
+    397496
+  ],
+  "mtgo_id": 56862,
+  "mtgo_foil_id": 56863,
+  "name": "Verdant Touch",
+  "lang": "en",
+  "released_at": "2015-05-06",
+  "uri": "https://api.scryfall.com/cards/c19849f9-cb47-42c9-aaf8-e2e90e157f6e",
+  "scryfall_uri": "https://scryfall.com/card/tpr/203/verdant-touch?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:27:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.jpg?1783938453",
+    "normal": "https://cards.scryfall.io/normal/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.jpg?1783938453",
+    "large": "https://cards.scryfall.io/large/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.jpg?1783938453",
+    "png": "https://cards.scryfall.io/png/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.png?1783938453",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.jpg?1783938453",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.jpg?1783938453",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.webp?1783938453",
+    "grid": "https://cards.scryfall.io/grid/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.webp?1783938453",
+    "display": "https://cards.scryfall.io/display/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.webp?1783938453",
+    "art": "https://cards.scryfall.io/art/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.webp?1783938453",
+    "crop": "https://cards.scryfall.io/crop/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.webp?1783938453",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/1/c19849f9-cb47-42c9-aaf8-e2e90e157f6e.jpg?1783938453"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Buyback {3} (You may pay an additional {3} as you cast this spell. If you do, put this card into your hand as it resolves.)\nTarget land becomes a 2/2 creature that's still a land. (This effect lasts indefinitely.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Buyback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41b3e002-ab58-46a0-8024-056ee843e267",
+  "set": "tpr",
+  "set_name": "Tempest Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41b3e002-ab58-46a0-8024-056ee843e267",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atpr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tpr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c19849f9-cb47-42c9-aaf8-e2e90e157f6e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A68845200-5346-473d-becd-27315879443d&unique=prints",
+  "collector_number": "203",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "M. W. Kaluta & DiTerlizzi",
+  "artist_ids": [
+    "d88c4a3d-c1b6-40e1-9d14-3c38059716fa",
+    "ed44dce4-30cf-4c2c-b2e1-a19ba2295690"
+  ],
+  "illustration_id": "faee471b-3677-4c98-a88f-5507b412c72d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26659,
+  "penny_rank": 9655,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397496&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVerdant%2BTouch",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVerdant%2BTouch",
+    "edhrec": "https://edhrec.com/route/?cc=Verdant+Touch"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DVerdant%2BTouch%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Verdant+Touch&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56862?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

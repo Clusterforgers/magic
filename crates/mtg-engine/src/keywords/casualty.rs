@@ -58,6 +58,7 @@ impl KeywordRules for Casualty {
             from: ZoneKind::Stack,
             targets: Vec::new(),
             effects: vec![Effect::CopySpell {
+                each_target: None,
                 who: Ref::You,
                 what: Ref::This,
                 count: Amount::one(),

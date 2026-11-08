@@ -1,0 +1,35 @@
+{
+  "oracle_id": "068b9586-53e3-4791-a26c-a6b38d038f66",
+  "name": "Dreadlight Monstrosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreadlight Monstrosity",
+      "oracle_fingerprint": "d722db89e7de1a4c54ad83fb279d343c",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Activated": {
+            "cost": "{3}{U}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

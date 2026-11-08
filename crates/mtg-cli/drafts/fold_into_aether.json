@@ -1,0 +1,50 @@
+{
+  "oracle_id": "bc2f807b-555d-4a62-ab14-75fe62c64b97",
+  "name": "Fold into Aether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fold into Aether",
+      "oracle_fingerprint": "471e213b751e542b609be9d313052033",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 }, "as": "countered" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "countered" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

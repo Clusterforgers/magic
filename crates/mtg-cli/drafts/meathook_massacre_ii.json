@@ -1,0 +1,90 @@
+{
+  "oracle_id": "68957dca-df5c-4051-af22-407cb7e47200",
+  "name": "Meathook Massacre II",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meathook Massacre II",
+      "oracle_fingerprint": "acb594e6c7b14a44d367273af0dade97",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Creature" }],
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 3 }],
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": {
+                          "Battlefield": {
+                            "under": "You",
+                            "counters": [[{ "Other": "finality" }, 1]]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": [{ "PayLife": 3 }],
+                  "unpaid": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": {
+                          "Battlefield": {
+                            "under": "You",
+                            "counters": [[{ "Other": "finality" }, 1]]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

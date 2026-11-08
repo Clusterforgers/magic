@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1b799c30-4a43-403d-b822-0555bd513913",
+  "name": "Earth Kingdom Jailer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earth Kingdom Jailer",
+      "oracle_fingerprint": "2effbe015f59339b40ac461b1679dbd3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" }
+                      ]
+                    },
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

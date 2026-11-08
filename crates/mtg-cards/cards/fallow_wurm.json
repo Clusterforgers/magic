@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7b414f70-a9b1-42c3-9655-6aa520d3b19b",
+  "name": "Fallow Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fallow Wurm",
+      "oracle_fingerprint": "857aee8a69bfdb6b540c71d99db19784",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

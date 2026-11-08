@@ -1,0 +1,74 @@
+{
+  "oracle_id": "31851cb6-0caf-4575-aa5e-41aeadccafc1",
+  "name": "Cait Sith, Fortune Teller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cait Sith, Fortune Teller",
+      "oracle_fingerprint": "1f2cdd0ea65839d209d0d8c7ffde8997",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "Scry": {} },
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "exiled" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [
+                                {
+                                  "ModifyPT": {
+                                    "power": {
+                                      "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                                    },
+                                    "toughness": 0
+                                  }
+                                }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

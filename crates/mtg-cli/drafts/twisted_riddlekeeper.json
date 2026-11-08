@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c7ad20a3-51bf-4a22-a09c-fff8cae22765",
+  "name": "Twisted Riddlekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twisted Riddlekeeper",
+      "oracle_fingerprint": "ac20651ca9c916a8953f389bf8d64c94",
+      "abilities": [
+        { "Keyword": { "Emerge": "{5}{C}{U}" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 0, "max": 2 } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

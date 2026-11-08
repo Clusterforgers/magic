@@ -1,0 +1,38 @@
+{
+  "oracle_id": "769ae101-73cc-4ac5-8f46-8af8e7de6581",
+  "name": "Cabal Interrogator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cabal Interrogator",
+      "oracle_fingerprint": "b3e27d2752feda877c330ef10eebdb0b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{B}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": "X", "max": "X" },
+                  "as": "shown"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "shown" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "shown" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

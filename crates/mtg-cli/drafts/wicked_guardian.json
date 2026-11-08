@@ -1,0 +1,41 @@
+{
+  "oracle_id": "dda70e25-b3c5-444d-9dff-1366771bf881",
+  "name": "Wicked Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wicked Guardian",
+      "oracle_fingerprint": "b2246a9d0409414e876b7df97a5b0200",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              { "DealDamage": { "to": { "Bound": "card" }, "amount": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

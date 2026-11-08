@@ -43,6 +43,8 @@ pub fn divided_creatures(most: i32) -> TargetSpec {
 /// Each target of the first specification is dealt its share of the division.
 fn share_damage() -> Effect {
     Effect::DealDamage {
+        excess: None,
+        unpreventable: false,
         source: None,
         to: Ref::Target(0),
         amount: Amount::Divided,
@@ -83,6 +85,8 @@ pub fn even_bolt(name: &str, total: i32) -> Arc<CardDefinition> {
                 divide: None,
             }],
             effects: vec![Effect::DealDamage {
+                excess: None,
+                unpreventable: false,
                 source: None,
                 to: Ref::Target(0),
                 amount: Amount::EvenShare(Box::new(Amount::Fixed(total))),
@@ -115,15 +119,19 @@ pub fn split_charm(name: &str) -> Arc<CardDefinition> {
         Ability::Spell {
             targets: Vec::new(),
             effects: vec![Effect::Modal {
+                who: mtg_cards::refs::Ref::You,
                 choose: Bounds {
                     min: Amount::one(),
                     max: Some(Amount::Fixed(1)),
                 },
                 repeat: false,
                 at_random: false,
+                different_players: false,
                 once_each_turn: false,
                 once_ever: false,
                 all_if: None,
+                mode_costs: Vec::new(),
+                extra_mode_cost: None,
                 modes: vec![
                     Mode {
                         label: Some("Split".to_owned()),
@@ -153,6 +161,7 @@ pub fn split_pinger(name: &str) -> Arc<CardDefinition> {
                 timing: Timing::Instant,
                 condition: None,
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: vec![divided(2)],
                 effects: vec![share_damage()],

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "10495c22-2456-4b93-afa9-0c3c53075efe",
+  "name": "Cowed by Wisdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cowed by Wisdom",
+      "oracle_fingerprint": "551ae6a934363c6db6c3a94d3fd89052",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": [{ "Is": "Attached" }],
+                "mana": "{1}",
+                "per": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "BlockTax": {
+                "blockers": [{ "Is": "Attached" }],
+                "mana": "{1}",
+                "per": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

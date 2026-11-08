@@ -6,7 +6,7 @@ import { DeckError } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { FixMarkView } from '@/protocol/generated'
 import { fixMarksClient } from './client'
-import { FixMarkButton } from './FixMarkButton'
+import { DEMOTES, FixMarkButton } from './FixMarkButton'
 
 const ORACLE = 'oracle-sol-ring'
 const view = (note: string | null = null, oracleId = ORACLE): FixMarkView => ({
@@ -238,5 +238,21 @@ describe('FixMarkButton', () => {
     mount(fakeApi(), 'quiet')
     await loaded()
     expect(toggle().className).toContain('text-muted-foreground')
+  })
+})
+
+describe('FixMarkButton demotion', () => {
+  it.each(['partial', 'forge'] as const)('says a press plays a %s card by hand', async (support) => {
+    render(<FixMarkButton oracleId={ORACLE} name="Sol Ring" api={fakeApi()} support={support} />)
+    await loaded()
+    expect(toggle()).toHaveAttribute('title', DEMOTES)
+    expect(document.querySelector('[data-slot="fix-mark-demotes"]')).not.toBeNull()
+  })
+
+  it('keeps the plain label for other cards', async () => {
+    render(<FixMarkButton oracleId={ORACLE} name="Sol Ring" api={fakeApi()} support="manual" />)
+    await loaded()
+    expect(toggle()).not.toHaveAttribute('title')
+    expect(document.querySelector('[data-slot="fix-mark-demotes"]')).toBeNull()
   })
 })

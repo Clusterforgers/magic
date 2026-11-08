@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3420da71-0af4-46b4-a994-91a82332d0fb",
+  "name": "Apothecary Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apothecary Geist",
+      "oracle_fingerprint": "8fa6d1b3cec06e024e440a8a9871fca5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Spirit" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

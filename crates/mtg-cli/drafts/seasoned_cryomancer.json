@@ -1,0 +1,68 @@
+{
+  "oracle_id": "c3936db3-d3b6-4a92-9773-6f3c52dc419d",
+  "name": "Seasoned Cryomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seasoned Cryomancer",
+      "oracle_fingerprint": "71fb32a6fd3b21cbbacaeb66bf88de0e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Discard": { "count": 2, "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": { "Object": [{ "Type": "Creature" }] },
+                            "bounds": {
+                              "min": 0,
+                              "max": {
+                                "CountOf": {
+                                  "of": { "Bound": "when2" },
+                                  "filter": [{ "Not": { "Type": "Land" } }]
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Tap": { "what": { "Target": 0 } } },
+                          {
+                            "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}{U}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

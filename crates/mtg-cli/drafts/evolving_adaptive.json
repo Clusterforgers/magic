@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e350c2d5-0ca2-4b9c-b01f-a3c31cbf8d10",
+  "name": "Evolving Adaptive",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Evolving Adaptive",
+      "oracle_fingerprint": "6272b12b06ded6782ff6aedaba730112",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 1 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "oil" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "oil" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 251 }
+          }
+        }
+      ]
+    }
+  ]
+}

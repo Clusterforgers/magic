@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9a8c8d52-1701-4ae0-9d2d-cce4e476673b",
+  "name": "Power Artifact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power Artifact",
+      "oracle_fingerprint": "490933ffa7685a89991f71cb1e6663df",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Artifact" }, { "Is": "Attached" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Any",
+            "least": 1
+          }
+        }
+      ]
+    }
+  ]
+}

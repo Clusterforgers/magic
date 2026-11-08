@@ -1,0 +1,69 @@
+{
+  "oracle_id": "bd4810a4-8f86-4d1c-82f1-cbcd7e9479d6",
+  "name": "Storm the Citadel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm the Citadel",
+      "oracle_fingerprint": "d20e322e1e22760d994dd9733eb2827b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "AnyOf": [
+                              {
+                                "DealsDamage": {
+                                  "source": ["This"],
+                                  "to": "EachPlayer",
+                                  "combat": true
+                                }
+                              },
+                              {
+                                "DealsDamage": {
+                                  "source": ["This"],
+                                  "to": { "Each": [{ "Type": "Planeswalker" }] },
+                                  "combat": true
+                                }
+                              }
+                            ]
+                          },
+                          "targets": [
+                            {
+                              "what": {
+                                "Object": [
+                                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                                  { "ControlledBy": "Defending" }
+                                ]
+                              }
+                            }
+                          ],
+                          "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

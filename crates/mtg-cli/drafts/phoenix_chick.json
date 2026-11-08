@@ -1,0 +1,44 @@
+{
+  "oracle_id": "40bb7b6b-a75d-4b59-ba45-a5801dcd59a1",
+  "name": "Phoenix Chick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phoenix Chick",
+      "oracle_fingerprint": "c9b4614ee162e53e97fbf97dcd4e59cb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 3
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}{R}",
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "Battlefield": { "tapped": true, "counters": [["+1/+1", 1]] } },
+                        "as": "moved"
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "moved" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

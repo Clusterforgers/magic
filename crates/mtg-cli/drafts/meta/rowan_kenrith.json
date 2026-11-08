@@ -1,0 +1,91 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "CARDNAME can be your commander.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Partner with:Will Kenrith:Will",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "During target player's next turn, each creature that player controls attacks if able.",
+      "abilities": [],
+      "gap": "effect:Effect-static-MustAttack"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME deals 3 damage to each tapped creature target player controls.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Target player gets an emblem with \"Whenever you activate an ability that isn't a mana ability, copy it. You may choose new targets for the copy.\"",
+      "abilities": [],
+      "gap": "key:Effect.EffectOwner"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 89
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 90,
+          "end": 170
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 171,
+          "end": 320
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 321,
+          "end": 346
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 347,
+          "end": 383
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

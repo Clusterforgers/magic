@@ -1,0 +1,182 @@
+{
+  "object": "card",
+  "id": "4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b",
+  "oracle_id": "8b1e453a-35a6-4dff-bd37-498f34d0470e",
+  "multiverse_ids": [
+    548408,
+    548409
+  ],
+  "mtgo_id": 97140,
+  "arena_id": 79535,
+  "tcgplayer_id": 262773,
+  "cardmarket_id": 608218,
+  "name": "The Long Reach of Night // Animus of Night's Reach",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b",
+  "scryfall_uri": "https://scryfall.com/card/neo/109/the-long-reach-of-night-animus-of-nights-reach?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:24:48Z",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Spirit",
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Transform",
+    "Menace"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "The Long Reach of Night",
+      "mana_cost": "{3}{B}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI, II — Each opponent sacrifices a creature of their choice unless they discard a card.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "B"
+      ],
+      "artist": "Tuan Duong Chu",
+      "artist_id": "d84246f9-a536-485f-a21d-a237302ed100",
+      "illustration_id": "a653801c-7842-45ae-95c4-f548a0dd95dc",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "normal": "https://cards.scryfall.io/normal/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "large": "https://cards.scryfall.io/large/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "png": "https://cards.scryfall.io/png/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.png?1783923888",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "thumb": "https://cards.scryfall.io/thumb/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "grid": "https://cards.scryfall.io/grid/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "display": "https://cards.scryfall.io/display/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "art": "https://cards.scryfall.io/art/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "crop": "https://cards.scryfall.io/crop/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "jpeg": "https://cards.scryfall.io/normal/front/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Animus of Night's Reach",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Spirit",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhenever this creature attacks, it gets +X/+0 until end of turn, where X is the number of creature cards in defending player's graveyard.",
+      "colors": [
+        "B"
+      ],
+      "color_indicator": [
+        "B"
+      ],
+      "power": "0",
+      "toughness": "4",
+      "flavor_text": "The dark myojin's gifts were instrumental in ending the Kami War.",
+      "artist": "Tuan Duong Chu",
+      "artist_id": "d84246f9-a536-485f-a21d-a237302ed100",
+      "illustration_id": "ef3e7c14-e877-49fb-a9de-2fd70a13d335",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "normal": "https://cards.scryfall.io/normal/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "large": "https://cards.scryfall.io/large/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "png": "https://cards.scryfall.io/png/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.png?1783923888",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888",
+        "thumb": "https://cards.scryfall.io/thumb/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "grid": "https://cards.scryfall.io/grid/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "display": "https://cards.scryfall.io/display/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "art": "https://cards.scryfall.io/art/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "crop": "https://cards.scryfall.io/crop/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.webp?1783923888",
+        "jpeg": "https://cards.scryfall.io/normal/back/4/e/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b.jpg?1783923888"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59a2059f-5482-433f-8761-eb2e17859b71",
+  "set": "neo",
+  "set_name": "Kamigawa: Neon Dynasty",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59a2059f-5482-433f-8761-eb2e17859b71",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aneo&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/neo?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4ec18bf7-bd80-408d-acc4-ffaaf7ef6b5b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8b1e453a-35a6-4dff-bd37-498f34d0470e&unique=prints",
+  "collector_number": "109",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Tuan Duong Chu",
+  "artist_ids": [
+    "d84246f9-a536-485f-a21d-a237302ed100"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "fandfc",
+    "enchantment"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11699,
+  "penny_rank": 10089,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.24",
+    "usd_etched": null,
+    "eur": "0.41",
+    "eur_foil": "0.14",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548408&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BLong%2BReach%2Bof%2BNight%2B%252F%252F%2BAnimus%2Bof%2BNight%2527s%2BReach",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BLong%2BReach%2Bof%2BNight%2B%252F%252F%2BAnimus%2Bof%2BNight%2527s%2BReach",
+    "edhrec": "https://edhrec.com/route/?cc=The+Long+Reach+of+Night"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262773%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=608218&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97140?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

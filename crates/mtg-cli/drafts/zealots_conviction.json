@@ -1,0 +1,37 @@
+{
+  "oracle_id": "79ab207f-e7ff-4236-b260-5a109a73fbed",
+  "name": "Zealot's Conviction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zealot's Conviction",
+      "oracle_fingerprint": "4ccb087c0da8c6b871d9c882477c68ab",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "AddKeyword": "FirstStrike" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

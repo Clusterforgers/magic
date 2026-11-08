@@ -1,0 +1,45 @@
+{
+  "oracle_id": "245d0ccf-87b6-460a-8b99-9e2079f2d375",
+  "name": "Delney, Streetwise Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delney, Streetwise Lookout",
+      "oracle_fingerprint": "c5c43f6d38d26466dfcd2c312946de4d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+              ]
+            },
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3334b218-01e3-47a3-8a28-5cc2decbedea",
+  "name": "Woodweaver's Puzzleknot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodweaver's Puzzleknot",
+      "oracle_fingerprint": "f30e4362e4eaac71b9c49da86bf66fb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "GainLife": { "amount": 3 } },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "SacrificeSelf"],
+            "effects": [
+              { "GainLife": { "amount": 3 } },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

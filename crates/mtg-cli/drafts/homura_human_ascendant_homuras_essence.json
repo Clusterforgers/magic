@@ -1,0 +1,60 @@
+{
+  "oracle_id": "fa023c32-2cec-416c-90b7-07b7a19c82d4",
+  "name": "Homura, Human Ascendant // Homura's Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Homura, Human Ascendant",
+      "oracle_fingerprint": "0ff0d5de1fd3a3314646c6bd44dc9472",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              { "Flip": { "what": { "Bound": "moved" } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Homura's Essence",
+      "oracle_fingerprint": "b3809467b75064da04ac0686263339ba",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{R}",
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -84,6 +84,7 @@ fn an_optional_additional_cost_reads_and_writes_back(
     "As an additional cost to cast this spell, exile a creature card from your graveyard.",
     must(vec![CostItem::ExileFromGraveyard {
         filter: kind(CardType::Creature),
+        any_player: false,
         count: Amount::one(),
     }])
 )]
@@ -206,11 +207,11 @@ fn a_reveal_from_the_hand_as_an_additional_cost_reads_and_writes_back(
 )]
 #[case::exile_from_the_graveyard(
     "As an additional cost to cast this spell, exile X cards from your graveyard.",
-    must(vec![CostItem::ExileFromGraveyard { filter: Selector(Vec::new()), count: Amount::X }])
+    must(vec![CostItem::ExileFromGraveyard { filter: Selector(Vec::new()), any_player: false, count: Amount::X }])
 )]
 #[case::exile_a_kind_from_the_graveyard(
     "As an additional cost to cast this spell, exile X creature cards from your graveyard.",
-    must(vec![CostItem::ExileFromGraveyard { filter: kind(CardType::Creature), count: Amount::X }])
+    must(vec![CostItem::ExileFromGraveyard { filter: kind(CardType::Creature), any_player: false, count: Amount::X }])
 )]
 fn a_required_additional_cost_that_counts_x_reads_and_writes_back(
     #[case] text: &str,

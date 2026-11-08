@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c5054364-2a19-4b70-869b-94d48b7b12c0",
+  "name": "Otrimi, the Ever-Playful",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otrimi, the Ever-Playful",
+      "oracle_fingerprint": "e4b7f4565d8e7b0ea524d754a0154530",
+      "abilities": [
+        { "Keyword": { "Mutate": "{1}{U}{B}{G}" } },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "HasKeywordNamed": "Mutate" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

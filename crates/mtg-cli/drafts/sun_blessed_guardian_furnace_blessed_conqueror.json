@@ -1,0 +1,62 @@
+{
+  "oracle_id": "0b34581e-66df-4e2f-91fb-dddba632d203",
+  "name": "Sun-Blessed Guardian // Furnace-Blessed Conqueror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sun-Blessed Guardian",
+      "oracle_fingerprint": "c68e9d33dbf8b08fcdffc4d79c287bdf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{5}{R/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Furnace-Blessed Conqueror",
+      "oracle_fingerprint": "629d06e5f3ab60a35a8f0f6e873d9b29",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": "This" } },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "copy" } },
+                        "filter": [{ "Is": { "Bound": "copy" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "copy" },
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

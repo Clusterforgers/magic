@@ -28,7 +28,7 @@ use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::forecast::{
     AttackerForecast, CombatForecast, CreatureForecast, ForecastDamage, PlayerForecast,
 };
-use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
+use mtg_engine::library::{CardsFound, HandLooked, LibraryLooked, Revealed, Scried, Surveilled};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::manual::{ManualAction, ManualZone};
 use mtg_engine::object::{Chosen, ObjectRef};
@@ -245,9 +245,11 @@ fn decision_kinds() -> Vec<DecisionKind> {
             abilities: Vec::new(),
             suspendable: Vec::new(),
             foretellable: Vec::new(),
+            plottable: Vec::new(),
             companion: false,
             turnable: Vec::new(),
             unlockable: Vec::new(),
+            endable: Vec::new(),
             faces: Vec::new(),
             unplayable: Vec::new(),
             can_act: true,
@@ -261,6 +263,8 @@ fn decision_kinds() -> Vec<DecisionKind> {
             sources: vec![option.clone()],
             auto_available: true,
             can_cancel: true,
+            attack: true,
+            block: false,
             life: 20,
             max_life: 0,
             help: Box::default(),
@@ -273,6 +277,8 @@ fn decision_kinds() -> Vec<DecisionKind> {
             sources: vec![option],
             auto_available: false,
             can_cancel: false,
+            attack: false,
+            block: false,
             life: 3,
             max_life: 2,
             help: Box::default(),
@@ -280,6 +286,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
         DecisionKind::DeclareAttackers(AttackOptions {
             most: None,
             most_at: Vec::new(),
+            cant_alone: Vec::new(),
             attackers: vec![AttackerOption::free(
                 a,
                 vec![AttackTarget::Player(PlayerId(1))],
@@ -294,6 +301,8 @@ fn decision_kinds() -> Vec<DecisionKind> {
                 can_block: vec![b],
                 extra: 0,
             }],
+            must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: Vec::new(),
@@ -305,6 +314,8 @@ fn decision_kinds() -> Vec<DecisionKind> {
                 can_block: vec![b],
                 extra: 0,
             }],
+            must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: vec![(b, 2)],
             max_blockers: Vec::new(),
             required: vec![a],
@@ -315,6 +326,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             blockers: vec![b],
             excess: None,
             lethal: vec![2],
+            unblocked: false,
         }),
         DecisionKind::AssignDamage(DamageOptions {
             attacker: a,
@@ -322,6 +334,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             blockers: vec![b],
             excess: Some(DamageTarget::Player(PlayerId(1))),
             lethal: vec![1],
+            unblocked: false,
         }),
         DecisionKind::Discard(DiscardOptions {
             hand: vec![a, b],
@@ -342,9 +355,11 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             abilities: vec![AbilityRef::printed(a, 0)],
             suspendable: Vec::new(),
             foretellable: Vec::new(),
+            plottable: Vec::new(),
             companion: false,
             turnable: Vec::new(),
             unlockable: Vec::new(),
+            endable: Vec::new(),
             faces: Vec::new(),
             unplayable: Vec::new(),
             can_act: true,
@@ -363,6 +378,8 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             wording: "up to two target creatures".into(),
             triggered: true,
             apart: Vec::new(),
+            together: None,
+            total: None,
         }),
         DecisionKind::ChooseMode(ModeOptions {
             source: b,
@@ -370,16 +387,19 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                 ModeOption {
                     index: 0,
                     label: Some("Draw".into()),
+                    cost: None,
                 },
                 ModeOption {
                     index: 1,
                     label: None,
+                    cost: None,
                 },
             ],
             min: 1,
             max: 2,
             repeat: false,
             can_cancel: true,
+            cheapest: Vec::new(),
         }),
         DecisionKind::ChooseNumber(NumberOptions {
             source: b,
@@ -409,6 +429,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             can_cancel: true,
         }),
         DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
             source: b,
             from: vec![a, b],
             min: 1,
@@ -818,12 +839,18 @@ fn every_event_view_variant_round_trips() {
     let player = PlayerId(1);
     let hidden = [
         HiddenEvent::CardDrawn { player },
+        HiddenEvent::CardConjured { player },
         HiddenEvent::HandDealt { player, count: 7 },
         HiddenEvent::LibraryShuffled { player },
         HiddenEvent::MulliganTaken { player },
         HiddenEvent::CardsBottomed { player, count: 2 },
         HiddenEvent::ObjectLeftGame,
         HiddenEvent::LibraryLooked { player, count: 3 },
+        HiddenEvent::HandLooked {
+            player,
+            of: player,
+            count: 4,
+        },
         HiddenEvent::CardsFound { player, count: 1 },
         HiddenEvent::Scried {
             player,
@@ -1042,7 +1069,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(3),
         decision: Decision {
             player: PlayerId(1),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![], max_blockers: vec![], required: vec![], most: None }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![] }),
         },
         deadline_ms: Some(45_000),
         show_after_ms: None,
@@ -1057,7 +1084,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(4),
         decision: Decision {
             player: PlayerId(0),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![], max_blockers: vec![], required: vec![], most: None }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![] }),
         },
         deadline_ms: None,
         show_after_ms: None,
@@ -1238,6 +1265,8 @@ fn pay_options_carry_the_life_total_and_the_most_life_that_may_be_paid() {
         sources: vec![],
         auto_available: false,
         can_cancel: true,
+        attack: false,
+        block: false,
         life: 2,
         max_life: 2,
         help: Box::default(),
@@ -1464,6 +1493,11 @@ fn w2f_cost_taken(
         shots: vec![shot],
         variant: 1,
         kinds: vec![mtg_cards::value::CounterKind::Other("shield".into())],
+        sources: vec![mtg_cards::spend::SpentFrom {
+            traits: mtg_cards::spend::SpendTraits::default(),
+            count: 2,
+        }],
+        convoked: vec![mtg_engine::object::ObjectRef { id: a, counter: 1 }],
     }
 }
 
@@ -1508,6 +1542,7 @@ fn pipeline_events() -> Vec<Event> {
                 snapshots: vec![shot.clone()],
                 amount: 0,
                 source: None,
+                against: None,
             }),
             delayed: Some(DelayedId(2)),
         })),
@@ -1598,6 +1633,11 @@ fn primitive_events() -> Vec<Event> {
             player,
             cards: vec![a],
         }),
+        Event::HandLooked(HandLooked {
+            player,
+            of: player,
+            cards: vec![a, b],
+        }),
         Event::CardsFound(CardsFound {
             player,
             zone: Zone::Library(player),
@@ -1681,11 +1721,13 @@ fn the_question_of_a_yes_no_or_option_decision_is_left_out_while_empty_and_a_mod
             modes: vec![ModeOption {
                 index: 1,
                 label: None,
+                cost: None,
             }],
             min: 1,
             max: 1,
             repeat: false,
             can_cancel: false,
+            cheapest: Vec::new(),
         })),
         json!({"ChooseMode": {
             "source": 4, "modes": [{"index": 1, "label": null}],
@@ -1715,6 +1757,8 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             wording: String::new(),
             triggered: false,
             apart: Vec::new(),
+            together: None,
+            total: None,
         }),
     };
     assert_eq!(
@@ -1788,9 +1832,11 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
         abilities: Vec::new(),
         suspendable: Vec::new(),
         foretellable: Vec::new(),
+        plottable: Vec::new(),
         companion: false,
         turnable: Vec::new(),
         unlockable: Vec::new(),
+        endable: Vec::new(),
         faces: Vec::new(),
         unplayable: Vec::new(),
         can_act: true,

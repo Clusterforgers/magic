@@ -6,6 +6,7 @@ use super::super::variants;
 use crate::ability::Ability;
 use crate::effect::{Destination, Effect, Place};
 use crate::refs::Ref;
+use crate::value::Amount;
 
 /// The effects of an ability and a copy of it with other effects, for the kinds that have effects.
 fn with_effects(ability: &Ability, effects: Vec<Effect>) -> Option<Ability> {
@@ -32,7 +33,11 @@ fn sentence(effects: &[Effect]) -> Option<&'static str> {
     };
     match effects {
         [
-            Effect::LookAtTop { bind: top_name, .. },
+            Effect::LookAtTop {
+                bind: top_name,
+                count: Amount::Fixed(2),
+                ..
+            },
             Effect::Choose {
                 who: Ref::You,
                 from: Ref::Bound(looked),
@@ -43,10 +48,12 @@ fn sentence(effects: &[Effect]) -> Option<&'static str> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to: Destination::Hand,
+                ..
             },
             Effect::Move {
                 what: Ref::Bound(others),
                 to,
+                ..
             },
         ] if looked == top_name && moved == kept && others == rest && *to == bottom => {
             Some(" Put one of them into your hand and the other on the bottom of your library.")
@@ -63,6 +70,7 @@ fn sentence(effects: &[Effect]) -> Option<&'static str> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to: Destination::Hand,
+                ..
             },
             Effect::Choose {
                 who: Ref::You,
@@ -74,10 +82,12 @@ fn sentence(effects: &[Effect]) -> Option<&'static str> {
             Effect::Move {
                 what: Ref::Bound(on_top),
                 to: first,
+                ..
             },
             Effect::Move {
                 what: Ref::Bound(on_bottom),
                 to: second,
+                ..
             },
         ] if looked == top_name
             && moved == kept

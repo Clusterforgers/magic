@@ -1,0 +1,80 @@
+{
+  "oracle_id": "468f9b8e-4423-4131-8611-d34b0aa3d96f",
+  "name": "Nissa, Worldwaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa, Worldwaker",
+      "oracle_fingerprint": "d98e4e223e5e5948e1973ee66817a5c3",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Forest" }] }, "bounds": { "min": 0, "max": 4 } }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Type": "Land" },
+                        { "Supertype": "Basic" },
+                        { "OwnedBy": "You" },
+                        { "In": "Library" }
+                      ]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "found" },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

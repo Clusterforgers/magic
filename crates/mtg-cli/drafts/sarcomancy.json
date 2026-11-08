@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bd1e93da-7524-4bdd-9738-accd76bda7f7",
+  "name": "Sarcomancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarcomancy",
+      "oracle_fingerprint": "5d8de2d72ec735335666464825125f3d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Subtype": "Zombie" }] }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

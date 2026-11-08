@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5ed533a7-82b0-4a71-a9e9-4dffe9d18851",
+  "name": "Dreadhound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreadhound",
+      "oracle_fingerprint": "e41e1252a971bad0662f4588a1bed724",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }],
+                    "from": "Library",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

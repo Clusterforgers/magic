@@ -1,0 +1,42 @@
+{
+  "oracle_id": "be02005c-0e37-4dba-ac8e-3c69d06bbec2",
+  "name": "Silver Surfer, Galactus's Herald",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Silver Surfer, Galactus's Herald",
+      "oracle_fingerprint": "7b9d15dfd3dbbb123dfbbd7e9fec0548",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Galactus, Devourer of Worlds" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 157, "end": 302 }
+          }
+        }
+      ]
+    }
+  ]
+}

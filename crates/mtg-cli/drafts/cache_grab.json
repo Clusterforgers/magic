@@ -1,0 +1,76 @@
+{
+  "oracle_id": "06ccec61-27d2-4079-80b5-29ebd3a980ee",
+  "name": "Cache Grab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cache Grab",
+      "oracle_fingerprint": "076c4990ad0fc6d2b406294e1ccc7740",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand", "as": "moved3" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          { "Count": [{ "Subtype": "Squirrel" }, { "ControlledBy": "You" }] },
+                          {
+                            "Count": [
+                              { "Is": { "Bound": "moved3" } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              },
+                              { "Subtype": "Squirrel" }
+                            ]
+                          }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "food" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

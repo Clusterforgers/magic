@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fcae4f9d-8f81-42f9-93a3-82a482851bdd",
+  "name": "Moonstone Harbinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonstone Harbinger",
+      "oracle_fingerprint": "017a7cfe87f6d6d80d587844447a67d5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "LifeGained": { "who": "You" } }, { "LifeLost": { "who": "You" } }]
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Bat" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

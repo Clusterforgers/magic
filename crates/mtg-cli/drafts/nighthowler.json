@@ -1,0 +1,27 @@
+{
+  "oracle_id": "57b3f7fc-1812-4134-a645-6cef48a8aa71",
+  "name": "Nighthowler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nighthowler",
+      "oracle_fingerprint": "099c062117ebaa45424015562bd9c609",
+      "abilities": [
+        { "Keyword": { "Bestow": "{2}{B}{B}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "AnyOf": ["This", { "Is": "Attached" }] }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

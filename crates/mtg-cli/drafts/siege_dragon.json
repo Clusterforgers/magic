@@ -1,0 +1,52 @@
+{
+  "oracle_id": "206539a6-0e60-4986-bc57-c2b89e08b9f2",
+  "name": "Siege Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siege Dragon",
+      "oracle_fingerprint": "0e9adf731857c335706f473d1b07770d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Subtype": "Wall" }, { "ControlledBy": "Opponents" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Wall" }, { "ControlledBy": "Defending" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "HasKeyword": "Flying" } },
+                      { "ControlledBy": "Defending" }
+                    ]
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

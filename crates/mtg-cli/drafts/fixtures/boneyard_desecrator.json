@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "d43981b1-60c8-4896-8885-b07e73b99b30",
+  "oracle_id": "c3adc698-a0c5-4c82-8347-536745c9e928",
+  "multiverse_ids": [
+    655022
+  ],
+  "mtgo_id": 124073,
+  "arena_id": 90427,
+  "tcgplayer_id": 544471,
+  "cardmarket_id": 764090,
+  "name": "Boneyard Desecrator",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/d43981b1-60c8-4896-8885-b07e73b99b30",
+  "scryfall_uri": "https://scryfall.com/card/otj/81/boneyard-desecrator?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:03:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.jpg?1783911836",
+    "normal": "https://cards.scryfall.io/normal/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.jpg?1783911836",
+    "large": "https://cards.scryfall.io/large/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.jpg?1783911836",
+    "png": "https://cards.scryfall.io/png/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.png?1783911836",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.jpg?1783911836",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.jpg?1783911836",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.webp?1783911836",
+    "grid": "https://cards.scryfall.io/grid/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.webp?1783911836",
+    "display": "https://cards.scryfall.io/display/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.webp?1783911836",
+    "art": "https://cards.scryfall.io/art/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.webp?1783911836",
+    "crop": "https://cards.scryfall.io/crop/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.webp?1783911836",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/4/d43981b1-60c8-4896-8885-b07e73b99b30.jpg?1783911836"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Zombie Mercenary",
+  "oracle_text": "Menace\n{1}{B}, Sacrifice another creature: Put a +1/+1 counter on this creature. If an outlaw was sacrificed this way, create a Treasure token. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Treasure",
+    "Menace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "7ec6f053-96f7-4e57-b2eb-4e7699a40a4f",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/7ec6f053-96f7-4e57-b2eb-4e7699a40a4f"
+    },
+    {
+      "object": "related_card",
+      "id": "d43981b1-60c8-4896-8885-b07e73b99b30",
+      "component": "combo_piece",
+      "name": "Boneyard Desecrator",
+      "type_line": "Creature — Zombie Mercenary",
+      "uri": "https://api.scryfall.com/cards/d43981b1-60c8-4896-8885-b07e73b99b30"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "otj",
+  "set_name": "Outlaws of Thunder Junction",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d43981b1-60c8-4896-8885-b07e73b99b30/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac3adc698-a0c5-4c82-8347-536745c9e928&unique=prints",
+  "collector_number": "81",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "It's never too late to start an afterlife of crime.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Maxime Minard",
+  "artist_ids": [
+    "a9065769-afcd-4e54-a3c0-5809e7b4108b"
+  ],
+  "illustration_id": "764704ba-36a3-4c30-9bcc-ab8a2f80302d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16591,
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.09",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=655022&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBoneyard%2BDesecrator",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBoneyard%2BDesecrator",
+    "edhrec": "https://edhrec.com/route/?cc=Boneyard+Desecrator"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F544471%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764090&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124073?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

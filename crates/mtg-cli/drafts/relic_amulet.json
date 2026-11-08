@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b3998d9c-56b1-486c-818c-a6882e999d54",
+  "name": "Relic Amulet",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Relic Amulet",
+      "oracle_fingerprint": "d8039c4e307daf72ff6ea4f7fa909321",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Subtype": "Wizard" }]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 197 }
+          }
+        }
+      ]
+    }
+  ]
+}

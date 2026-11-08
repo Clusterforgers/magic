@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6a180f07-7afa-4605-9c58-4521a5f3fcc1",
+  "name": "Rathi Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rathi Dragon",
+      "oracle_fingerprint": "9aac30826b8f879607f9a58a17699a77",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Mountain" }], "count": 2 } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

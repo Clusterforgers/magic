@@ -9,23 +9,13 @@
       "abilities": [
         {
           "Static": {
-            "affected": {
-              "Each": [
-                { "Type": "Creature" },
-                { "ControlledBy": "You" },
-                { "Subtype": "Commander" }
-              ]
-            },
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
             "mods": [
               {
                 "GrantAbility": {
                   "Static": {
                     "affected": {
-                      "Each": [
-                        { "Type": "Creature" },
-                        { "ControlledBy": "You" },
-                        { "Subtype": "Token" }
-                      ]
+                      "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }]
                     },
                     "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
                   }

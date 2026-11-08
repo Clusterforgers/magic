@@ -39,6 +39,7 @@ pub fn exile_and_return(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 transformed,
                 counters: Vec::new(),
             },
+            bind: None,
         },
     ])
 }
@@ -101,6 +102,7 @@ pub fn text(effects: &[Effect]) -> Option<(String, usize)> {
                     transformed,
                     counters,
                 },
+            ..
         },
         ..,
     ] = effects

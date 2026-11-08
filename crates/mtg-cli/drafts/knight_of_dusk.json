@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cd1ca3c8-1f03-4c03-a93a-0419ac205c18",
+  "name": "Knight of Dusk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of Dusk",
+      "oracle_fingerprint": "2e18663dbeb95249420e4d4a578f02be",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Blocks": "This" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

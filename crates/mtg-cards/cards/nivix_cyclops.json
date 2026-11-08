@@ -1,0 +1,39 @@
+{
+  "oracle_id": "68b8bfac-63f7-4dbd-bb2e-4ad394c77335",
+  "name": "Nivix Cyclops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nivix Cyclops",
+      "oracle_fingerprint": "7accf4552f24b39423fdd3c2f885d5b4",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

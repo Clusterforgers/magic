@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ee32ab1a-1120-4c34-a538-7bde9eff5a6e",
+  "name": "Inventor's Goggles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inventor's Goggles",
+      "oracle_fingerprint": "bd8dd8da100c43db831cca60e0f613f7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Artificer" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

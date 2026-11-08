@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever NICKNAME attacks, untap each snow permanent you control.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "You may play target snow permanent card from your graveyard this turn. If you do, it enters tapped.",
+      "abilities": [],
+      "gap": "key:Effect.TgtZone"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 61
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 104
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

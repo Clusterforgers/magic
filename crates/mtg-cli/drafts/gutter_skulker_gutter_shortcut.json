@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d2d753d4-3bb7-4503-8cc0-8f948b7a461e",
+  "name": "Gutter Skulker // Gutter Shortcut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gutter Skulker",
+      "oracle_fingerprint": "64effffe0d5276550619b2a915af774e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", "Attacking"] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": { "left": { "Count": ["Other", "Attacking"] }, "op": "Eq", "right": 0 }
+            }
+          }
+        },
+        { "Keyword": { "Disturb": "{3}{U}" } }
+      ]
+    },
+    {
+      "name": "Gutter Shortcut",
+      "oracle_fingerprint": "6a21712150134a5659b9b8f0d5a2b325",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }, "Attacking"] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": { "left": { "Count": ["Attacking"] }, "op": "Eq", "right": 1 }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

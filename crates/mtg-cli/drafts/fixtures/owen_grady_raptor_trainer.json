@@ -1,0 +1,170 @@
+{
+  "object": "card",
+  "id": "a85a1e4c-af02-4072-872f-956fa74f8aa6",
+  "oracle_id": "4eda40a2-39e5-4b0e-ba6d-8a6f89d6f55f",
+  "multiverse_ids": [
+    642688
+  ],
+  "mtgo_id": 117440,
+  "tcgplayer_id": 525378,
+  "cardmarket_id": 743246,
+  "name": "Owen Grady, Raptor Trainer",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/a85a1e4c-af02-4072-872f-956fa74f8aa6",
+  "scryfall_uri": "https://scryfall.com/card/rex/16/owen-grady-raptor-trainer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:33:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.jpg?1783913633",
+    "normal": "https://cards.scryfall.io/normal/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.jpg?1783913633",
+    "large": "https://cards.scryfall.io/large/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.jpg?1783913633",
+    "png": "https://cards.scryfall.io/png/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.png?1783913633",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.jpg?1783913633",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.jpg?1783913633",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.webp?1783913633",
+    "grid": "https://cards.scryfall.io/grid/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.webp?1783913633",
+    "display": "https://cards.scryfall.io/display/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.webp?1783913633",
+    "art": "https://cards.scryfall.io/art/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.webp?1783913633",
+    "crop": "https://cards.scryfall.io/crop/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.webp?1783913633",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/8/a85a1e4c-af02-4072-872f-956fa74f8aa6.jpg?1783913633"
+  },
+  "mana_cost": "{1}{R}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Soldier Scientist",
+  "oracle_text": "Partner with Blue, Loyal Raptor\n{T}: Put your choice of a reach, menace, trample, or haste counter on target Dinosaur. Activate only as a sorcery.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d69d3be4-3ab2-426e-90a0-848acf7c2cdb",
+      "component": "combo_piece",
+      "name": "Owen Grady, Raptor Trainer",
+      "type_line": "Legendary Creature — Human Soldier Scientist",
+      "uri": "https://api.scryfall.com/cards/d69d3be4-3ab2-426e-90a0-848acf7c2cdb"
+    },
+    {
+      "object": "related_card",
+      "id": "f197b176-8fa0-451b-a981-a7a942890296",
+      "component": "combo_piece",
+      "name": "Blue, Loyal Raptor",
+      "type_line": "Legendary Creature — Dinosaur",
+      "uri": "https://api.scryfall.com/cards/f197b176-8fa0-451b-a981-a7a942890296"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set": "rex",
+  "set_name": "Jurassic World Collection",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arex&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rex?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a85a1e4c-af02-4072-872f-956fa74f8aa6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4eda40a2-39e5-4b0e-ba6d-8a6f89d6f55f&unique=prints",
+  "collector_number": "16",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I don't control the raptors. It's a relationship. It's based on mutual respect.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jaroslav Kosmina",
+  "artist_ids": [
+    "2ac4115a-486a-414b-b61c-dc0019880b64"
+  ],
+  "illustration_id": "7e9e5ba2-0b2f-41f3-bf89-578adb25be52",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 12278,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/chris-pratt-magic-the-gathering-jurassic-world-crossover-spoiler",
+    "previewed_at": "2023-10-30"
+  },
+  "prices": {
+    "usd": "6.59",
+    "usd_foil": "9.93",
+    "usd_etched": null,
+    "eur": "4.23",
+    "eur_foil": "6.70",
+    "tix": "1.22"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642688&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOwen%2BGrady%252C%2BRaptor%2BTrainer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOwen%2BGrady%252C%2BRaptor%2BTrainer",
+    "edhrec": "https://edhrec.com/route/?cc=Owen+Grady%2C+Raptor+Trainer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525378%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743246&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117440?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

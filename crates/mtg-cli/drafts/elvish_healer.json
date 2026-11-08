@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ea46835c-9dac-4e1e-8338-ad99136f511a",
+  "name": "Elvish Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Healer",
+      "oracle_fingerprint": "f3aa18f6bf74293a22fd42a16d7fbf1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventCounted": {
+                      "Sum": [
+                        {
+                          "CountOf": {
+                            "of": { "Target": 0 },
+                            "filter": [{ "Type": "Creature" }, { "Color": "Green" }]
+                          }
+                        },
+                        1
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b0b93253-6432-401e-9a01-94c41fb72c10",
+  "name": "Fearless Liberator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fearless Liberator",
+      "oracle_fingerprint": "52d66d2c4db1efeee686955766efa23b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dwarf Berserker",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dwarf", "Berserker"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

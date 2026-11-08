@@ -1,0 +1,48 @@
+{
+  "oracle_id": "102b0a65-f2e0-4ef3-a9dc-4a85557b852e",
+  "name": "Valduk, Keeper of the Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valduk, Keeper of the Flame",
+      "oracle_fingerprint": "6f206776eb32bc3a98f3ab0161a4b157",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 3,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AttachedTo": "This" }
+                    ]
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

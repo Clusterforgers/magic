@@ -1,0 +1,31 @@
+{
+  "oracle_id": "67a025eb-6e65-435c-becb-b51085175292",
+  "name": "Lantern Bearer // Lanterns' Lift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lantern Bearer",
+      "oracle_fingerprint": "0cf55471d78af71132c5d48b4622b51b",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Disturb": "{2}{U}" } }]
+    },
+    {
+      "name": "Lanterns' Lift",
+      "oracle_fingerprint": "1ae568e817c3bea75a70b1a7738b86b7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4c77de57-29fd-45ba-b2c7-eef231c6b7c7",
+  "name": "Phyrexian Censor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Censor",
+      "oracle_fingerprint": "a25f72bb274849350497d23108257dbf",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": { "filter": [{ "Not": { "Subtype": "Phyrexian" } }], "more_than": 1 }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, { "Not": { "Subtype": "Phyrexian" } }] }
+            },
+            "by": "Tapped"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "b6e3af71-0d68-4bf0-b886-c29dae15e9ae",
+  "name": "Kitt Kanto, Mayhem Diva",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitt Kanto, Mayhem Diva",
+      "oracle_fingerprint": "c61a9c913f1400edea2885d274e07780",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Citizen",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Citizen"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": 2 } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "ActivePlayer" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [
+                                { "ModifyPT": { "power": 2, "toughness": 2 } },
+                                { "AddKeyword": "Trample" }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          },
+                          { "Goad": { "what": { "Target": 0 } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

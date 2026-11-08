@@ -50,5 +50,6 @@ pub(super) fn plan(text: &str, creature_at: Option<i32>) -> Option<Plan> {
             .chain(lines)
             .map(str::to_owned)
             .collect(),
+        conditions: Vec::new(),
     })
 }

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "624cf822-0b4e-4f0c-9893-a53cb094f616",
+  "name": "Stinging Vitriol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stinging Vitriol",
+      "oracle_fingerprint": "183a06c7368fe09af9c683e8500b936d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

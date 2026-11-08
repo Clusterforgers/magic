@@ -1,0 +1,31 @@
+{
+  "oracle_id": "06b7987d-c876-4369-9c2d-ce1d35a01097",
+  "name": "Eradicator Valkyrie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eradicator Valkyrie",
+      "oracle_fingerprint": "ebe56828fe67bb7879612dcd3597af4d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "HexproofFrom": [{ "Type": "Planeswalker" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

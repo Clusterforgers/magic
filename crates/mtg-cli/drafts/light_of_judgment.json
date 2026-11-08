@@ -1,0 +1,31 @@
+{
+  "oracle_id": "932177b8-70f8-4908-a48f-fe03204daddc",
+  "name": "Light of Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light of Judgment",
+      "oracle_fingerprint": "3536a3e314bdd279fb152e08292fb907",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Subtype": "Equipment" }, { "AttachedTo": { "Target": 0 } }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "card" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

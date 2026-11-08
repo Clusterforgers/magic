@@ -1,0 +1,31 @@
+{
+  "oracle_id": "78e3a3c3-3091-46ab-a47a-86b7db68ced4",
+  "name": "Pale Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pale Moon",
+      "oracle_fingerprint": "090e5683e5756c7b0f39b36706bb298a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "ManaProduced": {
+                      "what": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }],
+                      "who": "EachPlayer",
+                      "change": { "OnlyType": "Colorless" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

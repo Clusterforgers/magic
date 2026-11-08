@@ -1,0 +1,40 @@
+{
+  "oracle_id": "98dd6d43-cc56-4656-9e0c-240d0679b404",
+  "name": "Gaddock Teeg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaddock Teeg",
+      "oracle_fingerprint": "1543ade6c0302dccf5f2247b7111843e",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }, "XInCost"] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

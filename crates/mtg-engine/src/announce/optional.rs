@@ -73,16 +73,30 @@ struct Printed {
 /// The optional costs a card prints, in the order it prints them: the keywords that give one and the abilities that say
 /// "As an additional cost to cast this spell, you may ...".
 fn printed(card: &CardDefinition) -> impl Iterator<Item = Printed> + '_ {
-    ability_reader::printed_rules(card).filter_map(|rule| match &**rule {
+    ability_reader::printed_rules(card).flat_map(|rule| match &**rule {
         Ability::Keyword(keyword) => {
-            let extra = keywords::rules(keyword).additional_cost(keyword)?;
-            Some(Printed {
-                kind: extra.kind,
-                name: extra.name,
-                cost: extra.cost,
-                repeatable: extra.repeatable,
-            })
+            let own = keywords::rules(keyword)
+                .additional_cost(keyword)
+                .map(|extra| Printed {
+                    kind: extra.kind,
+                    name: extra.name,
+                    cost: extra.cost,
+                    repeatable: extra.repeatable,
+                });
+            // A keyword the macro table expands (teamwork) can stand for an optional cost.
+            let expanded = keywords::rules(keyword)
+                .adds_abilities(keyword)
+                .into_iter()
+                .filter_map(|ability| additional(&ability));
+            own.into_iter().chain(expanded).collect::<Vec<_>>()
         }
+        other => additional(other).into_iter().collect(),
+    })
+}
+
+/// The optional cost an "As an additional cost to cast this spell, you may ..." ability states.
+fn additional(ability: &Ability) -> Option<Printed> {
+    match ability {
         Ability::AdditionalCost {
             cost,
             required: false,
@@ -93,7 +107,7 @@ fn printed(card: &CardDefinition) -> impl Iterator<Item = Printed> + '_ {
             repeatable: false,
         }),
         _ => None,
-    })
+    }
 }
 
 /// What `printed` costs: the mana, the parts and whether the engine pays them as a spell is announced.
@@ -133,16 +147,7 @@ fn read_cost(printed: Printed) -> Optional {
     } else {
         format!("{name} {}", words.join(", "))
     };
-    // A part that needs a source to lose, tap or hold counters, or an X, is not paid for a spell; a repeated cost asks
-    // its picks again for each payment.
-    let payable = !price.tap
-        && !price.moves_source()
-        && price.x == 0
-        && (price.mana.is_some() || !price.parts.is_empty())
-        && price
-            .parts
-            .iter()
-            .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }));
+    let payable = payable(&price) && (price.mana.is_some() || !price.parts.is_empty());
     Optional {
         label,
         mana,
@@ -151,6 +156,19 @@ fn read_cost(printed: Printed) -> Optional {
         kind,
         offerable: payable,
     }
+}
+
+/// Whether the engine pays the cost `price` reads as a spell is announced. A part that needs a source to lose, tap or
+/// hold counters, or an X, is not paid for a spell; a repeated cost asks its picks again for each payment.
+pub(super) fn payable(price: &Price) -> bool {
+    !price.tap
+        && !price.untap
+        && !price.moves_source()
+        && price.x == 0
+        && price
+            .parts
+            .iter()
+            .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }))
 }
 
 /// The optional costs of a card, by index.
@@ -345,6 +363,7 @@ fn targets_remain(ctx: &Ctx<'_>, choices: &Choices) -> bool {
                 choices.x,
                 &choices.optional_costs,
                 choices.way,
+                None,
             )
             .is_some()
         })
@@ -376,7 +395,7 @@ fn source_of(ctx: &Ctx<'_>) -> Option<ObjectRef> {
     match ctx.what {
         What::Trigger(waiting) => Some(waiting.trigger.source),
         What::Ability(ability) => ctx.state.object(ability.object).map(GameObject::reference),
-        What::Spell(_) | What::Attack(..) => None,
+        What::Spell(_) | What::Attack(..) | What::Block(_) => None,
     }
 }
 

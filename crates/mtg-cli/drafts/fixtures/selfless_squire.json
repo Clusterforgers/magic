@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "8b8f4489-3d07-4e57-9b94-afa52fa984f8",
+  "oracle_id": "7d079c78-b2a9-444f-ab54-c61c041baa6d",
+  "multiverse_ids": [
+    650176
+  ],
+  "mtgo_id": 122304,
+  "tcgplayer_id": 535563,
+  "cardmarket_id": 753434,
+  "name": "Selfless Squire",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/8b8f4489-3d07-4e57-9b94-afa52fa984f8",
+  "scryfall_uri": "https://scryfall.com/card/mkc/82/selfless-squire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:23:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.jpg?1783913025",
+    "normal": "https://cards.scryfall.io/normal/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.jpg?1783913025",
+    "large": "https://cards.scryfall.io/large/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.jpg?1783913025",
+    "png": "https://cards.scryfall.io/png/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.png?1783913025",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.jpg?1783913025",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.jpg?1783913025",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.webp?1783913025",
+    "grid": "https://cards.scryfall.io/grid/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.webp?1783913025",
+    "display": "https://cards.scryfall.io/display/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.webp?1783913025",
+    "art": "https://cards.scryfall.io/art/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.webp?1783913025",
+    "crop": "https://cards.scryfall.io/crop/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.webp?1783913025",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/b/8b8f4489-3d07-4e57-9b94-afa52fa984f8.jpg?1783913025"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Flash\nWhen this creature enters, prevent all damage that would be dealt to you this turn.\nWhenever damage that would be dealt to you is prevented, put that many +1/+1 counters on this creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8b8f4489-3d07-4e57-9b94-afa52fa984f8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7d079c78-b2a9-444f-ab54-c61c041baa6d&unique=prints",
+  "collector_number": "82",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tony Foti",
+  "artist_ids": [
+    "1ab97a5f-9abb-42f4-bbc4-954899619d6f"
+  ],
+  "illustration_id": "d8fa9d13-cf09-4aaf-a0f4-3e2924d77d91",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2504,
+  "prices": {
+    "usd": "0.40",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.38",
+    "eur_foil": null,
+    "tix": "0.56"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=650176&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSelfless%2BSquire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSelfless%2BSquire",
+    "edhrec": "https://edhrec.com/route/?cc=Selfless+Squire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535563%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753434&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122304?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "66e74e8f-036e-4b26-a4a8-2365891765bc",
+  "name": "Flourishing Bloom-Kin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flourishing Bloom-Kin",
+      "oracle_fingerprint": "b483693acec87211b91aa072e48713c2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Disguise": "{4}{G}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Forest" }],
+                  "count": { "min": 0, "max": 2 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Search": { "filter": [{ "Is": { "Bound": "found" } }], "as": "found2" } },
+              {
+                "Move": {
+                  "what": { "Bound": "found2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Is": { "Bound": "found" } }],
+                  "reveal": true,
+                  "as": "found3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

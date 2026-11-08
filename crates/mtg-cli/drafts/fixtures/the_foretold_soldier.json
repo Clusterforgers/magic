@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "93391c14-a22c-4223-a980-5f98350c6a99",
+  "oracle_id": "02a45719-ee4a-49c4-96ec-a140cd6e1547",
+  "multiverse_ids": [
+    634797
+  ],
+  "tcgplayer_id": 509586,
+  "cardmarket_id": 738673,
+  "name": "The Foretold Soldier",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/93391c14-a22c-4223-a980-5f98350c6a99",
+  "scryfall_uri": "https://scryfall.com/card/who/102/the-foretold-soldier?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.jpg?1783914644",
+    "normal": "https://cards.scryfall.io/normal/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.jpg?1783914644",
+    "large": "https://cards.scryfall.io/large/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.jpg?1783914644",
+    "png": "https://cards.scryfall.io/png/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.png?1783914644",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.jpg?1783914644",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.jpg?1783914644",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.webp?1783914644",
+    "grid": "https://cards.scryfall.io/grid/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.webp?1783914644",
+    "display": "https://cards.scryfall.io/display/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.webp?1783914644",
+    "art": "https://cards.scryfall.io/art/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.webp?1783914644",
+    "crop": "https://cards.scryfall.io/crop/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.webp?1783914644",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/3/93391c14-a22c-4223-a980-5f98350c6a99.jpg?1783914644"
+  },
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Alien Zombie Soldier",
+  "oracle_text": "This creature must be blocked if able.\nThis creature can't be blocked by more than one creature.\nWhenever this creature deals damage, exile it face down. It becomes foretold.\nForetell {1}{G} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Foretell"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b952c053-0c26-4690-86d2-1b28e664e7a6",
+      "component": "combo_piece",
+      "name": "The Foretold Soldier",
+      "type_line": "Creature — Alien Zombie Soldier",
+      "uri": "https://api.scryfall.com/cards/b952c053-0c26-4690-86d2-1b28e664e7a6"
+    },
+    {
+      "object": "related_card",
+      "id": "207b3d62-2541-4a51-8152-3c54218ab6f7",
+      "component": "combo_piece",
+      "name": "Foretell",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/207b3d62-2541-4a51-8152-3c54218ab6f7"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/93391c14-a22c-4223-a980-5f98350c6a99/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A02a45719-ee4a-49c4-96ec-a140cd6e1547&unique=prints",
+  "collector_number": "102",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fajareka Setiawan",
+  "artist_ids": [
+    "0cc534e0-be18-4cb1-8521-50fabd0dac6f"
+  ],
+  "illustration_id": "a3042744-33c5-4678-afbf-226841e71a55",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10119,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.52",
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": "0.32",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634797&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BForetold%2BSoldier",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BForetold%2BSoldier",
+    "edhrec": "https://edhrec.com/route/?cc=The+Foretold+Soldier"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F509586%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738673&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Foretold+Soldier&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

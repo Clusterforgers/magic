@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME deals 2 damage to any target.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME deals 4 damage to target creature and 2 damage to that creature's controller.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME deals 10 damage to target player and each creature that player controls.",
+      "abilities": [],
+      "gap": "key:DamageAll.ValidTgts"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 41
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 42,
+          "end": 131
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 132,
+          "end": 216
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

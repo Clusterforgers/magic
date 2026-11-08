@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0e768d03-b2a3-4783-9cf5-7470f0203349",
+  "name": "Telim'Tor's Edict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Telim'Tor's Edict",
+      "oracle_fingerprint": "8a9ae12db2a038b48f0d5e91ba3fc8c5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "ControlledBy": "You" }, { "OwnedBy": "You" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

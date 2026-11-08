@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2a87e3a9-10e3-4b00-aeb9-d3336b2fa3b3",
+  "name": "Mardu Skullhunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Skullhunter",
+      "oracle_fingerprint": "bae251b7b99e775b230ae4efa6c62492",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

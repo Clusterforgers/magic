@@ -1,0 +1,27 @@
+{
+  "oracle_id": "247793af-be9e-47c7-8887-e99e49478b0b",
+  "name": "Briar Patch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Briar Patch",
+      "oracle_fingerprint": "e09f806c3530e26e8d5d40b737bba538",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

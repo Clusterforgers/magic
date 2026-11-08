@@ -1,0 +1,35 @@
+{
+  "oracle_id": "70a6f08e-854d-4e2f-9d8c-c45ec3231157",
+  "name": "Faeburrow Elder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Faeburrow Elder",
+      "oracle_fingerprint": "fc79fd5bd4ba43a0814eced611ef9762",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } },
+                  "toughness": {
+                    "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 80, "end": 157 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "3bc0479f-0f45-4b36-9963-f8eb5973cf47",
+  "name": "Origin of Black Widow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Origin of Black Widow",
+      "oracle_fingerprint": "841c1a99f86bd0c72a7b629bcc5aeb65",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": { "Bound": "each" } },
+                            { "In": "Graveyard" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

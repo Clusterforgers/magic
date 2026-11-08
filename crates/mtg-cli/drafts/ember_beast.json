@@ -1,0 +1,15 @@
+{
+  "oracle_id": "58edb282-a124-47bc-b123-1c34b6804f48",
+  "name": "Ember Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ember Beast",
+      "oracle_fingerprint": "b35aff9e37c7d2987b9315c8bbb166c7",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantBlockAlone" } } } }
+      ]
+    }
+  ]
+}

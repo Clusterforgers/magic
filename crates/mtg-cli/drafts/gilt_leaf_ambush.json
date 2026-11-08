@@ -1,0 +1,50 @@
+{
+  "oracle_id": "e5a06062-0513-48af-b92a-420ebbeb1695",
+  "name": "Gilt-Leaf Ambush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilt-Leaf Ambush",
+      "oracle_fingerprint": "5470a343ab7447ff318063da1ca3a020",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2,
+                  "as": "token"
+                }
+              },
+              {
+                "Clash": {
+                  "win": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "Is": { "Bound": "token" } }]
+                        },
+                        "mods": [{ "AddKeyword": "Deathtouch" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

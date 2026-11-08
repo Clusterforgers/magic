@@ -1,0 +1,49 @@
+{
+  "oracle_id": "87f82107-eaba-484a-800d-e61a0cc5e1f2",
+  "name": "Desolation Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desolation Angel",
+      "oracle_fingerprint": "bb9c78d398d94285b3ca2a13bcf43313",
+      "abilities": [
+        { "Keyword": { "Kicker": "{W}{W}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": "Kicked" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": { "subject": "This", "selector": ["Kicked"], "op": "Ge", "right": 1 }
+                  },
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Land" }] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

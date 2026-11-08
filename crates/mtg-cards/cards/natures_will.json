@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9837287b-d821-4655-8f01-93fc6c7f0ecc",
+  "name": "Nature's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Will",
+      "oracle_fingerprint": "25bfbe40f8e65566df12f53d5bfec135",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "Triggering" }] }
+                }
+              },
+              { "Untap": { "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

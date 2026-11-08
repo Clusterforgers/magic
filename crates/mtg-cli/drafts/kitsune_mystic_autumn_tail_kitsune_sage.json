@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b269770d-2b48-4314-a1b8-0d79beb879a3",
+  "name": "Kitsune Mystic // Autumn-Tail, Kitsune Sage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kitsune Mystic",
+      "oracle_fingerprint": "87f1a7268d2948f7501c6e731b370802",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "Flip": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autumn-Tail, Kitsune Sage",
+      "oracle_fingerprint": "e6e20c3f17eddcdb85c96fdfacc841b7",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 67 } }
+        }
+      ]
+    }
+  ]
+}

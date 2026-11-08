@@ -1,0 +1,31 @@
+{
+  "oracle_id": "54dc1c02-2d71-465b-a285-d6d11113991c",
+  "name": "Coiling Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coiling Stalker",
+      "oracle_fingerprint": "16e73b57199e89e00355fef7ee1553e1",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "HasCounter": "+1/+1" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

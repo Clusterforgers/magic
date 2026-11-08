@@ -13,7 +13,7 @@ use mtg_core::ids::EffectId;
 
 use super::wrong_effect;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
-use crate::effects::{ContinuousEffect, Modification, Selector};
+use crate::effects::{Borrowed, ContinuousEffect, Modification, Selector};
 use crate::events::Event;
 use crate::object::{Chosen, GameObject, ObjectRef};
 use crate::resolve::{Cx, ResolveError, Run, Scope};
@@ -59,7 +59,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .scope
         .live_objects(affected)?
         .into_iter()
-        .filter(|object| object.zone() == Zone::Battlefield)
+        // A spell on the stack counts: what it gains stays with the permanent it becomes (CR 608.3, `follow_spell`).
+        .filter(|object| matches!(object.zone(), Zone::Battlefield | Zone::Stack))
         .map(GameObject::reference)
         .collect();
     if named.is_empty() {
@@ -90,7 +91,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Optioned::Done(taken) => taken.into_iter(),
     };
     let mut events = Vec::new();
-    for (made, wanted) in (0u64..).zip(mods) {
+    // The loss of all abilities takes the first timestamp of the effect, so what the same effect gives stays whatever the
+    // order of its list (CR 613.1f).
+    let (lost, kept): (Vec<_>, Vec<_>) = mods
+        .iter()
+        .partition(|wanted| matches!(wanted, Wanted::LoseAbilities));
+    for (made, wanted) in (0u64..).zip(lost.into_iter().chain(kept)) {
         let modification = match wanted {
             Wanted::AddProtectionFromChosenColor => {
                 let color = chosen
@@ -110,6 +116,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     card_type,
                 )])))
             }
+            // The ability that is resolving, at the address it was activated from; one that names no ability takes none away.
+            Wanted::LoseThisAbility => match this_ability(cx) {
+                Some(address) => Modification::LoseAbility(address),
+                None => continue,
+            },
             other => lower(&cx.scope, other)?,
         };
         events.push(Event::EffectCreated {
@@ -122,11 +133,30 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     state.next_timestamp + made,
                 )
                 .from_source(cx.scope.source)
-                .begun(cx.controller(), state.turn().number()),
+                .begun(
+                    cx.controller(),
+                    crate::effects::began_turn(state, duration, cx.controller()),
+                ),
             ),
         });
     }
     Ok(Run::events(events))
+}
+
+/// What a static ability makes of the value its source chose as it entered: the creature type it adds or the colour it
+/// sets. A source that chose nothing of the kind gives no modification.
+fn entered(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
+    match (wanted, scope.entered_choice()) {
+        (Wanted::AddChosenSubtype, Some(Chosen::CreatureType(kind) | Chosen::LandType(kind))) => {
+            Ok(Modification::AddSubtype(kind.clone()))
+        }
+        (Wanted::SetChosenColor, Some(Chosen::Color(color))) => {
+            Ok(Modification::SetColors(std::iter::once(*color).collect()))
+        }
+        _ => Err(ResolveError::Invalid(
+            "the source chose no value of the kind".into(),
+        )),
+    }
 }
 
 /// The keyword with the colour, creature type or land type the source chose as it entered written into a protection
@@ -138,13 +168,20 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
     };
     let fixed = |pred: &Pred| match (pred, chosen) {
         (Pred::ChosenColor, Chosen::Color(color)) => Pred::Color(*color),
-        (Pred::ChosenSubtype, Chosen::CreatureType(subtype)) => Pred::Subtype(subtype.clone()),
+        (Pred::ChosenSubtype, Chosen::CreatureType(subtype) | Chosen::LandType(subtype)) => {
+            Pred::Subtype(subtype.clone())
+        }
+        (Pred::ChosenSubtype, Chosen::CardType(kind)) => Pred::Type(*kind),
         _ => pred.clone(),
     };
     match (keyword, chosen) {
         (Keyword::Protection(quality), _) => {
             Keyword::Protection(PickSelector(quality.0.iter().map(fixed).collect()))
         }
+        (Keyword::ProtectionSparing { from, spares }, _) => Keyword::ProtectionSparing {
+            from: PickSelector(from.0.iter().map(fixed).collect()),
+            spares: spares.clone(),
+        },
         // The land type is the one the landwalk names.
         (Keyword::Landwalk(land), Chosen::LandType(subtype)) => Keyword::Landwalk(PickSelector(
             land.0
@@ -157,6 +194,25 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
         )),
         _ => keyword.clone(),
     }
+}
+
+/// The activated abilities printed on the cards `from` names now (and the mana ability of a basic land), each with the card it is printed on: what a static ability
+/// that gives the abilities of other cards gives while the layers are worked out.
+fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrowed>, ResolveError> {
+    let mut found = Vec::new();
+    for donor in scope.objects(from)? {
+        let Some(object) = scope.state.object(donor.id) else {
+            continue;
+        };
+        for (index, body) in crate::ability_reader::lendable(object.card()) {
+            found.push(Borrowed {
+                donor: donor.id,
+                index,
+                body,
+            });
+        }
+    }
+    Ok(found)
 }
 
 /// What the engine applies for a modification of the card: its amounts worked out and the player it names found in
@@ -177,11 +233,14 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             power: amount(power)?,
             toughness: amount(toughness)?,
         },
+        Wanted::SetPower(value) => Modification::SetPower(amount(value)?),
+        Wanted::SetToughness(value) => Modification::SetToughness(amount(value)?),
         Wanted::SwitchPT => Modification::SwitchPowerToughness,
         Wanted::AddType(ty) => Modification::AddType(*ty),
         Wanted::RemoveType(ty) => Modification::RemoveType(*ty),
         Wanted::SetTypes(types) => Modification::SetTypes(types.iter().copied().collect()),
-        Wanted::RemoveSupertype(_) => {
+        Wanted::AddSupertype(supertype) => Modification::AddSupertype(*supertype),
+        Wanted::RemoveSupertype(_) | Wanted::SetName(_) | Wanted::ThisAbility => {
             return Err(ResolveError::Unsupported(
                 "Mod.RemoveSupertype outside the exceptions of a copy",
             ));
@@ -190,11 +249,33 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::SetCreatureTypes(types) => Modification::SetCreatureTypes(types.clone()),
         Wanted::SetLandTypes(types) => Modification::SetLandTypes(types.clone()),
         Wanted::AddAllCreatureTypes => Modification::AddAllCreatureTypes,
+        Wanted::SetColorsChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::Color(color)) => {
+                Modification::SetColors(std::iter::once(*color).collect())
+            }
+            Some(Chosen::Colors(colors)) => {
+                Modification::SetColors(colors.iter().copied().collect())
+            }
+            _ => return Err(ResolveError::Invalid("no color was chosen".into())),
+        },
+        Wanted::SetLandTypesChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::LandType(land)) => Modification::SetLandTypes(vec![land.clone()]),
+            _ => return Err(ResolveError::Invalid("no land type was chosen".into())),
+        },
+        Wanted::SetCreatureTypesChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::CreatureType(kind)) => Modification::SetCreatureTypes(vec![kind.clone()]),
+            _ => return Err(ResolveError::Invalid("no creature type was chosen".into())),
+        },
+        Wanted::AddChosenSubtype | Wanted::SetChosenColor => entered(scope, wanted)?,
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
+        Wanted::AddColors(colors) => Modification::AddColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),
+        Wanted::LockKeyword(keyword) => Modification::LockKeyword(keyword.clone()),
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,
+        Wanted::LoseThisAbility => return Err(not_resolving()),
+        Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
             Modification::SetController(*scope.players(who)?.first().ok_or_else(|| {
@@ -236,6 +317,21 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::MinBlockers(count) => Modification::MinBlockers(*count),
         Wanted::MaxBlockers(count) => Modification::MaxBlockers(*count),
         Wanted::BlocksAdditional(count) => Modification::BlocksAdditional(*count),
+    })
+}
+
+/// Only the resolution of an activated ability knows which ability it is (`run`).
+fn not_resolving() -> ResolveError {
+    ResolveError::Invalid("only a resolving ability loses this ability".into())
+}
+
+/// The address of the activated ability that is resolving, on the object it was activated from.
+fn this_ability(cx: &Cx<'_>) -> Option<crate::abilities::AbilityRef> {
+    let ability = cx.state().object(cx.resolving.object)?.ability()?;
+    Some(crate::abilities::AbilityRef {
+        object: ability.source().id,
+        ability: ability.index(),
+        source: ability.origin(),
     })
 }
 

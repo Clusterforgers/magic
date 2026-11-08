@@ -1,0 +1,42 @@
+{
+  "oracle_id": "03af4b10-900e-4013-bd5d-dd8d132d50fb",
+  "name": "Sanguine Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanguine Spy",
+      "oracle_fingerprint": "91ccd36a47b633867e2139f00132f60c",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                    "stat": "ManaValue"
+                  }
+                },
+                "op": "Ge",
+                "right": 5
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "PayLife": 2 }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

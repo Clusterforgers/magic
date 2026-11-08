@@ -1,0 +1,73 @@
+{
+  "oracle_id": "50e3540f-963f-4c91-a205-c2f8259a969e",
+  "name": "Innistrad Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Innistrad Charm",
+      "oracle_fingerprint": "5fe6a945bbb68e3a4e8ea2ac9bea5440",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Bound": "moved" },
+                                "selector": [{ "Subtype": "Zombie" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Draw": {} }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "filter": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Type": "Land" } }
+                            ],
+                            "by": "You"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Subtype": "Human" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cac55e46-b730-4569-b92c-a4b5922fc20c",
+  "name": "Time Spiral",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Spiral",
+      "oracle_fingerprint": "f0c75c8e1e7e4a6b0f30c27a987d004c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              { "Exile": { "what": "This" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": { "min": 0, "max": 6 },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

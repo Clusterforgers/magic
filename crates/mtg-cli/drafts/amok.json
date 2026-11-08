@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2ddbbe65-f928-4b8e-8c4c-a9ce82e2594d",
+  "name": "Amok",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amok",
+      "oracle_fingerprint": "ac3b6d78df268ef88f1fb8e5dd367cff",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "DiscardRandom": 1 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

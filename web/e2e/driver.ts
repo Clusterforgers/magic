@@ -113,7 +113,7 @@ export function attackersOffered(own: readonly string[]): string[] {
 /**
  * A priority window with nothing to play: no card of the hand, the command zone, the graveyard or the exile and no
  * ability on the battlefield is legal, so it can be passed and nothing else. An untapped land is marked legal for its
- * mana ability, which is never a play (`can_act`, [arena-flow.md](../../docs/arena-flow.md)), so a land alone leaves the
+ * mana ability, which is never a play (`can_act`, [ui-design.md](../../docs/ui-design.md)), so a land alone leaves the
  * window idle; a land that names an ability to activate (a sacrifice outlet, a cycling land) is a play, like any other
  * legal permanent. The server asks only a seat with a play, a stop, Full Control or a by-hand clause to apply.
  */

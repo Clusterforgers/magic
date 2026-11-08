@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2afc161c-f627-4e9e-a70f-badc99415a0b",
+  "name": "Boneyard Aberration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boneyard Aberration",
+      "oracle_fingerprint": "9b3aba552772a29ef9ad34c31d64b5fa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Conjure": {
+                        "name": "Reassembling Skeleton",
+                        "zone": "Graveyard",
+                        "count": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

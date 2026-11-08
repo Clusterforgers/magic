@@ -1,0 +1,46 @@
+{
+  "oracle_id": "381df197-5fb7-44ab-a31f-96c4993a0e53",
+  "name": "Shantotto, Tactician Magician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shantotto, Tactician Magician",
+      "oracle_fingerprint": "1c4c5dd1f2da0b085e584403d5d413ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

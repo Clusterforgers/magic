@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c4ab446a-97e4-46a5-89a8-180a0bf3447c",
+  "name": "Mirror Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Wall",
+      "oracle_fingerprint": "909608b62ed58620da5c434e22f6ce22",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

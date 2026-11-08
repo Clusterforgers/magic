@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6410e2bb-5ae6-4190-8b4a-6b2d5c9dff8d",
+  "name": "Steelclad Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steelclad Serpent",
+      "oracle_fingerprint": "bae27f946fbbe8adf8ff059ea8b8c153",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }, "Other"] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

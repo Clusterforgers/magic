@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1b553ed4-12eb-4a53-8e1f-d47ec92b1d65",
+  "name": "Fiery Mantle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Mantle",
+      "oracle_fingerprint": "a103a7110b6a87b9729b867b534a3565",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

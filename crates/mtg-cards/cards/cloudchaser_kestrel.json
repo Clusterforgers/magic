@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4771f50c-0844-4d3a-90ea-406d65ebccfa",
+  "name": "Cloudchaser Kestrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudchaser Kestrel",
+      "oracle_fingerprint": "0400156eb23481be8f3db5fa25dd0340",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["White"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

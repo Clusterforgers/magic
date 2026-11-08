@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "65b8af30-559b-43a9-8526-62c28c378339",
+  "oracle_id": "8933297c-62f1-4df9-91b8-2d3481db77e5",
+  "multiverse_ids": [],
+  "resource_id": "0184F5D39D4D2A15C521A316947B7A8BC9208EDFC297078893618C91F966E46C",
+  "mtgo_id": 153545,
+  "arena_id": 97969,
+  "tcgplayer_id": 651330,
+  "cardmarket_id": 845854,
+  "name": "Spider-Man India",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/65b8af30-559b-43a9-8526-62c28c378339",
+  "scryfall_uri": "https://scryfall.com/card/spm/151/spider-man-india?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:15:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.jpg?1783905310",
+    "normal": "https://cards.scryfall.io/normal/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.jpg?1783905310",
+    "large": "https://cards.scryfall.io/large/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.jpg?1783905310",
+    "png": "https://cards.scryfall.io/png/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.png?1783905310",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.jpg?1783905310",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.jpg?1783905310",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.webp?1783905310",
+    "grid": "https://cards.scryfall.io/grid/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.webp?1783905310",
+    "display": "https://cards.scryfall.io/display/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.webp?1783905310",
+    "art": "https://cards.scryfall.io/art/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.webp?1783905310",
+    "crop": "https://cards.scryfall.io/crop/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.webp?1783905310",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/5/65b8af30-559b-43a9-8526-62c28c378339.jpg?1783905310"
+  },
+  "mana_cost": "{3}{G}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Spider Human Hero",
+  "oracle_text": "Web-slinging {1}{G}{W} (You may cast this spell for {1}{G}{W} if you also return a tapped creature you control to its owner's hand.)\nPavitr's Sevā — Whenever you cast a creature spell, put a +1/+1 counter on target creature you control. It gains flying until end of turn.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Web-slinging",
+    "Pavitr's Sevā"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a1c7b891-9e96-434c-9994-be58b62b27f1",
+  "set": "spm",
+  "set_name": "Marvel's Spider-Man",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a1c7b891-9e96-434c-9994-be58b62b27f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/65b8af30-559b-43a9-8526-62c28c378339/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8933297c-62f1-4df9-91b8-2d3481db77e5&unique=prints",
+  "collector_number": "151",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"That's why I do what I do. For my people.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lie Setiawan",
+  "artist_ids": [
+    "6f771d3f-310e-4aa4-841f-5ba4ba9f025a"
+  ],
+  "illustration_id": "37e6f040-a89c-44de-bd1c-583507586e60",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7744,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.13",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpider-Man%2BIndia",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpider-Man%2BIndia",
+    "edhrec": "https://edhrec.com/route/?cc=Spider-Man+India"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F651330%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=845854&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/153545?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

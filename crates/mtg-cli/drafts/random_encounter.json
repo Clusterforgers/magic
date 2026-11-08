@@ -1,0 +1,48 @@
+{
+  "oracle_id": "324493fc-a205-4177-aa94-cf4672844c81",
+  "name": "Random Encounter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Random Encounter",
+      "oracle_fingerprint": "1eb753305bb408cbd85fcbcde2d1bb48",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Shuffle": {} },
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "moved2" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{6}{R}{R}" } }
+      ]
+    }
+  ]
+}

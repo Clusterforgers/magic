@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9b8c44a0-82ef-4beb-a762-c2a2a21380f3",
+  "name": "Omen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omen",
+      "oracle_fingerprint": "feeeb322307f1e219306ec98ef88267c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              { "May": { "effects": [{ "Shuffle": {} }] } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

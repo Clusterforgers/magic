@@ -1,0 +1,64 @@
+{
+  "oracle_id": "0edc8ad3-2920-4b25-8a86-98ce216111d1",
+  "name": "Sorcerer's Wand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorcerer's Wand",
+      "oracle_fingerprint": "6389846d37fae6cc3d815f3f03601224",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [
+                      {
+                        "what": { "Either": [{ "Object": [{ "Type": "Planeswalker" }] }, "Player"] }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "If": {
+                          "condition": {
+                            "CountOf": {
+                              "subject": "This",
+                              "selector": [
+                                { "Type": "Creature" },
+                                { "Not": { "Subtype": "Wizard" } }
+                              ],
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                        }
+                      },
+                      {
+                        "If": {
+                          "condition": {
+                            "CountOf": {
+                              "subject": "This",
+                              "selector": [{ "Subtype": "Wizard" }],
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

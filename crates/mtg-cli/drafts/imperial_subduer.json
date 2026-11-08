@@ -1,0 +1,31 @@
+{
+  "oracle_id": "bedf1dd5-b133-455b-bc3d-c7b1f469d91f",
+  "name": "Imperial Subduer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imperial Subduer",
+      "oracle_fingerprint": "6217c3831a0d04127384c5ec47769ad3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

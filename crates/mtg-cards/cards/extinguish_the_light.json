@@ -1,0 +1,40 @@
+{
+  "oracle_id": "6dbef43d-40d3-4894-86a5-d31a5026604e",
+  "name": "Extinguish the Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extinguish the Light",
+      "oracle_fingerprint": "0f3e754a4fddae73e1421ee218fd11c5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -7,12 +7,17 @@
 
 use std::sync::Arc;
 
-use mtg_cards::CardDefinition;
-use mtg_cards::ability::Ability;
+use mtg_cards::ability::{Ability, Timing};
+use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::effect::{Effect, Produce};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as WantedModification;
-use mtg_cards::refs::ZoneKind;
+use mtg_cards::refs::{Ref, ZoneKind};
+use mtg_cards::spend::ManaLasts;
+use mtg_cards::value::Amount;
+use mtg_cards::{AbilityDef, CardDefinition};
 use mtg_core::ids::ObjectId;
+use mtg_core::mana::ManaType;
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
 use crate::effects::Modification;
@@ -43,6 +48,43 @@ pub(crate) fn printed(object: &GameObject) -> impl Iterator<Item = (AbilityRef, 
         .map(|(index, rules)| (AbilityRef::printed(object.id(), index), rules))
 }
 
+/// The activated abilities a card lends to a permanent that gains the abilities of it, each with its index: the activated
+/// rules in order, then the plain mana abilities the card has (a basic land's own) numbered after the rules.
+pub(crate) fn lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
+    let rules = card
+        .rules
+        .iter()
+        .enumerate()
+        .filter(|(_, rules)| matches!(***rules, Ability::Activated { .. }))
+        .map(|(index, rules)| (index, Arc::clone(rules)));
+    let mana = card.abilities.iter().enumerate().map(|(at, def)| {
+        let AbilityDef::Mana(mana) = def;
+        (card.rules.len() + at, tap_for_mana(mana.produces))
+    });
+    rules.chain(mana).collect()
+}
+
+/// "{T}: Add {X}" as a rules ability.
+fn tap_for_mana(produces: ManaType) -> Arc<Ability> {
+    Arc::new(Ability::Activated {
+        cost: Cost(vec![CostItem::Tap]),
+        timing: Timing::default(),
+        condition: None,
+        limit: None,
+        by: mtg_cards::ability::Activators::Controller,
+        from: ZoneKind::default(),
+        targets: Vec::new(),
+        effects: vec![Effect::AddMana {
+            who: Ref::you(),
+            mana: Produce::Fixed(vec![produces]),
+            times: Amount::one(),
+            only: Vec::new(),
+            lasts: ManaLasts::default(),
+            when_spent: None,
+        }],
+    })
+}
+
 /// The rules printed on a card with this definition, in order: what a spell announces and what the cards of a hand or a
 /// graveyard are read for, with no object to address them.
 pub(crate) fn printed_rules(definition: &CardDefinition) -> impl Iterator<Item = &Arc<Ability>> {
@@ -62,11 +104,29 @@ pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {
     }
 }
 
+/// Whether the ability replaces its own object's move to a graveyard from anywhere ("If ~ would be put into a graveyard
+/// from anywhere, ..."): it works in every zone the object can leave for a graveyard, whatever zone it names (CR 113.6).
+pub(crate) fn works_anywhere(ability: &Ability) -> bool {
+    matches!(
+        ability,
+        Ability::Replacement {
+            when: mtg_cards::trigger::ReplaceWhen::ZoneChange {
+                what,
+                from: None,
+                to: Some(ZoneKind::Graveyard),
+            },
+            ..
+        } if what.0 == [mtg_cards::refs::Pred::This]
+    )
+}
+
 /// Whether a card with this definition prints an ability that works from a zone other than the battlefield, or a static
 /// ability that gives something to the cards of another zone ("Each creature card in your hand has cycling {1}{U}")
 /// (`GameState::possible`).
 pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
-    let elsewhere = |rules: &Ability| works_from(rules).is_some_and(|from| !from.is_battlefield());
+    let elsewhere = |rules: &Ability| {
+        works_from(rules).is_some_and(|from| !from.is_battlefield()) || works_anywhere(rules)
+    };
     definition.rules.iter().any(|rules| match &**rules {
         Ability::Keyword(keyword) => keywords::rules(keyword)
             .adds_abilities(keyword)
@@ -78,6 +138,15 @@ pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
         } => elsewhere(rules) || !crate::layers::zone_named(selector).is_battlefield(),
         other => elsewhere(other),
     })
+}
+
+/// Whether a card with this definition prints an activated ability that players other than its controller may activate
+/// (`GameState::possible`).
+pub(crate) fn definition_lets_others_activate(definition: &CardDefinition) -> bool {
+    definition
+        .rules
+        .iter()
+        .any(|rules| matches!(&**rules, Ability::Activated { by, .. } if !by.is_controller()))
 }
 
 /// The abilities that the keywords printed on `object`, which is not on the battlefield, add and that work from the
@@ -131,12 +200,56 @@ pub(crate) fn definition_has_static(definition: &CardDefinition) -> bool {
     })
 }
 
-/// Whether a card with this definition prints a rule of the game as an ability (`GameState::rules`).
+/// Whether a card with this definition has a static ability that gives a supertype (CR 205.4).
+pub(crate) fn definition_gives_supertype(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(&**rules, Ability::Static { mods, .. }
+            if mods.iter().any(|given| matches!(given, WantedModification::AddSupertype(_))))
+    })
+}
+
+/// Whether a card with this definition prints a rule of the game as an ability or a static ability that grants one
+/// (`GameState::rules`).
 pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {
     definition
         .rules
         .iter()
-        .any(|rules| matches!(**rules, Ability::Rule { .. }))
+        .any(|rules| is_rule(rules) || static_grants(rules, is_rule))
+}
+
+/// Whether `ability` is a static ability that grants an ability `kind` accepts (CR 613.1f).
+fn static_grants(ability: &Ability, kind: impl Fn(&Ability) -> bool) -> bool {
+    let Ability::Static { mods, .. } = ability else {
+        return false;
+    };
+    mods.iter()
+        .any(|given| matches!(given, WantedModification::GrantAbility(granted) if kind(granted)))
+}
+
+/// Whether the object `id` prints an ability `kind` accepts, or holds one an effect or a static ability gave it: the
+/// cheap check before its abilities are read for rules or cost modifiers.
+pub(crate) fn may_hold(
+    state: &GameState,
+    object: &GameObject,
+    printed: fn(&CardDefinition) -> bool,
+    kind: fn(&Ability) -> bool,
+) -> bool {
+    printed(object.card())
+        || state.layers().get(object.id()).is_some_and(|held| {
+            held.abilities
+                .iter()
+                .any(|held| !held.address.source.is_printed() && kind(&held.body))
+        })
+}
+
+/// Whether an ability is a rule of the game.
+pub(crate) const fn is_rule(ability: &Ability) -> bool {
+    matches!(ability, Ability::Rule { .. })
+}
+
+/// Whether an ability is a cost modifier.
+pub(crate) const fn is_cost_modifier(ability: &Ability) -> bool {
+    matches!(ability, Ability::CostModifier { .. })
 }
 
 /// Whether a card with this definition prints that counters remain on it as it changes zones (CR 122.2); the rule works
@@ -158,9 +271,11 @@ pub(crate) fn w17b_definition_keeps_counters(definition: &CardDefinition) -> boo
 pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool {
     let modifier = |rules: &Ability| match rules {
         Ability::CostModifier { .. } => true,
-        Ability::Static { mods, .. } => mods
-            .iter()
-            .any(|given| matches!(given, WantedModification::AddKeyword(Keyword::Affinity(_)))),
+        Ability::Static { mods, .. } => {
+            mods.iter()
+                .any(|given| matches!(given, WantedModification::AddKeyword(Keyword::Affinity(_))))
+                || static_grants(rules, is_cost_modifier)
+        }
         _ => false,
     };
     definition.rules.iter().any(|rules| match &**rules {
@@ -196,6 +311,7 @@ pub(crate) fn definition_has_protection(definition: &CardDefinition) -> bool {
     definition.rules.iter().any(|rules| {
         let used = mtg_cards::validate::used_primitives(rules);
         used.contains("Keyword.Protection")
+            || used.contains("Keyword.ProtectionSparing")
             || used.contains("Mod.AddProtectionFromChosenColor")
             || used.contains("Mod.AddProtectionFromChosenCardType")
     })
@@ -220,6 +336,17 @@ pub(crate) fn definition_has_ascend(definition: &CardDefinition) -> bool {
         matches!(
             **rules,
             Ability::Keyword(mtg_cards::keyword::Keyword::Ascend)
+        )
+    })
+}
+
+/// Whether a card with this definition has start your engines!, so the game watches for the speed it starts
+/// (`GameState::possible`).
+pub(crate) fn definition_has_engines(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(
+            **rules,
+            Ability::Keyword(mtg_cards::keyword::Keyword::StartYourEngines)
         )
     })
 }
@@ -403,7 +530,11 @@ fn card_of<'a>(
     let left = shot.filter(|shot| shot.id == id && shot.counter != object.counter());
     match left.and_then(|shot| shot.merged.as_deref().or(shot.copy.as_deref())) {
         Some(copy) => Some(copy),
-        None => Some(object.card()),
+        // The new object is the card as a whole; the abilities were those of the face the permanent was in use as.
+        None => match left.and_then(|shot| shot.face) {
+            Some(face) => Some(object.whole_card().face(face)),
+            None => Some(object.card()),
+        },
     }
 }
 
@@ -467,14 +598,18 @@ fn static_mod(
 /// The ability `grant` gives, if it gives one.
 fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
     match grant {
-        Grant::Effect(id) => state
-            .effects()
-            .iter()
-            .find(|effect| effect.id == id)
-            .and_then(|effect| match &effect.modification {
-                Modification::GrantAbility(granted) => Some(Arc::clone(granted)),
-                _ => None,
-            }),
+        Grant::Effect(id) => {
+            let ring = crate::ring::effects(state);
+            state
+                .effects()
+                .iter()
+                .chain(&ring)
+                .find(|effect| effect.id == id)
+                .and_then(|effect| match &effect.modification {
+                    Modification::GrantAbility(granted) => Some(Arc::clone(granted)),
+                    _ => None,
+                })
+        }
         Grant::Static {
             source,
             rule,
@@ -483,6 +618,10 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
             WantedModification::GrantAbility(granted) => Some(granted),
             _ => None,
         },
+        // The ability is printed on the donor, and it is only an ability of the object while the donor is the same object.
+        Grant::Borrowed { donor, ability } => lendable(card_of(state, donor, None)?)
+            .into_iter()
+            .find_map(|(index, body)| (index == ability).then_some(body)),
     }
 }
 
@@ -505,6 +644,7 @@ fn granted_keyword(state: &GameState, grant: Grant) -> Option<Keyword> {
             WantedModification::AddKeyword(keyword) => Some(keyword),
             _ => None,
         },
+        Grant::Borrowed { .. } => None,
     }
 }
 
@@ -519,6 +659,15 @@ pub(crate) fn keyword_abilities(state: &GameState, id: ObjectId) -> Vec<&Keyword
             })
             .collect()
     })
+}
+
+/// Whether the printed rules of the object hold a triggered ability, which may read what it remembered once it has left.
+pub(crate) fn has_triggered(object: &GameObject) -> bool {
+    object
+        .card()
+        .rules
+        .iter()
+        .any(|rule| matches!(**rule, Ability::Triggered { .. }))
 }
 
 #[cfg(test)]
@@ -563,6 +712,7 @@ mod tests {
             timing: Timing::Instant,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
             effects: gain(),

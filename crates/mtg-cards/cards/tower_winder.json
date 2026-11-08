@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c1aecc8a-db3a-4158-b1f1-bfe06d782482",
+  "name": "Tower Winder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tower Winder",
+      "oracle_fingerprint": "ed6ed09dbf1cc32f303063003ecdbbaa",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Command Tower" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

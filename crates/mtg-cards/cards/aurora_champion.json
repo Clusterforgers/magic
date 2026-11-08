@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a4499cf9-04a0-45c5-9c73-19f8e7e95da6",
+  "name": "Aurora Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aurora Champion",
+      "oracle_fingerprint": "360b3c8f3f925143c59ce8381c7b67d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Warrior" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

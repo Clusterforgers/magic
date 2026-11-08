@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b2d95950-18b3-463f-94f4-299e420751dc",
+  "name": "Éomer, Marshal of Rohan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Éomer, Marshal of Rohan",
+      "oracle_fingerprint": "d5b12106b0770fc663a7421501656092",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "Supertype": "Legendary" },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

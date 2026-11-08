@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c2a4c6c7-e5b4-4cc8-91d8-5de8cc95ed00",
+  "name": "Green Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Dragon",
+      "oracle_fingerprint": "bbe2dbdebf5d3a1e3748f5c929a4cad0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Batch": {
+                      "DealsDamage": {
+                        "source": [],
+                        "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                      }
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Destroy": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

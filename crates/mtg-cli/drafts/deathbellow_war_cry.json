@@ -1,0 +1,29 @@
+{
+  "oracle_id": "947835a2-a72f-44e2-a183-99dcb019d6ff",
+  "name": "Deathbellow War Cry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathbellow War Cry",
+      "oracle_fingerprint": "cc049f68c0593a41d17b8842545584a3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Subtype": "Minotaur" }],
+                  "count": { "min": 0, "max": 4 },
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

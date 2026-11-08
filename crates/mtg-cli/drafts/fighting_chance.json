@@ -1,0 +1,45 @@
+{
+  "oracle_id": "fece632b-d8d5-4d3d-a4a7-643293b67538",
+  "name": "Fighting Chance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fighting Chance",
+      "oracle_fingerprint": "060d100d283f8b166412970286699443",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, "Blocking"] },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [
+                          {
+                            "Shield": {
+                              "when": {
+                                "Damage": {
+                                  "source": [{ "Is": { "Bound": "each" } }],
+                                  "combat": true
+                                }
+                              },
+                              "by": "Prevent",
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

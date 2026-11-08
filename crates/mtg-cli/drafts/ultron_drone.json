@@ -1,0 +1,50 @@
+{
+  "oracle_id": "51c1f21d-1512-4885-bfdc-58790cf77d51",
+  "name": "Ultron Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultron Drone",
+      "oracle_fingerprint": "31de899bb71de479352fca8702fafa03",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{6}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{3}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot Villain",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot", "Villain"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
