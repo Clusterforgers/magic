@@ -38,6 +38,22 @@ fn atom(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     if let Some(found) = against_source(prop) {
         return one(found);
     }
+    // `ManaSpent GTX` with `X` as `Count$CardPower`: the mana spent to cast the spell against the source's stat.
+    if let Some(rest) = prop.strip_prefix("ManaSpent ")
+        && let Some((op, bound)) = rest.get(..2).and_then(super::valid::cmp).zip(rest.get(2..))
+        && let Some(stat) = ctx.svar(bound).and_then(|text| match text.trim() {
+            "Count$CardPower" => Some("Power"),
+            "Count$CardToughness" => Some("Toughness"),
+            "Count$CardManaCost" => Some("ManaValue"),
+            _ => None,
+        })
+    {
+        return one(json!({"Test": {
+            "left": {"Stat": {"of": "Candidate", "stat": "ManaSpent"}},
+            "op": op,
+            "right": {"Stat": {"of": "This", "stat": stat}},
+        }}));
+    }
     if let Some(found) = counted_bound(ctx, prop)? {
         return one(found);
     }
