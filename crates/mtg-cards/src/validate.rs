@@ -4709,6 +4709,15 @@ impl Walker<'_> {
         }
     }
 
+    /// The engine changes only the count of a mill (`ReplaceWhen.Mill.Other`).
+    fn e19_mill(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        if matches!(when, ReplaceWhen::Mill { .. })
+            && !matches!(by, ReplaceBy::Multiply(_) | ReplaceBy::Add(_))
+        {
+            self.uses("ReplaceWhen", "Mill.Other");
+        }
+    }
+
     /// A dredge replaces a draw of at least one card; a move elsewhere or into the library replaces a move.
     fn g12a_moves(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         match by {
@@ -4785,12 +4794,7 @@ impl Walker<'_> {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
         self.g12a_moves(when, by);
-        if matches!(when, ReplaceWhen::Mill { .. })
-            && !matches!(by, ReplaceBy::Multiply(_) | ReplaceBy::Add(_))
-        {
-            // The engine changes only the count of a mill.
-            self.uses("ReplaceWhen", "Mill.Other");
-        }
+        self.e19_mill(when, by);
         if let ReplaceWhen::TurnedFaceUp { what } = when
             && (*what != Selector::this()
                 || !matches!(by, ReplaceBy::WithCounters { tapped: false, .. }))

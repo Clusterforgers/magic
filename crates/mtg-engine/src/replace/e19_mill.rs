@@ -222,7 +222,7 @@ mod tests {
             .map(|(index, rules)| {
                 let rule: Ability = serde_json::from_str(rules).unwrap();
                 Arc::new(
-                    CardDefinition::new(&format!("Source {index}"))
+                    CardDefinition::new(format!("Source {index}"))
                         .with_type(CardType::Enchantment)
                         .with_rules(rule),
                 )

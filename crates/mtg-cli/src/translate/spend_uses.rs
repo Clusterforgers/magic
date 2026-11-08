@@ -189,7 +189,6 @@ pub fn when_spent(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
             arrives: None,
             targeting: None,
             destination: None,
-            counters_on_objects: false,
         });
         let effects = super::effects::chain_at(ctx, &part, false)?;
         if ctx.targets.is_empty() {
