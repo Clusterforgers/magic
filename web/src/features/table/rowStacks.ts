@@ -296,5 +296,10 @@ export function layoutSeat({ box, stacks, facing, opened, marked, held }: SeatLa
     return { rows: plain, stacks: stacks.plain, merged: false, fit: plainFit }
   }
   const merged = entriesOfRows(stacks.merged, opened, marked)
-  return { rows: merged, stacks: stacks.merged, merged: true, fit: fitLanes(box, laneCounts(merged, held), facing) }
+  return {
+    rows: merged,
+    stacks: stacks.merged,
+    merged: true,
+    fit: fitLanes(box, laneCounts(merged, held), facing),
+  }
 }
