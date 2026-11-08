@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e766a7ec-2761-453b-bfba-956de7b5e125",
+  "name": "Chancellor of the Spires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chancellor of the Spires",
+      "oracle_fingerprint": "8d960edd738a4ce3968a0a712e86e94c",
+      "abilities": [
+        {
+          "OpeningReveal": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "Mill": { "who": "Opponents", "count": 7 } }]
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CastFromZone": { "what": { "Target": 0 }, "free": true, "play": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "fa798a3d-7797-4795-b251-a45f0429d169",
+  "name": "Grinning Totem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grinning Totem",
+      "oracle_fingerprint": "115d78fa4c7c2c192555dac6eaed3b56",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Search": { "of": { "Target": 0 }, "filter": [], "as": "found" } },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "found_exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "found_exiled" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

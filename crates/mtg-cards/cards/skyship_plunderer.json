@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c5e47644-c72c-40f9-b65f-57fcea075466",
+  "name": "Skyship Plunderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyship Plunderer",
+      "oracle_fingerprint": "eb37a38b8657eae0fe71e2a19c34dc00",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [{ "what": { "Either": [{ "Object": [] }, "Player"] } }],
+            "effects": [
+              { "PutCountersOf": { "on": { "Target": 0 }, "of": { "Target": 0 }, "each": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

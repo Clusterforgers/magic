@@ -1,0 +1,80 @@
+{
+  "oracle_id": "6b3e1aaf-6909-400a-88f2-9e9fde9a0cf7",
+  "name": "The Eleventh Hour",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Eleventh Hour",
+      "oracle_fingerprint": "486de8095c47ebd08792a4f073f78a95",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Doctor" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "food" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "CostModifier": {
+                            "applies_to": [
+                              "Spell",
+                              { "Subtype": "Doctor" },
+                              { "ControlledBy": "You" }
+                            ],
+                            "change": "Reduce",
+                            "mana": "{1}"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "SetName": "Prisoner Zero" },
+                        { "SetCreatureTypes": ["Alien"] },
+                        { "AddSupertype": "Legendary" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

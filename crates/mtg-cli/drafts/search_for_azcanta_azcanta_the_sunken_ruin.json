@@ -1,0 +1,61 @@
+{
+  "oracle_id": "f74c4d96-bc4a-4d32-9519-a753d192144e",
+  "name": "Search for Azcanta // Azcanta, the Sunken Ruin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Search for Azcanta",
+      "oracle_fingerprint": "7bc79fd3e3f677701fd594f42fdb2571",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 220 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Azcanta, the Sunken Ruin",
+      "oracle_fingerprint": "26dd0c0d13af45aeca0a73a58caab197",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

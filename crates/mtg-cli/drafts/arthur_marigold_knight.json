@@ -1,0 +1,64 @@
+{
+  "oracle_id": "8d6ce07f-b21b-42eb-a3d6-df810664e2be",
+  "name": "Arthur, Marigold Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arthur, Marigold Knight",
+      "oracle_fingerprint": "c87706c24b8d6e9624884561fd08b356",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved4" } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Move": { "what": { "Bound": "moved4" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

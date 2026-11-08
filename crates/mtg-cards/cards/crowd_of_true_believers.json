@@ -1,0 +1,35 @@
+{
+  "oracle_id": "06296d4d-a1b3-4e9a-a2fd-a0183bb892a1",
+  "name": "Crowd of True Believers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crowd of True Believers",
+      "oracle_fingerprint": "d9eba47e40eeb45cb4dd0d3fe98ae0a6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "AttackingAlone"]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

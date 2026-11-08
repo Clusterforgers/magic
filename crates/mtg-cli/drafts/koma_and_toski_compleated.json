@@ -1,0 +1,108 @@
+{
+  "oracle_id": "b57f9ed0-db4e-46dd-9fe6-956958ce6434",
+  "name": "Koma and Toski, Compleated",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koma and Toski, Compleated",
+      "oracle_fingerprint": "0fed958c8de2ffe2623c441949d84a77",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Toski's Coil",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Serpent", "Squirrel"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "DealsDamage": {
+                                "source": ["This"],
+                                "to": "EachPlayer",
+                                "combat": true
+                              }
+                            },
+                            "effects": [{ "Draw": {} }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "AnyOf": [{ "Subtype": "Serpent" }, { "Subtype": "Squirrel" }] },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": { "MustAttack": { "Target": 0 } },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Cant": {
+                                "who": "EachPlayer",
+                                "action": {
+                                  "ActivateKind": {
+                                    "kind": "Every",
+                                    "sources": [{ "Is": { "Target": 0 } }]
+                                  }
+                                }
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Indestructible" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

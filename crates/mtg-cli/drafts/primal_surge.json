@@ -1,0 +1,91 @@
+{
+  "oracle_id": "44b12ccc-81cb-4ec1-891e-4bf706e53aa4",
+  "name": "Primal Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Surge",
+      "oracle_fingerprint": "9dac530884d0cf36c4860a432a13862e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved5" },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Exile": {
+                        "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                        "as": "exiled4"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled4" },
+                            "selector": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              }
+                            ],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "May": {
+                              "effects": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "exiled4" },
+                                    "to": { "Battlefield": {} },
+                                    "as": "moved5"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

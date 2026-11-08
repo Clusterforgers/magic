@@ -1,0 +1,106 @@
+{
+  "oracle_id": "9e35d450-00af-4f40-a4ee-bc7844ff5628",
+  "name": "Cocoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cocoon",
+      "oracle_fingerprint": "285e8679f2ae1c048f441c979ccc0e1f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": "Attached" } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "pupa" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["DoesntUntap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "pupa" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Counters": { "on": "This", "counter": { "Other": "pupa" } } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": { "Counters": { "on": "This", "counter": { "Other": "pupa" } } }
+                    }
+                  },
+                  "slot": "remembered_number"
+                }
+              },
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "pupa" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Le",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Le",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "Attached",
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Le",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

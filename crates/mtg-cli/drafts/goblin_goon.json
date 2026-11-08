@@ -1,0 +1,58 @@
+{
+  "oracle_id": "e91bcf01-113b-4532-9f78-2a155b17be4f",
+  "name": "Goblin Goon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Goon",
+      "oracle_fingerprint": "4b07eae32cb34cb2973225dcf31b9128",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "op": "Lt",
+                        "right": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "ControllerOf": "This" } }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBlock"],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "ActivePlayer" }]
+                    },
+                    "op": "Ge",
+                    "right": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  }
+                },
+                { "Not": "YourTurn" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f5d9be71-91d0-4166-ba58-cbbf5d490c40",
+  "name": "Ajani, the Greathearted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani, the Greathearted",
+      "oracle_fingerprint": "1bc34ba85722a55e4d932e2847391ed3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "GainLife": { "amount": 3 } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }, "Other"] },
+                  "counter": "loyalty"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d377b28f-c887-4937-9f14-74484b612551",
+  "name": "Dokuchi Silencer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dokuchi Silencer",
+      "oracle_fingerprint": "652fa817004f5ed3e32cbeb50ac09d39",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [
+                    { "Bind": { "what": "Triggering", "as": "when" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                                { "ControlledBy": { "Bound": "when" } }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

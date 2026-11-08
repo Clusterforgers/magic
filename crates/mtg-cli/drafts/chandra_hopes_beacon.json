@@ -1,0 +1,59 @@
+{
+  "oracle_id": "53231b31-fb3c-4b30-bfe9-0ee8e754247b",
+  "name": "Chandra, Hope's Beacon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Hope's Beacon",
+      "oracle_fingerprint": "c4dcf8671cba283b8eae9c382d2645d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 2 } } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "ExileTop": { "count": 5, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 2 } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

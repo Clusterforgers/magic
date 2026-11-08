@@ -1,7 +1,7 @@
 {
   "oracle_id": "aef4ab0e-c81f-428c-ab23-64504a9fb989",
   "name": "Kheru Goldkeeper",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kheru Goldkeeper",
@@ -18,9 +18,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 178, "end": 328 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}{B}{G}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }] },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }] },
+                  "counter": { "Other": "flying" }
+                }
+              }
+            ]
           }
         }
       ]

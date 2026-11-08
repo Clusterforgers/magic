@@ -1,0 +1,68 @@
+{
+  "oracle_id": "02718076-4c71-4bf5-988f-e6f94fbf0aef",
+  "name": "Spara's Adjudicators",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spara's Adjudicators",
+      "oracle_fingerprint": "6c1e0bf2f64e6f13909ebfbe703400a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "ExileSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [
+                            { "AddMana": { "mana": { "OneOf": ["Green", "White", "Blue"] } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilCastFromExile"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Arrived": { "of": "This", "zone": "Exile" } }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

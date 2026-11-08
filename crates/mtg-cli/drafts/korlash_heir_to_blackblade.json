@@ -1,0 +1,49 @@
+{
+  "oracle_id": "09f99b5a-66cf-4178-ae64-29f2004fe899",
+  "name": "Korlash, Heir to Blackblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Korlash, Heir to Blackblade",
+      "oracle_fingerprint": "b4012da198b9455fe6ed239f5adf3e98",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        { "Activated": { "cost": "{1}{B}", "effects": [{ "Regenerate": { "what": "This" } }] } },
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Named": "Korlash, Heir to Blackblade" }] } }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Swamp" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

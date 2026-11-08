@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9a884415-caa2-40bc-b935-b00e5ab6779e",
+  "name": "Arms Scavenger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Arms Scavenger",
+      "oracle_fingerprint": "865d43755769ff2848550d55860b18fb",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 135 }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": "YourTurn",
+            "activating": "Equip"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7647940e-c99c-401c-ad1d-9ec730f66b6f",
+  "name": "Balduvian Trading Post",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Trading Post",
+      "oracle_fingerprint": "ca33bdc92acd100eed814464211953c2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Mountain" }, "Untapped"] } }]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

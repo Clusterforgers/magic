@@ -1,0 +1,69 @@
+{
+  "oracle_id": "f85eea8f-5887-4921-a943-d15e0ad1e028",
+  "name": "Case of the Ransacked Lab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Case of the Ransacked Lab",
+      "oracle_fingerprint": "4a694c89c60f658c8196c96da1096dec",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "Not": "Solved" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "SpellCast",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "ControlledBy": "You" }
+                        ]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 4
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "if": { "Compare": { "left": { "Count": ["This", "Solved"] }, "op": "Ge", "right": 1 } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

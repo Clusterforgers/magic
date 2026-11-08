@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a9cdfb6c-6087-4b0d-b8a5-175f3546b23a",
+  "name": "Lavaball Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lavaball Trap",
+      "oracle_fingerprint": "7e3b06814354e48e6048146798be4751",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Entered",
+                              "who": "EachPlayer",
+                              "filter": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{3}{R}{R}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

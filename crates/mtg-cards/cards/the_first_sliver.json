@@ -1,0 +1,27 @@
+{
+  "oracle_id": "55e4d4b2-1bd8-4c29-a21a-c014a974b715",
+  "name": "The First Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The First Sliver",
+      "oracle_fingerprint": "35df045d1465416162e47bedb4a0ffa4",
+      "abilities": [
+        { "Keyword": "Cascade" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Subtype": "Sliver" },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Cascade" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "oracle_id": "bc7f39e1-97bf-4725-a84a-2a04121530c6",
+  "name": "Jailbreak Scheme",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jailbreak Scheme",
+      "oracle_fingerprint": "377a4c36e08adc570a0b5bd17fec6867",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{3}", "{2}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["CantBeBlocked"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "ChooseValue": {
+                            "who": { "OwnerOf": { "Target": 0 } },
+                            "kind": { "Options": ["Top", "Bottom"] },
+                            "as": "way"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                            "then": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Bottom" } }
+                                }
+                              }
+                            ],
+                            "otherwise": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Top" } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

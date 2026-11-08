@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ea43fd04-e9fa-42fb-ba20-22dcc21c6c43",
+  "name": "Stormwing Entity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stormwing Entity",
+      "oracle_fingerprint": "fbf27c21763309f3637f38efcc766959",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}{U}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

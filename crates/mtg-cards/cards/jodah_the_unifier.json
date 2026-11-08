@@ -1,0 +1,86 @@
+{
+  "oracle_id": "490a8045-e160-4ccf-a05e-658ad2b7ac2d",
+  "name": "Jodah, the Unifier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jodah, the Unifier",
+      "oracle_fingerprint": "4f81d54ce4d2fd1651cc1b3152fe4635",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Supertype": "Legendary" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Supertype": "Legendary" },
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Supertype": "Legendary" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_moved3" } },
+              { "Exile": { "what": { "Bound": "revealed2" }, "as": "rest_moved4" } },
+              { "CastFromZone": { "what": { "Bound": "found_moved3" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "rest_moved4" } }, { "In": "Exile" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

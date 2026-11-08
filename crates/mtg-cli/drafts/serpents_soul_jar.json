@@ -1,0 +1,48 @@
+{
+  "oracle_id": "5d451958-25f3-4e70-8be2-c832f60f39e9",
+  "name": "Serpent's Soul-Jar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpent's Soul-Jar",
+      "oracle_fingerprint": "8fa62595ac03d0e7e074eb106ba473df",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 2 }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "ExiledWith": "This" },
+                        { "Not": { "Type": "Land" } }
+                      ],
+                      "from": "Exile",
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

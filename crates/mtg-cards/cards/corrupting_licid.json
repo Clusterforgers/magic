@@ -1,0 +1,35 @@
+{
+  "oracle_id": "503ddd47-4b0c-4a2a-b77a-fb321044b438",
+  "name": "Corrupting Licid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corrupting Licid",
+      "oracle_fingerprint": "6f5cefcb495b79bce0f4c9490dfadd90",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "SetTypes": ["Enchantment"] },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                    "LoseThisAbility"
+                  ],
+                  "duration": { "UntilPaid": "{B}" }
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Fear" }] } }
+      ]
+    }
+  ]
+}

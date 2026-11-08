@@ -1,0 +1,35 @@
+{
+  "oracle_id": "893c88cb-72ba-4f54-809c-bfac4d6efb74",
+  "name": "Convulsing Licid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Convulsing Licid",
+      "oracle_fingerprint": "bbfcd26de3db2ca742e217ffd83d5e67",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "SetTypes": ["Enchantment"] },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                    "LoseThisAbility"
+                  ],
+                  "duration": { "UntilPaid": "{R}" }
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantBlock"] } }
+      ]
+    }
+  ]
+}

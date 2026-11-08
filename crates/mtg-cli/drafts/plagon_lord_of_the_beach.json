@@ -1,7 +1,7 @@
 {
   "oracle_id": "1c95b7cf-be4d-4961-9073-3e39487492c8",
   "name": "Plagon, Lord of the Beach",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Plagon, Lord of the Beach",
@@ -32,9 +32,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 101, "end": 213 }
+          "Activated": {
+            "cost": "{W/U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": { "Target": 0 }, "quirk": "AssignsByToughness" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

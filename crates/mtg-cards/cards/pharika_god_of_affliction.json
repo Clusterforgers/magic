@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b7d05d00-1e69-4d11-bff0-c1ca2026aad6",
+  "name": "Pharika, God of Affliction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pharika, God of Affliction",
+      "oracle_fingerprint": "5441826c12e65d87d6652424c18e2ba7",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Black", "Green"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "colors": ["Black", "Green"],
+                      "types": ["Enchantment", "Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Deathtouch" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

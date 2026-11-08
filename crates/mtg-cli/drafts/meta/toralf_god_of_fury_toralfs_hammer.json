@@ -1,0 +1,93 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Trample",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature or planeswalker an opponent controls is dealt excess noncombat damage, NICKNAME deals damage equal to the excess to any target other than that permanent.",
+      "abilities": [],
+      "gap": "trigger:ExcessDamage"
+    },
+    {
+      "face": 1,
+      "tag": "K",
+      "text": "Equip:1 R",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "S",
+      "text": "Equipped creature has \"{1}{R}, {T}, Unattach CARDNAME: It deals 3 damage to any target. Return CARDNAME to it owner's hand.\"",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "S",
+      "text": "Equipped creature gets +3/+0 as long as it's legendary.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 7
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 8,
+          "end": 179
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 139
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 140,
+          "end": 195
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 196,
+          "end": 208
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

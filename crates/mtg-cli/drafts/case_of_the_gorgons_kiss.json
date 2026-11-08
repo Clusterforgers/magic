@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a89f9072-cf06-429f-a9b8-c11b5731ddd3",
+  "name": "Case of the Gorgon's Kiss",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Case of the Gorgon's Kiss",
+      "oracle_fingerprint": "312bd44a434ca382529090b98e51649f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 235 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Deathtouch" },
+              { "AddKeyword": "Lifelink" },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Gorgon" }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["Solved"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

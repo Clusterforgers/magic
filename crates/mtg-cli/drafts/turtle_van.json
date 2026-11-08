@@ -1,0 +1,44 @@
+{
+  "oracle_id": "aeb9a2e6-ad11-4e2c-81d0-caf279d31ece",
+  "name": "Turtle Van",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turtle Van",
+      "oracle_fingerprint": "a92daea359ac5129f2f92ff128b4e949",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Crewed": "This" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Subtype": "Mutant" },
+                            { "Subtype": "Ninja" },
+                            { "Subtype": "Turtle" }
+                          ]
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

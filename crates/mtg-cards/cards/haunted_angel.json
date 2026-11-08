@@ -1,0 +1,38 @@
+{
+  "oracle_id": "437be0ad-2dd1-42c8-bf62-5af95228b2f8",
+  "name": "Haunted Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunted Angel",
+      "oracle_fingerprint": "b18c09bf114f0ff3aa3ef14211b8639b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This" } },
+              {
+                "CreateToken": {
+                  "who": "Opponents",
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

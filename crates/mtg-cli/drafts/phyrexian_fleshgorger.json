@@ -1,0 +1,17 @@
+{
+  "oracle_id": "d3a5a830-cd14-49da-9412-c50049c74c92",
+  "name": "Phyrexian Fleshgorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Fleshgorger",
+      "oracle_fingerprint": "608d824c4eea3bd84684c707de1d6b79",
+      "abilities": [
+        { "Keyword": { "Prototype": { "cost": "{1}{B}{B}", "power": 3, "toughness": 3 } } },
+        { "Keyword": "Menace" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Ward": [{ "PayLife": { "Stat": { "of": "This", "stat": "Power" } } }] } }
+      ]
+    }
+  ]
+}

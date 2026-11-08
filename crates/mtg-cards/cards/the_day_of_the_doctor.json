@@ -1,0 +1,162 @@
+{
+  "oracle_id": "c2ee17b2-6119-4ade-b806-1add64513c3a",
+  "name": "The Day of the Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Day of the Doctor",
+      "oracle_fingerprint": "8463807eaf958468005ad2730c3f30cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Supertype": "Legendary" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_moved3" } },
+              { "Exile": { "what": { "Bound": "revealed2" }, "as": "rest_moved4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "found_moved3" },
+                      "play": true
+                    }
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "rest_moved4" } },
+                      { "Not": { "Is": { "Bound": "found_moved3" } } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Supertype": "Legendary" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_moved3" } },
+              { "Exile": { "what": { "Bound": "revealed2" }, "as": "rest_moved4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "found_moved3" },
+                      "play": true
+                    }
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "rest_moved4" } },
+                      { "Not": { "Is": { "Bound": "found_moved3" } } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Supertype": "Legendary" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_moved3" } },
+              { "Exile": { "what": { "Bound": "revealed2" }, "as": "rest_moved4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "found_moved3" },
+                      "play": true
+                    }
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "rest_moved4" } },
+                      { "Not": { "Is": { "Bound": "found_moved3" } } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Doctor" }] },
+                  "count": { "min": 0, "max": 3 },
+                  "as": "card"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "card" } } }]
+                        }
+                      }
+                    },
+                    { "DealDamage": { "to": "You", "amount": 13 } }
+                  ],
+                  "second": []
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

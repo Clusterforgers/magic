@@ -1,0 +1,74 @@
+{
+  "oracle_id": "9537cca4-7c58-4f89-95f0-f5186d04c025",
+  "name": "Mr. Monopoly, On the Go",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mr. Monopoly, On the Go",
+      "oracle_fingerprint": "a740619e314c0fc26bbc53f0fbdcd12c",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": "This",
+                            "counter": "loyalty",
+                            "count": { "DieResult": "Only" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": 2, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 40 },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 200 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

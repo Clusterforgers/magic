@@ -1,0 +1,78 @@
+{
+  "oracle_id": "e8521fdf-0896-4747-8c66-ea3bb69eb876",
+  "name": "Gabriel Angelfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gabriel Angelfire",
+      "oracle_fingerprint": "d4e377e9239741041b0aa2333a9975fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilYourNextTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "FirstStrike" }],
+                              "duration": "UntilYourNextTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Continuous": {
+                                    "affected": "This",
+                                    "mods": [{ "AddKeyword": "Trample" }],
+                                    "duration": "UntilYourNextTurn"
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "Continuous": {
+                                    "affected": "This",
+                                    "mods": [
+                                      {
+                                        "AddKeyword": {
+                                          "Macro": { "name": "rampage", "amount": 3 }
+                                        }
+                                      }
+                                    ],
+                                    "duration": "UntilYourNextTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

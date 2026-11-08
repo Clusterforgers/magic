@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4d6d3e6d-f958-4c17-b117-960fb8033601",
+  "name": "Assault Formation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assault Formation",
+      "oracle_fingerprint": "c308d9a1be8d1ccc051a12f895973d5e",
+      "abilities": [
+        { "Rule": { "rule": { "ToughnessAssignsDamage": "You" } } },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Defender" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": { "Target": 0 }, "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "d6313ef4-c1a0-4315-8db9-a3666e49daa8",
+  "oracle_id": "a46f9136-b904-403e-b263-e99c9a2fe2ec",
+  "multiverse_ids": [],
+  "resource_id": "D6F4C863C2C05D0A55592225A259B771125969F2FC8D4AC6F65A7EBE5D0F617C",
+  "mtgo_id": 146005,
+  "arena_id": 98905,
+  "tcgplayer_id": 671168,
+  "cardmarket_id": 864971,
+  "name": "Ferrafor, Young Yew",
+  "lang": "en",
+  "released_at": "2026-01-23",
+  "uri": "https://api.scryfall.com/cards/d6313ef4-c1a0-4315-8db9-a3666e49daa8",
+  "scryfall_uri": "https://scryfall.com/card/ecc/16/ferrafor-young-yew?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:03:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.jpg?1783904601",
+    "normal": "https://cards.scryfall.io/normal/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.jpg?1783904601",
+    "large": "https://cards.scryfall.io/large/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.jpg?1783904601",
+    "png": "https://cards.scryfall.io/png/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.png?1783904601",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.jpg?1783904601",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.jpg?1783904601",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.webp?1783904601",
+    "grid": "https://cards.scryfall.io/grid/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.webp?1783904601",
+    "display": "https://cards.scryfall.io/display/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.webp?1783904601",
+    "art": "https://cards.scryfall.io/art/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.webp?1783904601",
+    "crop": "https://cards.scryfall.io/crop/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.webp?1783904601",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/6/d6313ef4-c1a0-4315-8db9-a3666e49daa8.jpg?1783904601"
+  },
+  "mana_cost": "{6}{G}",
+  "cmc": 7.0,
+  "type_line": "Legendary Creature — Treefolk Druid",
+  "oracle_text": "When Ferrafor enters, create a number of 1/1 green Saproling creature tokens equal to the number of counters among creatures target player controls.\n{T}: Double the number of each kind of counter on target creature.",
+  "power": "4",
+  "toughness": "7",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Double"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "34032448-fe31-44c7-845c-37fea0b8e762",
+      "component": "token",
+      "name": "Saproling",
+      "type_line": "Token Creature — Saproling",
+      "uri": "https://api.scryfall.com/cards/34032448-fe31-44c7-845c-37fea0b8e762"
+    },
+    {
+      "object": "related_card",
+      "id": "0a664cd2-3778-4344-addc-72341889e871",
+      "component": "combo_piece",
+      "name": "Ferrafor, Young Yew",
+      "type_line": "Legendary Creature — Treefolk Druid",
+      "uri": "https://api.scryfall.com/cards/0a664cd2-3778-4344-addc-72341889e871"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "805b5a0c-f8bb-4555-86ea-eb9ec36a011a",
+  "set": "ecc",
+  "set_name": "Lorwyn Eclipsed Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/805b5a0c-f8bb-4555-86ea-eb9ec36a011a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aecc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ecc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d6313ef4-c1a0-4315-8db9-a3666e49daa8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa46f9136-b904-403e-b263-e99c9a2fe2ec&unique=prints",
+  "collector_number": "16",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jesper Ejsing",
+  "artist_ids": [
+    "a5f8354a-8b51-4e59-96b2-0e3aeae4fa1d"
+  ],
+  "illustration_id": "4e0a0b86-6b1b-4829-82cf-49f4b1ac017c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8407,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": null,
+    "tix": "1.93"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFerrafor%252C%2BYoung%2BYew",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFerrafor%252C%2BYoung%2BYew",
+    "edhrec": "https://edhrec.com/route/?cc=Ferrafor%2C+Young+Yew"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F671168%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=864971&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/146005?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

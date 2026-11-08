@@ -1,0 +1,49 @@
+{
+  "oracle_id": "30e4849e-c58c-4b65-9fb3-7aa40c944904",
+  "name": "Evolving Door",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evolving Door",
+      "oracle_fingerprint": "d3a64b4d72fab541382ec8b088d6852e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Colors",
+                        "op": "Eq",
+                        "to": { "Sum": [{ "Stat": { "of": "Paid", "stat": "Colors" } }, 1] }
+                      }
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Shuffle": {} },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "found_exiled" },
+                  "as": "card2",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card2" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

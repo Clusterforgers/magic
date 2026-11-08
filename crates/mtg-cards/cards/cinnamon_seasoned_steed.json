@@ -1,0 +1,68 @@
+{
+  "oracle_id": "b6f27e98-6c12-453c-8321-891f2f7c2bbb",
+  "name": "Cinnamon, Seasoned Steed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinnamon, Seasoned Steed",
+      "oracle_fingerprint": "872efd745be059505293d1151f3de28d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Food" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Horsemanship" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Food" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 0, "toughness": 0 } },
+                          { "AddSubtype": "Knight" },
+                          { "AddType": "Creature" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

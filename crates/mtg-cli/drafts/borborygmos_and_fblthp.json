@@ -1,0 +1,94 @@
+{
+  "oracle_id": "22d9eef5-0f86-4d1a-bde0-65b990d4be75",
+  "name": "Borborygmos and Fblthp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Borborygmos and Fblthp",
+      "oracle_fingerprint": "fdb88279b9de356b5b44564fa56ec2ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }] },
+                  "filter": [{ "Type": "Land" }],
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Let": {
+                        "as": "number2",
+                        "amount": {
+                          "Times": {
+                            "by": 2,
+                            "of": {
+                              "Count": [
+                                { "Is": { "Bound": "discarded" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": { "Bound": "number2" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": { "Below": 2 } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

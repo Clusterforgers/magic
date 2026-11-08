@@ -1,0 +1,63 @@
+{
+  "oracle_id": "4421ab7d-6d9b-4edd-b5a0-53a8ed84da6f",
+  "name": "Emrakul, the Exigent Doom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emrakul, the Exigent Doom",
+      "oracle_fingerprint": "3c9dbcfe400398b862f7362d1bf92c42",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] } } }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": [{ "Sacrifice": { "filter": [], "count": 3 } }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "ExileSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [
+                            { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilCastFromExile"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Arrived": { "of": "This", "zone": "Exile" } }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

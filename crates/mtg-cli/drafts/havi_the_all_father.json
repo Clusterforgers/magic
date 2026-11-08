@@ -17,8 +17,8 @@
                   "Count": [
                     {
                       "AnyOf": [
-                        { "Supertype": "Legendary" },
                         { "Type": "Artifact" },
+                        { "Supertype": "Legendary" },
                         { "Subtype": "Saga" }
                       ]
                     },

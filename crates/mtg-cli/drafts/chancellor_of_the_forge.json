@@ -1,0 +1,58 @@
+{
+  "oracle_id": "0aedf049-db6b-420e-80e7-591ed38d4fba",
+  "name": "Chancellor of the Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chancellor of the Forge",
+      "oracle_fingerprint": "7471c05f69c0a360e89a0220fb760b40",
+      "abilities": [
+        {
+          "OpeningReveal": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Phyrexian", "Goblin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Phyrexian", "Goblin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

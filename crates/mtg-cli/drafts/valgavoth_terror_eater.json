@@ -1,0 +1,48 @@
+{
+  "oracle_id": "cae3ec72-436d-4086-9dcb-17b3d92ad5c4",
+  "name": "Valgavoth, Terror Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valgavoth, Terror Eater",
+      "oracle_fingerprint": "e9ebd4141470ed06bafc96b1344b2d7d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Keyword": {
+            "Ward": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }], "count": 3 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "ExiledWith": "This" }],
+                "from": "Exile",
+                "play": true,
+                "rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }]
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Not": "Token" },
+                  { "Not": { "ControlledBy": "You" } },
+                  { "OwnedBy": "Opponents" }
+                ],
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

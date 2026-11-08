@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5a51b168-02d1-4eb4-8ccc-614ab6f6cffa",
+  "name": "Storm Cauldron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Cauldron",
+      "oracle_fingerprint": "aeca938d7d58b787966830e67cb5e87e",
+      "abilities": [
+        { "Rule": { "rule": { "AdditionalLandPlays": { "who": "EachPlayer" } } } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }] } },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

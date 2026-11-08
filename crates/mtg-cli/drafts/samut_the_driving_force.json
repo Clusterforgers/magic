@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ee89c719-5ae8-4316-bfd0-cfe3684b5859",
+  "name": "Samut, the Driving Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samut, the Driving Force",
+      "oracle_fingerprint": "1aedc0a103f016cf17938d64869ba36d",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        { "Keyword": "StartYourEngines" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": { "Speed": "You" }, "toughness": 0 } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Speed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

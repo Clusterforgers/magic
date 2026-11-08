@@ -11,24 +11,15 @@
         {
           "Triggered": {
             "when": {
-              "ZoneChange": {
-                "what": [
-                  {
-                    "AnyOf": [
-                      "This",
-                      {
-                        "Not": {
-                          "AnyOf": [
-                            { "Not": { "Type": "Enchantment" } },
-                            { "Not": { "ControlledBy": "You" } }
-                          ]
-                        }
-                      }
-                    ]
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }, "Other"],
+                    "to": "Battlefield"
                   }
-                ],
-                "to": "Battlefield"
-              }
+                }
+              ]
             },
             "targets": [
               { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }

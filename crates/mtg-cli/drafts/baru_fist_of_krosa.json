@@ -1,0 +1,58 @@
+{
+  "oracle_id": "b6021700-992a-4faa-8f83-a9af03dc7296",
+  "name": "Baru, Fist of Krosa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baru, Fist of Krosa",
+      "oracle_fingerprint": "7af3c4c20630a5e907bbec3418325e57",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Subtype": "Forest" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Color": "Green" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Named": "Baru, Fist of Krosa" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "token": {
+                        "name": "Wurm",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Wurm"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

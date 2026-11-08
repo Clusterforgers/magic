@@ -1,0 +1,83 @@
+{
+  "oracle_id": "88522a0f-5377-4522-97f4-4148bef954af",
+  "name": "Bolg of the North",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bolg of the North",
+      "oracle_fingerprint": "5af1436d238522025d3d009c61c0edba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed3"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed3~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          { "Bind": { "what": { "Bound": "sacrificed3" }, "as": "when" } },
+                          {
+                            "Reflexive": {
+                              "targets": [
+                                { "what": { "Object": [{ "Type": "Creature" }, "Other"] } }
+                              ],
+                              "effects": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Target": 0 },
+                                    "amount": {
+                                      "Stat": { "of": { "Bound": "when" }, "stat": "Power" }
+                                    },
+                                    "excess": { "as": "excess2" }
+                                  }
+                                },
+                                {
+                                  "If": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": { "Bound": "excess2" },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": [
+                                      {
+                                        "Amass": {
+                                          "subtype": "Goblin",
+                                          "count": { "Bound": "excess2" }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

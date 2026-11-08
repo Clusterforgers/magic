@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6d19e2bb-2e5f-4e55-bb86-de01ea35263d",
+  "name": "Sylvan Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Echoes",
+      "oracle_fingerprint": "e6ae3a74e84f28b20c0d3f5f346550a0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "W15cClashWon": { "who": "You" } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

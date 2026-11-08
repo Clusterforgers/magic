@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5998f07e-01f9-4d02-94dd-867c7166463f",
+  "name": "Jackal, Genius Geneticist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jackal, Genius Geneticist",
+      "oracle_fingerprint": "9c17ea259468e7d732172fb47bcde256",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Eq",
+                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "except": [{ "RemoveSupertype": "Legendary" }]
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

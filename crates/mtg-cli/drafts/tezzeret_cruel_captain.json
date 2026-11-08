@@ -1,0 +1,117 @@
+{
+  "oracle_id": "0eb11b2d-a397-48da-a0f3-9f0f83f42282",
+  "name": "Tezzeret, Cruel Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret, Cruel Captain",
+      "oracle_fingerprint": "cba30af49a763e276e2697c2a7fd6be0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Is": { "Target": 0 } },
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 }
+                          },
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [
+                                  { "Is": { "Target": 0 } },
+                                  { "Not": { "Type": "Creature" } }
+                                ]
+                              },
+                              "mods": [
+                                { "SetPT": { "power": 0, "toughness": 0 } },
+                                { "AddSubtype": "Robot" },
+                                { "AddType": "Artifact" },
+                                { "AddType": "Creature" }
+                              ],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

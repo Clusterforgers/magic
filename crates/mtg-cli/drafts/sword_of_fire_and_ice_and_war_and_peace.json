@@ -1,0 +1,48 @@
+{
+  "oracle_id": "64bd0722-7123-43cf-b22d-0b4a385974e0",
+  "name": "Sword of Fire and Ice and War and Peace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Fire and Ice and War and Peace",
+      "oracle_fingerprint": "4ae0c9bf0ee2e54eea3a6024bd866d0f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": { "Protection": [{ "Color": "White" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Blue" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Red" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "Draw": {} },
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                }
+              },
+              { "GainLife": { "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

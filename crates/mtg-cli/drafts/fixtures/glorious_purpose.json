@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "d78f2105-030f-4951-aa02-0d4db3d34f59",
+  "oracle_id": "182baad0-ec6e-4e93-9dfc-7c80b37005de",
+  "multiverse_ids": [],
+  "resource_id": "A659F66188BC76EB00BD5393B246C0C8215401EC3201D226067C8CBBE37B2212",
+  "mtgo_id": 150501,
+  "tcgplayer_id": 697996,
+  "cardmarket_id": 892390,
+  "name": "Glorious Purpose",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/d78f2105-030f-4951-aa02-0d4db3d34f59",
+  "scryfall_uri": "https://scryfall.com/card/msc/31/glorious-purpose?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.jpg?1783903293",
+    "normal": "https://cards.scryfall.io/normal/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.jpg?1783903293",
+    "large": "https://cards.scryfall.io/large/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.jpg?1783903293",
+    "png": "https://cards.scryfall.io/png/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.png?1783903293",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.jpg?1783903293",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.jpg?1783903293",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.webp?1783903293",
+    "grid": "https://cards.scryfall.io/grid/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.webp?1783903293",
+    "display": "https://cards.scryfall.io/display/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.webp?1783903293",
+    "art": "https://cards.scryfall.io/art/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.webp?1783903293",
+    "crop": "https://cards.scryfall.io/crop/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.webp?1783903293",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/7/d78f2105-030f-4951-aa02-0d4db3d34f59.jpg?1783903293"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Plan",
+  "oracle_text": "Whenever a creature you control connives, put a +1/+1 counter on that creature and a plan counter on this enchantment.\nWhen the sixth plan counter is put on this enchantment, sacrifice it. If you do, exile the top four cards of your library. You may cast any number of spells from among them without paying their mana costs. Put the rest into your hand.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Connive"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d78f2105-030f-4951-aa02-0d4db3d34f59/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A182baad0-ec6e-4e93-9dfc-7c80b37005de&unique=prints",
+  "collector_number": "31",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fariba Khamseh",
+  "artist_ids": [
+    "f18a7bd6-4aca-4201-b2f5-942c28ee4f18"
+  ],
+  "illustration_id": "4f15d9b4-7804-4ffe-9eba-99f44584e4ae",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10551,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": "1.72"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGlorious%2BPurpose",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGlorious%2BPurpose",
+    "edhrec": "https://edhrec.com/route/?cc=Glorious+Purpose"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697996%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892390&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150501?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

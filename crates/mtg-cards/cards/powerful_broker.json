@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2b3d76e7-faaa-4e6f-9e21-a88dd719247e",
+  "name": "Powerful Broker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Powerful Broker",
+      "oracle_fingerprint": "d960a07fc9dea7bf685ae9f17343df60",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Either": [{ "Object": [] }, "Player"] } }],
+            "effects": [
+              { "PutCountersOf": { "on": { "Target": 0 }, "of": { "Target": 0 }, "each": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

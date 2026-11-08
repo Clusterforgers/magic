@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a2fc892b-3840-45a0-bb1c-0d2cf7d14f2f",
+  "name": "Divine Congregation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Congregation",
+      "oracle_fingerprint": "ae633c318b621e9a77647199341bb1c7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 5, "cost": "{1}{W}" } } }
+      ]
+    }
+  ]
+}

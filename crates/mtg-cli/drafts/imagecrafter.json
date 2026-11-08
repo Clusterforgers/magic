@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9a0c6b4d-b16a-4849-9106-047b009a99b3",
+  "name": "Imagecrafter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imagecrafter",
+      "oracle_fingerprint": "ad7ced22cf7dcea7d4b1c2ccd0e2ab49",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CreatureTypeExcept": ["Wall"] }, "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

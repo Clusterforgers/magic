@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3686fd97-49ff-4a92-9cb2-7d8e9438d945",
+  "name": "Agency Coroner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agency Coroner",
+      "oracle_fingerprint": "2fe34f700249ed35c8afb70f9de3be16",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "CountOf": { "of": "Paid", "filter": ["Suspected"] } },
+                          "op": "Eq",
+                          "right": 1
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

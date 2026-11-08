@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9f7d5e1c-bf5b-4ab9-bd6e-2627b4d22b36",
+  "name": "Zada, Hedron Grinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zada, Hedron Grinder",
+      "oracle_fingerprint": "054bb42eac098f030a83d4f7a2ad4d7d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "SingleTarget",
+                  { "Targeting": ["This"] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "each_target": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

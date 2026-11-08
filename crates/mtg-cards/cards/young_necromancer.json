@@ -1,0 +1,45 @@
+{
+  "oracle_id": "17455491-c295-4130-99b4-1b5c6ac1cd25",
+  "name": "Young Necromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Young Necromancer",
+      "oracle_fingerprint": "918e39e9079dfc7af3220d5473c438f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [], "count": 2 } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "89c5dec1-cefe-4ce3-a9df-b5cb9fa73b35",
+  "name": "Twisted Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twisted Justice",
+      "oracle_fingerprint": "ad9f0f24133399a0661a111b11938ee5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "65d41af0-978e-4071-9f64-0e3b5826763a",
+  "name": "Maulfist Revolutionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maulfist Revolutionary",
+      "oracle_fingerprint": "cd24207fbacf95cc2d7ea1e5f644e4ef",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "targets": [{ "what": { "Either": [{ "Object": [] }, "Player"] } }],
+            "effects": [
+              { "PutCountersOf": { "on": { "Target": 0 }, "of": { "Target": 0 }, "each": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

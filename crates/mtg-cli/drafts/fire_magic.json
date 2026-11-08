@@ -15,6 +15,7 @@
                   "mode_costs": ["{0}", "{2}", "{5}"],
                   "modes": [
                     {
+                      "label": "Fire",
                       "effects": [
                         {
                           "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 }
@@ -22,6 +23,7 @@
                       ]
                     },
                     {
+                      "label": "Fira",
                       "effects": [
                         {
                           "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 2 }
@@ -29,6 +31,7 @@
                       ]
                     },
                     {
+                      "label": "Firaga",
                       "effects": [
                         {
                           "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 3 }

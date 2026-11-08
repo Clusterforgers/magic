@@ -1,0 +1,38 @@
+{
+  "oracle_id": "08528c5e-9a01-42a4-a00b-c1ec5eaae64d",
+  "name": "Renegade Doppelganger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renegade Doppelganger",
+      "oracle_fingerprint": "05171bbd1b6c97a9bb786ef227b7d562",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": "Triggering",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

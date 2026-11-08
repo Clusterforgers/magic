@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When you unlock this door, manifest dread, then put two +1/+1 counters and a trample counter on that creature.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever a creature you control deals combat damage to a player, turn that creature face up or put a +1/+1 counter on it.",
+      "abilities": [],
+      "gap": "key:PutCounter.IsPresent"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 110
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 121
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

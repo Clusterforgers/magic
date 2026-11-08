@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6ee68855-c8c5-422b-88da-163c09a96416",
+  "name": "Scorched Ruins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scorched Ruins",
+      "oracle_fingerprint": "08cda0e3ad4c48d5e61e025905e4eead",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [
+                  { "Sacrifice": { "filter": [{ "Type": "Land" }, "Untapped"], "count": 2 } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless", "Colorless", "Colorless"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

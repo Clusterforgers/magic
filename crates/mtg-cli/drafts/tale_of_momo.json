@@ -1,0 +1,33 @@
+{
+  "oracle_id": "728157a3-fcd4-4295-85ff-1162dbb64f8a",
+  "name": "Tale of Momo",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tale of Momo",
+      "oracle_fingerprint": "365c387df6a12eb53eaa6dfeb3caf869",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "CreaturesLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 99, "end": 246 }
+          }
+        }
+      ]
+    }
+  ]
+}

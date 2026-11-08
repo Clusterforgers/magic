@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "e203daaf-bd68-4251-9106-00299b3ad662",
+  "oracle_id": "73d8c33d-916a-4220-96ae-9622aad36210",
+  "multiverse_ids": [
+    559767
+  ],
+  "tcgplayer_id": 269651,
+  "cardmarket_id": 652776,
+  "name": "Call the Coppercoats",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/e203daaf-bd68-4251-9106-00299b3ad662",
+  "scryfall_uri": "https://scryfall.com/card/ncc/195/call-the-coppercoats?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:14:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.jpg?1783923293",
+    "normal": "https://cards.scryfall.io/normal/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.jpg?1783923293",
+    "large": "https://cards.scryfall.io/large/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.jpg?1783923293",
+    "png": "https://cards.scryfall.io/png/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.png?1783923293",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.jpg?1783923293",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.jpg?1783923293",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.webp?1783923293",
+    "grid": "https://cards.scryfall.io/grid/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.webp?1783923293",
+    "display": "https://cards.scryfall.io/display/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.webp?1783923293",
+    "art": "https://cards.scryfall.io/art/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.webp?1783923293",
+    "crop": "https://cards.scryfall.io/crop/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.webp?1783923293",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/2/e203daaf-bd68-4251-9106-00299b3ad662.jpg?1783923293"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Strive — This spell costs {1}{W} more to cast for each target beyond the first.\nChoose any number of target opponents. Create X 1/1 white Human Soldier creature tokens, where X is the number of creatures those opponents control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Strive"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e203daaf-bd68-4251-9106-00299b3ad662",
+      "component": "combo_piece",
+      "name": "Call the Coppercoats",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/e203daaf-bd68-4251-9106-00299b3ad662"
+    },
+    {
+      "object": "related_card",
+      "id": "48601048-d280-46b9-8463-21bcbe84b1f9",
+      "component": "token",
+      "name": "Human Soldier",
+      "type_line": "Token Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/48601048-d280-46b9-8463-21bcbe84b1f9"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e203daaf-bd68-4251-9106-00299b3ad662/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A73d8c33d-916a-4220-96ae-9622aad36210&unique=prints",
+  "collector_number": "195",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "When the alarm crystals flash, Drannith's finest answer the call.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cristi Balanescu",
+  "artist_ids": [
+    "c09ede88-a1b5-4a18-9895-dc8a965d28a5"
+  ],
+  "illustration_id": "3577adf1-bb82-47a0-9c3d-a6662d2152b8",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1649,
+  "prices": {
+    "usd": "7.66",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "5.27",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=559767&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCall%2Bthe%2BCoppercoats",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCall%2Bthe%2BCoppercoats",
+    "edhrec": "https://edhrec.com/route/?cc=Call+the+Coppercoats"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269651%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652776&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Call+the+Coppercoats&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

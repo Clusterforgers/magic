@@ -1,0 +1,55 @@
+{
+  "oracle_id": "09ea5508-78fd-4bbc-8395-38ec13202d9a",
+  "name": "Pirated Copy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pirated Copy",
+      "oracle_fingerprint": "68b1745f35a03996fc79a8a02e3fe6b6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  { "AddSubtype": "Pirate" },
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": {
+                          "DealsDamage": {
+                            "source": [
+                              {
+                                "AnyOf": [
+                                  "This",
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Type": "Creature" } },
+                                        { "Not": "Other" },
+                                        { "Not": { "SharesName": "This" } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            ],
+                            "to": "EachPlayer",
+                            "combat": true
+                          }
+                        },
+                        "effects": [{ "Draw": {} }]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

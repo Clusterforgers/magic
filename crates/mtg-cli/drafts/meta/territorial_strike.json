@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Destroy target nonland permanent. If a Dragon creature was beheld, it perpetually gets +2/+2.",
+      "abilities": [],
+      "gap": "duration:Perpetual"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "As an additional cost to cast this spell, you may behold a Dragon creature.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 75
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 76,
+          "end": 169
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

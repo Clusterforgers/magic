@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c022b5df-1d85-44c0-94a1-d01b345b845b",
+  "name": "Bureau Headmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bureau Headmaster",
+      "oracle_fingerprint": "1ba3bb5bdd75125f6ee7d4f28bc92ff5",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Equipment" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Equip"
+          }
+        }
+      ]
+    }
+  ]
+}

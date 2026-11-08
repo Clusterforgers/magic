@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5297c493-59ec-43e9-9980-8ae03e3264d8",
+  "name": "Veiling Oddity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veiling Oddity",
+      "oracle_fingerprint": "e564add3c41301114b0e8b8b1e1343ba",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 4, "cost": "{1}{U}" } } },
+        {
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                  "op": "Eq",
+                  "right": 0
+                }
+              }
+            },
+            "from": "Exile",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

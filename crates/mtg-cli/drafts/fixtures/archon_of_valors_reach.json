@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "7f51e677-1278-401e-a892-33cd8ffed6fe",
+  "oracle_id": "baff00b8-b109-4e31-942b-38aeb1e45ab2",
+  "multiverse_ids": [
+    482830
+  ],
+  "tcgplayer_id": 212298,
+  "cardmarket_id": 454153,
+  "name": "Archon of Valor's Reach",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/7f51e677-1278-401e-a892-33cd8ffed6fe",
+  "scryfall_uri": "https://scryfall.com/card/c20/202/archon-of-valors-reach?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:25:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.jpg?1783931153",
+    "normal": "https://cards.scryfall.io/normal/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.jpg?1783931153",
+    "large": "https://cards.scryfall.io/large/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.jpg?1783931153",
+    "png": "https://cards.scryfall.io/png/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.png?1783931153",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.jpg?1783931153",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.jpg?1783931153",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.webp?1783931153",
+    "grid": "https://cards.scryfall.io/grid/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.webp?1783931153",
+    "display": "https://cards.scryfall.io/display/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.webp?1783931153",
+    "art": "https://cards.scryfall.io/art/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.webp?1783931153",
+    "crop": "https://cards.scryfall.io/crop/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.webp?1783931153",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/f/7f51e677-1278-401e-a892-33cd8ffed6fe.jpg?1783931153"
+  },
+  "mana_cost": "{4}{G}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Archon",
+  "oracle_text": "Flying, vigilance, trample\nAs this creature enters, choose artifact, enchantment, instant, sorcery, or planeswalker.\nPlayers can't cast spells of the chosen type.",
+  "power": "5",
+  "toughness": "6",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7f51e677-1278-401e-a892-33cd8ffed6fe/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abaff00b8-b109-4e31-942b-38aeb1e45ab2&unique=prints",
+  "collector_number": "202",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gabor Szikszai",
+  "artist_ids": [
+    "44c3877f-8771-43dc-9e40-f4c765f59d2e"
+  ],
+  "illustration_id": "46b3767b-ac35-4221-9688-93371ad79674",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10312,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.57",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=482830&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DArchon%2Bof%2BValor%2527s%2BReach",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DArchon%2Bof%2BValor%2527s%2BReach",
+    "edhrec": "https://edhrec.com/route/?cc=Archon+of+Valor%27s+Reach"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212298%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=454153&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Archon+of+Valor%27s+Reach&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

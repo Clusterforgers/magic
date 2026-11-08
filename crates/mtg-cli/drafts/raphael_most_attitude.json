@@ -1,0 +1,45 @@
+{
+  "oracle_id": "eaf194a7-d95f-4738-9052-92ad00443a76",
+  "name": "Raphael, Most Attitude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raphael, Most Attitude",
+      "oracle_fingerprint": "1c737125e32f04c8eec793d56ef42f18",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "ExileTop": { "as": "exiled" } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "ExiledWith": "This" }],
+                      "from": "Exile",
+                      "play": true,
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

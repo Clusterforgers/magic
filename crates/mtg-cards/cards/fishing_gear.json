@@ -1,0 +1,94 @@
+{
+  "oracle_id": "7d309b18-8dc5-41ee-888c-e275761029e7",
+  "name": "Fishing Gear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fishing Gear",
+      "oracle_fingerprint": "6d3d02f54add81f4f858124cdb9221eb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "exiled" },
+                              "to": { "Battlefield": { "under": "You" } },
+                              "as": "moved2"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Fish",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Fish"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

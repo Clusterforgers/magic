@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c1d54d0c-53fc-474c-ba89-2aa1be3bf27d",
+  "name": "Grim Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Return",
+      "oracle_fingerprint": "122cadc44086a50d423a0727b9fa523b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ArrivedFrom": "Battlefield" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

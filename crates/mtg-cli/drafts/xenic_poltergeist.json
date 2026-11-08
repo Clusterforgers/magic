@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fb8f80cc-6214-4ab9-a9a9-1873ab9feb0c",
+  "name": "Xenic Poltergeist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xenic Poltergeist",
+      "oracle_fingerprint": "123c40a962b9d6f78ad47a55cc97870f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    },
+                    { "AddType": "Creature" },
+                    { "AddType": "Artifact" }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

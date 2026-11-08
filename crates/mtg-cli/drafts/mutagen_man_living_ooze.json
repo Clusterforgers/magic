@@ -13,7 +13,7 @@
             "applies_to": [{ "Type": "Artifact" }, "Token", { "ControlledBy": "You" }],
             "change": "Reduce",
             "mana": "{1}",
-            "activating": "Any"
+            "activating": "Every"
           }
         },
         {

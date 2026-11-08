@@ -1,0 +1,27 @@
+{
+  "oracle_id": "dcc82c14-d632-4333-be35-4a206a10b184",
+  "name": "Cylian Sunsinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cylian Sunsinger",
+      "oracle_fingerprint": "1ea82bdd848a20a31128a1981df81748",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}{R}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "SharesName": "This" }] },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

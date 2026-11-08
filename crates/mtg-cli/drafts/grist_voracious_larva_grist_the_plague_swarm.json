@@ -1,0 +1,171 @@
+{
+  "oracle_id": "196f8f13-d4df-4740-8746-8fed3bc71840",
+  "name": "Grist, Voracious Larva // Grist, the Plague Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grist, Voracious Larva",
+      "oracle_fingerprint": "170d425f8c06274c99c98c0e0209e763",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          "This",
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "ControlledBy": "You" } }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      { "OwnedBy": "You" }
+                    ],
+                    "from": "Graveyard",
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          "This",
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "ControlledBy": "You" } }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      { "WasCast": { "by": "You", "from": "Graveyard" } },
+                      { "OwnedBy": "You" }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{G}",
+                  "paid": [
+                    { "Exile": { "what": "This", "as": "exiled" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "transformed": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Grist, the Plague Swarm",
+      "oracle_fingerprint": "f379747964ee80815f799044d1803e37",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Black", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Mill": { "count": 2, "as": "milled2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled2" },
+                      "selector": [{ "Color": "Black" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "token" },
+                        "counter": { "Other": "deathtouch" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "except": [
+                        { "SetPT": { "power": 1, "toughness": 1 } },
+                        { "SetColors": ["Black", "Green"] },
+                        { "SetCreatureTypes": ["Insect"] }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

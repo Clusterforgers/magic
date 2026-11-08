@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "cc019633-788e-4095-9610-6c0a432f7656",
+  "oracle_id": "9fea3f42-643f-43c8-a9a9-4516dd72af5b",
+  "multiverse_ids": [
+    23089
+  ],
+  "mtgo_id": 14863,
+  "mtgo_foil_id": 14864,
+  "tcgplayer_id": 7457,
+  "cardmarket_id": 3452,
+  "name": "Collapsing Borders",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/cc019633-788e-4095-9610-6c0a432f7656",
+  "scryfall_uri": "https://scryfall.com/card/inv/141/collapsing-borders?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:28:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.jpg?1783945687",
+    "normal": "https://cards.scryfall.io/normal/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.jpg?1783945687",
+    "large": "https://cards.scryfall.io/large/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.jpg?1783945687",
+    "png": "https://cards.scryfall.io/png/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.png?1783945687",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.jpg?1783945687",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.jpg?1783945687",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.webp?1783945687",
+    "grid": "https://cards.scryfall.io/grid/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.webp?1783945687",
+    "display": "https://cards.scryfall.io/display/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.webp?1783945687",
+    "art": "https://cards.scryfall.io/art/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.webp?1783945687",
+    "crop": "https://cards.scryfall.io/crop/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.webp?1783945687",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/c/cc019633-788e-4095-9610-6c0a432f7656.jpg?1783945687"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Domain — At the beginning of each player's upkeep, that player gains 1 life for each basic land type among lands they control. Then this enchantment deals 3 damage to that player.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Domain"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cc019633-788e-4095-9610-6c0a432f7656/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9fea3f42-643f-43c8-a9a9-4516dd72af5b&unique=prints",
+  "collector_number": "141",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Glen Angus",
+  "artist_ids": [
+    "7be3b9e4-de9b-4a3d-884e-e67b9681d409"
+  ],
+  "illustration_id": "500e04e3-f28d-4087-b999-ae8cd4ca49a0",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24232,
+  "penny_rank": 3139,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": "10.25",
+    "usd_etched": null,
+    "eur": "0.42",
+    "eur_foil": "4.55",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=23089&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCollapsing%2BBorders",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCollapsing%2BBorders",
+    "edhrec": "https://edhrec.com/route/?cc=Collapsing+Borders"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7457%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3452&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14863?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

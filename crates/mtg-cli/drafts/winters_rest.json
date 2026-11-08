@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9df37d14-89fa-4a28-98ee-426062b5740d",
+  "name": "Winter's Rest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter's Rest",
+      "oracle_fingerprint": "52a7d73748c811017018a1d339b4215f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["DoesntUntap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Supertype": "Snow" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

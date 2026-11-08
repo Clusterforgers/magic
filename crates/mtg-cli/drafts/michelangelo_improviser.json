@@ -1,7 +1,7 @@
 {
   "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
   "name": "Michelangelo, Improviser",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Michelangelo, Improviser",
@@ -35,9 +35,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 183, "end": 321 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+            ]
           }
         }
       ]

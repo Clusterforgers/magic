@@ -1,0 +1,55 @@
+{
+  "oracle_id": "fffcb71f-e802-436e-917d-eaa6607ab74f",
+  "name": "Toralf, God of Fury // Toralf's Hammer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Toralf, God of Fury",
+      "oracle_fingerprint": "16347939f1a492185cf416195a6aa02a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 179 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Toralf's Hammer",
+      "oracle_fingerprint": "752a25a10433a2f2b349e5692998a9b2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{1}{R}" }, "Tap", "Unattach"],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [
+                      { "DealDamage": { "source": "Granter", "to": { "Target": 0 }, "amount": 3 } },
+                      { "Move": { "what": "Granter", "to": "Hand" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Supertype": "Legendary" }] }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{1}{R}" } }
+      ]
+    }
+  ]
+}

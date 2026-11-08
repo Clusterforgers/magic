@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e",
+  "oracle_id": "44b12ccc-81cb-4ec1-891e-4bf706e53aa4",
+  "multiverse_ids": [
+    240158
+  ],
+  "mtgo_id": 44077,
+  "mtgo_foil_id": 44078,
+  "tcgplayer_id": 58840,
+  "cardmarket_id": 254517,
+  "name": "Primal Surge",
+  "lang": "en",
+  "released_at": "2012-05-04",
+  "uri": "https://api.scryfall.com/cards/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e",
+  "scryfall_uri": "https://scryfall.com/card/avr/189/primal-surge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:04:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.jpg?1783940663",
+    "normal": "https://cards.scryfall.io/normal/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.jpg?1783940663",
+    "large": "https://cards.scryfall.io/large/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.jpg?1783940663",
+    "png": "https://cards.scryfall.io/png/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.png?1783940663",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.jpg?1783940663",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.jpg?1783940663",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.webp?1783940663",
+    "grid": "https://cards.scryfall.io/grid/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.webp?1783940663",
+    "display": "https://cards.scryfall.io/display/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.webp?1783940663",
+    "art": "https://cards.scryfall.io/art/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.webp?1783940663",
+    "crop": "https://cards.scryfall.io/crop/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.webp?1783940663",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/2/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e.jpg?1783940663"
+  },
+  "mana_cost": "{8}{G}{G}",
+  "cmc": 10.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile the top card of your library. If it's a permanent card, you may put it onto the battlefield. If you do, repeat this process.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "banned",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "039810a9-92d7-4f2d-b2d0-ca661ac586c0",
+  "set": "avr",
+  "set_name": "Avacyn Restored",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/039810a9-92d7-4f2d-b2d0-ca661ac586c0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aavr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/avr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4278f7bd-afff-4a1d-a0bb-bf9ce3ad5a2e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A44b12ccc-81cb-4ec1-891e-4bf706e53aa4&unique=prints",
+  "collector_number": "189",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "With Avacyn's return, the flow of life became a tidal wave.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Rapoza",
+  "artist_ids": [
+    "c5a2318d-5d04-499f-b121-57dee5a9dfe6"
+  ],
+  "illustration_id": "5e46b2c6-2036-4b5f-a2b2-b74cfbdf7bf2",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8075,
+  "penny_rank": 2721,
+  "prices": {
+    "usd": "5.43",
+    "usd_foil": "24.50",
+    "usd_etched": null,
+    "eur": "4.64",
+    "eur_foil": "13.31",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=240158&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPrimal%2BSurge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPrimal%2BSurge",
+    "edhrec": "https://edhrec.com/route/?cc=Primal+Surge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F58840%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=254517&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/44077?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

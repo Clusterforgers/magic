@@ -1,7 +1,7 @@
 {
   "oracle_id": "11329dd8-b10b-4659-b747-fbdbecf16308",
   "name": "Myrkul, Lord of Bones",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Myrkul, Lord of Bones",
@@ -21,9 +21,38 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 110, "end": 293 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "Triggering", "as": "exiled" } },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Bound": "exiled" },
+                            "except": [{ "SetTypes": ["Enchantment"] }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

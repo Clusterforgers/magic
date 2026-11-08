@@ -1,0 +1,62 @@
+{
+  "oracle_id": "a5a2d17d-5759-46fb-8e44-694bd3b72f5d",
+  "name": "Shapeshifter's Marrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shapeshifter's Marrow",
+      "oracle_fingerprint": "ee2b2b9545289a9322cf3b54a89e5706",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": "Graveyard",
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved4" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Bound": "moved4" },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

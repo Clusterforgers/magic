@@ -1,0 +1,44 @@
+{
+  "oracle_id": "68f34b1c-e06b-4859-b7c0-62148341e38c",
+  "name": "Nascent Metamorph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nascent Metamorph",
+      "oracle_fingerprint": "2e9c653e3ab72cf1e69fcfbccae70fe3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Bound": "found" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

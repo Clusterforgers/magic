@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0a265cb5-47c7-4e06-9030-602e17bedae5",
+  "name": "Leeches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leeches",
+      "oracle_fingerprint": "fb2e1db0383da4225819cb01ac550030",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Counters": { "on": { "Target": 0 }, "counter": "poison" } }
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": { "Target": 0 },
+                  "counter": "poison",
+                  "count": { "Counters": { "on": { "Target": 0 }, "counter": "poison" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

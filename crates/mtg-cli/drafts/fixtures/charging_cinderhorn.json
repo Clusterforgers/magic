@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "fc0b61f2-4bb7-4dfa-907c-71787930d58f",
+  "oracle_id": "397e0d30-a3bf-4b33-98b6-b880f8de5cbb",
+  "multiverse_ids": [
+    420633
+  ],
+  "tcgplayer_id": 123988,
+  "cardmarket_id": 293499,
+  "name": "Charging Cinderhorn",
+  "lang": "en",
+  "released_at": "2016-11-11",
+  "uri": "https://api.scryfall.com/cards/fc0b61f2-4bb7-4dfa-907c-71787930d58f",
+  "scryfall_uri": "https://scryfall.com/card/c16/16/charging-cinderhorn?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:04:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.jpg?1783937089",
+    "normal": "https://cards.scryfall.io/normal/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.jpg?1783937089",
+    "large": "https://cards.scryfall.io/large/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.jpg?1783937089",
+    "png": "https://cards.scryfall.io/png/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.png?1783937089",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.jpg?1783937089",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.jpg?1783937089",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.webp?1783937089",
+    "grid": "https://cards.scryfall.io/grid/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.webp?1783937089",
+    "display": "https://cards.scryfall.io/display/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.webp?1783937089",
+    "art": "https://cards.scryfall.io/art/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.webp?1783937089",
+    "crop": "https://cards.scryfall.io/crop/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.webp?1783937089",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/c/fc0b61f2-4bb7-4dfa-907c-71787930d58f.jpg?1783937089"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elemental Ox",
+  "oracle_text": "Haste\nAt the beginning of each player's end step, if no creatures attacked this turn, put a fury counter on this creature. Then this creature deals damage equal to the number of fury counters on it to that player.",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "3e0d713a-b5cb-4287-81b9-a57d4dcaf415",
+  "set": "c16",
+  "set_name": "Commander 2016",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/3e0d713a-b5cb-4287-81b9-a57d4dcaf415",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac16&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c16?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fc0b61f2-4bb7-4dfa-907c-71787930d58f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A397e0d30-a3bf-4b33-98b6-b880f8de5cbb&unique=prints",
+  "collector_number": "16",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lius Lasahido",
+  "artist_ids": [
+    "0a0e9093-ce44-4a69-93a7-09b63e7c330d"
+  ],
+  "illustration_id": "370fdc71-223f-4cfc-ac3a-5b25654dcde7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 19506,
+  "penny_rank": 14784,
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.43",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=420633&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCharging%2BCinderhorn",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCharging%2BCinderhorn",
+    "edhrec": "https://edhrec.com/route/?cc=Charging+Cinderhorn"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F123988%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=293499&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Charging+Cinderhorn&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "ebedff30-ae43-4861-aab2-afe1fc88337e",
+  "name": "Ms. Marvel, Kamala Khan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ms. Marvel, Kamala Khan",
+      "oracle_fingerprint": "ae0781e083a67f8bfc11d05abbed0e45",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "ControlledBy": "You" },
+                  {
+                    "Targeting": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "In": "Battlefield" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": "This",
+                          "mods": [
+                            { "SetPower": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

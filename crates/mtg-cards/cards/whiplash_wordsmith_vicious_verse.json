@@ -1,0 +1,52 @@
+{
+  "oracle_id": "e1ffb884-a89e-4e2a-9beb-8bd5838b6a94",
+  "name": "Whiplash Wordsmith // Vicious Verse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whiplash Wordsmith",
+      "oracle_fingerprint": "45ae64b25bccdf81aaa86322788160f0",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "NoncombatDamageTaken" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vicious Verse",
+      "oracle_fingerprint": "62aeb86d052314e98d45ca6a3deb2435",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9cb7f23f-322d-4a87-b6c6-15b9d446aef3",
+  "name": "Champions of the Perfect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champions of the Perfect",
+      "oracle_fingerprint": "c45f76d3e7ecf7ad012602dd46cf8e45",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Behold": { "filter": [{ "Subtype": "Elf" }], "exile": true } }],
+            "required": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

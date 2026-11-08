@@ -14,6 +14,7 @@
                 "Modal": {
                   "modes": [
                     {
+                      "label": "Date Night",
                       "effects": [
                         { "ExileTop": { "count": 2, "as": "exiled" } },
                         {
@@ -37,6 +38,7 @@
                       ]
                     },
                     {
+                      "label": "Patrol Night",
                       "targets": [
                         {
                           "what": { "Object": [{ "Type": "Creature" }] },

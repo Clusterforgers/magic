@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f39fd4bd-3157-42da-9a39-94e094b5f681",
+  "name": "Tainted Sigil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Sigil",
+      "oracle_fingerprint": "e5cb50e63ca5ddb528c8187a12d8c2b0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "GainLife": { "amount": { "Tallied": { "who": "EachPlayer", "what": "LifeLost" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

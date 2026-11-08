@@ -1,0 +1,25 @@
+{
+  "oracle_id": "54b1a496-1f8e-4581-8260-bad57b25c6e3",
+  "name": "Loyal Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loyal Sentry",
+      "oracle_fingerprint": "c608004a0574224600c74a8105aaab49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "AnyOf": [{ "Is": "Triggering" }, { "Is": "This" }] }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

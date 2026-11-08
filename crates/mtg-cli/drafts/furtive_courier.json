@@ -1,0 +1,38 @@
+{
+  "oracle_id": "92d24b75-419b-4068-89c1-db9945f74972",
+  "name": "Furtive Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furtive Courier",
+      "oracle_fingerprint": "452dbee605e31bbfc3ef548f898cd16c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", "Attacking"] },
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Sacrificed",
+                    "who": "You",
+                    "filter": [{ "Type": "Artifact" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

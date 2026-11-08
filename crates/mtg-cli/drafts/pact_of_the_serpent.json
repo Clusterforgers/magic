@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f275039e-3dba-49b0-92aa-92721b1c7f95",
+  "name": "Pact of the Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pact of the Serpent",
+      "oracle_fingerprint": "49ab6f05ad12ed71310426a8945b238d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Largest": {
+                      "who": { "Target": 0 },
+                      "of": [
+                        { "Type": "Creature" },
+                        { "ControlledBy": "You" },
+                        { "ChosenAs": "chosen" }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Largest": {
+                      "who": { "Target": 0 },
+                      "of": [
+                        { "Type": "Creature" },
+                        { "ControlledBy": "You" },
+                        { "ChosenAs": "chosen" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

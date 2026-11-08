@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a986d83d-22f1-45c3-bc2d-f5b210c539fb",
+  "name": "Sorcerous Squall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorcerous Squall",
+      "oracle_fingerprint": "c6bba724316d9596147ce70ea20022f4",
+      "abilities": [
+        { "Keyword": "Delve" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 9 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": { "Target": 0 } },
+                      { "In": "Graveyard" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

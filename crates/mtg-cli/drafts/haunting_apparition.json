@@ -1,0 +1,46 @@
+{
+  "oracle_id": "ced9130c-2865-49df-abdd-84069aa1b180",
+  "name": "Haunting Apparition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunting Apparition",
+      "oracle_fingerprint": "84a848132712c65fade04960bdae666b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Color": "Green" },
+                          { "OwnedBy": "Chosen" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      1
+                    ]
+                  },
+                  "toughness": 2
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

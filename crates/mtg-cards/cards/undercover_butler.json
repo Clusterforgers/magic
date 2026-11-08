@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ff135dc7-31c8-41d6-a5d5-626217844d09",
+  "name": "Undercover Butler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercover Butler",
+      "oracle_fingerprint": "fd0dcfa29ec06f3cdfcfd8d82b64bbee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": ["This"], "at": "MostLife" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

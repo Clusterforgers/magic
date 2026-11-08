@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a80c13db-949d-4784-8177-04aaa22b96b0",
+  "name": "Burden of Greed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burden of Greed",
+      "oracle_fingerprint": "dfa84ef7bcaab5e9ccd4ffd91f0c67a7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Largest": {
+                      "who": { "Target": 0 },
+                      "of": [{ "Type": "Artifact" }, "Tapped", { "ControlledBy": "You" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

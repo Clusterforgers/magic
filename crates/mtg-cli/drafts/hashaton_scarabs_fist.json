@@ -1,0 +1,42 @@
+{
+  "oracle_id": "db266661-f783-4907-9e52-6963eec05431",
+  "name": "Hashaton, Scarab's Fist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hashaton, Scarab's Fist",
+      "oracle_fingerprint": "c9b6d75850e75f320050e3a2617b451d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{U}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": "Triggering",
+                            "except": [
+                              { "SetPT": { "power": 4, "toughness": 4 } },
+                              { "SetColors": ["Black"] },
+                              { "SetCreatureTypes": ["Zombie"] }
+                            ]
+                          }
+                        },
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

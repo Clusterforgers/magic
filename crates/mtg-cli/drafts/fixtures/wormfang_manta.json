@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9",
+  "oracle_id": "17abf8c6-70b6-4877-a0f2-a87b22fb2828",
+  "multiverse_ids": [
+    34939
+  ],
+  "mtgo_id": 17468,
+  "mtgo_foil_id": 17469,
+  "tcgplayer_id": 10218,
+  "cardmarket_id": 2184,
+  "name": "Wormfang Manta",
+  "lang": "en",
+  "released_at": "2002-05-27",
+  "uri": "https://api.scryfall.com/cards/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9",
+  "scryfall_uri": "https://scryfall.com/card/jud/58/wormfang-manta?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:18:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.jpg?1783945125",
+    "normal": "https://cards.scryfall.io/normal/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.jpg?1783945125",
+    "large": "https://cards.scryfall.io/large/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.jpg?1783945125",
+    "png": "https://cards.scryfall.io/png/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.png?1783945125",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.jpg?1783945125",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.jpg?1783945125",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.webp?1783945125",
+    "grid": "https://cards.scryfall.io/grid/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.webp?1783945125",
+    "display": "https://cards.scryfall.io/display/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.webp?1783945125",
+    "art": "https://cards.scryfall.io/art/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.webp?1783945125",
+    "crop": "https://cards.scryfall.io/crop/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.webp?1783945125",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/c/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9.jpg?1783945125"
+  },
+  "mana_cost": "{5}{U}{U}",
+  "cmc": 7.0,
+  "type_line": "Creature — Nightmare Fish Beast",
+  "oracle_text": "Flying\nWhen this creature enters, you skip your next turn.\nWhen this creature leaves the battlefield, you take an extra turn after this one.",
+  "power": "6",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cd82de1a-36fd-4618-bfe8-b45532a582d9",
+  "set": "jud",
+  "set_name": "Judgment",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/cd82de1a-36fd-4618-bfe8-b45532a582d9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajud&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jud?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bc9bf91d-6f7c-4fb5-bbc6-c012212e62e9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A17abf8c6-70b6-4877-a0f2-a87b22fb2828&unique=prints",
+  "collector_number": "58",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Heather Hudson",
+  "artist_ids": [
+    "4441fe52-9e41-40c1-9b74-8510426279ab"
+  ],
+  "illustration_id": "96a429c7-8e09-4d9f-8452-0cc41a97742e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23110,
+  "penny_rank": 15466,
+  "prices": {
+    "usd": "0.48",
+    "usd_foil": "17.33",
+    "usd_etched": null,
+    "eur": "0.41",
+    "eur_foil": "5.72",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=34939&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWormfang%2BManta",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWormfang%2BManta",
+    "edhrec": "https://edhrec.com/route/?cc=Wormfang+Manta"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10218%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2184&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17468?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

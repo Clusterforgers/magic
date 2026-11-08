@@ -1,0 +1,59 @@
+{
+  "oracle_id": "b8961205-87fa-4cce-aba9-84fa2f91a67f",
+  "name": "Vincent, Vengeful Atoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vincent, Vengeful Atoner",
+      "oracle_fingerprint": "ce1dd537cc16f24383d903bba760bded",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents", "combat": true } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "This", "stat": "Power" } },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": { "Not": { "Among": "Triggering" } }
+                          }
+                        },
+                        "amount": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

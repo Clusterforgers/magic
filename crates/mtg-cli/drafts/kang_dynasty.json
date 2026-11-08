@@ -1,0 +1,106 @@
+{
+  "oracle_id": "4e420f43-a4a3-44bb-9a4e-a943f93a3534",
+  "name": "Kang Dynasty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kang Dynasty",
+      "oracle_fingerprint": "95f5bf8dd4af4d0340eb47ecf64f6afe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Goad": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Is": { "Target": 0 } }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                        "toughness": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Goad": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Is": { "Target": 0 } }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

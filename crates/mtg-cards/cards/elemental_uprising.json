@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d9d3f6fc-5087-451a-94b1-ffe1a5d30f5e",
+  "name": "Elemental Uprising",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Uprising",
+      "oracle_fingerprint": "a0889cb91f1350d7bea3f63f13b642b2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

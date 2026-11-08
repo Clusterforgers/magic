@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c19f4a43-85bb-4070-a237-171597c94ec3",
+  "name": "Undercity Upheaval",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercity Upheaval",
+      "oracle_fingerprint": "7a0992beae9fad023e5d9b57a95dbb13",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                },
+                "divide": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

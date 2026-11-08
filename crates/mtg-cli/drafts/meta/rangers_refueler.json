@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Crew:2",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you activate an exhaust ability, draw a card.",
+      "abilities": [],
+      "gap": "key:Trigger.AbilityCast.ValidSA=Activated.Exhaust"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 54
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 55,
+          "end": 182
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 183,
+          "end": 189
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

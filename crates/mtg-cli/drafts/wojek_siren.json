@@ -1,0 +1,32 @@
+{
+  "oracle_id": "164b21ce-834b-4ec2-9094-33e51a46f9ef",
+  "name": "Wojek Siren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wojek Siren",
+      "oracle_fingerprint": "5a808fd61f046b12a80effb72c84e029",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesColor": { "Target": 0 } }] },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

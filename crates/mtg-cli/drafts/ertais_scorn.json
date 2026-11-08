@@ -1,0 +1,46 @@
+{
+  "oracle_id": "76e6c0e7-593a-4b4a-9eb6-a912f9c3f26f",
+  "name": "Ertai's Scorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ertai's Scorn",
+      "oracle_fingerprint": "8cecd994ecdf8c6945d64fc4d6626bec",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{U}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

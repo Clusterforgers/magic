@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5baa7abe-5bdf-40ce-9a83-a93b7cae71a3",
+  "name": "Soldevi Excavations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soldevi Excavations",
+      "oracle_fingerprint": "6f6840823b2bba9e0087b8b7245cabd4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Island" }, "Untapped"] } }]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Blue"] } } }]
+          }
+        },
+        { "Activated": { "cost": [{ "Mana": "{1}" }, "Tap"], "effects": [{ "Scry": {} }] } }
+      ]
+    }
+  ]
+}

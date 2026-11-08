@@ -1,0 +1,26 @@
+{
+  "oracle_id": "49d0fdd6-cc8f-4fe1-a6bd-4321dac18404",
+  "name": "War Cadence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War Cadence",
+      "oracle_fingerprint": "6f0e9dfe5762b2fddb120033ae04cf95",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}{R}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "BlockTax": { "mana": "{1}", "per": "X" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

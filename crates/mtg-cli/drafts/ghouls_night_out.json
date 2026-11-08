@@ -1,0 +1,61 @@
+{
+  "oracle_id": "cc9f9f14-a11c-4e33-9e11-8bf6ef13cf2b",
+  "name": "Ghouls' Night Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghouls' Night Out",
+      "oracle_fingerprint": "de37470423939f96efbe9d0fcf8d43e3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": { "Bound": "each" } },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "as": "card2"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card2" }, "as": "picks3", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picks3" },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved4"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved4" },
+                  "mods": [{ "AddSubtype": "Zombie" }, { "AddColors": ["Black"] }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved4" },
+                  "mods": [{ "AddKeyword": "Decayed" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

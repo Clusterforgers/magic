@@ -1,0 +1,66 @@
+{
+  "oracle_id": "1bc44216-4e06-4f66-89b7-5c327004604e",
+  "name": "Valakut, the Molten Pinnacle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valakut, the Molten Pinnacle",
+      "oracle_fingerprint": "cb85bf27c6133e45a761ed18459e7dc3",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Subtype": "Mountain" },
+                          { "ControlledBy": "You" },
+                          { "Not": { "Is": "Triggering" } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -124,21 +124,7 @@
                 "Rule": {
                   "rule": {
                     "MayCast": {
-                      "what": [
-                        {
-                          "AnyOf": [
-                            {
-                              "Not": {
-                                "AnyOf": [
-                                  { "Not": { "Type": "Instant" } },
-                                  { "Not": { "Is": { "Bound": "exiled" } } }
-                                ]
-                              }
-                            },
-                            { "Type": "Sorcery" }
-                          ]
-                        }
-                      ],
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
                       "from": "Exile",
                       "free": true,
                       "only": { "Bound": "exiled" }

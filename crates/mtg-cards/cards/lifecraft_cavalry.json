@@ -1,0 +1,39 @@
+{
+  "oracle_id": "13db0230-b57e-47fd-9025-580d06cc88ee",
+  "name": "Lifecraft Cavalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifecraft Cavalry",
+      "oracle_fingerprint": "c19320b83b8ddc8a6b4c7e7b17ed9dcc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

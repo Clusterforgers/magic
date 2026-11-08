@@ -1,0 +1,49 @@
+{
+  "oracle_id": "e0bea449-7601-48ee-a522-f1bbe6905f6d",
+  "name": "Ravenous Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Trap",
+      "oracle_fingerprint": "4ac29411836d710c89949dfef0f4c372",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "CardsGraved" } },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

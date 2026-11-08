@@ -1,0 +1,37 @@
+{
+  "oracle_id": "56de4cdc-4db0-48ec-8a16-f66086507233",
+  "name": "Mnemonic Deluge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mnemonic Deluge",
+      "oracle_fingerprint": "6c8a3d662be39fde99824757a8d7bfaf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy2" } },
+              { "CastFromZone": { "what": { "Bound": "copy2" }, "free": true } },
+              { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy3" } },
+              { "CastFromZone": { "what": { "Bound": "copy3" }, "free": true } },
+              { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy4" } },
+              { "CastFromZone": { "what": { "Bound": "copy4" }, "free": true } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4a7fef1e-3f11-4350-86da-6f1315fedc53",
+  "name": "Ferocious Tigorilla",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ferocious Tigorilla",
+      "oracle_fingerprint": "898174668e7795705e72d2e9e51e8357",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounterOf": [{ "Other": "trample" }, { "Other": "menace" }] }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "fe034544-e13f-45fc-ae43-83d0f399ed33",
+  "oracle_id": "bd0df0a8-c2ec-4d1f-9ada-cc91f7a20e1a",
+  "multiverse_ids": [
+    667601
+  ],
+  "mtgo_id": 127988,
+  "tcgplayer_id": 555454,
+  "cardmarket_id": 775446,
+  "name": "What Must Be Done",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/fe034544-e13f-45fc-ae43-83d0f399ed33",
+  "scryfall_uri": "https://scryfall.com/card/acr/11/what-must-be-done?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.jpg?1783910986",
+    "normal": "https://cards.scryfall.io/normal/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.jpg?1783910986",
+    "large": "https://cards.scryfall.io/large/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.jpg?1783910986",
+    "png": "https://cards.scryfall.io/png/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.png?1783910986",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.jpg?1783910986",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.jpg?1783910986",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.webp?1783910986",
+    "grid": "https://cards.scryfall.io/grid/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.webp?1783910986",
+    "display": "https://cards.scryfall.io/display/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.webp?1783910986",
+    "art": "https://cards.scryfall.io/art/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.webp?1783910986",
+    "crop": "https://cards.scryfall.io/crop/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.webp?1783910986",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/e/fe034544-e13f-45fc-ae43-83d0f399ed33.jpg?1783910986"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose one —\n• Let the World Burn — Destroy all artifacts and creatures.\n• Release Juno — Return target historic permanent card from your graveyard to the battlefield. It enters with two additional +1/+1 counters on it if it's a creature. (Artifacts, legendaries, and Sagas are historic.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Release Juno",
+    "Let the World Burn"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fe034544-e13f-45fc-ae43-83d0f399ed33/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abd0df0a8-c2ec-4d1f-9ada-cc91f7a20e1a&unique=prints",
+  "collector_number": "11",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Syd Mills",
+  "artist_ids": [
+    "1386ca17-2704-4b3d-ba17-050daf3f89e6"
+  ],
+  "illustration_id": "5f945535-4c90-4812-be7e-d08a116a83b3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 8565,
+  "penny_rank": 7232,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.38",
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": "0.41",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667601&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWhat%2BMust%2BBe%2BDone",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWhat%2BMust%2BBe%2BDone",
+    "edhrec": "https://edhrec.com/route/?cc=What+Must+Be+Done"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F555454%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=775446&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/127988?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

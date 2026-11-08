@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ac8630ac-defb-4774-ac71-d35fe02a7324",
+  "name": "Wojek Embermage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wojek Embermage",
+      "oracle_fingerprint": "2f163e7e40c291ae618a1fe20c4d7546",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesColor": { "Target": 0 } }] },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

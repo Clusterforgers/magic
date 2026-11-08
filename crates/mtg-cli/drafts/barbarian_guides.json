@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ef8c324a-582b-401e-add1-1985c5596908",
+  "name": "Barbarian Guides",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbarian Guides",
+      "oracle_fingerprint": "4969166523f895d046ff7adf7b3efa10",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "AddKeyword": {
+                        "Landwalk": [{ "ChosenAs": "chosen" }, { "Supertype": "Snow" }]
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Bind": { "what": { "Target": 0 }, "as": "target2" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "target2" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

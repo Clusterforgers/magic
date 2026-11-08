@@ -1,0 +1,27 @@
+{
+  "oracle_id": "689f8696-dd13-4e1e-bdbc-3794c524f423",
+  "name": "Duskwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duskwalker",
+      "oracle_fingerprint": "94e8e999e1f434314fb952e0f74a379b",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{B}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "Fear" }]
+              }
+            },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

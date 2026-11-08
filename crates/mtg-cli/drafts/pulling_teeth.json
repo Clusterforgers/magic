@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9c966ba3-3408-4bdd-a4cf-97c9183e1115",
+  "name": "Pulling Teeth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pulling Teeth",
+      "oracle_fingerprint": "a15982aec6ea0a1718185adcb0223ddd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Clash": {
+                  "win": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }],
+                  "lose": [{ "Discard": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

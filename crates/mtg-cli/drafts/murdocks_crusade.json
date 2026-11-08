@@ -23,6 +23,7 @@
                   },
                   "modes": [
                     {
+                      "label": "Street Justice",
                       "targets": [
                         {
                           "what": {
@@ -36,6 +37,7 @@
                       "effects": [{ "Exile": { "what": { "Target": 0 } } }]
                     },
                     {
+                      "label": "Legal Justice",
                       "targets": [
                         {
                           "what": {

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2aae77ed-1a91-41f5-8dc2-e353d63a7586",
+  "name": "Dwarven Catapult",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Catapult",
+      "oracle_fingerprint": "678afd8097735ca4dc7ad8f35c567eca",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "amount": {
+                    "Quotient": {
+                      "of": "X",
+                      "by": {
+                        "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                      },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

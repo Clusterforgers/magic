@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c88eff74-def5-42ea-873c-b3b479f6fe18",
+  "name": "Ill-Gotten Gains",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ill-Gotten Gains",
+      "oracle_fingerprint": "8baa182b52c754a0e0f3bc89564134fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": "This" } },
+              {
+                "Discard": {
+                  "who": "EachPlayer",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Bound": "player" } }]
+                        },
+                        "count": { "min": 0, "max": 3 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

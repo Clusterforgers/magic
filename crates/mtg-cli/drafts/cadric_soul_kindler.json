@@ -1,0 +1,59 @@
+{
+  "oracle_id": "739bbf44-9169-4749-abea-21c20823915f",
+  "name": "Cadric, Soul Kindler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cadric, Soul Kindler",
+      "oracle_fingerprint": "4207d4b190eaf8ffc864ea8731de4d05",
+      "abilities": [
+        { "Rule": { "rule": { "NoLegendRuleFor": ["Token", { "ControlledBy": "You" }] } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Not": "Token" },
+                  { "Supertype": "Legendary" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": { "of": "Triggering", "except": [{ "AddKeyword": "Haste" }] }
+                        },
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "filter": [{ "Is": { "Bound": "copy" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

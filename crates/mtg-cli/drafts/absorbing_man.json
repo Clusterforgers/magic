@@ -1,0 +1,60 @@
+{
+  "oracle_id": "ec8e310f-e871-498f-8d80-c3617c5e1433",
+  "name": "Absorbing Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Absorbing Man",
+      "oracle_fingerprint": "a560ff19246698e871f73f4bb7c26e71",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Enchantment" } },
+                              { "Not": { "Not": { "Subtype": "Aura" } } }
+                            ]
+                          }
+                        },
+                        { "Type": "Land" }
+                      ]
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "except": [
+                    { "SetName": "Absorbing Man" },
+                    { "AddSupertype": "Legendary" },
+                    { "AddType": "Creature" },
+                    { "AddSubtype": "Human" },
+                    { "AddSubtype": "Villain" },
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

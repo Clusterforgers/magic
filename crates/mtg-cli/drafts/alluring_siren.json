@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5f358544-7319-4f8e-9d60-a410c4feb774",
+  "name": "Alluring Siren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alluring Siren",
+      "oracle_fingerprint": "37935beba00ac036fc52d5ffe92cde42",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustAttackPlayers": { "who": { "Target": 0 }, "players": "You" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

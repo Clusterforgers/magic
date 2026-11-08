@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1916f120-4418-404a-aed5-b95ebf60d3a3",
+  "name": "Dimir Doppelganger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Doppelganger",
+      "oracle_fingerprint": "1a0e5d75c619836655eef8d61e7c3f1a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Bound": "exiled" },
+                  "except": ["ThisAbility"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

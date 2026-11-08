@@ -12,7 +12,7 @@
             "when": { "Enters": { "what": ["This"] } },
             "by": {
               "AsCopy": {
-                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"],
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
                 "except": [{ "SetName": "Chameleon, Master of Disguise" }]
               }
             }

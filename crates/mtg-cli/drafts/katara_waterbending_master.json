@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2e3af413-6706-4023-871a-e5e49da5beab",
+  "name": "Katara, Waterbending Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Katara, Waterbending Master",
+      "oracle_fingerprint": "2c79166787d146f9f9944ead007a1f63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Draw": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                    }
+                  ],
+                  "paid": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

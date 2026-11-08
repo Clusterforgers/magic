@@ -1,0 +1,75 @@
+{
+  "oracle_id": "f20f0bf4-c74b-4df7-a849-270c35f5d99e",
+  "name": "Shimian Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimian Specter",
+      "oracle_fingerprint": "95a3661420e90c30d6424514f5de8183",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Reveal": { "what": { "Each": [{ "OwnedBy": "Triggering" }, { "In": "Hand" }] } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "OwnedBy": "Triggering" },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "SharesName": { "Bound": "card" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Triggering" }
+                    ]
+                  }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "card" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": "Triggering" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" } } },
+              {
+                "Search": {
+                  "of": "Triggering",
+                  "filter": [{ "SharesName": { "Bound": "card" } }],
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Library" }, { "OwnedBy": "Triggering" }] }
+                  },
+                  "as": "found3"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found3" } } },
+              { "Shuffle": { "who": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

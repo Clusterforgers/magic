@@ -1,0 +1,41 @@
+{
+  "oracle_id": "3c0f7c4d-ac93-4a58-a87f-bf694c709624",
+  "name": "Rimefeather Owl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rimefeather Owl",
+      "oracle_fingerprint": "cbc6f4309522377f12e33f4056a33e57",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Supertype": "Snow" }] },
+                  "toughness": { "Count": [{ "Supertype": "Snow" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{S}",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "ice" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "HasCounter": { "Other": "ice" } }] },
+            "mods": [{ "AddSupertype": "Snow" }]
+          }
+        }
+      ]
+    }
+  ]
+}

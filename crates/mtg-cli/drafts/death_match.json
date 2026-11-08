@@ -1,0 +1,44 @@
+{
+  "oracle_id": "68d11f97-da97-4738-bb3e-e6730bd014e8",
+  "name": "Death Match",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Match",
+      "oracle_fingerprint": "0981846b13001d6d324ada3046092308",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": { "ControllerOf": "Triggering" },
+                    "what": { "Object": [{ "Type": "Creature" }] }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

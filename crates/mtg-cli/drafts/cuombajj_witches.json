@@ -1,0 +1,32 @@
+{
+  "oracle_id": "638eeb16-9e0e-4cc6-b97e-8ff0df81ca58",
+  "name": "Cuombajj Witches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cuombajj Witches",
+      "oracle_fingerprint": "2a007ecb3f316074e95f2b8f97f65c8f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": "AnyTarget" },
+              { "what": { "ChosenBy": { "who": "Opponents", "what": "AnyTarget" } } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

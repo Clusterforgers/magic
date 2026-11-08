@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When this Case enters, destroy up to one target creature that was dealt damage this turn.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "To solve — Three or more creature cards were put into graveyards from anywhere this turn. (If unsolved, solve at the beginning of your end step.)",
+      "abilities": [],
+      "gap": "amount:Count$ThisTurnEntered_Graveyard_Creature"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Solved — This Case is a 4/4 Gorgon creature with deathtouch and lifelink in addition to its other types.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 89
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 90,
+          "end": 235
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 236,
+          "end": 340
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

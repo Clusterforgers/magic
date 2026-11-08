@@ -1,0 +1,43 @@
+{
+  "oracle_id": "11b7ee78-fca6-4b34-93e4-e60492583d50",
+  "name": "Agrus Kos, Spirit of Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agrus Kos, Spirit of Justice",
+      "oracle_fingerprint": "1945154e4321978f2d1bf184adca180a",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CountOf": { "of": { "Target": 0 }, "filter": ["Suspected"] } },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }],
+                  "otherwise": [{ "Suspect": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

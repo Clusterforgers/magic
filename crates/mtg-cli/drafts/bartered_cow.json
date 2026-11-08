@@ -1,0 +1,24 @@
+{
+  "oracle_id": "33d42811-686d-4aca-bb3b-086de453ddaf",
+  "name": "Bartered Cow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bartered Cow",
+      "oracle_fingerprint": "a90e1d87d691f4843ab45860b2c45d63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                { "Discarded": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

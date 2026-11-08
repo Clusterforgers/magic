@@ -1,0 +1,60 @@
+{
+  "oracle_id": "4f63d306-cc14-405c-8424-d8990c670c74",
+  "name": "Territorial Aetherkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Territorial Aetherkite",
+      "oracle_fingerprint": "586b6ea88b87c8700cc7af99a4350084",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "number"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "ChosenAs": "number" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "cost": [{ "PayEnergy": 1 }],
+                        "times": { "ChosenAs": "number" },
+                        "paid": [
+                          {
+                            "Reflexive": {
+                              "effects": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Each": [{ "Type": "Creature" }, "Other"] },
+                                    "amount": { "ChosenAs": "number" }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

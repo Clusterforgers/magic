@@ -1,0 +1,65 @@
+{
+  "oracle_id": "27c2fa16-2f86-4c54-bdc0-d13850e3b717",
+  "name": "Rising Chicane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rising Chicane",
+      "oracle_fingerprint": "81c8ecbd931d69ec453c36cf89d914ef",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "When": { "condition": { "StartingPlayer": "You" }, "then": 0, "otherwise": 1 }
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": "StartYourEngines" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "SetPT": { "power": 2, "toughness": 2 } },
+                            { "AddSubtype": "Construct" },
+                            { "AddType": "Creature" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

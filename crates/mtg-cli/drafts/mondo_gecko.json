@@ -1,16 +1,32 @@
 {
   "oracle_id": "fa3ae120-756d-4c52-91f9-235767539d67",
   "name": "Mondo Gecko",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mondo Gecko",
       "oracle_fingerprint": "98b568f244eaf1c380a82e6e096ed9c5",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 120 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Discard": {} }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "HexproofFrom": [{ "ChosenAs": "chosen" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

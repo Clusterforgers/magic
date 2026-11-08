@@ -15,7 +15,19 @@
               {
                 "RevealUntil": {
                   "who": { "ControllerOf": { "Target": 0 } },
-                  "filter": [{ "SharesType": { "Target": 0 } }],
+                  "filter": [
+                    { "SharesType": { "Target": 0 } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ],
                   "as": "found",
                   "revealed_as": "revealed2"
                 }

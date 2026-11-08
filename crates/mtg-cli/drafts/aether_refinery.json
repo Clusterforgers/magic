@@ -1,0 +1,67 @@
+{
+  "oracle_id": "9e9cde32-0568-44bc-a00a-9709f15c1350",
+  "name": "Aether Refinery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Refinery",
+      "oracle_fingerprint": "57ca676cca63eb270541bfc34827b12c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "CountersPut": { "on": "You", "counter": { "Other": "energy" } } },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" } } },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "number"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "ChosenAs": "number" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "cost": [{ "PayEnergy": 1 }],
+                        "times": { "ChosenAs": "number" },
+                        "paid": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Sized": {
+                                  "size": { "ChosenAs": "number" },
+                                  "token": {
+                                    "name": "Aetherborn",
+                                    "colors": ["Black"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Aetherborn"]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

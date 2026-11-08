@@ -15,8 +15,12 @@
                 "Modal": {
                   "once_ever": true,
                   "modes": [
-                    { "effects": [{ "CreateToken": { "token": { "Named": "food" }, "count": 3 } }] },
                     {
+                      "label": "Buffet",
+                      "effects": [{ "CreateToken": { "token": { "Named": "food" }, "count": 3 } }]
+                    },
+                    {
+                      "label": "See a Show",
                       "effects": [
                         {
                           "CreateToken": {
@@ -36,6 +40,7 @@
                       ]
                     },
                     {
+                      "label": "Play Games",
                       "effects": [
                         { "Search": { "filter": [], "as": "found" } },
                         { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
@@ -44,6 +49,7 @@
                       ]
                     },
                     {
+                      "label": "Go to Sleep",
                       "effects": [
                         { "LoseLife": { "amount": 15 } },
                         { "Sacrifice": { "filter": ["This"] } }

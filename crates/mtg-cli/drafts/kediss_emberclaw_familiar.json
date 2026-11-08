@@ -12,7 +12,7 @@
             "when": {
               "DealsDamage": {
                 "source": [{ "Type": "Creature" }, "Commander", { "ControlledBy": "You" }],
-                "to": "EachPlayer",
+                "to": "Opponents",
                 "combat": true
               }
             },

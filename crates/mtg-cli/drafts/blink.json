@@ -1,0 +1,123 @@
+{
+  "oracle_id": "f5fba11b-7669-40a0-97c7-6cb7c13acedd",
+  "name": "Blink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blink",
+      "oracle_fingerprint": "3af2cad2a6c57d1e9bc10f2a4427afeb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              {
+                "CreateToken": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "token": { "Named": "clue" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Alien Angel",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Alien", "Angel"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": "FirstStrike" },
+                        { "Keyword": "Vigilance" },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" }
+                            },
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": "This",
+                                  "mods": [{ "RemoveType": "Creature" }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              {
+                "CreateToken": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "token": { "Named": "clue" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Alien Angel",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Alien", "Angel"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": "FirstStrike" },
+                        { "Keyword": "Vigilance" },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" }
+                            },
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": "This",
+                                  "mods": [{ "RemoveType": "Creature" }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

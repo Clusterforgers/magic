@@ -1,0 +1,62 @@
+{
+  "oracle_id": "f87bf51e-6218-4418-ae3e-98055e9601e4",
+  "name": "Gruesome Encore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruesome Encore",
+      "oracle_fingerprint": "c2c79bcd0259f7a17c07cd5a3337efb9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "Opponents" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "moved" } }],
+                      "from": "Battlefield"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "moved" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

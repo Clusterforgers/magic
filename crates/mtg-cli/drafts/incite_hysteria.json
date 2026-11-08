@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0a992ad5-136f-482d-8390-fdfe745fe764",
+  "name": "Incite Hysteria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incite Hysteria",
+      "oracle_fingerprint": "4c490164a4a5e2e358fcd3f85560041b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesColor": { "Target": 0 } }] },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

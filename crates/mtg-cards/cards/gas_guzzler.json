@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7c98626b-ba97-4d1e-9be7-291480ae8d22",
+  "name": "Gas Guzzler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gas Guzzler",
+      "oracle_fingerprint": "562f10e547e2414305a7633028342d67",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [
+                      { "Mana": "{B}" },
+                      {
+                        "Sacrifice": {
+                          "filter": [
+                            { "AnyOf": [{ "Subtype": "Vehicle" }, { "Type": "Creature" }] },
+                            "Other"
+                          ]
+                        }
+                      }
+                    ],
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "7555c429-5f2d-4171-b6b0-8e3c8da7f314",
+  "name": "Satoru, the Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Satoru, the Infiltrator",
+      "oracle_fingerprint": "3edb1e5d46ce80642adde1a8689ccad3",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": "Token" },
+                    {
+                      "AnyOf": [
+                        { "Not": { "WasCast": {} } },
+                        { "Compare": { "stat": "ManaSpent", "op": "Eq", "to": 0 } }
+                      ]
+                    }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "6c9a854c-0509-4ed4-9d94-c45b823b65e5",
+  "name": "Heart of Yavimaya",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heart of Yavimaya",
+      "oracle_fingerprint": "2d861eea5e7131c08223a3a4e02394fa",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Forest" }] } }]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

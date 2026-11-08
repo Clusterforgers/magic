@@ -1,0 +1,70 @@
+{
+  "oracle_id": "c6e87760-4cd0-4281-82d4-7a377ea960ad",
+  "name": "Roiling Canopy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roiling Canopy",
+      "oracle_fingerprint": "cf2b97db7a2dc3c7ab39c67c580b1464",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Subtype": "Forest" },
+                          { "ControlledBy": "You" },
+                          { "Not": { "Is": "Triggering" } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

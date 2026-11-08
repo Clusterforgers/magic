@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d8c95a86-2f05-44f9-8ed7-b1798eaed42f",
+  "name": "Chandra's Regulator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Regulator",
+      "oracle_fingerprint": "78dbcd73befaafb1fdb71335fcdc3680",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "ActivatedLoyalty",
+                "who": "You",
+                "what": [{ "Type": "Planeswalker" }, { "Subtype": "Chandra" }]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              {
+                "Discard": {
+                  "filter": [{ "AnyOf": [{ "Subtype": "Mountain" }, { "Color": "Red" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

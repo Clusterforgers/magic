@@ -1,0 +1,31 @@
+{
+  "oracle_id": "990d4798-3f59-462d-952c-777da5af1c41",
+  "name": "Mask of Intolerance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mask of Intolerance",
+      "oracle_fingerprint": "413eba089d27169f1e634dadd39745b2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "ActivePlayer" }],
+                    "stat": "BasicLandTypes"
+                  }
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

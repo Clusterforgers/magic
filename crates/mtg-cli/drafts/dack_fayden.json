@@ -1,7 +1,7 @@
 {
   "oracle_id": "9d4b1e44-3c66-4b1b-8a1d-308aa4f841f8",
   "name": "Dack Fayden",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dack Fayden",
@@ -33,9 +33,37 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 97, "end": 222 }
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "SpellCast": {
+                            "what": [{ "Targeting": [{ "In": "Battlefield" }] }],
+                            "by": "You"
+                          }
+                        },
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [{ "TargetedBy": "Triggering" }, { "In": "Battlefield" }]
+                              },
+                              "mods": [{ "SetController": "You" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

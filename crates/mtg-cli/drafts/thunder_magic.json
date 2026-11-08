@@ -15,14 +15,17 @@
                   "mode_costs": ["{0}", "{3}", "{5}{R}"],
                   "modes": [
                     {
+                      "label": "Thunder",
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
                     },
                     {
+                      "label": "Thundara",
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
                     },
                     {
+                      "label": "Thundaga",
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 8 } }]
                     }

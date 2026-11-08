@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fd5ff6ad-f3f1-470f-adef-fb4ce6536365",
+  "name": "War Tax",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War Tax",
+      "oracle_fingerprint": "7ca26533d3ee6e3b9ccbadd5aff6dcf2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}{U}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "AttackTax": {
+                      "who": "EachPlayer",
+                      "attacked": "Both",
+                      "mana": "{1}",
+                      "per": "X"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

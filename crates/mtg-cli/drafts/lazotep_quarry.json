@@ -1,0 +1,64 @@
+{
+  "oracle_id": "0d2fa39a-9cac-4a1f-bb1e-b6162e6d5169",
+  "name": "Lazotep Quarry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lazotep Quarry",
+      "oracle_fingerprint": "38f00927ffadab9b10d1b5b28a74af11",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}{2}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Subtype": "Desert" }] } }
+            ],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [
+                        { "SetPT": { "power": 4, "toughness": 4 } },
+                        { "SetColors": ["Black"] },
+                        { "SetCreatureTypes": ["Zombie"] }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

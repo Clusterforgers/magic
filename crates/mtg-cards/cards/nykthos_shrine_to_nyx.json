@@ -1,0 +1,25 @@
+{
+  "oracle_id": "84dc18f0-8225-4b40-a165-b10321e41769",
+  "name": "Nykthos, Shrine to Nyx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nykthos, Shrine to Nyx",
+      "oracle_fingerprint": "bcaedf0f6e8216225fb69a2ad25faa41",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": "Devotion" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

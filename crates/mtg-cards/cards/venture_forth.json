@@ -1,0 +1,56 @@
+{
+  "oracle_id": "261f371f-bcda-4761-810f-3216608b31d8",
+  "name": "Venture Forth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venture Forth",
+      "oracle_fingerprint": "da2157c757d2b17e9fa5ba9c1250319f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    { "Type": "Land" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_moved3" } },
+              { "Exile": { "what": { "Bound": "revealed2" }, "as": "rest_moved4" } },
+              { "Move": { "what": { "Bound": "found_moved3" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "rest_moved4" } }, { "In": "Exile" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "Exile": { "what": "This", "as": "exiled5" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled5" },
+                  "counter": { "Other": "time" },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{1}{G}" } } }
+      ]
+    }
+  ]
+}

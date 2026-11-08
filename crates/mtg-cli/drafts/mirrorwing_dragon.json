@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9ea14a03-c6a2-49ec-953d-4249a2c27e1d",
+  "name": "Mirrorwing Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrorwing Dragon",
+      "oracle_fingerprint": "fecc39a655be37b5a4e7e3ca519d0bcc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "SingleTarget",
+                  { "Targeting": ["This"] }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "who": "TriggeringPlayer",
+                  "each_target": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

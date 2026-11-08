@@ -1,0 +1,48 @@
+{
+  "oracle_id": "2c22af49-c6ef-4de6-bb84-6b3e99879148",
+  "name": "Steer Clear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steer Clear",
+      "oracle_fingerprint": "9f8adab56a897314159561ad674640b0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "CountedAsCast": {
+                              "Count": [{ "Subtype": "Mount" }, { "ControlledBy": "You" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

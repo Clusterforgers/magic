@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e7eb7ac8-08ab-419b-8508-987afd0bb93b",
+  "name": "Cunning Rhetoric",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning Rhetoric",
+      "oracle_fingerprint": "90d57d3f8e063e9fe456fb9adfcecc01",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  { "AttackingPlayerOrPlaneswalker": "You" }
+                ]
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": { "ControllerOf": "Triggering" }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

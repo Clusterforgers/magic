@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1b30210d-10e9-4703-8967-032063bb4f26",
+  "name": "Cut Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut Down",
+      "oracle_fingerprint": "9ec5b7d9058b126e3b3b50f5cd32fdec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Test": {
+                        "left": {
+                          "Sum": [
+                            { "Stat": { "of": "Candidate", "stat": "Power" } },
+                            { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                          ]
+                        },
+                        "op": "Le",
+                        "right": 5
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

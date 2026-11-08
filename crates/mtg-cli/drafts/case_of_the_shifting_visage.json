@@ -1,0 +1,55 @@
+{
+  "oracle_id": "409697d5-ce3c-46aa-a97d-969d143a2a65",
+  "name": "Case of the Shifting Visage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Case of the Shifting Visage",
+      "oracle_fingerprint": "3b0fd2c0cec2006980afa9086221736c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                    "op": "Ge",
+                    "right": 15
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "Not": "Solved" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Supertype": "Legendary" } }],
+                "by": "You"
+              }
+            },
+            "if": { "Compare": { "left": { "Count": ["This", "Solved"] }, "op": "Ge", "right": 1 } },
+            "effects": [{ "CopySpell": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "93d20859-249f-47ae-8f6d-095228e7b6e9",
+  "name": "Calming Licid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calming Licid",
+      "oracle_fingerprint": "5e2a9400d916436647d3e6edcf873080",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "SetTypes": ["Enchantment"] },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                    "LoseThisAbility"
+                  ],
+                  "duration": { "UntilPaid": "{W}" }
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack"] } }
+      ]
+    }
+  ]
+}

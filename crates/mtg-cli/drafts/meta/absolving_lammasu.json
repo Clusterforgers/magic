@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Flying",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, all suspected creatures are no longer suspected.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME dies, you gain 3 life and suspect up to one target creature an opponent controls. (A suspected creature has menace and can't block.)",
+      "abilities": [],
+      "gap": "key:AlterAttribute.TargetMin"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 6
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 7,
+          "end": 82
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 83,
+          "end": 234
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

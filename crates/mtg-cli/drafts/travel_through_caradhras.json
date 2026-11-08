@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2d47a98b-5700-4096-b080-32df4d79910c",
+  "name": "Travel Through Caradhras",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Travel Through Caradhras",
+      "oracle_fingerprint": "bc402154152615e2005c156fa8c1d266",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Vote": { "options": { "Named": ["redhorn_pass", "mines_of_moria"] } } },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": { "min": 0, "max": { "Players": { "Bound": "redhorn_pass" } } },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "count": {
+                    "min": { "Players": { "Bound": "mines_of_moria" } },
+                    "max": { "Players": { "Bound": "mines_of_moria" } }
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

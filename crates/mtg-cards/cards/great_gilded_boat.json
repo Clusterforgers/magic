@@ -1,0 +1,58 @@
+{
+  "oracle_id": "d4607026-80b2-4fa6-99d5-694cd3b43868",
+  "name": "Great Gilded Boat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Great Gilded Boat",
+      "oracle_fingerprint": "1746237658b02d12c74d0d8b5443018c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "discarded" } },
+                          { "In": "Graveyard" },
+                          { "Not": { "Type": "Land" } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human", "Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

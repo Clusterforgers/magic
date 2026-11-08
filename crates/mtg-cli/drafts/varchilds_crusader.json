@@ -1,0 +1,44 @@
+{
+  "oracle_id": "45351d9d-453f-4245-84c0-053eb8aca345",
+  "name": "Varchild's Crusader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Varchild's Crusader",
+      "oracle_fingerprint": "678a8a5f9acb860beef48c60ab1bade1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": "This" }],
+                        "count": { "Count": [{ "Is": "This" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

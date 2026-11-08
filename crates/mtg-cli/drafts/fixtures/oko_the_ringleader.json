@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "396df8d6-e85d-4486-8116-68841b7e1e2e",
+  "oracle_id": "4372b729-dc3d-4469-8fc5-811cc787d653",
+  "multiverse_ids": [
+    655164
+  ],
+  "mtgo_id": 124357,
+  "arena_id": 90569,
+  "tcgplayer_id": 541251,
+  "cardmarket_id": 759034,
+  "name": "Oko, the Ringleader",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/396df8d6-e85d-4486-8116-68841b7e1e2e",
+  "scryfall_uri": "https://scryfall.com/card/otj/223/oko-the-ringleader?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:03:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.jpg?1783911788",
+    "normal": "https://cards.scryfall.io/normal/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.jpg?1783911788",
+    "large": "https://cards.scryfall.io/large/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.jpg?1783911788",
+    "png": "https://cards.scryfall.io/png/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.png?1783911788",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.jpg?1783911788",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.jpg?1783911788",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.webp?1783911788",
+    "grid": "https://cards.scryfall.io/grid/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.webp?1783911788",
+    "display": "https://cards.scryfall.io/display/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.webp?1783911788",
+    "art": "https://cards.scryfall.io/art/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.webp?1783911788",
+    "crop": "https://cards.scryfall.io/crop/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.webp?1783911788",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/9/396df8d6-e85d-4486-8116-68841b7e1e2e.jpg?1783911788"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Planeswalker — Oko",
+  "oracle_text": "At the beginning of combat on your turn, Oko becomes a copy of up to one target creature you control until end of turn, except he has hexproof.\n+1: Draw two cards. If you've committed a crime this turn, discard a card. Otherwise, discard two cards.\n−1: Create a 3/3 green Elk creature token.\n−5: For each other nonland permanent you control, create a token that's a copy of that permanent.",
+  "loyalty": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "0bfbb249-f2cc-4295-b6e3-4fd7e1eac183",
+      "component": "combo_piece",
+      "name": "Oko, the Ringleader",
+      "type_line": "Legendary Planeswalker — Oko",
+      "uri": "https://api.scryfall.com/cards/0bfbb249-f2cc-4295-b6e3-4fd7e1eac183"
+    },
+    {
+      "object": "related_card",
+      "id": "1632f3fa-4615-46ee-9768-22bbd9d142d6",
+      "component": "token",
+      "name": "Elk",
+      "type_line": "Token Creature — Elk",
+      "uri": "https://api.scryfall.com/cards/1632f3fa-4615-46ee-9768-22bbd9d142d6"
+    },
+    {
+      "object": "related_card",
+      "id": "e85f57c5-923a-4824-969e-53feddd78c3b",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/e85f57c5-923a-4824-969e-53feddd78c3b"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "otj",
+  "set_name": "Outlaws of Thunder Junction",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/396df8d6-e85d-4486-8116-68841b7e1e2e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4372b729-dc3d-4469-8fc5-811cc787d653&unique=prints",
+  "collector_number": "223",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Magali Villeneuve",
+  "artist_ids": [
+    "9e6a55ae-be4d-4c23-a2a5-135737ffd879"
+  ],
+  "illustration_id": "c8cf2efc-b1be-42fa-b1a3-f295643c8400",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12173,
+  "penny_rank": 5316,
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": "0.51",
+    "usd_etched": null,
+    "eur": "0.52",
+    "eur_foil": "0.76",
+    "tix": "0.17"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=655164&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOko%252C%2Bthe%2BRingleader",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOko%252C%2Bthe%2BRingleader",
+    "edhrec": "https://edhrec.com/route/?cc=Oko%2C+the+Ringleader"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F541251%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=759034&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124357?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

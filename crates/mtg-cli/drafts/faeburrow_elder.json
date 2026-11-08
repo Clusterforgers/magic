@@ -1,7 +1,7 @@
 {
   "oracle_id": "70a6f08e-854d-4e2f-9d8c-c45ec3231157",
   "name": "Faeburrow Elder",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Faeburrow Elder",
@@ -24,9 +24,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 80, "end": 157 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "EachColorAmong": [{ "ControlledBy": "You" }] } } }
+            ]
           }
         }
       ]

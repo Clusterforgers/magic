@@ -1,0 +1,27 @@
+{
+  "oracle_id": "81cb888c-c4d3-45a2-a03e-bfd91a2af2be",
+  "name": "Mirrorform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrorform",
+      "oracle_fingerprint": "5515f2f49366b3617fa4a4e6b484733e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Subtype": "Aura" } }] } }],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": { "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] },
+                  "of": { "Target": 0 },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
