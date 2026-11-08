@@ -30,10 +30,31 @@ pub(super) struct Prop {
     pub atom: String,
 }
 
+/// The alternatives of a filter, split at `,`. A comma followed by a space inside a name stays in it
+/// (`Card.namedSkoa, Embermage`): the piece after it continues the `named` word before it.
+pub(super) fn alternatives(spec: &str) -> Vec<&str> {
+    let mut out: Vec<&str> = Vec::new();
+    let mut start = 0;
+    for (at, _) in spec.match_indices(',') {
+        let piece = &spec[start..at];
+        let in_name = piece
+            .rsplit(['.', '+'])
+            .next()
+            .is_some_and(|last| last.starts_with("named"));
+        if in_name && spec[at + 1..].starts_with(' ') {
+            continue;
+        }
+        out.push(piece);
+        start = at + 1;
+    }
+    out.push(&spec[start..]);
+    out
+}
+
 /// Splits a filter; an empty alternative, base or property is a gap, so the whole string is consumed or refused.
 pub(super) fn parse(spec: &str) -> Result<Filter<'_>, String> {
     let mut alts = Vec::new();
-    for alt in spec.split(',') {
+    for alt in alternatives(spec) {
         let (base, rest) = alt.trim().split_once('.').unwrap_or((alt.trim(), ""));
         if base.is_empty() {
             return Err("valid:empty-alternative".into());
@@ -296,6 +317,13 @@ pub(super) fn atom(ctx: &Ctx, scope: Scope, word: &str) -> Option<Tr<Vec<Value>>
     }
     // `hasKeywordFlash`: the object has the keyword, as `withFlash` says.
     let name = word.strip_prefix("hasKeyword")?;
+    // `hasKeywordLandwalk:Island`, `hasKeywordEnchant:Creature`: the keyword with that parameter, as a keyword line reads it.
+    if name.contains(':') {
+        return Some(match super::keyword::keyword_value(ctx, name) {
+            Ok(keyword) => one(json!({"HasKeyword": keyword})),
+            Err(_) => unmapped(format!("valid:{word}")),
+        });
+    }
     let spaced = super::valid::spaced(name);
     if let Some(keyword) = keyword_name(&spaced) {
         return Some(one(json!({"HasKeyword": keyword})));

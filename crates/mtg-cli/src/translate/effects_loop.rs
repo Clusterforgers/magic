@@ -176,6 +176,10 @@ fn choose_each(
     if p.get("AtRandom") == Some("True") || !matches!(p.get("Amount"), None | Some("1")) {
         return unmapped("key:ChooseCard.ChooseEach-shape");
     }
+    // A party is up to one creature of each party type, not one creature of any of them.
+    if each.split(" & ").any(|kind| kind.trim() == "Party") {
+        return unmapped("key:ChooseCard.ChooseEach-Party");
+    }
     let min = match (p.get("MinAmount"), p.get("Mandatory")) {
         (Some("0"), _) | (None, None | Some("False")) => 0,
         (None | Some("1"), Some("True")) => 1,

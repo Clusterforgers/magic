@@ -71,7 +71,7 @@ fn triggered_object(prop: &str) -> bool {
 }
 
 /// The predicates a property of a valid-string stands for.
-fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
+pub(super) fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     let one = |value: Value| Ok(vec![value]);
     match prop {
         // Teams do not exist at our tables: a player's team is the player.
@@ -174,8 +174,14 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     if prop.chars().next().is_some_and(char::is_uppercase) && ctx.world.subtypes.contains(prop) {
         return one(json!({"Subtype": prop}));
     }
-    super::filter::atom(ctx, ctx.scope.get(), prop)
-        .unwrap_or_else(|| unmapped(format!("valid:{prop}")))
+    if let Some(preds) = super::valid_grammar::atom(ctx, prop)? {
+        return Ok(preds);
+    }
+    super::filter::atom(ctx, ctx.scope.get(), prop).unwrap_or_else(|| {
+        // An atom of the table of gaps is named by its row: one key per missing fact, whatever its argument.
+        let word = super::valid_grammar::unmapped_row(prop).map_or(prop, |row| row.word);
+        unmapped(format!("valid:{word}"))
+    })
 }
 
 /// A keyword with a parameter (`withToxic`, `withoutForetell`): has it, or lacks it, at any value.
@@ -288,6 +294,9 @@ fn base(ctx: &Ctx, word: &str) -> Tr<Vec<Value>> {
     match word {
         "Permanent" | "Card" | "card" | "Any" => Ok(Vec::new()),
         "Spell" => Ok(vec![json!("Spell")]),
+        "Self" => Ok(vec![json!("This")]),
+        // A word for a group of types reads as the property of the same name (`Affinity:Historic`).
+        "Historic" | "Outlaw" | "Party" => property(ctx, word),
         _ if ctx.world.subtypes.contains(word) => Ok(vec![json!({"Subtype": word})]),
         _ => super::filter::base(word).map_or_else(|| unmapped(format!("valid-base:{word}")), Ok),
     }
@@ -328,7 +337,7 @@ pub(super) fn split_properties(props: &str) -> Vec<String> {
                 last.push_str(part);
             }
             _ => {
-                greedy = ["AttachedTo ", "EnchantedBy ", "EquippedBy "]
+                greedy = ["AttachedTo ", "EnchantedBy ", "EquippedBy ", "SharesColorWith "]
                     .iter()
                     .any(|head| part.strip_prefix(head).is_some_and(|arg| arg.contains('.')));
                 out.push(part.to_owned());
@@ -350,6 +359,10 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let mut gaps = super::filter::Unknowns::default();
     let (mut preds, props) = if matches!(head, "Targeted" | "TargetedCard") {
         targeted_base(&objects(ctx.last_target()?)?, props)
+    } else if head == "Triggered" && ctx.trigger.is_some() {
+        // `Triggered.sameName`: the trigger's object, as `Targeted.sameName` is the target's.
+        let object = super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?;
+        targeted_base(&objects(object)?, props)
     } else if let Some(slot) = memory_head(head) {
         targeted_base(&objects(super::memory::held_objects(ctx, slot)?)?, props)
     } else {
@@ -486,7 +499,7 @@ pub fn source_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
 /// one each (`Instant.YouCtrl,Sorcery.YouCtrl`, `Creature.attacking,Creature.blocking`).
 pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let spec = &commas(spec);
-    let alternatives: Vec<&str> = spec.split(',').collect();
+    let alternatives = super::filter::alternatives(spec);
     if let [only] = alternatives.as_slice() {
         return selector(ctx, only);
     }

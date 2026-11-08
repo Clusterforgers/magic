@@ -107,6 +107,7 @@ pub mod triggers_r4;
 mod triggers_static;
 pub mod valid;
 pub mod valid_atoms;
+pub mod valid_grammar;
 pub mod valid_more;
 
 #[cfg(test)]
