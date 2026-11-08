@@ -3251,7 +3251,7 @@ impl Writer<'_> {
             return Some(format!("prevent all damage {source} would deal this turn"));
         }
         prevention::effect_text(effect)
-            .or_else(|| self.w22_move(effect))
+            .or_else(|| Self::w22_move(effect))
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
             .or_else(|| super::g12f_taxes::g12f_x_tax_text(effect))

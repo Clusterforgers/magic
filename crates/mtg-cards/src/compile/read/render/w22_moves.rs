@@ -172,7 +172,7 @@ impl Writer<'_> {
     /// The card with the ability or the card it enchants, put into a library or into a hand: "put ~ on top of its
     /// owner's library", "put enchanted creature into its owner's library third from the top", "return enchanted
     /// creature to its owner's hand".
-    pub(super) fn w22_move(&mut self, effect: &Effect) -> Option<String> {
+    pub(super) fn w22_move(effect: &Effect) -> Option<String> {
         let Effect::Move { what, to, .. } = effect else {
             return None;
         };
