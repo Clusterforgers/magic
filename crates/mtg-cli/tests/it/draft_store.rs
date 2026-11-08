@@ -265,7 +265,7 @@ async fn compile_reports_the_drafts_of_the_build(pool: PgPool) {
     assert!(report.render().contains("drafts: "), "{}", report.render());
 }
 
-/// The metadata files that decide what `compile` stores as the draft's source and oracle match.
+/// The metadata files that decide what `compile` stores as the draft's source, oracle match and `differs` mark.
 const META: &[(&str, &str, &str, bool)] = &[
     ("no file", "", "sweep", false),
     (
@@ -279,6 +279,12 @@ const META: &[(&str, &str, &str, bool)] = &[
         r#"{"source":"forge"}"#,
         "forge",
         false,
+    ),
+    (
+        "a Forge draft marked differs",
+        r#"{"source":"forge","oracle_matches":true,"differs":true}"#,
+        "forge",
+        true,
     ),
     ("a file that is not json", "{", "sweep", false),
 ];
@@ -310,6 +316,11 @@ async fn the_metadata_of_a_draft_file_gives_the_source_and_the_oracle_match(pool
         assert_eq!(
             (current[0].source.as_str(), current[0].oracle_matches),
             (*source, *matched),
+            "{name}"
+        );
+        assert_eq!(
+            current[0].differs,
+            meta.contains(r#""differs":true"#),
             "{name}"
         );
         sqlx::query("DELETE FROM card_drafts")

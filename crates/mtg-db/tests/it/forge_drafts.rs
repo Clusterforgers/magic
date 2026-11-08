@@ -1,4 +1,4 @@
-//! Goal: a draft stores its source and whether the Oracle text matched, and a Forge draft with a matching text is `approved` without a verdict until a `wrong` counts, whatever the verdicts, while any other draft needs a human read.
+//! Goal: a draft stores its source and whether the Oracle text matched, and a Forge draft with a matching text is `approved` without a verdict until a `wrong` counts, whatever the verdicts, while any other draft, one marked `differs` too, needs a human read.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -115,6 +115,50 @@ async fn a_forge_draft_with_a_matching_oracle_text_is_approved_until_a_wrong_cou
             .await
             .unwrap();
         assert_eq!((all[0].state, all[0].forge), (*state, *forge), "{name}");
+        sqlx::query("DELETE FROM card_drafts")
+            .execute(&pool)
+            .await
+            .unwrap();
+    }
+}
+
+/// A matched Forge draft marked `differs`: the verdicts given on it, and the state expected; it is never trusted.
+const DIFFERS_CASES: &[(&str, Sequence, ReadState)] = &[
+    ("no verdict", &[], ReadState::Pending),
+    ("one correct", &[(Some(1), CORRECT)], ReadState::Approved),
+    ("one wrong", &[(Some(1), WRONG)], ReadState::Wrong),
+];
+
+#[sqlx::test]
+async fn a_forge_draft_marked_differs_is_pending_until_a_player_reads_it(pool: PgPool) {
+    let database = seeded(pool.clone()).await;
+    let bolt = oracle_of("Lightning Bolt");
+    for (name, verdicts, state) in DIFFERS_CASES {
+        let row = NewDraft {
+            source: SOURCE_FORGE.into(),
+            oracle_matches: true,
+            differs: true,
+            ..draft(&bolt, 1)
+        };
+        database.drafts().insert(&[row]).await.unwrap();
+        for (who, verdict) in *verdicts {
+            let note = (*verdict == WRONG).then_some("it does not work");
+            database
+                .reads()
+                .append(who.map(Uuid::from_u128), &key(&bolt, 1), *verdict, note)
+                .await
+                .unwrap();
+        }
+        let all = database
+            .reads()
+            .state_of(std::slice::from_ref(&bolt))
+            .await
+            .unwrap();
+        assert_eq!((all[0].state, all[0].forge), (*state, false), "{name}");
+        assert!(
+            database.drafts().current().await.unwrap()[0].differs,
+            "{name}"
+        );
         sqlx::query("DELETE FROM card_drafts")
             .execute(&pool)
             .await
