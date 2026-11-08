@@ -411,6 +411,36 @@ impl CardDefinition {
         names
     }
 
+    /// The conditions its abilities (and those of its faces) ask "as you cast this spell" (`Condition::AsCast`), each once.
+    pub fn as_cast_conditions(&self) -> Vec<crate::value::Condition> {
+        fn walk(value: &serde_json::Value, found: &mut Vec<crate::value::Condition>) {
+            match value {
+                serde_json::Value::Object(map) => {
+                    if let Some(inner) = map.get("AsCast")
+                        && let Ok(condition) = serde_json::from_value(inner.clone())
+                        && !found.contains(&condition)
+                    {
+                        found.push(condition);
+                    }
+                    for inner in map.values() {
+                        walk(inner, found);
+                    }
+                }
+                serde_json::Value::Array(items) => {
+                    for inner in items {
+                        walk(inner, found);
+                    }
+                }
+                _ => {}
+            }
+        }
+        let mut found = Vec::new();
+        if let Ok(value) = serde_json::to_value(self) {
+            walk(&value, &mut found);
+        }
+        found
+    }
+
     /// Printed types as a compact set.
     pub fn type_set(&self) -> CardTypes {
         self.types.iter().copied().collect()

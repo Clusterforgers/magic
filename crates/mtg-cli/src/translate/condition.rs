@@ -178,9 +178,11 @@ fn settled(left: &Value, op: &str, right: &Value) -> Option<Value> {
         _ => false,
     };
     let condition = when.get("condition")?.clone();
-    // Only the mana spent to cast the spell: other choices keep the shape the read-back writers know.
+    // Only the mana spent to cast the spell and what held as it was cast: other choices keep the shape the read-back
+    // writers know.
     let spent = condition.get("ManaSpent").is_some()
-        || condition.pointer("/Compare/left/ManaSpent").is_some();
+        || condition.pointer("/Compare/left/ManaSpent").is_some()
+        || condition.pointer("/Any/1/AsCast").is_some();
     if !spent {
         return None;
     }

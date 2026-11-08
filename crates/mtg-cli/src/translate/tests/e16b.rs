@@ -87,3 +87,39 @@ fn another_paid_word_is_a_gap() {
             .any(|gap| gap.contains("ConditionOptionalPaid")),
     );
 }
+
+const REVEAL: &str = "Mode$ OptionalCost | EffectZone$ All | ValidCard$ Card.Self | ValidSA$ Spell | Cost$ Reveal<1/Goblin>";
+const PRESENCE: &str = r#"{"Any":["AdditionalCostPaid",{"AsCast":{"Compare":{"left":{"Count":[{"Subtype":"Goblin"},{"ControlledBy":"You"}]},"op":"Ge","right":1}}}]}"#;
+
+/// A Dragonlord-like spell whose second line checks `Count$Presence_Goblin.1.0`, with the Oracle text `oracle`.
+fn dragonlord(oracle: &str) -> String {
+    format!(
+        "Name:Subject\nManaCost:1 R\nTypes:Instant\nS:{REVEAL}\nA:SP$ DealDamage | ValidTgts$ Any | NumDmg$ 2 | SubAbility$ DBGain\nSVar:DBGain:DB$ GainLife | LifeAmount$ 2 | ConditionCheckSVar$ Count$Presence_Goblin.1.0\nOracle:{oracle}\n"
+    )
+}
+
+#[test]
+fn a_revealed_or_controlled_dragon_is_the_reveal_paid_or_a_dragon_held_as_the_spell_was_cast() {
+    let text = dragonlord(
+        "Subject deals 2 damage to any target. If you revealed a Goblin card or controlled a Goblin as you cast this spell, you gain 2 life.",
+    );
+    assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
+    let found = serde_json::to_string(&abilities(&text)).unwrap();
+    let presence: Value = serde_json::from_str(PRESENCE).unwrap();
+    assert!(
+        found.contains(&format!(r#""condition":{presence}"#)),
+        "{found}"
+    );
+}
+
+#[test]
+fn a_presence_the_oracle_does_not_word_is_a_gap() {
+    let text = dragonlord("Subject deals 2 damage to any target. You gain 2 life.");
+    assert!(
+        gaps(&text)
+            .iter()
+            .any(|gap| gap.contains("Presence_Goblin")),
+        "{:?}",
+        gaps(&text)
+    );
+}

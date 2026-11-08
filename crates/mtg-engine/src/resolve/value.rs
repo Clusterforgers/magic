@@ -2550,6 +2550,11 @@ impl<'a> Scope<'a> {
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
+            Condition::AsCast(inner) => self
+                .state
+                .object(self.source.id)
+                .filter(|source| source.counter() == self.source.counter)
+                .is_some_and(|source| source.held_as_cast(inner)),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::ChosenWord { name, word } => {
                 matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)

@@ -1194,6 +1194,10 @@ impl<'a> Walker<'a> {
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
+            Condition::AsCast(inner) => {
+                self.uses("Condition", "AsCast");
+                self.at("inner", |w| w.condition(inner));
+            }
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
             Condition::StartingPlayer(who) => {

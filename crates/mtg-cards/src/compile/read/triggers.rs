@@ -1019,6 +1019,9 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(paid) = r.attempt(|r| cost_paid(r, false)) {
         return Some(paid);
     }
+    if let Some(presence) = r.attempt(super::e16b_presence::read) {
+        return Some(presence);
+    }
     if let Some(spent) = r.attempt(|r| super::spent::was_spent(r, false)) {
         return Some(spent);
     }
@@ -1205,6 +1208,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     }
     if let Some(paid) = cost_paid_text(condition, false) {
         return Some(paid);
+    }
+    if let Some(presence) = super::e16b_presence::text(condition) {
+        return Some(presence);
     }
     if let Some(spent) = super::spent::was_spent_text(condition, false) {
         return Some(spent);

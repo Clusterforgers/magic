@@ -24,6 +24,9 @@ fn color_word(mana: ManaType) -> Option<&'static str> {
 
 /// The wordings of a condition the other writers do not word.
 pub(super) fn r7c_condition_texts(condition: &Condition) -> Vec<String> {
+    if let Some(presence) = super::super::super::e16b_presence::text(condition) {
+        return vec![presence];
+    }
     match condition {
         Condition::AdditionalCostPaid => vec![
             "this spell was bargained".to_owned(),
