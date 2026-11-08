@@ -511,7 +511,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
-    super::written_memo::written(ability, written_anew)
+    let mut texts = super::written_memo::written(ability, written_anew);
+    // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
+    texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
+    texts
 }
 
 /// [`written_variants`] without the table of abilities written already.
@@ -945,11 +948,6 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                         text.replace("copy of enchanted creature", "copy of equipped creature");
                     let others = (equipped != text).then_some(equipped);
                     e15g_that_spell(when, std::iter::once(text).chain(others))
-                })
-                // The controller of "that spell or ability" is the one of what targeted the card.
-                .filter(|text| {
-                    !text.contains("that spell or ability's controller")
-                        || matches!(when, TriggerPattern::BecomesTarget { .. })
                 })
                 .collect()
         }

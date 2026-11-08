@@ -1419,6 +1419,7 @@ fn names_own_commander(preds: &[Pred]) -> bool {
 }
 
 /// A selector as a phrase, the way `phrase` reads it.
+#[allow(clippy::too_many_lines)]
 pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (spell, preds) = match selector.0.split_first() {
         Some((Pred::Spell, rest)) => (true, rest),
@@ -1524,9 +1525,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         [token, spell, card, commander_noun, bare],
         plural,
     ));
-    let mut suffixes = suffixes;
-    super::w19d_suffixes::last(&mut suffixes);
-    let (suffixes, zone) = super::w21a_atoms::w21a_place(suffixes, zone, plural)?;
+    let (suffixes, zone) =
+        super::w21a_atoms::w21a_place(super::w19d_suffixes::last(suffixes), zone, plural)?;
     words.extend(without_list(suffixes));
     words.extend(zone);
     Some(words.join(" "))
@@ -1862,6 +1862,7 @@ fn either_objects(kinds: &[Targetable]) -> Option<String> {
 }
 
 /// A target as the card words it.
+#[allow(clippy::too_many_lines)]
 pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     if spec.divide.is_some() {
         return None;

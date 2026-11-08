@@ -5,7 +5,9 @@
 
 use super::selectors::Form;
 use super::tokens::Reader;
+use crate::ability::Ability;
 use crate::refs::{Pred, Ref};
+use crate::trigger::TriggerPattern;
 
 /// The card itself, as "it" or by its name.
 fn w19d_itself(r: &mut Reader<'_>) -> bool {
@@ -54,7 +56,6 @@ pub(super) fn w19d_suffix(r: &mut Reader<'_>) -> Option<Pred> {
 
 /// The wordings with "it" for the card where an earlier word of the sentence names it.
 pub(super) fn add(texts: &mut Vec<String>) {
-    let mut found = Vec::new();
     // Each rewording, and whether it needs an earlier "~" for "it" to name.
     const REWORDINGS: [(&str, &str, bool); 9] = [
         (" blocking ~", " blocking it", true),
@@ -67,6 +68,7 @@ pub(super) fn add(texts: &mut Vec<String>) {
         (" blocked by ~", " that it's blocking", true),
         (" that's attacking you", " attacking you", false),
     ];
+    let mut found = Vec::new();
     for text in texts.iter() {
         for (from, to, named) in REWORDINGS {
             let Some(at) = text.rfind(from) else {
@@ -86,6 +88,15 @@ pub(super) fn add(texts: &mut Vec<String>) {
         if let Some(counters) = rest.strip_suffix(" on target creature that's attacking you.") {
             found.push(format!(
                 "{head}, choose target creature attacking you. Put {counters} on that creature."
+            ));
+        }
+    }
+    // A trigger about a spell alone names that spell, not "that spell or ability".
+    for text in texts.iter() {
+        if text.contains("target of a spell, that spell or ability's controller") {
+            found.push(text.replace(
+                "target of a spell, that spell or ability's controller",
+                "target of a spell, that spell's controller",
             ));
         }
     }
@@ -112,10 +123,24 @@ pub(super) fn w19d_suffix_text(pred: &Pred, form: Form) -> Option<String> {
     })
 }
 
+/// Whether the text of a triggered ability may say "that spell or ability's controller": only after a trigger about what
+/// targets the card, whose "spell or ability" it is.
+pub(super) fn w19d_targeting_controller(ability: &Ability, text: &str) -> bool {
+    !text.contains("that spell or ability's controller")
+        || matches!(
+            ability,
+            Ability::Triggered {
+                when: TriggerPattern::BecomesTarget { .. },
+                ..
+            }
+        )
+}
+
 /// The suffixes that open with "that" and say what happened go last, after who controls the object and what it has:
 /// "creature an opponent controls that was dealt damage this turn", "creature without flying that's attacking you".
-pub(super) fn last(suffixes: &mut [String]) {
+pub(super) fn last(mut suffixes: Vec<String>) -> Vec<String> {
     suffixes.sort_by_key(|suffix| {
         suffix == "that was dealt damage this turn" || suffix == "that's attacking you"
     });
+    suffixes
 }

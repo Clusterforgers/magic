@@ -29,5 +29,5 @@ fn w19c_a_keyword_with_a_counter_or_modified_condition_is_written(
     r#"{"Static":{"affected":"This","condition":{"Matches":{"selector":[{"HasCounter":"+1/+1"},"Tapped"],"subject":"This"}},"mods":[{"AddKeyword":"Trample"}]}}"#
 )]
 fn w19c_other_conditions_stay_unwritten(#[case] json: &str) {
-    assert!(render_variants(&ability(json)).is_empty());
+    assert_eq!(render_variants(&ability(json)), Vec::<String>::new());
 }
