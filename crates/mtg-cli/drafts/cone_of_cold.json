@@ -1,0 +1,94 @@
+{
+  "oracle_id": "56fd0752-9fb0-4c05-90e5-c3b268b57c6f",
+  "name": "Cone of Cold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cone of Cold",
+      "oracle_fingerprint": "a2072bdf1f7e1523d2bc6efe2337b79b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "Tap": {
+                            "what": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "Tap": {
+                            "what": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            },
+                            "mods": ["DoesntUntap"],
+                            "duration": "NextUntapStep"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "Tap": {
+                            "what": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            },
+                            "mods": ["DoesntUntap"],
+                            "duration": "NextUntapStep"
+                          }
+                        },
+                        {
+                          "Shield": {
+                            "when": {
+                              "Enters": {
+                                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                              }
+                            },
+                            "by": "Tapped",
+                            "duration": "UntilYourNextTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

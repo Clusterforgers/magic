@@ -1,0 +1,68 @@
+{
+  "oracle_id": "7139ead5-86f0-46ae-8a6d-ad66d0408f73",
+  "name": "Azula, Ruthless Firebender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azula, Ruthless Firebender",
+      "oracle_fingerprint": "2d426c63d02c07ba1bf1c82c6537e81c",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 1 } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "May": { "effects": [{ "Discard": {} }] } },
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "experience" },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "EachPlayer",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "Discarded" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Counters": { "on": "You", "counter": { "Other": "experience" } }
+                        },
+                        "toughness": {
+                          "Counters": { "on": "You", "counter": { "Other": "experience" } }
+                        }
+                      }
+                    },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d82bde29-1576-4736-a755-df9c37765202",
+  "name": "Indentured Oaf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indentured Oaf",
+      "oracle_fingerprint": "3219cec2b64a45a859f8e06f6b2dcdf4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }, { "Color": "Red" }] },
+                "source": ["This"]
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

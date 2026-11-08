@@ -1,0 +1,92 @@
+{
+  "oracle_id": "cd51cc2d-0d39-4aba-b0ea-70e8118149bc",
+  "name": "Figure of Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Figure of Destiny",
+      "oracle_fingerprint": "5d2f1aef50fed61f869f2b768ee490a6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R/W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "SetCreatureTypes": ["Kithkin", "Spirit"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R/W}{R/W}{R/W}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Spirit" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 4, "toughness": 4 } },
+                          { "SetCreatureTypes": ["Kithkin", "Spirit", "Warrior"] }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R/W}{R/W}{R/W}{R/W}{R/W}{R/W}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Warrior" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 8, "toughness": 8 } },
+                          { "SetCreatureTypes": ["Kithkin", "Spirit", "Warrior", "Avatar"] },
+                          { "AddKeyword": "Flying" },
+                          { "AddKeyword": "FirstStrike" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

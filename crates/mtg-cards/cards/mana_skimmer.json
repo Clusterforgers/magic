@@ -1,0 +1,32 @@
+{
+  "oracle_id": "713eba2e-d19d-4056-b224-f93857dbdafe",
+  "name": "Mana Skimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Skimmer",
+      "oracle_fingerprint": "974388b23572cdbe955691eea341e0e9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

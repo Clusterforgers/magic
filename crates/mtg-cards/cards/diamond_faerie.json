@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7a25ccf3-0fe1-447c-bdf4-57ec31b19a0f",
+  "name": "Diamond Faerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diamond Faerie",
+      "oracle_fingerprint": "1fabf85d40c877b0800861777fa32534",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{S}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Snow" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

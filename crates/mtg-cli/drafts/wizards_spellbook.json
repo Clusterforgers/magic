@@ -1,0 +1,87 @@
+{
+  "oracle_id": "740fe41a-16bb-4c97-a03c-f678f15a0a0c",
+  "name": "Wizard's Spellbook",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wizard's Spellbook",
+      "oracle_fingerprint": "9677e3593e23a71e1ca5ce828693637c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                            "as": "card2",
+                            "effects": [
+                              { "CopyCard": { "what": { "Bound": "card2" }, "as": "copy3" } },
+                              { "CastFromZone": { "what": { "Bound": "copy3" } } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                            "as": "card4",
+                            "effects": [
+                              { "CopyCard": { "what": { "Bound": "card4" }, "as": "copy5" } },
+                              { "CastFromZone": { "what": { "Bound": "copy5" }, "rather": "{1}" } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                            "as": "card6",
+                            "effects": [
+                              { "CopyCard": { "what": { "Bound": "card6" }, "as": "copy7" } },
+                              { "CastFromZone": { "what": { "Bound": "copy7" }, "free": true } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

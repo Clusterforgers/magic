@@ -1,0 +1,34 @@
+{
+  "oracle_id": "168d5711-4459-440f-8de4-aabffd47c44d",
+  "name": "Rosie Cotton of South Lane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rosie Cotton of South Lane",
+      "oracle_fingerprint": "5f65e86ee71698dac74183cc9903cd5c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "TokenCreated",
+                "who": "You",
+                "what": ["Token", { "ControlledBy": "You" }]
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

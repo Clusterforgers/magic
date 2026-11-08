@@ -1,0 +1,57 @@
+{
+  "oracle_id": "bcb2f489-9d58-424d-96c1-a124a8d25a14",
+  "name": "Energy Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Energy Vortex",
+      "oracle_fingerprint": "d772032ee88c7c0001b6dd65a0dea3e2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": { "Other": "vortex" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "vortex" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Chosen" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Chosen",
+                  "cost": "{1}",
+                  "times": { "Counters": { "on": "This", "counter": { "Other": "vortex" } } },
+                  "unpaid": [{ "DealDamage": { "to": "Chosen", "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}",
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "vortex" }, "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

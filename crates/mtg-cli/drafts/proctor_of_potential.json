@@ -10,24 +10,15 @@
         {
           "Triggered": {
             "when": {
-              "ZoneChange": {
-                "what": [
-                  {
-                    "AnyOf": [
-                      "This",
-                      {
-                        "Not": {
-                          "AnyOf": [
-                            { "Not": { "Type": "Creature" } },
-                            { "Not": { "ControlledBy": "You" } }
-                          ]
-                        }
-                      }
-                    ]
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"],
+                    "to": "Battlefield"
                   }
-                ],
-                "to": "Battlefield"
-              }
+                }
+              ]
             },
             "effects": [{ "Surveil": {} }]
           }
