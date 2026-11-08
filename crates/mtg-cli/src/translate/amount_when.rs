@@ -59,6 +59,7 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
             let selector = super::valid_atoms::atom(word)?;
             json!({"Matches": {"subject": "This", "selector": selector}})
         }
+        "Revolt" => super::condition::revolt(),
         "Threshold" | "Delirium" | "Hellbent" | "Metalcraft" | "Void" | "FatefulHour" => {
             match named(word) {
                 Ok(condition) => condition,

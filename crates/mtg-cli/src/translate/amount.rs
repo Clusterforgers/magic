@@ -383,6 +383,12 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         | "TriggeredSource"
         | "TriggeredSourceLKICopy" => super::triggered::resolve(ctx.trigger.as_ref(), head)?,
         "TriggeredSpellAbility" if casts(ctx) => json!("Triggering"),
+        // "Cards exiled with this permanent": those still in exile.
+        "ExiledWith" => {
+            let of = [json!({"ExiledWith": "This"}), json!({"In": "Exile"})];
+            let reduce = if what == "Amount" { "" } else { what };
+            return super::amount_more::reduced(head, &of, reduce).map(Some);
+        }
         "Enchanted" | "Equipped" => json!("Attached"),
         "OriginalHost" if ctx.granted => json!("Granter"),
         "Sacrificed" | "Discarded" => json!("Paid"),
@@ -398,7 +404,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             return super::memory::total_in(ctx, super::memory::Slot::Imprinted, what).map(Some);
         }
         // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
-        "TriggerRemembered" => match &ctx.delayed_remembered {
+        "TriggerRemembered" | "Spawner>Sacrificed" => match &ctx.delayed_remembered {
             Some(bound) => bound.clone(),
             None => return unmapped("amount:TriggerRemembered"),
         },

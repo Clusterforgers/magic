@@ -113,7 +113,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
                 None => super::memory::entered_with(ctx, prop).map(|pred| vec![pred]),
             };
         }
-        "ExiledWithSource" => return one(json!({"ExiledWith": "This"})),
+        "ExiledWithSource" | "ExiledWithEffectSource" => return one(json!({"ExiledWith": "This"})),
         "enchanted" => return one(json!({"HasAttached": [{"Subtype": "Aura"}]})),
         "equipped" => return one(json!({"HasAttached": [{"Subtype": "Equipment"}]})),
         "Historic" => {
@@ -811,6 +811,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         | "DelayedTriggerRemembered"
         | "RememberedLKI"
         | "RememberedCard"
+        | "DirectRemembered"
         | "Remembered" => super::memory::remembered(ctx),
         "Player.IsRemembered" => {
             let held = super::memory::remembered(ctx)?;

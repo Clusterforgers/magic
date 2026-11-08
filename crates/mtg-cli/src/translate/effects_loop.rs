@@ -371,7 +371,13 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let part = ctx.sub(name)?;
     let mut out = Vec::new();
     let mut bound = None;
-    if let Some(word) = p.get("RememberObjects") {
+    // The reflexive trigger of a sacrifice cost reads the sacrificed object as `Spawner>Sacrificed`.
+    let spawned = ctx
+        .svars
+        .values()
+        .any(|text| text.contains("Spawner>Sacrificed"))
+        .then_some("Sacrificed");
+    if let Some(word) = p.get("RememberObjects").or(spawned) {
         let loose = super::memory::slot_ref_loose(ctx, super::memory::Slot::Remembered)
             .filter(|held| super::memory::is_scoped(ctx, held));
         let what = match word {
@@ -381,9 +387,8 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
                 loose.unwrap_or_default()
             }
             // A target an earlier step moved is another object now (CR 400.7), so `Targeted` stays a gap.
-            "Remembered" | "RememberedCard" | "RememberedLKI" | "ChosenCard" | "ChosenPlayer" => {
-                defined(ctx, word)?
-            }
+            "Remembered" | "RememberedCard" | "RememberedLKI" | "ChosenCard" | "ChosenPlayer"
+            | "Sacrificed" => defined(ctx, word)?,
             w if super::triggered::is_word(w) => defined(ctx, w)?,
             other => return unmapped(format!("key:ImmediateTrigger.RememberObjects={other}")),
         };

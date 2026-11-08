@@ -36,6 +36,10 @@ pub fn property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         "TargetedPlayerOwn" => return one(json!({"OwnedBy": ctx.player_target()?})),
         // Without an argument the property compares with the card the line belongs to.
         "sharesCreatureTypeWith" => return one(json!({"SharesSubtype": "This"})),
+        // "With the same name as this creature" (a copy's granted ability names its own source).
+        "sameName" => return one(json!({"SharesName": "This"})),
+        // "That crewed it this turn": the creature was tapped to crew the Vehicle the line belongs to.
+        "CrewedThisTurn" => return one(json!({"Crewed": "This"})),
         "Outlaw" => return outlaw(ctx).map(Some),
         // The player the source chose; outside the battlefield control is ownership.
         "ChosenCtrl" | "ChosenOwn" => {

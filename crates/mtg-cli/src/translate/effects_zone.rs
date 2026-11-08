@@ -1682,10 +1682,9 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     // Forge remembers every card revealed, the one found included; where the found card goes elsewhere, "the cards
     // revealed this way" may mean the rest only (Spoils of the Vault), so only one destination for all is read.
     let remembers = p.get("RememberRevealed") == Some("True");
-    if remembers && p.get("RememberFound") == Some("True") {
-        return unmapped("key:DigUntil.RememberRevealed-with-RememberFound");
-    }
-    let all_seen = remembers && p.has("FoundDestination") && every_revealed(ctx)?;
+    // The cards revealed are all of them, the found one included, so remembering both is remembering the revealed ones.
+    let found_too = remembers && p.get("RememberFound") == Some("True");
+    let all_seen = remembers && !found_too && p.has("FoundDestination") && every_revealed(ctx)?;
     let who = subject(ctx, p, "You", None)?;
     let found = ctx.fresh("found");
     let revealed = ctx.fresh("revealed");
@@ -1715,7 +1714,7 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("Battlefield") => Some(Goes::To(json!({"Battlefield": {"tapped": tapped}}))),
         Some(other) => return unmapped(format!("key:DigUntil.FoundDestination={other}")),
     };
-    if p.get("RememberFound") == Some("True") {
+    if p.get("RememberFound") == Some("True") && !found_too {
         ctx.remembered = Some(json!({ "Bound": found }));
     }
     let rest_to = revealed_to(p)?;
@@ -1732,7 +1731,11 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(json!({"Let": {"as": seen, "amount": {"Count": [{"Is": {"Bound": revealed}}, {"In": "Library"}]}}}));
         ctx.kept_count.insert(revealed.clone(), seen);
     }
-    if let Some(found_to) = found_to {
+    // Where the found card goes with the rest, the revealed cards move together (the found one is among them).
+    let together = found_too
+        && matches!(found_to, Some(Goes::Exile))
+        && p.get("RevealedDestination") == Some("Exile");
+    if let Some(found_to) = found_to.filter(|_| !together) {
         let found_move = moves(&json!({"Bound": found}), found_to);
         if optional {
             effects.extend(super::frame::ask(vec![found_move], &who));

@@ -16,11 +16,12 @@ pub enum Forgets {
 }
 
 /// The keys and what each does.
-const KEYS: [(&str, Forgets); 4] = [
+const KEYS: [(&str, Forgets); 5] = [
     ("ForgetOtherRemembered", Forgets::All),
     ("ForgetOtherTargets", Forgets::All),
     ("ForgetChanged", Forgets::Moved),
     ("ForgetPlayed", Forgets::Moved),
+    ("ForgetRemembered", Forgets::Moved),
 ];
 
 /// The line without its `Forget*` keys, and what they asked for.
