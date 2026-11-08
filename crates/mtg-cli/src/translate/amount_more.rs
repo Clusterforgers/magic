@@ -12,6 +12,9 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
     Some(match word {
         "Domain" if rest.is_empty() => Ok(json!({"Distinct": {
             "of": [{"Type": "Land"}, {"ControlledBy": "You"}], "stat": "BasicLandTypes"}})),
+        // The basic land types among the lands the player whose turn it is controls (each player's upkeep).
+        "DomainActivePlayer" if rest.is_empty() => Ok(json!({"Distinct": {
+            "of": [{"Type": "Land"}, {"ControlledBy": "ActivePlayer"}], "stat": "BasicLandTypes"}})),
         "ResolvedThisTurn" if rest.is_empty() => Ok(json!("ResolvedThisTurn")),
         // Forge counts what the card dealt this turn; the Oracle words read what this resolution dealt.
         "TotalDamageDoneByThisTurn"

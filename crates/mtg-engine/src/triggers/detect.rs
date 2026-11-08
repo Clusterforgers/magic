@@ -277,6 +277,8 @@ enum Happened {
         player: Option<PlayerId>,
         object: Option<ObjectId>,
         ability: Option<ObjectId>,
+        /// How much it was: the cards a scry looked at; zero for the rest.
+        amount: u32,
     },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
@@ -302,7 +304,8 @@ impl Happened {
         match self {
             Happened::Damaged { amount, .. }
             | Happened::LifeGained { amount, .. }
-            | Happened::LifeLost { amount, .. } => *amount,
+            | Happened::LifeLost { amount, .. }
+            | Happened::Did { amount, .. } => *amount,
             Happened::Counters { delta, .. } | Happened::PlayerCounters { delta, .. } => {
                 delta.unsigned_abs()
             }

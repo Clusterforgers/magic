@@ -268,7 +268,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "TriggerCount" => {
             return match what {
                 "Amount" if monstrosity(ctx) => monstrosity_x(ctx),
-                "DamageAmount" | "LifeAmount" | "Amount" => Ok(Some(json!("Triggering"))),
+                "DamageAmount" | "LifeAmount" | "Amount" | "ScryNum" => {
+                    Ok(Some(json!("Triggering")))
+                }
                 other => unmapped(format!("amount:TriggerCount${other}")),
             };
         }
@@ -391,6 +393,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Enchanted" | "Equipped" => json!("Attached"),
         "OriginalHost" if ctx.granted => json!("Granter"),
         "Sacrificed" | "Discarded" => json!("Paid"),
+        "Tapped" if super::valid::tapped_alone(ctx.oracle) => json!("Paid"),
         // The card revealed from the hand as the cost, when the cost picks nothing else.
         "Revealed" if revealed_alone(ctx.oracle) => json!("Paid"),
         "Exiled" => super::cost::exiled_paid(ctx, "amount")?,

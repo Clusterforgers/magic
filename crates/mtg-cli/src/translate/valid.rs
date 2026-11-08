@@ -57,6 +57,19 @@ fn remembered_player_owns(ctx: &Ctx) -> Tr<Vec<Value>> {
     }
 }
 
+/// Whether the property is a word for the one object of a trigger's event.
+fn triggered_object(prop: &str) -> bool {
+    matches!(
+        prop,
+        "TriggeredAttacker"
+            | "TriggeredAttackerLKICopy"
+            | "TriggeredCard"
+            | "TriggeredCardLKICopy"
+            | "TriggeredSource"
+            | "TriggeredSourceLKICopy"
+    )
+}
+
 /// The predicates a property of a valid-string stands for.
 fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     let one = |value: Value| Ok(vec![value]);
@@ -81,10 +94,10 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "MultiColor" => return one(json!({"Compare": {"stat": "Colors", "op": "Ge", "to": 2}})),
         "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
         "IsCommander" => return one(json!("Commander")),
-        // The creature whose attack triggered the ability.
-        "TriggeredAttacker" | "TriggeredAttackerLKICopy" if ctx.trigger.is_some() => {
-            let attacker = super::triggered::resolve(ctx.trigger.as_ref(), prop)?;
-            return one(json!({"Is": attacker}));
+        // The creature whose attack triggered the ability, the card or the source of its event.
+        _ if ctx.trigger.is_some() && triggered_object(prop) => {
+            let object = super::triggered::resolve(ctx.trigger.as_ref(), prop)?;
+            return one(json!({"Is": object}));
         }
         // Attached to the object the line is about: its source.
         "Attached" => return one(json!({"AttachedTo": "This"})),
@@ -273,7 +286,7 @@ fn base(ctx: &Ctx, word: &str) -> Tr<Vec<Value>> {
         return Ok(vec![json!({"Type": word})]);
     }
     match word {
-        "Permanent" | "Card" | "Any" => Ok(Vec::new()),
+        "Permanent" | "Card" | "card" | "Any" => Ok(Vec::new()),
         "Spell" => Ok(vec![json!("Spell")]),
         _ if ctx.world.subtypes.contains(word) => Ok(vec![json!({"Subtype": word})]),
         _ => super::filter::base(word).map_or_else(|| unmapped(format!("valid-base:{word}")), Ok),
@@ -776,6 +789,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Self" | "Card.Self" => Ok(json!("This")),
         "EffectSource" | "Card.EffectSource" if ctx.effect_source => Ok(json!("This")),
         "Sacrificed" | "Discarded" => Ok(json!("Paid")),
+        "Tapped" if tapped_alone(ctx.oracle) => Ok(json!("Paid")),
         "Convoked" => Ok(json!("Convoked")),
         "Exiled" => super::cost::exiled_paid(ctx, "defined"),
         // The cards this permanent exiled and that are still in exile.
@@ -1211,4 +1225,16 @@ pub(super) fn chosen_player(ctx: &Ctx, gap: &str) -> Tr<Value> {
         return Ok(json!("Chosen"));
     }
     unmapped(gap)
+}
+
+/// Whether the card's only cost that picks permanents is tapping one ("Tap an untapped creature you control"), so the
+/// permanent paid is the one tapped.
+pub(super) fn tapped_alone(oracle: &str) -> bool {
+    let lower = oracle.to_lowercase();
+    lower.matches("tap an untapped ").count() + lower.matches("tap another untapped ").count() == 1
+        && !lower.contains("sacrifice")
+        && !lower.contains("discard")
+        && !lower.contains("exile a")
+        && !lower.contains("reveal")
+        && !lower.contains("return")
 }

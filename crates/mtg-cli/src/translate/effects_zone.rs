@@ -845,9 +845,43 @@ fn from_any_exile(ctx: &Ctx, p: &Params) -> bool {
             .any(|words| text.contains(words))
 }
 
+/// "A creature card and/or a land card" (`EACH Creature & Land`): up to one card of each kind, picked and moved in turn.
+fn each_kind(
+    ctx: &mut Ctx,
+    p: &Params,
+    each: &str,
+    origin: &str,
+    destination: &str,
+) -> Tr<Vec<Value>> {
+    if p.get("ChangeNum").is_some_and(|number| number != "1")
+        || p.has("DifferentNames")
+        || p.has("AtRandom")
+        || p.has("DefinedPlayer")
+        || remember::wanted(p, &["RememberChanged"])
+    {
+        return unmapped("key:ChangeZone.Choose.EACH-shape");
+    }
+    let mut steps = Vec::new();
+    for kind in each.split(" & ") {
+        let one = p
+            .without(&["ChangeType", "Optional"])
+            .with("ChangeType", kind.trim())
+            .with("Optional", "True");
+        steps.extend(choose_and_move(ctx, &one, origin, destination)?);
+    }
+    Ok(steps)
+}
+
 /// A card of the player's own hand, graveyard or exile, or a permanent, that a player picks and moves ("put a creature card
 /// from your hand onto the battlefield"): a choice among the matching cards, then the move.
 fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
+    // "A creature card and/or a land card" (`EACH Creature & Land`): up to one card of each, picked and moved in turn.
+    if let Some(each) = p
+        .get("ChangeType")
+        .and_then(|kinds| kinds.strip_prefix("EACH "))
+    {
+        return each_kind(ctx, p, each, origin, destination);
+    }
     PICKED.admit(p)?;
     // Several cards put into one library are ordered by their controller anyway.
     if p.get("Reorder").is_some_and(|word| word != "True") {

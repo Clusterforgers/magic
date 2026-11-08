@@ -391,6 +391,18 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         out.push(json!({"Bind": {"what": what, "as": bind}}));
         bound = Some(json!({ "Bound": bind }));
     }
+    // "that player" of the spawning damage trigger, read by the reflexive trigger's target filters.
+    if bound.is_none()
+        && part
+            .get("ValidTgts")
+            .is_some_and(|valid| valid.contains("Spawner>TriggeredTarget"))
+        && ctx.trigger.as_ref().is_some_and(|shape| shape.to_player)
+    {
+        let what = defined(ctx, "TriggeredTarget")?;
+        let bind = ctx.fresh("when");
+        out.push(json!({"Bind": {"what": what, "as": bind}}));
+        bound = Some(json!({ "Bound": bind }));
+    }
     // `RememberSVarAmount$`: the number as the trigger is set up, which its steps read as `TriggerRememberAmount`.
     let mut kept = None;
     if let Some(word) = p.get("RememberSVarAmount") {

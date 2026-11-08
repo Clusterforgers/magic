@@ -174,6 +174,11 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "You" => Ok(json!("You")),
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         "TargetedPlayer" => ctx.player_target(),
+        // The player the trigger that spawned a reflexive trigger was about, bound as the reflexive trigger was set up.
+        "Spawner>TriggeredTarget" => match ctx.delayed_remembered.clone() {
+            Some(held) => Ok(held),
+            None => unmapped("valid:ControlledBy Spawner>TriggeredTarget"),
+        },
         "TargetedOrController" => Ok(json!({"OrController": ctx.last_target()?})),
         // An earlier target, read as chosen even by a later target's filter (CR 601.2c).
         "ParentTarget" if super::frame::parent_is_player(ctx) => ctx.parent(),
@@ -214,6 +219,12 @@ pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         // "Each player who doesn't have max speed" (CR 702.179).
         _ if word.ends_with(".MaxSpeed") || word.ends_with(".!MaxSpeed") => {
             super::players_where::word(word).map_or_else(|| unmapped(format!("defined:{word}")), Ok)
+        }
+        // "Each opponent who has three or more poison counters" (corrupted), also written `Player.Opponent+IsCorrupted`.
+        _ if word.starts_with("Opponent.") || word.starts_with("Player.Opponent+") => {
+            let spelled = word.replace("Player.Opponent+", "Opponent.");
+            super::players_where::word(&spelled)
+                .map_or_else(|| unmapped(format!("defined:{word}")), Ok)
         }
         _ => unmapped(format!("defined:{word}")),
     }
