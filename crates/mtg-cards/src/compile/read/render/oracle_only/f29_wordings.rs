@@ -8,6 +8,9 @@ use serde_json::{Value, json};
 
 use crate::ability::Ability;
 
+/// A shape of the ability and the wording it allows.
+type Row = (fn(&Value, &Value) -> bool, fn(&str) -> Option<String>);
+
 /// Adds the oracle wordings of the ability.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Ok(shape) = serde_json::to_value(ability) else {
@@ -17,7 +20,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         return;
     };
     let effects = body.get("effects").cloned().unwrap_or(Value::Null);
-    let rules: [(fn(&Value, &Value) -> bool, fn(&str) -> Option<String>); 8] = [
+    let rules: [Row; 8] = [
         (counter_exile_toll, toll_first),
         (choice_then_delayed, if_you_do),
         (damage_then_if_damage, it_deals),
