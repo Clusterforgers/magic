@@ -220,6 +220,12 @@ pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         _ if word.ends_with(".MaxSpeed") || word.ends_with(".!MaxSpeed") => {
             super::players_where::word(word).map_or_else(|| unmapped(format!("defined:{word}")), Ok)
         }
+        // "Each opponent who has three or more poison counters" (corrupted), also written `Player.Opponent+IsCorrupted`.
+        _ if word.starts_with("Opponent.") || word.starts_with("Player.Opponent+") => {
+            let spelled = word.replace("Player.Opponent+", "Opponent.");
+            super::players_where::word(&spelled)
+                .map_or_else(|| unmapped(format!("defined:{word}")), Ok)
+        }
         _ => unmapped(format!("defined:{word}")),
     }
 }

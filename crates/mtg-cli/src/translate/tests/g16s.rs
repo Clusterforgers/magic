@@ -148,6 +148,21 @@ fn the_creature_tapped_for_a_cost_is_the_paid_object() {
     );
 }
 
+#[rstest]
+#[case::dotted("Opponent.IsCorrupted", true)]
+#[case::plus("Player.Opponent+IsCorrupted", true)]
+#[case::unknown_property("Opponent.IsSomethingElse", false)]
+fn the_opponents_with_three_poison_counters_are_a_group(#[case] word: &str, #[case] known: bool) {
+    let script = format!(
+        "Name:Test Drain\nTypes:Sorcery\nA:SP$ LoseLife | Defined$ {word} | LifeAmount$ 3 | SpellDescription$ Corrupted \u{2014} Each opponent who has three or more poison counters loses 3 life.\nOracle:Corrupted \u{2014} Each opponent who has three or more poison counters loses 3 life.\n"
+    );
+    let (gaps, found) = read(&script);
+    assert_eq!(gaps.is_empty(), known, "{gaps:?} {found}");
+    if known {
+        assert!(found.contains("PlayersWhere"), "{found}");
+    }
+}
+
 #[test]
 fn a_tapped_creature_beside_another_paid_cost_is_a_gap() {
     let script = "Name:Test Sling\nTypes:Artifact\nA:AB$ DealDamage | Cost$ Sac<1/Creature> tapXType<1/Creature> | ValidTgts$ Creature | NumDmg$ X\nSVar:X:Tapped$CardPower\nOracle:Sacrifice a creature, Tap an untapped creature you control: Test Sling deals damage equal to the tapped creature's power to target creature.\n";
