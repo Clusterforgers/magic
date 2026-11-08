@@ -1,7 +1,7 @@
 // Goal: in a real two-seat game, at desktop and phone size, one seat loses life, draws, mills, looks at the top and puts a card on the bottom, and makes a token from the Commands panel; each row says Done, both seats' logs tell every action, and the other seat's log never names the cards looked at.
 import { expect, test } from '@playwright/test'
-import type { Locator, Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
+import { apply, logOf, openRow, openSide } from './manual'
 import type { Player } from './lobby'
 
 const SIZES = [
@@ -9,54 +9,12 @@ const SIZES = [
   { name: 'phone', width: 390, height: 844 },
 ] as const
 
-/** The side area: the column at desktop size, the sheet that the top bar's button opens on a phone. */
-async function openSide(page: Page, tab: 'Commands' | 'Log'): Promise<void> {
-  const button = page.getByRole('button', { name: /^Commands, log, chat and stack/ })
-  if (await button.isVisible()) {
-    if ((await button.getAttribute('aria-expanded')) !== 'true') await button.click()
-  }
-  await page.getByRole('tab', { name: new RegExp(`^${tab}`) }).click()
-}
-
-/** The panel's row of a command, opened. */
-async function openRow(page: Page, name: string): Promise<Locator> {
-  const panel = page.getByRole('region', { name: 'Commands' })
-  const toggle = panel.locator('button[aria-expanded]', { hasText: new RegExp(`^${name}`) }).first()
-  // The table redraws while a turn starts: look again until the row is open.
-  await expect(async () => {
-    if (!(await panel.isVisible())) await openSide(page, 'Commands')
-    if ((await toggle.getAttribute('aria-expanded', { timeout: 2000 })) !== 'true')
-      await toggle.click({ timeout: 2000 })
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 1000 })
-  }).toPass({ timeout: 20_000 })
-  const row = panel.locator('[data-open]')
-  await expect(row).toHaveCount(1)
-  return row
-}
-
-/** Presses Apply, which names the change, and waits for the row to say the server took it. */
-async function apply(row: Locator, label: string | RegExp): Promise<void> {
-  const button = row.locator('[data-slot="command-apply"]')
-  await expect(button).toHaveText(label)
-  // The open row is scrolled into the panel's view, so Apply is in reach without a scroll.
-  await expect(button).toBeInViewport()
-  await button.click()
-  await expect(row.locator('[data-slot="command-feedback"]')).toContainText(/^(Done|Sent)/)
-}
-
-/** The text of the seat's log, once it holds every line in `lines`. */
-async function logOf(page: Page, lines: readonly RegExp[]): Promise<string> {
-  await openSide(page, 'Log')
-  const log = page.getByRole('log', { name: 'Game log' })
-  for (const line of lines) await expect(log).toContainText(line)
-  return (await log.textContent()) ?? ''
-}
-
 const BOTH = [
   /Ada loses 5 life \(by hand\)/,
   /Ada gains 1 life \(by hand\)/,
   /Ada loses 1 life \(by hand\)/,
-  /Ada draws 2 cards \(by hand\)/,
+  // The drawing seat's log names the cards, the other seat's counts them.
+  /Ada draws (2 cards|.+ and .+) \(by hand\)/,
   /Ada moves the top 2 cards of their library to the graveyard \(by hand\)/,
   /Ada creates 1 Treasure token \(by hand\)/,
 ]
