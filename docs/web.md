@@ -325,9 +325,19 @@ Sign-in uses the server's accounts ([server.md](server.md); bodies in [protocol.
 - The not-validated list (`features/decks/unvalidated`) is `/decks/unvalidated` for every saved deck and `/decks/$deckId/unvalidated` for one (route files `decks_.unvalidated.tsx` and `decks_.$deckId_.unvalidated.tsx`). `useUnvalidated` reads `GET /api/decks` and checks each deck whose summary counts a card that is not Verified (`POST /api/decks/check`, four at a time), or reads one deck; a deck whose check fails is named and the others still show. `model.ts` (pure) merges the cards by oracle id with the decks that hold them (`mergeDecks`) or groups them by deck (`groupByDeck`), and narrows them to Partial, Manual, Stale, Unplayable or To read. A card (`UnvalidatedCard`) shows its picture, name, `SupportMark`, its decks as links, the clauses its draft words differently (`DiffersList`, from `ReportCard.differs`: one highlighted row each, the printed clause beside the game's words) and each clause (`ClauseList`): the words of the card the span covers, quoted, beside the plain reason; a card with no clause of its own shows its whole text. `useCardTexts` reads the texts from `GET /api/cards/{oracle_id}` once per card and four at a time. "Copy as text" (`copyText`) waits, as a disabled "Reading card text…", until every card is read.
 - The create page waits until it is known who is signed in; a signed-in creator gets seat 1 named after the account. The lobby shows "signed in as" on seats with an account (`useSeatAccounts`).
 
+## Reading cards
+
+A player reads a card's draft beside its printed text and says whether the game does what the card says ([cards-dsl.md](cards-dsl.md), Read tier; endpoints in [server.md](server.md), Reads).
+
+- `net/reads.ts` `createReadsApi` is the typed client of `GET /api/reads`, `GET` and `PUT /api/reads/{oracle_id}`; a failure is a `DeckError` (`stale_read` among the codes).
+- `/read?deck=<id>` and `/read?precon=<code>` (`features/reads/ReadPage`, route `read.tsx`): signed out goes to `/login?next=`; a visitor on a server without accounts reads a notice. `ReadView` lists the deck's `ReadQueue` (from `lg` a list beside the card; under it a "Card 2 of 7" bar with Previous and Next) and shows one card; a verdict moves on to the next card not judged and a polite live region says so; the last one shows "Every card is read".
+- `ReadCardView` (`useReadCard`) draws the card's name, state (`STATE_WORDS`), counts and the account's own verdict over `ReadSheet`: one row per printed clause, the clause beside the engine's words (`engineWords`) and its steps indented by depth, stacked under `sm`. A row's tone (`toneOf`) marks it with an icon and words; `differs` rows carry the `support-partial` edge and tint, by-hand rows the `support-manual` edge.
+- The verdict: Correct and Wrong stay `aria-disabled` for `READ_DELAY_MS` (2 s) after each draft appears, so nobody judges a card unread. C gives Correct and W opens the note outside a text field (`verdictKey`); a `wrong` needs a note of at most 280 characters (`noteProblem`). A 409 `stale_read` shows "The rules changed" with "Load the new version".
+- `ReadDialog` is the same card view in a dialog. The table's pinned preview offers "Read its rules" to a signed-in player for a card that runs on a read or leaves clauses by hand (`readableOf`); the dialog lives in `CardPreview`, outside the preview it closes, and reads its client from `ReadsApiContext`.
+
 ## Dev routes
 
-All five exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fixture marker or card name reaches the production bundle, and each route has a test that it answers "not found" with no fixture when DEV is off. By hand: `pnpm build && ! grep -r dev-table-fixture dist`. The parameters are read in the route and fixture files; this is what each stands for.
+All six exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fixture marker or card name reaches the production bundle, and each route has a test that it answers "not found" with no fixture when DEV is off. By hand: `pnpm build && ! grep -r dev-table-fixture dist`. The parameters are read in the route and fixture files; this is what each stands for.
 
 | Route | Stands for |
 |---|---|
@@ -336,6 +346,7 @@ All five exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fi
 | `/dev/builder` | the real builder over `builder/dev/fixture.ts` and in-memory servers; `deck` picks the case (`mixed`, `manual`, `verified`, `changed`, `unchecked`, `partners`, `refused`); a check endpoint answers after 450 ms; fix marks are kept in memory; `cards=real` searches a running server |
 | `/dev/precons` | the real precon page over `precons/dev/fixture.ts`; `view` (`list`, `empty`, `loading`, `error`, `unavailable`), `account=1`, `play=refused` |
 | `/dev/unvalidated` | the real not-validated page over `decks/unvalidated/fixture.ts`, signed in; `view` (`all`, `deck`, `clean`, `none`, `loading`, `error`, `unavailable`, `failed`, `texts`) |
+| `/dev/read` | the real review screen over `reads/dev/fixture.ts`, signed in; `view` (`deck`, `precon`, `done`, `loading`, `error`, `stale`, `dialog`) |
 
 ## Testing
 

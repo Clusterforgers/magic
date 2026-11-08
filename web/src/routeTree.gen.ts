@@ -16,6 +16,7 @@ import { Route as GamesRouteImport } from './routes/games'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as PreconsRouteImport } from './routes/precons'
+import { Route as ReadRouteImport } from './routes/read'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
@@ -23,6 +24,7 @@ import { Route as DecksUnvalidatedRouteImport } from './routes/decks_.unvalidate
 import { Route as DevBuilderRouteImport } from './routes/dev.builder'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
 import { Route as DevPreconsRouteImport } from './routes/dev.precons'
+import { Route as DevReadRouteImport } from './routes/dev.read'
 import { Route as DevTableRouteImport } from './routes/dev.table'
 import { Route as DevUnvalidatedRouteImport } from './routes/dev.unvalidated'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
@@ -64,6 +66,11 @@ const PreconsRoute = PreconsRouteImport.update({
   path: '/precons',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReadRoute = ReadRouteImport.update({
+  id: '/read',
+  path: '/read',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -97,6 +104,11 @@ const DevLobbyRoute = DevLobbyRouteImport.update({
 const DevPreconsRoute = DevPreconsRouteImport.update({
   id: '/dev/precons',
   path: '/dev/precons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevReadRoute = DevReadRouteImport.update({
+  id: '/dev/read',
+  path: '/dev/read',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevTableRoute = DevTableRouteImport.update({
@@ -133,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/precons': typeof PreconsRoute
+  '/read': typeof ReadRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
@@ -140,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
+  '/dev/read': typeof DevReadRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -154,6 +168,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/precons': typeof PreconsRoute
+  '/read': typeof ReadRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
@@ -161,6 +176,7 @@ export interface FileRoutesByTo {
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
+  '/dev/read': typeof DevReadRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -176,6 +192,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/precons': typeof PreconsRoute
+  '/read': typeof ReadRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
@@ -183,6 +200,7 @@ export interface FileRoutesById {
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
+  '/dev/read': typeof DevReadRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -199,6 +217,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/new'
     | '/precons'
+    | '/read'
     | '/register'
     | '/settings'
     | '/decks/$deckId'
@@ -206,6 +225,7 @@ export interface FileRouteTypes {
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
+    | '/dev/read'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -220,6 +240,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/new'
     | '/precons'
+    | '/read'
     | '/register'
     | '/settings'
     | '/decks/$deckId'
@@ -227,6 +248,7 @@ export interface FileRouteTypes {
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
+    | '/dev/read'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -241,6 +263,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/new'
     | '/precons'
+    | '/read'
     | '/register'
     | '/settings'
     | '/decks_/$deckId'
@@ -248,6 +271,7 @@ export interface FileRouteTypes {
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
+    | '/dev/read'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -263,6 +287,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   NewRoute: typeof NewRoute
   PreconsRoute: typeof PreconsRoute
+  ReadRoute: typeof ReadRoute
   RegisterRoute: typeof RegisterRoute
   SettingsRoute: typeof SettingsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
@@ -270,6 +295,7 @@ export interface RootRouteChildren {
   DevBuilderRoute: typeof DevBuilderRoute
   DevLobbyRoute: typeof DevLobbyRoute
   DevPreconsRoute: typeof DevPreconsRoute
+  DevReadRoute: typeof DevReadRoute
   DevTableRoute: typeof DevTableRoute
   DevUnvalidatedRoute: typeof DevUnvalidatedRoute
   GameGameIdRoute: typeof GameGameIdRoute
@@ -328,6 +354,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreconsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/read': {
+      id: '/read'
+      path: '/read'
+      fullPath: '/read'
+      preLoaderRoute: typeof ReadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -377,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevPreconsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev/read': {
+      id: '/dev/read'
+      path: '/dev/read'
+      fullPath: '/dev/read'
+      preLoaderRoute: typeof DevReadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/table': {
       id: '/dev/table'
       path: '/dev/table'
@@ -423,6 +463,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   NewRoute: NewRoute,
   PreconsRoute: PreconsRoute,
+  ReadRoute: ReadRoute,
   RegisterRoute: RegisterRoute,
   SettingsRoute: SettingsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
@@ -430,6 +471,7 @@ const rootRouteChildren: RootRouteChildren = {
   DevBuilderRoute: DevBuilderRoute,
   DevLobbyRoute: DevLobbyRoute,
   DevPreconsRoute: DevPreconsRoute,
+  DevReadRoute: DevReadRoute,
   DevTableRoute: DevTableRoute,
   DevUnvalidatedRoute: DevUnvalidatedRoute,
   GameGameIdRoute: GameGameIdRoute,

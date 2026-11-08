@@ -32,7 +32,8 @@ const MESSAGES: Record<DeckFailureCode, (error: DeckError) => string> = {
   unavailable: () => 'The server is shutting down or restarting. Wait a minute, then try again.',
   internal: () => 'The server ran into a problem. Try again in a moment.',
   rate_limited: () => 'Too many requests came from this address. Wait a moment, then try again.',
-  stale_read: () => 'The rules of this card changed since the page loaded them. Read the new version, then judge it.',
+  stale_read: () =>
+    'The rules of this card changed since the page loaded them. Read the new version, then judge it.',
   unknown: (error) =>
     `The server refused the request, and this page does not know why. It said "${error.message}".`,
   network: () =>
