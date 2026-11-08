@@ -2029,9 +2029,44 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
             });
             batch_causes(inner, firsts, scope)
         }
+        // "Whenever you discard one or more cards for the first time each turn": the batch that holds the player's first
+        // discards of the turn, any card.
+        (TriggerPattern::Nth { event, nth: 1 }, Happened::Batch(members))
+            if matches!(&**event, TriggerPattern::Batch(inner)
+                if matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())) =>
+        {
+            let TriggerPattern::Batch(inner) = &**event else {
+                return Vec::new();
+            };
+            let firsts = members
+                .iter()
+                .filter(|member| e16a_first_discards(scope.state, members, member));
+            batch_causes(inner, firsts, scope)
+        }
         (TriggerPattern::Batch(_), _) | (_, Happened::Batch(_)) => Vec::new(),
         _ => matching(pattern, happened, scope).into_iter().collect(),
     }
+}
+
+/// Whether `member` is a discard of a player whose discards this turn are all in this batch: the turn's count after the
+/// batch (`post`) equals the player's discards in it.
+fn e16a_first_discards(post: &GameState, members: &[Happened], member: &Happened) -> bool {
+    let discarder = |happened: &Happened| match happened {
+        Happened::Moved {
+            from: Zone::Hand(player),
+            cause: Some(ZoneCause::Discarded),
+            ..
+        } => Some(*player),
+        _ => None,
+    };
+    let Some(player) = discarder(member) else {
+        return false;
+    };
+    let here = members
+        .iter()
+        .filter(|other| discarder(other) == Some(player))
+        .count();
+    usize::try_from(post.tallied(player, Tally::Discarded)).is_ok_and(|turn| turn == here)
 }
 
 /// Whether a damage pattern's recipient names players, so that its batch triggers once for each player dealt damage.

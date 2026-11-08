@@ -1744,7 +1744,8 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         }
         // The damage of one batch is one time, and the engine counts only the first batch of a turn.
         TriggerPattern::Batch(inner) if nth == 1 => {
-            let counted = super::r7e_events::r7e_one_object_damage(inner)?;
+            let counted = super::r7e_events::r7e_one_object_damage(inner)
+                .or_else(|| super::e16a_history::first_discards(inner))?;
             return Some(format!("{counted} for the first time each turn"));
         }
         // The counters of one batch are one time: the first counter put in the turn is the one that counts.

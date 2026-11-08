@@ -14,6 +14,7 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     Some(match mode {
         "AttackerUnblocked" => unblocked(ctx, p),
         "SpellCastOrCopy" => cast_or_copy(ctx, p),
+        "DiscardedAll" if p.get("FirstTime").is_some() => first_discards(ctx, p),
         "DiscardedAll" => discarded(ctx, p).map(|inner| batch(&inner)),
         "LifeLostAll" => life_lost(p).map(|inner| batch(&inner)),
         "SacrificedOnce" => sacrificed(ctx, p).map(|inner| batch(&inner)),
@@ -64,6 +65,17 @@ fn discarded(ctx: &Ctx, p: &Params) -> Tr<Value> {
         pattern["what"] = json!(what);
     }
     Ok(json!({ "Discarded": pattern }))
+}
+
+/// "Whenever you discard one or more cards for the first time each turn": the batch of the player's first discards. A
+/// first time among the cards of a kind (Veronica's nonland cards) needs the kind of every earlier discard and stays a gap.
+fn first_discards(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    if p.get("ValidCard").is_some_and(|valid| valid != "Card") {
+        return unmapped("key:Trigger.DiscardedAll.FirstTime-of-a-kind");
+    }
+    let line = p.without(&["FirstTime"]);
+    let inner = discarded(ctx, &line)?;
+    super::triggers::first_time(p, batch(&inner))
 }
 
 fn life_lost(p: &Params) -> Tr<Value> {

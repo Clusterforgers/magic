@@ -283,6 +283,10 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if !r6d.is_empty() {
         return r6d;
     }
+    let e16a = super::e16a_history::texts(left, *op, number);
+    if !e16a.is_empty() {
+        return e16a;
+    }
     let counted = |pattern: &dyn Fn(&str) -> String| -> Vec<String> {
         quantity_texts(number)
             .iter()

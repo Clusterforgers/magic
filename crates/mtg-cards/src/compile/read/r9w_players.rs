@@ -107,6 +107,19 @@ fn fact(test: &Condition) -> Option<Fact> {
             one: "who was dealt damage this turn".to_owned(),
             many: vec!["who were dealt damage this turn".to_owned()],
         }),
+        Amount::Tallied {
+            who: Ref::You,
+            what: what @ (TurnTally::CombatDamageTaken | TurnTally::NoncombatDamageTaken),
+        } if *right == Amount::Fixed(1) => {
+            let kind = super::e16a_history::damage_kind(*what)?;
+            Some(Fact {
+                one: format!("who was dealt {kind} damage this turn"),
+                many: vec![
+                    format!("who were dealt {kind} damage this turn"),
+                    format!("that were dealt {kind} damage this turn"),
+                ],
+            })
+        }
         Amount::Counters {
             on: Ref::You,
             counter: CounterKind::Poison,
