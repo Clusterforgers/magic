@@ -4,7 +4,9 @@
 use super::ClauseState;
 use super::pairing::unmatched;
 use crate::ability::Ability;
-use crate::compile::{BlockPlan, keyword_grant, same_text, without_header, written_variants};
+use crate::compile::{
+    BlockPlan, keyword_grant, same_written_text, without_header, written_variants,
+};
 use crate::modify::Modification;
 use crate::refs::Ref;
 use crate::value::{Amount, Condition};
@@ -34,7 +36,10 @@ impl Owned<'_> {
     /// is a wording of the ability.
     fn says(&self, line: &str) -> bool {
         keyword_grant(line).is_some_and(|grant| grant == self.bare)
-            || self.written.iter().any(|text| same_text(text, line))
+            || self
+                .written
+                .iter()
+                .any(|text| same_written_text(text, line))
     }
 }
 

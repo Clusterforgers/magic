@@ -7,7 +7,7 @@ use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
     Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, either_way_pair_texts,
-    own_names, read_keyword, read_keywords, same_text, static_pair_texts, written_variants,
+    own_names, read_keyword, read_keywords, same_written_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;
@@ -51,12 +51,27 @@ pub(crate) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) 
         let of_face: Vec<&Clause> = clauses.iter().filter(|c| c.face == face).collect();
         let creature_at = printed.faces.get(face).and_then(creature_at);
         let names = printed.faces.get(face).map(own_names).unwrap_or_default();
-        let found = Pairer::new(face, abilities, &of_face, (creature_at, names)).run();
+        let attachment = printed
+            .faces
+            .get(face)
+            .map_or("", |printed| attachment_word(&printed.type_line));
+        let found = Pairer::new(face, abilities, &of_face, (creature_at, names, attachment)).run();
         paired.clauses.extend(found.clauses);
         paired.strays.extend(found.strays);
         paired.places.extend(found.places);
     }
     paired
+}
+
+/// "equipped" for an Equipment, "enchanted" for an Aura: the word its attached object is named by.
+fn attachment_word(type_line: &str) -> &'static str {
+    if type_line.contains("Equipment") {
+        "equipped"
+    } else if type_line.contains("Aura") {
+        "enchanted"
+    } else {
+        ""
+    }
 }
 
 /// The clause kinds an ability can stand for.
@@ -201,6 +216,8 @@ struct Pairer<'a> {
     names: Vec<String>,
     /// "a Dragon was beheld" or "evidence was collected": the words for the paid additional cost of the face.
     beheld: Option<String>,
+    /// What the face attaches by: "equipped" for an Equipment, "enchanted" for an Aura, nothing for another card.
+    attachment: &'static str,
     slots: Vec<Slot<'a>>,
     taken: Vec<bool>,
     slot_of: Vec<Option<usize>>,
@@ -213,7 +230,7 @@ impl<'a> Pairer<'a> {
         face: usize,
         abilities: &'a [Ability],
         clauses: &[&'a Clause],
-        (creature_at, names): (Option<i32>, Vec<String>),
+        (creature_at, names, attachment): (Option<i32>, Vec<String>, &'static str),
     ) -> Self {
         Pairer {
             face,
@@ -221,6 +238,7 @@ impl<'a> Pairer<'a> {
             creature_at,
             names,
             beheld: super::e15c_beheld::paid_words(abilities),
+            attachment,
             slots: clauses
                 .iter()
                 .map(|&clause| Slot {
@@ -289,9 +307,22 @@ impl<'a> Pairer<'a> {
         })
     }
 
+    /// The wording with the attached object named by the face's own attachment: the data keeps "what the source is
+    /// attached to" and the face says whether that is equipped or enchanted.
+    fn attached(&self, variant: &str) -> String {
+        let (from, to) = match self.attachment {
+            "equipped" => ("nchanted creature", "quipped creature"),
+            "enchanted" => ("quipped creature", "nchanted creature"),
+            _ => return variant.to_owned(),
+        };
+        variant.replace(from, to)
+    }
+
     /// Whether a written wording is the clause text; the face's own names count as `~` in it, as in the clause.
     fn same(&self, variant: &str, text: &str) -> bool {
-        if same_text(variant, text) {
+        let worded = self.attached(variant);
+        let variant = worded.as_str();
+        if same_written_text(variant, text) {
             return true;
         }
         if let Some(unworded) = r7c_unworded(text) {
@@ -308,7 +339,7 @@ impl<'a> Pairer<'a> {
         for name in &self.names {
             shown = shown.replace(name.as_str(), "~");
         }
-        shown != variant && same_text(&shown, text)
+        shown != variant && same_written_text(&shown, text)
     }
 
     /// The clauses a `Manual` ability of the proposal leaves to the table.
@@ -642,7 +673,10 @@ impl<'a> Pairer<'a> {
             ) {
                 let text = &self.slots[at].clause.text;
                 let wanted = rows.get(at - head - 1).map_or(&[][..], Vec::as_slice);
-                if !wanted.iter().any(|written| same_text(written, text)) {
+                if !wanted
+                    .iter()
+                    .any(|written| same_written_text(written, text))
+                {
                     let written = wanted
                         .iter()
                         .max_by_key(|variant| common_prefix(variant, text))
@@ -843,7 +877,7 @@ pub(crate) fn haunt_pair_texts(enters: &Ability, haunted: &Ability) -> Vec<Strin
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause; a spell ability reads a line the compiler takes for a static only when its wording names every line.
+    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause; a spell ability reads a line the compiler takes for a static only when its wording names every line; what a source is attached to is named by the face (equipped for an Equipment, enchanted for an Aura), and the other word reads as another rule.
     use rstest::rstest;
 
     use super::*;
@@ -890,6 +924,29 @@ mod tests {
             .iter()
             .all(|state| matches!(state, ClauseState::Reads { ability: 0 }));
         assert_eq!(all_read, reads, "{states:?}");
+    }
+
+    /// An activated ability that pumps what the source is attached to (Demonspine Whip).
+    const W16_PUMP: &str = r#"{"faces":[{"abilities":[{"Activated":{"cost":"{X}","effects":[{"Continuous":{"affected":"Attached","duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":"X","toughness":0}}]}}]}}]}]}"#;
+
+    #[rstest]
+    #[case::equipment_equipped("Artifact \u{2014} Equipment", "Equipped", true)]
+    #[case::equipment_enchanted("Artifact \u{2014} Equipment", "Enchanted", false)]
+    #[case::aura_enchanted("Enchantment \u{2014} Aura", "Enchanted", true)]
+    #[case::aura_equipped("Enchantment \u{2014} Aura", "Equipped", false)]
+    #[case::other_card_equipped("Artifact", "Equipped", false)]
+    #[case::other_card_enchanted("Artifact", "Enchanted", true)]
+    fn w16_the_attached_object_is_named_by_the_face(
+        #[case] type_line: &str,
+        #[case] word: &str,
+        #[case] reads: bool,
+    ) {
+        let text = format!("{{X}}: {word} creature gets +X/+0 until end of turn.");
+        let states = c11f_states(type_line, &text, W16_PUMP);
+        let read = states
+            .iter()
+            .all(|state| matches!(state, ClauseState::Reads { ability: 0 }));
+        assert_eq!(read, reads, "{states:?}");
     }
 
     #[rstest]

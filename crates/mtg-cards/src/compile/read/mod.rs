@@ -202,8 +202,14 @@ mod w14a_wanderer;
 mod w14b_or_spell;
 mod w14c_alt_costs;
 mod w14c_block_capacity;
+mod w15_wordings;
 mod w15b_time;
 mod w15c_clash;
+mod w16_wordings;
+mod w16b_labels;
+mod w16c_lists;
+mod w16d_forms;
+mod w16e_sequence;
 mod w17b_statics;
 mod w17c_cast_only;
 mod w20a_look_pick;
@@ -253,7 +259,7 @@ pub use render::{
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;
-pub use tokens::same_text;
+pub use tokens::{same_text, same_written_text};
 
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
