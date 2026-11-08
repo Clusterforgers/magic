@@ -1,0 +1,189 @@
+// Goal: the review screen lists a deck's cards to read beside the card being read, highlights a clause the game words differently, gives no verdict for the first 2 s, takes Correct with C or the button and moves to the next card, needs a note for Wrong (W opens it), asks to load a draft that changed meanwhile, ends with every card read, and the table's ReadDialog shows the same sheet.
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { AuthContext } from '@/features/auth/context'
+import { createAuthStore, offlineAccounts } from '@/features/auth/store'
+import type { ReadsApi } from '@/net/reads'
+import { renderInRouter } from '@/test-utils/router'
+import { ReadsApiContext } from './apiContext'
+import { READ_CARDS, fixtureReadsApi } from './dev/fixture'
+import type { ReadFixtureOptions } from './dev/fixture'
+import { READ_DELAY_MS } from './model'
+import { ReadDialog } from './ReadDialog'
+import { ReadPage } from './ReadPage'
+
+const [FIRST, SECOND, THIRD] = Object.values(READ_CARDS) as [
+  (typeof READ_CARDS)[string],
+  (typeof READ_CARDS)[string],
+  (typeof READ_CARDS)[string],
+]
+
+function signedIn() {
+  return createAuthStore({
+    api: { ...offlineAccounts, myGames: async () => [] },
+    initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L', is_admin: false } },
+  })
+}
+
+function spied(options: ReadFixtureOptions = {}) {
+  const api = fixtureReadsApi(options)
+  const judge = vi.fn(api.judge)
+  return { api: { ...api, judge } satisfies ReadsApi, judge }
+}
+
+async function renderPage(options: ReadFixtureOptions = {}) {
+  const { api, judge } = spied(options)
+  await renderInRouter(
+    <AuthContext value={signedIn()}>
+      <ReadPage target={{ deck: 'deck-izzet' }} api={api} />
+    </AuthContext>,
+  )
+  await screen.findByRole('heading', { level: 2, name: FIRST.name })
+  return { judge }
+}
+
+const button = (name: RegExp) => screen.getByRole('button', { name })
+// Effects first, so the delay's timer is set before the clock moves on.
+const pass = async (ms: number) => {
+  await act(async () => {})
+  await act(async () => {
+    vi.advanceTimersByTime(ms)
+  })
+}
+
+beforeEach(() => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+})
+
+afterEach(() => {
+  vi.useRealTimers()
+})
+
+describe('ReadPage', () => {
+  it('lists the cards and shows the first with its differing clause highlighted', async () => {
+    await renderPage()
+    const list = screen.getByRole('navigation', { name: 'Cards to read' })
+    expect(
+      within(list)
+        .getAllByRole('button')
+        .map((item) => item.textContent),
+    ).toEqual([
+      expect.stringContaining(FIRST.name),
+      expect.stringContaining(SECOND.name),
+      expect.stringContaining(THIRD.name),
+    ])
+    expect(within(list).getByRole('button', { current: true })).toHaveTextContent(FIRST.name)
+    const rows = screen.getByRole('list', { name: "Clauses beside the game's reading" })
+    const tones = [...rows.querySelectorAll(':scope > li')].map((row) => row.getAttribute('data-tone'))
+    expect(tones).toEqual(['written', 'differs', 'unwritten'])
+    expect(screen.getByText('1 clause is worded differently by the game. Compare it closely.')).toBeVisible()
+  })
+
+  it('gives no verdict for the first two seconds, by button or key', async () => {
+    const { judge } = await renderPage()
+    expect(button(/^Correct/)).toHaveAttribute('aria-disabled', 'true')
+    fireEvent.click(button(/^Correct/))
+    fireEvent.keyDown(document.body, { key: 'c' })
+    expect(judge).not.toHaveBeenCalled()
+    await pass(READ_DELAY_MS)
+    expect(button(/^Correct/)).toHaveAttribute('aria-disabled', 'false')
+  })
+
+  it('takes Correct with C and moves on to the next card', async () => {
+    const { judge } = await renderPage()
+    await pass(READ_DELAY_MS)
+    fireEvent.keyDown(document.body, { key: 'c' })
+    await screen.findByRole('heading', { level: 2, name: SECOND.name })
+    expect(judge).toHaveBeenCalledWith(FIRST.oracle_id, {
+      read_hash: FIRST.read_hash,
+      verdict: 'correct',
+      note: null,
+    })
+    const list = screen.getByRole('navigation', { name: 'Cards to read' })
+    expect(within(list).getAllByRole('button')[0]).toHaveTextContent('You said correct')
+    expect(screen.getByText(/saved\. Next: Ember Archive\./)).toBeInTheDocument()
+    // The next card waits its own two seconds.
+    expect(button(/^Correct/)).toHaveAttribute('aria-disabled', 'true')
+  })
+
+  it('needs a note for Wrong, which W opens', async () => {
+    const { judge } = await renderPage()
+    await pass(READ_DELAY_MS)
+    fireEvent.keyDown(document.body, { key: 'w' })
+    const note = screen.getByRole('textbox', { name: 'What do the rules do wrong?' })
+    await waitFor(() => expect(note).toHaveFocus())
+    // The key typed into the note is no verdict.
+    fireEvent.keyDown(note, { key: 'c' })
+    fireEvent.click(button(/^Send: wrong/))
+    expect(screen.getByText('Say what the rules do wrong.')).toBeVisible()
+    expect(note).toHaveAttribute('aria-invalid', 'true')
+    expect(judge).not.toHaveBeenCalled()
+    fireEvent.change(note, { target: { value: '  it never discards  ' } })
+    fireEvent.click(button(/^Send: wrong/))
+    await screen.findByRole('heading', { level: 2, name: SECOND.name })
+    expect(judge).toHaveBeenCalledWith(FIRST.oracle_id, {
+      read_hash: FIRST.read_hash,
+      verdict: 'wrong',
+      note: 'it never discards',
+    })
+  })
+
+  it('asks to load a draft that changed since the page loaded it', async () => {
+    await renderPage({ stale: true })
+    await pass(READ_DELAY_MS)
+    fireEvent.click(button(/^Correct/))
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent('The rules changed')
+    fireEvent.click(within(alert).getByRole('button', { name: 'Load the new version' }))
+    await screen.findByRole('heading', { level: 2, name: FIRST.name })
+    expect(screen.queryByRole('alert')).toBeNull()
+  })
+
+  it('ends with every card read', async () => {
+    await renderPage()
+    for (const next of [SECOND.name, THIRD.name]) {
+      await pass(READ_DELAY_MS)
+      fireEvent.keyDown(document.body, { key: 'c' })
+      await screen.findByRole('heading', { level: 2, name: next })
+    }
+    await pass(READ_DELAY_MS)
+    fireEvent.keyDown(document.body, { key: 'c' })
+    expect(await screen.findByRole('heading', { name: 'Every card is read' })).toBeVisible()
+  })
+
+  it('says what to do with no deck in the address, and when nothing waits', async () => {
+    await renderInRouter(
+      <AuthContext value={signedIn()}>
+        <ReadPage target={null} api={fixtureReadsApi()} />
+      </AuthContext>,
+    )
+    expect(screen.getByText('Open this page from a deck or a precon that has cards to read.')).toBeVisible()
+  })
+
+  it('shows a failed list with Try again', async () => {
+    await renderInRouter(
+      <AuthContext value={signedIn()}>
+        <ReadPage target={{ precon: 'c18' }} api={fixtureReadsApi({ listFails: 'network' })} />
+      </AuthContext>,
+    )
+    expect(await screen.findByText('The cards could not be loaded')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Try again' })).toBeVisible()
+  })
+})
+
+describe('ReadDialog', () => {
+  it('shows the sheet of one card from the context and closes', async () => {
+    const onClose = vi.fn()
+    await renderInRouter(
+      <ReadsApiContext value={fixtureReadsApi()}>
+        <ReadDialog oracleId={FIRST.oracle_id} name={FIRST.name} onClose={onClose} />
+      </ReadsApiContext>,
+    )
+    const dialog = await screen.findByRole('dialog', { name: `Read the rules of ${FIRST.name}` })
+    expect(
+      await within(dialog).findByRole('list', { name: "Clauses beside the game's reading" }),
+    ).toBeVisible()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }))
+    expect(onClose).toHaveBeenCalled()
+  })
+})

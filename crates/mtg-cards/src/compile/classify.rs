@@ -6,6 +6,7 @@ use super::keywords;
 
 /// The shape of a clause of oracle text.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum ClauseKind {
     /// A keyword with its parameter.
     Keyword,

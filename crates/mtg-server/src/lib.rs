@@ -113,6 +113,7 @@ mod precons;
 mod prefs;
 mod presence;
 mod preview;
+mod reads;
 mod recipe;
 mod recorder;
 mod records;

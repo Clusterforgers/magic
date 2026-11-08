@@ -1,6 +1,10 @@
-import { Play, X } from 'lucide-react'
-import { useEffect } from 'react'
+import { BookOpen, Play, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { usePlay } from '@/features/game/gameContext'
+import { ReadDialog } from '@/features/reads/ReadDialog'
+import { readableOf } from '@/features/reads/readable'
+import type { Reading } from '@/features/reads/readable'
+import { useAuth } from '@/features/auth/context'
 import { Button } from '@/components/ui/button'
 import { BY_HAND_TITLE } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
@@ -49,7 +53,17 @@ const DOCK: Record<Dock, string> = {
  */
 export function CardPreview() {
   const target = usePreviewTarget()
-  return target === null ? null : <PreviewBody target={target} />
+  const [reading, setReading] = useState<Reading | null>(null)
+  return (
+    <>
+      {target === null ? null : <PreviewBody target={target} onRead={setReading} />}
+      <ReadDialog
+        oracleId={reading?.oracleId ?? null}
+        name={reading?.name ?? ''}
+        onClose={() => setReading(null)}
+      />
+    </>
+  )
 }
 
 /** The tag after an ability the viewer can activate now, in the look of the reason tag under the card's name. */
@@ -65,7 +79,7 @@ function NowTag() {
   )
 }
 
-function PreviewBody({ target }: { target: PreviewTarget }) {
+function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card: Reading) => void }) {
   const store = usePreviewStore()
   const name = useSeatNamer()
   const { id } = target
@@ -88,6 +102,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const note = useCardMark(id).note
   const reason = note?.line
   const gone = held === undefined
+  const signedIn = useAuth((state) => state.status === 'signed-in')
 
   useEffect(() => {
     // A pinned card that left the game would otherwise stay "shown" with nothing to draw.
@@ -115,6 +130,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const hosted = hostLine(object, links.host)
   const paired = pairLine(links.partner)
   const attaches = links.attaches ?? []
+  const readable = signedIn ? readableOf(object, manual.length) : null
   return (
     <div
       role="group"
@@ -252,11 +268,25 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         </p>
         {target.pinned ? (
           // Stays at the foot of the panel while the lines above it scroll.
-          <div className="sticky -bottom-3 -mb-3 bg-popover pt-1 pb-3">
+          <div className="sticky -bottom-3 -mb-3 flex flex-wrap gap-2 bg-popover pt-1 pb-3">
             <Button variant="outline" size="sm" onClick={() => store.dismiss()}>
               <X aria-hidden="true" />
               Close preview
             </Button>
+            {readable === null ? null : (
+              <Button
+                variant="outline"
+                size="sm"
+                data-slot="preview-read"
+                onClick={() => {
+                  onRead(readable)
+                  store.dismiss()
+                }}
+              >
+                <BookOpen aria-hidden="true" />
+                Read its rules
+              </Button>
+            )}
           </div>
         ) : null}
       </div>

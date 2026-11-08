@@ -22,6 +22,7 @@ use sqlx::types::uuid::Uuid;
 
 use crate::api::ApiError;
 use crate::cards::{CardSource, CatalogError, Rules};
+use crate::reads::card_draft;
 use crate::server::AppState;
 
 /// Longest free text of a search, in characters.
@@ -385,6 +386,7 @@ pub(crate) async fn detail(
             })
             .collect(),
         reasons: record.clauses.iter().map(Reason::from).collect(),
+        draft: card_draft(&rules, card),
     }))
 }
 

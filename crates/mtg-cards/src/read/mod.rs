@@ -21,6 +21,8 @@ use crate::support::PrintedCard;
 
 /// One line of what the game does, with the depth of the block it sits in.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "ts", ts(rename = "ReadStep"))]
 pub struct Step {
     /// How many blocks deep the line is: 0 for a line of the ability, 1 for one under an "if" or a mode.
     pub depth: u8,
@@ -40,6 +42,7 @@ impl Step {
 
 /// How the rules stand against one clause of the printed text.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(rename_all = "snake_case")]
 pub enum RowState {
     /// The renderer writes the ability back as this clause.
@@ -65,6 +68,7 @@ pub enum RowState {
 
 /// One printed clause and what the rules make of it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ReadRow {
     /// The face the clause belongs to.
     pub face: usize,
@@ -90,6 +94,7 @@ pub struct ReadRow {
 
 /// The review sheet of a card.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ReadSheet {
     /// The card's name.
     pub card: String,

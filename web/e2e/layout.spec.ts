@@ -267,6 +267,24 @@ const STOPS: readonly Stop[] = [
       await expect(page.getByRole('list', { name: 'Cards played by hand' })).toBeVisible()
     },
   },
+  {
+    name: 'The review screen (dev), a deck to read',
+    fitsFrom: Infinity,
+    actions: { Correct: 'main [data-verdict="correct"]', Wrong: 'main [data-verdict="wrong"]' },
+    async open(page) {
+      await page.goto(`${DEV_WEB_URL}/dev/read`)
+      await expect(page.locator('[data-slot="read-card"]')).toBeVisible()
+    },
+  },
+  {
+    name: 'The review screen (dev), the dialog from the table',
+    fitsFrom: Infinity,
+    actions: { Correct: '[data-slot="read-dialog"] [data-verdict="correct"]' },
+    async open(page) {
+      await page.goto(`${DEV_WEB_URL}/dev/read?view=dialog`)
+      await expect(page.locator('[data-slot="read-dialog"] [data-slot="read-card"]')).toBeVisible()
+    },
+  },
 ]
 
 for (const theme of THEMES) {
