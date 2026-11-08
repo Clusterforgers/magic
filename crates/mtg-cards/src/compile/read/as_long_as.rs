@@ -169,6 +169,15 @@ fn hand() -> Selector {
     Selector(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)])
 }
 
+/// The cards in the hand of the player whose turn it is, in either order of the two predicates.
+fn is_active_hand(of: &Selector) -> bool {
+    let [first, second] = of.0.as_slice() else {
+        return false;
+    };
+    let (hand, owner) = (Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::ActivePlayer));
+    (*first == hand && *second == owner) || (*first == owner && *second == hand)
+}
+
 /// Domain: the basic land types among the lands you control.
 fn w7a_domain() -> Amount {
     Amount::Distinct {
@@ -281,6 +290,13 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     } = condition
         && let [Pred::This, state] = counted.as_slice()
     {
+        // The card itself in a zone (t18): "if this card is in your graveyard".
+        if *state == Pred::In(ZoneKind::Graveyard) {
+            return vec![
+                "~ is in your graveyard".to_owned(),
+                "this card is in your graveyard".to_owned(),
+            ];
+        }
         return state_texts(&Condition::Matches {
             subject: Ref::This,
             selector: Selector(vec![state.clone()]),
@@ -472,6 +488,13 @@ fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> 
             Cmp::Eq if number == 0 => vec!["you have no cards in hand".to_owned()],
             Cmp::Ge => vec![format!("you have {words} or more cards in hand")],
             Cmp::Le => vec![format!("you have {words} or fewer cards in hand")],
+            _ => Vec::new(),
+        },
+        // The player whose turn it is (t18): "that player has two or fewer cards in hand".
+        (Amount::Count(of), _) if is_active_hand(of) => match op {
+            Cmp::Eq if number == 0 => vec!["that player has no cards in hand".to_owned()],
+            Cmp::Ge => vec![format!("that player has {words} or more cards in hand")],
+            Cmp::Le => vec![format!("that player has {words} or fewer cards in hand")],
             _ => Vec::new(),
         },
         _ => Vec::new(),

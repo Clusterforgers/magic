@@ -62,3 +62,47 @@ fn control_another(#[case] count: &str, #[case] text: &str) {
 fn not_the_same_rule(#[case] count: &str, #[case] op: &str, #[case] number: u32, #[case] text: &str) {
     assert!(!written(&enters_if(count, op, number), text));
 }
+
+fn upkeep_if(left: &str, op: &str, number: u32) -> String {
+    format!(
+        r#"{{"Triggered":{{"effects":[{{"DealDamage":{{"amount":2,"to":"Triggering"}}}}],"if":{{"Compare":{{"left":{{"Count":[{left}]}},"op":"{op}","right":{number}}}}},"when":{{"StepBegins":{{"step":"Upkeep","whose":"Opponents"}}}}}}}}"#
+    )
+}
+
+const THAT_PLAYER_TWO: &str = "At the beginning of each opponent's upkeep, if that player has two or fewer cards in hand, ~ deals 2 damage to that player.";
+
+#[rstest]
+#[case::owner_first(r#"{"OwnedBy":"ActivePlayer"},{"In":"Hand"}"#, "Le", 2)]
+#[case::zone_first(r#"{"In":"Hand"},{"OwnedBy":"ActivePlayer"}"#, "Le", 2)]
+fn the_hand_of_the_active_player(#[case] left: &str, #[case] op: &str, #[case] number: u32) {
+    assert!(written(&upkeep_if(left, op, number), THAT_PLAYER_TWO));
+}
+
+#[rstest]
+#[case::more_cards(r#"{"OwnedBy":"ActivePlayer"},{"In":"Hand"}"#, "Le", 3)]
+#[case::at_least(r#"{"OwnedBy":"ActivePlayer"},{"In":"Hand"}"#, "Ge", 2)]
+#[case::your_hand(r#"{"OwnedBy":"You"},{"In":"Hand"}"#, "Le", 2)]
+#[case::the_graveyard(r#"{"OwnedBy":"ActivePlayer"},{"In":"Graveyard"}"#, "Le", 2)]
+fn another_hand_count_is_another_rule(#[case] left: &str, #[case] op: &str, #[case] number: u32) {
+    assert!(!written(&upkeep_if(left, op, number), THAT_PLAYER_TWO));
+}
+
+fn life_lost(who: &str, number: u32) -> String {
+    format!(
+        r#"{{"Triggered":{{"effects":[{{"Draw":{{}}}}],"if":{{"Compare":{{"left":{{"Tallied":{{"what":"LifeLost","who":"{who}"}}}},"op":"Ge","right":{number}}}}},"when":{{"ZoneChange":{{"to":"Battlefield","what":["This"]}}}}}}}}"#
+    )
+}
+
+#[rstest]
+#[case::an_opponent("Opponents", 1, true)]
+#[case::two_life("Opponents", 2, false)]
+#[case::you("You", 1, false)]
+fn an_opponent_lost_life(#[case] who: &str, #[case] number: u32, #[case] reads: bool) {
+    assert_eq!(
+        written(
+            &life_lost(who, number),
+            "When ~ enters, if an opponent lost life this turn, draw a card."
+        ),
+        reads
+    );
+}
