@@ -5,13 +5,18 @@ import type { PageWidth } from './pageWidths'
 export type { PageWidth }
 
 // Whole class names, so Tailwind can see them. The widths are the `--container-*` tokens of index.css.
-const WIDTH: Record<PageWidth, string> = { narrow: 'max-w-narrow', page: 'max-w-page', wide: 'max-w-wide' }
+const WIDTH: Record<PageWidth, string> = {
+  narrow: 'max-w-narrow',
+  page: 'max-w-page',
+  wide: 'max-w-wide',
+  wider: 'max-w-wider',
+}
 
 interface PageShellProps extends ComponentProps<'div'> {
   width?: PageWidth
 }
 
-/** The column every page sits in: centred, one of the three widths, the same gutters. */
+/** The column every page sits in: centred, one of the four widths, the same gutters. */
 export function PageShell({ width = 'page', className, ...props }: PageShellProps) {
   return (
     <div
