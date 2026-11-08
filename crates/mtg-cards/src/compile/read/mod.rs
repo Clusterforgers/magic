@@ -91,6 +91,7 @@ mod e16b_presence;
 mod e16c_attacks;
 mod e17b_exile_until;
 mod e17b_returned;
+mod e18a_first;
 mod effects;
 mod either_way_pairs;
 mod equip_options;

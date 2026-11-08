@@ -1268,6 +1268,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
     let mut group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
     group.extend(super::w14c_alt_costs::w14c_alt_cost_texts(ability));
+    group.extend(super::e18a_first::free_activation_texts(ability));
     group.extend(super::t15a_alt_costs::t15a_alt_cost_texts(ability));
     group.extend(super::w17c_cast_only::w17c_cast_only_texts(ability));
     group.extend(group_enters(ability));

@@ -167,7 +167,10 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "MustBlock" => must_act(ctx, p, "MustBlock")?,
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
         "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
-        "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
+        "AlternativeCost" => match super::e18a_first::free_activation(p) {
+            Some(found) => found?,
+            None => super::statics_alt::alternative_cost(ctx, p)?,
+        },
         "OptionalCost" => super::statics_alt::optional_cost(ctx, p)?,
         other => return unmapped(format!("static:{other}")),
     })
