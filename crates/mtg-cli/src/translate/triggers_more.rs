@@ -113,7 +113,9 @@ pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     }
     if mode != "DamageDone" {
         // Every player and every permanent is every recipient damage can have.
-        if recipients.len() == 2 && recipients.contains(&"Player") && recipients.contains(&"Permanent")
+        if recipients.len() == 2
+            && recipients.contains(&"Player")
+            && recipients.contains(&"Permanent")
         {
             return Ok(json!({ "DealsDamage": pattern }));
         }

@@ -51,13 +51,19 @@ fn an_etb_counter_line_with_an_empty_condition_field_has_no_condition() {
     let script = "Name:T\nTypes:Creature Elf\nK:etbCounter:P1P1:X::Enters with counters.\nSVar:X:Count$TotalCommanderCastFromCommandZone/Twice\n";
     let found = abilities(script);
     let text = serde_json::to_string(&found).unwrap_or_default();
-    assert!(text.contains(r#""WithCounters""#) && !text.contains("condition"), "{text}");
+    assert!(
+        text.contains(r#""WithCounters""#) && !text.contains("condition"),
+        "{text}"
+    );
 }
 
 #[test]
 fn an_etb_counter_line_with_a_condition_stays_a_gap() {
     let script = "Name:T\nTypes:Creature Elf\nK:etbCounter:P1P1:2:Foo$ Bar\n";
-    assert_eq!(gaps(script), vec!["keyword:etbCounter-condition".to_owned()]);
+    assert_eq!(
+        gaps(script),
+        vec!["keyword:etbCounter-condition".to_owned()]
+    );
 }
 
 #[rstest]
@@ -73,7 +79,11 @@ fn damage_once_to_players_and_permanents_names_no_recipient(
     );
     let found = abilities(&script);
     let text = serde_json::to_string(&found).unwrap_or_default();
-    assert_eq!(text.contains(r#""Batch""#) && !text.contains(r#""to""#), anywhere, "{text}");
+    assert_eq!(
+        text.contains(r#""Batch""#) && !text.contains(r#""to""#),
+        anywhere,
+        "{text}"
+    );
     if !anywhere {
         assert_eq!(
             gaps(&script),
