@@ -1429,8 +1429,13 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         } if source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer) => {
             said(&damaged_subject(to)?, "is dealt damage")
         }
+        // The creature an Equipment is attached to, however the translator names it: "equipped creature deals combat damage".
         TriggerPattern::DealsDamage { source, to, combat } => said(
-            source,
+            &if source.0 == [Pred::Type(CardType::Creature), Pred::Is(Ref::Attached)] {
+                Selector(vec![Pred::Is(Ref::Attached)])
+            } else {
+                source.clone()
+            },
             &format!("deals {}", damage_text(*combat, to.as_ref())?),
         ),
         // An action of `Did`, or nothing.

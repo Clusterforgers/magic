@@ -213,6 +213,17 @@ fn historic() -> Pred {
     ])
 }
 
+/// Whether the predicate is [`historic`] in any order of its three parts.
+fn is_historic(pred: &Pred) -> bool {
+    let Pred::AnyOf(parts) = pred else {
+        return false;
+    };
+    let Pred::AnyOf(wanted) = historic() else {
+        return false;
+    };
+    parts.len() == wanted.len() && wanted.iter().all(|part| parts.contains(part))
+}
+
 /// An Assassin, Mercenary, Pirate, Rogue or Warlock (CR 205.3m).
 fn outlaw() -> Pred {
     Pred::AnyOf(
@@ -299,7 +310,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
         pred if *pred == multicolored() => "multicolored".to_owned(),
         pred if *pred == monocolored() => "monocolored".to_owned(),
         pred if *pred == attacking_or_blocking() => "attacking or blocking".to_owned(),
-        pred if *pred == historic() => "historic".to_owned(),
+        pred if is_historic(pred) => "historic".to_owned(),
         pred if *pred == outlaw() => "outlaw".to_owned(),
         Pred::Tapped => "tapped".to_owned(),
         Pred::Untapped => "untapped".to_owned(),

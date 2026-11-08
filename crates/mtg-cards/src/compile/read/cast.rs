@@ -377,6 +377,13 @@ pub fn text(effect: &Effect) -> Option<String> {
             let face = if *sealed { " face down" } else { "" };
             format!("exile {} of your library{face}", top_text(count)?)
         }
+        // The library of the player an event names: "exile the top card of that player's library".
+        Effect::ExileTop {
+            who: Ref::Triggering,
+            count,
+            sealed: false,
+            ..
+        } => format!("exile {} of that player's library", top_text(count)?),
         Effect::ExileUntil {
             who: Ref::You,
             filter: Selector(preds),

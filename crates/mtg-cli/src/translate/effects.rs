@@ -230,7 +230,7 @@ fn holds_what_was_taken(ctx: &Ctx, name: &str) -> bool {
     if line.get("DB") != Some("Effect")
         || !matches!(
             line.get("RememberObjects"),
-            Some("Remembered" | "RememberedCard")
+            Some("Remembered" | "RememberedCard" | "Imprinted")
         )
         || line.has("ConditionDefined")
         || line.has("ConditionPresent")
@@ -1139,7 +1139,7 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         );
         let effects = chain_at(ctx, &part.without(&["ModeCost"]), true)?;
         let mut mode = json!({ "effects": effects });
-        if let Some(label) = e15f_mode_name(&part) {
+        if let Some(label) = e15f_mode_name(&part).or_else(|| w20_sub_mode_name(ctx, &part)) {
             mode["label"] = json!(label);
         }
         if !ctx.targets.is_empty() {
@@ -1186,6 +1186,15 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         modal["different_players"] = json!(true);
     }
     Ok(json!({ "Modal": modal }))
+}
+
+/// The name of a mode whose own line has no description: the first sub-ability line holds it (What Must Be Done).
+fn w20_sub_mode_name(ctx: &Ctx, part: &Params) -> Option<String> {
+    if part.get("SpellDescription").is_some() || part.get("PrecostDesc").is_some() {
+        return None;
+    }
+    let next = ctx.svar(part.get("SubAbility")?)?;
+    e15f_mode_name(&Params::parse(next))
 }
 
 /// The name a card prints before a mode ("Charge Them — Creatures you control get +2/+0"): the words before the dash of

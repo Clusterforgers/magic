@@ -1839,6 +1839,8 @@ fn static_texts(
                 Modification::GrantAbility(_)
                     | Modification::AddKeyword(_)
                     | Modification::SetChosenColor
+                    | Modification::CantAttack
+                    | Modification::CantBlock
             )
         })
         && mods

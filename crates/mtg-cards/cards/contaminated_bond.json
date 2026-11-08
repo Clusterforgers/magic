@@ -1,0 +1,26 @@
+{
+  "oracle_id": "56aeaee8-e014-485e-b7ad-e26ade663bcf",
+  "name": "Contaminated Bond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contaminated Bond",
+      "oracle_fingerprint": "210228beb1160f83bf2d45bf24a23851",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

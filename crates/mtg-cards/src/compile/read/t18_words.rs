@@ -29,6 +29,54 @@ fn other_than(text: &str) -> Option<String> {
     ))
 }
 
+/// The wordings the cards print for what a trigger of the player an event names does to them: "that player exiles the top
+/// card of their library", "that player discards a card and you untap all lands you control", "destroy up to one target
+/// planeswalker and up to one target artifact", "historic card" for the permanent cards that are historic, and the kind
+/// of a card before "historic" ("non-Assassin historic card").
+pub(super) fn w20_wordings(text: &str) -> Vec<String> {
+    let mut more = Vec::new();
+    if text.contains("exile the top") && text.contains(" of that player's library") {
+        more.push(
+            text.replace("exile the top", "that player exiles the top")
+                .replace(" of that player's library", " of their library"),
+        );
+    }
+    if text.contains(" and untap each land you control") {
+        more.push(text.replace(
+            " and untap each land you control",
+            " and you untap all lands you control",
+        ));
+    }
+    if let Some(at) = text.find("destroy up to one target ")
+        && let Some(rest) = text[at..].strip_prefix("destroy up to one target ")
+        && let Some(then) = rest.find(", then destroy up to one target ")
+        && !rest[..then].contains(['.', ','])
+    {
+        let first = &rest[..then];
+        let second = &rest[then + ", then destroy up to one target ".len()..];
+        more.push(format!(
+            "{}destroy up to one target {first} and up to one target {second}",
+            &text[..at]
+        ));
+    }
+    if text.contains("historic attacking creature") {
+        more.push(text.replace("historic attacking creature", "attacking historic creature"));
+    }
+    if text.contains("historic permanent card") {
+        more.push(text.replace("historic permanent card", "historic card"));
+    }
+    if let Some(at) = text.find("historic non-")
+        && let Some(word) = text[at + "historic non-".len()..].split(' ').next()
+        && text[at + "historic non-".len() + word.len()..].starts_with(" card")
+    {
+        more.push(text.replace(
+            &format!("historic non-{word} card"),
+            &format!("non-{word} historic card"),
+        ));
+    }
+    more
+}
+
 /// The other wordings of the texts written for an ability.
 pub(super) fn t18_wordings(texts: &[String]) -> Vec<String> {
     let mut more = Vec::new();
@@ -36,6 +84,7 @@ pub(super) fn t18_wordings(texts: &[String]) -> Vec<String> {
         if let Some(other) = other_than(text) {
             more.push(other);
         }
+        more.extend(w20_wordings(text));
         if text.contains(" damage to that player.") {
             more.push(text.replace(" damage to that player.", " damage to them."));
         }
