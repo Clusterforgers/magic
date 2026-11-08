@@ -1,4 +1,4 @@
-// Goal: the verdict of a deck at a table separates a deck that runs whole, one that runs on reads, one with cards played by hand (with the cards still waiting for a read) and one the table cannot take, and word each in the badge's state and label.
+// Goal: the verdict of a deck at a table separates a deck that runs whole, one that runs whole without being all Verified (read, from Forge or unverified), one with cards played by hand (with the cards still waiting for a read) and one the table cannot take, and word each in the badge's state and label.
 import { describe, expect, it } from 'vitest'
 import { legalityIssue, reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { ReportCard } from '@/protocol/generated'
@@ -16,7 +16,17 @@ describe('verdictOf', () => {
       { kind: 'reads', cards: 4 },
     ],
     [
-      'a card nobody has read beside approved ones',
+      'an unverified draft and one from Forge beside an approved read: the whole deck runs',
+      [
+        card('Forest', { count: 50 }),
+        card('Read Card', { count: 4, support: 'read', draft: 'approved' }),
+        card('Unread', { count: 4, support: 'unverified', draft: 'pending' }),
+        card('Translated', { count: 2, support: 'forge', draft: 'approved' }),
+      ],
+      { kind: 'reads', cards: 10 },
+    ],
+    [
+      'a partial draft nobody has read beside approved ones',
       [
         card('Forest', { count: 54 }),
         card('Read Card', { count: 4, support: 'read', draft: 'approved' }),
@@ -47,7 +57,7 @@ describe('verdictOf', () => {
 describe('the words of a verdict', () => {
   it.each<[Verdict, string, string]>([
     [{ kind: 'runs' }, 'verified', 'Whole deck runs'],
-    [{ kind: 'reads', cards: 4 }, 'read', 'Runs on reads'],
+    [{ kind: 'reads', cards: 4 }, 'read', 'Whole deck runs'],
     [{ kind: 'hand', cards: 3, names: [], toRead: 1 }, 'manual_play', '3 cards played by hand'],
     [{ kind: 'blocked', reasons: [] }, 'blocked', 'Cannot be taken'],
   ])('%j is the state %s and says "%s"', (verdict, state, label) => {

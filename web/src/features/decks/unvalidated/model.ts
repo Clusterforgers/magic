@@ -8,7 +8,7 @@ import type { Reason, ReadDiffers, ReadState, ReportCard, Support } from '@/prot
 import { SUPPORT_LABEL } from '../format'
 
 /** The support states of a card the game does not run whole. */
-export type Unvalidated = Exclude<Support, 'verified' | 'read' | 'forge'>
+export type Unvalidated = Exclude<Support, 'verified' | 'read' | 'forge' | 'unverified'>
 
 /** The states in the order the filters list them. */
 export const UNVALIDATED: readonly Unvalidated[] = ['partial', 'manual', 'stale', 'unplayable']
@@ -59,6 +59,7 @@ export const NO_CLAUSE: Readonly<Record<Support, string>> = {
   verified: '',
   read: '',
   forge: '',
+  unverified: '',
   partial: PARTLY_BY_HAND,
   manual: BY_HAND,
   stale: `its text changed since the rules were written, so it is ${BY_HAND}`,

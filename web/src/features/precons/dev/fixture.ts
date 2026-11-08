@@ -32,6 +32,8 @@ export const FIXTURE_PRECONS: readonly PreconListItem[] = [
       release_date: '2024-06-14',
       commanders: ['Satya, Aetherflux Genius'],
     }),
+    // Runs whole, most of it not Verified: the badge says so and a quiet line breaks the tiers down.
+    { forge: 34, unverified: 20, read: 2, toRead: 20 },
   ),
   checked(
     commander('clb-draconic-domination', 'Draconic Domination', {

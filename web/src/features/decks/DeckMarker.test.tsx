@@ -7,7 +7,7 @@ import type { MarkerChange, MarkerKind } from './DeckMarker'
 
 const CASES: ReadonlyArray<readonly [string, DeckState, MarkerChange, MarkerKind, string]> = [
   ['a clean saved check', 'verified', {}, 'verified', 'Verified'],
-  ['a deck on reads', 'read', {}, 'read', 'Runs on reads'],
+  ['a deck on reads', 'read', {}, 'read', 'Whole deck runs'],
   ['a deck played by hand', 'manual_play', {}, 'manual_play', 'Played by hand'],
   ['a blocked deck', 'blocked', {}, 'blocked', 'Blocked'],
   ['a state never stored by a check', 'unchecked', {}, 'unchecked', 'Unchecked'],

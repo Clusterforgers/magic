@@ -562,7 +562,7 @@ impl CardSource {
     }
 
     /// The library a game that pinned `reads` builds with: the hand-written and compiled rules and exactly those
-    /// drafts, each as read and found correct whatever the verdicts are now.
+    /// drafts, each running whatever the verdicts are now, labelled `Read` or `Forge` once approved, else `Unverified`.
     async fn pinned_library(&self, reads: &Reads) -> Result<Arc<Library>, CatalogError> {
         let base = self.base_library().await?;
         let keys: Vec<DraftKey> = reads
@@ -590,11 +590,25 @@ impl CardSource {
         if !missing.is_empty() {
             return Err(CatalogError::NotFound { ids: missing });
         }
+        // Only the label follows today's verdicts: a whole draft runs pending or approved alike, and a partial one runs
+        // only approved, so it always pins as such. A whole draft nobody approved shows as Unverified.
+        let current = self.library().await.ok().map(|(library, _)| library);
         let rows: Vec<DraftRules> = stored
             .into_iter()
             .map(|draft| {
                 let forge = is_trusted_forge(&draft);
-                draft_rules(draft, mtg_db::ReadState::Approved, forge)
+                let approved = draft.proof.is_some()
+                    || current
+                        .as_ref()
+                        .and_then(|library| library.draft(draft.oracle_id.as_str()))
+                        .filter(|now| now.read_hash == draft.read_hash)
+                        .map_or(forge, |now| now.read == ReadState::Approved);
+                let read = if approved {
+                    mtg_db::ReadState::Approved
+                } else {
+                    mtg_db::ReadState::Pending
+                };
+                draft_rules(draft, read, forge)
             })
             .collect();
         let (library, left_out) = off_runtime(move || {
@@ -827,8 +841,8 @@ impl CardSource {
     }
 
     /// The definitions a recipe needs, built as the game was created: a recipe that pinned reads gets exactly those
-    /// drafts as approved, one that pinned none gets no draft. A recipe with no deck of oracle ids needs none and
-    /// does not touch the database, so games with demo decks resume on a server whose database has no cards.
+    /// drafts, running whatever the verdicts are now, one that pinned none gets no draft. A recipe with no deck of
+    /// oracle ids needs none and does not touch the database, so games with demo decks resume on a server whose database has no cards.
     pub async fn catalog_for(&self, recipe: &GameRecipe) -> Result<Catalog, CatalogError> {
         let ids = recipe.oracle_ids();
         if ids.is_empty() {

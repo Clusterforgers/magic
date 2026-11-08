@@ -105,4 +105,5 @@ mod target_legality_view;
 mod token_printed_view;
 mod transcript;
 mod transform_view;
+mod unverified_wire;
 mod vote_hidden;

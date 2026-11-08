@@ -58,7 +58,7 @@ A companion (CR 702.139, `companions.rs`) is a card a seat names before the game
 
 ### Fail-soft resolution
 
-- A card in state `Read` runs rules no checker proved ([cards-dsl.md](cards-dsl.md)), so its errors must not stop a game. When a step of a spell or ability whose source definition has `read` returns a `ResolveError`, the engine keeps the steps already folded, drops the rest, logs `AbilityLeftToTable {source, controller, text}` (a note: no state change) and goes on as after a resolution, so the table resolves the ability by hand. The same error from any other card stays an `EngineError`, which the tests must catch, except `Unsupported`: it is left to the table for every card, so no game stops on a primitive the engine lacks.
+- A card in state `Read`, `Forge` or `Unverified` runs rules no checker proved ([cards-dsl.md](cards-dsl.md)), so its errors must not stop a game. When a step of a spell or ability whose source definition has `read` returns a `ResolveError`, the engine keeps the steps already folded, drops the rest, logs `AbilityLeftToTable {source, controller, text}` (a note: no state change) and goes on as after a resolution, so the table resolves the ability by hand. The same error from any other card stays an `EngineError`, which the tests must catch, except `Unsupported`: it is left to the table for every card, so no game stops on a primitive the engine lacks.
 
 ## Mana costs
 

@@ -65,6 +65,7 @@ fn support_word(state: Support) -> &'static str {
         Support::Verified => "Verified",
         Support::Read => "Read",
         Support::Forge => "Forge",
+        Support::Unverified => "Unverified",
         Support::Partial => "Partial",
         Support::Manual => "Manual",
         Support::Stale => "Stale",

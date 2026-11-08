@@ -43,7 +43,7 @@ describe('parseDevPreconsSearch', () => {
 
 describe('the fixture list', () => {
   it('holds a precon of every check state', () => {
-    expect(new Set(FIXTURE_PRECONS.map(statusOf))).toEqual(new Set(['whole', 'hand', 'blocked']))
+    expect(new Set(FIXTURE_PRECONS.map(statusOf))).toEqual(new Set(['whole', 'read', 'hand', 'blocked']))
   })
 
   it('is sorted newest release first, a deck with no date last, as the server sorts it', () => {

@@ -1,4 +1,4 @@
-//! Goal: a draft counts by its read when no rules file or `Verified` reading outranks it (`Read` once approved, waiting while pending or stale, by hand when wrong or when the engine lacks a primitive), and the tally counts `Read` and the waiting cards apart from `Partial` and `Manual`.
+//! Goal: a draft counts by its read when no rules file or `Verified` reading outranks it (`Read` once approved, `Unverified` while a draft the engine runs is pending, waiting while one that does not run is pending or stale, by hand when wrong or when the engine lacks a primitive), and the tally counts `Read`, `Unverified` and the waiting cards apart from `Partial` and `Manual`.
 use super::*;
 use crate::ability::Ability;
 use crate::card::{Face, Span};
@@ -170,7 +170,8 @@ fn a_rules_file_outranks_a_draft(#[case] read: ReadState) {
 }
 
 #[rstest]
-#[case::pending(ReadState::Pending, Support::Partial, true)]
+#[case::pending_runs_unverified(ReadState::Pending, Support::Unverified, false)]
+#[case::wrong_keeps_the_row(ReadState::Wrong, Support::Partial, false)]
 #[case::approved(ReadState::Approved, Support::Read, false)]
 fn a_compiled_row_that_is_not_verified_gives_way_to_a_draft(
     #[case] read: ReadState,
@@ -216,6 +217,7 @@ fn the_tally_counts_read_and_waiting_cards_apart_from_partial_and_manual() {
         cards: vec![
             card("a", Support::Verified, false, 1),
             card("b", Support::Read, false, 2),
+            card("u", Support::Unverified, false, 64),
             card("c", Support::Manual, true, 4),
             card("d", Support::Partial, true, 8),
             card("e", Support::Partial, false, 16),
@@ -234,6 +236,7 @@ fn the_tally_counts_read_and_waiting_cards_apart_from_partial_and_manual() {
         [
             ("verified", 1, 1),
             ("read", 1, 2),
+            ("unverified", 1, 64),
             ("waiting", 2, 12),
             ("partial", 1, 16),
             ("manual", 0, 0),
@@ -246,5 +249,5 @@ fn the_tally_counts_read_and_waiting_cards_apart_from_partial_and_manual() {
         .map(|deck| (deck.verified, deck.copies))
         .collect();
     // The share of a deck counts proven cards only.
-    assert_eq!(shares, [(1, 63)]);
+    assert_eq!(shares, [(1, 127)]);
 }

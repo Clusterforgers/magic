@@ -511,8 +511,8 @@ impl Library {
     }
 
     /// The rules that decide an imported card and their support record, by the precedence of the Read tier: a rules
-    /// file, then a `Verified` compiled row, then a draft in state `Read`, then a compiled row of any other state, then
-    /// nothing (a card with no rules text plays as printed).
+    /// file, then a `Verified` compiled row, then a draft in state `Read`, `Forge` or `Unverified`, then a compiled row
+    /// of any other state, then nothing (a card with no rules text plays as printed).
     ///
     /// Rules that read back as other text than the card (a compiled row or a draft) play by hand with the reason
     /// `readback:Differs`; the hand-written corpus is held to the same read back by its tests.
@@ -573,8 +573,8 @@ impl Library {
         (rules, record, false)
     }
 
-    /// The support of an imported card by the precedence of the Read tier: a rules file, a `Verified` compiled row, an
-    /// approved draft, then any other compiled row; nothing if none of them is there.
+    /// The support of an imported card by the precedence of the Read tier: a rules file, a `Verified` compiled row, a
+    /// running draft (approved, trusted or pending), then any other compiled row; nothing if none of them is there.
     pub fn support(&self, printed: &PrintedCard, caps: &Caps) -> SupportRecord {
         self.decide(printed, caps).1
     }
