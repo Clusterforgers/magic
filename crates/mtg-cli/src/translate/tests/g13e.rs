@@ -343,7 +343,9 @@ fn a_flip_until_the_first_loss_is_a_repeating_flip() {
 fn a_land_that_may_enter_tapped_for_rad_counters(#[case] gift: &str, #[case] read: bool) {
     let (json, found) = card(
         "Land",
-        &format!("K:ETBReplacement:Other:DBTap:Optional\nSVar:DBTap:DB$ Tap | ETB$ True | Defined$ Self | SubAbility$ DBGift\nSVar:DBGift:{gift}\nA:AB$ Draw | Cost$ 5 T | NumCards$ 1 | ReduceCost$ X\nSVar:X:Count$YourCountersRAD"),
+        &format!(
+            "K:ETBReplacement:Other:DBTap:Optional\nSVar:DBTap:DB$ Tap | ETB$ True | Defined$ Self | SubAbility$ DBGift\nSVar:DBGift:{gift}\nA:AB$ Draw | Cost$ 5 T | NumCards$ 1 | ReduceCost$ X\nSVar:X:Count$YourCountersRAD"
+        ),
     );
     assert_eq!(found.is_empty(), read, "{found:?}");
     if read {
@@ -369,14 +371,25 @@ fn several_flips_are_that_many_flips_with_the_win_part_each() {
 }
 
 #[rstest::rstest]
-#[case::a_lose_part("Amount$ 3 | WinSubAbility$ Win | LoseSubAbility$ Win", "key:FlipCoin.Amount-with-more")]
-#[case::until_a_loss("Amount$ 3 | FlipUntilYouLose$ True | WinSubAbility$ Win", "key:FlipCoin.Amount-with-more")]
+#[case::a_lose_part(
+    "Amount$ 3 | WinSubAbility$ Win | LoseSubAbility$ Win",
+    "key:FlipCoin.Amount-with-more"
+)]
+#[case::until_a_loss(
+    "Amount$ 3 | FlipUntilYouLose$ True | WinSubAbility$ Win",
+    "key:FlipCoin.Amount-with-more"
+)]
 #[case::a_counted_number("Amount$ X | WinSubAbility$ Win", "key:FlipCoin.Amount")]
-#[case::another_memory("RememberNumber$ Losses | WinSubAbility$ Win", "key:FlipCoin.RememberNumber")]
+#[case::another_memory(
+    "RememberNumber$ Losses | WinSubAbility$ Win",
+    "key:FlipCoin.RememberNumber"
+)]
 fn flips_beyond_these_words_stay_gaps(#[case] keys: &str, #[case] gap: &str) {
     let (_, found) = card(
         "Creature Goblin",
-        &format!("T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigFlip | TriggerDescription$ x\nSVar:TrigFlip:DB$ FlipCoin | {keys}\nSVar:Win:DB$ GainLife | LifeAmount$ 1"),
+        &format!(
+            "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigFlip | TriggerDescription$ x\nSVar:TrigFlip:DB$ FlipCoin | {keys}\nSVar:Win:DB$ GainLife | LifeAmount$ 1"
+        ),
     );
     assert_eq!(found, vec![gap.to_owned()]);
 }
