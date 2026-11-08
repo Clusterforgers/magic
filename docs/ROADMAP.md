@@ -32,7 +32,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Engine: zones, turns, priority, stack, combat with forecast, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch, the initiative and speed, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
-- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), smart stops, per-ability yields and leak tests (`docs/ui-design.md`).
+- Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), smart stops, per-ability yields, Undo of a cast or activation at every step and leak tests (`docs/ui-design.md`).
 - Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
 - Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
@@ -45,7 +45,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (pf21) A spell or ability can be backed out of at every step before it is on the stack (targets, modes, X, costs, payment): an Undo in each prompt returns the card or ability and any mana spent, as Arena does
 - [ ] (pf25a) Hovering or focusing a folded stack chip draws the target arrows of every item in its run, not only its top one's (`combat/stackArrows.ts`, `stackGroups.ts`)
 - [ ] (pf23a) A mana source in the hand (Simian Spirit Guide, Elvish Spirit Guide) is offered for payments and counted when an unpayable optional payment is declined without asking
 

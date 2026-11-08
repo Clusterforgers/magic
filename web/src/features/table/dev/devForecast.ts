@@ -112,6 +112,7 @@ export function devForecast(view: StateView): CombatForecast {
  * of answer and an attack with nobody.
  */
 export function devPreview(view: StateView, answer: Answer): CombatForecast | null {
+  if (typeof answer !== 'object') return null
   if ('DeclareBlockers' in answer) {
     const attackers = view.combat.attackers.map((attacker) => {
       const added = answer.DeclareBlockers.filter(([, blocked]) => blocked === attacker.object).map(

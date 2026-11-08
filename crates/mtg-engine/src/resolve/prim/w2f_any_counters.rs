@@ -116,6 +116,7 @@ fn w2f_question(cx: &Cx<'_>, holder: Target, kinds: &[CounterKind], up_to: bool)
     Decision {
         player: cx.scope.controller,
         kind: DecisionKind::ChooseOption(OptionOptions {
+            can_cancel: false,
             source: cx.scope.source.id,
             options,
             text: format!("Choose a counter to remove{whose}."),
