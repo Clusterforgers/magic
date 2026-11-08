@@ -712,6 +712,7 @@ mod g12f_memory;
 mod g13f_each_player;
 mod g13i_shapes;
 mod g14s_shapes;
+mod g20e_mana_spent_over_power;
 mod g20e_unique_name;
 mod g14t_players;
 mod g9c_shadow;
