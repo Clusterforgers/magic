@@ -215,7 +215,7 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
               className={cn('size-4 shrink-0', lit ? 'text-phase' : 'text-muted-foreground')}
             />
             {lit ? <span className="text-xs font-medium text-foreground">{run.phase.name}</span> : null}
-            <ol className="flex items-center gap-1">
+            <ol aria-label={run.phase.name} className="flex items-center gap-1">
               {run.steps.map((name, inRun) => {
                 const state = states[(starts[index] ?? 0) + inRun] ?? 'upcoming'
                 const className = state === 'current' ? CURRENT[yours ? 'you' : 'them'] : PIP[state]
