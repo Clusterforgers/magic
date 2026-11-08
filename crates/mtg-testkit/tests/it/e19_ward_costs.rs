@@ -1,4 +1,4 @@
-//! Goal: ward takes any cost the engine pays ("Ward—Blight 2", "Ward—Pay 2 life"): the player whose ability targets the
+//! Goal: ward takes any cost the engine pays (a blight, life, life counted from the warded creature's power): the player whose ability targets the
 //! warded permanent pays it and the ability resolves, or declines and the ability is countered, at tables of two to four
 //! seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
@@ -50,15 +50,22 @@ fn object(driver: &Driver, name: &str) -> mtg_core::ids::ObjectId {
         .unwrap()
 }
 
+/// Ward that costs life equal to the warded creature's power, counted as the ward resolves.
+const LIFE_OF_ITS_POWER: &str = r#"[{"PayLife":{"Stat":{"of":"This","stat":"Power"}}}]"#;
+
 #[rstest]
-#[case::blight_paid(r#"[{"Blight":2}]"#, true)]
-#[case::blight_declined(r#"[{"Blight":2}]"#, false)]
-#[case::life_paid(r#"[{"PayLife":2}]"#, true)]
-#[case::life_declined(r#"[{"PayLife":2}]"#, false)]
+#[case::blight_paid(r#"[{"Blight":2}]"#, true, 2, 0)]
+#[case::blight_declined(r#"[{"Blight":2}]"#, false, 0, 0)]
+#[case::life_paid(r#"[{"PayLife":2}]"#, true, 0, 2)]
+#[case::life_declined(r#"[{"PayLife":2}]"#, false, 0, 0)]
+#[case::life_of_its_power_paid(LIFE_OF_ITS_POWER, true, 0, 4)]
+#[case::life_of_its_power_declined(LIFE_OF_ITS_POWER, false, 0, 0)]
 fn ward_of_any_cost_is_paid_or_counters(
     #[values(2, 3, 4)] seats: usize,
     #[case] cost: &str,
     #[case] pays: bool,
+    #[case] blight: u32,
+    #[case] lost: i32,
 ) {
     let scenario = Scenario::new(seats)
         .at(1, 1, Step::Main1)
@@ -105,9 +112,5 @@ fn ward_of_any_cost_is_paid_or_counters(
         .counters_of(&CounterKind::MinusOneMinusOne);
     let life = state.player(pid(1)).unwrap().life();
     let start = state.player(pid(0)).unwrap().life();
-    match (cost.contains("Blight"), pays) {
-        (true, true) => assert_eq!(blighted, 2),
-        (false, true) => assert_eq!(life, start - 2),
-        _ => assert_eq!((blighted, life), (0, start)),
-    }
+    assert_eq!((blighted, start - life), (blight, lost));
 }

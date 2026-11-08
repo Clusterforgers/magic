@@ -1818,10 +1818,13 @@ impl<'a> Walker<'a> {
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
-            Keyword::Ward(cost)
-            | Keyword::Echo(cost)
-            | Keyword::CumulativeUpkeep(cost)
-            | Keyword::Recover(cost) => {
+            // Ward is an `Effect::Pay` of the player who targets: life counted as it resolves ("pay life equal to its
+            // power") is paid as any counted life in an effect.
+            Keyword::Ward(cost) => {
+                self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
+                self.payment_of_the_source(cost);
+            }
+            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) | Keyword::Recover(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
@@ -5774,6 +5777,9 @@ mod tests {
     #[case::r5g_discarding_your_hand_as_you_pay(r#"{"Spell":{"effects":[{"Pay":{"cost":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"paid":[{"Draw":{"count":2}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
     #[case::r5g_another_player_discarding_your_hand_count(r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Pay":{"who":{"Target":0},"cost":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Cost.Discard.Counted", "Effect.Draw", "Effect.Pay"])]
     #[case::r5g_a_discard_counted_by_a_condition(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"Discard":{"count":{"When":{"condition":"YourTurn","then":2,"otherwise":1}}}}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Amount.When", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
+    #[case::e19_ward_of_life_equal_to_its_power(r#"{"Keyword":{"Ward":[{"PayLife":{"Stat":{"of":"This","stat":"Power"}}}]}}"#, &["Cost.PayLife", "Effect.Pay.Counted", "Keyword.Ward"])]
+    #[case::e19_ward_of_a_blight(r#"{"Keyword":{"Ward":[{"Blight":2}]}}"#, &["Cost.Blight", "Keyword.Ward"])]
+    #[case::e19_ward_of_a_counted_discard(r#"{"Keyword":{"Ward":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]}}"#, &["Cost.Discard", "Cost.Discard.Counted", "Keyword.Ward"])]
     #[case::r5g_untapping_the_source(r#"{"Activated":{"cost":["Untap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Untap", "Effect.Draw"])]
     #[case::r5g_untapping_in_a_payment(r#"{"Spell":{"effects":[{"Pay":{"cost":["Untap"],"paid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Untap", "Cost.Untap.Elsewhere", "Effect.Draw", "Effect.Pay"])]
     #[case::a_payment_of_x_in_an_effect(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{X}"}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.Pay", "Effect.Pay.X", "Trigger.StepBegins"])]

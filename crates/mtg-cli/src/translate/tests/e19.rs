@@ -1,7 +1,7 @@
 //! Goal: pack e19's Forge lines read: an `Event$ Mill` replacement of a player's mill as twice that many or that many
 //! plus a number (another change of the mill, a condition or another player stays a gap), and a return whose static
 //! names creature types with `RemoveCreatureTypes$` as those types replacing the others (a word that is no creature type
-//! is a gap).
+//! is a gap), and the card of a batch of counters put on objects as each object ("that creature"), never of player counters.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -82,4 +82,26 @@ fn a_return_that_names_no_creature_types_alone_is_a_gap(#[case] animate: &str) {
             .any(|gap| gap.contains("RemoveCreatureTypes")),
         "{animate}"
     );
+}
+
+/// "Whenever one or more -1/-1 counters are put on `valid`, its controller loses 1 life", the player named by `word`.
+fn countered(valid: &str, word: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature\nPT:1/1\nT:Mode$ CounterAddedOnce | {valid} | TriggerZones$ Battlefield | CounterType$ M1M1 | Execute$ Lose | TriggerDescription$ x\nSVar:Lose:DB$ LoseLife | LifeAmount$ 1 | Defined$ {word}\n"
+    )
+}
+
+#[rstest]
+#[case::its_controller("TriggeredCardController", json!({"ControllerOf": "Triggering"}))]
+fn that_creature_of_a_counter_batch_is_the_creature(#[case] word: &str, #[case] who: Value) {
+    let text = countered("ValidCard$ Creature", word);
+    assert_eq!(gaps(&text), Vec::<String>::new());
+    let ability = &abilities(&text)[0]["Triggered"];
+    assert_eq!(ability["effects"][0]["LoseLife"]["who"], who);
+}
+
+#[rstest]
+#[case::player_counters("ValidPlayer$ Player", "TriggeredCardController")]
+fn the_card_of_a_player_counter_batch_is_a_gap(#[case] valid: &str, #[case] word: &str) {
+    assert_ne!(gaps(&countered(valid, word)), Vec::<String>::new());
 }
