@@ -422,6 +422,7 @@ impl Running {
             LogWindow {
                 log: Vec::new(),
                 names: Vec::new(),
+                hosts: Vec::new(),
             }
         })
     }
@@ -443,12 +444,13 @@ impl Running {
     pub(crate) fn sync_messages(&self, seat: PlayerId) -> Vec<ServerMessage> {
         let mut view = StateView::for_player(self.engine.state(), seat);
         self.banks.stamp(&mut view.table);
-        let LogWindow { log, names } = self.recent_log(seat);
+        let LogWindow { log, names, hosts } = self.recent_log(seat);
         let mut messages = vec![ServerMessage::Snapshot {
             seq: count(self.engine.events().len()),
             state: Box::new(view),
             log,
             names,
+            hosts,
         }];
         let visible = self.all().find(|p| p.decision.player == seat && !p.hidden);
         if let Some(pending) = visible {
