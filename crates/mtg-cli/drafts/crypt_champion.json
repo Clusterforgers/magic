@@ -1,0 +1,51 @@
+{
+  "oracle_id": "59135531-6189-4c44-9f6f-602f44f20422",
+  "name": "Crypt Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crypt Champion",
+      "oracle_fingerprint": "feafc631c9b23bee237ae1fb646c89e5",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Not": { "ManaSpent": "Red" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1d88014b-8189-4a88-bee3-c2310d36f6e8",
+  "name": "Miriam, Herd Whisperer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Miriam, Herd Whisperer",
+      "oracle_fingerprint": "e23d18672bda6bcc58159ed7730c6b59",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

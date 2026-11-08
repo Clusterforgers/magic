@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b02d24fd-62b4-4f78-96af-57f88c98c5c8",
+  "name": "Dragonshift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonshift",
+      "oracle_fingerprint": "313ca474cb99c1b9e2b166dab8e00a9b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetColors": ["Blue", "Red"] },
+                    { "SetCreatureTypes": ["Dragon"] },
+                    { "AddKeyword": "Flying" },
+                    "LoseAbilities"
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{3}{U}{U}{R}{R}" } }
+      ]
+    }
+  ]
+}

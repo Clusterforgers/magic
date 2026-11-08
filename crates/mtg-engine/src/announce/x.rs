@@ -56,9 +56,11 @@ impl XCost {
                 u32::from(card.x_in_cost)
             }
             What::Ability(ability) => match rules? {
-                Ability::Activated { cost, .. } => {
+                activated @ Ability::Activated { cost, .. } => {
+                    let cost =
+                        crate::free_activation::cost(state, player, (*ability, activated), cost);
                     let price = Price::announced_in(
-                        cost,
+                        &cost,
                         state,
                         player,
                         ability.object,

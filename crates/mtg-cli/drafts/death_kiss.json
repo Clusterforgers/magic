@@ -1,0 +1,52 @@
+{
+  "oracle_id": "42410e81-f4a6-4501-82e4-6e745934976c",
+  "name": "Death Kiss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Kiss",
+      "oracle_fingerprint": "f922f4c9cd191c30f151efd8327c32cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "at": "Opponents"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{X}{X}{R}", "effects": [{ "Monstrosity": { "count": "X" } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": "X" }
+              }
+            ],
+            "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

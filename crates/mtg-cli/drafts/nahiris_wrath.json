@@ -1,0 +1,34 @@
+{
+  "oracle_id": "420091b5-b966-4233-877d-e9143481e97e",
+  "name": "Nahiri's Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri's Wrath",
+      "oracle_fingerprint": "02f304ada2c7cef5494d61d003925ebe",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": { "count": "X" } }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": "X" }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -148,6 +148,7 @@ fn draft_rules(draft: Draft, shown: &PrintedCard) -> Option<DraftRules> {
     };
     Some(DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: card.oracle_id.clone(),
         read_hash: hash,
@@ -379,6 +380,7 @@ fn a_verdict_counts_only_on_the_hash_of_the_rules_and_the_text_it_was_given_on(
     let (card, shown) = bolt();
     let row = DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: card.oracle_id.clone(),
         read_hash: read_hash(&shown, &card),
@@ -405,6 +407,7 @@ fn a_draft_edited_after_its_approval_is_read_again() {
     let edited = edited();
     let row = DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: card.oracle_id.clone(),
         read_hash: read_hash(&shown, &card),
@@ -429,6 +432,7 @@ fn a_draft_written_for_another_text_is_ignored_even_when_its_hash_is_current() {
     card.faces[0].oracle_fingerprint = oracle_fingerprint("Lightning Bolt deals 2 damage.");
     let row = DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: card.oracle_id.clone(),
         read_hash: read_hash(&shown, &card),
@@ -452,6 +456,7 @@ fn the_newest_row_of_a_card_is_its_draft() {
     let (card, shown) = bolt();
     let row = |read, damage_edit: bool| DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: card.oracle_id.clone(),
         read_hash: read_hash(&shown, &card),
@@ -478,6 +483,7 @@ fn a_draft_that_is_not_whole_is_left_out_and_reported(#[case] shape: Shape, #[ca
     let (card, shown) = bolt();
     let row = DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: card.oracle_id.clone(),
         read_hash: read_hash(&shown, &card),
@@ -503,6 +509,7 @@ fn a_full_draft_with_a_manual_ability_is_left_out_and_reported() {
     full.impl_status = ImplStatus::Full;
     let row = DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: card.oracle_id.clone(),
         read_hash: read_hash(&shown, &full),
@@ -525,6 +532,7 @@ fn a_row_that_does_not_load_is_left_out_and_the_others_still_load(
     let (card, shown) = bolt();
     let bad = DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: card.oracle_id.clone(),
         read_hash: "0".repeat(32),
@@ -533,6 +541,7 @@ fn a_row_that_does_not_load_is_left_out_and_the_others_still_load(
     };
     let good = DraftRules {
         forge: false,
+        differs: false,
         proof: None,
         oracle_id: "00000000-0000-4000-8000-000000000002".into(),
         read_hash: read_hash(&shown, &card),
@@ -822,6 +831,7 @@ fn approved_copies(cards: &[PrintedCard], library: &Library) -> Vec<DraftRules> 
             let card = library.card(&shown.oracle_id)?;
             Some(DraftRules {
                 forge: false,
+                differs: false,
                 proof: None,
                 oracle_id: shown.oracle_id.clone(),
                 read_hash: read_hash(shown, card),

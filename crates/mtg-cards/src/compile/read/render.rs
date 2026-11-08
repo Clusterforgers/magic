@@ -488,6 +488,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     graveyard_wordings(ability, &mut texts);
     produced_wordings(&mut texts);
     super::w15b_time::w15b_wordings(ability, &mut texts);
+    super::fix32_animate::wordings(ability, &mut texts);
     super::w20b_reflexive::w20b_wordings(ability, &mut texts);
     texts
 }
@@ -511,7 +512,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
-    super::written_memo::written(ability, written_anew)
+    let mut texts = super::written_memo::written(ability, written_anew);
+    // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
+    texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
+    texts
 }
 
 /// [`written_variants`] without the table of abilities written already.
@@ -683,6 +687,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::r6a_wordings::add(ability, &mut texts);
     super::r6c_wordings::add(ability, &mut texts);
     g8e_prevent::g8e_wordings(&mut texts);
+    super::w19d_suffixes::add(&mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7a_wordings::add(ability, &mut texts);
     super::r7d_statics::wordings(&mut texts);
@@ -730,6 +735,12 @@ fn graveyard_wordings(ability: &Ability, texts: &mut Vec<String>) {
                     ": Return ~ from your graveyard to your hand",
                 );
             }
+            let said: Vec<String> = texts
+                .iter()
+                .filter(|text| !text.contains("Activate only"))
+                .map(|text| format!("{text} Activate only if ~ is in your graveyard."))
+                .collect();
+            texts.extend(said);
         }
         Ability::Triggered {
             when: TriggerPattern::StepBegins { .. },
@@ -3204,7 +3215,10 @@ impl Writer<'_> {
             let lead = self.name_target();
             return Some(super::w9c_replaced::w9c_shield_text(lead));
         }
-        if let Some(text) = self.g8e_shield(effect) {
+        if let Some(text) = self
+            .g8e_shield(effect)
+            .or_else(|| self.g8e_next_shield(effect))
+        {
             return Some(text);
         }
         if let Some(named) = prevention::c9_fight_named_source(effect) {
@@ -3246,6 +3260,11 @@ impl Writer<'_> {
             Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()
+            }
+            // The spell or ability that targeted the card ("Whenever ~ becomes the target of a spell or ability, that
+            // spell or ability's controller sacrifices a land").
+            Ref::ControllerOf(inner) if **inner == Ref::Dealer => {
+                "that spell or ability's controller".to_owned()
             }
             _ => return None,
         })

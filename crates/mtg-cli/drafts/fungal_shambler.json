@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9991941e-436f-42d4-8b0c-1ee84234774b",
+  "name": "Fungal Shambler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fungal Shambler",
+      "oracle_fingerprint": "f8e895bf7acc1dc68712730a03a50ddf",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [{ "Draw": {} }, { "Discard": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

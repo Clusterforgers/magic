@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "d68b8dff-32b0-4e96-82f0-4d4ceb92861d",
+  "oracle_id": "cf2c507a-41b4-457b-bbe8-edcdfcc681ac",
+  "multiverse_ids": [
+    675608
+  ],
+  "mtgo_id": 131347,
+  "tcgplayer_id": 577796,
+  "cardmarket_id": 787229,
+  "name": "Glitch Interpreter",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/d68b8dff-32b0-4e96-82f0-4d4ceb92861d",
+  "scryfall_uri": "https://scryfall.com/card/dsc/13/glitch-interpreter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.jpg?1783909661",
+    "normal": "https://cards.scryfall.io/normal/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.jpg?1783909661",
+    "large": "https://cards.scryfall.io/large/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.jpg?1783909661",
+    "png": "https://cards.scryfall.io/png/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.png?1783909661",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.jpg?1783909661",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.jpg?1783909661",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.webp?1783909661",
+    "grid": "https://cards.scryfall.io/grid/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.webp?1783909661",
+    "display": "https://cards.scryfall.io/display/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.webp?1783909661",
+    "art": "https://cards.scryfall.io/art/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.webp?1783909661",
+    "crop": "https://cards.scryfall.io/crop/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.webp?1783909661",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/6/d68b8dff-32b0-4e96-82f0-4d4ceb92861d.jpg?1783909661"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "When this creature enters, if you control no face-down permanents, return this creature to its owner's hand and manifest dread.\nWhenever one or more colorless creatures you control deal combat damage to a player, draw a card.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Manifest",
+    "Manifest dread"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "453d6565-137a-44b9-987d-e67944f2bebf",
+      "component": "combo_piece",
+      "name": "Glitch Interpreter",
+      "type_line": "Creature — Human Wizard",
+      "uri": "https://api.scryfall.com/cards/453d6565-137a-44b9-987d-e67944f2bebf"
+    },
+    {
+      "object": "related_card",
+      "id": "01104ab1-84e1-4c78-853d-637c6554bdf9",
+      "component": "combo_piece",
+      "name": "Manifest",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/01104ab1-84e1-4c78-853d-637c6554bdf9"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d68b8dff-32b0-4e96-82f0-4d4ceb92861d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acf2c507a-41b4-457b-bbe8-edcdfcc681ac&unique=prints",
+  "collector_number": "13",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Miguel Mercado",
+  "artist_ids": [
+    "085f314d-cd61-48e0-89d1-048e9891e4a1"
+  ],
+  "illustration_id": "23a2809f-6731-4023-bf09-770f37f453b9",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10482,
+  "preview": {
+    "source": "Infrecuentes",
+    "source_uri": "https://www.youtube.com/watch?v=n1tWgZ8r_Qw",
+    "previewed_at": "2024-09-07"
+  },
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": "0.18"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675608&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGlitch%2BInterpreter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGlitch%2BInterpreter",
+    "edhrec": "https://edhrec.com/route/?cc=Glitch+Interpreter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F577796%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=787229&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131347?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

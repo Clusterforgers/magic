@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d40fd63b-f55d-49f6-b4e5-a8d00f22e8e1",
+  "name": "Ashmouth Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashmouth Hound",
+      "oracle_fingerprint": "268baec8da588ce0711c2018d984c31a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "DealDamage": { "to": "Dealer", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

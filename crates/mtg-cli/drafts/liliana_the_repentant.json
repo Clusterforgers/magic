@@ -1,0 +1,50 @@
+{
+  "oracle_id": "5eb4403f-f199-4f75-a7c6-e76783f9b07d",
+  "name": "Liliana the Repentant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana the Repentant",
+      "oracle_fingerprint": "a7ab35ccaef35367635c13fc9905c7ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Mill": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{B}",
+            "timing": "Sorcery",
+            "limit": "OncePerGame",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

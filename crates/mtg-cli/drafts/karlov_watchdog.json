@@ -1,0 +1,40 @@
+{
+  "oracle_id": "73f44500-fe83-40fa-b6f2-ed5673d0edcc",
+  "name": "Karlov Watchdog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karlov Watchdog",
+      "oracle_fingerprint": "8212b1d7d129152d7ee3d792b24d3dd8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "ControlledBy": "Opponents" }] },
+            "mods": ["CantBeTurnedFaceUp"],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 3
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

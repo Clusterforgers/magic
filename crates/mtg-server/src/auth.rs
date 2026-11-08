@@ -84,6 +84,22 @@ impl Auth {
         }))
     }
 
+    /// Counts a request of `user` to the read endpoints against `AttemptLimits::read_requests_per_user`, or says to
+    /// wait with 429 `rate_limited` and `Retry-After`.
+    pub(crate) fn admit_read(&self, user: UserId) -> Result<(), ApiError> {
+        self.throttle
+            .begin_read(Instant::now(), user)
+            .map_err(|blocked| {
+                let seconds = blocked.seconds();
+                ApiError::new(
+                    StatusCode::TOO_MANY_REQUESTS,
+                    DeckErrorCode::RateLimited.as_str(),
+                    format!("too many reads; try again in {seconds} seconds"),
+                )
+                .with_header(RETRY_AFTER, HeaderValue::from(seconds))
+            })
+    }
+
     /// Counts a star or an unstar of a precon by `user` against `AttemptLimits::favourite_writes_per_user`, or
     /// says to wait with 429 `rate_limited` and `Retry-After`.
     pub(crate) fn admit_favourite_write(&self, user: UserId) -> Result<(), ApiError> {

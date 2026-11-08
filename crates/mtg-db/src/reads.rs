@@ -222,11 +222,11 @@ impl ReadRepo {
                SELECT d.oracle_id, d.read_hash,
                       count(c.verdict) FILTER (WHERE c.verdict = 'wrong') AS "wrong!",
                       count(c.verdict) FILTER (WHERE c.verdict = 'correct') AS "correct!",
-                      (d.source = 'forge' AND d.oracle_matches) AS "forge!"
+                      (d.source = 'forge' AND d.oracle_matches AND NOT d.differs) AS "forge!"
                FROM card_drafts d
                LEFT JOIN counting c ON c.oracle_id = d.oracle_id AND c.read_hash = d.read_hash
                WHERE NOT d.retired AND ($1::uuid[] IS NULL OR d.oracle_id = ANY($1))
-               GROUP BY d.oracle_id, d.read_hash, d.source, d.oracle_matches
+               GROUP BY d.oracle_id, d.read_hash, d.source, d.oracle_matches, d.differs
                ORDER BY d.oracle_id"#,
             cards
         )

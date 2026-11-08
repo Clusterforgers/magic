@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ce7582a2-e014-41fb-8753-00d29cffc81a",
+  "name": "Lys Alana Dignitary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lys Alana Dignitary",
+      "oracle_fingerprint": "72655eb57dbf4099d448313378e3b668",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "OneOf": [[{ "Behold": { "filter": [{ "Subtype": "Elf" }] } }], "{2}"] }],
+            "required": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Elf" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

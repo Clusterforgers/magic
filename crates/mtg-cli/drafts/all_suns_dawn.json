@@ -1,0 +1,57 @@
+{
+  "oracle_id": "a97d9a72-2e47-491b-b1db-9829a9abbbd7",
+  "name": "All Suns' Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All Suns' Dawn",
+      "oracle_fingerprint": "a49a5db9612e16779242279bae6b4f7d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Color": "White" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Color": "Blue" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Color": "Black" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Color": "Red" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Color": "Green" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 2 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 3 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 4 }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

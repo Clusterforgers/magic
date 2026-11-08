@@ -1,0 +1,20 @@
+{
+  "oracle_id": "bc9f159b-984d-4b9f-8904-b38b5cb79636",
+  "name": "Leyline of Singularity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Singularity",
+      "oracle_fingerprint": "e2280001b3af2b414104d4350b79751c",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Static": {
+            "affected": { "Each": [{ "Not": { "Type": "Land" } }] },
+            "mods": [{ "AddSupertype": "Legendary" }]
+          }
+        }
+      ]
+    }
+  ]
+}

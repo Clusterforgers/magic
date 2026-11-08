@@ -1,0 +1,28 @@
+{
+  "oracle_id": "23cf095c-d43e-4a80-9bc5-f0f46ff885c4",
+  "name": "Don't Move",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Don't Move",
+      "oracle_fingerprint": "75b70dcdeab577937de34f96e08dcd8f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "Tapped": { "what": [{ "Type": "Creature" }] } },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [{ "Destroy": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

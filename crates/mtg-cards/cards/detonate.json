@@ -1,0 +1,31 @@
+{
+  "oracle_id": "daa90a75-c600-41bd-9311-ec21cf51480b",
+  "name": "Detonate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Detonate",
+      "oracle_fingerprint": "b3360fcb9c0d28ccedb9417ed596bd17",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

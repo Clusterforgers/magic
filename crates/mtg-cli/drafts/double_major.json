@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ece44a82-dcf0-4439-bdd9-a09c99a6f159",
+  "name": "Double Major",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Double Major",
+      "oracle_fingerprint": "c71f74fcdb5f994ac0bee6cfa4ab8185",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": { "Target": 0 },
+                  "except": [{ "RemoveSupertype": "Legendary" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

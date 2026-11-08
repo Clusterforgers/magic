@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c000d5c3-5b0c-4c5c-9919-76640da0a1e4",
+  "name": "Kratos, Stoic Father",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kratos, Stoic Father",
+      "oracle_fingerprint": "052eddfbf84e26ae1475154079fffda5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "GroupAttacks": { "what": [{ "Subtype": "God" }, { "ControlledBy": "You" }] } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "God" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Father & Son" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "722324de-3e77-4a22-aa07-7f8a21be76c2",
+  "name": "Weight of Spires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weight of Spires",
+      "oracle_fingerprint": "7cd1c5d45edbee0800bee81317dc38e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

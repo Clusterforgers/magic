@@ -1,0 +1,62 @@
+{
+  "oracle_id": "4879c8f0-8832-4290-bc71-9838940f75cd",
+  "name": "Valley Floodcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valley Floodcaller",
+      "oracle_fingerprint": "693ceeb516a7f5a78a584bfaf37087f2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Not": { "Type": "Creature" } }], "flash": true } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Bird" },
+                          { "Subtype": "Frog" },
+                          { "Subtype": "Otter" },
+                          { "Subtype": "Rat" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Bird" },
+                          { "Subtype": "Frog" },
+                          { "Subtype": "Otter" },
+                          { "Subtype": "Rat" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

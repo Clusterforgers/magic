@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9352e742-9a22-4463-b41f-3117ff1540ed",
+  "name": "Talruum Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talruum Champion",
+      "oracle_fingerprint": "98ec5c97ef241fe73faa0fd1ea60723e",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "RemoveKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Dealer",
+                  "mods": [{ "RemoveKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

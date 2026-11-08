@@ -1,0 +1,29 @@
+{
+  "oracle_id": "44cf99b0-8a5e-4df9-abc5-552f8b838c56",
+  "name": "Flying Crane Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flying Crane Technique",
+      "oracle_fingerprint": "f0d017bd9f606a8aaab1c53cd92e2079",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8f1d65ae-7ce5-4bb6-8c00-eace25ff837c",
+  "name": "Measure of Wickedness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Measure of Wickedness",
+      "oracle_fingerprint": "9167bf5032127951c66e7b9bd40836de",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }, { "LoseLife": { "amount": 8 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }, { "OwnedBy": "You" }, "Other"],
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

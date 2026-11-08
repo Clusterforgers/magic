@@ -1,0 +1,191 @@
+{
+  "object": "card",
+  "id": "16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb",
+  "oracle_id": "d37effd3-d194-4609-9994-6d70038a68f9",
+  "multiverse_ids": [
+    685892
+  ],
+  "mtgo_id": 135512,
+  "tcgplayer_id": 609756,
+  "cardmarket_id": 805723,
+  "name": "Grizzled Angler // Grisly Anglerfish",
+  "lang": "en",
+  "released_at": "2025-01-24",
+  "uri": "https://api.scryfall.com/cards/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb",
+  "scryfall_uri": "https://scryfall.com/card/inr/67/grizzled-angler-grisly-anglerfish?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:02:48Z",
+  "cmc": 3.0,
+  "type_line": "Creature — Human // Creature — Eldrazi Fish",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Transform",
+    "Mill"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Grizzled Angler",
+      "mana_cost": "{2}{U}",
+      "type_line": "Creature — Human",
+      "oracle_text": "{T}: Mill two cards. Then if there is a colorless creature card in your graveyard, transform this creature. (To mill two cards, put the top two cards of your library into your graveyard.)",
+      "colors": [
+        "U"
+      ],
+      "power": "2",
+      "toughness": "3",
+      "flavor_text": "\"There's no question that these waters are treacherous, but if there's one thing I've learned in all my years of sailing . . .\"",
+      "artist": "Kev Walker",
+      "artist_id": "f366a0ee-a0cd-466d-ba6a-90058c7a31a6",
+      "illustration_id": "7b2a9c78-bbad-477c-b5de-c53a776d1972",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "normal": "https://cards.scryfall.io/normal/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "large": "https://cards.scryfall.io/large/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "png": "https://cards.scryfall.io/png/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.png?1783908168",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "thumb": "https://cards.scryfall.io/thumb/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "grid": "https://cards.scryfall.io/grid/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "display": "https://cards.scryfall.io/display/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "art": "https://cards.scryfall.io/art/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "crop": "https://cards.scryfall.io/crop/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "jpeg": "https://cards.scryfall.io/normal/front/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Grisly Anglerfish",
+      "mana_cost": "",
+      "type_line": "Creature — Eldrazi Fish",
+      "oracle_text": "{6}: Creatures your opponents control attack this turn if able.",
+      "colors": [],
+      "power": "4",
+      "toughness": "5",
+      "flavor_text": "\". . . it's that the lure of the sea is impossible to ignore.\"",
+      "artist": "Kev Walker",
+      "artist_id": "f366a0ee-a0cd-466d-ba6a-90058c7a31a6",
+      "illustration_id": "23674028-c9aa-4354-9764-abfbab9aac7b",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "normal": "https://cards.scryfall.io/normal/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "large": "https://cards.scryfall.io/large/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "png": "https://cards.scryfall.io/png/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.png?1783908168",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168",
+        "thumb": "https://cards.scryfall.io/thumb/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "grid": "https://cards.scryfall.io/grid/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "display": "https://cards.scryfall.io/display/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "art": "https://cards.scryfall.io/art/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "crop": "https://cards.scryfall.io/crop/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.webp?1783908168",
+        "jpeg": "https://cards.scryfall.io/normal/back/1/6/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb.jpg?1783908168"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "cd8586f9-97e2-438d-b74f-1e53c811f314",
+      "component": "combo_piece",
+      "name": "Eldritch Moon Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/cd8586f9-97e2-438d-b74f-1e53c811f314"
+    },
+    {
+      "object": "related_card",
+      "id": "982c0f7b-d707-4fcd-8b5a-dc9bc92d8aa4",
+      "component": "combo_piece",
+      "name": "Grizzled Angler // Grisly Anglerfish",
+      "type_line": "Creature — Human // Creature — Eldrazi Fish",
+      "uri": "https://api.scryfall.com/cards/982c0f7b-d707-4fcd-8b5a-dc9bc92d8aa4"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set": "inr",
+  "set_name": "Innistrad Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/16c0bb08-36b3-41e2-a5a9-2fcd6bb49beb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad37effd3-d194-4609-9994-6d70038a68f9&unique=prints",
+  "collector_number": "67",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Kev Walker",
+  "artist_ids": [
+    "f366a0ee-a0cd-466d-ba6a-90058c7a31a6"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25784,
+  "penny_rank": 14982,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.14",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.05",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=685892&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGrizzled%2BAngler%2B%252F%252F%2BGrisly%2BAnglerfish",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGrizzled%2BAngler%2B%252F%252F%2BGrisly%2BAnglerfish",
+    "edhrec": "https://edhrec.com/route/?cc=Grizzled+Angler"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F609756%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=805723&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/135512?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

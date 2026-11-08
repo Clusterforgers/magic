@@ -1,0 +1,65 @@
+{
+  "oracle_id": "533d5bf9-0912-451f-a3f4-3842b0a75b1d",
+  "name": "Golbez, Crystal Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golbez, Crystal Collector",
+      "oracle_fingerprint": "afac3a447c5e1012cac8e449f598c93a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "who": "Opponents",
+                        "amount": { "Stat": { "of": { "Bound": "moved" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

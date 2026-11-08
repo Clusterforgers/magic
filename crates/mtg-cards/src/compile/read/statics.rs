@@ -42,7 +42,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 42] = [
+const TEMPLATES: [Template; 43] = [
+    super::w19a_flash::w19a_flash,
     super::w13b_mill_rad::w13b_tapped_for_counters,
     super::w9d_exert::w9d_exert,
     super::r6f_flash_sacrifice::r6f_flash_sacrifice,
@@ -1268,8 +1269,10 @@ pub fn texts(ability: &Ability) -> Vec<String> {
     let mut group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
     group.extend(super::w14c_alt_costs::w14c_alt_cost_texts(ability));
+    group.extend(super::e18a_first::free_activation_texts(ability));
     group.extend(super::t15a_alt_costs::t15a_alt_cost_texts(ability));
     group.extend(super::w17c_cast_only::w17c_cast_only_texts(ability));
+    group.extend(super::w19a_flash::w19a_flash_texts(ability));
     group.extend(group_enters(ability));
     let sentences = match ability {
         _ if !group.is_empty() => group,
@@ -1838,6 +1841,8 @@ fn static_texts(
                 Modification::GrantAbility(_)
                     | Modification::AddKeyword(_)
                     | Modification::SetChosenColor
+                    | Modification::CantAttack
+                    | Modification::CantBlock
             )
         })
         && mods

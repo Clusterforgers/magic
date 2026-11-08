@@ -1,0 +1,23 @@
+{
+  "oracle_id": "76ca315a-4979-4fda-8d3f-b7f4e5d3a622",
+  "name": "Inspired Ultimatum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspired Ultimatum",
+      "oracle_fingerprint": "e57226d04e1cc8b75922e95af26f352f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }, { "what": "AnyTarget" }],
+            "effects": [
+              { "GainLife": { "who": { "Target": 0 }, "amount": 5 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 5 } },
+              { "Draw": { "count": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2013df0b-9e8c-4dbf-87b2-0dec983266fa",
+  "name": "Glittering Frost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glittering Frost",
+      "oracle_fingerprint": "935c3dc972b554c2bc82aa3fe268cbcc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddSupertype": "Snow" }],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b5e9599f-9561-4e3f-9904-9a4dab98cabb",
+  "name": "Star Compass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Star Compass",
+      "oracle_fingerprint": "f58c5a7347e1911612624032ccae7224",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": {
+                      "among": [{ "Supertype": "Basic" }, { "ControlledBy": "You" }],
+                      "count": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

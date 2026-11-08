@@ -4,7 +4,7 @@
  */
 import { reasonLines } from '@/features/builder/report'
 import { BY_HAND, PARTLY_BY_HAND, runsWhole } from '@/lib/byHand'
-import type { Reason, ReadState, ReportCard, Support } from '@/protocol/generated'
+import type { Reason, ReadDiffers, ReadState, ReportCard, Support } from '@/protocol/generated'
 import { SUPPORT_LABEL } from '../format'
 
 /** The support states of a card the game does not run whole. */
@@ -12,6 +12,15 @@ export type Unvalidated = Exclude<Support, 'verified' | 'read' | 'forge'>
 
 /** The states in the order the filters list them. */
 export const UNVALIDATED: readonly Unvalidated[] = ['partial', 'manual', 'stale', 'unplayable']
+
+/** The heading over the clauses a draft words differently from the card. */
+export const DIFFERS_TITLE = 'Check these lines: the draft words them differently from the card'
+
+/** The label of the printed side of a differing clause. */
+export const DIFFERS_PRINTED = 'On the card'
+
+/** The label of the engine's side of a differing clause. */
+export const DIFFERS_ENGINE = 'The game reads'
 
 /** A deck by id and name. */
 export interface DeckRef {
@@ -34,6 +43,8 @@ export interface FlaggedCard {
   reasons: readonly Reason[]
   /** The read state of the draft that decides the card, once it has one. */
   draft?: ReadState
+  /** The clauses its draft words differently from the card, each beside the engine's words; none for most drafts. */
+  differs?: readonly ReadDiffers[]
   decks: readonly DeckRef[]
 }
 
@@ -70,6 +81,7 @@ function flaggedIn(deck: CheckedDeck): FlaggedCard[] {
       support: card.support,
       reasons: card.reasons,
       draft: card.draft,
+      differs: card.differs ?? [],
       decks: [{ id: deck.id, name: deck.name }],
     })
   }

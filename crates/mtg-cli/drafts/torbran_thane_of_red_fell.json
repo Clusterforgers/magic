@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8c3495bf-02e7-4ad9-949d-92eb3d2b662a",
+  "name": "Torbran, Thane of Red Fell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torbran, Thane of Red Fell",
+      "oracle_fingerprint": "4d6401a865424a645660cbd195c70c33",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "Opponents",
+                "source": [{ "Color": "Red" }, { "ControlledBy": "You" }]
+              }
+            },
+            "by": { "Add": 2 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "ControlledBy": "Opponents" }] },
+                "source": [{ "Color": "Red" }, { "ControlledBy": "You" }]
+              }
+            },
+            "by": { "Add": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

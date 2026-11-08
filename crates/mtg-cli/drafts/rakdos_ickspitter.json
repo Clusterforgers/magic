@@ -1,0 +1,23 @@
+{
+  "oracle_id": "329f6e2e-6c37-4e98-bd45-bd252f1a2bd9",
+  "name": "Rakdos Ickspitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos Ickspitter",
+      "oracle_fingerprint": "5f75a8a6bb66ca398d5733310e7fad91",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

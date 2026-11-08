@@ -10,8 +10,9 @@ use serde_json::Value;
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{
-    ClauseKind, Compiled, compile, equip_line, escalate_cost, escalate_reads, forecast_lines,
-    own_names, reinforce_line, same_written_text, static_pair_texts, written_variants,
+    ClauseKind, Compiled, compile, either_way_pair_texts, equip_line, escalate_cost,
+    escalate_reads, forecast_lines, own_names, reinforce_line, same_written_text,
+    static_pair_texts, written_variants,
 };
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
@@ -373,6 +374,76 @@ fn the_corpus_fails_a_rule_the_checker_marks_differs(
     assert_eq!(!misses.is_empty(), differs, "{misses:?}");
 }
 
+/// The nouns the permanent an Aura or Equipment is attached to is called by; the writers say "enchanted creature" and the
+/// checker names it by the face (`proposal::pairing`).
+const ATTACHED_NOUNS: [&str; 5] = [
+    "enchanted creature",
+    "equipped creature",
+    "enchanted permanent",
+    "enchanted land",
+    "enchanted artifact",
+];
+
+/// The wordings of an activated ability with the attached permanent named by each noun of the cards.
+fn attached_as_named(ability: &Ability, mut written: Vec<String>) -> Vec<String> {
+    if !matches!(ability, Ability::Activated { .. }) {
+        return written;
+    }
+    let named: Vec<String> = written
+        .iter()
+        .filter(|text| {
+            text.to_lowercase().contains("nchanted creature")
+                || text.to_lowercase().contains("quipped creature")
+        })
+        .flat_map(|text| {
+            ATTACHED_NOUNS.iter().map(move |noun| {
+                let capital = noun.replacen(&noun[..1], &noun[..1].to_uppercase(), 1);
+                text.replace("enchanted creature", noun)
+                    .replace("equipped creature", noun)
+                    .replace("Enchanted creature", &capital)
+                    .replace("Equipped creature", &capital)
+            })
+        })
+        .collect();
+    written.extend(named);
+    written
+}
+
+/// Whether two abilities of a face are one sentence of the card (two statics, two triggers or two shields) and the card
+/// prints them as one; `None` when they do not read as one sentence at all.
+fn pair_is_written(
+    printed: &PrintedCard,
+    compiled: &Compiled,
+    face: usize,
+    first: &Ability,
+    second: &Ability,
+) -> Option<bool> {
+    let mut pair = static_pair_texts(first, second);
+    pair.extend(either_way_pair_texts(first, second));
+    if pair.is_empty() {
+        return None;
+    }
+    let lines: Vec<&str> = compiled
+        .clauses
+        .iter()
+        .filter(|clause| {
+            clause.face == face && matches!(clause.kind, ClauseKind::Static | ClauseKind::Triggered)
+        })
+        .map(|clause| without_numerals(without_ability_word(&clause.text)))
+        .collect();
+    let names = printed.faces.get(face).map(own_names).unwrap_or_default();
+    let shown = |variant: &str| {
+        names.iter().fold(variant.to_owned(), |text, name| {
+            text.replace(name.as_str(), "~")
+        })
+    };
+    Some(lines.iter().any(|text| {
+        pair.iter().any(|written| {
+            same_written_text(written, text) || same_written_text(&shown(written), text)
+        })
+    }))
+}
+
 /// How many abilities of the hand-written card the renderer writes, and each one not written as a clause of the card.
 fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usize, Vec<String>) {
     let mut rendered = 0;
@@ -401,27 +472,18 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
         // Two statics with one subject may be one sentence of the card; printed as two sentences (Air Bladder),
         // each must be written as its own line below.
         let own_line = std::mem::take(&mut pair_apart);
-        if let Some(&(same, second)) = listed.get(at + 1) {
-            let pair = static_pair_texts(ability, second);
-            if same == face && !pair.is_empty() {
-                let lines: Vec<&str> = compiled
-                    .clauses
-                    .iter()
-                    .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
-                    .map(|clause| without_numerals(without_ability_word(&clause.text)))
-                    .collect();
-                if lines
-                    .iter()
-                    .any(|text| pair.iter().any(|written| same_written_text(written, text)))
-                {
-                    skip_next = true;
-                    rendered += 2;
-                    continue;
-                }
-                pair_apart = true;
+        if let Some(&(same, second)) = listed.get(at + 1)
+            && same == face
+            && let Some(written) = pair_is_written(printed, compiled, face, ability, second)
+        {
+            if written {
+                skip_next = true;
+                rendered += 2;
+                continue;
             }
+            pair_apart = true;
         }
-        let written = written_variants(ability);
+        let written = attached_as_named(ability, written_variants(ability));
         if written.is_empty() {
             assert!(
                 !own_line && !pair_apart,

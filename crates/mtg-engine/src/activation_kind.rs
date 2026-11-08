@@ -21,19 +21,38 @@ use crate::zones::Zone;
 /// The most times one modifier changes a cost: a count this large is more mana than any game has.
 const MOST_TIMES: i64 = 100;
 
-/// The one specific kind the ability `rules`, which `address` names, is: a loyalty ability, the equip ability or the
-/// cycling ability; none for any other activated ability.
+/// The one specific kind the ability `rules`, which `address` names, is: a loyalty ability, the equip, cycling or
+/// unearth ability; none for any other activated ability.
 pub(crate) fn specific(
     state: &GameState,
     address: AbilityRef,
     rules: &Ability,
 ) -> Option<ActivationKind> {
+    of_keyword(rules, keyword_adding(state, address))
+}
+
+/// [`specific`] for an ability whose source has left since `shot` was taken.
+pub(crate) fn specific_as_it_was(
+    state: &GameState,
+    address: AbilityRef,
+    rules: &Ability,
+    shot: &crate::snapshot::Snapshot,
+) -> Option<ActivationKind> {
+    of_keyword(
+        rules,
+        crate::ability_reader::keyword_adding_as_it_was(state, address, shot),
+    )
+}
+
+/// The kind of `rules`, which `keyword` adds when a keyword adds it.
+fn of_keyword(rules: &Ability, keyword: Option<Keyword>) -> Option<ActivationKind> {
     if matches!(rules, Ability::Loyalty { .. }) {
         return Some(ActivationKind::Loyalty);
     }
-    match keyword_adding(state, address)? {
+    match keyword? {
         Keyword::Equip(_) | Keyword::EquipTo { .. } => Some(ActivationKind::Equip),
         Keyword::Cycling(_) | Keyword::Typecycling { .. } => Some(ActivationKind::Cycling),
+        Keyword::Unearth(_) => Some(ActivationKind::Unearth),
         _ => None,
     }
 }

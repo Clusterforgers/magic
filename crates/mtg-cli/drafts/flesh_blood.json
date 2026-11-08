@@ -1,0 +1,56 @@
+{
+  "oracle_id": "0741151a-fec0-4ed3-9295-0d0f56d24165",
+  "name": "Flesh // Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flesh",
+      "oracle_fingerprint": "3633aa92ec53bde42cd13a5717cb6369",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": {
+                  "on": { "Target": 1 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Blood",
+      "oracle_fingerprint": "67e0c4dd0334bd0a95306b2b1bf530ea",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": "AnyTarget" }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

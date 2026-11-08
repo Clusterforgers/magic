@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f256c828-01d2-4077-823d-8dccd15120bd",
+  "name": "Taigam's Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taigam's Strike",
+      "oracle_fingerprint": "5edb9cc8b9da75b2cf45e528525c918b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

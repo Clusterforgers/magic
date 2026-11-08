@@ -1,0 +1,64 @@
+{
+  "oracle_id": "6d51ebd1-ceb9-42c0-8c1e-34dbbbc7bf8a",
+  "name": "Tori D'Avenant, Fury Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tori D'Avenant, Fury Rider",
+      "oracle_fingerprint": "351cf1581d73f7d26e31cb3870f7c5c1",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      { "Color": "Red" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      { "Color": "White" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

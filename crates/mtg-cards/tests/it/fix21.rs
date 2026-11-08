@@ -61,6 +61,7 @@ fn drafted(printed: &PrintedCard, card: &Card) -> SupportRecord {
         rules: serde_json::to_value(card).unwrap(),
         read: ReadState::Approved,
         forge: true,
+        differs: false,
         proof: None,
     };
     let (library, left_out) = Library::default().with_drafts(&[row]);

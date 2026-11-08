@@ -19,7 +19,8 @@ use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 
 /// What a permanent can be that a condition names: "untapped", "tapped", "attacking", "blocking", "monstrous",
 /// "prepared", "legendary" (a color is another).
-const STATES: [(&str, Pred); 7] = [
+const STATES: [(&str, Pred); 8] = [
+    ("modified", Pred::Modified),
     ("untapped", Pred::Untapped),
     ("tapped", Pred::Tapped),
     ("attacking", Pred::Attacking),
@@ -281,6 +282,20 @@ fn controls_none(r: &mut Reader<'_>) -> Option<Condition> {
 pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::YourTurn {
         return vec!["it's your turn".to_owned()];
+    }
+    // "it has a +1/+1 counter on it": the object matches "has a counter of the kind", one counter or more.
+    if let Condition::Matches { subject, selector } = condition
+        && let [Pred::HasCounter(counter)] = selector.0.as_slice()
+        && !matches!(counter, CounterKind::Other(_))
+    {
+        return counters_texts(&Condition::Compare {
+            left: Amount::Counters {
+                on: subject.clone(),
+                counter: counter.clone(),
+            },
+            op: Cmp::Ge,
+            right: Amount::Fixed(1),
+        });
     }
     // "~ is attacking" counted: one or more of the card itself in that state is the card in it.
     if let Condition::Compare {

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "06e9287b-56d4-443e-97ba-b5dcdc4fa989",
+  "name": "Storm, Windrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm, Windrider",
+      "oracle_fingerprint": "f9af8c8203b48dc070a823a0944580fd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+            "mods": [{ "CantAttackYou": "Player" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Targeting": [{ "Type": "Creature" }, { "In": "Battlefield" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "TargetedBy": "Triggering" },
+                      { "Type": "Creature" },
+                      { "In": "Battlefield" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

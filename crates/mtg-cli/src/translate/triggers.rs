@@ -508,17 +508,20 @@ fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
     {
         return Ok(json!({"ZoneChangeExcept": {"what": what, "except": "Battlefield", "to": to}}));
     }
+    let apart = this_or_another(&what, p);
     let mut any = Vec::new();
     for from in &origins {
         for to in &destinations {
-            let mut pattern = json!({ "what": what });
-            if let Some(from) = from {
-                pattern["from"] = json!(from);
+            for subject in apart.clone().unwrap_or_else(|| vec![what.clone()]) {
+                let mut pattern = json!({ "what": subject });
+                if let Some(from) = from {
+                    pattern["from"] = json!(from);
+                }
+                if let Some(to) = to {
+                    pattern["to"] = json!(to);
+                }
+                any.push(json!({ "ZoneChange": pattern }));
             }
-            if let Some(to) = to {
-                pattern["to"] = json!(to);
-            }
-            any.push(json!({ "ZoneChange": pattern }));
         }
     }
     // "Dies or is put into exile": either move triggers it once.
@@ -527,6 +530,37 @@ fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
         2..=6 => Ok(json!({ "AnyOf": any })),
         _ => unmapped("key:Trigger.ChangesZone.zone-list"),
     }
+}
+
+/// "This or another creature you control enters": Forge lists `Card.Self,Creature.YouCtrl`, whose second part holds the
+/// card too. Oracle's "another" is the card's own event and the event of the others; `None` for any other subject.
+fn this_or_another(what: &[Value], p: &Params) -> Option<Vec<Vec<Value>>> {
+    let [subject] = what else { return None };
+    if !p
+        .get("TriggerDescription")
+        .is_some_and(|d| d.to_lowercase().contains(" or another "))
+    {
+        return None;
+    }
+    let [this, other] = subject.get("AnyOf")?.as_array()?.as_slice() else {
+        return None;
+    };
+    if this != "This" {
+        return None;
+    }
+    let mut others: Vec<Value> = other
+        .get("Not")?
+        .get("AnyOf")?
+        .as_array()?
+        .iter()
+        .map(|part| part.get("Not").cloned())
+        .collect::<Option<_>>()?;
+    // The script already says "other" (the readers take that compound subject as it is).
+    if others.contains(&json!("Other")) {
+        return None;
+    }
+    others.push(json!("Other"));
+    Some(vec![vec![json!("This")], others])
 }
 
 /// The zones a comma-joined zone word names (`Graveyard,Exile`); `None` for any zone.
@@ -991,6 +1025,13 @@ fn decided(
 ) -> Tr<Vec<Value>> {
     let you = json!("You");
     Ok(match p.get("OptionalDecider") {
+        // The printed "you may return target ..." that the script makes mandatory (Spellpyre Phoenix): no decider to ask.
+        None if p
+            .get("TriggerDescription")
+            .is_some_and(|text| text.contains(", you may return target ")) =>
+        {
+            return unmapped("trigger:printed-may-without-OptionalDecider");
+        }
         None => effects,
         Some("You" | "TriggeredCardController") if pays => effects,
         Some("You") if !super::fix26_printed::asks(p) => effects,

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f38fe1e9-8997-4b63-9109-7513034bac88",
+  "name": "Palisade Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Palisade Giant",
+      "oracle_fingerprint": "f0f0564a4b80b82695d0baaeaa84ba11",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+              ]
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": { "Each": ["Other", { "ControlledBy": "You" }] } } },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

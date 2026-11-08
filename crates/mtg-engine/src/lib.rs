@@ -29,6 +29,7 @@ mod faces;
 #[cfg(test)]
 mod fixtures;
 mod flow;
+mod free_activation;
 #[cfg(test)]
 mod help_tests;
 mod land_types;

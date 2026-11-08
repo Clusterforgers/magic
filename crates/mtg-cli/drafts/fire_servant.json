@@ -1,0 +1,26 @@
+{
+  "oracle_id": "dbf64afa-ace6-44b9-b47f-750c7e52cc29",
+  "name": "Fire Servant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Servant",
+      "oracle_fingerprint": "6fd8eef809b8b5a604ff71a8b94eb905",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

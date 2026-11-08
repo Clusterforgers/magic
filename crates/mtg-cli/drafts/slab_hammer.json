@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f353948c-b5f9-4840-a89a-19206dde9d47",
+  "name": "Slab Hammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slab Hammer",
+      "oracle_fingerprint": "45af592380f1b6aad404d5e1ccc88cce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

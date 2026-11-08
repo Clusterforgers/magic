@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2f051ee4-9f2e-414d-b763-5fd78f2d4e1b",
+  "name": "Windwright Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windwright Mage",
+      "oracle_fingerprint": "75d0b8a79f711005f1b0fde29f772c22",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

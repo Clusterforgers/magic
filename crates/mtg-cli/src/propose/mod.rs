@@ -404,6 +404,7 @@ async fn w2a_promote_run(
         no_smoke: false,
         drafts: None,
         source: None,
+        differs: false,
         files,
     };
     Ok(w2a_promote(db, cache, &args).await?.render())

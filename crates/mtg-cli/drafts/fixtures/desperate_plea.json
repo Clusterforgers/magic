@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "b42b4b0e-39f6-4f93-a358-9bcec8d13b65",
+  "oracle_id": "bc1ea0ba-46bf-49b6-af95-51eaf1ab915e",
+  "multiverse_ids": [],
+  "resource_id": "8804590855394D00EEF5F81061455418760EE113FAA3E6E5CA8980704C707B7A",
+  "mtgo_id": 145604,
+  "arena_id": 98248,
+  "tcgplayer_id": 662441,
+  "cardmarket_id": 857922,
+  "name": "Desperate Plea",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/b42b4b0e-39f6-4f93-a358-9bcec8d13b65",
+  "scryfall_uri": "https://scryfall.com/card/tle/103/desperate-plea?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.jpg?1783904827",
+    "normal": "https://cards.scryfall.io/normal/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.jpg?1783904827",
+    "large": "https://cards.scryfall.io/large/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.jpg?1783904827",
+    "png": "https://cards.scryfall.io/png/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.png?1783904827",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.jpg?1783904827",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.jpg?1783904827",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.webp?1783904827",
+    "grid": "https://cards.scryfall.io/grid/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.webp?1783904827",
+    "display": "https://cards.scryfall.io/display/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.webp?1783904827",
+    "art": "https://cards.scryfall.io/art/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.webp?1783904827",
+    "crop": "https://cards.scryfall.io/crop/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.webp?1783904827",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/4/b42b4b0e-39f6-4f93-a358-9bcec8d13b65.jpg?1783904827"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery — Lesson",
+  "oracle_text": "As an additional cost to cast this spell, sacrifice a creature.\nChoose one or both —\n• Return target creature card from your graveyard to the battlefield if its power is less than or equal to the sacrificed creature's power.\n• Destroy target creature.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b42b4b0e-39f6-4f93-a358-9bcec8d13b65/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abc1ea0ba-46bf-49b6-af95-51eaf1ab915e&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Shiyu",
+  "artist_ids": [
+    "49f6277b-cd67-4fc7-a41f-ade6504c66ff"
+  ],
+  "illustration_id": "d373fbb7-7a4a-4f02-a0d6-e71dace16be1",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "lesson"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10734,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "2.28",
+    "usd_etched": null,
+    "eur": "0.92",
+    "eur_foil": "0.78",
+    "tix": "1.29"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDesperate%2BPlea",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDesperate%2BPlea",
+    "edhrec": "https://edhrec.com/route/?cc=Desperate+Plea"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662441%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857922&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145604?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

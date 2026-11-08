@@ -1,0 +1,26 @@
+{
+  "oracle_id": "22a33139-a730-4792-9dd5-2c0f99f96855",
+  "name": "Vitu-Ghazi Inspector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vitu-Ghazi Inspector",
+      "oracle_fingerprint": "7e7d97b603227a3872236afb4b70864a",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "CollectEvidence": 6 }] } },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

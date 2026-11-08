@@ -1,0 +1,166 @@
+{
+  "object": "card",
+  "id": "aa74e656-480a-4c1b-963d-1b207075c27f",
+  "oracle_id": "c66976d3-57f1-4c48-ada0-d74081f1699a",
+  "multiverse_ids": [
+    563195
+  ],
+  "mtgo_id": 100662,
+  "tcgplayer_id": 272611,
+  "cardmarket_id": 658515,
+  "name": "Dungeoneer's Pack",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/aa74e656-480a-4c1b-963d-1b207075c27f",
+  "scryfall_uri": "https://scryfall.com/card/clb/312/dungeoneers-pack?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:04:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.jpg?1783922676",
+    "normal": "https://cards.scryfall.io/normal/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.jpg?1783922676",
+    "large": "https://cards.scryfall.io/large/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.jpg?1783922676",
+    "png": "https://cards.scryfall.io/png/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.png?1783922676",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.jpg?1783922676",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.jpg?1783922676",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.webp?1783922676",
+    "grid": "https://cards.scryfall.io/grid/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.webp?1783922676",
+    "display": "https://cards.scryfall.io/display/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.webp?1783922676",
+    "art": "https://cards.scryfall.io/art/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.webp?1783922676",
+    "crop": "https://cards.scryfall.io/crop/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.webp?1783922676",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/a/aa74e656-480a-4c1b-963d-1b207075c27f.jpg?1783922676"
+  },
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "This artifact enters tapped.\n{2}, {T}, Sacrifice this artifact: You take the initiative, gain 3 life, draw a card, and create a Treasure token. Activate only as a sorcery. (A Treasure token is an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Treasure"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2c65185b-6cf0-451d-985e-56aa45d9a57d",
+      "component": "combo_piece",
+      "name": "Undercity // The Initiative",
+      "type_line": "Dungeon — Undercity // Card",
+      "uri": "https://api.scryfall.com/cards/2c65185b-6cf0-451d-985e-56aa45d9a57d"
+    },
+    {
+      "object": "related_card",
+      "id": "770b988d-4f31-4746-8c23-4ed8d9a6b393",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/770b988d-4f31-4746-8c23-4ed8d9a6b393"
+    },
+    {
+      "object": "related_card",
+      "id": "aa74e656-480a-4c1b-963d-1b207075c27f",
+      "component": "combo_piece",
+      "name": "Dungeoneer's Pack",
+      "type_line": "Artifact",
+      "uri": "https://api.scryfall.com/cards/aa74e656-480a-4c1b-963d-1b207075c27f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aa74e656-480a-4c1b-963d-1b207075c27f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac66976d3-57f1-4c48-ada0-d74081f1699a&unique=prints",
+  "collector_number": "312",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tony Foti",
+  "artist_ids": [
+    "1ab97a5f-9abb-42f4-bbc4-954899619d6f"
+  ],
+  "illustration_id": "33a9d0a4-7720-41f4-8d61-c4a1c3efb470",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10837,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-image-gallery/commander-legends-battle-for-baldurs-gate",
+    "previewed_at": "2022-05-17"
+  },
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.17",
+    "tix": "0.27"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563195&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDungeoneer%2527s%2BPack",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDungeoneer%2527s%2BPack",
+    "edhrec": "https://edhrec.com/route/?cc=Dungeoneer%27s+Pack"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272611%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=658515&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100662?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

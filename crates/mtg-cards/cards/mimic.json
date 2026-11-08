@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ba8156cd-2e78-4763-b61d-8bc85b2f3657",
+  "name": "Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mimic",
+      "oracle_fingerprint": "be99de9adea0ba9a182202b5545cbd9a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Shapeshifter"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9eb9e4c1-fabf-45ff-a584-fbe4b94fb41c",
+  "name": "Avatar Roku, Firebender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar Roku, Firebender",
+      "oracle_fingerprint": "fe0aceea34e28947116b72eefc211ca6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red", "Red", "Red", "Red", "Red"] },
+                  "lasts": "Combat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}{R}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "da62b97e-e4cd-462d-9ab9-2230ca360c32",
+  "oracle_id": "9e2e3272-d4e1-4329-b1d2-f393b3511b82",
+  "multiverse_ids": [
+    627725
+  ],
+  "mtgo_id": 114749,
+  "tcgplayer_id": 507171,
+  "cardmarket_id": 723515,
+  "name": "Subira, Tulzidi Caravanner",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/da62b97e-e4cd-462d-9ab9-2230ca360c32",
+  "scryfall_uri": "https://scryfall.com/card/cmm/261/subira-tulzidi-caravanner?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:07:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.jpg?1783915640",
+    "normal": "https://cards.scryfall.io/normal/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.jpg?1783915640",
+    "large": "https://cards.scryfall.io/large/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.jpg?1783915640",
+    "png": "https://cards.scryfall.io/png/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.png?1783915640",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.jpg?1783915640",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.jpg?1783915640",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.webp?1783915640",
+    "grid": "https://cards.scryfall.io/grid/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.webp?1783915640",
+    "display": "https://cards.scryfall.io/display/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.webp?1783915640",
+    "art": "https://cards.scryfall.io/art/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.webp?1783915640",
+    "crop": "https://cards.scryfall.io/crop/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.webp?1783915640",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/a/da62b97e-e4cd-462d-9ab9-2230ca360c32.jpg?1783915640"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Shaman",
+  "oracle_text": "Haste\n{1}: Another target creature with power 2 or less can't be blocked this turn.\n{1}{R}, {T}, Discard your hand: Until end of turn, whenever a creature you control with power 2 or less deals combat damage to a player, draw a card.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/da62b97e-e4cd-462d-9ab9-2230ca360c32/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9e2e3272-d4e1-4329-b1d2-f393b3511b82&unique=prints",
+  "collector_number": "261",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Leesha Hannigan",
+  "artist_ids": [
+    "0c5d1acd-714b-4e7a-b7bf-e3450b305337"
+  ],
+  "illustration_id": "fbb623b8-7bc6-4cb0-ad66-cbdec159546b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8344,
+  "penny_rank": 7746,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.18",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=627725&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSubira%252C%2BTulzidi%2BCaravanner",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSubira%252C%2BTulzidi%2BCaravanner",
+    "edhrec": "https://edhrec.com/route/?cc=Subira%2C+Tulzidi+Caravanner"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F507171%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=723515&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114749?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

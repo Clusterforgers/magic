@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0d80d0f7-a436-431c-a54e-e7dd7dbba8de",
+  "name": "Mind Transfer Protocol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Transfer Protocol",
+      "oracle_fingerprint": "20252e748b5e05527fa6043dbc060049",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 5 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a85390b6-e90b-4d0c-9573-eb67ce01a0aa",
+  "name": "Thicket Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thicket Elemental",
+      "oracle_fingerprint": "1a2deb3932337022e5078830eb101c75",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "found",
+                        "revealed_as": "revealed2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed2" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

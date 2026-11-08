@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "d236aa15-f60c-4368-b796-4d41e0bc3358",
+  "oracle_id": "ebe1448e-21c5-4b73-8296-03d3e5097c50",
+  "multiverse_ids": [
+    695953
+  ],
+  "mtgo_id": 138065,
+  "tcgplayer_id": 624916,
+  "cardmarket_id": 819278,
+  "name": "Will of the Temur",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/d236aa15-f60c-4368-b796-4d41e0bc3358",
+  "scryfall_uri": "https://scryfall.com/card/tdc/24/will-of-the-temur?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:46:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.jpg?1783907179",
+    "normal": "https://cards.scryfall.io/normal/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.jpg?1783907179",
+    "large": "https://cards.scryfall.io/large/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.jpg?1783907179",
+    "png": "https://cards.scryfall.io/png/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.png?1783907179",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.jpg?1783907179",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.jpg?1783907179",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.webp?1783907179",
+    "grid": "https://cards.scryfall.io/grid/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.webp?1783907179",
+    "display": "https://cards.scryfall.io/display/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.webp?1783907179",
+    "art": "https://cards.scryfall.io/art/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.webp?1783907179",
+    "crop": "https://cards.scryfall.io/crop/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.webp?1783907179",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/2/d236aa15-f60c-4368-b796-4d41e0bc3358.jpg?1783907179"
+  },
+  "mana_cost": "{5}{U}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose one. If you control a commander as you cast this spell, you may choose both instead.\n• Create a token that's a copy of target permanent, except it's a 4/4 Dragon creature with flying in addition to its other types.\n• Target player draws cards equal to the greatest mana value among permanents you control.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "45364163-62b7-4641-b2c9-c2e46d61335c",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/45364163-62b7-4641-b2c9-c2e46d61335c"
+    },
+    {
+      "object": "related_card",
+      "id": "c50fe0ff-6826-485a-a0cf-a8f8193bc756",
+      "component": "combo_piece",
+      "name": "Will of the Temur",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/c50fe0ff-6826-485a-a0cf-a8f8193bc756"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d236aa15-f60c-4368-b796-4d41e0bc3358/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aebe1448e-21c5-4b73-8296-03d3e5097c50&unique=prints",
+  "collector_number": "24",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "temur",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Irina Nordsol",
+  "artist_ids": [
+    "1e4cb52d-476e-4c68-ac87-2e620aede6d4"
+  ],
+  "illustration_id": "e0741c2d-78db-46cd-8ae5-f78506620b69",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3967,
+  "prices": {
+    "usd": "2.11",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.14",
+    "eur_foil": null,
+    "tix": "2.18"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=695953&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWill%2Bof%2Bthe%2BTemur",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWill%2Bof%2Bthe%2BTemur",
+    "edhrec": "https://edhrec.com/route/?cc=Will+of+the+Temur"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624916%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=819278&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138065?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

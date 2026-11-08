@@ -1,0 +1,47 @@
+{
+  "oracle_id": "a25bcf65-4417-45e9-a4b1-94e0ea78af63",
+  "name": "Morningtide's Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morningtide's Light",
+      "oracle_fingerprint": "7a33b2ad5186f7b489f5aec12114a6e8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": "Prevent",
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

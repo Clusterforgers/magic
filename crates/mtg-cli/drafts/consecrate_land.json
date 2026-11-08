@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4627691c-4ed4-4add-9cc3-2e019be2f9fd",
+  "name": "Consecrate Land",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consecrate Land",
+      "oracle_fingerprint": "aaf70c5d5a3bd5fa708bc0b9247b7ccd",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Land" }, { "Is": "Attached" }] },
+                "action": { "BeAttachedBy": [{ "Subtype": "Aura" }, "Other"] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

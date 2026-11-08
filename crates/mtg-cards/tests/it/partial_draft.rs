@@ -106,6 +106,7 @@ fn draft(by_hand: &[usize], read: ReadState) -> DraftRules {
         rules: serde_json::to_value(&card).unwrap(),
         read,
         forge: true,
+        differs: false,
         proof: Some(proof(by_hand)),
     }
 }

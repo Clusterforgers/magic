@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fb150d6a-5f81-4fd8-92b2-22a9615bfd4f",
+  "name": "Winter Sky",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter Sky",
+      "oracle_fingerprint": "1c3d2bff77c6a8d9bc9b612fe8bcc731",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 } },
+                    { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+                  ],
+                  "lose": [{ "Draw": { "who": "EachPlayer" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

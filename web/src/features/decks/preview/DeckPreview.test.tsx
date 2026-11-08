@@ -2,6 +2,7 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { renderInRouter } from '@/test-utils/router'
 import { DeckPreview } from './DeckPreview'
 import type { DeckPreviewProps } from './DeckPreview'
 import type { PreviewCard } from './model'
@@ -91,12 +92,16 @@ describe('the deck preview', () => {
   it.each([
     [{ deck: 'deck-1' }, '/read?deck=deck-1'],
     [{ precon: 'c18-x' }, '/read?precon=c18-x'],
-  ] as const)('says how many cards wait for a read, with the address of %j', (readTarget, path) => {
-    render(<DeckPreview deck={{ ...DECK, toRead: 1, readTarget }} />)
-    const line = document.querySelector('[data-slot="deck-to-read"]')
-    expect(line).toHaveTextContent('1 card to read')
-    expect(line?.querySelector('[data-slot="to-read"]')).toHaveAttribute('data-read-path', path)
-  })
+  ] as const)(
+    'says how many cards wait for a read, with a link to the review screen at %j',
+    async (readTarget, path) => {
+      await renderInRouter(<DeckPreview deck={{ ...DECK, toRead: 1, readTarget }} />)
+      const line = document.querySelector('[data-slot="deck-to-read"]')
+      expect(line).toHaveTextContent('1 card to read')
+      expect(line?.querySelector('[data-slot="to-read"]')).toHaveAttribute('data-read-path', path)
+      expect(line?.querySelector('a[data-slot="to-read"]')).toHaveAttribute('href', path)
+    },
+  )
 
   it('draws no count when the check holds no draft to read', () => {
     render(<DeckPreview deck={{ ...DECK, toRead: 0 }} />)

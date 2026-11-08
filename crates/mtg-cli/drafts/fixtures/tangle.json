@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "635ca3c1-d544-44fc-a178-3bfe4fe69551",
+  "oracle_id": "f627e125-15af-4e53-b34e-82b60e4ec87b",
+  "multiverse_ids": [
+    383123
+  ],
+  "mtgo_id": 52867,
+  "mtgo_foil_id": 52868,
+  "name": "Tangle",
+  "lang": "en",
+  "released_at": "2014-06-16",
+  "uri": "https://api.scryfall.com/cards/635ca3c1-d544-44fc-a178-3bfe4fe69551",
+  "scryfall_uri": "https://scryfall.com/card/vma/237/tangle?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:40:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.jpg?1783939245",
+    "normal": "https://cards.scryfall.io/normal/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.jpg?1783939245",
+    "large": "https://cards.scryfall.io/large/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.jpg?1783939245",
+    "png": "https://cards.scryfall.io/png/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.png?1783939245",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.jpg?1783939245",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.jpg?1783939245",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.webp?1783939245",
+    "grid": "https://cards.scryfall.io/grid/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.webp?1783939245",
+    "display": "https://cards.scryfall.io/display/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.webp?1783939245",
+    "art": "https://cards.scryfall.io/art/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.webp?1783939245",
+    "crop": "https://cards.scryfall.io/crop/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.webp?1783939245",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/3/635ca3c1-d544-44fc-a178-3bfe4fe69551.jpg?1783939245"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Prevent all combat damage that would be dealt this turn.\nEach attacking creature doesn't untap during its controller's next untap step.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a944551a-73fa-41cd-9159-e8d0e4674403",
+  "set": "vma",
+  "set_name": "Vintage Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/a944551a-73fa-41cd-9159-e8d0e4674403",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/635ca3c1-d544-44fc-a178-3bfe4fe69551/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af627e125-15af-4e53-b34e-82b60e4ec87b&unique=prints",
+  "collector_number": "237",
+  "digital": true,
+  "rarity": "common",
+  "flavor_text": "Gaea battles rampant death with abundant life.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Avon",
+  "artist_ids": [
+    "798f3932-30e0-4420-aa3f-db4d613f89ca"
+  ],
+  "illustration_id": "c4efe2b8-1f8d-41cb-b2d4-42f7c01b5527",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6112,
+  "penny_rank": 1383,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=383123&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTangle",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTangle",
+    "edhrec": "https://edhrec.com/route/?cc=Tangle"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DTangle%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Tangle&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/52867?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

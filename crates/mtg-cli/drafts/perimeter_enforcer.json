@@ -1,0 +1,43 @@
+{
+  "oracle_id": "be8d3788-709b-4d10-861c-a6f27d4b63a6",
+  "name": "Perimeter Enforcer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perimeter Enforcer",
+      "oracle_fingerprint": "172e0df3cac9eb2b64de5346cd1d0143",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Detective" }, { "ControlledBy": "You" }, "Other"],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "TurnedFaceUp": {
+                    "what": [{ "Subtype": "Detective" }, { "ControlledBy": "You" }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

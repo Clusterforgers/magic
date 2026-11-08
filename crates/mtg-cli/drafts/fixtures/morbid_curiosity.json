@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "03898f46-a26c-4765-8f1e-ea976fc53d7e",
+  "oracle_id": "59c620fb-a58d-4038-a7e2-0185324b5123",
+  "multiverse_ids": [
+    446117
+  ],
+  "tcgplayer_id": 167888,
+  "cardmarket_id": 358979,
+  "name": "Morbid Curiosity",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/03898f46-a26c-4765-8f1e-ea976fc53d7e",
+  "scryfall_uri": "https://scryfall.com/card/bbd/149/morbid-curiosity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:27:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.jpg?1783934823",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.jpg?1783934823",
+    "large": "https://cards.scryfall.io/large/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.jpg?1783934823",
+    "png": "https://cards.scryfall.io/png/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.png?1783934823",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.jpg?1783934823",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.jpg?1783934823",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.webp?1783934823",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.webp?1783934823",
+    "display": "https://cards.scryfall.io/display/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.webp?1783934823",
+    "art": "https://cards.scryfall.io/art/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.webp?1783934823",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.webp?1783934823",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/03898f46-a26c-4765-8f1e-ea976fc53d7e.jpg?1783934823"
+  },
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nDraw cards equal to the mana value of the sacrificed permanent.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set": "bbd",
+  "set_name": "Battlebond",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abbd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bbd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/03898f46-a26c-4765-8f1e-ea976fc53d7e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A59c620fb-a58d-4038-a7e2-0185324b5123&unique=prints",
+  "collector_number": "149",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Every creation carries a piece of its creators. Their knowledge, their dreams, their soul. That is the best part.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "81dd0002-a8d1-4c71-bc82-bc724c41cce2",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8384,
+  "penny_rank": 12898,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "1.01",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.30",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=446117&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMorbid%2BCuriosity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMorbid%2BCuriosity",
+    "edhrec": "https://edhrec.com/route/?cc=Morbid+Curiosity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F167888%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358979&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Morbid+Curiosity&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

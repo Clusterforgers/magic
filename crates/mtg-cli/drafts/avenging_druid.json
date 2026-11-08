@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1f3fb367-60b5-4b36-9604-3064afdac0d9",
+  "name": "Avenging Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avenging Druid",
+      "oracle_fingerprint": "3530c583f2d410341ad10f6bd202ff40",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Type": "Land" }],
+                        "as": "found",
+                        "revealed_as": "revealed2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Move": { "what": { "Bound": "revealed2" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

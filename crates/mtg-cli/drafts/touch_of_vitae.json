@@ -1,0 +1,50 @@
+{
+  "oracle_id": "84f1e596-f56f-48c9-9bff-2c0bb2cea2d3",
+  "name": "Touch of Vitae",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Touch of Vitae",
+      "oracle_fingerprint": "2c9912c8b6b6871737761fac7e48b205",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{0}",
+                          "limit": "OncePerGame",
+                          "effects": [{ "Untap": { "what": "This" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

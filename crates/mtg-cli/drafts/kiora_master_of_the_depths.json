@@ -1,0 +1,113 @@
+{
+  "oracle_id": "0b829189-ff9d-4f6c-9a2a-fdb4a9bfeeb6",
+  "name": "Kiora, Master of the Depths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kiora, Master of the Depths",
+      "oracle_fingerprint": "e5d873f5d5f80dfb475ef20fd61d4893",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } },
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "Untap": { "what": { "Target": 1 } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "kept2" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept3" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "to": "Battlefield"
+                          }
+                        },
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          {
+                            "May": {
+                              "effects": [
+                                { "Fight": { "what": "Triggering", "with": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Octopus",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Octopus"],
+                      "power": 8,
+                      "toughness": 8
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

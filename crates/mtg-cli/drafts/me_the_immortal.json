@@ -1,0 +1,68 @@
+{
+  "oracle_id": "26ad696e-9f17-4110-9c59-b9211e662900",
+  "name": "Me, the Immortal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Me, the Immortal",
+      "oracle_fingerprint": "8e1eb212aec58fbdfd45fd0cff4f70e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Either": {
+                  "first": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "PutCounters": { "on": "This", "counter": { "Other": "first strike" } }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "PutCounters": {
+                                    "on": "This",
+                                    "counter": { "Other": "vigilance" }
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "PutCounters": { "on": "This", "counter": { "Other": "menace" } }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CountersRemain" } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "additional": [{ "Discard": { "count": 2 } }]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

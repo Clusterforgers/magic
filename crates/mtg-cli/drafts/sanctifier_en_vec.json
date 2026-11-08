@@ -1,0 +1,43 @@
+{
+  "oracle_id": "810d3afe-c644-444f-a4d9-88b323f0b581",
+  "name": "Sanctifier en-Vec",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanctifier en-Vec",
+      "oracle_fingerprint": "6d7cb6581e7b80fd563007fa74702bf1",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }],
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

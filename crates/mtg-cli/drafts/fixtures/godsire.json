@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "e2539ff7-2b7d-47e3-bd77-3138a6c42d2b",
+  "oracle_id": "4252d7f4-c582-4a21-b3af-829c84cb0b09",
+  "multiverse_ids": [
+    175105
+  ],
+  "mtgo_id": 31175,
+  "mtgo_foil_id": 31176,
+  "tcgplayer_id": 27686,
+  "cardmarket_id": 19922,
+  "name": "Godsire",
+  "lang": "en",
+  "released_at": "2008-10-03",
+  "uri": "https://api.scryfall.com/cards/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b",
+  "scryfall_uri": "https://scryfall.com/card/ala/170/godsire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:35:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.jpg?1783942544",
+    "normal": "https://cards.scryfall.io/normal/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.jpg?1783942544",
+    "large": "https://cards.scryfall.io/large/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.jpg?1783942544",
+    "png": "https://cards.scryfall.io/png/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.png?1783942544",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.jpg?1783942544",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.jpg?1783942544",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.webp?1783942544",
+    "grid": "https://cards.scryfall.io/grid/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.webp?1783942544",
+    "display": "https://cards.scryfall.io/display/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.webp?1783942544",
+    "art": "https://cards.scryfall.io/art/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.webp?1783942544",
+    "crop": "https://cards.scryfall.io/crop/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.webp?1783942544",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/2/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b.jpg?1783942544"
+  },
+  "mana_cost": "{4}{R}{G}{G}{W}",
+  "cmc": 8.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Vigilance\n{T}: Create an 8/8 Beast creature token that's red, green, and white.",
+  "power": "8",
+  "toughness": "8",
+  "colors": [
+    "G",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e2539ff7-2b7d-47e3-bd77-3138a6c42d2b",
+      "component": "combo_piece",
+      "name": "Godsire",
+      "type_line": "Creature — Beast",
+      "uri": "https://api.scryfall.com/cards/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b"
+    },
+    {
+      "object": "related_card",
+      "id": "b51e84d7-bf9f-454f-bdcd-a2458b1b5b33",
+      "component": "combo_piece",
+      "name": "Behemoth's Herald",
+      "type_line": "Creature — Elf Shaman",
+      "uri": "https://api.scryfall.com/cards/b51e84d7-bf9f-454f-bdcd-a2458b1b5b33"
+    },
+    {
+      "object": "related_card",
+      "id": "a7382e4b-43dc-4b35-8a9e-ab886ea0a981",
+      "component": "token",
+      "name": "Beast",
+      "type_line": "Token Creature — Beast",
+      "uri": "https://api.scryfall.com/cards/a7382e4b-43dc-4b35-8a9e-ab886ea0a981"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d667aaec-09b7-4406-b6fa-60795132dc11",
+  "set": "ala",
+  "set_name": "Shards of Alara",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d667aaec-09b7-4406-b6fa-60795132dc11",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aala&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ala?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e2539ff7-2b7d-47e3-bd77-3138a6c42d2b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4252d7f4-c582-4a21-b3af-829c84cb0b09&unique=prints",
+  "collector_number": "170",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"Lay sacrifice to the godsire that it may spare us, but save some for his progeny who also will hunger.\"\n—Syeena, elvish godtoucher",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jim Murray",
+  "artist_ids": [
+    "1c906f9b-5bbe-4643-8f5c-90eb1c7f0c43"
+  ],
+  "illustration_id": "6fe28b17-77d4-4164-89ca-b98a80fee293",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15705,
+  "penny_rank": 11114,
+  "prices": {
+    "usd": "4.27",
+    "usd_foil": "31.44",
+    "usd_etched": null,
+    "eur": "3.00",
+    "eur_foil": "5.30",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=175105&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGodsire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGodsire",
+    "edhrec": "https://edhrec.com/route/?cc=Godsire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F27686%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=19922&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/31175?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

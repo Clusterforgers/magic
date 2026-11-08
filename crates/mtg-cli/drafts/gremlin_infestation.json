@@ -1,0 +1,47 @@
+{
+  "oracle_id": "94fa21f1-826a-4d51-9ccd-d72e5cf13f3d",
+  "name": "Gremlin Infestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gremlin Infestation",
+      "oracle_fingerprint": "f48c06d5dfc85e05b16dcbe7840e1369",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Attached" }, "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gremlin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Gremlin"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

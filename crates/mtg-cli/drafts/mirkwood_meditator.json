@@ -1,0 +1,38 @@
+{
+  "oracle_id": "399cd159-7376-421c-b001-c26f1cbadced",
+  "name": "Mirkwood Meditator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirkwood Meditator",
+      "oracle_fingerprint": "93e15e2183e5695f61cdb7a54015802b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetPT": { "power": 4, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

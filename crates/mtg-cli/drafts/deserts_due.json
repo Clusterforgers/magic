@@ -1,0 +1,54 @@
+{
+  "oracle_id": "909eacf3-05ce-4c2b-97a8-49b6ea597b64",
+  "name": "Desert's Due",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desert's Due",
+      "oracle_fingerprint": "8da4377f0f15428a4d6cfa4920c1faf7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                                2
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                                2
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "44c65424-9c44-4bd8-9022-7ef5bb5b898e",
+  "name": "Dark Maze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Maze",
+      "oracle_fingerprint": "205b01c4aeb2ec201e57c5a2711de82f",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

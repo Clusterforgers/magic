@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2313a3f9-3eac-4684-a25e-6a6ae445a723",
+  "name": "Veteran Guardmouse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran Guardmouse",
+      "oracle_fingerprint": "fa994a58e62339d15789d1d9c6ac4bfc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "You" }] }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

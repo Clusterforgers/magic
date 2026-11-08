@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bfe0818b-ae13-4174-85c8-24b895d28df0",
+  "name": "Moon Girl and Devil Dinosaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moon Girl and Devil Dinosaur",
+      "oracle_fingerprint": "21f040a7a9be6053f3f257650c896f4d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 6, "toughness": 6 } }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

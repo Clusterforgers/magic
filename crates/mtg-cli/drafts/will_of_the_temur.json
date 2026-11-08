@@ -1,0 +1,74 @@
+{
+  "oracle_id": "ebe1448e-21c5-4b73-8296-03d3e5097c50",
+  "name": "Will of the Temur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Will of the Temur",
+      "oracle_fingerprint": "f17133d0926cf2719270fb484f387728",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "CopyOf": {
+                                "of": { "Target": 0 },
+                                "except": [
+                                  { "SetPT": { "power": 4, "toughness": 4 } },
+                                  { "AddSubtype": "Dragon" },
+                                  { "AddType": "Creature" },
+                                  { "AddKeyword": "Flying" }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Draw": {
+                            "who": { "Target": 0 },
+                            "count": {
+                              "Greatest": { "of": [{ "ControlledBy": "You" }], "stat": "ManaValue" }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

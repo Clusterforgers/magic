@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3f0dc347-adac-428b-8f04-858799e91243",
+  "name": "Bogardan Dragonheart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bogardan Dragonheart",
+      "oracle_fingerprint": "4ba3e7f533c4f1005f3d18a8045e5a63",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetCreatureTypes": ["Dragon"] },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

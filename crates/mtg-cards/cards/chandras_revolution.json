@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f72d2074-2f32-4b56-a172-947bf6104fae",
+  "name": "Chandra's Revolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Revolution",
+      "oracle_fingerprint": "f76a454e428d1bcda54d2b64aa1bd458",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "Tap": { "what": { "Target": 1 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -281,6 +281,7 @@ fn draft_rules(draft: StoredDraft, read: mtg_db::ReadState, forge: bool) -> Draf
             mtg_db::ReadState::Approved => ReadState::Approved,
             mtg_db::ReadState::Wrong => ReadState::Wrong,
         },
+        differs: draft.differs,
         forge,
         // A proof that does not parse is none: a partial draft without one is left out by the library.
         proof: draft
@@ -289,9 +290,9 @@ fn draft_rules(draft: StoredDraft, read: mtg_db::ReadState, forge: bool) -> Draf
     }
 }
 
-/// Whether a stored draft is a trusted translation of a Forge script.
+/// Whether a stored draft is a trusted translation of a Forge script: never one that reads back as other text.
 fn is_trusted_forge(draft: &StoredDraft) -> bool {
-    draft.source == SOURCE_FORGE && draft.oracle_matches
+    draft.source == SOURCE_FORGE && draft.oracle_matches && !draft.differs
 }
 
 /// The index that ties the names and printings of a pasted list to cards, built from the stored
@@ -919,6 +920,7 @@ mod tests {
             rules: serde_json::to_value(card).unwrap(),
             read: ReadState::Approved,
             forge: true,
+            differs: false,
             proof: None,
         };
         let (library, left_out) = Library::default().with_drafts(&[row]);
@@ -966,6 +968,7 @@ mod tests {
             rules,
             source: SOURCE_FORGE.into(),
             oracle_matches: true,
+            differs: false,
             proof: Some(serde_json::json!({"marks": [
                 mark(0, LINE0.chars().count(), "Auto"), mark(start, proof_end, "ByHand")]})),
             retired: false,

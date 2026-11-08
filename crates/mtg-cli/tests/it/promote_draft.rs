@@ -96,11 +96,13 @@ fn proposal(dir: &Path, folder: &str, slug: &str, text: &str) -> PathBuf {
 }
 
 /// What a run is asked: the switches and the files.
+#[allow(clippy::struct_excessive_bools)] // one field per switch of `promote`
 struct Run {
     draft: bool,
     dry: bool,
     no_smoke: bool,
     origin: Option<String>,
+    differs: bool,
     files: Vec<PathBuf>,
 }
 
@@ -117,6 +119,7 @@ async fn promote(
         no_smoke: run.no_smoke,
         drafts: run.draft.then(|| drafts.clone()),
         source: run.origin,
+        differs: run.differs,
         files: run.files,
     };
     w2a_promote_against(db, cache, &args, &Library::default())
@@ -130,6 +133,7 @@ fn drafting(files: Vec<PathBuf>) -> Run {
         dry: false,
         no_smoke: false,
         origin: None,
+        differs: false,
         files,
     }
 }
@@ -406,6 +410,51 @@ async fn a_mismatch_is_never_drafted_and_only_an_unchecked_translation_may_pass(
                     serde_json::from_str(&fs::read_to_string(meta_file).unwrap()).unwrap();
                 assert_eq!(written["source"], "forge", "{name}");
             }
+        }
+    }
+}
+
+/// What `--differs` makes of a whole proposal whose clause reads back as other text: its meta, and whether it is drafted.
+const DIFFERS_CASES: &[(&str, &str, bool)] = &[
+    (
+        "Forge with a matching text",
+        r#"{"source":"forge","oracle_matches":true}"#,
+        true,
+    ),
+    ("Forge, not matched", r#"{"source":"forge"}"#, false),
+    (
+        "a sweep",
+        r#"{"source":"sweep","oracle_matches":true}"#,
+        false,
+    ),
+];
+
+#[sqlx::test]
+async fn with_differs_a_matched_forge_translation_that_reads_back_as_other_text_is_a_draft_marked_differs(
+    pool: PgPool,
+) {
+    let dir = tempfile::tempdir().unwrap();
+    let stored = loaded(pool, dir.path()).await;
+    for (name, meta_text, drafted) in DIFFERS_CASES {
+        let places = dirs(dir.path());
+        let file = proposal(dir.path(), "forge", RESERVOIR, &mismatching_reservoir());
+        meta(&file, meta_text);
+        let _ = fs::remove_dir_all(&places.1);
+        let run = Run {
+            differs: true,
+            ..drafting(vec![file])
+        };
+
+        let promoted = promote(&stored, &places, run).await;
+
+        let outcome = &promoted.decisions[0].outcome;
+        assert_eq!(outcome.is_ok(), *drafted, "{name}: {outcome:?}");
+        if *drafted {
+            let meta_file = places.1.join(format!("meta/{RESERVOIR}.json"));
+            let written: serde_json::Value =
+                serde_json::from_str(&fs::read_to_string(meta_file).unwrap()).unwrap();
+            assert_eq!(written["source"], "forge", "{name}");
+            assert_eq!(written["differs"], true, "{name}");
         }
     }
 }

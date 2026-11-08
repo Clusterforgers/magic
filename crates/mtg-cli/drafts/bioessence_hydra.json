@@ -1,0 +1,45 @@
+{
+  "oracle_id": "1f79de2a-6cef-4285-b008-5b5527c406ab",
+  "name": "Bioessence Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bioessence Hydra",
+      "oracle_fingerprint": "f517c6443182e59553d84d41e3a3cb1c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Counters": {
+                    "on": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                    "counter": "loyalty"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "CountersPut": {
+                  "what": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }],
+                  "counter": "loyalty"
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

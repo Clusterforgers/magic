@@ -1,0 +1,26 @@
+{
+  "oracle_id": "649e4969-71d4-434f-85b0-205ec2c6b24f",
+  "name": "Collective Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collective Inferno",
+      "oracle_fingerprint": "115f74553d473dc01344299cbf956541",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": ["ChosenSubtype", { "ControlledBy": "You" }] } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "e70373b7-ced5-4d88-9ff3-04b6f59c69c9",
+  "oracle_id": "d1aba343-d85a-4829-bdfe-db31fcb3c320",
+  "multiverse_ids": [
+    184477
+  ],
+  "mtgo_id": 30324,
+  "mtgo_foil_id": 30325,
+  "name": "Deep Spawn",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/e70373b7-ced5-4d88-9ff3-04b6f59c69c9",
+  "scryfall_uri": "https://scryfall.com/card/me2/45/deep-spawn?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:37:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.jpg?1783942634",
+    "normal": "https://cards.scryfall.io/normal/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.jpg?1783942634",
+    "large": "https://cards.scryfall.io/large/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.jpg?1783942634",
+    "png": "https://cards.scryfall.io/png/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.png?1783942634",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.jpg?1783942634",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.jpg?1783942634",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.webp?1783942634",
+    "grid": "https://cards.scryfall.io/grid/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.webp?1783942634",
+    "display": "https://cards.scryfall.io/display/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.webp?1783942634",
+    "art": "https://cards.scryfall.io/art/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.webp?1783942634",
+    "crop": "https://cards.scryfall.io/crop/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.webp?1783942634",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/7/e70373b7-ced5-4d88-9ff3-04b6f59c69c9.jpg?1783942634"
+  },
+  "mana_cost": "{5}{U}{U}{U}",
+  "cmc": 8.0,
+  "type_line": "Creature — Homarid",
+  "oracle_text": "Trample\nAt the beginning of your upkeep, sacrifice this creature unless you mill two cards.\n{U}: This creature gains shroud until end of turn and doesn't untap during your next untap step. Tap this creature. (A creature with shroud can't be the target of spells or abilities.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Trample",
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e70373b7-ced5-4d88-9ff3-04b6f59c69c9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad1aba343-d85a-4829-bdfe-db31fcb3c320&unique=prints",
+  "collector_number": "45",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Tedin",
+  "artist_ids": [
+    "9ee9a9cc-c09e-486f-918b-69f80cbc4188"
+  ],
+  "illustration_id": "1c6c63a1-bab5-438a-a00c-a1d3eca00801",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28526,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184477&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeep%2BSpawn",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeep%2BSpawn",
+    "edhrec": "https://edhrec.com/route/?cc=Deep+Spawn"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DDeep%2BSpawn%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Deep+Spawn&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30324?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

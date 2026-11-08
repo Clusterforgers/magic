@@ -1,0 +1,32 @@
+{
+  "oracle_id": "862b777a-4816-4a3e-be8d-ddfcb72268e8",
+  "name": "Shambling Suit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shambling Suit",
+      "oracle_fingerprint": "e540e2556fa7a372397b43d203612644",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": 3
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

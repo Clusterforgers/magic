@@ -450,8 +450,9 @@ impl Library {
                 card,
                 read_hash: row.read_hash.clone(),
                 read: row.read,
-                forge: row.forge,
+                forge: row.forge && !row.differs,
                 proof,
+                differs: row.differs,
             };
             library.drafts.insert(row.oracle_id.clone(), draft);
         }

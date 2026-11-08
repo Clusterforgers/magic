@@ -1,0 +1,60 @@
+{
+  "oracle_id": "653f0452-5802-4639-86c2-1500c3964fcb",
+  "name": "Cloud, Ex-SOLDIER",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloud, Ex-SOLDIER",
+      "oracle_fingerprint": "682e43fc39a6d22ba29bbecf495b26fd",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      { "HasAttached": [{ "Subtype": "Equipment" }] }
+                    ]
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 7 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

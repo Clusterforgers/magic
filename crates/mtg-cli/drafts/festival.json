@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8e594801-4a8d-4dcd-b328-7eb3de65cf90",
+  "name": "Festival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Festival",
+      "oracle_fingerprint": "98a4eb58fdf9d2fca0f33e1f2ad9c78f",
+      "abilities": [
+        { "CastOnly": { "condition": { "All": [{ "Step": "Upkeep" }, { "Not": "YourTurn" }] } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

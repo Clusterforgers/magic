@@ -1,0 +1,57 @@
+{
+  "oracle_id": "1c21efcf-1007-45bb-ba21-ac33c2a8d751",
+  "name": "Zoetic Glyph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zoetic Glyph",
+      "oracle_fingerprint": "3d0046b740cd6d25682d690a8e661520",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 5, "toughness": 4 } },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Golem" }
+            ],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Artifact" }] }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

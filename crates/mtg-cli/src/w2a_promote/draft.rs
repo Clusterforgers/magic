@@ -28,15 +28,18 @@ const SMOKE_STACK: usize = 8 << 20;
 const SMOKE_THREADS: usize = 4;
 
 /// The draft of an `Unchecked` proposal, or why the card is not one: it must be a whole rules file that the engine
-/// runs without a missing primitive, and no clause may read back as other text. The smoke gate and the record come later.
+/// runs without a missing primitive, and no clause may read back as other text unless `allow_differs`: then the draft is
+/// marked `differs`, so it runs on a player's read alone. The smoke gate and the record come later.
 pub fn decide(
     printed: &PrintedCard,
     slug: String,
     report: Report,
     source: String,
     oracle_matches: bool,
+    allow_differs: bool,
 ) -> Result<W2aPromotion, W2aSkip> {
-    if differs(&report) {
+    let marked = differs(&report);
+    if marked && !allow_differs {
         return Err(W2aSkip::Differs);
     }
     let (Some(record), Some(rules)) = (report.support, report.rules) else {
@@ -58,6 +61,7 @@ pub fn decide(
         oracle_matches,
         proof: None,
         lines: Vec::new(),
+        differs: marked,
     })
 }
 
@@ -133,6 +137,7 @@ pub fn decide_partial(
         oracle_matches: true,
         proof: Some(proof),
         lines: meta.lines.clone(),
+        differs: false,
     })
 }
 
@@ -296,6 +301,7 @@ fn write_meta(dir: &Path, promotion: &W2aPromotion) -> Result<(), CliError> {
         gaps: Vec::new(),
         lines: promotion.lines.clone(),
         proof: promotion.proof.clone(),
+        differs: promotion.differs,
     };
     let text = serde_json::to_string_pretty(&meta).unwrap_or_default();
     if let Some(parent) = path.parent() {
@@ -394,6 +400,7 @@ mod tests {
             "x".into(),
             report(Some(rules), state),
             "sweep".into(),
+            false,
             false,
         );
 
@@ -520,6 +527,7 @@ mod partial_tests {
             gaps: vec!["effect:RollDice".into()],
             lines,
             proof: None,
+            differs: false,
         };
         let mut detail = None;
         let out = decide_partial(
@@ -611,6 +619,7 @@ mod partial_tests {
             partial: false,
             draft: true,
             source: None,
+            differs: false,
         };
 
         gate(&basis, &mut decisions, true);

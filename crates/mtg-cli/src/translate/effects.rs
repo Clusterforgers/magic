@@ -12,7 +12,46 @@ use crate::forge::script::Params;
 
 /// The effects of an ability line and of the sub-abilities it names, in order.
 pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
-    chain_at(ctx, params, true)
+    chain_at(ctx, params, true).map(color_with_pump)
+}
+
+/// "Target creature becomes red and gains haste until end of turn. Draw a card.": Forge runs the color after the draw, the
+/// card says it with the pump; a color nothing in between depends on moves up to the pump of the same target.
+fn color_with_pump(mut effects: Vec<Value>) -> Vec<Value> {
+    let only_colors = |effect: &Value| {
+        effect.get("Continuous").is_some_and(|c| {
+            c["mods"]
+                .as_array()
+                .is_some_and(|m| m.len() == 1 && m[0].get("SetColors").is_some())
+        })
+    };
+    let Some(last) = effects
+        .len()
+        .checked_sub(1)
+        .filter(|&l| l >= 2 && only_colors(&effects[l]))
+    else {
+        return effects;
+    };
+    let same = |a: &Value, b: &Value| {
+        a.get("Continuous").is_some_and(|a| {
+            b.get("Continuous")
+                .is_some_and(|b| a["affected"] == b["affected"] && a["duration"] == b["duration"])
+        })
+    };
+    let between_are_draws = effects[1..last].iter().all(|e| e.get("Draw").is_some());
+    if !between_are_draws || !same(&effects[0], &effects[last]) || only_colors(&effects[0]) {
+        return effects;
+    }
+    let color = effects.remove(last);
+    if let (Some(Value::Array(mods)), Some(Value::Array(set))) = (
+        effects[0]
+            .get_mut("Continuous")
+            .and_then(|c| c.get_mut("mods")),
+        color.get("Continuous").map(|c| c["mods"].clone()),
+    ) {
+        mods.splice(0..0, set);
+    }
+    effects
 }
 
 /// The effects of a line and of the sub-abilities after it. A part that is not the ability itself (`top`) and has a cost
@@ -191,7 +230,7 @@ fn holds_what_was_taken(ctx: &Ctx, name: &str) -> bool {
     if line.get("DB") != Some("Effect")
         || !matches!(
             line.get("RememberObjects"),
-            Some("Remembered" | "RememberedCard")
+            Some("Remembered" | "RememberedCard" | "Imprinted")
         )
         || line.has("ConditionDefined")
         || line.has("ConditionPresent")
@@ -1100,7 +1139,7 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         );
         let effects = chain_at(ctx, &part.without(&["ModeCost"]), true)?;
         let mut mode = json!({ "effects": effects });
-        if let Some(label) = e15f_mode_name(&part) {
+        if let Some(label) = e15f_mode_name(&part).or_else(|| w20_sub_mode_name(ctx, &part)) {
             mode["label"] = json!(label);
         }
         if !ctx.targets.is_empty() {
@@ -1147,6 +1186,15 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         modal["different_players"] = json!(true);
     }
     Ok(json!({ "Modal": modal }))
+}
+
+/// The name of a mode whose own line has no description: the first sub-ability line holds it (What Must Be Done).
+fn w20_sub_mode_name(ctx: &Ctx, part: &Params) -> Option<String> {
+    if part.get("SpellDescription").is_some() || part.get("PrecostDesc").is_some() {
+        return None;
+    }
+    let next = ctx.svar(part.get("SubAbility")?)?;
+    e15f_mode_name(&Params::parse(next))
 }
 
 /// The name a card prints before a mode ("Charge Them — Creatures you control get +2/+0"): the words before the dash of

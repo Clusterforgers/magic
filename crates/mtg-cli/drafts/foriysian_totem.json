@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d053ea00-e727-4030-8c64-0d32ae57f169",
+  "name": "Foriysian Totem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foriysian Totem",
+      "oracle_fingerprint": "16dc0924b9dd82b0a7a615563ff499c6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetColors": ["Red"] },
+                    { "SetCreatureTypes": ["Giant"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 1 }] } }
+      ]
+    }
+  ]
+}

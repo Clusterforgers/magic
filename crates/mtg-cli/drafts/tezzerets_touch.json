@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c6f2c767-3c8e-4113-b271-ea7c19583e6c",
+  "name": "Tezzeret's Touch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret's Touch",
+      "oracle_fingerprint": "7acee92db2841ac69bcc31c44c7cb3b8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetPT": { "power": 5, "toughness": 5 } }, { "AddType": "Creature" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

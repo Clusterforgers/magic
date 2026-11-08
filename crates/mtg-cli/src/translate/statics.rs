@@ -80,7 +80,9 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(found) = super::statics_castonly::cast_only(&p, condition.as_ref()) {
         return found;
     }
-    let mut ability = match super::statics_rules::rule(ctx, &p) {
+    let mut ability = match super::e18a_first::instant_activation(&p)
+        .or_else(|| super::statics_rules::rule(ctx, &p))
+    {
         Some(found) => found?,
         None => by_mode(ctx, &p)?,
     };
@@ -167,7 +169,10 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "MustBlock" => must_act(ctx, p, "MustBlock")?,
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
         "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
-        "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
+        "AlternativeCost" => match super::e18a_first::free_activation(p) {
+            Some(found) => found?,
+            None => super::statics_alt::alternative_cost(ctx, p)?,
+        },
         "OptionalCost" => super::statics_alt::optional_cost(ctx, p)?,
         other => return unmapped(format!("static:{other}")),
     })
@@ -233,6 +238,10 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     if matches!(valid, "Creature" | "Card" | "Permanent") && !creature_condition {
         return Ok(None);
     }
+    // "Enchanted artifact is a creature": an Aura that enchants only artifacts has no condition to state.
+    if p.get("AffectedDefined") == Some("Enchanted") && enchants_only(ctx, valid) {
+        return Ok(None);
+    }
     if p.has("AffectedZone") {
         return unmapped("key:Static.Continuous.AffectedZone-with-AffectedDefined");
     }
@@ -240,6 +249,15 @@ fn refinement(ctx: &Ctx, p: &Params, subject: &Value) -> Tr<Option<Value>> {
     Ok(Some(
         json!({"Matches": {"subject": subject, "selector": selector}}),
     ))
+}
+
+/// Whether the face's `K:Enchant:` line names the one kind `valid`.
+fn enchants_only(ctx: &Ctx, valid: &str) -> bool {
+    ctx.keywords.iter().any(|keyword| {
+        keyword
+            .strip_prefix("Enchant:")
+            .is_some_and(|rest| rest.split(':').next() == Some(valid))
+    })
 }
 
 /// Whether the face's `K:Enchant:` line lets the Aura enchant something other than a creature ("Enchant permanent"); a
@@ -585,6 +603,16 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             p.get("Affected").unwrap_or_default()
         ));
     }
+    // An Aura that adds types and a size: the types first, the size after them (layers 4 and 7b).
+    if affected == "Attached"
+        && mods.iter().all(|m| {
+            ["SetPT", "AddType", "AddSubtype"]
+                .iter()
+                .any(|key| m.get(key).is_some())
+        })
+    {
+        mods.sort_by_key(|m| m.get("SetPT").is_some());
+    }
     let mut ability = json!({"affected": affected, "mods": mods});
     if let Some(refinement) = refinement {
         ability["condition"] = refinement;
@@ -602,6 +630,16 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
                 .any(|key| modification.get(key).is_some())
                 || modification == "AddAllCreatureTypes"
         };
+        // "~ has flash as long as ...": Forge marks the line defining so it works in the hand; the rule is a static from the hand
+        // whose condition the caller adds.
+        let flash =
+            |modification: &Value| modification.get("AddKeyword").is_some_and(|k| k == "Flash");
+        if ability.get("from").is_none() && mods.iter().all(flash) {
+            ability["from"] = json!("Hand");
+            ability["affected"] = json!({"Each": [{"In": "Hand"}, "This"]});
+            let ability = json!({ "Static": ability });
+            return Ok(ability);
+        }
         if !mods.iter().all(defines) || ability.get("condition").is_some() {
             return unmapped("key:Static.Continuous.defining-other-than-stats");
         }
@@ -830,6 +868,11 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
             only.push(inner);
             Ok(json!({"Static": {"affected": "This", "mods": [{"CanBlockOnly": only}]}}))
         }
+        // A bestowed creature and what it enchants: the card's own rule and the one the Aura gives.
+        ("Creature.Self,Creature.EnchantedBy", None) => Ok(json!([
+            {"Static": {"affected": "This", "mods": ["CantBeBlocked"]}},
+            {"Static": {"affected": "Attached", "mods": ["CantBeBlocked"]}},
+        ])),
         (valid, None) => Ok(json!({"Static": {
             "affected": affected_valid(ctx, valid)?,
             "mods": ["CantBeBlocked"],

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e2b152ea-82d5-465e-8e13-3d62aacd6692",
+  "name": "Reason // Believe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reason",
+      "oracle_fingerprint": "71c753256ebfa0966215b281263e9308",
+      "abilities": [{ "Spell": { "effects": [{ "Scry": { "count": 3 } }] } }]
+    },
+    {
+      "name": "Believe",
+      "oracle_fingerprint": "c1e62e24c57e5518103c06907734c6b5",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

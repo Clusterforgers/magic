@@ -1,0 +1,30 @@
+{
+  "oracle_id": "feb2f08e-79c7-4d51-bf55-e649f5ff5e07",
+  "name": "Grave Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Strength",
+      "oracle_fingerprint": "6feb9376e31d4e527bde71be51941da0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

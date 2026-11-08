@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "51aa3511-e588-4b40-b98c-c5dc3a05bb2d",
+  "oracle_id": "0030578c-afaf-4072-a62b-2510bdceb64a",
+  "multiverse_ids": [],
+  "resource_id": "0F7EFDFFCC9309F61B7A605B7A72CAF65EA9407E53AD32513716B14D60D6A8CB",
+  "mtgo_id": 148647,
+  "tcgplayer_id": 687383,
+  "cardmarket_id": 881303,
+  "name": "Lattice Library",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/51aa3511-e588-4b40-b98c-c5dc3a05bb2d",
+  "scryfall_uri": "https://scryfall.com/card/soc/40/lattice-library?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:50:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.jpg?1783903852",
+    "normal": "https://cards.scryfall.io/normal/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.jpg?1783903852",
+    "large": "https://cards.scryfall.io/large/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.jpg?1783903852",
+    "png": "https://cards.scryfall.io/png/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.png?1783903852",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.jpg?1783903852",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.jpg?1783903852",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.webp?1783903852",
+    "grid": "https://cards.scryfall.io/grid/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.webp?1783903852",
+    "display": "https://cards.scryfall.io/display/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.webp?1783903852",
+    "art": "https://cards.scryfall.io/art/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.webp?1783903852",
+    "crop": "https://cards.scryfall.io/crop/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.webp?1783903852",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/1/51aa3511-e588-4b40-b98c-c5dc3a05bb2d.jpg?1783903852"
+  },
+  "mana_cost": "{X}{G}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "This enchantment enters with X study counters on it.\nWhen this enchantment enters and whenever you cast your first spell with {X} in its mana cost each turn, create a 0/0 green and blue Fractal creature token. Put a number of +1/+1 counters on it equal to the number of study counters on this enchantment.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f291612f-fe70-486e-907f-950a35d23727",
+      "component": "combo_piece",
+      "name": "Lattice Library",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/f291612f-fe70-486e-907f-950a35d23727"
+    },
+    {
+      "object": "related_card",
+      "id": "8b5f1fdb-04df-4224-acb4-7819c37565f5",
+      "component": "token",
+      "name": "Fractal",
+      "type_line": "Token Creature — Fractal",
+      "uri": "https://api.scryfall.com/cards/8b5f1fdb-04df-4224-acb4-7819c37565f5"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set": "soc",
+  "set_name": "Secrets of Strixhaven Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/51aa3511-e588-4b40-b98c-c5dc3a05bb2d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0030578c-afaf-4072-a62b-2510bdceb64a&unique=prints",
+  "collector_number": "40",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "quandrix",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Constantin Marin",
+  "artist_ids": [
+    "6cb0dc0c-4362-4c21-b23a-b2d7e096aa4f"
+  ],
+  "illustration_id": "1de56b22-910c-4069-9c3d-f6bece73924b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9580,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": null,
+    "tix": "2.20"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLattice%2BLibrary",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLattice%2BLibrary",
+    "edhrec": "https://edhrec.com/route/?cc=Lattice+Library"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F687383%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=881303&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/148647?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

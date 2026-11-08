@@ -1,0 +1,43 @@
+{
+  "oracle_id": "83f0b573-58a0-457d-80e5-6e0b690e5f4e",
+  "name": "Revoke Demise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revoke Demise",
+      "oracle_fingerprint": "58c7504700313b3f29da7a67190e75eb",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              {
+                "Targeting": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                ]
+              }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

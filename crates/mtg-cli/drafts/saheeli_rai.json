@@ -1,0 +1,70 @@
+{
+  "oracle_id": "5f3fe679-aff1-41b3-8d75-c78c2c0636f0",
+  "name": "Saheeli Rai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saheeli Rai",
+      "oracle_fingerprint": "0ec2415663e425b420b91af4ad88d6cd",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [{ "Scry": {} }, { "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "AddType": "Artifact" }, { "AddKeyword": "Haste" }]
+                    }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Artifact" }],
+                  "count": { "min": 0, "max": 3 },
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

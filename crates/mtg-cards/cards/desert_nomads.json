@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3247fca3-7458-47ee-875b-c55f2a3e2962",
+  "name": "Desert Nomads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desert Nomads",
+      "oracle_fingerprint": "c05e9c9fc3f1abc288d228e9d4768628",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Desert" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This", "source": [{ "Subtype": "Desert" }] } },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

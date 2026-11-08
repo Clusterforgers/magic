@@ -19,6 +19,7 @@ use crate::decision::{FaceOption, PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::faces;
+use crate::free_activation;
 use crate::keywords;
 use crate::loyalty;
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
@@ -215,7 +216,9 @@ fn can_activate(
     {
         return false;
     }
-    let Ok(price) = Price::announced_in(cost, state, player, object.id(), address.source.granter())
+    let cost = crate::free_activation::cost(state, player, (address, rules), cost);
+    let Ok(price) =
+        Price::announced_in(&cost, state, player, object.id(), address.source.granter())
     else {
         return false;
     };
@@ -233,7 +236,8 @@ fn can_activate(
     let Some(claimed) = price.claimed(state, player, object.id()) else {
         return false;
     };
-    if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
+    if *timing == Timing::Sorcery && !free_activation::timing_open(state, player, (address, rules))
+    {
         return false;
     }
     // "Activate only if ..." is judged as the ability is activated (CR 602.5b).
@@ -273,7 +277,7 @@ fn can_activate(
                 && can_pay_x(state, player, object, &price, &claimed, x))
     };
     // "X can't be 0": the least X must be paid for.
-    let least = crate::announce::least_of(cost);
+    let least = crate::announce::least_of(&cost);
     (least == 0 || affords(least))
         && announceable(state, player, object.id(), rules)
         && some_x_has_targets(state, player, object.id(), rules, affords)

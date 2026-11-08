@@ -1,0 +1,38 @@
+{
+  "oracle_id": "998d8d8a-743d-43f9-8e9b-42460f170243",
+  "name": "Unctus's Retrofitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unctus's Retrofitter",
+      "oracle_fingerprint": "ffcd164051d0cec4b1100ca22e25e8e6",
+      "abilities": [
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

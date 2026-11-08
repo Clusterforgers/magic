@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c2dbdf9d-3ac1-47d8-9ad8-57e7888e5cdd",
+  "name": "Giant Ambush Beetle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Ambush Beetle",
+      "oracle_fingerprint": "d56fa1902ab20645a638868b6257cd68",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

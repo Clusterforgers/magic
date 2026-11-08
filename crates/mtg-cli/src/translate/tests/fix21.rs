@@ -55,9 +55,29 @@ fn a_clause_that_reads_back_as_other_text_is_not_offered_or_drafted(
     assert_eq!(report.verdict(), verdict, "{:?}", report.clauses);
     let refusal = crate::translate::stored::refusal(&report, &caps);
     assert_eq!(refusal.as_deref(), refused);
-    let drafted = decide(&card, "alpha".into(), report, SOURCE_FORGE.into(), true);
+    let drafted = decide(
+        &card,
+        "alpha".into(),
+        report.clone(),
+        SOURCE_FORGE.into(),
+        true,
+        false,
+    );
     match refused {
         Some(_) => assert!(matches!(drafted, Err(W2aSkip::Differs)), "{drafted:?}"),
         None => assert!(drafted.is_ok(), "{drafted:?}"),
     }
+    // With `--differs` the same card is a draft, marked exactly when a clause reads back as other text.
+    let marked = decide(
+        &card,
+        "alpha".into(),
+        report,
+        SOURCE_FORGE.into(),
+        true,
+        true,
+    );
+    assert_eq!(
+        marked.map(|promotion| promotion.differs).ok(),
+        Some(refused.is_some())
+    );
 }

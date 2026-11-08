@@ -1,0 +1,17 @@
+{
+  "oracle_id": "d46a6e0b-d39e-42ad-b95f-6902e1b72e62",
+  "name": "Goldnight Castigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldnight Castigator",
+      "oracle_fingerprint": "ec88400ddefb21d69b0e43ea82e100f3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        { "Replacement": { "when": { "Damage": { "to": "You" } }, "by": { "Multiply": 2 } } },
+        { "Replacement": { "when": { "Damage": { "to": "This" } }, "by": { "Multiply": 2 } } }
+      ]
+    }
+  ]
+}

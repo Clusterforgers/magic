@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7cea5b12-9483-4142-9efa-735305581e73",
+  "name": "Caduceus, Staff of Hermes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caduceus, Staff of Hermes",
+      "oracle_fingerprint": "59c6b9ef70f33f78375fbbc09ef40ead",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Lifelink" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 5, "toughness": 5 } },
+              { "AddKeyword": "Indestructible" }
+            ],
+            "condition": { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 30 } }
+          }
+        },
+        { "Keyword": { "Equip": "{W}{W}" } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached" } },
+            "by": "Prevent",
+            "condition": { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 30 } }
+          }
+        }
+      ]
+    }
+  ]
+}

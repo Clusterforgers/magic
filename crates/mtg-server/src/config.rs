@@ -129,6 +129,8 @@ pub struct AttemptLimits {
     pub precon_requests_per_ip: u32,
     /// Stars and unstars of precons one account may make inside `window`; both count.
     pub favourite_writes_per_user: u32,
+    /// Requests to the read endpoints one account may make inside `lobby_window`, lists, cards and verdicts alike.
+    pub read_requests_per_user: u32,
 }
 
 impl Default for AttemptLimits {
@@ -145,6 +147,7 @@ impl Default for AttemptLimits {
             lobby_requests_per_ip: 30,
             precon_requests_per_ip: 60,
             favourite_writes_per_user: 200,
+            read_requests_per_user: 120,
         }
     }
 }

@@ -1,0 +1,179 @@
+{
+  "object": "card",
+  "id": "939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9",
+  "oracle_id": "de4e5120-b958-4dcb-ad78-d0f726b7a881",
+  "multiverse_ids": [
+    616981
+  ],
+  "mtgo_id": 112212,
+  "arena_id": 84843,
+  "tcgplayer_id": 498620,
+  "cardmarket_id": 716132,
+  "name": "There and Back Again",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9",
+  "scryfall_uri": "https://scryfall.com/card/ltr/151/there-and-back-again?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:17:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.jpg?1783916275",
+    "normal": "https://cards.scryfall.io/normal/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.jpg?1783916275",
+    "large": "https://cards.scryfall.io/large/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.jpg?1783916275",
+    "png": "https://cards.scryfall.io/png/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.png?1783916275",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.jpg?1783916275",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.jpg?1783916275",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.webp?1783916275",
+    "grid": "https://cards.scryfall.io/grid/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.webp?1783916275",
+    "display": "https://cards.scryfall.io/display/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.webp?1783916275",
+    "art": "https://cards.scryfall.io/art/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.webp?1783916275",
+    "crop": "https://cards.scryfall.io/crop/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.webp?1783916275",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/3/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9.jpg?1783916275"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Up to one target creature can't block for as long as you control this Saga. The Ring tempts you.\nII — Search your library for a Mountain card, put it onto the battlefield, then shuffle.\nIII — Create Smaug, a legendary 6/6 red Dragon creature token with flying, haste, and \"When Smaug dies, create fourteen Treasure tokens.\"",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure",
+    "Haste"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "bb4ac08f-f6a5-49d6-91e9-38c4f217932b",
+      "component": "token",
+      "name": "Smaug",
+      "type_line": "Token Legendary Creature — Dragon",
+      "uri": "https://api.scryfall.com/cards/bb4ac08f-f6a5-49d6-91e9-38c4f217932b"
+    },
+    {
+      "object": "related_card",
+      "id": "b29d7556-9051-4451-812e-91513ef10e62",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/b29d7556-9051-4451-812e-91513ef10e62"
+    },
+    {
+      "object": "related_card",
+      "id": "7215460e-8c06-47d0-94e5-d1832d0218af",
+      "component": "combo_piece",
+      "name": "The Ring // The Ring Tempts You",
+      "type_line": "Emblem // Card",
+      "uri": "https://api.scryfall.com/cards/7215460e-8c06-47d0-94e5-d1832d0218af"
+    },
+    {
+      "object": "related_card",
+      "id": "f7596fb2-2f2b-4fde-8b8b-e041e16de4e9",
+      "component": "combo_piece",
+      "name": "There and Back Again",
+      "type_line": "Enchantment — Saga",
+      "uri": "https://api.scryfall.com/cards/f7596fb2-2f2b-4fde-8b8b-e041e16de4e9"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "08078706-ac5d-439b-8f01-894d38751367",
+  "set": "ltr",
+  "set_name": "The Lord of the Rings: Tales of Middle-earth",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/08078706-ac5d-439b-8f01-894d38751367",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/939b0bd0-24ea-45de-a2d3-37bbf6a3e6f9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ade4e5120-b958-4dcb-ad78-d0f726b7a881&unique=prints",
+  "collector_number": "151",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jarel Threat",
+  "artist_ids": [
+    "0fd89fbd-bd59-4ded-890e-731a8982f278"
+  ],
+  "illustration_id": "48c2b35f-efdb-4bf2-bc7d-c17a29f523da",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2050,
+  "penny_rank": 9779,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://twitter.com/mtgaaron/status/1664346495620087808",
+    "previewed_at": "2023-06-01"
+  },
+  "prices": {
+    "usd": "5.58",
+    "usd_foil": "12.51",
+    "usd_etched": null,
+    "eur": "5.29",
+    "eur_foil": "6.87",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=616981&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThere%2Band%2BBack%2BAgain",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThere%2Band%2BBack%2BAgain",
+    "edhrec": "https://edhrec.com/route/?cc=There+and+Back+Again"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F498620%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=716132&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/112212?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

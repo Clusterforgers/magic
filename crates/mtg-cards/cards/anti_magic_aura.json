@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6f78c1e2-e38f-431b-8864-8aad982e9912",
+  "name": "Anti-Magic Aura",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anti-Magic Aura",
+      "oracle_fingerprint": "06dec31574b114c9901529065fb829f4",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Attached", "action": { "BeTargeted": ["Spell"] } } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Attached",
+                "action": { "BeAttachedBy": [{ "Subtype": "Aura" }, "Other"] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

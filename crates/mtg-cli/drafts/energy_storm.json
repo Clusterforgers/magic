@@ -1,0 +1,28 @@
+{
+  "oracle_id": "567d3de7-8d56-4b6d-a59a-f8674172f595",
+  "name": "Energy Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Energy Storm",
+      "oracle_fingerprint": "6be50c00ae980f29ee3708b4785cc544",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

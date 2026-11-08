@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { unvalidatedLink } from '@/features/decks/format'
+import { renderInRouter } from '@/test-utils/router'
 import { NotValidatedDialog, notValidatedWords } from './NotValidatedDialog'
 import type { DeckPreviewData, PreviewCard } from './model'
 import { supportCounts } from './model'
@@ -77,7 +78,7 @@ describe('the button of the not-validated cards', () => {
   })
 
   it('says on each card whether its draft waits for a read or was found wrong, and how many cards wait', async () => {
-    render(
+    await renderInRouter(
       <NotValidatedDialog
         deck={deck({
           cards: [

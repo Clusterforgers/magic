@@ -68,6 +68,7 @@ pub(crate) fn activation_events(
     let mut shots = Vec::new();
     match &*rules {
         Ability::Activated { cost, .. } => {
+            let cost = &*crate::free_activation::cost(state, player, (ability, &rules), cost);
             let price = Price::announced_in(
                 cost,
                 state,

@@ -1,0 +1,83 @@
+{
+  "oracle_id": "3fdee2ab-7ec6-4fc6-ad99-f04571f94583",
+  "name": "Marjhan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marjhan",
+      "oracle_fingerprint": "f0df6b7683936f47fdd5ae7c056ad7a7",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{U}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "Not": { "HasKeyword": "Flying" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

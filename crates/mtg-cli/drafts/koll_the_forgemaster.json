@@ -1,0 +1,54 @@
+{
+  "oracle_id": "344dc8b0-302a-4721-99b6-5a6626a349c1",
+  "name": "Koll, the Forgemaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koll, the Forgemaster",
+      "oracle_fingerprint": "784346e1ded3e61bfec259a36a24c463",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "Not": "Token" },
+                  {
+                    "AnyOf": [
+                      { "HasAttached": [{ "Subtype": "Aura" }] },
+                      { "HasAttached": [{ "Subtype": "Equipment" }] }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                "Token",
+                {
+                  "AnyOf": [
+                    { "HasAttached": [{ "Subtype": "Aura" }] },
+                    { "HasAttached": [{ "Subtype": "Equipment" }] }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

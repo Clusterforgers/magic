@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c43e7fa5-ff93-42d9-af79-ee417a8e41a7",
+  "name": "Emissary Green",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emissary Green",
+      "oracle_fingerprint": "c9e52efe26383bbdd6862b2e7afd3022",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Vote": { "options": { "Named": ["profit", "security"] } } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Times": { "by": 2, "of": { "Players": { "Bound": "profit" } } } }
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": { "Players": { "Bound": "security" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

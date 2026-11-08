@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0e4d2fbc-1b34-4501-9022-8ea800cb2d24",
+  "name": "Talon of Pain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talon of Pain",
+      "oracle_fingerprint": "d50a5d99b552dc51e0a2e919891a7ce4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["Other", { "ControlledBy": "You" }], "to": "Opponents" }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}" },
+              "Tap",
+              { "RemoveCounters": { "counter": "charge", "count": "X" } }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

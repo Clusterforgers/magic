@@ -1,0 +1,23 @@
+{
+  "oracle_id": "55b72b1f-6463-406a-8824-d99a3c028285",
+  "name": "Vicious Rumors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vicious Rumors",
+      "oracle_fingerprint": "986609d66fb452b9499ec6a949483314",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              { "Discard": { "who": "Opponents" } },
+              { "Mill": { "who": "Opponents" } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

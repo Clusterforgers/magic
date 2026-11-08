@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1ef73b3b-ab4a-494b-b969-dcde995cee34",
+  "name": "Soul Sear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Sear",
+      "oracle_fingerprint": "57e13079ec271f5377813d1b2bf6630b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

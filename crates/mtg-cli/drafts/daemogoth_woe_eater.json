@@ -1,0 +1,29 @@
+{
+  "oracle_id": "290323d7-d8cb-4706-87d9-b920a4e2f680",
+  "name": "Daemogoth Woe-Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daemogoth Woe-Eater",
+      "oracle_fingerprint": "3c57b6314ab150a6c9b8cd59c5f21fa3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["This"] } },
+            "effects": [
+              { "Discard": { "who": "Opponents" } },
+              { "Draw": {} },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

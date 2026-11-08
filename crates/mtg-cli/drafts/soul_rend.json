@@ -1,0 +1,39 @@
+{
+  "oracle_id": "80d233cc-7748-41a2-bfd6-2189d0136900",
+  "name": "Soul Rend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Rend",
+      "oracle_fingerprint": "949b84fa4d2c13e4eaa66880d5579e1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }, { "Color": "White" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

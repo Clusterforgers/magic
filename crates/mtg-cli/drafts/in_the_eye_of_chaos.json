@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6a0da9f3-cb06-42b1-ae73-b142c0eedaff",
+  "name": "In the Eye of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In the Eye of Chaos",
+      "oracle_fingerprint": "236868a044d8e9f7fc44ff03d09051d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Instant" }] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{1}",
+                  "times": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -618,6 +618,9 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
         "PlayerCountOpponents" => Ok(json!({"Players": "Opponents"})),
         "PlayerCountPlayers" => Ok(json!({"Players": "EachPlayer"})),
         other if other.starts_with("ThisTurnCast_") => this_turn_cast(ctx, other),
+        other if other.starts_with("ThisTurnActivated_") => {
+            super::e18a_first::this_turn_activated(ctx, other)
+        }
         other => counters_or_gap(ctx, other),
     }
 }

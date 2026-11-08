@@ -94,7 +94,7 @@ impl Session {
 }
 
 /// The id of a card in the path; one that is no id and one that names no card look alike.
-fn card_id(path: Result<Path<String>, PathRejection>) -> Result<OracleId, ApiError> {
+pub(crate) fn card_id(path: Result<Path<String>, PathRejection>) -> Result<OracleId, ApiError> {
     let Path(id) = path.map_err(|_| ApiError::not_found())?;
     let uuid = Uuid::parse_str(&id).map_err(|_| ApiError::not_found())?;
     Ok(OracleId(uuid.to_string()))
@@ -103,7 +103,13 @@ fn card_id(path: Result<Path<String>, PathRejection>) -> Result<OracleId, ApiErr
 /// The note of a body, trimmed: none when empty, refused when too long or holding control
 /// characters other than line breaks.
 fn note_of(body: FixMarkBody) -> Result<Option<String>, ApiError> {
-    let Some(note) = body.note.map(|note| note.trim().to_owned()) else {
+    clean_note(body.note)
+}
+
+/// A note as a mark or a verdict keeps it: trimmed, none when empty, refused when too long or holding control
+/// characters other than line breaks.
+pub(crate) fn clean_note(note: Option<String>) -> Result<Option<String>, ApiError> {
+    let Some(note) = note.map(|note| note.trim().to_owned()) else {
         return Ok(None);
     };
     if note.chars().count() > MAX_FIX_NOTE_CHARS {

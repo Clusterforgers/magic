@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b9043dcd-234f-4144-80db-1cb903c009ea",
+  "name": "Myr Turbine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Turbine",
+      "oracle_fingerprint": "45a6bfc8c42010fc2865f6e65122f790",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Myr",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Myr"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "TapPermanents": { "filter": [{ "Subtype": "Myr" }], "count": 5 } }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Subtype": "Myr" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

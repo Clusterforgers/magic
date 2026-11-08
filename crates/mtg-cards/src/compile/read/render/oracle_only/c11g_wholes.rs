@@ -6,7 +6,15 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording.
-const C11G_WHOLES: [(&str, &str); 39] = [
+const C11G_WHOLES: [(&str, &str); 41] = [
+    (
+        r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Distinct":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"Power"}},"op":"Ge","right":3}},"then":[{"PutCounters":{"counter":"+1/+1","on":{"Target":0}}}]}},{"Fight":{"what":{"Target":0},"with":{"Target":1}}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}},{"what":{"Object":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]}}]}}"#,
+        "Coven — Choose target creature you control and target creature you don't control. If you control three or more creatures with different powers, put a +1/+1 counter on the chosen creature you control. Then the chosen creatures fight each other.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"If":{"condition":{"CountOf":{"op":"Ge","right":1,"selector":[{"Type":"Creature"},"EnteredThisTurn"],"subject":{"Target":0}}},"then":[{"PutCounters":{"counter":"+1/+1","on":{"Target":0}}}]}},{"Fight":{"what":{"Target":0},"with":{"Target":1}}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}},{"what":{"Object":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]}}]}}"#,
+        "Choose target creature you control and target creature you don't control. If the creature you control entered this turn, put a +1/+1 counter on it. Then those creatures fight each other.",
+    ),
     (
         r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"CastFrom":"Hand"}}],"by":"You"}},"targets":[{"what":"Player"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":2}},{"Discard":{"who":{"Target":0}}},{"Draw":{"who":{"Target":0}}},{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}"#,
         "Paradox — Whenever you cast a spell from anywhere other than your hand, this creature deals 2 damage to target player. That player discards a card, then draws a card. Put a +1/+1 counter on this creature.",

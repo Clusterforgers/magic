@@ -1,0 +1,44 @@
+{
+  "oracle_id": "63e6c80a-a7c7-4c98-b760-271c36425dd1",
+  "name": "Bride's Gown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bride's Gown",
+      "oracle_fingerprint": "6002f1eecba4df9e5b25892d1b86d5da",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 0, "toughness": 2 } },
+              { "AddKeyword": "FirstStrike" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Subtype": "Equipment" },
+                    {
+                      "AttachedTo": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    },
+                    { "Named": "Groom's Finery" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 //! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`), of the signed-in user's game
 //! list (`/api/me/games`), of the card endpoints (`/api/cards`), of the deck endpoints
-//! (`/api/decks`), of the fix-mark endpoints (`/api/fix-marks`), of the precon endpoints
+//! (`/api/decks`), of the fix-mark endpoints (`/api/fix-marks`), of the read endpoints
+//! (`/api/reads`), of the precon endpoints
 //! (`/api/precons`) and of the game browser (`/api/lobbies`, joining), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The body of
@@ -13,6 +14,7 @@ mod fix_marks;
 mod lobbies;
 mod precons;
 mod prefs;
+mod reads;
 
 use std::fmt;
 
@@ -43,6 +45,7 @@ pub use precons::{
     PreconView,
 };
 pub use prefs::{MAX_DEFAULT_STOPS, UserPrefs};
+pub use reads::{CardDraft, MyRead, ReadBody, ReadCard, ReadQueue, ReadQueueCard, ReadVerdict};
 
 /// Fewest characters in a username.
 pub const USERNAME_MIN_CHARS: usize = 3;

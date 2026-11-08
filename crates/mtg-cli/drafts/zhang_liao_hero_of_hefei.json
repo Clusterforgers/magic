@@ -1,0 +1,19 @@
+{
+  "oracle_id": "244541f6-cbfc-4e89-9156-64e412f745a7",
+  "name": "Zhang Liao, Hero of Hefei",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zhang Liao, Hero of Hefei",
+      "oracle_fingerprint": "e53d2aa47a082d48d600f21f6e8b59ff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [{ "Discard": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

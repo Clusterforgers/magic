@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d31c6043-e005-4efe-9aa7-d82cb122eebe",
+  "name": "Serpent of Yawning Depths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpent of Yawning Depths",
+      "oracle_fingerprint": "fa32ea585baa9a3eacfc521bf5643a60",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Kraken" },
+                    { "Subtype": "Leviathan" },
+                    { "Subtype": "Octopus" },
+                    { "Subtype": "Serpent" }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Not": { "Subtype": "Kraken" } },
+                  { "Not": { "Subtype": "Leviathan" } },
+                  { "Not": { "Subtype": "Octopus" } },
+                  { "Not": { "Subtype": "Serpent" } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

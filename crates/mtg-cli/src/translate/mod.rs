@@ -24,6 +24,7 @@ mod e15f_words;
 mod e16a_history;
 mod e17a_until_cast;
 mod e17b_memory;
+mod e18a_first;
 pub mod effects;
 pub mod effects_ambient;
 pub mod effects_animate;
