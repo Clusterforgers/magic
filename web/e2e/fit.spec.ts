@@ -1,8 +1,9 @@
-// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock, three targeting items on the stack at rest fit too; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card; on the crowded scene (`crowd=1`) the stack's chips and its "+N more" button stay inside the strip with every item counted once, and the three bundles of the big attack carry whole labels in the window and off the strip.
+// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats, and at 16, 24 and 40 in both themes, with 40 permanents a seat, and also at 1600x1000, 1400x900, 768x1024 and 360x740, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock, three targeting items on the stack at rest fit too; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card; on the crowded scene (`crowd=1`) the stack's chips and its "+N more" button stay inside the strip with every item counted once, and the three bundles of the big attack carry whole labels in the window and off the strip.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
 import { createAndJoin, everyoneReady } from './lobby'
+import { expectTheme, themedContext } from './layoutGate'
 import { DEV_WEB_URL } from './ports'
 
 type Breakpoint = 'xs' | 's' | 'm' | 'l' | 'xl'
@@ -229,9 +230,19 @@ async function expectFits(page: Page, size: Size, needs: readonly Thing[], where
     .toEqual([])
 }
 
+/** The widths between and beyond the six: a wide window, a laptop, a tablet and a small phone. */
+const EXTRA_SIZES: readonly Size[] = [
+  { width: 1600, height: 1000, breakpoint: 'xl' },
+  { width: 1400, height: 900, breakpoint: 'l' },
+  { width: 768, height: 1024, breakpoint: 's' },
+  { width: 360, height: 740, breakpoint: 'xs' },
+]
+
+const SWEEP: readonly Size[] = [...SIZES, ...EXTRA_SIZES]
+
 /** Every size, from the largest to the smallest and back up, so a window that grows is laid out again as well. */
 async function atEverySize(page: Page, needs: readonly Thing[], where: Where): Promise<void> {
-  for (const size of [...SIZES, ...SIZES.toReversed()]) await expectFits(page, size, needs, where)
+  for (const size of [...SWEEP, ...SWEEP.toReversed()]) await expectFits(page, size, needs, where)
 }
 
 const onTable = (label: string): Where => ({ label, table: true })
@@ -671,6 +682,29 @@ test.describe('the development table with 40 permanents a seat', () => {
     await page.locator(THINGS.primary).waitFor()
     await atEverySize(page, ['hand', 'life', 'primary'], onTable('12 seats'))
   })
+
+  for (const theme of ['light', 'dark'] as const) {
+    for (const seats of [16, 24, 40]) {
+      test(`fits at every size with ${seats} seats in the ${theme} theme`, async ({ browser }, testInfo) => {
+        const context = await themedContext(browser, theme)
+        const page = await context.newPage()
+        await page.goto(`${DEV_WEB_URL}/dev/table?seats=${seats}&prompt=priority&turn=you`)
+        await page.locator(THINGS.primary).waitFor()
+        await expectTheme(page, theme)
+        await atEverySize(page, ['hand', 'life', 'primary'], onTable(`${seats} seats, ${theme}`))
+        for (const size of [SIZES[1], SIZES[5]]) {
+          if (size === undefined) continue
+          await page.setViewportSize(size)
+          await expectFits(page, size, ['hand', 'life', 'primary'], onTable(`${seats} seats, ${theme}`))
+          await testInfo.attach(`table-${seats}-${theme}-${size.width}.png`, {
+            body: await page.screenshot(),
+            contentType: 'image/png',
+          })
+        }
+        await context.close()
+      })
+    }
+  }
 
   for (const [name, size] of [
     ['a phone', { width: 390, height: 844 }],

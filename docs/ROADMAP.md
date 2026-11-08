@@ -71,7 +71,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
 - [ ] (ts6a) Compact faces (under 76 px) cut long names mid-word ("Bonesplitte r") and clip the foot marks at 1280x720 and 1024x768 on `/dev/table?states=1`: the face needs one-line names and a mark row that fits (`CardFace.tsx`)
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
@@ -85,8 +84,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
-- [ ] (pn1b) `fit.spec.ts` and `/dev/table` screenshots at 16, 24 and 40 seats in both themes, and the e2e create flow typing a count above 12
-- [ ] (pn1c) The seat field builds a row per seat as it is typed: guard a count that would freeze the page (the server's ceiling is the 256 KiB create body, about 2,500 seats)
 - [ ] (fx1c) `FixMarkButton` is mounted in the lobby deck view (the large card of the shared deck preview) and in the table card menu, for a card that is not Verified
 - [ ] (db1a) A deck entry can be marked "play by hand" by its owner (also for a Verified card), so a card that misbehaves is fixed at the table: a flag on `DeckLineBody` and the stored line, the engine hosting the card as manual, the check counting it as played by hand
 - [ ] (db1b) The builder's cards played by hand quote the words of the card each reason covers (the spans of `useCardTexts`), as the not-validated page does
