@@ -193,7 +193,10 @@ fn branch(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         subject(ctx, p, "", None)?;
     }
     // `Defined$` only repeats the object the condition number names itself (`X:TriggeredTarget$Counters.RAD`).
-    if p.get("Defined").is_some_and(|word| ctx.svar(name).is_none_or(|text| !text.starts_with(&format!("{word}$")))) {
+    if p.get("Defined").is_some_and(|word| {
+        ctx.svar(name)
+            .is_none_or(|text| !text.starts_with(&format!("{word}$")))
+    }) {
         return unmapped("key:Branch.Defined");
     }
     let word = p.get("BranchConditionSVarCompare").unwrap_or("GE1");
