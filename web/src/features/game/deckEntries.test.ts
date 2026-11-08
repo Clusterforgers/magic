@@ -1,4 +1,4 @@
-// Goal: the chooser's rows read a stored deck, a precon and a built-in deck into one shape with the right facts, support chip and colours, and the filters (search words, colours, support) and the mark of the seat's deck pick the right rows.
+// Goal: the chooser's rows read a stored deck, a precon and a built-in deck into one shape with the right facts, support chip and colours, and the filters (search words, colours, support) and the mark of the seat's deck pick the right rows, and each row names its review screen.
 import { describe, expect, it } from 'vitest'
 import { cardHit, deckIn } from '@/features/decks/fakeDecks'
 import { counts } from '@/features/decks/fakeDecks'
@@ -14,6 +14,7 @@ import {
   handWords,
   markedId,
   NO_FILTER,
+  readTargetOf,
   sortEntries,
 } from './deckEntries'
 import type { DeckEntry, SortKey } from './deckEntries'
@@ -279,5 +280,18 @@ describe('a precon without a commander', () => {
     )
     expect(entry).toMatchObject({ identity: null, commanders: [] })
     expect(entry.pictures).toHaveLength(1)
+  })
+})
+
+describe('the review screen of a row', () => {
+  it.each([
+    [{ id: 'deck-1', kind: 'own' as const }, { deck: 'deck-1' }],
+    [
+      { id: 'precon:c18-adaptive-enchantment', kind: 'precon' as const },
+      { precon: 'c18-adaptive-enchantment' },
+    ],
+    [{ id: 'mono-red', kind: 'builtin' as const }, undefined],
+  ])('of %o is %o', (entry, target) => {
+    expect(readTargetOf(entry)).toEqual(target)
   })
 })
