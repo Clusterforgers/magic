@@ -19,7 +19,7 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { DeckMarker } from '@/features/decks/DeckMarker'
 import { cardsText, DECK_FORMATS, formatLabel } from '@/features/decks/format'
 import { copiesOf, landCopies } from '@/features/decks/preview/model'
-import { BY_HAND_TITLE, byHandCopies } from '@/lib/byHand'
+import { BY_HAND, BY_HAND_TITLE, byHandCopies } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { DeckState, DeckZone } from '@/protocol/generated'
@@ -464,7 +464,7 @@ export function DeckPane({
               )}
             </div>
             {railOn && total > 0 ? (
-              <aside aria-label="Stats and cards played by hand" data-slot="deck-rail" className="grid gap-4">
+              <aside aria-label={`Stats and cards ${BY_HAND}`} data-slot="deck-rail" className="grid gap-4">
                 <section aria-labelledby={`${id}-stats-title`} className="grid gap-2">
                   <h3
                     id={`${id}-stats-title`}
