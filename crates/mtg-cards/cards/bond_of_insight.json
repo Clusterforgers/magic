@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3a877718-ff90-4d6e-9f95-47b06adad7f8",
+  "name": "Bond of Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bond of Insight",
+      "oracle_fingerprint": "90c0c8d5c56934bb4accf2364d8311cf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 4 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

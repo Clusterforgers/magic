@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "4d976c91-2377-470a-8129-eeb716451252",
+  "oracle_id": "859cbe11-e1e6-4309-94da-8725db1b3fc2",
+  "multiverse_ids": [
+    383058
+  ],
+  "mtgo_id": 52811,
+  "mtgo_foil_id": 52812,
+  "name": "Radiant, Archangel",
+  "lang": "en",
+  "released_at": "2014-06-16",
+  "uri": "https://api.scryfall.com/cards/4d976c91-2377-470a-8129-eeb716451252",
+  "scryfall_uri": "https://scryfall.com/card/vma/40/radiant-archangel?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:41:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/d/4d976c91-2377-470a-8129-eeb716451252.jpg?1783939319",
+    "normal": "https://cards.scryfall.io/normal/front/4/d/4d976c91-2377-470a-8129-eeb716451252.jpg?1783939319",
+    "large": "https://cards.scryfall.io/large/front/4/d/4d976c91-2377-470a-8129-eeb716451252.jpg?1783939319",
+    "png": "https://cards.scryfall.io/png/front/4/d/4d976c91-2377-470a-8129-eeb716451252.png?1783939319",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/d/4d976c91-2377-470a-8129-eeb716451252.jpg?1783939319",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/d/4d976c91-2377-470a-8129-eeb716451252.jpg?1783939319",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/d/4d976c91-2377-470a-8129-eeb716451252.webp?1783939319",
+    "grid": "https://cards.scryfall.io/grid/front/4/d/4d976c91-2377-470a-8129-eeb716451252.webp?1783939319",
+    "display": "https://cards.scryfall.io/display/front/4/d/4d976c91-2377-470a-8129-eeb716451252.webp?1783939319",
+    "art": "https://cards.scryfall.io/art/front/4/d/4d976c91-2377-470a-8129-eeb716451252.webp?1783939319",
+    "crop": "https://cards.scryfall.io/crop/front/4/d/4d976c91-2377-470a-8129-eeb716451252.webp?1783939319",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/d/4d976c91-2377-470a-8129-eeb716451252.jpg?1783939319"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Angel",
+  "oracle_text": "Flying, vigilance\nRadiant gets +1/+1 for each other creature on the battlefield with flying.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a944551a-73fa-41cd-9159-e8d0e4674403",
+  "set": "vma",
+  "set_name": "Vintage Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/a944551a-73fa-41cd-9159-e8d0e4674403",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4d976c91-2377-470a-8129-eeb716451252/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A859cbe11-e1e6-4309-94da-8725db1b3fc2&unique=prints",
+  "collector_number": "40",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michael Sutfin",
+  "artist_ids": [
+    "5ce7b3bd-53d2-49e6-b504-37191e8e9b17"
+  ],
+  "illustration_id": "6f941534-2b24-456f-b290-f377f220e1a3",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19148,
+  "penny_rank": 11378,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=383058&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRadiant%252C%2BArchangel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRadiant%252C%2BArchangel",
+    "edhrec": "https://edhrec.com/route/?cc=Radiant%2C+Archangel"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DRadiant%252C%2BArchangel%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Radiant%2C+Archangel&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/52811?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

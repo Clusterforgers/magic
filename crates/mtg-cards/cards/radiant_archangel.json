@@ -1,0 +1,32 @@
+{
+  "oracle_id": "859cbe11-e1e6-4309-94da-8725db1b3fc2",
+  "name": "Radiant, Archangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant, Archangel",
+      "oracle_fingerprint": "5c1d59d265a39040102e965ed5d075fc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Type": "Creature" }, "Other", { "HasKeyword": "Flying" }]
+                  },
+                  "toughness": {
+                    "Count": [{ "Type": "Creature" }, "Other", { "HasKeyword": "Flying" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

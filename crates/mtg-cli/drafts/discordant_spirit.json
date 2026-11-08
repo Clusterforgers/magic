@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ce785306-eaf5-42b3-9840-884cd690ae0a",
+  "name": "Discordant Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Discordant Spirit",
+      "oracle_fingerprint": "1bc59e07d92823811363929f56a08cf0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "Opponents" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Tallied": { "who": "You", "what": "DamageTaken" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

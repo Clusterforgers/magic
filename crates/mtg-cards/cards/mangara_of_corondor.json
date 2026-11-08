@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7a5789b3-68a2-4079-8ec5-3b5e1d2c739b",
+  "name": "Mangara of Corondor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mangara of Corondor",
+      "oracle_fingerprint": "0437a805e1a424d2b91d62c2b1188d3a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Exile": { "what": "This" } }, { "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

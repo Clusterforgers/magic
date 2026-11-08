@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3bcb7436-f7d9-4bb0-81be-7a3db9d8329f",
+  "name": "Choking Sands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Choking Sands",
+      "oracle_fingerprint": "549b03b90d47cd8e4402d7d179368f96",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Subtype": "Swamp" } }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

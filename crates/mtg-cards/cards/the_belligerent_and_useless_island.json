@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3765004c-2146-49fa-b556-ba216302599b",
+  "name": "The Belligerent and Useless Island",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Belligerent and Useless Island",
+      "oracle_fingerprint": "8b05771a4d8e21a0f6e3e0c8792fa1ea",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Battle" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

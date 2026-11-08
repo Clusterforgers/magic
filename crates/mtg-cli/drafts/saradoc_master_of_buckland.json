@@ -10,26 +10,21 @@
         {
           "Triggered": {
             "when": {
-              "ZoneChange": {
-                "what": [
-                  {
-                    "AnyOf": [
-                      "This",
-                      {
-                        "Not": {
-                          "AnyOf": [
-                            { "Not": { "Type": "Creature" } },
-                            { "Not": { "Not": "Token" } },
-                            { "Not": { "Compare": { "stat": "Power", "op": "Le", "to": 2 } } },
-                            { "Not": { "ControlledBy": "You" } }
-                          ]
-                        }
-                      }
-                    ]
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "Not": "Token" },
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ],
+                    "to": "Battlefield"
                   }
-                ],
-                "to": "Battlefield"
-              }
+                }
+              ]
             },
             "effects": [
               {

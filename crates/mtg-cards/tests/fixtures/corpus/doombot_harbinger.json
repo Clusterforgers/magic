@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "faa0c280-36e1-468b-8f88-61de394f250c",
+  "oracle_id": "37042a3e-c377-4282-80f9-068e4955f8a1",
+  "multiverse_ids": [],
+  "resource_id": "C850EF1F7403D7865684B9AE2692BFB5AB24A7E158A520B8ACAD060F80845B9F",
+  "mtgo_id": 151759,
+  "arena_id": 105665,
+  "tcgplayer_id": 697255,
+  "cardmarket_id": 892035,
+  "name": "Doombot Harbinger",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/faa0c280-36e1-468b-8f88-61de394f250c",
+  "scryfall_uri": "https://scryfall.com/card/msc/655/doombot-harbinger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.jpg?1783903062",
+    "normal": "https://cards.scryfall.io/normal/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.jpg?1783903062",
+    "large": "https://cards.scryfall.io/large/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.jpg?1783903062",
+    "png": "https://cards.scryfall.io/png/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.png?1783903062",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.jpg?1783903062",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.jpg?1783903062",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.webp?1783903062",
+    "grid": "https://cards.scryfall.io/grid/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.webp?1783903062",
+    "display": "https://cards.scryfall.io/display/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.webp?1783903062",
+    "art": "https://cards.scryfall.io/art/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.webp?1783903062",
+    "crop": "https://cards.scryfall.io/crop/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.webp?1783903062",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/a/faa0c280-36e1-468b-8f88-61de394f250c.jpg?1783903062"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Robot Villain",
+  "oracle_text": "Flying\nWhen this creature enters, you may mill four cards. (You may put the top four cards of your library into your graveyard.)\nWhen this creature dies, you may exile this card. When you do, return target creature card from your graveyard to your hand.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/faa0c280-36e1-468b-8f88-61de394f250c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A37042a3e-c377-4282-80f9-068e4955f8a1&unique=prints",
+  "collector_number": "655",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Myles Wohl",
+  "artist_ids": [
+    "d08c97ce-ffe1-46ca-a06c-27ed6a5baf42"
+  ],
+  "illustration_id": "efb2ce04-9de7-4817-a625-6da214c7763a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 18259,
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": "2.50",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.32",
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDoombot%2BHarbinger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDoombot%2BHarbinger",
+    "edhrec": "https://edhrec.com/route/?cc=Doombot+Harbinger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697255%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892035&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151759?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "42bb6537-fa54-43b7-84f2-dea41adc35fd",
+  "name": "Dauthi Warlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauthi Warlord",
+      "oracle_fingerprint": "c575d8d352ac2958dc1f4448656ca5cf",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "HasKeyword": "Shadow" }] },
+                  "toughness": 1
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}
