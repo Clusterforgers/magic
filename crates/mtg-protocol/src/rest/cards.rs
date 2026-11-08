@@ -3,6 +3,8 @@
 use std::collections::BTreeMap;
 
 use mtg_cards::support::{Reason, Support};
+
+use super::reads::CardDraft;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -165,4 +167,8 @@ pub struct CardDetail {
     /// The clauses the game cannot run, each over a span of one face's oracle text; empty for a
     /// card that is `verified`.
     pub reasons: Vec<Reason>,
+    /// The card's current draft while it decides the card or would once read; left out otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub draft: Option<CardDraft>,
 }

@@ -116,6 +116,7 @@ fn a_card_page_has_the_documented_wire_shape() {
             span: Span { start: 0, end: 44 },
             text: "the engine does not run Effect.DealDamage yet".into(),
         }],
+        draft: None,
     };
     let value = serde_json::to_value(&detail).unwrap();
     assert_eq!(value["legalities"], json!({"commander": "legal"}));
@@ -125,6 +126,10 @@ fn a_card_page_has_the_documented_wire_shape() {
     );
     assert_eq!(value["printings"][0]["released_at"], "2009-07-17");
     assert_eq!(value["faces"][0]["power"], json!(null));
+    assert!(
+        value.get("draft").is_none(),
+        "a card without a draft leaves the member out"
+    );
     assert_eq!(serde_json::from_value::<CardDetail>(value).unwrap(), detail);
 }
 

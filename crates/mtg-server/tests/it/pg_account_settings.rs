@@ -32,6 +32,7 @@ fn roomy_limits() -> AttemptLimits {
         lobby_requests_per_ip: 10_000,
         precon_requests_per_ip: 10_000,
         favourite_writes_per_user: 10_000,
+        read_requests_per_user: 10_000,
     }
 }
 

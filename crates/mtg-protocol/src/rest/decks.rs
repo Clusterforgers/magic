@@ -317,13 +317,16 @@ pub enum DeckErrorCode {
     Unavailable,
     /// 500: the server failed; the details stay in its log.
     Internal,
-    /// 429: the address asked for too many precons or precon checks; `Retry-After` says how long to wait.
+    /// 429: the address asked for too many precons or precon checks, or the account for too many reads; `Retry-After`
+    /// says how long to wait.
     RateLimited,
+    /// 409: the card's draft changed since the page loaded it; read it again.
+    StaleRead,
 }
 
 impl DeckErrorCode {
     /// Every code, in declaration order.
-    pub const ALL: [DeckErrorCode; 15] = [
+    pub const ALL: [DeckErrorCode; 16] = [
         DeckErrorCode::InvalidRequest,
         DeckErrorCode::InvalidDeck,
         DeckErrorCode::UnknownCards,
@@ -339,6 +342,7 @@ impl DeckErrorCode {
         DeckErrorCode::Unavailable,
         DeckErrorCode::Internal,
         DeckErrorCode::RateLimited,
+        DeckErrorCode::StaleRead,
     ];
 
     /// The text on the wire.
@@ -359,6 +363,7 @@ impl DeckErrorCode {
             DeckErrorCode::Unavailable => "unavailable",
             DeckErrorCode::Internal => "internal",
             DeckErrorCode::RateLimited => "rate_limited",
+            DeckErrorCode::StaleRead => "stale_read",
         }
     }
 }

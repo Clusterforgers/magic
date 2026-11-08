@@ -38,6 +38,8 @@ enum Key {
     AdminCreate(UserId),
     /// Stars and unstars of precons one account made.
     FavouriteWrite(UserId),
+    /// Requests to the read endpoints one account made, answered or not.
+    ReadRequest(UserId),
     /// Join code lookups from one network that were started and did not (yet) find a game.
     CodeAddress(IpAddr),
     /// Requests for the lobby list from one network, answered or not.
@@ -50,7 +52,7 @@ enum Key {
 fn window_of(limits: &AttemptLimits, key: &Key) -> Duration {
     match key {
         Key::CodeAddress(_) => limits.code_window,
-        Key::ListAddress(_) | Key::PreconAddress(_) => limits.lobby_window,
+        Key::ListAddress(_) | Key::PreconAddress(_) | Key::ReadRequest(_) => limits.lobby_window,
         Key::LoginAddress(_)
         | Key::LoginName(_)
         | Key::RegisterAddress(_)
@@ -266,6 +268,12 @@ impl Throttle {
         self.admit(now, &wanted).map(|_| ())
     }
 
+    /// Counts a request of `user` to the read endpoints, or says to wait. Every request counts and nothing hands it back.
+    pub(crate) fn begin_read(&self, now: Instant, user: UserId) -> Result<(), Blocked> {
+        let wanted = [(Key::ReadRequest(user), self.limits.read_requests_per_user)];
+        self.admit(now, &wanted).map(|_| ())
+    }
+
     /// Counts one attempt on every key in `wanted` if none is at its limit; returns the keys
     /// counted and whether any of them has now reached its limit. Nothing is counted when any key
     /// is full.
@@ -356,6 +364,7 @@ mod tests {
             lobby_requests_per_ip: 6,
             precon_requests_per_ip: 3,
             favourite_writes_per_user: 3,
+            read_requests_per_user: 3,
         }
     }
 

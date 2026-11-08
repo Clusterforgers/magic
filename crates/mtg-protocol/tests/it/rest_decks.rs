@@ -436,6 +436,7 @@ fn index(code: DeckErrorCode) -> usize {
         DeckErrorCode::Unavailable => 12,
         DeckErrorCode::Internal => 13,
         DeckErrorCode::RateLimited => 14,
+        DeckErrorCode::StaleRead => 15,
     }
 }
 
