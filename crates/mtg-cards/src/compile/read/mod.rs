@@ -185,6 +185,10 @@ mod stations;
 pub(super) mod subtypes;
 mod t15a_alt_costs;
 mod t17b_attached;
+mod t18_binds;
+mod t18_dead;
+mod t18_demorgan;
+mod t18_words;
 mod target_phrases;
 #[cfg(test)]
 mod tests;
