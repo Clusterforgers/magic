@@ -704,11 +704,13 @@ fn like_this(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
-#[allow(clippy::too_many_lines)]
+/// The words after the noun for one predicate: the older writers first, then the combat and damage suffixes of a target.
 pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
-    if let Some(text) = super::w19d_suffixes::w19d_suffix_text(pred, form) {
-        return Some(text);
-    }
+    suffix_text_main(pred, form).or_else(|| super::w19d_suffixes::w19d_suffix_text(pred, form))
+}
+
+#[allow(clippy::too_many_lines)]
+fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
     if let Some(text) = super::t17b_attached::suffix_text(pred, form) {
         return Some(text);
     }
@@ -1522,6 +1524,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         [token, spell, card, commander_noun, bare],
         plural,
     ));
+    let mut suffixes = suffixes;
+    super::w19d_suffixes::last(&mut suffixes);
     let (suffixes, zone) = super::w21a_atoms::w21a_place(suffixes, zone, plural)?;
     words.extend(without_list(suffixes));
     words.extend(zone);

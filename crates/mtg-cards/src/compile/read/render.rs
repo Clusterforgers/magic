@@ -669,6 +669,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::r6a_wordings::add(ability, &mut texts);
     super::r6c_wordings::add(ability, &mut texts);
     g8e_prevent::g8e_wordings(&mut texts);
+    super::w19d_suffixes::add(&mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7a_wordings::add(ability, &mut texts);
     super::r7d_statics::wordings(&mut texts);
