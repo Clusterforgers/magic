@@ -184,6 +184,10 @@ pub struct CardDefinition {
     /// player (`docs/cards-dsl.md`, Read tier). The table shows it; a resolution that fails is then left to the table.
     #[serde(default, skip_serializing_if = "is_false")]
     pub read: bool,
+    /// Whether this face runs on a draft no player has read yet (`Unverified`): the table shows it apart from a read.
+    /// A [`Shown`] flag, so a read given during a game changes no deck fingerprint and no state hash.
+    #[serde(skip)]
+    pub unverified: Shown,
     /// Whether the engine runs part of this face's rules and leaves the rest to the table (`Partial`), as against a card
     /// played wholly by hand (`Manual`, whose `manual` is its whole text).
     #[serde(default, skip_serializing_if = "is_false")]
@@ -200,6 +204,23 @@ pub struct CardDefinition {
     /// rules do not see it.
     #[serde(skip)]
     pub identity: Option<CardIdentity>,
+}
+
+/// A flag the table shows that is no part of what a card is: equal to any other and hashed as nothing, and left out of
+/// the JSON where it is used, so it changes no fingerprint or state hash.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct Shown(pub bool);
+
+impl PartialEq for Shown {
+    fn eq(&self, _: &Self) -> bool {
+        true
+    }
+}
+
+impl Eq for Shown {}
+
+impl std::hash::Hash for Shown {
+    fn hash<H: std::hash::Hasher>(&self, _: &mut H) {}
 }
 
 impl CardDefinition {
@@ -222,6 +243,7 @@ impl CardDefinition {
             layout: Layout::Normal,
             manual: Vec::new(),
             read: false,
+            unverified: Shown(false),
             partial: false,
             faces: Vec::new(),
             identity: None,

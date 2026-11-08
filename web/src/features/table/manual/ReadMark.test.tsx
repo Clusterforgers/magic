@@ -1,4 +1,4 @@
-// Goal: a card that runs on a player's read shows a mark with the word "Read" (the icon alone on a small face) in its own colour, hidden from a screen reader and explained by a tooltip; a card that does not run on one shows nothing.
+// Goal: a card that runs on a player's read shows a mark with the word "Read" (the icon alone on a small face) in its own colour, hidden from a screen reader and explained by a tooltip; a card whose draft nobody has read yet says "Unverified" in a colour of its own instead; a card that does not run on one shows nothing.
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { card } from '@/test-utils/cards'
@@ -18,6 +18,19 @@ describe('ReadMark', () => {
     expect(found).toHaveAttribute('title', "runs on a player's read")
     expect(found?.className).toContain('bg-support-read')
     expect(found?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('says Unverified in its own colour while no player has read the draft', () => {
+    const { container } = render(
+      <ReadMark object={card({ read: true, unverified: true })} spot="corner" compact={false} text="text-xs" />,
+    )
+    const found = container.querySelector<HTMLElement>('[data-slot="card-read"]')
+    expect(found).toHaveTextContent(/^Unverified$/)
+    expect(found).toHaveAttribute('data-unverified', 'true')
+    expect(found).toHaveAttribute('title', 'Runs automatically, not verified: nobody has read its rules yet')
+    expect(found?.className).toContain('bg-support-unverified')
+    expect(found?.className).not.toContain('bg-support-read')
+    expect(mark(true)).not.toHaveAttribute('data-unverified')
   })
 
   it('keeps the icon alone on a small face', () => {

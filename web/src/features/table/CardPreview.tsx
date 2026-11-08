@@ -6,7 +6,9 @@ import { readableOf } from '@/features/reads/readable'
 import type { Reading } from '@/features/reads/readable'
 import { useAuth } from '@/features/auth/context'
 import { Button } from '@/components/ui/button'
+import { SupportMark } from '@/features/decks/SupportMark'
 import { BY_HAND_TITLE } from '@/lib/byHand'
+import { READ_IT, UNVERIFIED_MEANING } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import { abilityText, costText, keywordLine, powerToughness, statusWords, typeLine } from './cardModel'
 import { KeywordText } from './Keyword'
@@ -247,6 +249,25 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
             ))}
           </ul>
         )}
+        {object.unverified === true ? (
+          <p data-slot="preview-unverified" className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <SupportMark support="unverified" />
+            <span className="text-muted-foreground">{UNVERIFIED_MEANING}.</span>
+            {readable === null ? null : (
+              <button
+                type="button"
+                data-slot="preview-unverified-read"
+                className="font-medium text-primary underline-offset-2 hover:underline focus-visible:underline"
+                onClick={() => {
+                  onRead(readable)
+                  store.dismiss()
+                }}
+              >
+                {READ_IT}
+              </button>
+            )}
+          </p>
+        ) : null}
         {status.length === 0 ? null : <p>Status: {status.join(', ')}</p>}
         {hosted === null ? null : <p data-slot="preview-host">{hosted}.</p>}
         {paired === null ? null : <p data-slot="preview-paired">{paired}.</p>}

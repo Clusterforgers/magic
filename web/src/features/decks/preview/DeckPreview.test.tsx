@@ -79,14 +79,21 @@ describe('the deck preview', () => {
       card('Odd Dragon', { support: 'read', draft: 'approved', count: 2 }),
     ]
     render(<DeckPreview deck={{ ...DECK, commanders: [], cards, toRead: 0 }} />)
-    expect(screen.getByText('The whole deck runs, 2 cards on reads.')).toBeInTheDocument()
+    expect(screen.getByText('The whole deck runs.')).toBeInTheDocument()
+    expect(document.querySelector('[data-support-count="read"]')).toHaveTextContent('2')
     expect(document.querySelector('[data-slot="deck-to-read"]')).toBeNull()
   })
 
-  it('says a deck with cards from Forge runs whole and names the copies from Forge in plain words', () => {
-    const cards = [card('Bolt', { count: 40 }), card('Odd Dragon', { support: 'forge', count: 3 })]
-    render(<DeckPreview deck={{ ...DECK, commanders: [], cards, toRead: 0 }} />)
-    expect(screen.getByText('The whole deck runs, 3 cards from Forge.')).toBeInTheDocument()
+  it('says a deck with cards from Forge and unverified ones runs whole and counts each tier apart', () => {
+    const cards = [
+      card('Bolt', { count: 40 }),
+      card('Odd Dragon', { support: 'forge', count: 3 }),
+      card('New Draft', { support: 'unverified', draft: 'pending', count: 2 }),
+    ]
+    render(<DeckPreview deck={{ ...DECK, commanders: [], cards, toRead: 1 }} />)
+    expect(screen.getByText('The whole deck runs.')).toBeInTheDocument()
+    expect(document.querySelector('[data-support-count="forge"]')).toHaveTextContent('3')
+    expect(document.querySelector('[data-support-count="unverified"]')).toHaveTextContent('2')
   })
 
   it.each([

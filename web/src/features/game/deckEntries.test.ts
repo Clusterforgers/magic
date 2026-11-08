@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { cardHit, deckIn } from '@/features/decks/fakeDecks'
 import { counts } from '@/features/decks/fakeDecks'
-import type { PreconListItem } from '@/protocol/generated'
+import type { Counts, PreconListItem } from '@/protocol/generated'
 import {
   entryFacts,
   entryOfBuiltIn,
@@ -93,7 +93,7 @@ describe('the support chip', () => {
       'manual_play',
       '9 played by hand',
     ],
-    ['read', counts({ total: 100, verified: 96, read: 4 }), 'read', 'Runs on reads'],
+    ['read', counts({ total: 100, verified: 96, read: 4 }), 'read', 'Whole deck runs'],
     [
       'manual_play',
       counts({ total: 100, verified: 90, read: 4, manual: 6 }),
@@ -258,11 +258,19 @@ describe('sorting', () => {
 
   it.each<[string, DeckEntry['state'], number, boolean, string | null]>([
     ['a row the chip already counts', 'manual_play', 4, true, null],
-    ['a deck on reads with cards by hand', 'read', 3, false, '3 cards played by hand'],
-    ['a deck on reads with none, unsorted', 'read', 0, false, null],
-    ['a deck on reads with none, sorted by hand', 'read', 0, true, 'no cards played by hand'],
+    ['a blocked deck with cards by hand', 'blocked', 3, false, '3 cards played by hand'],
+    ['a blocked deck with none, unsorted', 'blocked', 0, false, null],
+    ['a blocked deck with none, sorted by hand', 'blocked', 0, true, 'no cards played by hand'],
   ])('writes the count for %s', (_what, state, byHand, always, words) => {
     expect(handWords({ ...row('x', byHand, state) }, always)).toBe(words)
+  })
+
+  it.each<[string, Partial<Counts>, string | null]>([
+    ['tiers that run whole', { verified: 60, forge: 34, unverified: 4, read: 2 }, '34 from Forge · 4 unverified · 2 read'],
+    ['unverified copies alone', { verified: 99, unverified: 1 }, '1 unverified'],
+    ['nothing but Verified copies', {}, null],
+  ])('breaks down a deck that runs whole with %s', (_what, over, words) => {
+    expect(handWords({ ...row('x', 0, 'read'), counts: counts(over) }, true)).toBe(words)
   })
 
   it('marks a starred precon and keeps a stored deck unstarred', () => {

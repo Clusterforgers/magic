@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { playRequest } from './play'
 import { board, cardLine, checked, preconItem, preconView } from './fakePrecons'
 import {
+  breakdownWords,
   checkLine,
   commandersText,
   copyList,
@@ -25,7 +26,8 @@ describe('statusOf and statusWords', () => {
   it.each<[string, ReturnType<typeof preconItem>, PreconStatus, string]>([
     ['a clean deck', checked(preconItem()), 'whole', 'Whole deck runs'],
     ['one card by hand', checked(preconItem(), { manual: 1 }), 'hand', '1 card played by hand'],
-    ['approved reads beside verified cards', checked(preconItem(), { read: 4 }), 'read', 'Runs on reads'],
+    ['approved reads beside verified cards', checked(preconItem(), { read: 4 }), 'read', 'Whole deck runs'],
+    ['unverified drafts and Forge beside verified cards', checked(preconItem(), { unverified: 120, forge: 34 }), 'read', 'Whole deck runs'],
     [
       'a card by hand beside the reads',
       checked(preconItem(), { read: 4, manual: 1, toRead: 1 }),
@@ -57,11 +59,22 @@ describe('statusOf and statusWords', () => {
     expect(checkLine(preconItem())).toBe('100 of 100 cards verified')
   })
 
-  it('counts the cards on reads apart from the verified ones and from those played by hand', () => {
-    expect(checkLine(checked(preconItem(), { read: 4 }))).toBe('96 of 100 cards verified; 4 cards on reads')
+  it('counts the cards that run without being Verified apart from the verified ones and from those played by hand', () => {
+    expect(checkLine(checked(preconItem(), { read: 4 }))).toBe('96 of 100 cards verified; 4 read')
     expect(checkLine(checked(preconItem(), { read: 4, manual: 2, toRead: 2 }))).toBe(
-      '94 of 100 cards verified; 4 cards on reads, 2 played by hand',
+      '94 of 100 cards verified; 4 read, 2 played by hand',
     )
+    expect(checkLine(checked(preconItem(), { forge: 30, unverified: 6, read: 2 }))).toBe(
+      '62 of 100 cards verified; 30 from Forge, 6 unverified, 2 read',
+    )
+  })
+
+  it('breaks a deck that runs whole down quietly, and says nothing for any other', () => {
+    expect(breakdownWords(checked(preconItem(), { forge: 34, unverified: 12, read: 2 }))).toBe(
+      '34 from Forge · 12 unverified · 2 read',
+    )
+    expect(breakdownWords(checked(preconItem()))).toBe('')
+    expect(breakdownWords(checked(preconItem(), { unverified: 4, manual: 1 }))).toBe('')
   })
 
   it('lists the precons that run on reads under their own state, between whole and by hand', () => {

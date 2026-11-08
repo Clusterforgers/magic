@@ -14,7 +14,7 @@ use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
-use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause};
+use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause, Shown};
 use crate::effect::{Effect, Produce};
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
@@ -119,6 +119,7 @@ pub(crate) fn assemble_record(
                 record.support,
                 Support::Read | Support::Forge | Support::Unverified
             );
+        definition.unverified = Shown(record.support == Support::Unverified);
         definition.partial = attach && !definition.manual.is_empty();
         definition
     };
@@ -215,6 +216,7 @@ fn whole_card(
             whole.color_indicator = (union != from_cost).then_some(union);
             whole.manual = faces.iter().flat_map(|face| face.manual.clone()).collect();
             whole.read = faces.iter().any(|face| face.read);
+            whole.unverified = Shown(faces.iter().any(|face| face.unverified.0));
             whole.partial = faces.iter().any(|face| face.partial);
             // The card as a whole is what a fused split spell is (CR 702.102c), so it carries that spell's rules.
             whole.rules.extend(fused_spell(&faces).map(Arc::new));
@@ -1213,6 +1215,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         layout: Layout::Normal,
         manual: Vec::new(),
         read: false,
+        unverified: Shown(false),
         partial: false,
         faces: Vec::new(),
         identity: None,

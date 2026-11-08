@@ -188,11 +188,12 @@ describe('the reads', () => {
     preconItem({ code: 'r3', name: 'Plain', set: 'PPP' }),
   ]
 
-  it('gives a deck that runs on reads its own badge and a deck with drafts waiting its count', async () => {
+  it('says a deck that runs on reads runs whole, breaks it down quietly, and gives a deck with drafts waiting its count', async () => {
     await open({ precons: READS })
     await listed()
     const onReads = rowOf('On Reads')
-    expect(within(onReads).getByText('Runs on reads').closest('[data-precon-status]')).toHaveAttribute(
+    expect(onReads.querySelector('[data-slot="precon-breakdown"]')).toHaveTextContent(/ read$/)
+    expect(within(onReads).getByText('Whole deck runs').closest('[data-precon-status]')).toHaveAttribute(
       'data-precon-status',
       'read',
     )
@@ -209,7 +210,7 @@ describe('the reads', () => {
   it('filters by the state of a deck that runs on reads', async () => {
     const page = await open({ precons: READS })
     await listed()
-    await page.user.selectOptions(screen.getByLabelText('Deck check'), 'Runs on reads')
+    await page.user.selectOptions(screen.getByLabelText('Deck check'), 'Whole deck runs, not all verified')
     expect(rows().map((row) => within(row).getByRole('rowheader').textContent)).toEqual([
       expect.stringContaining('On Reads'),
     ])

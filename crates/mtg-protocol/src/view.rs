@@ -342,6 +342,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub read: bool,
+    /// Whether its card runs on a draft no player has read yet (`CardDefinition.unverified`, `docs/cards-dsl.md`, Read
+    /// tier): it runs like `read` but is shown as Unverified; left out while false.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub unverified: bool,
     /// Whether the engine runs part of its card and leaves the clauses in `manual` to the table (`Partial`), as against a
     /// card played wholly by hand; shown wherever `manual` is, left out while false.
     #[serde(default, skip_serializing_if = "is_false")]

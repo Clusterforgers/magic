@@ -1,7 +1,6 @@
 /** The words and rules of the review screen, pure (docs/web.md, Reading cards). */
 import type { ReadCard, ReadQueueCard, ReadRow, ReadState } from '@/protocol/generated'
 import { BY_HAND_TITLE } from '@/lib/byHand'
-import { RUNS_ON_READS } from '@/lib/toRead'
 import type { ReadTarget } from '@/lib/toRead'
 
 /** How long a card is shown before a verdict can be given, so nobody judges a card without reading it. */
@@ -52,8 +51,8 @@ export function differsCount(card: ReadCard): number {
 
 /** The words of a draft's state. */
 export const STATE_WORDS: Readonly<Record<ReadState, string>> = {
-  pending: 'Waits for a read',
-  approved: RUNS_ON_READS,
+  pending: 'Unverified, waiting for a read',
+  approved: 'Read, runs automatically',
   wrong: 'Found wrong',
 }
 

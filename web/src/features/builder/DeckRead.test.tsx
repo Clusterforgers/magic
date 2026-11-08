@@ -1,4 +1,4 @@
-// Goal: the builder's deck check tells a deck whose cards are Verified or approved reads from one with drafts waiting: the marker says "Runs on reads", the counts line names the copies on reads, the check bar says "N cards to read" with the saved deck's review address (once, however many zones hold the card), and the cards played by hand say whether their draft waits or was found wrong.
+// Goal: the builder's deck check tells a deck whose cards are Verified or approved reads from one with drafts waiting: the marker says "Whole deck runs", the counts line names the copies on reads, the check bar says "N cards to read" with the saved deck's review address (once, however many zones hold the card), and the cards played by hand say whether their draft waits or was found wrong.
 import { describe, expect, it } from 'vitest'
 import { checked } from './checkedDeck'
 import type { Entry } from './checkedDeck'
@@ -21,12 +21,12 @@ const WAITING: Entry[] = [
   { card: DURESS, count: 2, support: 'manual' },
 ]
 
-describe('a deck that runs on reads', () => {
-  it('has the marker "Runs on reads" and counts its reads beside the verified cards', async () => {
+describe('a deck that runs whole on reads', () => {
+  it('has the marker "Whole deck runs" and counts its reads beside the verified cards', async () => {
     await renderBuilder({ view: checked(ON_READS) })
     expect(deckPane().querySelector('[data-marker]')).toHaveAttribute('data-marker', 'read')
-    expect(deckPane().querySelector('[data-marker]')).toHaveTextContent(/^Runs on reads$/)
-    expect(counts()).toHaveTextContent(/^24 of 28 verified, 4 on reads$/)
+    expect(deckPane().querySelector('[data-marker]')).toHaveTextContent(/^Whole deck runs$/)
+    expect(counts()).toHaveTextContent(/^24 of 28 verified, 4 read$/)
     expect(deckPane().querySelector('[data-slot="hand-summary"]')).toHaveTextContent('The whole deck runs.')
     expect(toRead()).toBeNull()
   })
@@ -36,7 +36,7 @@ describe('a deck with drafts waiting for a read', () => {
   it('stays "Played by hand" and says how many cards wait, once for a card in two zones, with the address of the deck', async () => {
     await renderBuilder({ view: checked(WAITING) })
     expect(deckPane().querySelector('[data-marker]')).toHaveTextContent(/^Played by hand$/)
-    expect(counts()).toHaveTextContent(/^20 of 30 verified, 4 on reads, 6 played by hand$/)
+    expect(counts()).toHaveTextContent(/^20 of 30 verified, 4 read, 6 played by hand$/)
     expect(toRead()).toHaveTextContent(/^1 card to read$/)
     expect(toRead()?.querySelector('[data-slot="to-read"]')).toHaveAttribute(
       'data-read-path',

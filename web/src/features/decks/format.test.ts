@@ -1,4 +1,4 @@
-// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand or what blocks it, and an import summary counts cards per zone; the format list is the one the server checks.
+// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand or what blocks it, or breaks a deck that runs whole down by tier, and an import summary counts cards per zone; the format list is the one the server checks.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -81,7 +81,7 @@ describe('formatLabel', () => {
 describe('STATE_LABEL', () => {
   it.each([
     ['verified', 'Verified'],
-    ['read', 'Runs on reads'],
+    ['read', 'Whole deck runs'],
     ['manual_play', 'Played by hand'],
     ['blocked', 'Blocked'],
     ['unchecked', 'Unchecked'],
@@ -119,17 +119,18 @@ describe('countsText', () => {
       '4 of 10 verified, 5 played by hand, 1 unplayable',
     ],
     ['an unplayable card', counts({ verified: 99, unplayable: 1 }), '99 of 100 verified, 1 unplayable'],
-    ['read cards', counts({ verified: 96, read: 4 }), '96 of 100 verified, 4 on reads'],
+    ['read cards', counts({ verified: 96, read: 4 }), '96 of 100 verified, 4 read'],
     [
       'read cards beside the others (a read card is not played by hand)',
       counts({ total: 10, verified: 3, read: 2, partial: 1, manual: 2, stale: 1, unplayable: 1 }),
-      '3 of 10 verified, 2 on reads, 4 played by hand, 1 unplayable',
+      '3 of 10 verified, 2 read, 4 played by hand, 1 unplayable',
     ],
-    ['forge cards', counts({ verified: 96, forge: 4 }), '96 of 100 verified, 4 cards from Forge'],
+    ['forge cards', counts({ verified: 96, forge: 4 }), '96 of 100 verified, 4 from Forge'],
+    ['unverified cards', counts({ verified: 96, unverified: 4 }), '96 of 100 verified, 4 unverified'],
     [
-      'read and forge cards beside the others (neither is played by hand)',
-      counts({ total: 10, verified: 3, read: 2, forge: 1, manual: 3, unplayable: 1 }),
-      '3 of 10 verified, 2 on reads, 1 card from Forge, 3 played by hand, 1 unplayable',
+      'read, forge and unverified cards beside the others (none is played by hand)',
+      counts({ total: 12, verified: 3, read: 2, forge: 1, unverified: 2, manual: 3, unplayable: 1 }),
+      '3 of 12 verified, 1 from Forge, 2 unverified, 2 read, 3 played by hand, 1 unplayable',
     ],
     ['no cards', counts({ total: 0, verified: 0 }), '0 of 0 verified'],
   ] satisfies ReadonlyArray<[string, Counts, string]>)('words %s', (_what, given, text) => {
@@ -180,11 +181,11 @@ describe('checkNote', () => {
     expect(checkNote(deck)).toBe(note)
   })
 
-  it('counts the copies on reads in a deck that runs on reads', () => {
+  it('breaks down the copies that are not Verified in a deck that runs whole', () => {
     const deck = deckIn('read', {
-      summary: summary({ state: 'read', counts: counts({ verified: 96, read: 4 }) }),
+      summary: summary({ state: 'read', counts: counts({ verified: 60, forge: 34, unverified: 4, read: 2 }) }),
     })
-    expect(checkNote(deck)).toBe('96 of 100 verified, 4 on reads')
+    expect(checkNote(deck)).toBe('34 from Forge · 4 unverified · 2 read')
   })
 
   it.each([
