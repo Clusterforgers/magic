@@ -686,6 +686,8 @@ test.describe('the development table with 40 permanents a seat', () => {
   for (const theme of ['light', 'dark'] as const) {
     for (const seats of [16, 24, 40]) {
       test(`fits at every size with ${seats} seats in the ${theme} theme`, async ({ browser }, testInfo) => {
+        // Twenty sizes of a table with up to 40 seats of 40 permanents are laid out one after the other.
+        test.setTimeout(300_000)
         const context = await themedContext(browser, theme)
         const page = await context.newPage()
         await page.goto(`${DEV_WEB_URL}/dev/table?seats=${seats}&prompt=priority&turn=you`)
