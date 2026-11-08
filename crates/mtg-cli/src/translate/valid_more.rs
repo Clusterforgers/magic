@@ -177,7 +177,9 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
     match word.trim() {
         "You" => Ok(json!("You")),
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
+        // `Targeted` names the player when the line targets a player (`ValidTgts$ Opponent`).
         "TargetedPlayer" | "Targeted" => ctx.player_target(),
+        "Player.Active" => Ok(json!("ActivePlayer")),
         // The player the trigger that spawned a reflexive trigger was about, bound as the reflexive trigger was set up.
         "Spawner>TriggeredTarget" => match ctx.delayed_remembered.clone() {
             Some(held) => Ok(held),
