@@ -9,6 +9,7 @@ import type { GameFormat } from '@/lib/houseRules'
 import { FavouriteButton } from '@/features/precons/FavouriteButton'
 import type { Favourites } from '@/features/precons/useFavourites'
 import { deckFormat } from './deckWords'
+import { readTargetOf } from './deckEntries'
 import type { DeckEntry } from './deckEntries'
 import type { DeckDetail } from './useDeckDetail'
 import type { VerdictState } from './useVerdicts'
@@ -52,6 +53,8 @@ function standIn(entry: DeckEntry): DeckPreviewData {
     commanders,
     cards: [],
     sideboard: [],
+    toRead: entry.toRead,
+    readTarget: readTargetOf(entry),
   }
 }
 

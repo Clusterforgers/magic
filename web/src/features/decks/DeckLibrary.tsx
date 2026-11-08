@@ -1,5 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import {
+  BookOpenIcon,
   CircleAlertIcon,
   LibraryIcon,
   PlusIcon,
@@ -119,6 +120,10 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
           </div>
           {state.status === 'unavailable' ? null : (
             <div className="flex flex-wrap items-center gap-2">
+              <Link to="/read" className={buttonVariants({ variant: 'ghost' })}>
+                <BookOpenIcon aria-hidden="true" />
+                Read cards
+              </Link>
               <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'ghost' })}>
                 <ShieldHalfIcon aria-hidden="true" />
                 Not validated cards

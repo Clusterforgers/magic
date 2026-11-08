@@ -44,7 +44,7 @@ function DialogScene() {
 }
 
 /**
- * `/dev/read?view=deck`: the real review screen over made-up cards in memory, signed in. `view` is `deck`, `precon`,
+ * `/dev/read?view=deck`: the real review screen over made-up cards in memory, signed in. `view` is `deck`, `precon`, `all`,
  * `done` (nothing left to read), `loading`, `error`, `stale` (every verdict meets a changed draft) or `dialog` (the
  * table's `ReadDialog`).
  */
@@ -71,7 +71,13 @@ export function DevReadRoute() {
           <ReadPage
             key={view}
             api={api}
-            target={view === 'precon' ? { precon: 'c18-adaptive-enchantment' } : { deck: 'deck-izzet' }}
+            target={
+              view === 'all'
+                ? null
+                : view === 'precon'
+                  ? { precon: 'c18-adaptive-enchantment' }
+                  : { deck: 'deck-izzet' }
+            }
           />
         )}
       </ReadsApiContext>

@@ -7,14 +7,18 @@ import type { ReadTarget } from '@/lib/toRead'
 interface ToReadProps {
   /** Distinct cards of the deck whose draft waits for a read (`summary.to_read`). */
   count: number
-  /** The deck whose cards are read; none for a deck that is not saved, or where a link cannot sit (a list option). */
-  target?: ReadTarget
+  /**
+   * The deck whose cards are read; null links to every card (a deck that is not saved has no queue of its own), and
+   * none draws no link, where a link cannot sit (a list option).
+   */
+  target?: ReadTarget | null
   className?: string
 }
 
 /**
  * "3 cards to read" with a book beside it, where a deck check says drafts wait for a player; nothing for none. With a
- * target it links to the review screen (`/read?deck=<id>` or `/read?precon=<code>`, also in `data-read-path`).
+ * target it links to the review screen (`/read?deck=<id>`, `/read?precon=<code>` or `/read`, also in
+ * `data-read-path`).
  */
 export function ToRead({ count, target, className }: ToReadProps) {
   if (count <= 0) return null
@@ -35,9 +39,9 @@ export function ToRead({ count, target, className }: ToReadProps) {
   return (
     <Link
       to="/read"
-      search={target}
+      search={target ?? {}}
       data-slot="to-read"
-      data-read-path={readPath(target)}
+      data-read-path={target === null ? '/read' : readPath(target)}
       className={cn(look, 'underline-offset-4 hover:underline')}
       onClick={(event) => event.stopPropagation()}
     >

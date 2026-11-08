@@ -20,8 +20,11 @@ export interface ReadsOptions {
 
 /** The read calls; each rejects with a `DeckError`. */
 export interface ReadsApi {
-  /** `GET /api/reads?deck=` or `?precon=`: what the account has left to read in that deck, pending drafts first. */
-  queue(target: ReadTarget): Promise<ReadQueue>
+  /**
+   * `GET /api/reads?deck=` or `?precon=`: what the account has left to read in that deck, pending drafts first; with
+   * no target, `GET /api/reads`: every card waiting for a first read. Each part is most played first.
+   */
+  queue(target: ReadTarget | null): Promise<ReadQueue>
   /** `GET /api/reads/{oracle_id}`: the card's current draft with its read sheet and the account's verdict. */
   get(oracleId: string): Promise<ReadCard>
   /** `PUT /api/reads/{oracle_id}`: the account's verdict on the draft with `read_hash`; answers the card after it. */
@@ -89,7 +92,9 @@ function readQueue(body: unknown): ReadQueue | null {
       isText(card.name) &&
       isText(card.read_hash) &&
       isState(card.state) &&
-      isCount(card.differs)
+      isCount(card.differs) &&
+      (card.rank === null || isCount(card.rank)) &&
+      isFlag(card.in_decks)
     )
   })
   return fits ? (body as ReadQueue) : null
@@ -114,11 +119,15 @@ function failure(response: Response, body: unknown): DeckError {
   )
 }
 
-/** The query string of a deck's list. */
-function queueQuery(target: ReadTarget): string {
-  return 'deck' in target
-    ? `deck=${encodeURIComponent(target.deck)}`
-    : `precon=${encodeURIComponent(target.precon)}`
+/** The query string of a deck's list, with its `?`; none for every card. */
+function queueQuery(target: ReadTarget | null): string {
+  if (target === null) return ''
+  return (
+    '?' +
+    ('deck' in target
+      ? `deck=${encodeURIComponent(target.deck)}`
+      : `precon=${encodeURIComponent(target.precon)}`)
+  )
 }
 
 /** Builds the client; call it once, or use the shared `readsApi`. */
@@ -146,7 +155,7 @@ export function createReadsApi(options: ReadsOptions = {}): ReadsApi {
   }
 
   return {
-    queue: (target) => call(`${base}/api/reads?${queueQuery(target)}`, readQueue, {}),
+    queue: (target) => call(`${base}/api/reads${queueQuery(target)}`, readQueue, {}),
     get: (oracleId) => call(cardPath(oracleId), readCard, {}),
     judge: (oracleId, body) =>
       call(cardPath(oracleId), readCard, {
