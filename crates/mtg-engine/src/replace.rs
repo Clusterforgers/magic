@@ -1962,11 +1962,8 @@ impl Pass<'_> {
             (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
             }
-            (ReplaceBy::Instead(effects), _) => {
-                self.w5d_instead(at, candidate, effects, &unit, applied);
-            }
-            (ReplaceBy::Plus(effects), _) => {
-                self.ep21_plus(at, candidate, effects, &unit, applied);
+            (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _) => {
+                self.w5d_instead(at, candidate, by, effects, &unit, applied);
             }
             (ReplaceBy::RedirectUpTo { most, .. }, Unit::Damage { .. }) => {
                 self.r6f_redirect_up_to(at, candidate, *most, applied);

@@ -4706,6 +4706,7 @@ impl Walker<'_> {
                 self.at("PreventCounted", |w| w.amount(amount));
             }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
+            ReplaceBy::Plus(effects) => self.ep21_plus(when, effects),
             _ => {}
         }
     }
@@ -4844,7 +4845,6 @@ impl Walker<'_> {
             ReplaceBy::Instead(effects) | ReplaceBy::InsteadNext(effects) => {
                 self.w5d_instead(when, effects);
             }
-            ReplaceBy::Plus(effects) => self.ep21_plus(when, effects),
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::WithCounters { count, .. } => {

@@ -2,6 +2,7 @@
 //! its cause: the player or object it is about (`Triggering`), its amount and the source of its damage (`Dealer`).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::trigger::ReplaceBy;
 
 use super::{Candidate, Item, Origin, Pass, Slot, Unit, slots_of};
 use crate::abilities::Cause;
@@ -51,15 +52,20 @@ impl Pass<'_> {
 
     /// The effects run in place of the event at `at`: their events take its place and carry the effects already applied
     /// to it, this one included, so it does not apply to them again (CR 614.5). Effects that cannot run without a
-    /// question leave the event as it is.
+    /// question leave the event as it is. `Plus` keeps the event and adds the tokens (`ep21_plus`).
     pub(super) fn w5d_instead(
         &mut self,
         at: usize,
         candidate: &Candidate,
+        by: &ReplaceBy,
         effects: &[Effect],
         unit: &Unit,
         applied: Vec<Origin>,
     ) {
+        if matches!(by, ReplaceBy::Plus(_)) {
+            self.ep21_plus(at, candidate, effects, unit, applied);
+            return;
+        }
         let cause = self.w5d_cause(at, unit);
         let Ok(events) = w5d_run_instead(
             self.state,

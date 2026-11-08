@@ -21,20 +21,20 @@ const KINDS: [(CardType, &str); 2] = [
 const SUBTYPES: [&str; 4] = ["Treasure", "Food", "Clue", "Map"];
 
 /// The kind of token words name: none for "tokens", a card type, or a subtype.
-fn kind(r: &mut Reader<'_>) -> Option<Selector> {
+fn kind(r: &mut Reader<'_>) -> Selector {
     if let Some(found) = KINDS
         .iter()
         .find_map(|(kind, words)| r.word(words).then_some(*kind))
     {
-        return Some(Selector(vec![Pred::Type(found)]));
+        return Selector(vec![Pred::Type(found)]);
     }
     if let Some(found) = r.attempt(|r| {
         let name = r.name()?;
         SUBTYPES.contains(&name).then_some(name)
     }) {
-        return Some(Selector(vec![Pred::Subtype(Subtype(found.to_owned()))]));
+        return Selector(vec![Pred::Subtype(Subtype(found.to_owned()))]);
     }
-    Some(Selector::default())
+    Selector::default()
 }
 
 /// The words of a kind, with a space after them; empty for any token.
@@ -171,14 +171,14 @@ pub(super) fn ep21_plus(r: &mut Reader<'_>) -> Option<Ability> {
     }
     r.word("if").then_some(())?;
     let (what, effect) = if r.words("you would create one or more") {
-        let what = kind(r)?;
+        let what = kind(r);
         r.word("tokens").then_some(())?;
         r.punct(',').then_some(())?;
         r.need("instead create those tokens plus")?;
         (what, more(r)?)
     } else {
         r.need("one or more")?;
-        let what = kind(r)?;
+        let what = kind(r);
         r.need("tokens would be created under your control")?;
         r.punct(',').then_some(())?;
         r.need("those tokens plus")?;
