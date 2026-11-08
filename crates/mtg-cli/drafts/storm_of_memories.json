@@ -1,0 +1,48 @@
+{
+  "oracle_id": "6f8ca795-d6fd-4e3e-911c-c621a942acbb",
+  "name": "Storm of Memories",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm of Memories",
+      "oracle_fingerprint": "c979b02b9f9e52d80fd735f8bfc072ee",
+      "abilities": [
+        { "Keyword": "Storm" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              { "CastFromZone": { "what": { "Bound": "exiled2" }, "free": true, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

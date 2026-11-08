@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1440ec54-067e-479b-9196-edf84534a04e",
+  "name": "Verdant Succession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Succession",
+      "oracle_fingerprint": "5f7481ef1ac95b957d6997ca30dd49bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Color": "Green" }, { "Not": "Token" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": "Triggering" },
+                        "filter": [{ "SharesName": "Triggering" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": "Triggering" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

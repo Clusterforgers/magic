@@ -1,0 +1,23 @@
+{
+  "oracle_id": "7dcbce46-2973-4a9f-93df-95ac41ce668a",
+  "name": "Phantasmal Terrain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantasmal Terrain",
+      "oracle_fingerprint": "abb28f430f717dc7db6a003ffca957b5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "BasicLandType" }
+          }
+        },
+        {
+          "Static": { "affected": "Attached", "mods": [{ "SetLandTypes": [] }, "AddChosenSubtype"] }
+        }
+      ]
+    }
+  ]
+}

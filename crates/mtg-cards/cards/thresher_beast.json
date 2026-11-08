@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e88915fd-7867-45e6-b4b9-ca0af1823c0d",
+  "name": "Thresher Beast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thresher Beast",
+      "oracle_fingerprint": "ff687035b3576eed73f9d8e066c9aba5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "Sacrifice": { "who": "Defending", "filter": [{ "Type": "Land" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

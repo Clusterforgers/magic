@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "bb4db814-3821-47ea-9e33-0e9f49128a36",
+  "oracle_id": "261f371f-bcda-4761-810f-3216608b31d8",
+  "multiverse_ids": [
+    567248
+  ],
+  "mtgo_id": 101464,
+  "tcgplayer_id": 273675,
+  "cardmarket_id": 661383,
+  "name": "Venture Forth",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/bb4db814-3821-47ea-9e33-0e9f49128a36",
+  "scryfall_uri": "https://scryfall.com/card/clb/683/venture-forth?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:01:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.jpg?1783922497",
+    "normal": "https://cards.scryfall.io/normal/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.jpg?1783922497",
+    "large": "https://cards.scryfall.io/large/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.jpg?1783922497",
+    "png": "https://cards.scryfall.io/png/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.png?1783922497",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.jpg?1783922497",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.jpg?1783922497",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.webp?1783922497",
+    "grid": "https://cards.scryfall.io/grid/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.webp?1783922497",
+    "display": "https://cards.scryfall.io/display/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.webp?1783922497",
+    "art": "https://cards.scryfall.io/art/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.webp?1783922497",
+    "crop": "https://cards.scryfall.io/crop/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.webp?1783922497",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/b/bb4db814-3821-47ea-9e33-0e9f49128a36.jpg?1783922497"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile cards from the top of your library until you exile a land card. Put that card onto the battlefield and the rest on the bottom of your library in a random order. Exile Venture Forth with three time counters on it.\nSuspend 3—{1}{G}",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Suspend"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bb4db814-3821-47ea-9e33-0e9f49128a36/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A261f371f-bcda-4761-810f-3216608b31d8&unique=prints",
+  "collector_number": "683",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gaboleps",
+  "artist_ids": [
+    "0c37cdfe-5651-4ae6-a3c8-e7153509f970"
+  ],
+  "illustration_id": "a501ae67-a5de-46c8-ad9b-a2275d4959f9",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9900,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.37",
+    "eur_foil": null,
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=567248&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVenture%2BForth",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVenture%2BForth",
+    "edhrec": "https://edhrec.com/route/?cc=Venture+Forth"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273675%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=661383&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/101464?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

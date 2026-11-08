@@ -1,0 +1,51 @@
+{
+  "oracle_id": "e9fa3e3c-4a7e-4a18-b2ef-15d53ff55321",
+  "name": "Offspring's Revenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Offspring's Revenge",
+      "oracle_fingerprint": "8e70225d2c6f1b17cdcaacdda4559142",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Red" }, { "Color": "White" }, { "Color": "Black" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                    }
+                  },
+                  "as": "copy2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy2" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

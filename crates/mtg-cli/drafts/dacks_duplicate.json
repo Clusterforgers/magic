@@ -12,7 +12,7 @@
             "when": { "Enters": { "what": ["This"] } },
             "by": {
               "AsCopy": {
-                "of": [{ "Type": "Creature" }, "Other"],
+                "of": [{ "Type": "Creature" }],
                 "except": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Dethrone" }]
               }
             }

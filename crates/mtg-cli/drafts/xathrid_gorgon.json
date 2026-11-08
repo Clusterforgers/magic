@@ -1,0 +1,47 @@
+{
+  "oracle_id": "1e65fac0-23fc-4a32-bd36-4e3f7ebfe33d",
+  "name": "Xathrid Gorgon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xathrid Gorgon",
+      "oracle_fingerprint": "53c4a6976f26e5ae49ed1f3c75183195",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "petrification" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetColors": [] },
+                    { "AddType": "Artifact" },
+                    { "AddKeyword": "Defender" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "EachPlayer",
+                      "action": {
+                        "ActivateKind": { "kind": "Every", "sources": [{ "Is": { "Target": 0 } }] }
+                      }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

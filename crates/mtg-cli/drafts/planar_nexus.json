@@ -1,0 +1,45 @@
+{
+  "oracle_id": "26005003-afcb-4c32-a760-be950246ff0f",
+  "name": "Planar Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Nexus",
+      "oracle_fingerprint": "84573026aa79ce0df6d7effa64b40842",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddSubtype": "Cave" },
+              { "AddSubtype": "Desert" },
+              { "AddSubtype": "Gate" },
+              { "AddSubtype": "Lair" },
+              { "AddSubtype": "Locus" },
+              { "AddSubtype": "Mine" },
+              { "AddSubtype": "Planet" },
+              { "AddSubtype": "Power-Plant" },
+              { "AddSubtype": "Sphere" },
+              { "AddSubtype": "Tower" },
+              { "AddSubtype": "Town" },
+              { "AddSubtype": "Urza's" }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

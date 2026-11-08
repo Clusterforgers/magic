@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a4f8012e-9880-45b0-9eba-d74c207d3242",
+  "name": "Naga Fleshcrafter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naga Fleshcrafter",
+      "oracle_fingerprint": "2844bd861d255679eb2febf71ea4a551",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": [{ "Type": "Creature" }] } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "BecomeCopy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "of": { "Target": 0 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

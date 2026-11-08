@@ -13,7 +13,7 @@
             "applies_to": [{ "Type": "Artifact" }, { "Is": "Attached" }],
             "change": "Reduce",
             "mana": "{2}",
-            "activating": "Any",
+            "activating": "Every",
             "least": 1
           }
         }

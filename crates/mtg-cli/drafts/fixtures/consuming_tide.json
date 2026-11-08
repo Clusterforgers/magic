@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "5865f0f1-28a6-49ac-b61e-135845075d1f",
+  "oracle_id": "24cd8f54-c1d4-4040-93bf-a7b9b719ac30",
+  "multiverse_ids": [
+    540891
+  ],
+  "mtgo_id": 94410,
+  "arena_id": 78839,
+  "tcgplayer_id": 253134,
+  "cardmarket_id": 581899,
+  "name": "Consuming Tide",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/5865f0f1-28a6-49ac-b61e-135845075d1f",
+  "scryfall_uri": "https://scryfall.com/card/vow/53/consuming-tide?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:41:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.jpg?1783924899",
+    "normal": "https://cards.scryfall.io/normal/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.jpg?1783924899",
+    "large": "https://cards.scryfall.io/large/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.jpg?1783924899",
+    "png": "https://cards.scryfall.io/png/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.png?1783924899",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.jpg?1783924899",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.jpg?1783924899",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.webp?1783924899",
+    "grid": "https://cards.scryfall.io/grid/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.webp?1783924899",
+    "display": "https://cards.scryfall.io/display/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.webp?1783924899",
+    "art": "https://cards.scryfall.io/art/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.webp?1783924899",
+    "crop": "https://cards.scryfall.io/crop/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.webp?1783924899",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/8/5865f0f1-28a6-49ac-b61e-135845075d1f.jpg?1783924899"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player chooses a nonland permanent they control. Return all nonland permanents not chosen this way to their owners' hands. Then you draw a card for each opponent who has more cards in their hand than you.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set": "vow",
+  "set_name": "Innistrad: Crimson Vow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avow&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vow?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5865f0f1-28a6-49ac-b61e-135845075d1f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A24cd8f54-c1d4-4040-93bf-a7b9b719ac30&unique=prints",
+  "collector_number": "53",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Nephalia's tides obey an unforgiving moon.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Viko Menezes",
+  "artist_ids": [
+    "92dfef2a-d0fa-42fd-bdd6-bc4c9286cb56"
+  ],
+  "illustration_id": "e259ef3b-ffa6-4c66-8240-04ba53f25182",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4297,
+  "penny_rank": 11074,
+  "preview": {
+    "source": "Comicaldo",
+    "source_uri": "http://comicaldo.com/m/column/innistrad_20211030",
+    "previewed_at": "2021-10-30"
+  },
+  "prices": {
+    "usd": "0.55",
+    "usd_foil": "0.55",
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": "0.88",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=540891&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DConsuming%2BTide",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DConsuming%2BTide",
+    "edhrec": "https://edhrec.com/route/?cc=Consuming+Tide"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F253134%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=581899&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/94410?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

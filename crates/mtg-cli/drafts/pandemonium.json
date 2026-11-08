@@ -1,0 +1,41 @@
+{
+  "oracle_id": "073551ca-2e84-4d49-8484-9890718cc483",
+  "name": "Pandemonium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pandemonium",
+      "oracle_fingerprint": "e19d38e6317e0876a5463a4d07f7d7a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": { "who": { "ControllerOf": "Triggering" }, "what": "AnyTarget" }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "Triggering",
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "18543bb3-14f9-45a0-8ed3-5f11832527d9",
+  "name": "Cheering Fanatic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cheering Fanatic",
+      "oracle_fingerprint": "f59738cda59cb6c5e4bb126fbaadbc21",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": ["Spell", { "ChosenAs": "name" }],
+                      "change": "Reduce",
+                      "mana": "{1}"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

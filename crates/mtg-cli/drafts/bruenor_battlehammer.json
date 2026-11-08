@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ea7de96f-db69-421d-a951-ffaeac140379",
+  "name": "Bruenor Battlehammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bruenor Battlehammer",
+      "oracle_fingerprint": "33c028256fea71317f0632b85c952b22",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "Affected" }] }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "FreeActivation": {
+            "kind": "Equip",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": { "event": { "KindActivated": "Equip" }, "who": "You", "filter": [] }
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

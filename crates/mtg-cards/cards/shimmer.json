@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f557fb2c-581b-4a8d-8766-1e46e92224fa",
+  "name": "Shimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimmer",
+      "oracle_fingerprint": "33247170207d065cd95666a37eaf18ec",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "LandType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, "ChosenSubtype"] },
+            "mods": [{ "AddKeyword": "Phasing" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2bd111bb-ce02-414c-b5b7-e0e037d8d96b",
+  "name": "Bolas's Citadel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bolas's Citadel",
+      "oracle_fingerprint": "5649afe2f6ae7c7694d7752da63eea60",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["TopOfLibrary"],
+                "from": "Library",
+                "play": true,
+                "rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }], "count": 10 } }
+            ],
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 10 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

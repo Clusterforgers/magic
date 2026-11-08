@@ -1,0 +1,61 @@
+{
+  "oracle_id": "5bc66b18-22ac-4138-b527-fa711116e298",
+  "name": "Zimone and Dina",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zimone and Dina",
+      "oracle_fingerprint": "e233feb4416b8d33db3d7b7f52f07c8f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "effects": [
+                    { "Draw": {} },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ],
+                  "most": 2,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

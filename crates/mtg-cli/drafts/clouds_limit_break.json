@@ -15,10 +15,12 @@
                   "mode_costs": ["{0}", "{1}", "{3}{W}"],
                   "modes": [
                     {
+                      "label": "Cross-Slash",
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
                       "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
                     },
                     {
+                      "label": "Blade Beam",
                       "targets": [
                         {
                           "what": {
@@ -33,6 +35,7 @@
                       "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
                     },
                     {
+                      "label": "Omnislash",
                       "effects": [
                         { "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] } } }
                       ]

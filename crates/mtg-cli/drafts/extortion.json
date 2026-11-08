@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": "Opponent" }],
+            "targets": [{ "what": "Player" }],
             "effects": [
               { "Discard": { "who": { "Target": 0 }, "count": 2, "by": "You", "optional": true } }
             ]

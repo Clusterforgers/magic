@@ -1,0 +1,70 @@
+{
+  "oracle_id": "f2f165b6-ef0a-42ad-9352-ba68be8248b0",
+  "name": "Teferi, Hero of Dominaria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi, Hero of Dominaria",
+      "oracle_fingerprint": "eae94d674531898e5f5d3d6d4e88f37e",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Draw": {} },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Land" }] },
+                        "count": { "min": 0, "max": 2 },
+                        "as": "untap"
+                      }
+                    },
+                    { "Untap": { "what": { "Bound": "untap" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": { "Below": 2 } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "Drew": { "who": "You" } },
+                        "targets": [{ "what": { "Object": [{ "ControlledBy": "Opponents" }] } }],
+                        "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

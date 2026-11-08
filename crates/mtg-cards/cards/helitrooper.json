@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a2900c79-8e55-49f9-b548-5890a753932e",
+  "name": "Helitrooper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helitrooper",
+      "oracle_fingerprint": "abb0922fb7a420d5a2e471bc2ab67537",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Equip",
+            "targeting": ["This"]
+          }
+        }
+      ]
+    }
+  ]
+}

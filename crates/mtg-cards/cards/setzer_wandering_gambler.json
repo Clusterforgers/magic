@@ -1,0 +1,55 @@
+{
+  "oracle_id": "acdd5082-7b3c-4fd3-941b-d19dd72698ec",
+  "name": "Setzer, Wandering Gambler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Setzer, Wandering Gambler",
+      "oracle_fingerprint": "1c790d2e323a25fb4b97a70a7c02cd59",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "The Blackjack",
+                      "supertypes": ["Legendary"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Vehicle"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Crew": 2 } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "FlipCoin": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CoinFlipWon": { "who": "You" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": 2, "tapped": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

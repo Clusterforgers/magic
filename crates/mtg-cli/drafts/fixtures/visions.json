@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "b0fed0e6-0e56-4987-b0dd-b294156c0233",
+  "oracle_id": "448fa4e3-7269-446b-8089-675bc1bff5f9",
+  "multiverse_ids": [
+    2369
+  ],
+  "tcgplayer_id": 1976,
+  "cardmarket_id": 6138,
+  "name": "Visions",
+  "lang": "en",
+  "released_at": "1995-04-01",
+  "uri": "https://api.scryfall.com/cards/b0fed0e6-0e56-4987-b0dd-b294156c0233",
+  "scryfall_uri": "https://scryfall.com/card/4ed/54/visions?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:04:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.jpg?1783947864",
+    "normal": "https://cards.scryfall.io/normal/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.jpg?1783947864",
+    "large": "https://cards.scryfall.io/large/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.jpg?1783947864",
+    "png": "https://cards.scryfall.io/png/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.png?1783947864",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.jpg?1783947864",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.jpg?1783947864",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.webp?1783947864",
+    "grid": "https://cards.scryfall.io/grid/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.webp?1783947864",
+    "display": "https://cards.scryfall.io/display/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.webp?1783947864",
+    "art": "https://cards.scryfall.io/art/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.webp?1783947864",
+    "crop": "https://cards.scryfall.io/crop/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.webp?1783947864",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/0/b0fed0e6-0e56-4987-b0dd-b294156c0233.jpg?1783947864"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Look at the top five cards of target player's library. You may then have that player shuffle that library.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2dd259d4-dc13-4956-a2dc-3e1d70b4a743",
+  "set": "4ed",
+  "set_name": "Fourth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/2dd259d4-dc13-4956-a2dc-3e1d70b4a743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A4ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/4ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b0fed0e6-0e56-4987-b0dd-b294156c0233/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A448fa4e3-7269-446b-8089-675bc1bff5f9&unique=prints",
+  "collector_number": "54",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Visions of glory, spare my aching sight,\nYe unborn ages, crowd not on my soul!\"\n—Thomas Gray, \"The Bard\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "NéNé Thomas",
+  "artist_ids": [
+    "c74ef1dd-0341-44c4-8f9f-5f243151cce3"
+  ],
+  "illustration_id": "54830c65-b4dd-406a-8dab-dd283424d0d2",
+  "border_color": "white",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27818,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2369&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVisions",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVisions",
+    "edhrec": "https://edhrec.com/route/?cc=Visions"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F1976%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6138&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Visions&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

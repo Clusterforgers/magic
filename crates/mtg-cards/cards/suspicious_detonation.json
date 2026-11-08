@@ -1,0 +1,40 @@
+{
+  "oracle_id": "91f7672c-3090-48f4-8586-0426341c3159",
+  "name": "Suspicious Detonation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suspicious Detonation",
+      "oracle_fingerprint": "d2e27cccb31be3f6536bfb358190a43e",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Sacrificed",
+                    "who": "You",
+                    "filter": [{ "Type": "Artifact" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

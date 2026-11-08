@@ -1,0 +1,47 @@
+{
+  "oracle_id": "4ef07e5a-3dc3-41dd-a3a9-e8812b4d40d3",
+  "name": "Trial of Agony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trial of Agony",
+      "oracle_fingerprint": "42d8b643be646af0c7f6ca580d3fd311",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "from": { "Each": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }] },
+                  "as": "card"
+                }
+              },
+              { "DealDamage": { "to": { "Bound": "card" }, "amount": 5 } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Is": { "Target": 0 } }, { "Not": { "Is": { "Bound": "card" } } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

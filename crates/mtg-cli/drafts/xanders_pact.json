@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3df11e5c-19aa-441c-a889-6b40eb3fdabf",
+  "name": "Xander's Pact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xander's Pact",
+      "oracle_fingerprint": "5031735d2a49e2a57652440a67fa64c8",
+      "abilities": [
+        { "Keyword": { "Casualty": 2 } },
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "who": "Opponents", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

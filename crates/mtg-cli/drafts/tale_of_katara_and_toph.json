@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7c376ea9-d50a-4cc3-ae40-7bac3a926f20",
+  "name": "Tale of Katara and Toph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tale of Katara and Toph",
+      "oracle_fingerprint": "a51ccc05c06712152a7ad7ca54274544",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Nth": { "event": { "Tapped": { "what": ["This"] } }, "nth": 1 } },
+                    "if": { "AtTrigger": "YourTurn" },
+                    "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

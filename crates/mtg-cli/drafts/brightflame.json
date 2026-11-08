@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6473eac1-6786-47dd-8124-9f1c4b790ddf",
+  "name": "Brightflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brightflame",
+      "oracle_fingerprint": "7e17745ae7f1a4df02700ba6a64c0235",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesColor": { "Target": 0 } }] },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "amount": "X"
+                }
+              },
+              { "GainLife": { "amount": "DamageDealtThisWay" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

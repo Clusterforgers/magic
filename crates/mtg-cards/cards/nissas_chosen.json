@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d14c9d2b-41c7-4c9a-a66a-cda34d29c7ba",
+  "name": "Nissa's Chosen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa's Chosen",
+      "oracle_fingerprint": "f1173ad41c2d6651a6b72d9b090a474d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "by": { "IntoLibrary": { "place": "Bottom" } }
+          }
+        }
+      ]
+    }
+  ]
+}

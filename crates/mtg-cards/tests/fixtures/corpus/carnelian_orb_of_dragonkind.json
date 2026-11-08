@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "6db2741d-2722-4eb7-b09d-0d81649c7ca2",
+  "oracle_id": "651c967c-8f71-4eb5-b22f-545e55ea050e",
+  "multiverse_ids": [],
+  "resource_id": "4627E940B712F763945AED04641ABAC1BC50BA1C12C5E427372F266C943AC1E6",
+  "tcgplayer_id": 695543,
+  "cardmarket_id": 904212,
+  "name": "Carnelian Orb of Dragonkind",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/6db2741d-2722-4eb7-b09d-0d81649c7ca2",
+  "scryfall_uri": "https://scryfall.com/card/fdn/759/carnelian-orb-of-dragonkind?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-24T09:13:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.jpg?1787562802",
+    "normal": "https://cards.scryfall.io/normal/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.jpg?1787562802",
+    "large": "https://cards.scryfall.io/large/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.jpg?1787562802",
+    "png": "https://cards.scryfall.io/png/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.png?1787562802",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.jpg?1787562802",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.jpg?1787562802",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.webp?1787562802",
+    "grid": "https://cards.scryfall.io/grid/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.webp?1787562802",
+    "display": "https://cards.scryfall.io/display/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.webp?1787562802",
+    "art": "https://cards.scryfall.io/art/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.webp?1787562802",
+    "crop": "https://cards.scryfall.io/crop/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.webp?1787562802",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/d/6db2741d-2722-4eb7-b09d-0d81649c7ca2.jpg?1787562802"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add {R}. If that mana is spent on a Dragon creature spell, it gains haste until end of turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "R"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6db2741d-2722-4eb7-b09d-0d81649c7ca2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A651c967c-8f71-4eb5-b22f-545e55ea050e&unique=prints",
+  "collector_number": "759",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Sages whisper that Lathliss still keeps the heart of the old dragon queen sealed within a jewel, its smoldering warmth an eternal reminder that no monarch is untouchable.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lars Grant-West",
+  "artist_ids": [
+    "21ed6499-c4d3-4965-ab02-6c7228275bec"
+  ],
+  "illustration_id": "fb0870f3-3862-4eda-afe6-3ab9b011df7d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "setextension"
+  ],
+  "edhrec_rank": 2194,
+  "prices": {
+    "usd": "0.40",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCarnelian%2BOrb%2Bof%2BDragonkind",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCarnelian%2BOrb%2Bof%2BDragonkind",
+    "edhrec": "https://edhrec.com/route/?cc=Carnelian+Orb+of+Dragonkind"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F695543%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=904212&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Carnelian+Orb+of+Dragonkind&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

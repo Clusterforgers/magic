@@ -1,7 +1,7 @@
 {
   "oracle_id": "745b9a2c-bcd7-4db9-8cd0-d38be2ef6270",
   "name": "Kassandra, Eagle Bearer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kassandra, Eagle Bearer",
@@ -30,9 +30,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 153, "end": 272 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasAttached": [{ "Subtype": "Equipment" }, { "Supertype": "Legendary" }] }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

@@ -1,0 +1,111 @@
+{
+  "oracle_id": "ca79cd3f-13ba-4d11-b885-48a504ae69aa",
+  "name": "Jadzi, Oracle of Arcavios // Journey to the Oracle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jadzi, Oracle of Arcavios",
+      "oracle_fingerprint": "436e4bb8e8ee33c77c91be21d4901fce",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CastFromZone": { "what": { "Bound": "top" }, "rather": "{1}" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "top" }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Journey to the Oracle",
+      "oracle_fingerprint": "bf75b3b2325e8a92bdadb0f0cfbec3d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Hand" }] }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Discard": {} }],
+                        "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "7e4cbfd1-2393-4643-bc05-022d06b30210",
+  "name": "Kheru Lich Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kheru Lich Lord",
+      "oracle_fingerprint": "eea0c7d6bbc056b37bfd9b57408cb39b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{B}",
+                  "paid": [
+                    {
+                      "ChooseAtRandom": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": {} },
+                        "as": "moved2"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "moved2" },
+                        "mods": [
+                          { "AddKeyword": "Flying" },
+                          { "AddKeyword": "Trample" },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "Shield": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Is": { "Bound": "moved2" } }],
+                            "from": "Battlefield"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" },
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "moved2" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

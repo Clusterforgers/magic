@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9a8f6e5e-6cde-49df-861c-a26cb09c9b12",
+  "name": "Muddle, the Ever-Changing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muddle, the Ever-Changing",
+      "oracle_fingerprint": "e22faf3ca2664b86b521862232c765e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "except": [{ "AddKeyword": "Myriad" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

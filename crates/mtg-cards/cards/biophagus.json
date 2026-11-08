@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7c06a368-3306-48e0-825e-a8fdc81fa343",
+  "name": "Biophagus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biophagus",
+      "oracle_fingerprint": "7ea1aeb8ba6329e8cbdce9a4b50872a9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Enters": { "spell": { "types": ["Creature"] }, "counters": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

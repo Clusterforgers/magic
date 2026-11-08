@@ -14,6 +14,7 @@
                 "Modal": {
                   "modes": [
                     {
+                      "label": "Look Around",
                       "effects": [
                         { "Mill": { "count": 3, "as": "milled" } },
                         {
@@ -44,6 +45,7 @@
                       ]
                     },
                     {
+                      "label": "Bring Down",
                       "targets": [
                         {
                           "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }

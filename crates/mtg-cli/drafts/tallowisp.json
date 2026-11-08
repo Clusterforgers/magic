@@ -1,0 +1,43 @@
+{
+  "oracle_id": "25187c05-ed6a-4690-b92b-89c532fdb780",
+  "name": "Tallowisp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tallowisp",
+      "oracle_fingerprint": "5cb76737506fd5d023622af2c35501e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Subtype": "Aura" },
+                          { "HasKeyword": { "Enchant": [{ "Type": "Creature" }] } }
+                        ],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

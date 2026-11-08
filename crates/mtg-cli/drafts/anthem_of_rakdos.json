@@ -1,0 +1,41 @@
+{
+  "oracle_id": "aba0f637-2d8d-43df-9002-08541ab42944",
+  "name": "Anthem of Rakdos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anthem of Rakdos",
+      "oracle_fingerprint": "c3678a45383963a2127653372fd992d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "ControlledBy": "You" }] } },
+            "by": { "Multiply": 2 },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

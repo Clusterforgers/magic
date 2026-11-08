@@ -1,0 +1,43 @@
+{
+  "oracle_id": "07d0b06b-80cb-4518-92c9-84ea87a7e08a",
+  "name": "Teferi, Temporal Archmage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Teferi, Temporal Archmage",
+      "oracle_fingerprint": "672afac145a1d4822d816a40073e24f5",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 0, "max": 4 } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 163, "end": 313 }
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

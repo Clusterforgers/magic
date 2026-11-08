@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2c595ccb-6703-4670-a1e5-0e74d4b8d3c8",
+  "name": "Elvish Mariner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Mariner",
+      "oracle_fingerprint": "c17abc401e00214315e23b0f5705ebc2",
+      "abilities": [
+        {
+          "Triggered": { "when": { "Attacks": { "what": ["This"] } }, "effects": [{ "Scry": {} }] }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": "Triggering" }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

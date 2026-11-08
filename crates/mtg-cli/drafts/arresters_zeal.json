@@ -1,0 +1,54 @@
+{
+  "oracle_id": "6b70af46-ff27-4eec-9692-248b06248de6",
+  "name": "Arrester's Zeal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arrester's Zeal",
+      "oracle_fingerprint": "79992feda873c48f93f19aaf255d8bd0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": {} }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] },
+                      "YourTurn"
+                    ]
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

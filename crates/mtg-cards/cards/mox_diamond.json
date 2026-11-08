@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f3c5978a-70fa-431f-933b-b954bd0db0ea",
+  "name": "Mox Diamond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mox Diamond",
+      "oracle_fingerprint": "7f7fe82fa9f24d4f58a32583e94ae68c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [{ "Discard": { "filter": [{ "Type": "Land" }] } }],
+                "optional": true
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

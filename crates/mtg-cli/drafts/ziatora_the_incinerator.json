@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d46c3fb6-f1c7-4a96-ae42-5bce17fc7c1d",
+  "name": "Ziatora, the Incinerator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ziatora, the Incinerator",
+      "oracle_fingerprint": "788ee366828877d3c9e4948143963e20",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed2"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed2~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          { "Bind": { "what": { "Bound": "sacrificed2" }, "as": "when" } },
+                          {
+                            "Reflexive": {
+                              "targets": [{ "what": "AnyTarget" }],
+                              "effects": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Target": 0 },
+                                    "amount": {
+                                      "Stat": { "of": { "Bound": "when" }, "stat": "Power" }
+                                    }
+                                  }
+                                },
+                                { "CreateToken": { "token": { "Named": "treasure" }, "count": 3 } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

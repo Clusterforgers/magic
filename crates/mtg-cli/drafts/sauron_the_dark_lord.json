@@ -13,8 +13,8 @@
               {
                 "Sacrifice": {
                   "filter": [
-                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
-                    { "Supertype": "Legendary" }
+                    { "Supertype": "Legendary" },
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
                   ]
                 }
               }

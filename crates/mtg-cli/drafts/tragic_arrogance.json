@@ -1,0 +1,143 @@
+{
+  "oracle_id": "8a29bd35-33ef-4317-9fe5-8aaff5d7d64d",
+  "name": "Tragic Arrogance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tragic Arrogance",
+      "oracle_fingerprint": "83eebe31cba0a1ac7169febfbc70e4dd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "ControlledBy": { "Bound": "each" } }, { "Type": "Artifact" }]
+                        },
+                        "as": "card3"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "ControlledBy": { "Bound": "each" } },
+                            { "Type": "Creature" },
+                            { "Not": { "Is": { "Bound": "card3" } } }
+                          ]
+                        },
+                        "as": "card4"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "ControlledBy": { "Bound": "each" } },
+                            { "Type": "Enchantment" },
+                            { "Not": { "Is": { "Bound": "card3" } } },
+                            { "Not": { "Is": { "Bound": "card4" } } }
+                          ]
+                        },
+                        "as": "card5"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "ControlledBy": { "Bound": "each" } },
+                            { "Type": "Planeswalker" },
+                            { "Not": { "Is": { "Bound": "card3" } } },
+                            { "Not": { "Is": { "Bound": "card4" } } },
+                            { "Not": { "Is": { "Bound": "card5" } } }
+                          ]
+                        },
+                        "as": "card6"
+                      }
+                    },
+                    {
+                      "Bind": {
+                        "what": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Is": { "Bound": "card3" } },
+                                { "Is": { "Bound": "card4" } },
+                                { "Is": { "Bound": "card5" } },
+                                { "Is": { "Bound": "card6" } }
+                              ]
+                            },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        },
+                        "as": "picks7",
+                        "adds": true
+                      }
+                    },
+                    {
+                      "Reveal": {
+                        "what": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Is": { "Bound": "card3" } },
+                                { "Is": { "Bound": "card4" } },
+                                { "Is": { "Bound": "card5" } },
+                                { "Is": { "Bound": "card6" } }
+                              ]
+                            },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Not": { "Is": { "Bound": "picks7" } } }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "Is": { "Bound": "picks7" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

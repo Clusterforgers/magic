@@ -1,7 +1,7 @@
 {
   "oracle_id": "0988d2cd-4e1d-47c6-b0db-0ff0335b12e6",
   "name": "Xho Cai, Flickering Talon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Xho Cai, Flickering Talon",
@@ -11,9 +11,21 @@
         { "Keyword": "Vigilance" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 25, "end": 105 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Not": { "Type": "Creature" } }],
+                      "benefit": { "Cost": { "change": "Reduce", "mana": "{1}" } }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {

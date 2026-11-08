@@ -1,0 +1,25 @@
+{
+  "oracle_id": "eb2a99ea-057f-45db-a711-e1de64f501b8",
+  "name": "Sandcloud Harbinger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sandcloud Harbinger",
+      "oracle_fingerprint": "ac73e2cb02e9d05258bad6280f9a216d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 136 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "PlayedLand", "what": [{ "Subtype": "Desert" }] } },
+            "effects": [{ "Draw": { "who": "TriggeringPlayer" } }, { "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

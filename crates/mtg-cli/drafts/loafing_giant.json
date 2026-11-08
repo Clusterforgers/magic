@@ -20,7 +20,7 @@
                     "CountOf": {
                       "subject": { "Bound": "milled" },
                       "selector": [{ "Type": "Land" }],
-                      "op": "Eq",
+                      "op": "Ge",
                       "right": 1
                     }
                   },

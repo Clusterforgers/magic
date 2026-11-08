@@ -1,0 +1,37 @@
+{
+  "oracle_id": "039115f2-6322-4674-bc64-f21883ed375a",
+  "name": "Polymorph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Polymorph",
+      "oracle_fingerprint": "da904ab8cf4c793be15017affcb93294",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "RevealUntil": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

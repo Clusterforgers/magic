@@ -1,0 +1,52 @@
+{
+  "oracle_id": "86ef06b3-2049-494d-9ecb-ca14766d3b68",
+  "name": "Braided Net // Braided Quipu",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Braided Net",
+      "oracle_fingerprint": "f083878f35a0346f6cc4108f6a3ea257",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "net" }, "count": 3 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 212 }
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{1}{U}" },
+              { "Craft": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Braided Quipu",
+      "oracle_fingerprint": "b05a49f3894f906f9731f7ee35ddac87",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, "Tap"],
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              },
+              { "Move": { "what": "This", "to": { "Library": { "place": { "Below": 2 } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

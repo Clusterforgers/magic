@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c68b4003-e539-4b88-acc9-e95c100173c0",
+  "name": "Cerebral Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cerebral Vortex",
+      "oracle_fingerprint": "fe16eedc958d2aa7661ab39005c4611d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Tallied": { "who": { "Target": 0 }, "what": "Drawn" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b83080af-9616-4dc3-bc47-6ef84b9ccc1b",
+  "name": "Dire Fleet Ravager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dire Fleet Ravager",
+      "oracle_fingerprint": "d7bbf27c218d035e9f594034465f061c",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Quotient": { "of": { "Life": { "Bound": "each" } }, "by": 3, "up": true }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

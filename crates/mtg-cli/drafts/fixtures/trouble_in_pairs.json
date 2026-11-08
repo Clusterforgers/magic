@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "0f61e93f-5f97-4c7d-b3d5-0e05242faeb3",
+  "oracle_id": "f349f58b-8cc8-45e4-9565-2b46fdf976c9",
+  "multiverse_ids": [
+    649953
+  ],
+  "mtgo_id": 122784,
+  "tcgplayer_id": 535640,
+  "cardmarket_id": 753249,
+  "name": "Trouble in Pairs",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3",
+  "scryfall_uri": "https://scryfall.com/card/mkc/15/trouble-in-pairs?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:24:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.jpg?1783913050",
+    "normal": "https://cards.scryfall.io/normal/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.jpg?1783913050",
+    "large": "https://cards.scryfall.io/large/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.jpg?1783913050",
+    "png": "https://cards.scryfall.io/png/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.png?1783913050",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.jpg?1783913050",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.jpg?1783913050",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.webp?1783913050",
+    "grid": "https://cards.scryfall.io/grid/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.webp?1783913050",
+    "display": "https://cards.scryfall.io/display/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.webp?1783913050",
+    "art": "https://cards.scryfall.io/art/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.webp?1783913050",
+    "crop": "https://cards.scryfall.io/crop/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.webp?1783913050",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/f/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3.jpg?1783913050"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "If an opponent would begin an extra turn, that player skips that turn instead.\nWhenever an opponent attacks you with two or more creatures, draws their second card each turn, or casts their second spell each turn, you draw a card.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0f61e93f-5f97-4c7d-b3d5-0e05242faeb3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af349f58b-8cc8-45e4-9565-2b46fdf976c9&unique=prints",
+  "collector_number": "15",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Together, they're greater than the sum of their rap sheets.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fay Dalton",
+  "artist_ids": [
+    "db096429-0266-4342-8a53-4ad566060216"
+  ],
+  "illustration_id": "f98d9144-aaf3-4421-9579-8319e84f8200",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 621,
+  "prices": {
+    "usd": "29.61",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "22.58",
+    "eur_foil": null,
+    "tix": "10.55"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=649953&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTrouble%2Bin%2BPairs",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTrouble%2Bin%2BPairs",
+    "edhrec": "https://edhrec.com/route/?cc=Trouble+in+Pairs"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535640%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753249&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122784?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

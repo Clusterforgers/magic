@@ -21,7 +21,12 @@
                   "as": "picked"
                 }
               },
-              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
             ]
           }
         }

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3431338b-928a-47f2-bc2f-f3c5d8eda8d0",
+  "name": "Host of the Hereafter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Host of the Hereafter",
+      "oracle_fingerprint": "d9fbdd41a48398565182f565117302cf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "HasAnyCounter"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "PutCountersOf": { "on": { "Target": 0 }, "of": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

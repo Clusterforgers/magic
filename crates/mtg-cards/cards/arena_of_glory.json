@@ -1,0 +1,55 @@
+{
+  "oracle_id": "63dfe794-5f56-41ec-9883-5523b41cc3e0",
+  "name": "Arena of Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arena of Glory",
+      "oracle_fingerprint": "b076d1293271b6657c5bba03152a884c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", "Exert"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red"] },
+                  "only": [
+                    {
+                      "Enters": {
+                        "spell": { "types": ["Creature"] },
+                        "keyword": "Haste",
+                        "this_turn": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

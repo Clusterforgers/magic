@@ -1,0 +1,59 @@
+{
+  "oracle_id": "0b72fdeb-80b2-4691-93b9-8df5307b4641",
+  "name": "Mythos of Vadrok",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mythos of Vadrok",
+      "oracle_fingerprint": "4e374adbdd2b881940a3d4da70f3c934",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 5 },
+                "divide": 5
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              {
+                "If": {
+                  "condition": { "All": [{ "ManaSpent": "White" }, { "ManaSpent": "Blue" }] },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["CantAttack", "CantBlock"],
+                        "duration": "UntilYourNextTurn"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": {
+                            "who": "EachPlayer",
+                            "action": {
+                              "ActivateKind": {
+                                "kind": "Every",
+                                "sources": [{ "Is": { "Target": 0 } }]
+                              }
+                            }
+                          }
+                        },
+                        "duration": "UntilYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

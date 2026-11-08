@@ -16,10 +16,12 @@
                 "Modal": {
                   "modes": [
                     {
+                      "label": "Distract",
                       "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
                       "effects": [{ "Tap": { "what": { "Target": 0 } } }, { "Draw": {} }]
                     },
                     {
+                      "label": "Enthrall",
                       "targets": [{ "what": "Player" }],
                       "effects": [
                         {

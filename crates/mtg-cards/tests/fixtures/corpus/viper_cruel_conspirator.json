@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "3a57b64f-2b57-44f3-8d4d-2ff5c5615601",
+  "oracle_id": "6824a6ed-37d0-4db5-b2d4-9c737d0c49f9",
+  "multiverse_ids": [],
+  "resource_id": "32844C3089A1D3825B8B7E9812066799B6D0F022746832ACF95A1ADAD0B9957E",
+  "mtgo_id": 151795,
+  "arena_id": 105683,
+  "tcgplayer_id": 697273,
+  "cardmarket_id": 892066,
+  "name": "Viper, Cruel Conspirator",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/3a57b64f-2b57-44f3-8d4d-2ff5c5615601",
+  "scryfall_uri": "https://scryfall.com/card/msc/673/viper-cruel-conspirator?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.jpg?1783903056",
+    "normal": "https://cards.scryfall.io/normal/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.jpg?1783903056",
+    "large": "https://cards.scryfall.io/large/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.jpg?1783903056",
+    "png": "https://cards.scryfall.io/png/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.png?1783903056",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.jpg?1783903056",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.jpg?1783903056",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.webp?1783903056",
+    "grid": "https://cards.scryfall.io/grid/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.webp?1783903056",
+    "display": "https://cards.scryfall.io/display/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.webp?1783903056",
+    "art": "https://cards.scryfall.io/art/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.webp?1783903056",
+    "crop": "https://cards.scryfall.io/crop/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.webp?1783903056",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/a/3a57b64f-2b57-44f3-8d4d-2ff5c5615601.jpg?1783903056"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Assassin Villain",
+  "oracle_text": "{B}: Target creature that's attacking alone gets +1/+1 until end of turn.\n{B}: Target creature that's attacking alone gains your choice of deathtouch or lifelink until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3a57b64f-2b57-44f3-8d4d-2ff5c5615601/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6824a6ed-37d0-4db5-b2d4-9c737d0c49f9&unique=prints",
+  "collector_number": "673",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Before unleashing my master plan, I will pay back those few animals who dared defy me in the past.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eglė Mosakaitė",
+  "artist_ids": [
+    "75e4c1b9-5759-4335-8c9c-f8ea3857a8f5"
+  ],
+  "illustration_id": "d5297c8b-2ba0-43c4-a8ca-e9c2fcce79a6",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 22022,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.67",
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": "0.63",
+    "tix": "1.39"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DViper%252C%2BCruel%2BConspirator",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DViper%252C%2BCruel%2BConspirator",
+    "edhrec": "https://edhrec.com/route/?cc=Viper%2C+Cruel+Conspirator"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697273%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892066&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151795?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

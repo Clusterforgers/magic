@@ -1,0 +1,56 @@
+{
+  "oracle_id": "f5295bfe-7e73-44ad-9cfd-200e31c5d52b",
+  "name": "Sauron, Dino Devotee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sauron, Dino Devotee",
+      "oracle_fingerprint": "1d6b752a33181069dd27459ac27936f6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "label": "Cure Cancer", "effects": [{ "GainLife": { "amount": 3 } }] },
+                    {
+                      "label": "Turn People into Dinosaurs",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Target": 0 },
+                            "counter": { "Other": "saurian" }
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "SetPT": { "power": 5, "toughness": 5 } },
+                              { "SetCreatureTypes": ["Dinosaur"] },
+                              { "SetColors": ["Green"] }
+                            ],
+                            "duration": { "WhileHasCounter": { "Other": "saurian" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

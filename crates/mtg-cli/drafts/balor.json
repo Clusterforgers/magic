@@ -1,0 +1,65 @@
+{
+  "oracle_id": "6f931c1e-f1d2-4dc7-a653-c29adfc8fb2c",
+  "name": "Balor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balor",
+      "oracle_fingerprint": "42bb2242f67b56c778a264ae801a056c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": { "Players": "Opponents" } },
+                  "different_players": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        { "Draw": { "who": { "Target": 0 }, "count": 3 } },
+                        { "Discard": { "who": { "Target": 0 }, "count": 3, "random": true } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": { "Target": 0 },
+                            "filter": [{ "Type": "Artifact" }, { "Not": "Token" }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "Target": 0 },
+                            "amount": {
+                              "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

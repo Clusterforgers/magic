@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fc3ee37a-f676-44af-80d0-774ff271ce11",
+  "name": "That's Rough Buddy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "That's Rough Buddy",
+      "oracle_fingerprint": "ad5650e69728b48bbde81d64924f2169",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "CreaturesLeftUnder" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

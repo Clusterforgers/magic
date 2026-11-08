@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8f06fcc9-9018-4c55-af63-c44350a6cfeb",
+  "name": "Simic Manipulator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simic Manipulator",
+      "oracle_fingerprint": "4039d6e3d3a039e697d6c0f6d260976b",
+      "abilities": [
+        { "Keyword": "Evolve" },
+        {
+          "Activated": {
+            "cost": [
+              { "XAtLeast": 1 },
+              "Tap",
+              { "RemoveCounters": { "counter": "+1/+1", "count": "X" } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

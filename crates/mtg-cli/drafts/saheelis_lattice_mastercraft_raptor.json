@@ -1,0 +1,54 @@
+{
+  "oracle_id": "ef8df503-6160-4e40-a689-49e97fd56cd0",
+  "name": "Saheeli's Lattice // Mastercraft Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saheeli's Lattice",
+      "oracle_fingerprint": "cd3d7fc66ada18c9531fdc62023cd812",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": { "count": 2 } }] } }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{4}{R}" },
+              { "Craft": { "filter": [{ "Subtype": "Dinosaur" }, "Other"], "count": "X" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mastercraft Raptor",
+      "oracle_fingerprint": "b44cfa19160d1d107023806a2ff4b7d6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Total": {
+                      "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

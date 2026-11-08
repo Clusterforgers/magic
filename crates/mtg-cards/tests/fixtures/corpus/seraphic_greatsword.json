@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "ff9b6e59-8e95-413d-825e-f1dc8874eaa9",
+  "oracle_id": "14a19102-00ed-4425-8837-1d05bc7ad8ba",
+  "multiverse_ids": [
+    497565
+  ],
+  "mtgo_id": 84872,
+  "tcgplayer_id": 226147,
+  "cardmarket_id": 510000,
+  "name": "Seraphic Greatsword",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/ff9b6e59-8e95-413d-825e-f1dc8874eaa9",
+  "scryfall_uri": "https://scryfall.com/card/cmr/45/seraphic-greatsword?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:47:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.jpg?1783928873",
+    "normal": "https://cards.scryfall.io/normal/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.jpg?1783928873",
+    "large": "https://cards.scryfall.io/large/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.jpg?1783928873",
+    "png": "https://cards.scryfall.io/png/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.png?1783928873",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.jpg?1783928873",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.jpg?1783928873",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.webp?1783928873",
+    "grid": "https://cards.scryfall.io/grid/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.webp?1783928873",
+    "display": "https://cards.scryfall.io/display/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.webp?1783928873",
+    "art": "https://cards.scryfall.io/art/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.webp?1783928873",
+    "crop": "https://cards.scryfall.io/crop/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.webp?1783928873",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/f/ff9b6e59-8e95-413d-825e-f1dc8874eaa9.jpg?1783928873"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+2.\nWhenever equipped creature attacks the player with the most life or tied for most life, create a 4/4 white Angel creature token with flying that's tapped and attacking that player.\nEquip {4}",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e18fd49d-c91e-458e-9bf3-13724ec404f4",
+      "component": "combo_piece",
+      "name": "Seraphic Greatsword",
+      "type_line": "Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/e18fd49d-c91e-458e-9bf3-13724ec404f4"
+    },
+    {
+      "object": "related_card",
+      "id": "f7c65b6a-9c63-4604-b7db-d75772799616",
+      "component": "token",
+      "name": "Angel",
+      "type_line": "Token Creature — Angel",
+      "uri": "https://api.scryfall.com/cards/f7c65b6a-9c63-4604-b7db-d75772799616"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ff9b6e59-8e95-413d-825e-f1dc8874eaa9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A14a19102-00ed-4425-8837-1d05bc7ad8ba&unique=prints",
+  "collector_number": "45",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "Light as a feather. Sharp as an angel's wrath.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Craig J Spearing",
+  "artist_ids": [
+    "b0f15e74-0dd6-4156-959e-c5e30c5cdc52"
+  ],
+  "illustration_id": "18f413bb-4beb-4a0d-a3ef-337efbefd191",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14459,
+  "preview": {
+    "source": "Star City Games",
+    "source_uri": "https://articles.starcitygames.com/news/new-orzhov-legend-mythic-equipment-in-commander-legends/",
+    "previewed_at": "2020-10-26"
+  },
+  "prices": {
+    "usd": "1.01",
+    "usd_foil": "0.87",
+    "usd_etched": null,
+    "eur": "0.81",
+    "eur_foil": "1.19",
+    "tix": "1.08"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=497565&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSeraphic%2BGreatsword",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSeraphic%2BGreatsword",
+    "edhrec": "https://edhrec.com/route/?cc=Seraphic+Greatsword"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F226147%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=510000&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/84872?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "259efd92-416e-42d9-b501-ac1338fd35fc",
+  "name": "Runeflare Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runeflare Trap",
+      "oracle_fingerprint": "ab75a73f2fb650e06f940ad3ca62960e",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "cost": "{R}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

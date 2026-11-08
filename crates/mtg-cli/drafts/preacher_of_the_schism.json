@@ -1,0 +1,42 @@
+{
+  "oracle_id": "74947e47-c4ff-4f47-9845-befa7403cbde",
+  "name": "Preacher of the Schism",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Preacher of the Schism",
+      "oracle_fingerprint": "b15eea783b7e015dfbe467380276f372",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": ["This"], "at": "MostLife" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 152, "end": 275 }
+          }
+        }
+      ]
+    }
+  ]
+}

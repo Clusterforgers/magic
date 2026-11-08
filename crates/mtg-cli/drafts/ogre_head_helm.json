@@ -1,0 +1,58 @@
+{
+  "oracle_id": "b73c297a-1c39-450f-99c3-c8daa31c5f3f",
+  "name": "Ogre-Head Helm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ogre-Head Helm",
+      "oracle_fingerprint": "ff64be0e3fa3907ce815091e52f6baa2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Is": "Attached" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Is": "Dealer" }] } }],
+                  "paid": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    },
+                    { "Draw": { "count": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{3}" } }
+      ]
+    }
+  ]
+}

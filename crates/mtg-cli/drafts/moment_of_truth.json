@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ef61fb5c-2ea6-4f82-92c5-c4713dee45fa",
+  "name": "Moment of Truth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moment of Truth",
+      "oracle_fingerprint": "f3552a516b688d795f3cf8a4ffcd153e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": { "Library": { "place": "Top" } } } },
+              { "LookAtTop": { "count": 2, "as": "top4" } },
+              { "Choose": { "from": { "Bound": "top4" }, "as": "kept5", "rest_as": "rest6" } },
+              { "Move": { "what": { "Bound": "kept5" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest6" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

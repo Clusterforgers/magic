@@ -1,0 +1,64 @@
+{
+  "oracle_id": "80ba76a6-cc48-4820-bc0b-c9ec18088a3b",
+  "name": "Katsumasa, the Animator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Katsumasa, the Animator",
+      "oracle_fingerprint": "1148d881ebe8465c318ba0f8f014bf54",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Is": { "Target": 0 } }, { "Not": { "Subtype": "Vehicle" } }]
+                  },
+                  "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

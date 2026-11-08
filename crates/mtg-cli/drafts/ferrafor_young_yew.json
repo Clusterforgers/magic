@@ -1,0 +1,47 @@
+{
+  "oracle_id": "a46f9136-b904-403e-b263-e99c9a2fe2ec",
+  "name": "Ferrafor, Young Yew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ferrafor, Young Yew",
+      "oracle_fingerprint": "42fa2a387c199ae639f2a3c7456739cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "AnyCounters": {
+                      "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

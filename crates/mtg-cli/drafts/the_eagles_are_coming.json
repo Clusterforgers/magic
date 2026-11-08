@@ -30,6 +30,7 @@
               {
                 "DelayedTrigger": {
                   "when": { "StepBegins": { "step": "Upkeep" } },
+                  "until": "Forever",
                   "effects": [
                     {
                       "CreateToken": {

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "8110f15d-82db-4299-a959-09c22475daec",
+  "name": "Kayla's Music Box",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kayla's Music Box",
+      "oracle_fingerprint": "83ebe8e0d6f7a4a36dc4a029bdf803c3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "ExiledWith": "This" }, { "OwnedBy": "You" }],
+                      "from": "Exile",
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

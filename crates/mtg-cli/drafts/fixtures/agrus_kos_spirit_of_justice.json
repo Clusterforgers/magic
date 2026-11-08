@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "58aeac7c-1275-49d4-9915-7604ae4bfdff",
+  "oracle_id": "11b7ee78-fca6-4b34-93e4-e60492583d50",
+  "multiverse_ids": [
+    646741
+  ],
+  "mtgo_id": 121844,
+  "arena_id": 89098,
+  "tcgplayer_id": 532875,
+  "cardmarket_id": 750885,
+  "name": "Agrus Kos, Spirit of Justice",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/58aeac7c-1275-49d4-9915-7604ae4bfdff",
+  "scryfall_uri": "https://scryfall.com/card/mkm/184/agrus-kos-spirit-of-justice?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:20:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.jpg?1783912857",
+    "normal": "https://cards.scryfall.io/normal/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.jpg?1783912857",
+    "large": "https://cards.scryfall.io/large/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.jpg?1783912857",
+    "png": "https://cards.scryfall.io/png/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.png?1783912857",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.jpg?1783912857",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.jpg?1783912857",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.webp?1783912857",
+    "grid": "https://cards.scryfall.io/grid/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.webp?1783912857",
+    "display": "https://cards.scryfall.io/display/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.webp?1783912857",
+    "art": "https://cards.scryfall.io/art/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.webp?1783912857",
+    "crop": "https://cards.scryfall.io/crop/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.webp?1783912857",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/8/58aeac7c-1275-49d4-9915-7604ae4bfdff.jpg?1783912857"
+  },
+  "mana_cost": "{2}{R}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Spirit Detective",
+  "oracle_text": "Double strike, vigilance\nWhenever Agrus Kos enters or attacks, choose up to one target creature. If it's suspected, exile it. Otherwise, suspect it. (A suspected creature has menace and can't block.)",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Suspect",
+    "Double strike"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/58aeac7c-1275-49d4-9915-7604ae4bfdff/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A11b7ee78-fca6-4b34-93e4-e60492583d50&unique=prints",
+  "collector_number": "184",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"Eventually I'll give retirement another shot. But not today.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason A. Engle",
+  "artist_ids": [
+    "02e2b5de-4341-464c-8fdb-a1adbf873bc0"
+  ],
+  "illustration_id": "6ea2ca2d-9599-4614-b530-68da706af45e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12190,
+  "penny_rank": 14029,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.66",
+    "usd_etched": null,
+    "eur": "0.43",
+    "eur_foil": "0.63",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646741&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAgrus%2BKos%252C%2BSpirit%2Bof%2BJustice",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAgrus%2BKos%252C%2BSpirit%2Bof%2BJustice",
+    "edhrec": "https://edhrec.com/route/?cc=Agrus+Kos%2C+Spirit+of+Justice"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F532875%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=750885&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121844?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

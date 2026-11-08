@@ -44,7 +44,7 @@
                     {
                       "Move": {
                         "what": { "Bound": "picked" },
-                        "to": { "Library": { "place": "Top" } }
+                        "to": { "Library": { "place": "Top", "order": "Chosen" } }
                       }
                     }
                   ]

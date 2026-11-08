@@ -1,7 +1,7 @@
 {
   "oracle_id": "d85e5398-fa97-4bcd-8b93-008f3f435e22",
   "name": "Verazol, the Split Current",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Verazol, the Split Current",
@@ -16,9 +16,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 74, "end": 271 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Spell", "Kicked"], "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": "+1/+1", "count": 2 } }],
+                  "paid": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
           }
         }
       ]

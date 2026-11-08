@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a355908b-4359-4bfe-9bc4-ccf721ab3a13",
+  "name": "Konda's Banner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Konda's Banner",
+      "oracle_fingerprint": "1f93b801646e0957d4484281b81996ac",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "Not": { "Supertype": "Legendary" } }] },
+                "action": { "BeAttachedBy": ["This"] }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "SharesColor": "Attached" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "SharesSubtype": "Attached" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "03048844-32bb-45a2-a754-73f75eaa4566",
+  "name": "Astarion, the Decadent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astarion, the Decadent",
+      "oracle_fingerprint": "82ea8e10867daf18f4d3a9f8a4d875a3",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Feed",
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "LoseLife": {
+                            "who": { "Target": 0 },
+                            "amount": { "Tallied": { "who": { "Target": 0 }, "what": "LifeLost" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Friends",
+                      "effects": [
+                        {
+                          "GainLife": {
+                            "amount": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "299ff264-c6db-4b48-88fb-ca006cb84f88",
+  "name": "Ellie, Brick Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ellie, Brick Master",
+      "oracle_fingerprint": "63e8c1c89585de9c737d1a8c60e4d7e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "GroupAttacksAt": { "what": [{ "Type": "Creature" }], "at": "Opponents" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "token": {
+                    "Custom": {
+                      "name": "Cordyceps Infected",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fungus", "Zombie"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "against": "Against"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Survivors" } }
+      ]
+    }
+  ]
+}

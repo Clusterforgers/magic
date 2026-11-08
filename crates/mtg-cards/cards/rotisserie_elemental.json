@@ -1,0 +1,57 @@
+{
+  "oracle_id": "e33c1744-843f-438f-a8c3-2d9f60120776",
+  "name": "Rotisserie Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rotisserie Elemental",
+      "oracle_fingerprint": "f3d13f96d6c4b1439be2e942b1bce83e",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "skewer" } } },
+              {
+                "May": { "effects": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }] }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "ExileTop": {
+                        "count": { "Counters": { "on": "This", "counter": { "Other": "skewer" } } },
+                        "as": "exiled2"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled2" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

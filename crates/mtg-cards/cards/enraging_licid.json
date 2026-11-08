@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5ec9f317-887a-4e08-a165-e7cf15eb071d",
+  "name": "Enraging Licid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enraging Licid",
+      "oracle_fingerprint": "860ab4b7348292d2e5532cf9b9d450ba",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "SetTypes": ["Enchantment"] },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                    "LoseThisAbility"
+                  ],
+                  "duration": { "UntilPaid": "{R}" }
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Haste" }] } }
+      ]
+    }
+  ]
+}

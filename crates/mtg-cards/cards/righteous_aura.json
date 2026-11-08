@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5bf93d4f-be59-4aa7-83d5-7c35d1f07fae",
+  "name": "Righteous Aura",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Righteous Aura",
+      "oracle_fingerprint": "b380dcb4074108d15f48355284c763b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, { "PayLife": 2 }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

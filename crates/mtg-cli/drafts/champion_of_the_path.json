@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b326ccd5-8ad2-441c-9d73-82ee6390dd36",
+  "name": "Champion of the Path",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of the Path",
+      "oracle_fingerprint": "6c762c1281a522ed40dcf4954065df9f",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Behold": { "filter": [{ "Subtype": "Elemental" }], "exile": true } }],
+            "required": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Elemental" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

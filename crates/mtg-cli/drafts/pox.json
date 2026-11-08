@@ -1,0 +1,88 @@
+{
+  "oracle_id": "539d7c1a-b5e9-4204-9109-ddb2e8dec168",
+  "name": "Pox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pox",
+      "oracle_fingerprint": "05d2d95f0e66aa377ccb00b0eeda00b1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Quotient": { "of": { "Life": { "Bound": "each" } }, "by": 3, "up": true }
+                        }
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Bound": "each" },
+                        "count": {
+                          "Quotient": {
+                            "of": {
+                              "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "each" } }]
+                            },
+                            "by": 3,
+                            "up": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "each" },
+                        "filter": [{ "Type": "Creature" }],
+                        "count": {
+                          "Quotient": {
+                            "of": {
+                              "Largest": {
+                                "who": { "Bound": "each" },
+                                "of": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              }
+                            },
+                            "by": 3,
+                            "up": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "each" },
+                        "filter": [{ "Type": "Land" }],
+                        "count": {
+                          "Quotient": {
+                            "of": {
+                              "Largest": {
+                                "who": { "Bound": "each" },
+                                "of": [{ "Type": "Land" }, { "ControlledBy": { "Bound": "each" } }]
+                              }
+                            },
+                            "by": 3,
+                            "up": true
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -23,7 +23,7 @@
                 "Continuous": {
                   "affected": "This",
                   "mods": [
-                    { "AddSubtype": "Spirit" },
+                    { "SetCreatureTypes": ["Spirit"] },
                     { "AddType": "Artifact" },
                     { "AddType": "Creature" }
                   ],

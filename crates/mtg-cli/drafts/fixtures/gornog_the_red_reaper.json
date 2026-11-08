@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "2f8f2cde-6894-4d8d-ade1-dcc36ed51c73",
+  "oracle_id": "adfd6c2d-a7f8-4f5c-bc31-d65c8150ed49",
+  "multiverse_ids": [],
+  "name": "Gornog, the Red Reaper",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73",
+  "scryfall_uri": "https://scryfall.com/card/plst/J25-49/gornog-the-red-reaper?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-25T18:06:30Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.jpg?1787681190",
+    "normal": "https://cards.scryfall.io/normal/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.jpg?1787681190",
+    "large": "https://cards.scryfall.io/large/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.jpg?1787681190",
+    "png": "https://cards.scryfall.io/png/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.png?1787681190",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.jpg?1787681190",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.jpg?1787681190",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.webp?1787681190",
+    "grid": "https://cards.scryfall.io/grid/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.webp?1787681190",
+    "display": "https://cards.scryfall.io/display/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.webp?1787681190",
+    "art": "https://cards.scryfall.io/art/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.webp?1787681190",
+    "crop": "https://cards.scryfall.io/crop/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.webp?1787681190",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/f/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73.jpg?1787681190"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Minotaur Warrior",
+  "oracle_text": "Haste\nCowards can't block Warriors.\nWhenever one or more Warriors you control attack a player, target creature that player controls becomes a Coward.\nAttacking Warriors you control get +X/+0, where X is the number of Cowards your opponents control.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set": "plst",
+  "set_name": "The List",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aplst&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/plst?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2f8f2cde-6894-4d8d-ade1-dcc36ed51c73/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aadfd6c2d-a7f8-4f5c-bc31-d65c8150ed49&unique=prints",
+  "collector_number": "J25-49",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ishikawa Kenta",
+  "artist_ids": [
+    "7af32cf9-75ca-439e-91c3-619dfeea2dfd"
+  ],
+  "illustration_id": "58cd78c2-068d-438d-a098-f4ceaa8849c9",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5744,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGornog%252C%2Bthe%2BRed%2BReaper",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGornog%252C%2Bthe%2BRed%2BReaper",
+    "edhrec": "https://edhrec.com/route/?cc=Gornog%2C+the+Red+Reaper"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DGornog%252C%2Bthe%2BRed%2BReaper%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Gornog%2C+the+Red+Reaper&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Gornog%2C+the+Red+Reaper&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

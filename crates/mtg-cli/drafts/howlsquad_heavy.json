@@ -1,0 +1,71 @@
+{
+  "oracle_id": "cd45a29f-73bc-435c-9d50-09a4ecaa77be",
+  "name": "Howlsquad Heavy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Howlsquad Heavy",
+      "oracle_fingerprint": "aa41e912c4f45a8d7545f912f2f9c1c0",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }, "Other"] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "MustAttack": { "Bound": "token" } },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": { "Fixed": ["Red"] },
+                          "times": { "Count": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

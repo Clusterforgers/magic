@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b0be3f25-edb1-4299-959c-9aad909730ca",
+  "name": "Tarnation Vista",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tarnation Vista",
+      "oracle_fingerprint": "e57b2e706c88054e74f7845f42f107c2",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "EachColorAmong": [
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

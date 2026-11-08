@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a9367efe-82f2-43e4-9692-205567be6a0c",
+  "name": "Leave No Trace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leave No Trace",
+      "oracle_fingerprint": "1d50dd0cfb79b40003ede6abed562ad6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesColor": { "Target": 0 } }] },
+                      { "Type": "Enchantment" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "08dcda8e-704d-444e-a7ca-34586a7f42a7",
+  "name": "Wreck Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wreck Hunter",
+      "oracle_fingerprint": "b5255b0b845230a19d13a6889834a540",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "powerstone" },
+                  "count": {
+                    "Count": [
+                      { "Not": { "Type": "Land" } },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

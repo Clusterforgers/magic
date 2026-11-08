@@ -1,0 +1,50 @@
+{
+  "oracle_id": "8b370db5-dfb9-4ea0-9017-bae3e767b041",
+  "name": "Kjeldoran Outpost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran Outpost",
+      "oracle_fingerprint": "ae1ad70ee81ceda9ec5db77af43021bb",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Plains" }] } }]
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

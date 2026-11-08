@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0c9ec9a1-738a-4f69-b367-5dbf3d046bf1",
+  "name": "Servant of the Stinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Servant of the Stinger",
+      "oracle_fingerprint": "974403b909d2e94ccb7c0857e3601ad5",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Crimes" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    { "Search": { "filter": [], "as": "found" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

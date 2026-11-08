@@ -1,0 +1,70 @@
+{
+  "oracle_id": "9e9a7f0b-ffba-43d6-892a-95fd0b8b39f8",
+  "name": "Torment of Venom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torment of Venom",
+      "oracle_fingerprint": "bed9dcfb70e9e52c76f5e8b33032ea5b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1", "count": 3 } },
+              {
+                "OneOf": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "options": [
+                    [
+                      {
+                        "Pay": {
+                          "who": { "ControllerOf": { "Target": 0 } },
+                          "cost": [
+                            {
+                              "Sacrifice": {
+                                "filter": [
+                                  { "Not": { "Is": { "Target": 0 } } },
+                                  { "Not": { "Type": "Land" } },
+                                  "Other"
+                                ]
+                              }
+                            }
+                          ],
+                          "unpaid": [
+                            {
+                              "LoseLife": {
+                                "who": { "ControllerOf": { "Target": 0 } },
+                                "amount": 3
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Pay": {
+                          "who": { "ControllerOf": { "Target": 0 } },
+                          "cost": [{ "Discard": {} }],
+                          "unpaid": [
+                            {
+                              "LoseLife": {
+                                "who": { "ControllerOf": { "Target": 0 } },
+                                "amount": 3
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "08b13e1f-27ca-40a8-b5ed-88ac933d24bf",
+  "name": "Archivist of Oghma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archivist of Oghma",
+      "oracle_fingerprint": "6591be2da750c13f0063ec375542bbd5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "SearchedOwnLibrary", "who": "Opponents" } },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

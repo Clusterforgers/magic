@@ -1,0 +1,28 @@
+{
+  "oracle_id": "54d4c632-1e7c-42f1-938c-9b4bd9b9a9b9",
+  "name": "Swallow Whole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swallow Whole",
+      "oracle_fingerprint": "730a00f158d7faaa61925c26f462179e",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "Paid", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

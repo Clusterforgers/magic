@@ -1,0 +1,39 @@
+{
+  "oracle_id": "66e42be3-5125-41b4-9efe-8a6a66899bb6",
+  "name": "Ringsight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ringsight",
+      "oracle_fingerprint": "8a7e3c018f3ee145b78e3fd12673f646",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "RingTempts": {} },
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "SharesColor": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "Supertype": "Legendary" },
+                          { "ControlledBy": "You" }
+                        ]
+                      }
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

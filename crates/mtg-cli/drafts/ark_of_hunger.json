@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2c654772-c786-4966-a46e-9556bbf31d7c",
+  "name": "Ark of Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ark of Hunger",
+      "oracle_fingerprint": "8bad61452260f50324154a58035efb3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Mill": { "as": "milled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Graveyard", "only": { "Bound": "milled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

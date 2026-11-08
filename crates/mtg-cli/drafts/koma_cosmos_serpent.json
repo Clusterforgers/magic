@@ -1,0 +1,81 @@
+{
+  "oracle_id": "6ba0656f-e0d2-4735-9c66-3a00afa9fc23",
+  "name": "Koma, Cosmos Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koma, Cosmos Serpent",
+      "oracle_fingerprint": "fb4b4faf7c2595f4ddf4f62e87c59b86",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Koma's Coil",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Serpent"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Serpent" }, "Other"] } }],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        { "Tap": { "what": { "Target": 0 } } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Cant": {
+                                "who": "EachPlayer",
+                                "action": {
+                                  "ActivateKind": {
+                                    "kind": "Every",
+                                    "sources": [{ "Is": { "Target": 0 } }]
+                                  }
+                                }
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Indestructible" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "3a024389-91a1-460c-b4e8-3f212d2b8400",
+  "name": "Lost in the Maze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost in the Maze",
+      "oracle_fingerprint": "8c31f6527ea1f5feb4feccd9b1c79ed4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [{ "Is": { "Target": 0 } }, { "Not": { "ControlledBy": "You" } }]
+                  },
+                  "counter": { "Other": "stun" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"] },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        }
+      ]
+    }
+  ]
+}

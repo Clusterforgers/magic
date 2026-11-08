@@ -1,0 +1,35 @@
+{
+  "oracle_id": "66958c48-3ac7-4f41-aa3e-adacaa24ea4f",
+  "name": "Magus of the Abyss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Abyss",
+      "oracle_fingerprint": "2d0f3eb26c36c5c0822468f1dd2da238",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Triggering",
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "Not": { "Type": "Artifact" } },
+                        { "ControlledBy": "Triggering" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

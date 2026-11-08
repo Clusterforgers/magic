@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4b5c7f11-75f2-4bad-86cd-f0232861f569",
+  "name": "Danitha, Spear of Agony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Danitha, Spear of Agony",
+      "oracle_fingerprint": "724febff7c335b282ab0c220a68caa11",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "TargetsPlayer": "Opponents" },
+                      { "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

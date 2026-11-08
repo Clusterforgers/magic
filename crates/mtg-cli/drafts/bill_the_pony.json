@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e461ef8d-59ca-440a-8773-da1de3b6b195",
+  "name": "Bill the Pony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bill the Pony",
+      "oracle_fingerprint": "91d5d7f49a1b84d90062461386f8a3e1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" }, "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": { "Target": 0 }, "quirk": "AssignsByToughness" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "1473580d-7cb2-48f5-a77d-08f49244c5e8",
   "name": "Essence Channeler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Essence Channeler",
@@ -27,9 +27,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 141, "end": 214 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCountersOf": { "on": { "Target": 0 }, "of": "This" } }]
           }
         }
       ]

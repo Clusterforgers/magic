@@ -1,0 +1,43 @@
+{
+  "oracle_id": "08a64b22-49da-415e-98ce-e1a61d3dfff3",
+  "name": "Neurok Transmuter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neurok Transmuter",
+      "oracle_fingerprint": "cd3fac39ebab2a2c39921f5adf6d526e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Blue"] }, { "RemoveType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

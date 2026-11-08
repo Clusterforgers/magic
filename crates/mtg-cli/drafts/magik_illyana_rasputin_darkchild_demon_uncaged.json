@@ -1,7 +1,7 @@
 {
   "oracle_id": "72d85d61-6bc3-4028-97c0-d5c34204a1df",
   "name": "Magik, Illyana Rasputin // Darkchild, Demon Uncaged",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Magik, Illyana Rasputin",
@@ -24,9 +24,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 103, "end": 217 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Sacrificed" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Transform": { "what": "This" } }] } }]
           }
         }
       ]
@@ -36,9 +43,26 @@
       "oracle_fingerprint": "05c7e55acb0bf7107be7697b592d90fe",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 141 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "revealed2" }, "as": "revealed3" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "revealed3" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

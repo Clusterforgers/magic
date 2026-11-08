@@ -15,10 +15,12 @@
                   "mode_costs": ["{0}", "{2}", "{5}{U}"],
                   "modes": [
                     {
+                      "label": "Blizzard",
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
                     },
                     {
+                      "label": "Blizzara",
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [
                         {
@@ -52,6 +54,7 @@
                       ]
                     },
                     {
+                      "label": "Blizzaga",
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [
                         {

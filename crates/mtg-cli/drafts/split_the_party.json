@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9ad61841-9894-41da-bdd8-248c2ce21b00",
+  "name": "Split the Party",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Split the Party",
+      "oracle_fingerprint": "9f2a3c0b47baa139238b4e92d5bcbf50",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": {
+                      "Half": {
+                        "of": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                        },
+                        "up": true
+                      }
+                    },
+                    "max": {
+                      "Half": {
+                        "of": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                        },
+                        "up": true
+                      }
+                    }
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

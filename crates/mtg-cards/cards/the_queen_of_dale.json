@@ -1,0 +1,62 @@
+{
+  "oracle_id": "a2ec1dd0-86c7-423d-b562-ed95b79bf8f7",
+  "name": "The Queen of Dale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Queen of Dale",
+      "oracle_fingerprint": "cd7ad97fa3e6ec4191fdc45e458ec96e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "discarded" } },
+                          { "In": "Graveyard" },
+                          { "Not": { "Type": "Land" } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human", "Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

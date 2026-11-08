@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "0df0e2eb-753a-4dd1-8b08-f741683e089d",
+  "oracle_id": "3edac7df-2a88-4718-865e-703dff9c972e",
+  "multiverse_ids": [
+    416862
+  ],
+  "tcgplayer_id": 121799,
+  "cardmarket_id": 291831,
+  "name": "Covenant of Minds",
+  "lang": "en",
+  "released_at": "2016-08-26",
+  "uri": "https://api.scryfall.com/cards/0df0e2eb-753a-4dd1-8b08-f741683e089d",
+  "scryfall_uri": "https://scryfall.com/card/cn2/105/covenant-of-minds?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:08:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.jpg?1783937326",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.jpg?1783937326",
+    "large": "https://cards.scryfall.io/large/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.jpg?1783937326",
+    "png": "https://cards.scryfall.io/png/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.png?1783937326",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.jpg?1783937326",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.jpg?1783937326",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.webp?1783937326",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.webp?1783937326",
+    "display": "https://cards.scryfall.io/display/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.webp?1783937326",
+    "art": "https://cards.scryfall.io/art/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.webp?1783937326",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.webp?1783937326",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0df0e2eb-753a-4dd1-8b08-f741683e089d.jpg?1783937326"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Reveal the top three cards of your library. Target opponent may choose to put those cards into your hand. If they don't, put those cards into your graveyard and draw five cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set": "cn2",
+  "set_name": "Conspiracy: Take the Crown",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acn2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cn2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0df0e2eb-753a-4dd1-8b08-f741683e089d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3edac7df-2a88-4718-865e-703dff9c972e&unique=prints",
+  "collector_number": "105",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Before signing anything on Grixis, always read the fine print.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Seagrave",
+  "artist_ids": [
+    "73f3ddb7-2ac6-4ac2-8170-0a6037a42c99"
+  ],
+  "illustration_id": "b4707bb1-0022-4481-93e0-fb0985636c4f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20703,
+  "penny_rank": 16871,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.71",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.55",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=416862&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCovenant%2Bof%2BMinds",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCovenant%2Bof%2BMinds",
+    "edhrec": "https://edhrec.com/route/?cc=Covenant+of+Minds"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F121799%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=291831&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Covenant+of+Minds&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

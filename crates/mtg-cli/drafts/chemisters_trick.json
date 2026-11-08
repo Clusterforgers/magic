@@ -1,0 +1,35 @@
+{
+  "oracle_id": "daf22b20-3d87-429c-99fe-2f3d4c6fee24",
+  "name": "Chemister's Trick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chemister's Trick",
+      "oracle_fingerprint": "799d7b6b9bd65443a111e033bc669b9d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{3}{U}{R}" } }
+      ]
+    }
+  ]
+}

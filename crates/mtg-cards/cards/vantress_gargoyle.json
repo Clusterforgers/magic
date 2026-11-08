@@ -1,0 +1,48 @@
+{
+  "oracle_id": "fc7c0197-bfa1-43b8-87c8-f134192b14c0",
+  "name": "Vantress Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vantress Gargoyle",
+      "oracle_fingerprint": "3ff392ae4a8b84949bd2f64c98cfef31",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                        "op": "Ge",
+                        "right": 7
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Lt",
+                "right": 4
+              }
+            }
+          }
+        },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Mill": { "who": "EachPlayer" } }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e2375f13-fd45-4087-abd1-c884acc6c736",
+  "name": "Creeping Renaissance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Creeping Renaissance",
+      "oracle_fingerprint": "1812ccfb7910938cdd6e54930a483417",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "CardTypeOf": [
+                      "Artifact",
+                      "Battle",
+                      "Creature",
+                      "Enchantment",
+                      "Land",
+                      "Planeswalker"
+                    ]
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "ChosenAs": "chosen" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{G}{G}" } }
+      ]
+    }
+  ]
+}

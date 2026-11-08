@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a9ab17ce-ba07-4ce8-99f9-9c4c633957f7",
+  "name": "Vadrik, Astral Archmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vadrik, Astral Archmage",
+      "oracle_fingerprint": "a3d8a8ca0d29c9f24e54c65f28de9adb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "DayIfNeither" } },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Stat": { "of": "This", "stat": "Power" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DayNightChanges": {} },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

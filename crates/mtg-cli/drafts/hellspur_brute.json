@@ -1,0 +1,29 @@
+{
+  "oracle_id": "81e5c62c-5aed-41e2-8bd1-610022e880bd",
+  "name": "Hellspur Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellspur Brute",
+      "oracle_fingerprint": "c71b359d56dc3b56f2132730256746b8",
+      "abilities": [
+        {
+          "Keyword": {
+            "Affinity": [
+              {
+                "AnyOf": [
+                  { "Subtype": "Assassin" },
+                  { "Subtype": "Mercenary" },
+                  { "Subtype": "Pirate" },
+                  { "Subtype": "Rogue" },
+                  { "Subtype": "Warlock" }
+                ]
+              }
+            ]
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

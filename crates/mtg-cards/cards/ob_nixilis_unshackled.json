@@ -1,0 +1,36 @@
+{
+  "oracle_id": "73021bd2-3b60-4fe4-8858-6eb525be1422",
+  "name": "Ob Nixilis, Unshackled",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ob Nixilis, Unshackled",
+      "oracle_fingerprint": "5082b4bc75681551de838a4b6ca06f93",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "SearchedOwnLibrary", "who": "Opponents" } },
+            "effects": [
+              { "Sacrifice": { "who": "Triggering", "filter": [{ "Type": "Creature" }] } },
+              { "LoseLife": { "who": "Triggering", "amount": 10 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

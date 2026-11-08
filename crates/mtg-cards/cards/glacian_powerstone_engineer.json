@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e96ce18e-b002-4b5b-9560-c1634320e164",
+  "name": "Glacian, Powerstone Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glacian, Powerstone Engineer",
+      "oracle_fingerprint": "93f3e03d00e7e5e524892db810a7bd02",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Artifact" }], "count": "X" } }
+            ],
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

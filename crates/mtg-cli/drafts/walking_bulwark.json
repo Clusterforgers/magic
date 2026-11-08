@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8ad0d89b-beef-40f7-8ce8-65589e3970be",
+  "name": "Walking Bulwark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walking Bulwark",
+      "oracle_fingerprint": "6a39f16b8e22934bf20e6cc94cd00a77",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Defender" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": { "Target": 0 }, "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": { "Target": 0 }, "quirk": "AssignsByToughness" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "eee83439-2dee-47d7-97f8-d75bef70c40e",
+  "name": "Stoic Ephemera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stoic Ephemera",
+      "oracle_fingerprint": "3397527f55c55973a8696a22cfd2d5a4",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": "This" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

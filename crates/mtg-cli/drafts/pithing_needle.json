@@ -15,7 +15,7 @@
         },
         {
           "Rule": {
-            "rule": { "Cant": { "who": { "Each": ["ChosenName"] }, "action": { "Activate": [] } } }
+            "rule": { "Cant": { "who": "EachPlayer", "action": { "Activate": ["ChosenName"] } } }
           }
         }
       ]

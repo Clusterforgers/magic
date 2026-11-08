@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d81d5749-ab4d-42c5-8903-0b400f10fe33",
+  "name": "Raubahn, Bull of Ala Mhigo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raubahn, Bull of Ala Mhigo",
+      "oracle_fingerprint": "7b2d6b39c7f2ff9913c1838ee7688c95",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": { "Stat": { "of": "This", "stat": "Power" } } }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

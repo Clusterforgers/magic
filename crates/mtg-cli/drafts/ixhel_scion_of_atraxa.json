@@ -1,0 +1,54 @@
+{
+  "oracle_id": "9fb7982f-fe35-4dea-a515-a0039ddbbaec",
+  "name": "Ixhel, Scion of Atraxa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ixhel, Scion of Atraxa",
+      "oracle_fingerprint": "9227ef33690b8164434ed1a2761f5430",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Toxic": 2 } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Counters": { "on": "You", "counter": "poison" } },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      }
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

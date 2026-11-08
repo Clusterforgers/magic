@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1b355139-4891-436c-9079-0ce17ecc2d65",
+  "name": "Vial Smasher the Fierce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vial Smasher the Fierce",
+      "oracle_fingerprint": "1f80a760e25fbe25e4f9bdb17c922d71",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "effects": [
+              { "ChooseAtRandom": { "from": "Opponents", "as": "player" } },
+              {
+                "DealDamage": {
+                  "to": { "Bound": "player" },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

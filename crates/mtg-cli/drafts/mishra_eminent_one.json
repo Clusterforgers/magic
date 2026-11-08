@@ -1,0 +1,67 @@
+{
+  "oracle_id": "d3438037-3efd-4ce0-88ec-6d48ab521992",
+  "name": "Mishra, Eminent One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra, Eminent One",
+      "oracle_fingerprint": "5e5d0dbc6591b03f3531a136ce50a091",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "SetName": "Mishra's Warform" },
+                        { "SetPT": { "power": 4, "toughness": 4 } },
+                        { "AddType": "Creature" },
+                        { "AddSubtype": "Construct" }
+                      ]
+                    }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": { "Bound": "copy" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

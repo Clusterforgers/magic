@@ -1,0 +1,24 @@
+{
+  "oracle_id": "8ce2a750-1137-4f8d-803c-9aac30db4193",
+  "name": "Chancellor of the Dross",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chancellor of the Dross",
+      "oracle_fingerprint": "e877a54c2b9d91b7445c4781a4a666f5",
+      "abilities": [
+        {
+          "OpeningReveal": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 3 } },
+              { "GainLife": { "amount": "LifeLostThisWay" } }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" }
+      ]
+    }
+  ]
+}

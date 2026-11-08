@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d04a836b-7e42-424d-9600-42a40d0dfccd",
+  "name": "Gravebane Zombie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravebane Zombie",
+      "oracle_fingerprint": "984f562619363829da62b3949e3b3f05",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "by": { "IntoLibrary": { "place": "Top" } }
+          }
+        }
+      ]
+    }
+  ]
+}

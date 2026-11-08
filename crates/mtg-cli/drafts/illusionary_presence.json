@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8f319b31-efb0-4f48-a2a3-1f308e7b1dda",
+  "name": "Illusionary Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusionary Presence",
+      "oracle_fingerprint": "ac50de7b54867f6f8a8eaa0f1930fa91",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{U}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "Landwalk": [{ "ChosenAs": "chosen" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

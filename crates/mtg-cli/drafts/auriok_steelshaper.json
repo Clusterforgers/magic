@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e3ee8b0e-9bdc-4b9a-b4f9-59189dd6a80d",
+  "name": "Auriok Steelshaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auriok Steelshaper",
+      "oracle_fingerprint": "08c15a60e8fb76dcb88316798ea34bf6",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Equip"
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Soldier" }, { "Subtype": "Knight" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasAttached": [{ "Subtype": "Equipment" }] }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

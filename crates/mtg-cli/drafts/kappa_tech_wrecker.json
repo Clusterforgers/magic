@@ -1,0 +1,50 @@
+{
+  "oracle_id": "2bc92c16-cd1e-4c32-9102-4593d77a9a9f",
+  "name": "Kappa Tech-Wrecker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kappa Tech-Wrecker",
+      "oracle_fingerprint": "5552f275d459826ed5bcc609e69a8fe4",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{1}{G}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "deathtouch" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": { "Other": "deathtouch" } } }],
+                  "paid": [
+                    { "Bind": { "what": "Triggering", "as": "when" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                                { "ControlledBy": { "Bound": "when" } }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

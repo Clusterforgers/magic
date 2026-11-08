@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8d84a706-080c-4fb2-b1b9-3dbb3294fb7b",
+  "name": "Osseous Exhale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Osseous Exhale",
+      "oracle_fingerprint": "46da13c0638b27736c5b7936a2a822ee",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Behold": { "filter": [{ "Subtype": "Dragon" }] } }] } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

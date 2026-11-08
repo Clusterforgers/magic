@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6a71deb3-6659-47ea-8687-136cf75fa381",
+  "name": "Unstable Shapeshifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstable Shapeshifter",
+      "oracle_fingerprint": "daf287d279fd74b88fbb6e098614574a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": "Triggering",
+                  "except": ["ThisAbility"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

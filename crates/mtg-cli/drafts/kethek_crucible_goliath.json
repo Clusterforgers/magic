@@ -1,0 +1,74 @@
+{
+  "oracle_id": "26747bdc-6bd4-4218-ae83-bd46c7668880",
+  "name": "Kethek, Crucible Goliath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kethek, Crucible Goliath",
+      "oracle_fingerprint": "49c0c291fbbb60436aa6907acd681719",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed3"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed3~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "RevealUntil": {
+                              "filter": [
+                                { "Type": "Creature" },
+                                { "Not": { "Supertype": "Legendary" } },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Lt",
+                                    "to": {
+                                      "Stat": {
+                                        "of": { "Bound": "sacrificed3" },
+                                        "stat": "ManaValue"
+                                      }
+                                    }
+                                  }
+                                }
+                              ],
+                              "as": "found",
+                              "revealed_as": "revealed2"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                          {
+                            "Move": {
+                              "what": { "Bound": "revealed2" },
+                              "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

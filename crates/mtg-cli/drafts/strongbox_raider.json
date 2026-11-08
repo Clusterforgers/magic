@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ba5a2689-3578-4b1a-99d6-6b6d2356330e",
+  "name": "Strongbox Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strongbox Raider",
+      "oracle_fingerprint": "234e0ee7f8a55610242fe1b82f65b55f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExileTop": { "count": 2, "as": "exiled" } },
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                        "as": "card2"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "card2" }, "play": true }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

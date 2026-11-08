@@ -1,0 +1,35 @@
+{
+  "oracle_id": "64fa0416-16b7-4128-ac6c-f30373074a1e",
+  "name": "Celeborn the Wise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celeborn the Wise",
+      "oracle_fingerprint": "37977021eb02906504e00a2b3361b3b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": "Triggering", "toughness": "Triggering" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

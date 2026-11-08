@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7fab8d65-af51-47d3-8f10-2676bf6e8ba3",
+  "name": "Eldrazi Temple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldrazi Temple",
+      "oracle_fingerprint": "6b199245ea9343e0560c92bbbd1e3a95",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [
+                    { "Spell": { "subtypes": ["Eldrazi"], "facts": ["Colorless"] } },
+                    {
+                      "Ability": {
+                        "subtypes": ["Eldrazi"],
+                        "facts": ["Colorless", "OnBattlefield"]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

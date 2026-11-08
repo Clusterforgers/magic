@@ -1,0 +1,34 @@
+{
+  "oracle_id": "417b9d9c-0a67-4554-a275-a6ae15a04bfb",
+  "name": "Seifer, Balamb Rival",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Seifer, Balamb Rival",
+      "oracle_fingerprint": "de408c4c0626372c6fcdb85d74c96bb4",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Against" }] } }
+            ],
+            "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 86, "end": 239 }
+          }
+        }
+      ]
+    }
+  ]
+}

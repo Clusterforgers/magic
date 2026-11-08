@@ -1,0 +1,59 @@
+{
+  "oracle_id": "fa2c984a-6bc1-4ec8-93d7-87f9f06b841e",
+  "name": "Jade Seedstones // Jadeheart Attendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jade Seedstones",
+      "oracle_fingerprint": "0c6dcbc220c4f845edb0601e387052bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{5}{G}{G}" },
+              { "Craft": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jadeheart Attendant",
+      "oracle_fingerprint": "3a5eb09611b805dccf4bd25e29391112",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Total": {
+                      "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

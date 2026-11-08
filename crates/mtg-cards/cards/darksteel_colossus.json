@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1b09d0cf-403c-4a15-aeee-602a1bdaf0c1",
+  "name": "Darksteel Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darksteel Colossus",
+      "oracle_fingerprint": "e96b83d58e3e2c5e9c063287253c198c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Indestructible" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "IntoLibrary": { "place": "Shuffled", "reveal": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

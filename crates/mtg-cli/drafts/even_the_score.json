@@ -1,0 +1,28 @@
+{
+  "oracle_id": "25f5cca6-a414-46d9-82e3-ce2fa21b14ca",
+  "name": "Even the Score",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Even the Score",
+      "oracle_fingerprint": "fb64e0006d3f5f5114b3d82ea2e16662",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{U}{U}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": "X" } }] } }
+      ]
+    }
+  ]
+}

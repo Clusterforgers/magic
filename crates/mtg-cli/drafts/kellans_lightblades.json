@@ -20,29 +20,13 @@
             "effects": [
               {
                 "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": {
-                        "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
-                      },
-                      "op": "Eq",
-                      "right": 0
-                    }
-                  },
+                  "condition": { "Not": "AdditionalCostPaid" },
                   "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
                 }
               },
               {
                 "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": {
-                        "When": { "condition": "AdditionalCostPaid", "then": 1, "otherwise": 0 }
-                      },
-                      "op": "Ge",
-                      "right": 1
-                    }
-                  },
+                  "condition": "AdditionalCostPaid",
                   "then": [{ "Destroy": { "what": { "Target": 0 } } }]
                 }
               }

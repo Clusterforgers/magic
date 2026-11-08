@@ -36,8 +36,7 @@
                   }
                 }
               }
-            ],
-            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+            ]
           }
         }
       ]

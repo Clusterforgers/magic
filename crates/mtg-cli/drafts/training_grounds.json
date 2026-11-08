@@ -12,7 +12,7 @@
             "applies_to": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
             "change": "Reduce",
             "mana": "{2}",
-            "activating": "Any",
+            "activating": "Every",
             "least": 1
           }
         }

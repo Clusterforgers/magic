@@ -1,0 +1,26 @@
+{
+  "oracle_id": "aa1a248d-2f76-4f15-b065-08f299af07b9",
+  "name": "Legacy Weapon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legacy Weapon",
+      "oracle_fingerprint": "cd7bd79cf3ba227da3bb081168d3c91b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}{U}{B}{R}{G}",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "IntoLibrary": { "place": "Shuffled", "reveal": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

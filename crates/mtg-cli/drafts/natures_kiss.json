@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e3e87fee-5717-4ca1-adfd-4df8732020f8",
+  "name": "Nature's Kiss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Kiss",
+      "oracle_fingerprint": "3c15bc63141c5eeca2c1bbb64f86d31e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "ExileFromGraveyard": { "filter": ["TopOfGraveyard"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

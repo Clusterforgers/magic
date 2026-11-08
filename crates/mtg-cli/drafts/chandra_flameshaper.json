@@ -1,22 +1,63 @@
 {
   "oracle_id": "818f908c-9af6-4edc-bb0e-193bc830e2e4",
   "name": "Chandra, Flameshaper",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chandra, Flameshaper",
       "oracle_fingerprint": "67aefe4c892e8bd0109d8b6e2928cbb1",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 107 }
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red"] } } },
+              { "ExileTop": { "count": 3, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "card2" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 108, "end": 254 }
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        {
+                          "GrantAbility": {
+                            "Triggered": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                            }
+                          }
+                        },
+                        { "AddKeyword": "Haste" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {

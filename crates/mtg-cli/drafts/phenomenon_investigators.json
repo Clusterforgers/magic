@@ -1,0 +1,76 @@
+{
+  "oracle_id": "cc9088c4-6f6b-4a1a-90f1-794eb1e938c6",
+  "name": "Phenomenon Investigators",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phenomenon Investigators",
+      "oracle_fingerprint": "ad884389651a45f03f6bdaf75e89f6ef",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Believe", "Doubt"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "Token" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "EnteredAs": "Believe" },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Horror",
+                      "colors": ["Black"],
+                      "types": ["Enchantment", "Creature"],
+                      "subtypes": ["Horror"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "EnteredAs": "Doubt" },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand", "as": "moved2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

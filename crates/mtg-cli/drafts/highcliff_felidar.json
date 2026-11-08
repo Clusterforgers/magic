@@ -1,0 +1,55 @@
+{
+  "oracle_id": "43296f8b-58d9-446e-a538-1c4921552c41",
+  "name": "Highcliff Felidar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Highcliff Felidar",
+      "oracle_fingerprint": "c89ee2362ba96a8f333e940a4537c417",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "each" } },
+                            {
+                              "GreatestAmong": {
+                                "stat": "Power",
+                                "group": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "as": "card2"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card2" }, "as": "picks3", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Is": { "Bound": "picks3" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

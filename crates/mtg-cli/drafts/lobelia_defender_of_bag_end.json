@@ -1,0 +1,59 @@
+{
+  "oracle_id": "0f2e3e2e-9857-4be5-9bf0-62da1cc147fc",
+  "name": "Lobelia, Defender of Bag End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lobelia, Defender of Bag End",
+      "oracle_fingerprint": "3f39ef8a311f1886b871f8f8b1edde5c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "who": "Opponents", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "what": [{ "ExiledWith": "This" }],
+                                "from": "Exile",
+                                "free": true,
+                                "play": true,
+                                "once": true
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                        { "GainLife": { "amount": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

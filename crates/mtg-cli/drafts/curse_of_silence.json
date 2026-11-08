@@ -1,0 +1,33 @@
+{
+  "oracle_id": "36e267c5-ea98-4e26-b2b4-3faa05493eb4",
+  "name": "Curse of Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Silence",
+      "oracle_fingerprint": "113de51954fb13b8ab87c70640436b66",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CardName" }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "ChosenName", { "ControlledBy": "AttachedPlayer" }],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["ChosenName"], "by": "AttachedPlayer" } },
+            "effects": [{ "Pay": { "cost": ["SacrificeSelf"], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

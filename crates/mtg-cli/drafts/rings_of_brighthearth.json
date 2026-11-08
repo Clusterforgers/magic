@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bbf9494c-c4bb-4d36-98fe-8387846b342e",
+  "name": "Rings of Brighthearth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rings of Brighthearth",
+      "oracle_fingerprint": "36af31f86a2cf49311fad55df24a961c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Activated", "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

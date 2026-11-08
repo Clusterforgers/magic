@@ -1,0 +1,32 @@
+{
+  "oracle_id": "286e7ef1-d763-4b48-8603-a161dcf7efbc",
+  "name": "Walking Dream",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walking Dream",
+      "oracle_fingerprint": "26ad0e15df43475837a72920ff164518",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["DoesntUntap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

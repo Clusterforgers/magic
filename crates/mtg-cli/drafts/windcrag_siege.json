@@ -1,0 +1,57 @@
+{
+  "oracle_id": "64df560a-905f-45d1-bc70-14d99e3112d3",
+  "name": "Windcrag Siege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windcrag Siege",
+      "oracle_fingerprint": "51d26b68e350b6e7aa9d8b40f358ed04",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Mardu", "Jeskai"] }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "cause": { "Attacks": { "what": [{ "Type": "Creature" }] } } }
+            },
+            "condition": { "EnteredAs": "Mardu" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "EnteredAs": "Jeskai" },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Lifelink" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

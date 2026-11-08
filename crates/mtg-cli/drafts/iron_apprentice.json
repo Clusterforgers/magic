@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cd0c8db0-67ee-483b-8298-455cce35fef7",
+  "name": "Iron Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Apprentice",
+      "oracle_fingerprint": "f104786493a6a5e137be417b9194d991",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", "HasAnyCounter"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCountersOf": { "on": { "Target": 0 }, "of": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

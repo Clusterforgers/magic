@@ -1,0 +1,479 @@
+{
+  "oracle_id": "e119c709-bf9d-451e-827b-9787d455029a",
+  "name": "First Family",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "First Family",
+      "oracle_fingerprint": "100a7a980b187281c2cdf169ff4218ec",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      {
+                        "Sum": [
+                          {
+                            "Sum": [
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Sum": [
+                                          {
+                                            "Count": [
+                                              { "Color": "White" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          },
+                                          {
+                                            "Tally": {
+                                              "event": "SpellCast",
+                                              "who": "EachPlayer",
+                                              "filter": [
+                                                { "Color": "White" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Sum": [
+                                      { "Count": [{ "Color": "White" }, { "ControlledBy": "You" }] },
+                                      {
+                                        "Tally": {
+                                          "event": "SpellCast",
+                                          "who": "EachPlayer",
+                                          "filter": [
+                                            { "Color": "White" },
+                                            { "ControlledBy": "You" }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Sum": [
+                                          {
+                                            "Count": [
+                                              { "Color": "Blue" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          },
+                                          {
+                                            "Tally": {
+                                              "event": "SpellCast",
+                                              "who": "EachPlayer",
+                                              "filter": [
+                                                { "Color": "Blue" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Sum": [
+                                      { "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }] },
+                                      {
+                                        "Tally": {
+                                          "event": "SpellCast",
+                                          "who": "EachPlayer",
+                                          "filter": [{ "Color": "Blue" }, { "ControlledBy": "You" }]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "Sum": [
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Sum": [
+                                          {
+                                            "Count": [
+                                              { "Color": "Black" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          },
+                                          {
+                                            "Tally": {
+                                              "event": "SpellCast",
+                                              "who": "EachPlayer",
+                                              "filter": [
+                                                { "Color": "Black" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Sum": [
+                                      { "Count": [{ "Color": "Black" }, { "ControlledBy": "You" }] },
+                                      {
+                                        "Tally": {
+                                          "event": "SpellCast",
+                                          "who": "EachPlayer",
+                                          "filter": [
+                                            { "Color": "Black" },
+                                            { "ControlledBy": "You" }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Sum": [
+                                          {
+                                            "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }]
+                                          },
+                                          {
+                                            "Tally": {
+                                              "event": "SpellCast",
+                                              "who": "EachPlayer",
+                                              "filter": [
+                                                { "Color": "Red" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Sum": [
+                                      { "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }] },
+                                      {
+                                        "Tally": {
+                                          "event": "SpellCast",
+                                          "who": "EachPlayer",
+                                          "filter": [{ "Color": "Red" }, { "ControlledBy": "You" }]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Sum": [
+                                  { "Count": [{ "Color": "Green" }, { "ControlledBy": "You" }] },
+                                  {
+                                    "Tally": {
+                                      "event": "SpellCast",
+                                      "who": "EachPlayer",
+                                      "filter": [{ "Color": "Green" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": {
+                            "Sum": [
+                              { "Count": [{ "Color": "Green" }, { "ControlledBy": "You" }] },
+                              {
+                                "Tally": {
+                                  "event": "SpellCast",
+                                  "who": "EachPlayer",
+                                  "filter": [{ "Color": "Green" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Sum": [
+                      {
+                        "Sum": [
+                          {
+                            "Sum": [
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Sum": [
+                                          {
+                                            "Count": [
+                                              { "Color": "White" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          },
+                                          {
+                                            "Tally": {
+                                              "event": "SpellCast",
+                                              "who": "EachPlayer",
+                                              "filter": [
+                                                { "Color": "White" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Sum": [
+                                      { "Count": [{ "Color": "White" }, { "ControlledBy": "You" }] },
+                                      {
+                                        "Tally": {
+                                          "event": "SpellCast",
+                                          "who": "EachPlayer",
+                                          "filter": [
+                                            { "Color": "White" },
+                                            { "ControlledBy": "You" }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Sum": [
+                                          {
+                                            "Count": [
+                                              { "Color": "Blue" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          },
+                                          {
+                                            "Tally": {
+                                              "event": "SpellCast",
+                                              "who": "EachPlayer",
+                                              "filter": [
+                                                { "Color": "Blue" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Sum": [
+                                      { "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }] },
+                                      {
+                                        "Tally": {
+                                          "event": "SpellCast",
+                                          "who": "EachPlayer",
+                                          "filter": [{ "Color": "Blue" }, { "ControlledBy": "You" }]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "Sum": [
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Sum": [
+                                          {
+                                            "Count": [
+                                              { "Color": "Black" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          },
+                                          {
+                                            "Tally": {
+                                              "event": "SpellCast",
+                                              "who": "EachPlayer",
+                                              "filter": [
+                                                { "Color": "Black" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Sum": [
+                                      { "Count": [{ "Color": "Black" }, { "ControlledBy": "You" }] },
+                                      {
+                                        "Tally": {
+                                          "event": "SpellCast",
+                                          "who": "EachPlayer",
+                                          "filter": [
+                                            { "Color": "Black" },
+                                            { "ControlledBy": "You" }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "Sum": [
+                                          {
+                                            "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }]
+                                          },
+                                          {
+                                            "Tally": {
+                                              "event": "SpellCast",
+                                              "who": "EachPlayer",
+                                              "filter": [
+                                                { "Color": "Red" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "op": "Gt",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": 1,
+                                  "otherwise": {
+                                    "Sum": [
+                                      { "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }] },
+                                      {
+                                        "Tally": {
+                                          "event": "SpellCast",
+                                          "who": "EachPlayer",
+                                          "filter": [{ "Color": "Red" }, { "ControlledBy": "You" }]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Sum": [
+                                  { "Count": [{ "Color": "Green" }, { "ControlledBy": "You" }] },
+                                  {
+                                    "Tally": {
+                                      "event": "SpellCast",
+                                      "who": "EachPlayer",
+                                      "filter": [{ "Color": "Green" }, { "ControlledBy": "You" }]
+                                    }
+                                  }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": {
+                            "Sum": [
+                              { "Count": [{ "Color": "Green" }, { "ControlledBy": "You" }] },
+                              {
+                                "Tally": {
+                                  "event": "SpellCast",
+                                  "who": "EachPlayer",
+                                  "filter": [{ "Color": "Green" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "82563a5f-cae4-4ece-876c-0df245d2dc58",
+  "name": "Raph & Mikey, Troublemakers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raph & Mikey, Troublemakers",
+      "oracle_fingerprint": "b44a5a6cac1a3ebeb28c629d9889d721",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved3"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved3" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

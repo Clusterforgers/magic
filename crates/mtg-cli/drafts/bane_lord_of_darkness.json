@@ -1,7 +1,7 @@
 {
   "oracle_id": "ca507eea-1b04-4488-813e-ca970640e227",
   "name": "Bane, Lord of Darkness",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bane, Lord of Darkness",
@@ -21,9 +21,53 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 108, "end": 313 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "OneOf": {
+                  "who": { "Target": 0 },
+                  "options": [
+                    [{ "Draw": {} }],
+                    [
+                      {
+                        "Choose": {
+                          "from": {
+                            "Each": [
+                              { "Type": "Creature" },
+                              {
+                                "Compare": {
+                                  "stat": "Toughness",
+                                  "op": "Le",
+                                  "to": { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                                }
+                              },
+                              { "In": "Hand" },
+                              { "OwnedBy": "You" }
+                            ]
+                          },
+                          "count": { "min": 0, "max": 1 },
+                          "as": "picked"
+                        }
+                      },
+                      { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                    ]
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5d39cce9-afa1-422a-8e6c-8f50c710a681",
+  "name": "Take the Bait",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Take the Bait",
+      "oracle_fingerprint": "8768fdd923ccf303a13b763b05c81616",
+      "abilities": [
+        { "CastOnly": { "condition": { "All": ["InCombat", { "Not": "YourTurn" }] } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } },
+              { "Goad": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
