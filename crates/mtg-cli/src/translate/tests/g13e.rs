@@ -335,3 +335,70 @@ fn a_flip_until_the_first_loss_is_a_repeating_flip() {
     assert!(found.is_empty(), "{found:?}");
     assert!(json.contains(r#""FlipCoin":{"until":true}"#), "{json}");
 }
+
+#[rstest::rstest]
+#[case::two_rad("DB$ Radiation | Defined$ You | Num$ 2", true)]
+#[case::each_player("DB$ Radiation | Defined$ Player | Num$ 2", false)]
+#[case::another_gift("DB$ GainLife | LifeAmount$ 2", false)]
+fn a_land_that_may_enter_tapped_for_rad_counters(#[case] gift: &str, #[case] read: bool) {
+    let (json, found) = card(
+        "Land",
+        &format!(
+            "K:ETBReplacement:Other:DBTap:Optional\nSVar:DBTap:DB$ Tap | ETB$ True | Defined$ Self | SubAbility$ DBGift\nSVar:DBGift:{gift}\nA:AB$ Draw | Cost$ 5 T | NumCards$ 1 | ReduceCost$ X\nSVar:X:Count$YourCountersRAD"
+        ),
+    );
+    assert_eq!(found.is_empty(), read, "{found:?}");
+    if read {
+        assert!(
+            json.contains(r#""TappedForCounters":{"count":2,"counter":{"Other":"rad"}}"#),
+            "{json}"
+        );
+        assert!(
+            json.contains(r#""per":{"Counters":{"counter":{"Other":"rad"},"on":"You"}}"#),
+            "{json}"
+        );
+    }
+}
+
+const THREE_FLIPS: &str = "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigFlip | TriggerDescription$ x\nSVar:TrigFlip:DB$ FlipCoin | Amount$ 3 | WinSubAbility$ Win | RememberNumber$ Wins\nSVar:Win:DB$ GainLife | LifeAmount$ Wins";
+
+#[test]
+fn several_flips_are_that_many_flips_with_the_win_part_each() {
+    let (json, found) = card("Creature Goblin", THREE_FLIPS);
+    assert!(found.is_empty(), "{found:?}");
+    let flip = r#"{"FlipCoin":{"win":[{"GainLife":{"amount":1}}]}}"#;
+    assert!(json.contains(&format!("{flip},{flip},{flip}")), "{json}");
+}
+
+#[rstest::rstest]
+#[case::a_lose_part(
+    "Amount$ 3 | WinSubAbility$ Win | LoseSubAbility$ Win",
+    "key:FlipCoin.Amount-with-more"
+)]
+#[case::until_a_loss(
+    "Amount$ 3 | FlipUntilYouLose$ True | WinSubAbility$ Win",
+    "key:FlipCoin.Amount-with-more"
+)]
+#[case::a_counted_number("Amount$ X | WinSubAbility$ Win", "key:FlipCoin.Amount")]
+#[case::another_memory(
+    "RememberNumber$ Losses | WinSubAbility$ Win",
+    "key:FlipCoin.RememberNumber"
+)]
+fn flips_beyond_these_words_stay_gaps(#[case] keys: &str, #[case] gap: &str) {
+    let (_, found) = card(
+        "Creature Goblin",
+        &format!(
+            "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigFlip | TriggerDescription$ x\nSVar:TrigFlip:DB$ FlipCoin | {keys}\nSVar:Win:DB$ GainLife | LifeAmount$ 1"
+        ),
+    );
+    assert_eq!(found, vec![gap.to_owned()]);
+}
+
+#[test]
+fn the_wins_read_outside_the_win_part_stay_a_gap() {
+    let (_, found) = card(
+        "Creature Goblin",
+        "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigFlip | TriggerDescription$ x\nSVar:TrigFlip:DB$ FlipCoin | Amount$ 3 | LoseSubAbility$ Win | RememberNumber$ Wins\nSVar:Win:DB$ GainLife | LifeAmount$ Wins",
+    );
+    assert_ne!(found, Vec::<String>::new());
+}

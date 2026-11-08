@@ -191,3 +191,16 @@ fn no_opponent_with_more_life_than_the_attacked_player_compares_with_the_most() 
         "{json}"
     );
 }
+
+#[test]
+fn the_attacked_player_with_the_most_life_compares_with_every_player() {
+    let (json, found) = card(
+        "Creature Elf",
+        "PT:1/1\nT:Mode$ Attacks | ValidCard$ Card.Self | FirstAttack$ True | Condition$ AttackedPlayerWithMostLife | Execute$ G | TriggerDescription$ x\nSVar:G:DB$ GainLife | LifeAmount$ 1",
+    );
+    assert_eq!(found, Vec::<String>::new(), "{json}");
+    assert!(
+        json.contains(r#""if":{"Compare":{"left":{"Life":"Against"},"op":"Ge","right":{"HighestLife":"EachPlayer"}}}"#),
+        "{json}"
+    );
+}
