@@ -8,7 +8,7 @@ use super::valid::{cmp, defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 19] = [
+pub const KEYS: [&str; 20] = [
     "TopCardOfLibraryIs",
     "IsPresent",
     "PresentDefined",
@@ -28,6 +28,7 @@ pub const KEYS: [&str; 19] = [
     "CheckFourthSVar",
     "FourthSVarCompare",
     "Condition",
+    "ConditionOptionalPaid",
 ];
 
 /// The keys of the `CheckSVar$` checks alone.
@@ -57,8 +58,13 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
         all.extend(present(ctx, p, suffix)?);
     }
     all.extend(check_svar(ctx, p)?);
-    if let Some(name) = p.get("Condition") {
-        all.push(named(name)?);
+    match (p.get("Condition"), p.get("ConditionOptionalPaid")) {
+        // "If this spell's additional cost was paid": the optional cost of the spell itself (`Mode$ OptionalCost`).
+        (Some("OptionalCost"), Some("True")) => all.push(json!("AdditionalCostPaid")),
+        (Some("OptionalCost"), Some("False")) => all.push(json!({"Not": "AdditionalCostPaid"})),
+        (_, Some(other)) => return unmapped(format!("key:ConditionOptionalPaid={other}")),
+        (Some(name), None) => all.push(named(name)?),
+        (None, None) => {}
     }
     if let Some(valid) = p.get("TopCardOfLibraryIs") {
         all.push(top_card_is(ctx, valid)?);
@@ -333,8 +339,9 @@ fn of_defined(
 }
 
 /// The keys of a condition on one line of an ability chain and the keys of [`condition`] they stand for.
-const PREFIXED: [(&str, &str); 10] = [
+const PREFIXED: [(&str, &str); 11] = [
     ("Condition", "Condition"),
+    ("ConditionOptionalPaid", "ConditionOptionalPaid"),
     ("ConditionDefined", "PresentDefined"),
     ("ConditionPresent", "IsPresent"),
     ("ConditionZone", "PresentZone"),

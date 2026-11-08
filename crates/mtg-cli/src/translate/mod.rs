@@ -83,6 +83,7 @@ pub mod statics_combat;
 pub mod statics_defender;
 pub mod statics_exert;
 pub mod statics_look;
+pub mod statics_optional;
 mod statics_rules;
 pub mod stored;
 pub mod tokens;

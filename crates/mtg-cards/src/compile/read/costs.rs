@@ -678,6 +678,9 @@ pub(super) fn additional_text(cost: &Cost, required: bool) -> Option<String> {
     let body = if let [CostItem::Mana(mana)] = cost.0.as_slice() {
         // The reader takes a cost of mana alone only after "you may".
         (!required).then(|| format!("pay {mana}"))?
+    } else if let [CostItem::Blight(Amount::Fixed(count @ 1..))] = cost.0.as_slice() {
+        // A spell's blight cost is printed with the keyword action (CR 701.66).
+        format!("blight {count}")
     } else {
         let text = text(cost)?;
         let mut chars = text.chars();

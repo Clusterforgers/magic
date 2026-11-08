@@ -1160,6 +1160,7 @@ mod t20b_writers;
 // t20a
 mod t20a_writers;
 // t20c
+mod e16b_writers;
 mod r5a;
 mod t20c_writers;
 // g8a
