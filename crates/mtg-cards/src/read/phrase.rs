@@ -534,6 +534,7 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
             format!("{} is {} {noun}", who(ctx, subject), article(&noun))
         }
         Condition::Kicked => "this spell was kicked".to_owned(),
+        Condition::EnteredAs(word) => format!("{word} was chosen as it entered"),
         Condition::AdditionalCostPaid => "the additional cost was paid".to_owned(),
         Condition::YourTurn => "it is your turn".to_owned(),
         Condition::Among(players) => format!("you are among {}", who(ctx, players)),
@@ -668,5 +669,16 @@ mod tests {
         assert_eq!(counted(&Ctx::none(), &Amount::Fixed(1), "card"), "a card");
         assert_eq!(counted(&Ctx::none(), &Amount::Fixed(3), "card"), "3 cards");
         assert_eq!(counted(&Ctx::none(), &Amount::X, "card"), "X cards");
+    }
+
+    #[rstest]
+    #[case::e15f_a_word_chosen_as_it_entered(
+        r#"{"EnteredAs":"Khans"}"#,
+        "Khans was chosen as it entered"
+    )]
+    #[case::kicked(r#""Kicked""#, "this spell was kicked")]
+    fn e15f_conditions_read_as_clauses(#[case] json: &str, #[case] shown: &str) {
+        let cond: Condition = serde_json::from_str(json).unwrap();
+        assert_eq!(condition(&Ctx::none(), &cond), shown);
     }
 }
