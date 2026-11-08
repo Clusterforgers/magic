@@ -31,11 +31,22 @@ const byId = (objects: ObjectView[]): Record<number, ObjectView> =>
   Object.fromEntries(objects.map((object) => [object.id, object]))
 
 const copy = (id: number): ObjectView =>
-  item(id, { kind: 'Card', name: 'Lightning Bolt', source: undefined, rules_text: undefined, copy: { of: 1 } })
+  item(id, {
+    kind: 'Card',
+    name: 'Lightning Bolt',
+    source: undefined,
+    rules_text: undefined,
+    copy: { of: 1 },
+  })
 
 describe('groupStack', () => {
   it.each<[string, ObjectView[], number[], number[][]]>([
-    ['six triggers of one source', [1, 2, 3, 4, 5, 6].map((id) => item(id)), [1, 2, 3, 4, 5, 6], [[1, 2, 3, 4, 5, 6]]],
+    [
+      'six triggers of one source',
+      [1, 2, 3, 4, 5, 6].map((id) => item(id)),
+      [1, 2, 3, 4, 5, 6],
+      [[1, 2, 3, 4, 5, 6]],
+    ],
     ['two spells of the same name', [spell(1), spell(2)], [1, 2], [[1], [2]]],
     ['copies of one spell', [spell(1), copy(2), copy(3)], [1, 2, 3], [[1], [2, 3]]],
     ['the same text of two sources', [item(1), item(2, { source: 101 })], [1, 2], [[1], [2]]],

@@ -420,7 +420,9 @@ test.describe('the development table with 40 permanents a seat', () => {
           outside: [...shown, ...(more === null ? [] : [more])].filter((chip) =>
             outside(chip.getBoundingClientRect()),
           ).length,
-          top: document.querySelector('[data-slot="stack-chips"] li:not([aria-hidden]) [data-stack-chip]') !== null,
+          top:
+            document.querySelector('[data-slot="stack-chips"] li:not([aria-hidden]) [data-stack-chip]') !==
+            null,
           more: more?.textContent ?? null,
           labels,
         }

@@ -22,11 +22,7 @@ describe('selectorsOf', () => {
     ],
     ['a seat', seat(2), ['[data-seat="2"]', '[data-tile-seat="2"]']],
     ['seat 0', seat(0), ['[data-seat="0"]', '[data-tile-seat="0"]']],
-    [
-      'a stack item',
-      { kind: 'stack', id: 7 },
-      ['[data-stack-chip="7"]', '[data-stack-members~="7"]'],
-    ],
+    ['a stack item', { kind: 'stack', id: 7 }, ['[data-stack-chip="7"]', '[data-stack-members~="7"]']],
   ])('looks for %s', (_name, anchor, expected) => {
     expect(selectorsOf(anchor)).toEqual(expected)
   })
@@ -245,7 +241,10 @@ describe('bundled', () => {
   const crowd = (n: number, over: Partial<LineSpec> = {}): LineSpec[] =>
     Array.from({ length: n }, (_, index) => spec(card(index + 1, 1), seat(0), 'attack', over))
   const rects = boxes([
-    ...Array.from({ length: 6 }, (_, index): [Anchor, Rect] => [card(index + 1, 1), { ...CARD, x: 100 * index }]),
+    ...Array.from({ length: 6 }, (_, index): [Anchor, Rect] => [
+      card(index + 1, 1),
+      { ...CARD, x: 100 * index },
+    ]),
     [seat(0), PANEL],
     [seat(2), { ...PANEL, y: -400 }],
   ])

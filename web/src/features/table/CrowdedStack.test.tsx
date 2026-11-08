@@ -13,7 +13,9 @@ import { StackPanel } from './StackPanel'
 const crowd = () => withCrowd(buildFixture({ seats: 4 }))
 const chips = () => screen.getByRole('list', { name: 'Spells on the stack, top first' })
 const counts = (root: HTMLElement): string[] =>
-  [...root.querySelectorAll('[data-slot="chip-count"], [data-slot="row-count"]')].map((count) => count.textContent ?? '')
+  [...root.querySelectorAll('[data-slot="chip-count"], [data-slot="row-count"]')].map(
+    (count) => count.textContent ?? '',
+  )
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -39,7 +41,9 @@ describe('the crowded scene', () => {
     const { view } = crowd()
     const stack = view.stack.cards ?? []
     expect(stack).toHaveLength(16)
-    expect(view.objects.filter((object) => object.zone === 'Stack' && object.kind === 'Ability')).toHaveLength(13)
+    expect(
+      view.objects.filter((object) => object.zone === 'Stack' && object.kind === 'Ability'),
+    ).toHaveLength(13)
     expect(view.combat.attackers).toHaveLength(CROWD_ATTACKERS)
     const targets = new Set(view.combat.attackers.map((attacker) => JSON.stringify(attacker.target)))
     expect(targets.size).toBe(3)
@@ -52,7 +56,11 @@ describe('the chips of a crowded stack', () => {
     const items = within(chips()).getAllByRole('listitem')
     expect(items).toHaveLength(7)
     expect(counts(chips())).toEqual(['×2', '×4', '×6'])
-    expect(within(chips()).getAllByRole('button').map((chip) => chip.getAttribute('aria-label'))).toEqual([
+    expect(
+      within(chips())
+        .getAllByRole('button')
+        .map((chip) => chip.getAttribute('aria-label')),
+    ).toEqual([
       'Top of the stack: Ability of Grizzly Bears (Draw a card.), controlled by Alice',
       'Ability of Air Elemental (Deal 1 damage to any target.), controlled by Bo, 2 times, targeting Cy',
       'Ability of Goblin Chieftain (Whenever a creature dies, each opponent loses 1 life.), controlled by Dee, 4 times',
@@ -67,28 +75,33 @@ describe('the chips of a crowded stack', () => {
     ['all fit', 2000, 7, null],
     ['three fit', 350, 3, '+9 more'],
     ['only the top fits', 50, 1, '+15 more'],
-  ])('keep the chips that fit the strip and fold the rest into one button: %s', (_case, width, shown, more) => {
-    // Each chip is 100 px wide from the start of the row.
-    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
-      return this.tagName === 'OL' ? width : 0
-    })
-    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
-      const index = this.tagName === 'LI' ? [...(this.parentElement?.children ?? [])].indexOf(this) : -1
-      return new DOMRect(0, 0, (index + 1) * 100, 32)
-    })
-    renderTable({ fixture: crowd(), ui: <StackChips /> })
-    const visible = within(chips())
-      .getAllByRole('listitem', { hidden: true })
-      .filter((item) => !item.hasAttribute('aria-hidden'))
-    expect(visible).toHaveLength(shown)
-    const button = screen.queryByRole('button', { name: /more on the stack/ })
-    expect(button?.textContent ?? null).toBe(more)
-    if (button !== null) {
-      // An arrow to a folded item ends at the button.
-      const members = must(button.getAttribute('data-stack-members')).split(' ')
-      expect(members).toHaveLength(Number(more?.match(/\d+/)?.[0]))
-    }
-  })
+  ])(
+    'keep the chips that fit the strip and fold the rest into one button: %s',
+    (_case, width, shown, more) => {
+      // Each chip is 100 px wide from the start of the row.
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
+        return this.tagName === 'OL' ? width : 0
+      })
+      vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+        this: HTMLElement,
+      ) {
+        const index = this.tagName === 'LI' ? [...(this.parentElement?.children ?? [])].indexOf(this) : -1
+        return new DOMRect(0, 0, (index + 1) * 100, 32)
+      })
+      renderTable({ fixture: crowd(), ui: <StackChips /> })
+      const visible = within(chips())
+        .getAllByRole('listitem', { hidden: true })
+        .filter((item) => !item.hasAttribute('aria-hidden'))
+      expect(visible).toHaveLength(shown)
+      const button = screen.queryByRole('button', { name: /more on the stack/ })
+      expect(button?.textContent ?? null).toBe(more)
+      if (button !== null) {
+        // An arrow to a folded item ends at the button.
+        const members = must(button.getAttribute('data-stack-members')).split(' ')
+        expect(members).toHaveLength(Number(more?.match(/\d+/)?.[0]))
+      }
+    },
+  )
 })
 
 describe('the Stack tab of a crowded stack', () => {
