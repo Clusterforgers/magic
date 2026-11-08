@@ -651,6 +651,8 @@ async function chooseCards({ player, seen }: Turn): Promise<string> {
 export interface Hooks {
   /** Called with the decision a seat is about to answer, before it is; screenshots and the end of the run go here. */
   before?(player: Player, seen: Seen, run: Run): Promise<void>
+  /** Answers the decision with the spec's own clicks and says what it did; undefined leaves it to the driver. */
+  answer?(player: Player, seen: Seen, run: Run): Promise<string | undefined>
 }
 
 /** Answers this seat's decisions until the game-over screen shows or a hook sets `run.done`. */
@@ -665,12 +667,13 @@ async function drive(player: Player, style: Style, run: Run, hooks: Hooks): Prom
       run.idle.set(player.name, (run.idle.get(player.name) ?? 0) + 1)
       run.idleAt.set(player.name, [...(run.idleAt.get(player.name) ?? []), seen.banner])
     }
+    const own = await hooks.answer?.(player, seen, run)
     const answer = ANSWERS[seen.kind]
-    if (answer === undefined)
+    if (own === undefined && answer === undefined)
       throw new Error(
         `${player.name} faces ${seen.kind} (${seen.text}; buttons: ${seen.buttons.map((b) => b.label).join(' | ')}), which the driver cannot answer`,
       )
-    const line = await answer({ player, style, seen, run })
+    const line = own ?? (await answer?.({ player, style, seen, run })) ?? ''
     const tried = run.lastPlay.get(player.name)
     if (/cancel/.test(line) && tried !== undefined) run.skip.add(tried)
     run.step(player.name, seen.kind, `#${seen.id} ${line}`)
