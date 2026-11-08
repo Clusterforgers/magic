@@ -116,10 +116,7 @@ fn a_licid_becomes_an_aura_until_its_controller_pays(
     let mut driver = Driver::from_scenario(scenario)?;
     let printed = abilities_of(driver.state(), driver.id_of("Calming Licid")?).len();
     let (licid, bear) = enchant(&mut driver)?;
-    assert_eq!(
-        driver.state().zone(Zone::Battlefield).contains(&licid),
-        true
-    );
+    assert!(driver.state().zone(Zone::Battlefield).contains(&licid));
     assert!(is(&driver, licid, CardType::Enchantment) && !is(&driver, licid, CardType::Creature));
     assert_eq!(
         driver.state().host_of(licid),

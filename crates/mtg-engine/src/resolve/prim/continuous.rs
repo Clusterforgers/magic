@@ -271,12 +271,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,
-        // Only the resolution of an activated ability knows which ability it is (`run`).
-        Wanted::LoseThisAbility => {
-            return Err(ResolveError::Invalid(
-                "only a resolving ability loses this ability".into(),
-            ));
-        }
+        Wanted::LoseThisAbility => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
@@ -319,6 +314,21 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::MinBlockers(count) => Modification::MinBlockers(*count),
         Wanted::MaxBlockers(count) => Modification::MaxBlockers(*count),
         Wanted::BlocksAdditional(count) => Modification::BlocksAdditional(*count),
+    })
+}
+
+/// Only the resolution of an activated ability knows which ability it is (`run`).
+fn not_resolving() -> ResolveError {
+    ResolveError::Invalid("only a resolving ability loses this ability".into())
+}
+
+/// The address of the activated ability that is resolving, on the object it was activated from.
+fn this_ability(cx: &Cx<'_>) -> Option<crate::abilities::AbilityRef> {
+    let ability = cx.state().object(cx.resolving.object)?.ability()?;
+    Some(crate::abilities::AbilityRef {
+        object: ability.source().id,
+        ability: ability.index(),
+        source: ability.origin(),
     })
 }
 
@@ -656,14 +666,4 @@ mod tests {
             Err(ResolveError::Invalid(_))
         ));
     }
-}
-
-/// The address of the activated ability that is resolving, on the object it was activated from.
-fn this_ability(cx: &Cx<'_>) -> Option<crate::abilities::AbilityRef> {
-    let ability = cx.state().object(cx.resolving.object)?.ability()?;
-    Some(crate::abilities::AbilityRef {
-        object: ability.source().id,
-        ability: ability.index(),
-        source: ability.origin(),
-    })
 }

@@ -91,8 +91,12 @@ impl Gives {
                 self.set = Some((*power, *toughness));
                 return;
             }
-            // A base power or toughness set alone shows no mark of its own.
-            Modification::SetPower(_) | Modification::SetToughness(_) => return,
+            // A base power or toughness set alone shows no mark of its own, nor one ability taken away.
+            Modification::SetPower(_)
+            | Modification::SetToughness(_)
+            | Modification::LoseAbility(_) => {
+                return;
+            }
             Modification::AddKeyword(keyword) => {
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());
@@ -110,8 +114,6 @@ impl Gives {
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities => GivenRule::LoseAbilities,
-            // An ability of its own that the attachment loses is no mark it gives.
-            Modification::LoseAbility(_) => return,
             Modification::RemoveKeyword(_) | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
             Modification::GrantAbility(_) | Modification::GainAbilities(_) => {
                 GivenRule::GainAbility

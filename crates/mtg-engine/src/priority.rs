@@ -72,6 +72,34 @@ pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
 }
 
 /// The answer that plots `object`, when it is offered.
+/// Unlocking a door and ending an effect by paying are legal when the offer lists them.
+fn e15g_special_answer(
+    options: &PriorityOptions,
+    action: &PriorityAction,
+) -> Result<Outcome, EngineError> {
+    match *action {
+        PriorityAction::UnlockDoor(object, door) => {
+            if !options
+                .unlockable
+                .iter()
+                .any(|option| option.card == object && option.face == door)
+            {
+                return Err(IllegalAnswer::NotOffered("unlock").into());
+            }
+            Ok(Outcome::BeginUnlock(object, door))
+        }
+        PriorityAction::EndEffect(effect) => {
+            let offered = options
+                .endable
+                .iter()
+                .find(|option| option.effect == effect)
+                .ok_or(IllegalAnswer::NotOffered("end effect"))?;
+            Ok(Outcome::BeginEndEffect(offered.object, effect))
+        }
+        _ => Err(IllegalAnswer::NotOffered("special action").into()),
+    }
+}
+
 fn plot_answer(options: &PriorityOptions, object: ObjectId) -> Result<Outcome, EngineError> {
     if options.plottable.contains(&object) {
         Ok(Outcome::BeginPlot(object))
@@ -632,23 +660,8 @@ pub(crate) fn answer(
             }
             Ok(Outcome::BeginTurnUp(object))
         }
-        PriorityAction::UnlockDoor(object, door) => {
-            if !options
-                .unlockable
-                .iter()
-                .any(|option| option.card == object && option.face == door)
-            {
-                return Err(IllegalAnswer::NotOffered("unlock").into());
-            }
-            Ok(Outcome::BeginUnlock(object, door))
-        }
-        PriorityAction::EndEffect(effect) => {
-            let offered = options
-                .endable
-                .iter()
-                .find(|option| option.effect == effect)
-                .ok_or(IllegalAnswer::NotOffered("end effect"))?;
-            Ok(Outcome::BeginEndEffect(offered.object, effect))
+        special @ (PriorityAction::UnlockDoor(..) | PriorityAction::EndEffect(_)) => {
+            e15g_special_answer(options, &special)
         }
         PriorityAction::CastPrepared(object) => {
             let offered = options.faces.iter().any(|option| {
