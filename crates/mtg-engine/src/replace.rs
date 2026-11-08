@@ -2629,15 +2629,8 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
-            ReplaceBy::ChooseWord(words) => {
-                let chosen = match self.e15f_chooses_word(source, controller, words)? {
-                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
-                    Asked::Got(chosen) => chosen,
-                };
-                self.w2b_remember(at, object, controller, chosen);
-            }
-            ReplaceBy::Choose(kind) => {
-                let chosen = match self.chooses(source, controller, *kind)? {
+            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) => {
+                let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,
                 };

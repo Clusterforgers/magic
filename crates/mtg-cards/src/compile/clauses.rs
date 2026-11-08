@@ -80,9 +80,12 @@ fn w9d_exert_split(line: &str) -> Option<usize> {
     (exert && rest.starts_with("When you do, ")).then(|| first.chars().count() + 1)
 }
 
+/// The words a word block offers and, for each, the word and the text after its dash ("Khans", "At the beginning ...").
+pub type WordBlock<'a> = (Vec<&'a str>, Vec<(&'a str, &'a str)>);
+
 /// The words of "As ~ enters, choose Khans or Dragons." and the lines after it, each a bullet that opens with one of the
 /// words in the same order ("• Khans — ..."), as the word and the text after its dash; `None` for any other clause.
-pub fn word_block(text: &str) -> Option<(Vec<&str>, Vec<(&str, &str)>)> {
+pub fn word_block(text: &str) -> Option<WordBlock<'_>> {
     let mut lines = text.lines();
     let (subject, choice) = lines.next()?.strip_prefix("As ")?.split_once(", choose ")?;
     let enters = subject.ends_with(" enters") || subject.ends_with(" enters the battlefield");

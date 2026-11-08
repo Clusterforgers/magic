@@ -1,6 +1,7 @@
 //! A word chosen as a permanent enters ("As this enchantment enters, choose Khans or Dragons."): the controller picks one
 //! of the words, the permanent keeps it while it stays, and `Condition::EnteredAs` reads it.
 
+use mtg_cards::trigger::ReplaceBy;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Asked, Pass};
@@ -10,6 +11,21 @@ use crate::error::EngineError;
 use crate::object::Chosen;
 
 impl Pass<'_> {
+    /// What `controller` chooses as the card enters for a choice of a kind (`ReplaceBy::Choose`) or of words
+    /// (`ReplaceBy::ChooseWord`); nothing for any other effect.
+    pub(super) fn e15f_chosen(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        by: &ReplaceBy,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        match by {
+            ReplaceBy::Choose(kind) => self.chooses(source, controller, *kind),
+            ReplaceBy::ChooseWord(words) => self.e15f_chooses_word(source, controller, words),
+            _ => Ok(Asked::Got(None)),
+        }
+    }
+
     /// The word `controller` chooses among `words` as the card enters; asked unless there is one word or none.
     pub(super) fn e15f_chooses_word(
         &mut self,

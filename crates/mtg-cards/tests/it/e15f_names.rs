@@ -76,7 +76,7 @@ const SIEGE: &str = "As Test Siege enters, choose Khans or Dragons.\n\u{2022} Kh
 
 const SIEGE_THIS: &str = "As this enchantment enters, choose Khans or Dragons.\n\u{2022} Khans \u{2014} At the beginning of your upkeep, draw a card.\n\u{2022} Dragons \u{2014} At the beginning of your upkeep, you gain 2 life.";
 
-fn upkeep(effect: Value, condition: Option<Value>) -> Value {
+fn upkeep(effect: &Value, condition: Option<Value>) -> Value {
     let mut trigger =
         json!({"when": {"StepBegins": {"step": "Upkeep", "whose": "You"}}, "effects": [effect]});
     if let Some(condition) = condition {
@@ -89,8 +89,8 @@ fn siege(words: [&str; 2], under: [Option<&str>; 2]) -> Value {
     let entered = |word: Option<&str>| word.map(|word| json!({ "EnteredAs": word }));
     json!([
         {"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"ChooseWord": words}}},
-        upkeep(json!({"Draw": {}}), entered(under[0])),
-        upkeep(json!({"GainLife": {"amount": 2}}), entered(under[1])),
+        upkeep(&json!({"Draw": {}}), entered(under[0])),
+        upkeep(&json!({"GainLife": {"amount": 2}}), entered(under[1])),
     ])
 }
 
