@@ -245,6 +245,7 @@ describe('the commands of the card picked', () => {
       'card:transform',
       'card:sacrifice',
       'card:give',
+      'card:copy',
     ])
     expect(commandRow(/^Tap/)).toHaveTextContent('Turn the permanent sideways.')
   })
@@ -252,7 +253,7 @@ describe('the commands of the card picked', () => {
   it('gives each command row its icon and a chevron that turns down while it is open', async () => {
     const { user } = await pick()
     const rows = [...group().querySelectorAll<HTMLElement>('[data-card-command]')]
-    expect(rows).toHaveLength(10)
+    expect(rows).toHaveLength(11)
     for (const row of rows) {
       expect(row.querySelector('[data-slot="row-icon"]')).not.toBeNull()
       expect(row.querySelector('[data-slot="row-chevron"]')).not.toHaveClass('rotate-90')

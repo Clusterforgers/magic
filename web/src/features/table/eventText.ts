@@ -455,6 +455,10 @@ export function describeManual(
     const name = 'Common' in token ? token.Common : token.Custom.name
     return `${who} creates ${count} ${name} ${count === 1 ? 'token' : 'tokens'} (by hand)`
   }
+  if ('CopyToken' in action) {
+    const { object, count } = action.CopyToken
+    return `${who} creates ${count} ${count === 1 ? 'token that is a copy' : 'tokens that are copies'} of ${n.card(object)} (by hand)`
+  }
   if ('Tap' in action) return `${who} taps ${n.card(action.Tap.object)} (by hand)`
   if ('Untap' in action) return `${who} untaps ${n.card(action.Untap.object)} (by hand)`
   if ('Draw' in action) {
