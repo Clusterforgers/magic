@@ -4,6 +4,7 @@ import { useSeatNamer } from '../names'
 import { askerOf, genericChoices, namedObjects } from './genericChoices'
 import type { GenericOffer } from './genericChoices'
 import { usePrompt } from './PromptContext'
+import { undoWords } from './undo'
 import { useObjects } from './useCombatNames'
 
 /**
@@ -27,7 +28,7 @@ export function useGenericOffer(): GenericOffer {
       object: (id) => names.get(id) ?? 'a card',
       seat: seatName,
       viewer,
-      cancel: source?.zone === 'Battlefield' ? 'Cancel the ability' : 'Cancel the spell',
+      cancel: undoWords(source?.zone),
     })
   }, [kind, objects, asker, seatName, viewer])
 }

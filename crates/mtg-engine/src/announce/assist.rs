@@ -102,6 +102,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             source: ctx.source,
             options,
             text: "Choose a player to help pay for it (assist).".to_owned(),
+            can_cancel: ctx.can_cancel(),
         })));
     };
     let (helper, can) = pick

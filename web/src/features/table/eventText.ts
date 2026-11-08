@@ -31,6 +31,7 @@ import type { HostRef } from '@/play/hosts'
 import { STEP_LABEL } from './turnText'
 import { REASON_WORDS } from './handReason'
 import { rollSentence } from './manual/panel/roll'
+import { keywordWords as grantKeywordWords } from './manual/offers'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
 export interface EventNames {
@@ -167,6 +168,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `${loses} ${word} and can't have or gain it`
   }
   if ('GrantAbility' in modification || 'GainAbilities' in modification) return `${gains} an ability`
+  if ('GrantText' in modification) return `${gains} “${modification.GrantText}”`
   if ('SetController' in modification) return `${group ? 'change' : 'changes'} controller`
   if ('SetPower' in modification) return `${becomes} ${modification.SetPower} power`
   if ('SetToughness' in modification) return `${becomes} ${modification.SetToughness} toughness`
@@ -503,6 +505,11 @@ export function describeManual(
     const { object, power, toughness } = action.Pump
     const signed = (value: number): string => (value < 0 ? `${value}` : `+${value}`)
     return `${who} gives ${n.card(object)} ${signed(power)}/${signed(toughness)} until end of turn (by hand)`
+  }
+  if ('GrantAbility' in action) {
+    const { object, grant, until_end_of_turn } = action.GrantAbility
+    const what = 'Keyword' in grant ? grantKeywordWords(grant.Keyword) : `“${grant.Text.trim()}”`
+    return `${who} gives ${n.card(object)} ${what} ${until_end_of_turn ? 'until end of turn' : 'for good'} (by hand)`
   }
   if ('Transform' in action) return `${who} turns ${n.card(action.Transform.object)} over (by hand)`
   if ('AttackDespiteDefender' in action) {

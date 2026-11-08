@@ -279,6 +279,27 @@ impl Held {
         });
     }
 
+    /// Gives the abilities `borrowed` names, each kept under its donor; an object never borrows from itself.
+    fn gain_borrowed(&mut self, borrowed: &[crate::effects::Borrowed], stamp: u64) {
+        for ability in borrowed {
+            if ability.donor == self.id {
+                continue;
+            }
+            self.abilities.push(HeldAbility {
+                address: AbilityRef::granted(
+                    self.id,
+                    Grant::Borrowed {
+                        donor: ability.donor,
+                        ability: ability.index,
+                    },
+                ),
+                body: Arc::clone(&ability.body),
+                since: stamp,
+                keyword: None,
+            });
+        }
+    }
+
     /// Makes the change `modification` says, as the effect `origin` with the timestamp `stamp` gives it.
     fn change(&mut self, modification: &Modification, origin: Grant, stamp: u64) {
         // An ability that is a keyword gives the keyword, whichever way the effect words it.
@@ -339,31 +360,14 @@ impl Held {
                 since: stamp,
                 keyword: None,
             }),
-            Modification::GainAbilities(borrowed) => {
-                for ability in borrowed {
-                    if ability.donor == self.id {
-                        continue;
-                    }
-                    self.abilities.push(HeldAbility {
-                        address: AbilityRef::granted(
-                            self.id,
-                            Grant::Borrowed {
-                                donor: ability.donor,
-                                ability: ability.index,
-                            },
-                        ),
-                        body: Arc::clone(&ability.body),
-                        since: stamp,
-                        keyword: None,
-                    });
-                }
-            }
+            Modification::GainAbilities(borrowed) => self.gain_borrowed(borrowed, stamp),
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::AddSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::GrantText(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddColors(_)

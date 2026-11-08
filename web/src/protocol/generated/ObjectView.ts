@@ -198,6 +198,11 @@ partial?: boolean,
  */
 note?: string, 
 /**
+ * What a seat gave the object by hand (`ManualAction::GrantAbility`) that still holds, a keyword in words or a
+ * line of text, which every seat that sees the object reads; left out while there are none.
+ */
+granted?: Array<string>, 
+/**
  * Which printed card the object shows, for a client to find its image and rules text: the card of the face in use or
  * of the copy effect. Left out for a token, an ability, a card the game has no record of, and a face-down object to a
  * seat that may not look at it.

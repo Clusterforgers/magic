@@ -55,6 +55,21 @@ function standIn(entry: DeckEntry): DeckPreviewData {
   }
 }
 
+/** The cards a built-in deck lists as preview cards that carry its colour and count, so the detail's size and pips match the list. */
+function builtInCards(entry: DeckEntry): PreviewCard[] {
+  return entry.listed.map((card) => ({
+    oracleId: card.name,
+    name: card.name,
+    count: card.count,
+    typeLine: '',
+    manaValue: 0,
+    manaCost: '',
+    identity: entry.identity ?? [],
+    support: 'verified',
+    reasons: [],
+  }))
+}
+
 /** The id of the legality block's reasons: the one place a deck's issues are written, which the off button points at. */
 const WHY_ID = 'deck-pane-why'
 
@@ -142,7 +157,7 @@ export function DeckPane({
   if (builtIn) {
     return (
       <DeckPreview
-        deck={{ ...standIn(entry), source: 'Built-in deck' }}
+        deck={{ ...standIn(entry), source: 'Built-in deck', cards: builtInCards(entry) }}
         legality={legality}
         actions={actions}
         body={

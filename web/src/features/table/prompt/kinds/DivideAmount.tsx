@@ -14,6 +14,7 @@ import { PromptLayout } from '../PromptLayout'
 import { TargetFace } from '../TargetFace'
 import { objectWords, targetKey } from '../targetText'
 import type { PromptComponent } from '../types'
+import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
 import { useDefaultFocus } from '../usePromptKeys'
 
@@ -100,7 +101,7 @@ function Row({ target, label, share, max, active, inputRef, onEnter, onLeave, on
  * stepper (the minus and plus buttons, the arrow keys or a typed number); a share never goes past what the other
  * targets leave. The split starts even, as the response clock would answer, so the common case is one press of
  * Confirm; the line beside Confirm, above the rows, counts what is left to give and Confirm waits until nothing is. A cast can be
- * taken back with Cancel; a triggered ability that divides as it goes on the stack cannot. Targets that are cards on
+ * taken back with Undo or Escape; a triggered ability that divides as it goes on the stack cannot. Targets that are cards on
  * the table are marked, and a click on one moves focus to its row.
  */
 export const DivideAmountPrompt: PromptComponent<'DivideAmount'> = ({ options }) => {
@@ -160,7 +161,6 @@ export const DivideAmountPrompt: PromptComponent<'DivideAmount'> = ({ options })
     event?.preventDefault()
     if (verdict.legal) answer(divisionAnswer(among, shares))
   }
-  const cancelWords = source?.zone === 'Battlefield' ? 'Cancel the ability' : 'Cancel the spell'
 
   return (
     <PromptLayout text={divideSentence(askerWords(source?.name), text, total)}>
@@ -170,14 +170,7 @@ export const DivideAmountPrompt: PromptComponent<'DivideAmount'> = ({ options })
             Confirm
           </Button>
           {options.can_cancel === true ? (
-            <Button
-              type="button"
-              variant="outline"
-              className="h-10 px-4"
-              onClick={() => answer({ DivideAmount: 'Cancel' })}
-            >
-              {cancelWords}
-            </Button>
+            <UndoButton zone={source?.zone} onUndo={() => void answer({ DivideAmount: 'Cancel' })} />
           ) : null}
           <p
             id={statusId}

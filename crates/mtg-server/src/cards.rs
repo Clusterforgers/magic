@@ -8,6 +8,7 @@
 
 use std::collections::BTreeMap;
 use std::sync::Arc;
+use std::time::Instant;
 
 use mtg_cards::assemble::Assembled;
 use mtg_cards::deck::{CardFacts, Legality};
@@ -237,6 +238,8 @@ pub struct CardSource {
     precons: Arc<PreconCache>,
     stored: Arc<StoredRules>,
     images: Option<Images>,
+    #[cfg(test)]
+    gate: Option<Arc<tests::BuildGate>>,
 }
 
 /// The library of the hand-written rules and the rows of `card_rules`, built when the rows change, and the same with
@@ -256,6 +259,15 @@ struct Built {
     base: Arc<Library>,
     /// `base` with the current drafts and their read state.
     full: Arc<Library>,
+}
+
+/// Runs CPU-heavy `work` on the blocking pool, so the runtime's workers keep serving meanwhile.
+async fn off_runtime<T: Send + 'static>(
+    work: impl FnOnce() -> T + Send + 'static,
+) -> Result<T, CatalogError> {
+    tokio::task::spawn_blocking(work)
+        .await
+        .map_err(|error| CatalogError::Rules(format!("the rules build stopped: {error}")))
 }
 
 /// A stored draft with its read state as a library takes it. A `forge` draft whose Oracle text matched is trusted.
@@ -302,6 +314,8 @@ impl CardSource {
             precons: Arc::default(),
             stored: Arc::default(),
             images: None,
+            #[cfg(test)]
+            gate: None,
         }
     }
 
@@ -365,28 +379,43 @@ impl CardSource {
 
     /// The library without drafts, the same with the current drafts and their read state, and the version of both.
     /// The rows of `card_rules` rebuild both; a draft or a verdict that changed rebuilds only the second.
+    ///
+    /// The build runs in a task of its own, so a caller that goes away does not throw it away, and its heavy parts
+    /// run on the blocking pool, so the runtime keeps serving while they last.
     async fn layers(&self) -> Result<(Arc<Library>, Arc<Library>, StoredVersion), CatalogError> {
+        let source = self.clone();
+        tokio::spawn(async move { source.layers_now().await })
+            .await
+            .map_err(|error| CatalogError::Rules(format!("the rules build stopped: {error}")))?
+    }
+
+    /// What [`CardSource::layers`] returns, built in the calling task.
+    async fn layers_now(
+        &self,
+    ) -> Result<(Arc<Library>, Arc<Library>, StoredVersion), CatalogError> {
         let repo = self.db.card_rules();
         let database = |error: DbError| CatalogError::Database(error.to_string());
         let rules = repo.version().await.map_err(database)?;
         let drafts = self.draft_version().await;
         let mut built = self.stored.built.lock().await;
-        let held = built.take().filter(|held| held.rules == rules);
+        let held = built
+            .as_ref()
+            .filter(|held| held.rules == rules)
+            .map(|held| (held.base.clone(), held.drafts.clone(), held.full.clone()));
         let base = match &held {
-            Some(held) => held.base.clone(),
+            Some((base, _, _)) => base.clone(),
             None => Arc::new(self.compiled_library(&repo).await?),
         };
-        let full = match held {
-            Some(held) if held.drafts.as_ref() == Some(&drafts) => {
-                (held.full, Some(drafts.clone()))
+        let (full, cached) = match held {
+            Some((_, held_drafts, full)) if held_drafts.as_ref() == Some(&drafts) => {
+                (full, Some(drafts.clone()))
             }
-            _ => match self.with_current_drafts(&base).await {
+            _ => match self.with_current_drafts(base.clone()).await {
                 Some(library) => (Arc::new(library), Some(drafts.clone())),
                 // Served this once, never cached as current.
                 None => (base.clone(), None),
             },
         };
-        let (full, cached) = full;
         *built = Some(Built {
             rules: rules.clone(),
             drafts: cached,
@@ -423,27 +452,56 @@ impl CardSource {
                 rules: row.rules,
             })
             .collect();
-        let (library, left_out) = self.hand_written()?.with_generated(&rows);
+        let source = self.clone();
+        let started = Instant::now();
+        let (library, left_out) = off_runtime(move || {
+            #[cfg(test)]
+            source.pass_gate();
+            source
+                .hand_written()
+                .map(|library| library.with_generated(&rows))
+        })
+        .await??;
         for error in &left_out {
             tracing::warn!(%error, "compiled rules left out");
         }
+        tracing::info!(
+            elapsed_ms = started.elapsed().as_millis(),
+            "compiled rules built"
+        );
         Ok(library)
     }
 
     /// `base` with the current drafts and the state of their reads; none if they cannot be read.
-    async fn with_current_drafts(&self, base: &Library) -> Option<Library> {
-        match self.current_drafts().await {
-            Ok(rows) => {
-                let (library, left_out) = base.with_drafts(&rows);
-                for error in &left_out {
-                    tracing::warn!(%error, "draft left out");
-                }
-                Some(library)
-            }
+    async fn with_current_drafts(&self, base: Arc<Library>) -> Option<Library> {
+        let rows = match self.current_drafts().await {
+            Ok(rows) => rows,
             Err(error) => {
                 tracing::warn!(%error, "the drafts could not be read");
-                None
+                return None;
             }
+        };
+        let started = Instant::now();
+        let (library, left_out) = match off_runtime(move || base.with_drafts(&rows)).await {
+            Ok(built) => built,
+            Err(error) => {
+                tracing::warn!(%error, "the drafts could not be added");
+                return None;
+            }
+        };
+        for error in &left_out {
+            tracing::warn!(%error, "draft left out");
+        }
+        tracing::info!(elapsed_ms = started.elapsed().as_millis(), "drafts added");
+        Some(library)
+    }
+
+    /// Builds the library once, so the first request does not wait for it; a failure is logged and a later
+    /// request tries again.
+    pub(crate) async fn warm(&self) {
+        match self.layers().await {
+            Ok(_) => tracing::info!("card library warmed"),
+            Err(error) => tracing::warn!(%error, "the card library could not be warmed"),
         }
     }
 
@@ -507,7 +565,7 @@ impl CardSource {
                 draft_rules(draft, mtg_db::ReadState::Approved, forge)
             })
             .collect();
-        let (library, left_out) = base.with_drafts(&rows);
+        let (library, left_out) = off_runtime(move || base.with_drafts(&rows)).await?;
         for error in &left_out {
             tracing::warn!(%error, "pinned draft left out");
         }
@@ -759,7 +817,7 @@ fn catalog_of(assembled: BTreeMap<String, Assembled>) -> Catalog {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a card the server reads for a game names its oracle id on the card and on each face, and keeps its deck fingerprint.
+    //! Goal: a card the server reads for a game names its oracle id on the card and on each face, and keeps its deck fingerprint; building the rules library leaves the runtime serving, and one build serves every caller.
     #![allow(clippy::unwrap_used, clippy::expect_used)]
 
     use mtg_cards::definition::Layout;
@@ -963,5 +1021,108 @@ mod tests {
         let (library, left_out) = Library::default().with_drafts(&[row]);
         assert_eq!(left_out.len(), 1, "{left_out:?}");
         assert!(library.draft(DRAFTED).is_none());
+    }
+
+    /// Holds the compiled-rules build until the test opens it, and tells when a build reached it.
+    #[derive(Debug, Default)]
+    pub(super) struct BuildGate {
+        reached: tokio::sync::Notify,
+        passes: std::sync::atomic::AtomicUsize,
+        open: std::sync::Mutex<bool>,
+        opened: std::sync::Condvar,
+        timed_out: std::sync::atomic::AtomicBool,
+    }
+
+    impl BuildGate {
+        fn open(&self) {
+            *self.open.lock().unwrap() = true;
+            self.opened.notify_all();
+        }
+    }
+
+    impl CardSource {
+        /// Waits at the gate, if any; a build on the runtime's only worker would starve the test, so the wait
+        /// ends after a while and says so.
+        pub(super) fn pass_gate(&self) {
+            let Some(gate) = &self.gate else { return };
+            gate.passes
+                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            gate.reached.notify_one();
+            let open = gate.open.lock().unwrap();
+            let (open, wait) = gate
+                .opened
+                .wait_timeout_while(open, std::time::Duration::from_secs(10), |open| !*open)
+                .unwrap();
+            drop(open);
+            if wait.timed_out() {
+                gate.timed_out
+                    .store(true, std::sync::atomic::Ordering::SeqCst);
+            }
+        }
+    }
+
+    /// The test runtime has one worker: other tasks run while the library is built only if the build is off it.
+    #[sqlx::test(migrations = false)]
+    async fn the_runtime_serves_while_the_library_is_built_and_one_build_serves_all(pool: PgPool) {
+        let (source, gate) = gated(pool).await;
+        let first = tokio::spawn({
+            let source = source.clone();
+            async move { source.rules().await }
+        });
+        within(gate.reached.notified()).await;
+        let waiting = tokio::spawn({
+            let source = source.clone();
+            async move { source.rules().await }
+        });
+        assert_eq!(
+            within(tokio::spawn(crate::api::healthz())).await.unwrap(),
+            "ok"
+        );
+        assert!(!first.is_finished());
+        gate.open();
+        let (first, waiting) = (
+            within(first).await.unwrap().unwrap(),
+            within(waiting).await.unwrap().unwrap(),
+        );
+        assert!(
+            !gate.timed_out.load(std::sync::atomic::Ordering::SeqCst),
+            "the build held the runtime's worker"
+        );
+        assert_eq!(gate.passes.load(std::sync::atomic::Ordering::SeqCst), 1);
+        assert!(Arc::ptr_eq(&first.library, &waiting.library));
+        assert_eq!(first.version, waiting.version);
+    }
+
+    /// A caller that goes away mid-build leaves the build to finish and be kept.
+    #[sqlx::test(migrations = false)]
+    async fn a_build_outlives_the_caller_that_started_it(pool: PgPool) {
+        let (source, gate) = gated(pool).await;
+        let caller = tokio::spawn({
+            let source = source.clone();
+            async move { source.rules().await }
+        });
+        within(gate.reached.notified()).await;
+        caller.abort();
+        gate.open();
+        let _ = within(caller).await;
+        within(source.rules()).await.unwrap();
+        assert_eq!(gate.passes.load(std::sync::atomic::Ordering::SeqCst), 1);
+    }
+
+    /// A source over both migrated schemas whose compiled-rules build waits at the returned gate.
+    async fn gated(pool: PgPool) -> (CardSource, Arc<BuildGate>) {
+        crate::migrate(&pool).await.unwrap();
+        Database::from_pool(pool.clone()).migrate().await.unwrap();
+        let gate = Arc::new(BuildGate::default());
+        let mut source = CardSource::new(pool).with_rules(Library::default());
+        source.gate = Some(gate.clone());
+        (source, gate)
+    }
+
+    /// `future`'s output; a hang fails the test instead of stalling it.
+    async fn within<T>(future: impl std::future::Future<Output = T>) -> T {
+        tokio::time::timeout(std::time::Duration::from_secs(30), future)
+            .await
+            .expect("the build hung")
     }
 }

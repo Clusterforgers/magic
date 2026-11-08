@@ -10,6 +10,8 @@ import {
   counterName,
   damageTargets,
   KNOWN_COUNTERS,
+  GRANT_KEYWORDS,
+  GRANT_TEXT,
   LIMITS,
   startDraft,
   targetKey,
@@ -33,6 +35,7 @@ const FORMS: Record<Ask, FormWords> = {
   damage: { title: (name) => `Deal damage with ${name}`, submit: 'Deal', count: 'Damage' },
   pump: { title: (name) => `Pump ${name} until end of turn`, submit: 'Pump', count: '' },
   note: { title: (name) => `Note on ${name}`, submit: 'Save note', count: '' },
+  grant: { title: (name) => `Give ${name} an ability`, submit: 'Give', count: '' },
 }
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -163,7 +166,8 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
           />
         </Field>
       ) : null}
-      {ask === 'note' ? null : ask === 'pump' ? (
+      {ask === 'grant' ? <GrantFields draft={draft} set={set} /> : null}
+      {ask === 'note' || ask === 'grant' ? null : ask === 'pump' ? (
         <div className="grid grid-cols-2 gap-2">
           <NumberField
             label="Power change"
@@ -192,6 +196,46 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
         </Button>
       </div>
     </form>
+  )
+}
+
+/** The ability a permanent is given, a keyword or a line of text, and how long it lasts. */
+function GrantFields({ draft, set }: { draft: Draft; set: (change: Partial<Draft>) => void }) {
+  return (
+    <>
+      <Field label="Ability">
+        <NativeSelect
+          value={draft.ability}
+          data-autofocus
+          onChange={(event) => set({ ability: event.currentTarget.value })}
+        >
+          {GRANT_KEYWORDS.map(([name, words]) => (
+            <option key={name} value={name}>
+              {words}
+            </option>
+          ))}
+          <option value={GRANT_TEXT}>Other…</option>
+        </NativeSelect>
+      </Field>
+      {draft.ability === GRANT_TEXT ? (
+        <Field label="Ability text">
+          <Input
+            value={draft.text}
+            maxLength={LIMITS.note}
+            onChange={(event) => set({ text: event.currentTarget.value })}
+          />
+        </Field>
+      ) : null}
+      <Field label="Lasts">
+        <NativeSelect
+          value={draft.forGood ? 'good' : 'turn'}
+          onChange={(event) => set({ forGood: event.currentTarget.value === 'good' })}
+        >
+          <option value="turn">Until end of turn</option>
+          <option value="good">For good</option>
+        </NativeSelect>
+      </Field>
+    </>
   )
 }
 

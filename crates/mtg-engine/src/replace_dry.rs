@@ -203,6 +203,7 @@ mod tests {
         let decision = Decision {
             player: PlayerId(0),
             kind: DecisionKind::ChooseOption(OptionOptions {
+                can_cancel: false,
                 source: ObjectId(1),
                 options: vec![
                     ChoiceOption::Label("a".into()),

@@ -7,7 +7,9 @@ import {
   PARTNER_HEAD_PX,
   POD_TIGHT_PX,
   cornerHeight,
+  podIsCramped,
   podIsTight,
+  POD_CRAMPED_PX,
   pictureHeight,
   pictureWidth,
   planCorner,
@@ -157,5 +159,13 @@ describe('podIsTight', () => {
     expect(podIsTight(null)).toBe(false)
     expect(podIsTight(POD_TIGHT_PX - 1)).toBe(true)
     expect(podIsTight(POD_TIGHT_PX)).toBe(false)
+  })
+})
+
+describe('podIsCramped', () => {
+  it('keeps only the name row and life over the corner in a measured column under the limit', () => {
+    expect(podIsCramped(null)).toBe(false)
+    expect(podIsCramped(POD_CRAMPED_PX - 1)).toBe(true)
+    expect(podIsCramped(POD_CRAMPED_PX)).toBe(false)
   })
 })

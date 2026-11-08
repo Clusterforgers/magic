@@ -9,6 +9,7 @@ import { KeyHint } from '../KeyHint'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
+import { UndoButton } from '../UndoButton'
 import { useObjects } from '../useCombatNames'
 import { useDefaultFocus, usePromptKeys } from '../usePromptKeys'
 
@@ -19,7 +20,8 @@ const FILTER_FROM = 12
  * ChooseOption: one of a short list (a color, a player, a name). Each option is a big button that answers at once,
  * numbered 1 to 9 and 0 for the keyboard, and focus starts on the first, the option the response clock takes. A color
  * carries its mana symbol and the viewer's own seat says so. The list scrolls inside the strip when it is long, and a
- * list of more than 12 options (a card name) has a filter field above it that narrows the buttons by their words.
+ * list of more than 12 options (a card name) has a filter field above it that narrows the buttons by their words. A
+ * choice made while a spell or ability is announced (the face or the way to cast it) has Undo, and Escape, to back out.
  */
 export const ChooseOptionPrompt: PromptComponent<'ChooseOption'> = ({ options }) => {
   const { answer } = usePrompt()
@@ -89,6 +91,9 @@ export const ChooseOptionPrompt: PromptComponent<'ChooseOption'> = ({ options })
           )
         })}
       </div>
+      {options.can_cancel === true ? (
+        <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
+      ) : null}
     </PromptLayout>
   )
 }

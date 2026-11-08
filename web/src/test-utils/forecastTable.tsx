@@ -25,6 +25,8 @@ export interface DrawnLineView {
   outcome: string | null
   /** The path of the curve. */
   d: string
+  /** How many attacks the line stands for: more than 1 for a bundle. */
+  count: number
 }
 
 /** What a test of the forecast on the table reads. */
@@ -97,6 +99,7 @@ export function renderForecastTable({
         pending: group.hasAttribute('data-pending'),
         outcome: group.getAttribute('data-outcome'),
         d: must(group.querySelector('.combat-line')?.getAttribute('d')),
+        count: Number(group.getAttribute('data-count') ?? 1),
       })),
     doomed: () =>
       [...root.querySelectorAll<HTMLElement>('button[data-doomed]')].map((element) =>

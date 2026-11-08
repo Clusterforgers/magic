@@ -16,6 +16,7 @@ import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
 import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
 import { STATES_BASE_PERMANENTS, withStates } from './states'
+import { withCrowd } from './crowdScene'
 import { withEquip } from './equip'
 import { withRevealed } from './revealScene'
 
@@ -139,6 +140,26 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       store.setState({ endTurnByHand: on })
       return true
     },
+    // As the server answers a yield to an ability: it keys it by the name and words on the stack and says the whole list.
+    autoYield(object) {
+      const shown = store.getState().objectsById[object]
+      if (shown?.kind !== 'Ability' || shown.name === '') return false
+      const key = { name: shown.name, text: shown.rules_text ?? '' }
+      store.setState((state) => ({
+        autoYields: state.autoYields.some((held) => held.name === key.name && held.text === key.text)
+          ? state.autoYields
+          : [...state.autoYields, key],
+      }))
+      return true
+    },
+    clearAutoYield(ability) {
+      store.setState((state) => ({
+        autoYields: state.autoYields.filter(
+          (held) => held.name !== ability.name || held.text !== ability.text,
+        ),
+      }))
+      return true
+    },
     setAutoChoices(choices) {
       store.setState({ autoChoices: choices })
       return true
@@ -190,6 +211,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   states?: true
   /** The attachments scene joins the table (`dev/equip.ts`). */
   equip?: true
+  /** The crowded stack and the big attack join the table (`dev/crowdScene.ts`). */
+  crowd?: true
   /** The first opponent's revealed hand cards and top card, a revealed card of the viewer's and two notes join the table (`dev/revealScene.ts`). */
   reveal?: true
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
@@ -227,7 +250,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const laid = buildFixture(sized.turn === 'you' ? { ...sized, active: sized.viewer ?? 0 } : sized)
   const stated = options.states === true ? withStates(laid) : laid
   const equipped = options.equip === true ? withEquip(stated) : stated
-  const plain = options.reveal === true ? withRevealed(equipped) : equipped
+  const revealed = options.reveal === true ? withRevealed(equipped) : equipped
+  const plain = options.crowd === true ? withCrowd(revealed) : revealed
   const built = options.real === undefined ? plain : withRealCards(plain, options.real, options.viewer ?? 0)
   const store = createPlayStore()
   const name = options.prompt ?? ''

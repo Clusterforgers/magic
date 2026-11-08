@@ -1,8 +1,9 @@
-//! Goal: a card a seat shows by hand is named to every seat and spectator, in the views and the batches, as a hand card in `revealed_hand` or the top card in `revealed_top`, while the cards beside it stay hidden; a shuffle hides the top card again; a note on a card is read by every seat that sees the card; the views the seats fold equal the true ones.
+//! Goal: a card a seat shows by hand is named to every seat and spectator, in the views and the batches, as a hand card in `revealed_hand` or the top card in `revealed_top`, while the cards beside it stay hidden; a shuffle hides the top card again; a note on a card and what was given to it by hand (a keyword in words, a line of text) are read by every seat that sees the card, the keyword through the card's keywords as well; the views the seats fold equal the true ones.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::manual::{ManualAction, ManualReveal};
+use mtg_engine::manual_grant::{ManualGrant, ManualKeyword};
 use mtg_protocol::{EventBatch, StateView};
 use mtg_testkit::cards::{forest, free_creature};
 use mtg_testkit::{Scenario, ready};
@@ -193,4 +194,37 @@ fn a_note_is_read_by_every_seat_that_sees_the_card(#[values(2, 4)] seat_count: u
         .iter()
         .find(|object| object.id == elf);
     assert_eq!(cleared.map(|object| object.note.clone()), Some(None));
+}
+
+#[rstest]
+fn what_was_given_by_hand_is_read_by_every_seat_that_sees_the_card(
+    #[values(2, 4)] seat_count: usize,
+) {
+    let mut table = table(seat_count);
+    let elf = card(&table, "Elf");
+    let give = |grant| ManualAction::GrantAbility {
+        object: elf,
+        grant,
+        until_end_of_turn: false,
+    };
+    act(
+        &mut table,
+        give(ManualGrant::Keyword(ManualKeyword::FirstStrike)),
+    );
+    let run = act(&mut table, give(ManualGrant::Text("has fun".to_owned())));
+    let wanted = ["First strike".to_owned(), "has fun".to_owned()];
+    for batch in &run.batches {
+        let told = batch.objects.iter().find(|object| object.id == elf);
+        assert_eq!(
+            told.map(|object| object.granted.as_slice()),
+            Some(&wanted[..])
+        );
+    }
+    let spectator = StateView::for_spectator(table.driver.state());
+    let seen = spectator.objects.iter().find(|object| object.id == elf);
+    assert_eq!(
+        seen.map(|object| object.granted.as_slice()),
+        Some(&wanted[..])
+    );
+    assert!(seen.is_some_and(|object| object.keywords.iter().any(|name| name == "First strike")));
 }

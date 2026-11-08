@@ -11,13 +11,15 @@
 //! game has left its step. A refusal is a small `Error{BadMessage}` that leaves everything as it was, so a client
 //! never needs a resync after one.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::turn::Step;
 use mtg_engine::{Event, GameState};
-use mtg_protocol::{AutoChoices, ErrorCode, FullControlMode, ServerMessage, Stop, StopSide};
+use mtg_protocol::{
+    AutoChoices, AutoYield, ErrorCode, FullControlMode, ServerMessage, Stop, StopSide,
+};
 use thiserror::Error;
 
 use crate::actor::{Fatal, GameActor, Phase};
@@ -56,6 +58,8 @@ struct Held {
     end_turn_by_hand: bool,
     /// The decisions the server answers for the seat with their plain answer.
     auto_choices: AutoChoices,
+    /// The abilities the seat lets resolve unasked ([`crate::auto_yields`]).
+    auto_yields: BTreeSet<AutoYield>,
 }
 
 /// The stops and the Full Control mode of every seat of one game.
@@ -169,6 +173,32 @@ impl Stops {
     pub(crate) fn set_auto_choices(&mut self, seat: PlayerId, choices: AutoChoices) {
         if let Some(held) = self.seats.get_mut(seat.index()) {
             held.auto_choices = choices;
+        }
+    }
+
+    /// The abilities `seat` lets resolve unasked, in key order.
+    pub(crate) fn auto_yields(&self, seat: PlayerId) -> Vec<AutoYield> {
+        self.seats
+            .get(seat.index())
+            .map(|held| held.auto_yields.iter().cloned().collect())
+            .unwrap_or_default()
+    }
+
+    /// Whether `seat` lets the ability with key `ability` resolve unasked.
+    pub(crate) fn yields_to(&self, seat: PlayerId, ability: &AutoYield) -> bool {
+        self.seats
+            .get(seat.index())
+            .is_some_and(|held| held.auto_yields.contains(ability))
+    }
+
+    /// Adds (`on`) or takes back `seat`'s yield to `ability`.
+    pub(crate) fn set_auto_yield(&mut self, seat: PlayerId, ability: AutoYield, on: bool) {
+        if let Some(held) = self.seats.get_mut(seat.index()) {
+            if on {
+                held.auto_yields.insert(ability);
+            } else {
+                held.auto_yields.remove(&ability);
+            }
         }
     }
 
@@ -317,6 +347,10 @@ impl Stops {
             if old.auto_choices(seat) != choices {
                 told.push((seat, ServerMessage::AutoChoices { choices }));
             }
+            let yields = self.auto_yields(seat);
+            if old.auto_yields(seat) != yields {
+                told.push((seat, ServerMessage::AutoYields { yields }));
+            }
         }
         told
     }
@@ -357,7 +391,7 @@ impl<S: EventStore> GameActor<S> {
 
     /// Takes `stops` as the seats' stops and modes. A seat that waits for its dwell is sent its decision at once if
     /// they now ask it: the decision is issued again, as a unit with the stops.
-    async fn take_stops(&mut self, seat: PlayerId, stops: Stops) -> Result<(), Fatal> {
+    pub(crate) async fn take_stops(&mut self, seat: PlayerId, stops: Stops) -> Result<(), Fatal> {
         if let Phase::Running(running) = &mut self.phase
             && running.dwell_ends(seat, &stops, &self.yields)
         {
@@ -482,7 +516,7 @@ impl<S: EventStore> GameActor<S> {
     /// The refusal for a seat that is out of the game, or for any seat once the game is over.
     ///
     /// A game that has not started has no such seat: stops set in the lobby are held for the game.
-    fn out_of_game(&self, seat: PlayerId) -> Option<Rejection> {
+    pub(crate) fn out_of_game(&self, seat: PlayerId) -> Option<Rejection> {
         let Phase::Running(running) = &self.phase else {
             return None;
         };

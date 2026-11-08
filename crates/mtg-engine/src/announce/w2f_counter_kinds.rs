@@ -49,6 +49,7 @@ pub(super) fn w2f_run(ctx: &Ctx<'_>, work: &mut Work<'_>, price: &Price) -> Opti
                             .map(|kind| ChoiceOption::Label(format!("{} counter", kind.name())))
                             .collect(),
                         text: format!("Choose a counter to remove from {name}."),
+                        can_cancel: ctx.can_cancel(),
                     })),
                 );
             }

@@ -200,7 +200,7 @@ export function DeckList({
             aria-label="Sort by"
             size="sm"
             value={sort}
-            className="min-w-0 flex-1"
+            className="min-w-0 flex-[11]"
             onChange={(event) => {
               if (isSortKey(event.target.value)) onSort(event.target.value)
             }}
@@ -215,7 +215,7 @@ export function DeckList({
             aria-label="Support"
             size="sm"
             value={filter.support}
-            className="min-w-0 flex-1"
+            className="min-w-0 flex-[9]"
             onChange={(event) =>
               setFilter((was) => ({ ...was, support: event.target.value as SupportFilter }))
             }

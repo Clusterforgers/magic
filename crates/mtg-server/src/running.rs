@@ -14,6 +14,7 @@ use mtg_protocol::{
 };
 use tokio::time::Instant;
 
+use crate::auto_yields;
 use crate::bank::Banks;
 use crate::dwell::Waits;
 use crate::pace::{self, Pace, chosen_answer};
@@ -277,6 +278,10 @@ impl Running {
     /// dwell is a pass at once.
     fn verdict(&self, decision: &Decision, stops: &Stops, yields: &mut Yields) -> Verdict {
         if self.auto_answer(decision, stops).is_some() {
+            return Verdict::Pass;
+        }
+        // A yield to the ability on top passes at once, whatever the seat holds: the pace shows the choice alone.
+        if auto_yields::passes_for(decision, stops, self.engine.state()) {
             return Verdict::Pass;
         }
         match windows::verdict(decision, stops, yields, self.engine.state()) {

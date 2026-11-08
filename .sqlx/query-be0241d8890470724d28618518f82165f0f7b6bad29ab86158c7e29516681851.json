@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops)\n             VALUES ($1, $2, $3, $4, $5, $6)\n             ON CONFLICT (user_id) DO UPDATE\n             SET default_stops = EXCLUDED.default_stops,\n                 end_turn_by_hand = EXCLUDED.end_turn_by_hand,\n                 auto_order_triggers = EXCLUDED.auto_order_triggers,\n                 auto_assign_damage = EXCLUDED.auto_assign_damage,\n                 auto_smart_stops = EXCLUDED.auto_smart_stops,\n                 updated_at = now()",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Jsonb",
+        "Bool",
+        "Bool",
+        "Bool",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "be0241d8890470724d28618518f82165f0f7b6bad29ab86158c7e29516681851"
+}

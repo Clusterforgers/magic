@@ -87,7 +87,7 @@ describe('a hybrid cost', () => {
     const { marked, text } = renderPay(payOptions('{W/U}', 'GRB'))
     expect(marked()).toEqual([])
     expect(text()).toBe(
-      'You cannot pay 1 white or blue for Selesnya Evangel with the mana you have. Cancel to go back.',
+      'You cannot pay 1 white or blue for Selesnya Evangel with the mana you have. Undo to go back.',
     )
   })
 

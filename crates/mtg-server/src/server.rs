@@ -203,6 +203,12 @@ impl Server {
         let mut stopping = state.stop();
         let janitor = state.registry().spawn_janitor(state.stop());
         let upkeep = state.auth().spawn_upkeep(state.stop());
+        // The first visitor should not wait for the card library; the build stays off the runtime's workers.
+        let warming = state.cards().cloned().map(|cards| {
+            tokio::spawn(async move {
+                cards.warm().await;
+            })
+        });
         // Small request/answer messages should not wait for Nagle's algorithm.
         let listener = listener.tap_io(|tcp| {
             if let Err(error) = tcp.set_nodelay(true) {
@@ -236,6 +242,9 @@ impl Server {
             }
         };
         janitor.abort();
+        if let Some(warming) = warming {
+            warming.abort();
+        }
         if let Some(upkeep) = upkeep {
             upkeep.abort();
         }
