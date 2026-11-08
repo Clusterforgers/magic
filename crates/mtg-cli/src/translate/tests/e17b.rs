@@ -59,7 +59,10 @@ fn the_card_found_and_the_rest_are_named_apart(
 #[case::both_remembered("RememberFound$ True | RememberRevealed$ True")]
 #[case::found_may_stay("ImprintFound$ True | RememberRevealed$ True | OptionalFoundMove$ True")]
 fn other_dig_shapes_stay_gaps(#[case] keys: &str) {
-    assert!(!gaps(&dig(keys, "Imprinted", "Card.IsRemembered")).is_empty());
+    assert_ne!(
+        gaps(&dig(keys, "Imprinted", "Card.IsRemembered")),
+        Vec::<String>::new()
+    );
 }
 
 /// Heroic Return's shape: an `Effect` remembering its target and itself with a `Moved` replacement, then the return.
@@ -95,7 +98,7 @@ fn a_returned_card_of_a_kind_gets_counters(
 #[case::counted_number("Creature.IsRemembered", "X", "")]
 #[case::more_after_the_return("Creature.IsRemembered", "2", " | SubAbility$ DBReturn")]
 fn other_returns_stay_gaps(#[case] valid: &str, #[case] put: &str, #[case] back: &str) {
-    assert!(!gaps(&returned(valid, put, back)).is_empty());
+    assert_ne!(gaps(&returned(valid, put, back)), Vec::<String>::new());
 }
 
 #[test]

@@ -115,19 +115,19 @@ impl Voice {
 }
 
 /// The step exiles the cards a name holds and names them as they are in exile.
-fn exiles(step: &Effect, held: &str, stem: &str) -> Option<()> {
+fn exiles(effect: &Effect, held: &str, stem: &str) -> Option<()> {
     let Effect::Exile {
         what: Ref::Bound(what),
         bind: Some(name),
         duration: None,
-    } = step
+    } = effect
     else {
         return None;
     };
     (what == held && plain(name) == stem).then_some(())
 }
 
-/// A bookkeeping name without its number ("found_moved3" is "found_moved").
+/// A bookkeeping name without its number (`found_moved3` is `found_moved`).
 fn plain(name: &str) -> &str {
     name.trim_end_matches(|c: char| c.is_ascii_digit())
 }

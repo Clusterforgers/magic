@@ -7,6 +7,11 @@ use super::ctx::{Ctx, Tr, unmapped};
 use super::memory::Slot;
 use crate::forge::script::Params;
 
+/// Whether the line is a `DigUntil` that splits its cards over the two memories, which it binds itself.
+pub fn splits(api: &str, p: &Params) -> bool {
+    api == "DigUntil" && split(p).is_some()
+}
+
 /// The memory of the card found and the memory of the rest, when a `DigUntil` splits them over the two slots.
 pub fn split(p: &Params) -> Option<(Slot, Slot)> {
     let on = |key| p.get(key) == Some("True");

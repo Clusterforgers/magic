@@ -117,7 +117,7 @@ fn the_card_found_and_the_rest_go_their_own_ways(
                 "only the card found stays exiled"
             );
         }
-        (None, _) => assert!(exile.is_empty()),
+        (None, _) => assert_eq!(exile, Vec::<String>::new()),
     }
     assert_eq!(
         count(&library, "Forest"),
