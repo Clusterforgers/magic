@@ -1,6 +1,6 @@
 //! Goal: every atom of the filter grammar that round 20 maps reads as its selector, reads back as the Oracle text that
-//! says it, and reads `Differs` beside a text with a narrower or wider selector (a shared color has no writer
-//! yet and stays `Unchecked`, never `Accepted`); every atom of the table of gaps stays a
+//! says it, and reads `Differs` beside a text with a narrower or wider selector (a shared color and a kicked
+//! spell have no writer yet and stay `Unchecked`, never `Accepted`); every atom of the table of gaps stays a
 //! gap named by its row.
 use std::collections::BTreeSet;
 
@@ -351,13 +351,13 @@ const KASSANDRA: &str = "Name:Alpha\nTypes:Enchantment\nT:Mode$ DamageDone | Val
     Verdict::Mismatch
 )]
 #[case::every_creature(FAVOR, "Enchantment", "Each creature has flying.", Verdict::Mismatch)]
-#[case::kicked(KICKED, "Instant", "Counter target kicked spell.", Verdict::Accepted)]
-#[case::any_spell(KICKED, "Instant", "Counter target spell.", Verdict::Mismatch)]
+#[case::kicked(KICKED, "Instant", "Counter target kicked spell.", Verdict::Unchecked)]
+#[case::any_spell(KICKED, "Instant", "Counter target spell.", Verdict::Unchecked)]
 #[case::multicolored_spell(
     KICKED,
     "Instant",
     "Counter target multicolored spell.",
-    Verdict::Mismatch
+    Verdict::Unchecked
 )]
 #[case::shares_with_yours(
     JADED,
@@ -452,6 +452,18 @@ fn an_extreme_beside_a_controller_has_no_words(#[case] oracle: &str) {
     assert_eq!(gaps(PADEEM), Vec::<String>::new());
     assert_eq!(
         verdict("Enchantment", oracle, &abilities(PADEEM)),
+        Verdict::Unchecked
+    );
+}
+
+#[test]
+fn an_extreme_of_power_has_no_words() {
+    let script = "Name:Alpha\nTypes:Sorcery\nA:SP$ ChangeZone | Origin$ Battlefield | Destination$ Exile | ValidTgts$ Creature.greatestPower\n";
+    assert_eq!(gaps(script), Vec::<String>::new());
+    let oracle =
+        "Exile target creature with the greatest power among creatures on the battlefield.";
+    assert_eq!(
+        verdict("Sorcery", oracle, &abilities(script)),
         Verdict::Unchecked
     );
 }

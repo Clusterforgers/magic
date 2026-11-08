@@ -1,5 +1,5 @@
-//! The noun-phrase words of the filter atoms the Forge translator maps: "kicked" before the noun; after it "with the
-//! greatest mana value" (an extreme among the phrase's own kind), "with a legendary Equipment attached to it", "with power
+//! The noun-phrase words of the filter atoms the Forge translator maps, after the noun: "with the greatest
+//! mana value" (an extreme of mana value among the phrase's own kind), "with a legendary Equipment attached to it", "with power
 //! less than ~'s" and "with three or more charge counters on it".
 
 use mtg_core::card::{CardType, Subtype, Supertype};
@@ -8,16 +8,6 @@ use super::amounts::stat_name;
 use super::selectors::Form;
 use crate::refs::{Pred, Ref, Selector};
 use crate::value::{Amount, Cmp, StatKind};
-
-/// An adjective of this module before the noun.
-pub(super) fn vp20_adjective(word: &str) -> Option<Pred> {
-    (word == "kicked").then_some(Pred::Kicked)
-}
-
-/// The adjective of this module for a predicate.
-pub(super) fn vp20_adjective_text(pred: &Pred) -> Option<String> {
-    (*pred == Pred::Kicked).then(|| "kicked".to_owned())
-}
 
 /// The kind an extreme is said among: the card types of the phrase, and "nonland" as the phrase says it.
 fn kind_of(selector: &Selector) -> Vec<Pred> {
@@ -58,15 +48,12 @@ pub(super) fn vp20_fits(selector: &Selector, form: Form) -> bool {
         }
 }
 
-/// The words of an extreme of a stat: "greatest mana value", "lowest mana value", "least toughness".
+/// The words of an extreme of mana value: "with the greatest mana value", "with the lowest mana value".
 fn extreme_text(stat: StatKind, greatest: bool) -> Option<String> {
-    let name = stat_name(stat)?;
-    let word = match (stat, greatest) {
-        (StatKind::ManaValue, false) => "lowest",
-        (_, true) => "greatest",
-        (_, false) => "least",
-    };
-    Some(format!("with the {word} {name}"))
+    // "The greatest power" is printed with "among creatures on the battlefield", which no writer says.
+    (stat == StatKind::ManaValue).then_some(())?;
+    let word = if greatest { "greatest" } else { "lowest" };
+    Some(format!("with the {word} mana value"))
 }
 
 /// The suffix of this module for a predicate.
@@ -75,12 +62,12 @@ pub(super) fn vp20_suffix_text(pred: &Pred, form: Form) -> Option<String> {
     match pred {
         Pred::GreatestAmong { stat, .. } => extreme_text(*stat, true),
         Pred::LeastAmong { stat, .. } => extreme_text(*stat, false),
-        // "with three or more charge counters on it".
+        // "with three or more charge counters on it", after "target", "each" or "all": a condition says it of the object itself.
         Pred::CounterCount {
             kind,
             op: Cmp::Ge,
             to,
-        } if *to >= 2 => {
+        } if *to >= 2 && !matches!(form, Form::Subject | Form::Count) => {
             let it = if plural { "them" } else { "it" };
             Some(format!(
                 "with {} or more {} counters on {it}",
