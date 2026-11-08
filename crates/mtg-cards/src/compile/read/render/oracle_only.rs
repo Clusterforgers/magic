@@ -341,6 +341,7 @@ mod t20c_rule;
 // r5b
 mod f25_wordings;
 mod f26_wordings;
+mod f29_wordings;
 mod fix20_each_then;
 mod fix8_tap_or_untap;
 mod fix9_wordings;
@@ -459,6 +460,11 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     r5b_flow::add(ability, texts);
     fix8_tap_or_untap::add(texts);
     add_latest(ability, texts);
+}
+
+/// Adds the wordings of fix29, which read the wordings every other writer has added.
+pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
+    f29_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's

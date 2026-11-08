@@ -88,6 +88,8 @@ const VOCABULARY: &[&str] = &[
     "historic",
     "multicolored",
     "monocolored",
+    "firststrike",
+    "doublestrike",
 ];
 
 /// Whether the word is one an unordered list is made of (a creature type is a capital letter in the middle of a text).

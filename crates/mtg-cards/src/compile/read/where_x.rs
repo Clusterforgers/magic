@@ -69,7 +69,7 @@ fn characteristic(r: &mut Reader<'_>) -> Option<(Whose, StatKind)> {
 }
 
 /// What the cost of an ability or a spell took out of its zone, as a card words it.
-const PAID_VERBS: [&str; 4] = ["sacrificed", "discarded", "exiled", "revealed"];
+const PAID_VERBS: [&str; 5] = ["sacrificed", "discarded", "exiled", "revealed", "tapped"];
 
 /// What the cost took, as a card names it.
 const PAID_NOUNS: [&str; 7] = [

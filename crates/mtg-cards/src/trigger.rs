@@ -252,6 +252,11 @@ pub enum TriggerPattern {
         /// The permanent.
         what: Selector,
     },
+    /// A permanent becomes tapped, not as it attacks.
+    TappedNotAttacking {
+        /// The permanent.
+        what: Selector,
+    },
     /// A permanent matching the selector becomes untapped.
     Untapped {
         /// The permanent.
@@ -330,6 +335,14 @@ pub enum TriggerPattern {
         /// What receives them; any permanent when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         what: Selector,
+        /// Only counters of this kind; any kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+    },
+    /// Counters are put on a player ("whenever you get one or more {E}"); `Triggering` is that player.
+    PlayerCountersPut {
+        /// Who gets them.
+        who: Ref,
         /// Only counters of this kind; any kind when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,

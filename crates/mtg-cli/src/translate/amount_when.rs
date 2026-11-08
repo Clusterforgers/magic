@@ -25,6 +25,12 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Bargained" | "Teamwork" | "OptionalGenericCostPaid" => json!("AdditionalCostPaid"),
         "Monarch" => json!({"Monarch": "You"}),
         "MaxSpeed" => json!({"MaxSpeed": "You"}),
+        // "If you revealed a Dragon card or controlled a Dragon as you cast this spell": the optional reveal was paid, or a
+        // permanent of the type was yours as the spell was cast.
+        _ if word.starts_with("Presence_") => match presence(ctx, word) {
+            Ok(condition) => condition,
+            Err(gap) => return Some(Err(gap)),
+        },
         "Morbid" => {
             json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": "CreaturesDied"}}, "op": "Ge", "right": 1}})
         }
@@ -68,6 +74,21 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         _ => return None,
     };
     Some(branch(ctx, &condition, branches))
+}
+
+/// `Presence_Dragon`: "if you revealed a Dragon card or controlled a Dragon as you cast this spell", the optional reveal
+/// of the spell itself paid or a permanent of the type controlled as it was cast. Other words are a gap.
+fn presence(ctx: &Ctx, word: &str) -> Tr<Value> {
+    let kind = word.strip_prefix("Presence_").unwrap_or_default();
+    let said = format!("revealed a {kind} card or controlled a {kind} as you cast this spell");
+    if kind.is_empty() || !ctx.oracle.contains(&said) {
+        return unmapped(format!("amount:Count${word}-wording"));
+    }
+    let controlled = super::valid::selector(ctx, &format!("Permanent.{kind}+YouCtrl"))?;
+    Ok(json!({"Any": [
+        "AdditionalCostPaid",
+        {"AsCast": {"Compare": {"left": {"Count": controlled}, "op": "Ge", "right": 1}}}
+    ]}))
 }
 
 /// `.White.1.0`: the amount when at least three mana of the color was spent to cast the spell (adamant), else the other;

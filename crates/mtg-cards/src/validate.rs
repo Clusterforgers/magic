@@ -1162,6 +1162,12 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// "as you cast this spell": the condition it asks as the spell is cast.
+    fn as_cast(&mut self, inner: &Condition) {
+        self.uses("Condition", "AsCast");
+        self.at("inner", |w| w.condition(inner));
+    }
+
     fn condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Not(inner) => self.at("Not", |w| w.condition(inner)),
@@ -1207,6 +1213,7 @@ impl<'a> Walker<'a> {
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
+            Condition::AsCast(inner) => self.as_cast(inner),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
             Condition::StartingPlayer(who) => {
@@ -2180,7 +2187,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Surveilled { who }
             | TriggerPattern::Bolstered { who }
             | TriggerPattern::Expend { who, .. }
-            | TriggerPattern::W11cCrime { who } => {
+            | TriggerPattern::W11cCrime { who }
+            | TriggerPattern::PlayerCountersPut { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             TriggerPattern::Drew { who, what, .. } | TriggerPattern::Did { who, what, .. } => {
@@ -2194,6 +2202,7 @@ impl<'a> Walker<'a> {
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
             TriggerPattern::Tapped { what }
+            | TriggerPattern::TappedNotAttacking { what }
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
@@ -2368,6 +2377,8 @@ impl Walker<'_> {
             | TriggerPattern::LifeGained { .. }
             | TriggerPattern::LifeLost { .. }
             | TriggerPattern::Surveilled { .. }
+            // The times the permanent itself became tapped.
+            | TriggerPattern::Tapped { .. }
             | TriggerPattern::Attacks { .. }
             | TriggerPattern::BecomesCrewed { .. }
             | TriggerPattern::BecomesSaddled { .. }
@@ -2397,12 +2408,14 @@ impl Walker<'_> {
                     to: Some(to),
                     combat: None,
                 } if source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::Defending))
+                    // A player's first discards of the turn, of any card.
+                    || matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())
             }
             _ => false,
         };
         if !counted {
             self.problem(
-                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source are counted in a turn",
+                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source or a player's first discards are counted in a turn",
             );
         }
         self.at("event", |w| w.trigger_pattern(event));
@@ -3565,12 +3578,16 @@ impl Walker<'_> {
                 who,
                 token,
                 count,
+                against,
                 bind,
                 ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
                 w.at("count", |w| w.amount(count));
+                if let Some(against) = against {
+                    w.at("against", |w| w.reference(against, Kind::Either));
+                }
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }

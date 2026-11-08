@@ -364,6 +364,15 @@ impl<'a> Ctx<'a> {
         let Ok(index) = u8::try_from(at) else {
             return unmapped("targets:too-many");
         };
+        // A script that targets an opponent where the card says "target player" is wrong, not a choice; a card that names
+        // no opponent already reads as a player (`valid::player_printed`, Draconic Fealty).
+        let oracle = self.oracle.to_lowercase();
+        if spec.get("what") == Some(&json!("Opponent"))
+            && oracle.contains("target player")
+            && !oracle.contains("target opponent")
+        {
+            return unmapped("targets:Opponent-where-the-card-says-target-player");
+        }
         self.targets.push(spec);
         Ok(json!({ "Target": index }))
     }

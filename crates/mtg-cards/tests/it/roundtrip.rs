@@ -1119,6 +1119,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 count,
                 tapped,
                 attacking,
+                against: None,
                 bind: None
             }
         ),

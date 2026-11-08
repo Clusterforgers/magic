@@ -75,6 +75,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         | TriggerPattern::Mutates { what }
         | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
+        | TriggerPattern::TappedNotAttacking { what }
         | TriggerPattern::Untapped { what }
         | TriggerPattern::PhasedOut { what }
         | TriggerPattern::PhasedIn { what }
@@ -752,6 +753,9 @@ fn each_turn(r: &mut Reader<'_>, noun: &str, whose: &str) -> Option<u32> {
 /// The ordinals a count of a turn names.
 const ORDINALS: [&str; 5] = ["first", "second", "third", "fourth", "fifth"];
 
+/// A tap other than to attack (`TriggerPattern::TappedNotAttacking`).
+const NOT_ATTACKING: &str = "becomes tapped, if it isn't being declared as an attacker";
+
 /// The card itself, or an object with its article: "a creature you control", "another creature".
 pub(super) fn subject(r: &mut Reader<'_>) -> Option<Selector> {
     if r.source() {
@@ -1019,6 +1023,9 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(paid) = r.attempt(|r| cost_paid(r, false)) {
         return Some(paid);
     }
+    if let Some(presence) = r.attempt(super::e16b_presence::read) {
+        return Some(presence);
+    }
     if let Some(spent) = r.attempt(|r| super::spent::was_spent(r, false)) {
         return Some(spent);
     }
@@ -1206,6 +1213,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     if let Some(paid) = cost_paid_text(condition, false) {
         return Some(paid);
     }
+    if let Some(presence) = super::e16b_presence::text(condition) {
+        return Some(presence);
+    }
     if let Some(spent) = super::spent::was_spent_text(condition, false) {
         return Some(spent);
     }
@@ -1372,23 +1382,15 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             )
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::AttachedPlayer,
-        } => said(what, "attacks enchanted player"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::Monarch,
-        } => said(what, "attacks the monarch"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::Opponents,
-        } => said(what, "attacks one of your opponents"),
+        TriggerPattern::AttacksPlayer { what, at } => {
+            said(what, super::e16c_attacks::e16c_attacks_player(at)?)
+        }
         TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
             said(what, "attacks you or a planeswalker you control")
         }
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
+        TriggerPattern::TappedNotAttacking { what } => said(what, NOT_ATTACKING),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::PhasedOut { what } => said(what, "phases out"),
         TriggerPattern::PhasedIn { what } => said(what, "phases in"),
@@ -1626,7 +1628,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))
             .or_else(|| super::r7e_events::r7e_any_of(patterns)),
         _ => {
-            if let Some(each) = super::r7e_events::fix10_each_source(pattern) {
+            if let Some(each) = super::r7e_events::fix10_each_source(pattern)
+                .or_else(|| super::e16c_attacks::e16c_group_at_text(pattern))
+            {
                 return Some(each);
             }
             let (what, verb) = happening(pattern)?;
@@ -1636,7 +1640,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
 }
 
 /// "Whenever one or more creatures you control attack", "Whenever two or more Knights attack".
-fn group_attacks_text(what: &Selector, at_least: u32) -> Option<String> {
+pub(super) fn group_attacks_text(what: &Selector, at_least: u32) -> Option<String> {
     let count = if at_least == 1 {
         "one"
     } else {
@@ -1744,7 +1748,8 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         }
         // The damage of one batch is one time, and the engine counts only the first batch of a turn.
         TriggerPattern::Batch(inner) if nth == 1 => {
-            let counted = super::r7e_events::r7e_one_object_damage(inner)?;
+            let counted = super::r7e_events::r7e_one_object_damage(inner)
+                .or_else(|| super::e16a_history::first_discards(inner))?;
             return Some(format!("{counted} for the first time each turn"));
         }
         // The counters of one batch are one time: the first counter put in the turn is the one that counts.
@@ -1774,6 +1779,9 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
 /// into your graveyard from your library".
 fn batch_text(inner: &TriggerPattern) -> Option<String> {
     match inner {
+        TriggerPattern::PlayerCountersPut { .. } => {
+            super::e16c_attacks::e16c_player_counters_text(inner)
+        }
         TriggerPattern::DealsDamage { source, to, combat } => Some(format!(
             "Whenever one or more {} deal {}",
             phrase_text(source, Form::All)?,

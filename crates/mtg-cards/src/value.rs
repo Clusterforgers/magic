@@ -273,6 +273,10 @@ pub enum TurnTally {
     Attackers,
     /// The damage dealt to the player after prevention, by any source.
     DamageTaken,
+    /// The combat damage the player took.
+    CombatDamageTaken,
+    /// The noncombat damage the player took.
+    NoncombatDamageTaken,
     /// The times the player gained life, once for each gain of any amount.
     LifeGained,
     /// The times counters were put on the object (read through an object reference, not a player): one for each
@@ -378,6 +382,8 @@ pub enum TallyEvent {
     /// +1/+1 counters were put on a permanent or a card in exile by a spell or ability, as for `CountersPut`; an amount
     /// counts the +1/+1 counters put.
     PlusOneCountersPut,
+    /// A permanent was sacrificed (as it last was, for its controller).
+    Sacrificed,
 }
 
 /// Which result of the latest die roll an amount reads.
@@ -1220,6 +1226,9 @@ pub enum Condition {
     /// The spell was cast at a time its caster couldn't have cast a sorcery (CR 307.1): another turn, a step that is no
     /// main phase or a stack that held more; a permanent and its abilities read the spell it came from.
     CastOffSorceryTiming,
+    /// The inner condition held for the caster as the spell was cast ("if you controlled a Dragon as you cast this spell");
+    /// a permanent and its abilities read the spell it came from.
+    AsCast(Box<Condition>),
     /// At least one mana of this type was spent to cast the spell (CR 601.2h): "if {R} was spent to cast this spell"; a
     /// permanent and its abilities read the spell it came from, as the mana it was cast with.
     ManaSpent(ManaType),

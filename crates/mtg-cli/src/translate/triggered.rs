@@ -204,6 +204,8 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
             "Triggering"
         }
         Word::Card if did.is_some_and(|(_, object)| object) => "Triggering",
+        // The permanent that was tapped for mana is the event's first subject.
+        Word::Card if mode == "TapsForMana" => "Triggering",
         Word::Attacker
             if matches!(
                 mode,

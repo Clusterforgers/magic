@@ -182,7 +182,8 @@ fn settled(left: &Value, op: &str, right: &Value) -> Option<Value> {
     // the shape the read-back writers know.
     let spent = condition.get("ManaSpent").is_some()
         || condition.pointer("/Compare/left/ManaSpent").is_some()
-        || condition == "AdditionalCostPaid";
+        || condition == "AdditionalCostPaid"
+        || condition.pointer("/Any/1/AsCast").is_some();
     if !spent {
         return None;
     }

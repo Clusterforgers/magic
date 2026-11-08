@@ -521,6 +521,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)
         }
+        TriggerPattern::PlayerCountersPut { who: by, .. } => {
+            let (name, s) = who(by);
+            (format!("{name} get{s} counters"), false)
+        }
         TriggerPattern::Ventured {
             who: by,
             room: None,
@@ -684,6 +688,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         }
         TriggerPattern::Tapped { what } => (
             format!("{} becomes tapped", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::TappedNotAttacking { what } => (
+            format!(
+                "{} becomes tapped, if it isn't being declared as an attacker",
+                subject(what)
+            ),
             what.0 == [Pred::This],
         ),
         TriggerPattern::PhasedOut { what } => (

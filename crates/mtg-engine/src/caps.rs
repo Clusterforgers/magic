@@ -50,6 +50,7 @@ const RUNS: &[&str] = &[
     "Trigger.Drew",
     "Trigger.Discarded",
     "Trigger.Tapped",
+    "Trigger.TappedNotAttacking",
     "Trigger.Untapped",
     "Trigger.PhasedOut",
     "Trigger.PhasedIn",
@@ -61,6 +62,7 @@ const RUNS: &[&str] = &[
     "Trigger.GroupAttacksAt",
     "Trigger.CountersPut",
     "Trigger.CountersRemoved",
+    "Trigger.PlayerCountersPut",
     "Trigger.Chapter",
     "Trigger.Attached",
     "Trigger.Cycled",
@@ -566,6 +568,7 @@ const RUNS: &[&str] = &[
     "Keyword.Shadow",
     "Condition.CastWith",
     "Condition.CastOffSorceryTiming",
+    "Condition.AsCast",
     "Condition.ManaSpent",
     "Rule.MayCast",
     "Condition.Kicked",
@@ -1218,6 +1221,7 @@ mod tests {
     #[case::group_attack_at_triggers("Trigger.GroupAttacksAt", true)]
     #[case::counter_triggers("Trigger.CountersPut", true)]
     #[case::counter_removal_triggers("Trigger.CountersRemoved", true)]
+    #[case::e16c_player_counter_triggers("Trigger.PlayerCountersPut", true)]
     #[case::chapter_triggers("Trigger.Chapter", true)]
     #[case::attach_triggers("Trigger.Attached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]

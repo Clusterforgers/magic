@@ -21,6 +21,12 @@ fn plain(word: &str) -> Option<Value> {
         "wasDealtDamageThisTurn" => {
             some(&json!({"Tallied": {"who": "You", "what": "DamageTaken"}}))
         }
+        "wasDealtCombatDamageThisTurn" => {
+            some(&json!({"Tallied": {"who": "You", "what": "CombatDamageTaken"}}))
+        }
+        "wasDealtNonCombatDamageThisTurn" => {
+            some(&json!({"Tallied": {"who": "You", "what": "NoncombatDamageTaken"}}))
+        }
         // Corrupted: three or more poison counters (CR 702.181 reminder text).
         "IsCorrupted" => json!({"Compare": {
             "left": {"Counters": {"on": "You", "counter": "poison"}}, "op": "Ge", "right": 3}}),

@@ -335,6 +335,26 @@ fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
 
 /// A spell with aftermath that is cast from a graveyard is exiled by a replacement effect when it leaves the stack
 /// (CR 702.127a), so the game has replacement effects to look for.
+/// The conditions the card of `spell` asks "as you cast this spell" that hold for `player` as it is cast.
+fn held_as_cast(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+) -> Vec<mtg_cards::value::Condition> {
+    let Some(object) = state.objects.get(&spell) else {
+        return Vec::new();
+    };
+    let asked = object.card().as_cast_conditions();
+    if asked.is_empty() {
+        return asked;
+    }
+    let scope = crate::resolve::Scope::announcing(state, player, object.reference());
+    asked
+        .into_iter()
+        .filter(|condition| scope.holds(condition).unwrap_or(false))
+        .collect()
+}
+
 fn note_aftermath(state: &mut GameState, spell: ObjectId, from: Zone) {
     if matches!(from, Zone::Graveyard(_)) && crate::keywords::aftermath::has(state, spell) {
         state.possible.replacements = true;
@@ -405,6 +425,10 @@ fn spell_cast(
         if choices.way == Some(CastWay::FaceDown) {
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
         }
+    }
+    let held_as_cast = held_as_cast(state, player, object);
+    if let Some(spell) = state.objects.get_mut(&object) {
+        spell.held_as_cast = held_as_cast;
     }
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
@@ -485,6 +509,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 )));
             }
             let before = state.objects.get(object).map(|o| o.controller);
+            log_sacrifice(state, (*cause, *from), before, *object);
             move_object(state, *object, *to, Placement::Top)?;
             if *cause == ZoneCause::Discarded
                 && let Zone::Hand(player) = *from
@@ -584,6 +609,22 @@ fn tally_sacrifice(
         && let Some(controller) = controller
     {
         state.tally(controller, Tally::Sacrificed);
+    }
+}
+
+/// Logs a permanent about to be sacrificed as it last existed on the battlefield (`TallyEvent::Sacrificed`), so "an
+/// artifact you've sacrificed this turn" judges what it was, not the card in the graveyard.
+fn log_sacrifice(
+    state: &mut GameState,
+    (cause, from): (ZoneCause, Zone),
+    controller: Option<PlayerId>,
+    id: ObjectId,
+) {
+    if cause == ZoneCause::Sacrificed
+        && from == Zone::Battlefield
+        && let Some(controller) = controller
+    {
+        state.log_event(TallyEvent::Sacrificed, controller, id);
     }
 }
 

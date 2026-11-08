@@ -1610,8 +1610,12 @@ pub(super) fn single_texts(selector: &Selector) -> Vec<String> {
             format!("{} {first} or {}", article(first), others.join(" or ")),
         ];
     }
+    // "another Human": the card itself is left out of the count (t18); the phrase carries "another" as its article.
     if selector.0.contains(&Pred::Other) {
-        return Vec::new();
+        return phrase_text(selector, Form::Subject)
+            .filter(|text| text.starts_with("another "))
+            .into_iter()
+            .collect();
     }
     phrase_text(selector, Form::Subject)
         .map(|text| format!("{} {text}", article(&text)))

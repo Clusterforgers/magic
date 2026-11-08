@@ -72,6 +72,13 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     if mode == "AttackerBlockedByCreature" {
         return Some(blocked_by(ctx, p));
     }
+    // "Whenever you surveil for the first time each turn": the surveil the engine counts as the player's first.
+    if mode == "Surveil" && p.get("FirstTime").is_some() {
+        return Some(keys(p, mode, &["ValidPlayer", "FirstTime"]).and_then(|()| {
+            let who = player_ref(p.get("ValidPlayer"))?;
+            super::triggers::first_time(p, json!({"Surveilled": {"who": who}}))
+        }));
+    }
     // "Whenever an opponent searches their library": a search of the player's own library only.
     if mode == "SearchedLibrary" && p.get("SearchOwnLibrary") == Some("True") {
         let line = p.without(&["SearchOwnLibrary"]);

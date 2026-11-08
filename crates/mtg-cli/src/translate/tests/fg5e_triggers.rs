@@ -40,8 +40,8 @@ fn a_mode_maps_to_its_pattern(#[case] trigger: &str, #[case] when: Value) {
 
 #[rstest]
 #[case::first_time(
-    "Mode$ DiscardedAll | ValidPlayer$ You | FirstTime$ True",
-    "key:Trigger.DiscardedAll.FirstTime"
+    "Mode$ LifeLostAll | ValidPlayer$ Opponent | FirstTime$ True",
+    "key:Trigger.LifeLostAll.FirstTime"
 )]
 #[case::amount_each(
     "Mode$ LifeLostAll | ValidPlayer$ Opponent | ValidAmountEach$ EQ1",

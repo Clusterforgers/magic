@@ -268,7 +268,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "TriggerCount" => {
             return match what {
                 "Amount" if monstrosity(ctx) => monstrosity_x(ctx),
-                "DamageAmount" | "LifeAmount" | "Amount" => Ok(Some(json!("Triggering"))),
+                "DamageAmount" | "LifeAmount" | "Amount" | "ScryNum" => {
+                    Ok(Some(json!("Triggering")))
+                }
                 other => unmapped(format!("amount:TriggerCount${other}")),
             };
         }
@@ -295,6 +297,8 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 "HighestCardsDrawn" => Some("Drawn"),
                 "LifeGainedThisTurn" => Some("LifeGainedTotal"),
                 "CardsDiscardedThisTurn" if who == "EachPlayer" => Some("Discarded"),
+                // "The total life lost by all players this turn": the losses of every player added up.
+                "LifeLostThisTurn" if who == "EachPlayer" => Some("LifeLost"),
                 _ => None,
             };
             if let Some(tally) = tally {
@@ -326,6 +330,9 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             return Ok(Some(json!({ key: who })));
         }
         "PlayerCountPropertyYou" => {
+            if let Some(found) = super::e16a_history::sacrificed(ctx, what) {
+                return found.map(Some);
+            }
             return match super::amount_more::player_amount(head, what, &json!("You")) {
                 Some(found) => found.map(Some),
                 None => unmapped(format!("amount:{head}${what}")),
@@ -386,6 +393,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         "Enchanted" | "Equipped" => json!("Attached"),
         "OriginalHost" if ctx.granted => json!("Granter"),
         "Sacrificed" | "Discarded" => json!("Paid"),
+        "Tapped" if super::valid::tapped_alone(ctx.oracle) => json!("Paid"),
         // The card revealed from the hand as the cost, when the cost picks nothing else.
         "Revealed" if revealed_alone(ctx.oracle) => json!("Paid"),
         "Exiled" => super::cost::exiled_paid(ctx, "amount")?,

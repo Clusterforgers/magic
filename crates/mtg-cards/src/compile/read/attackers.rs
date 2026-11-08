@@ -55,6 +55,7 @@ fn again(effect: &Effect) -> Option<Effect> {
             count,
             tapped,
             attacking,
+            against: None,
             bind: None,
         } => Effect::CreateToken {
             who: theirs,
@@ -62,6 +63,7 @@ fn again(effect: &Effect) -> Option<Effect> {
             count: count.clone(),
             tapped: *tapped,
             attacking: *attacking,
+            against: None,
             bind: None,
         },
         Effect::Untap { what } if *what == nonland_permanents(Ref::You) => Effect::Untap {

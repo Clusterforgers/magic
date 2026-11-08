@@ -56,6 +56,16 @@ fn to_an_opponent(description: Option<&str>, oracle: &str) -> bool {
     opponent(description.unwrap_or_default()) && opponent(oracle)
 }
 
+/// Whether the trigger text and the card text say "to a player" and the trigger text names no opponent.
+fn to_a_player(description: Option<&str>, oracle: &str) -> bool {
+    let player = |text: &str| {
+        let text = text.to_lowercase();
+        text.contains("damage to a player") || text.contains("a player is dealt")
+    };
+    let description = description.unwrap_or_default();
+    player(description) && !description.to_lowercase().contains("opponent") && player(oracle)
+}
+
 /// `DamageDone` and `DamageDoneOnce`: a source deals damage to a recipient.
 pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     keys(
@@ -91,6 +101,10 @@ pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
         // Some scripts write `Player` where the text says "to an opponent" (Kediss, Emberclaw Familiar).
         let only = if *only == "Player" && to_an_opponent(p.get("TriggerDescription"), ctx.oracle) {
             "Opponent"
+        } else if *only == "Player.Opponent" && to_a_player(p.get("TriggerDescription"), ctx.oracle)
+        {
+            // And `Player.Opponent` where the text says "to a player" (Broodbirth Viper).
+            "Player"
         } else {
             only
         };

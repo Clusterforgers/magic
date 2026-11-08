@@ -581,7 +581,10 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
     }
     let (mut head, mut tail) = (Vec::new(), Vec::new());
     let mut stage = 0;
-    for pred in &filter.0 {
+    // The conditions are a set: adjectives come first in the words whatever order the rules list them in.
+    let mut preds: Vec<&Pred> = filter.0.iter().collect();
+    preds.sort_by_key(|pred| !is_card_adjective(pred));
+    for pred in preds {
         if is_card_adjective(pred) {
             if stage > 0 {
                 return None;

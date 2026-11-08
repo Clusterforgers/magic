@@ -11,7 +11,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{
     ClauseKind, Compiled, compile, equip_line, escalate_cost, escalate_reads, forecast_lines,
-    own_names, reinforce_line, same_text, static_pair_texts, written_variants,
+    own_names, reinforce_line, same_written_text, static_pair_texts, written_variants,
 };
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
@@ -259,7 +259,7 @@ fn equip_options_are_written(
         .map(|clause| without_ability_word(&clause.text))
         .collect();
     assert!(
-        lines.iter().any(|text| same_text(&line, text)),
+        lines.iter().any(|text| same_written_text(&line, text)),
         "{}: {line:?} is not in {lines:?}",
         printed.name
     );
@@ -303,7 +303,7 @@ fn hand_keyword_is_written(
     assert!(
         lines.iter().any(|text| written
             .iter()
-            .any(|line| same_text(without_ability_word(line), text))),
+            .any(|line| same_written_text(without_ability_word(line), text))),
         "{}: none of {written:?} is in {lines:?}",
         printed.name
     );
@@ -316,107 +316,168 @@ fn hand_keyword_is_written(
 fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
     let library = hand_written();
     let mut rendered = 0;
+    let mut missing = Vec::new();
     for (printed, compiled) in compiled_corpus() {
         let by_hand = library.card(&printed.oracle_id).unwrap();
-        let listed: Vec<(usize, &Ability)> = by_hand.abilities().collect();
-        let mut skip_next = false;
-        // The first static of a pair was printed apart from the second, so the second needs its own line too.
-        let mut pair_apart = false;
-        for (at, &(face, ability)) in listed.iter().enumerate() {
-            if std::mem::take(&mut skip_next) {
-                continue;
-            }
-            // Equip abilities with an option (a price, a limit, a reduction) are one keyword line of the card.
-            if let Some(count) = equip_options_are_written(&printed, &compiled, &listed[at..]) {
-                // The line takes two abilities at most (`equip_line` refuses more).
-                skip_next = count == 2;
-                rendered += count;
-                continue;
-            }
-            // Reinforce and Forecast are one keyword line of the card.
-            if hand_keyword_is_written(&printed, &compiled, face, ability).is_some() {
-                rendered += 1;
-                continue;
-            }
-            assert_escalate_line(&printed.name, &compiled, face, ability);
-            // Two statics with one subject may be one sentence of the card; printed as two sentences (Air Bladder),
-            // each must be written as its own line below.
-            let own_line = std::mem::take(&mut pair_apart);
-            if let Some(&(same, second)) = listed.get(at + 1) {
-                let pair = static_pair_texts(ability, second);
-                if same == face && !pair.is_empty() {
-                    let lines: Vec<&str> = compiled
-                        .clauses
-                        .iter()
-                        .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
-                        .map(|clause| without_numerals(without_ability_word(&clause.text)))
-                        .collect();
-                    if lines
-                        .iter()
-                        .any(|text| pair.iter().any(|written| same_text(written, text)))
-                    {
-                        skip_next = true;
-                        rendered += 2;
-                        continue;
-                    }
-                    pair_apart = true;
+        let (count, misses) = unwritten(&printed, &compiled, by_hand);
+        rendered += count;
+        missing.extend(misses);
+    }
+    assert!(missing.is_empty(), "{}", missing.join("\n"));
+    assert!(rendered >= 10, "only {rendered} abilities were rendered");
+}
+
+/// Aurora Champion's attack trigger with this effect and this count of other Warriors you control.
+fn aurora_champion(effect: &str, count: u32) -> Card {
+    serde_json::from_value(serde_json::json!({
+        "oracle_id": "a4499cf9-04a0-45c5-9c73-19f8e7e95da6",
+        "name": "Aurora Champion",
+        "impl_status": "Full",
+        "faces": [{
+            "name": "Aurora Champion",
+            "oracle_fingerprint": "360b3c8f3f925143c59ce8381c7b67d7",
+            "abilities": [{"Triggered": {
+                "when": {"Attacks": {"what": ["This"]}},
+                "if": {"Compare": {
+                    "left": {"Count": [{"Subtype": "Warrior"}, "Other", {"ControlledBy": "You"}]},
+                    "op": "Ge",
+                    "right": count,
+                }},
+                "targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+                "effects": [{effect: {"what": {"Target": 0}}}],
+            }}],
+        }],
+    }))
+    .unwrap()
+}
+
+/// The corpus compares a rule's text with the card's as the offer does: a rule the checker reads as the card
+/// ("your team controls" written "you control") passes, and one it marks `Differs` fails.
+#[rstest::rstest]
+#[case::as_printed("Tap", 1, false)]
+#[case::another_effect("Untap", 1, true)]
+#[case::another_count("Tap", 2, true)]
+fn the_corpus_fails_a_rule_the_checker_marks_differs(
+    #[case] effect: &str,
+    #[case] count: u32,
+    #[case] differs: bool,
+) {
+    let printed = printed()
+        .into_iter()
+        .find(|card| card.name == "Aurora Champion")
+        .unwrap();
+    let rules = aurora_champion(effect, count);
+    let checker = !mtg_cards::proposal::differing(&rules, &printed).is_empty();
+    assert_eq!(checker, differs, "the checker");
+    let (_, misses) = unwritten(&printed, &compile(&printed), &rules);
+    assert_eq!(!misses.is_empty(), differs, "{misses:?}");
+}
+
+/// How many abilities of the hand-written card the renderer writes, and each one not written as a clause of the card.
+fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usize, Vec<String>) {
+    let mut rendered = 0;
+    let mut missing = Vec::new();
+    let listed: Vec<(usize, &Ability)> = by_hand.abilities().collect();
+    let mut skip_next = false;
+    // The first static of a pair was printed apart from the second, so the second needs its own line too.
+    let mut pair_apart = false;
+    for (at, &(face, ability)) in listed.iter().enumerate() {
+        if std::mem::take(&mut skip_next) {
+            continue;
+        }
+        // Equip abilities with an option (a price, a limit, a reduction) are one keyword line of the card.
+        if let Some(count) = equip_options_are_written(printed, compiled, &listed[at..]) {
+            // The line takes two abilities at most (`equip_line` refuses more).
+            skip_next = count == 2;
+            rendered += count;
+            continue;
+        }
+        // Reinforce and Forecast are one keyword line of the card.
+        if hand_keyword_is_written(printed, compiled, face, ability).is_some() {
+            rendered += 1;
+            continue;
+        }
+        assert_escalate_line(&printed.name, compiled, face, ability);
+        // Two statics with one subject may be one sentence of the card; printed as two sentences (Air Bladder),
+        // each must be written as its own line below.
+        let own_line = std::mem::take(&mut pair_apart);
+        if let Some(&(same, second)) = listed.get(at + 1) {
+            let pair = static_pair_texts(ability, second);
+            if same == face && !pair.is_empty() {
+                let lines: Vec<&str> = compiled
+                    .clauses
+                    .iter()
+                    .filter(|clause| clause.face == face && clause.kind == ClauseKind::Static)
+                    .map(|clause| without_numerals(without_ability_word(&clause.text)))
+                    .collect();
+                if lines
+                    .iter()
+                    .any(|text| pair.iter().any(|written| same_written_text(written, text)))
+                {
+                    skip_next = true;
+                    rendered += 2;
+                    continue;
                 }
+                pair_apart = true;
             }
-            let written = written_variants(ability);
-            if written.is_empty() {
-                assert!(
-                    !own_line && !pair_apart,
-                    "{}: a static of a pair printed apart has no wording of its own: {ability:?}",
-                    printed.name
-                );
-                continue;
-            }
-            // The spell ability is the spell lines of the face, or its list of modes.
-            let kinds: &[ClauseKind] = match ability {
-                Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
-                Ability::Triggered { .. } => &[ClauseKind::Triggered],
-                Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
-                Ability::Replacement { .. }
-                | Ability::Rule { .. }
-                | Ability::Static { .. }
-                | Ability::AdditionalCost { .. }
-                | Ability::FreeCast { .. }
-                | Ability::CastOnly { .. }
-                | Ability::CostModifier { .. } => &[ClauseKind::Static],
-                // A keyword line the keyword reader does not read ("Unearth—Pay eight {E}.") is written whole.
-                Ability::Keyword(_) => &[ClauseKind::Keyword, ClauseKind::Static],
-                _ => &[ClauseKind::Activated],
-            };
-            let lines: Vec<&str> = compiled
-                .clauses
-                .iter()
-                .filter(|clause| clause.face == face && kinds.contains(&clause.kind))
-                .map(|clause| without_numerals(without_ability_word(&clause.text)))
-                .collect();
-            let wanted = if matches!(ability, Ability::Spell { .. }) {
-                vec![lines.join("\n")]
-            } else {
-                lines.iter().map(|line| (*line).to_owned()).collect()
-            };
-            // The clause shows the face's own names as `~`, also inside a token name or a type.
-            let names = printed.faces.get(face).map(own_names).unwrap_or_default();
-            let shown = |variant: &str| {
-                names.iter().fold(variant.to_owned(), |text, name| {
-                    text.replace(name.as_str(), "~")
-                })
-            };
+        }
+        let written = written_variants(ability);
+        if written.is_empty() {
             assert!(
-                wanted.iter().any(|text| written.iter().any(|variant| {
-                    // A wording may carry the ability word that the clause loses above ("Morbid — ...").
-                    let variant = without_ability_word(variant);
-                    same_text(without_numerals(variant), text)
-                        || same_text(without_numerals(&shown(variant)), text)
-                })),
-                "{}: none of {written:?} is in {wanted:?}",
+                !own_line && !pair_apart,
+                "{}: a static of a pair printed apart has no wording of its own: {ability:?}",
                 printed.name
             );
-            rendered += 1;
+            continue;
         }
+        // The spell ability is the spell lines of the face, or its list of modes.
+        let kinds: &[ClauseKind] = match ability {
+            Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
+            Ability::Triggered { .. } => &[ClauseKind::Triggered],
+            Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
+            Ability::Replacement { .. }
+            | Ability::Rule { .. }
+            | Ability::Static { .. }
+            | Ability::AdditionalCost { .. }
+            | Ability::FreeCast { .. }
+            | Ability::CastOnly { .. }
+            | Ability::CostModifier { .. } => &[ClauseKind::Static],
+            // A keyword line the keyword reader does not read ("Unearth—Pay eight {E}.") is written whole.
+            Ability::Keyword(_) => &[ClauseKind::Keyword, ClauseKind::Static],
+            _ => &[ClauseKind::Activated],
+        };
+        let lines: Vec<&str> = compiled
+            .clauses
+            .iter()
+            .filter(|clause| clause.face == face && kinds.contains(&clause.kind))
+            .map(|clause| without_numerals(without_ability_word(&clause.text)))
+            .collect();
+        let wanted = if matches!(ability, Ability::Spell { .. }) {
+            vec![lines.join("\n")]
+        } else {
+            lines.iter().map(|line| (*line).to_owned()).collect()
+        };
+        // The clause shows the face's own names as `~`, also inside a token name or a type.
+        let names = printed.faces.get(face).map(own_names).unwrap_or_default();
+        let shown = |variant: &str| {
+            names.iter().fold(variant.to_owned(), |text, name| {
+                text.replace(name.as_str(), "~")
+            })
+        };
+        if !wanted.iter().any(|text| {
+            written.iter().any(|variant| {
+                // A wording may carry the ability word that the clause loses above ("Morbid — ...").
+                let variant = without_ability_word(variant);
+                same_written_text(without_numerals(variant), text)
+                    || same_written_text(without_numerals(&shown(variant)), text)
+            })
+        }) {
+            missing.push(format!(
+                "{}: none of {written:?} is in {wanted:?}",
+                printed.name
+            ));
+        }
+        rendered += 1;
     }
-    assert!(rendered >= 10, "only {rendered} abilities were rendered");
+    (rendered, missing)
 }

@@ -14,6 +14,7 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
     Some(match mode {
         "AttackerUnblocked" => unblocked(ctx, p),
         "SpellCastOrCopy" => cast_or_copy(ctx, p),
+        "DiscardedAll" if p.get("FirstTime").is_some() => first_discards(ctx, p),
         "DiscardedAll" => discarded(ctx, p).map(|inner| batch(&inner)),
         "LifeLostAll" => life_lost(p).map(|inner| batch(&inner)),
         "SacrificedOnce" => sacrificed(ctx, p).map(|inner| batch(&inner)),
@@ -25,11 +26,27 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "RingTemptsYou" => ring_tempts(ctx, p),
         "BecomesCrewed" => becomes_crewed(ctx, p),
         "Attached" => attached(ctx, p),
+        "CounterAddedOnce" if p.has("ValidPlayer") && !p.has("ValidCard") => {
+            player_counters(p).map(|inner| batch(&inner))
+        }
         "CounterAddedOnce" | "CounterPlayerAddedAll" => {
             counters(ctx, p, "CountersPut").map(|inner| batch(&inner))
         }
         _ => return None,
     })
+}
+
+/// "Whenever you get one or more {E}": counters put on a player together (e16c).
+fn player_counters(p: &Params) -> Tr<Value> {
+    keys(p, "PlayerCounter", &["ValidPlayer", "CounterType"])?;
+    let mut pattern = json!({ "who": player_ref(p.get("ValidPlayer"))? });
+    if let Some(kind) = p.get("CounterType") {
+        let Some(kind) = super::amount::counter_kind(kind) else {
+            return unmapped("key:Trigger.PlayerCounter.CounterType");
+        };
+        pattern["counter"] = kind;
+    }
+    Ok(json!({ "PlayerCountersPut": pattern }))
 }
 
 fn unblocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
@@ -64,6 +81,17 @@ fn discarded(ctx: &Ctx, p: &Params) -> Tr<Value> {
         pattern["what"] = json!(what);
     }
     Ok(json!({ "Discarded": pattern }))
+}
+
+/// "Whenever you discard one or more cards for the first time each turn": the batch of the player's first discards. A
+/// first time among the cards of a kind (Veronica's nonland cards) needs the kind of every earlier discard and stays a gap.
+fn first_discards(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    if p.get("ValidCard").is_some_and(|valid| valid != "Card") {
+        return unmapped("key:Trigger.DiscardedAll.FirstTime-of-a-kind");
+    }
+    let line = p.without(&["FirstTime"]);
+    let inner = discarded(ctx, &line)?;
+    super::triggers::first_time(p, batch(&inner))
 }
 
 fn life_lost(p: &Params) -> Tr<Value> {

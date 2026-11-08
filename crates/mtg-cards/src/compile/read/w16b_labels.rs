@@ -89,7 +89,9 @@ fn article(text: &str) -> Option<String> {
 }
 
 /// The words that begin a noun phrase a creature type can follow.
-const DETERMINERS: [&str; 9] = [
+const DETERMINERS: [&str; 11] = [
+    "have",
+    "more",
     "each",
     "all",
     "a",
@@ -99,6 +101,64 @@ const DETERMINERS: [&str; 9] = [
     "any",
     "target",
     "attacking",
+];
+
+/// Capitalized words that open a sentence and are not a creature type: "Those creatures", "Artifact creatures".
+const NOT_TYPES: &[&str] = &[
+    "then",
+    "also",
+    "if",
+    "when",
+    "whenever",
+    "at",
+    "until",
+    "during",
+    "as",
+    "unless",
+    "otherwise",
+    "instead",
+    "for",
+    "you",
+    "up",
+    "to",
+    "and",
+    "or",
+    "this",
+    "that",
+    "the",
+    "an",
+    "any",
+    "no",
+    "those",
+    "these",
+    "other",
+    "enchanted",
+    "equipped",
+    "target",
+    "each",
+    "all",
+    "your",
+    "another",
+    "attacking",
+    "blocking",
+    "tapped",
+    "untapped",
+    "nontoken",
+    "legendary",
+    "artifact",
+    "enchantment",
+    "land",
+    "white",
+    "blue",
+    "black",
+    "red",
+    "green",
+    "colorless",
+    "snow",
+    "basic",
+    "multicolored",
+    "chosen",
+    "token",
 ];
 
 /// The characters that end a word.
@@ -112,10 +172,12 @@ fn type_creature(text: &str) -> Option<String> {
         let core = word.trim_end_matches(ENDS);
         let plural = core == "creatures";
         let creature = (core == "creature" || plural)
-            && at >= 2
+            && at >= 1
             && words[at - 1].starts_with(|c: char| c.is_uppercase())
             && !words[at - 1].ends_with(ENDS)
-            && DETERMINERS.contains(&words[at - 2].to_ascii_lowercase().as_str())
+            && (((at == 1 || words[at - 2].ends_with(['.', ':']))
+                && !NOT_TYPES.contains(&words[at - 1].to_ascii_lowercase().as_str()))
+                || (at >= 2 && DETERMINERS.contains(&words[at - 2].to_ascii_lowercase().as_str())))
             && !matches!(
                 words.get(at + 1).map(|next| next.trim_end_matches(ENDS)),
                 Some("card" | "cards" | "spell" | "spells" | "token" | "tokens")
@@ -126,6 +188,10 @@ fn type_creature(text: &str) -> Option<String> {
             if let Some(last) = out.last_mut() {
                 // "Nightmare creatures" is the plural "Nightmares".
                 if plural {
+                    if last.ends_with('y') {
+                        last.pop();
+                        last.push_str("ie");
+                    }
                     last.push('s');
                 }
                 last.push_str(tail);

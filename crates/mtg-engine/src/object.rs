@@ -468,6 +468,9 @@ pub struct GameObject {
     /// The spell was cast at a time its caster couldn't have cast a sorcery (`Condition::CastOffSorceryTiming`); it stays
     /// with the permanent the spell becomes as `cast` does.
     pub(crate) off_sorcery_timing: bool,
+    /// The conditions of the card asked "as you cast this spell" (`Condition::AsCast`) that held as it was cast; it stays
+    /// with the permanent the spell becomes as `cast` does.
+    pub(crate) held_as_cast: Vec<mtg_cards::value::Condition>,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -525,6 +528,7 @@ impl GameObject {
             cast_from_hand: false,
             cast_from_graveyard: false,
             off_sorcery_timing: false,
+            held_as_cast: Vec::new(),
             cast: None,
             kind: ObjectKind::Card,
             choices: Choices::default(),
@@ -564,6 +568,7 @@ impl GameObject {
             cast_from_hand: false,
             cast_from_graveyard: false,
             off_sorcery_timing: false,
+            held_as_cast: Vec::new(),
             cast: None,
             kind: ObjectKind::Ability,
             choices,
@@ -796,7 +801,14 @@ impl GameObject {
         if !(from == crate::zones::Zone::Stack && to == crate::zones::Zone::Battlefield) {
             self.cast = None;
             self.off_sorcery_timing = false;
+            self.held_as_cast.clear();
         }
+    }
+
+    /// Whether `condition`, one the card asks "as you cast this spell", held as the spell was cast; kept by the permanent it
+    /// becomes.
+    pub fn held_as_cast(&self, condition: &mtg_cards::value::Condition) -> bool {
+        self.held_as_cast.contains(condition)
     }
 
     /// Whether the spell was cast at a time its caster couldn't have cast a sorcery; kept by the permanent it becomes.
@@ -923,6 +935,7 @@ impl PartialEq for GameObject {
             && self.cast_from_graveyard == other.cast_from_graveyard
             && self.cast == other.cast
             && self.off_sorcery_timing == other.off_sorcery_timing
+            && self.held_as_cast == other.held_as_cast
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -970,6 +983,9 @@ impl Hash for GameObject {
         }
         if self.off_sorcery_timing {
             "off sorcery timing".hash(state);
+        }
+        if !self.held_as_cast.is_empty() {
+            self.held_as_cast.hash(state);
         }
         self.counter.hash(state);
         self.kind.hash(state);
