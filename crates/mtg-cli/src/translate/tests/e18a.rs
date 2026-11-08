@@ -1,7 +1,7 @@
 //! Goal: pack e18a's turn's activations by kind read from Forge lines: `ThisTurnActivated_Activated.<kind>+YouCtrl` as the
 //! tally of the kind, a source filter without a kind as the plain tally, and `AlternativeCost` of equip, cycling and unearth
 //! abilities at {0} as a `FreeActivation` with its condition, `CastWithFlash` of equip as an `InstantActivation`; another player, a targeting filter, another kind or another
-//! cost stays a gap.
+//! cost stays a gap, as does a printed "you may return target" that the script makes mandatory.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -121,4 +121,30 @@ fn instant_activations_read(#[case] line: &str, #[case] expected: Option<Value>)
         }
         None => assert!(!gaps(&text).is_empty(), "{line}"),
     }
+}
+
+/// An enters trigger that returns a target instant card from the graveyard, printed as `description`, with `decider`.
+fn returner(description: &str, decider: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature\nPT:1/1\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigReturn{decider} | TriggerDescription$ {description}\nSVar:TrigReturn:DB$ ChangeZone | Origin$ Graveyard | Destination$ Hand | ValidTgts$ Instant.YouOwn | TgtPrompt$ Select target instant card\n"
+    )
+}
+
+const MAY_RETURN: &str =
+    "When CARDNAME enters, you may return target instant card from your graveyard to your hand.";
+
+#[rstest]
+#[case::printed_may_without_a_decider(MAY_RETURN, "", false)]
+#[case::printed_may_with_a_decider(MAY_RETURN, " | OptionalDecider$ You", true)]
+#[case::mandatory(
+    "When CARDNAME enters, return target instant card from your graveyard to your hand.",
+    "",
+    true
+)]
+fn a_printed_may_return_without_a_decider_is_a_gap(
+    #[case] description: &str,
+    #[case] decider: &str,
+    #[case] read: bool,
+) {
+    assert_eq!(gaps(&returner(description, decider)).is_empty(), read);
 }
