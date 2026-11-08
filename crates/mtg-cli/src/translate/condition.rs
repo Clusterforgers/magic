@@ -8,7 +8,8 @@ use super::valid::{cmp, defined, selector_any, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 19] = [
+pub const KEYS: [&str; 20] = [
+    "ConditionOptionalPaid",
     "TopCardOfLibraryIs",
     "IsPresent",
     "PresentDefined",
@@ -57,8 +58,13 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
         all.extend(present(ctx, p, suffix)?);
     }
     all.extend(check_svar(ctx, p)?);
-    if let Some(name) = p.get("Condition") {
-        all.push(named(name)?);
+    match (p.get("Condition"), p.get("ConditionOptionalPaid")) {
+        // "If this spell's additional cost was paid": the optional additional cost of the spell's own static line.
+        (Some("OptionalCost"), Some("True")) => all.push(json!("AdditionalCostPaid")),
+        (Some("OptionalCost"), Some("False")) => all.push(json!({"Not": "AdditionalCostPaid"})),
+        (Some("OptionalCost"), _) | (_, Some(_)) => return unmapped("condition:OptionalCost"),
+        (Some(name), None) => all.push(named(name)?),
+        (None, None) => {}
     }
     if let Some(valid) = p.get("TopCardOfLibraryIs") {
         all.push(top_card_is(ctx, valid)?);
@@ -172,9 +178,11 @@ fn settled(left: &Value, op: &str, right: &Value) -> Option<Value> {
         _ => false,
     };
     let condition = when.get("condition")?.clone();
-    // Only the mana spent to cast the spell: other choices keep the shape the read-back writers know.
+    // Only the mana spent to cast the spell and its paid additional cost ("if evidence was collected"): other choices keep
+    // the shape the read-back writers know.
     let spent = condition.get("ManaSpent").is_some()
-        || condition.pointer("/Compare/left/ManaSpent").is_some();
+        || condition.pointer("/Compare/left/ManaSpent").is_some()
+        || condition == "AdditionalCostPaid";
     if !spent {
         return None;
     }
@@ -211,6 +219,18 @@ fn present(ctx: &Ctx, p: &Params, suffix: &str) -> Tr<Option<Value>> {
     let valid = permanent.as_deref().unwrap_or(valid);
     if defined_word.is_some() && p.has("PresentPlayer") {
         return unmapped("key:Condition.PresentPlayerWithDefined");
+    }
+    // "If evidence was collected": the cards the spell's optional collect-evidence cost exiled, there when it was paid.
+    if matches!(defined_word, Some("Collected" | "CastSA>Collected"))
+        && valid == "Card"
+        && zone.is_none()
+        && ctx.oracle.contains("evidence was collected")
+    {
+        return match compare.unwrap_or("GE1") {
+            "GE1" => Ok(Some(json!("AdditionalCostPaid"))),
+            "EQ0" => Ok(Some(json!({"Not": "AdditionalCostPaid"}))),
+            other => unmapped(format!("compare:{other}")),
+        };
     }
     if let Some(word) = defined_word {
         return of_defined(ctx, word, valid, compare, zone).map(Some);
@@ -333,7 +353,8 @@ fn of_defined(
 }
 
 /// The keys of a condition on one line of an ability chain and the keys of [`condition`] they stand for.
-const PREFIXED: [(&str, &str); 10] = [
+const PREFIXED: [(&str, &str); 11] = [
+    ("ConditionOptionalPaid", "ConditionOptionalPaid"),
     ("Condition", "Condition"),
     ("ConditionDefined", "PresentDefined"),
     ("ConditionPresent", "IsPresent"),

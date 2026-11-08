@@ -33,6 +33,11 @@ pub fn item(ctx: &Ctx, head: &str, fields: &[&str]) -> Option<Tr<Value>> {
             Err(_) => unmapped("cost:CollectEvidence-X"),
         },
         "Behold" => filtered(ctx, "Behold", number, what),
+        // "Behold an Elemental and exile it": a permanent spell remembers the card as exiled with it.
+        "BeholdExile" => filtered(ctx, "Behold", number, what).map(|mut found| {
+            found["Behold"]["exile"] = json!(true);
+            found
+        }),
         "Waterbend" => match number.parse::<u32>() {
             Ok(n) if n > 0 && ctx.waterbend_ok.get() => Ok(json!({ "Waterbend": n })),
             Ok(_) => unmapped("cost:Waterbend-outside-an-ability"),

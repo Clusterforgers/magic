@@ -25,11 +25,12 @@ pub(super) fn candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> 
     found
 }
 
-/// "Behold a Goat.": the choice is a permanent or a card of the hand.
-pub(super) fn text(filter: &Selector, count: usize) -> String {
+/// "Behold a Goat.": the choice is a permanent or a card of the hand, exiled after with `exile`.
+pub(super) fn text(filter: &Selector, count: usize, exile: bool) -> String {
     let revealed = crate::wording::reveal_from_hand(filter, count);
+    let then = if exile { ", then exile it" } else { "" };
     format!(
-        "Behold: choose {} you control or {}",
+        "Behold: choose {} you control or {}{then}",
         crate::wording::subject(filter),
         revealed.to_lowercase()
     )
@@ -41,4 +42,12 @@ pub(super) fn event(state: &GameState, player: PlayerId, object: ObjectId) -> Op
         .zone(Zone::Hand(player))
         .contains(&object)
         .then(|| super::reveal::event(player, object))
+}
+
+/// "Behold an Elemental and exile it": the card revealed from the hand, or the permanent chosen, is then exiled.
+pub(super) fn exile_events(state: &GameState, player: PlayerId, object: ObjectId) -> Vec<Event> {
+    event(state, player, object)
+        .into_iter()
+        .chain(super::exile_hand::event(state, object))
+        .collect()
 }
