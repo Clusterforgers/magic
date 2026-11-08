@@ -16,12 +16,12 @@ import {
 import { usePrefsSync } from './usePrefsSync'
 
 const upkeep = { side: 'Own', step: 'Upkeep', keep: true } as const
-const auto = { order_triggers: true, assign_damage: false }
+const auto = { order_triggers: true, assign_damage: false, smart_stops: true }
 const held: UserPrefs = { default_stops: [upkeep], end_turn_by_hand: true, auto_choices: auto }
 const none: UserPrefs = {
   default_stops: [],
   end_turn_by_hand: false,
-  auto_choices: { order_triggers: false, assign_damage: false },
+  auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
 }
 
 function fakeApi(load: () => Promise<UserPrefs>) {
@@ -66,9 +66,9 @@ describe('usePrefsSync', () => {
     const { api, saved } = fakeApi(() => Promise.resolve(held))
     renderHook(() => usePrefsSync(true, api))
     await waitFor(() => expect(flowPrefs().autoChoices).toEqual(auto))
-    act(() => saveAutoChoices({ order_triggers: true, assign_damage: true }))
+    act(() => saveAutoChoices({ order_triggers: true, assign_damage: true, smart_stops: true }))
     await waitFor(() => expect(saved).toHaveLength(1))
-    expect(saved[0]?.auto_choices).toEqual({ order_triggers: true, assign_damage: true })
+    expect(saved[0]?.auto_choices).toEqual({ order_triggers: true, assign_damage: true, smart_stops: true })
     expect(window.localStorage.getItem(AUTO_CHOICES_KEY)).toBeNull()
   })
 

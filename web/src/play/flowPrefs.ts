@@ -81,7 +81,11 @@ function readStops(): Stop[] {
 function readAuto(): AutoChoices {
   const raw = parseJson(readItem(AUTO_CHOICES_KEY))
   const flags = typeof raw === 'object' && raw !== null ? (raw as Record<string, unknown>) : {}
-  return { order_triggers: flags.order_triggers === true, assign_damage: flags.assign_damage === true }
+  return {
+    order_triggers: flags.order_triggers === true,
+    assign_damage: flags.assign_damage === true,
+    smart_stops: flags.smart_stops === true,
+  }
 }
 
 /** The preferences now: the stored ones, none by default. */
@@ -116,7 +120,7 @@ function store(next: FlowPrefs): void {
 
 /** Whether any decision is left to the server. */
 function hasAuto(auto: AutoChoices): boolean {
-  return auto.order_triggers || auto.assign_damage
+  return auto.order_triggers || auto.assign_damage || auto.smart_stops
 }
 
 /** Whether `prefs` are what a new account has. */
@@ -201,10 +205,11 @@ export function welcomeRequests(welcome: WelcomeFacts, prefs: FlowPrefs = flowPr
   }
   if (prefs.endTurnByHand !== welcome.endTurnByHand)
     requests.push({ type: 'EndTurnByHand', on: prefs.endTurnByHand })
-  const { order_triggers, assign_damage } = prefs.autoChoices
+  const { order_triggers, assign_damage, smart_stops } = prefs.autoChoices
   if (
     order_triggers !== welcome.autoChoices.order_triggers ||
-    assign_damage !== welcome.autoChoices.assign_damage
+    assign_damage !== welcome.autoChoices.assign_damage ||
+    smart_stops !== welcome.autoChoices.smart_stops
   )
     requests.push({ type: 'AutoChoices', choices: prefs.autoChoices })
   return requests

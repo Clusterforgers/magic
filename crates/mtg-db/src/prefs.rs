@@ -1,4 +1,5 @@
-//! Account preferences: one row per account with the default stops, the end-turn-by-hand choice and the auto choices.
+//! Account preferences: one row per account with the default stops, the end-turn-by-hand choice and the auto choices
+//! (smart stops among them).
 //! Every query names the account, so one account never reads or changes another's row.
 
 use serde_json::Value;
@@ -8,6 +9,8 @@ use uuid::Uuid;
 use crate::error::DbError;
 
 /// The stored preferences of one account.
+// One flag per column: the settings are independent of each other.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, PartialEq)]
 pub struct StoredPrefs {
     /// A JSON array of stops, as the server wrote it.
@@ -18,6 +21,8 @@ pub struct StoredPrefs {
     pub auto_order_triggers: bool,
     /// Whether the account's seats have the server assign their combat damage.
     pub auto_assign_damage: bool,
+    /// Whether the account's seats have smart stops.
+    pub auto_smart_stops: bool,
 }
 
 impl Default for StoredPrefs {
@@ -27,6 +32,7 @@ impl Default for StoredPrefs {
             end_turn_by_hand: false,
             auto_order_triggers: false,
             auto_assign_damage: false,
+            auto_smart_stops: false,
         }
     }
 }
@@ -45,7 +51,7 @@ impl PrefsRepo {
     /// The preferences of `user`; the defaults when none were saved.
     pub async fn get(&self, user: Uuid) -> Result<StoredPrefs, DbError> {
         let row = sqlx::query!(
-            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage FROM user_prefs WHERE user_id = $1",
+            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops FROM user_prefs WHERE user_id = $1",
             user
         )
         .fetch_optional(&self.pool)
@@ -55,25 +61,28 @@ impl PrefsRepo {
             end_turn_by_hand: row.end_turn_by_hand,
             auto_order_triggers: row.auto_order_triggers,
             auto_assign_damage: row.auto_assign_damage,
+            auto_smart_stops: row.auto_smart_stops,
         }))
     }
 
     /// Replaces the preferences of `user`.
     pub async fn put(&self, user: Uuid, prefs: &StoredPrefs) -> Result<(), DbError> {
         sqlx::query!(
-            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage)
-             VALUES ($1, $2, $3, $4, $5)
+            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops)
+             VALUES ($1, $2, $3, $4, $5, $6)
              ON CONFLICT (user_id) DO UPDATE
              SET default_stops = EXCLUDED.default_stops,
                  end_turn_by_hand = EXCLUDED.end_turn_by_hand,
                  auto_order_triggers = EXCLUDED.auto_order_triggers,
                  auto_assign_damage = EXCLUDED.auto_assign_damage,
+                 auto_smart_stops = EXCLUDED.auto_smart_stops,
                  updated_at = now()",
             user,
             prefs.default_stops,
             prefs.end_turn_by_hand,
             prefs.auto_order_triggers,
-            prefs.auto_assign_damage
+            prefs.auto_assign_damage,
+            prefs.auto_smart_stops
         )
         .execute(&self.pool)
         .await?;

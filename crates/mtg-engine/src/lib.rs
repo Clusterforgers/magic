@@ -139,6 +139,7 @@ mod rule_options;
 pub mod rules;
 pub mod setup;
 pub mod sight;
+pub mod smart_stops;
 pub mod snapshot;
 pub mod speed;
 pub mod spend;

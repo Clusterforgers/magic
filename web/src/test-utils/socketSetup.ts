@@ -19,7 +19,7 @@ export const welcome = {
   stops: [],
   full_control: 'Off',
   end_turn_by_hand: false,
-  auto_choices: { order_triggers: false, assign_damage: false },
+  auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
   auto_yields: [],
 }
 /** The `Join` the socket must open with. */

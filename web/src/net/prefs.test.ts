@@ -12,7 +12,7 @@ function serve(answer: (call: FetchCall) => Response | Promise<Response>) {
 const stored = {
   default_stops: [{ side: 'Own', step: 'Upkeep', keep: true }],
   end_turn_by_hand: true,
-  auto_choices: { order_triggers: true, assign_damage: false },
+  auto_choices: { order_triggers: true, assign_damage: false, smart_stops: true },
 }
 
 describe('createPrefsApi', () => {
@@ -26,6 +26,15 @@ describe('createPrefsApi', () => {
     ])
     expect(calls[0]?.init?.credentials).toBe('include')
     expect(JSON.parse(String(calls[1]?.init?.body))).toEqual(stored)
+  })
+
+  it('reads auto choices without smart_stops (an older server) as smart stops off', async () => {
+    const older = { ...stored, auto_choices: { order_triggers: true, assign_damage: false } }
+    const { api } = serve(() => jsonResponse(200, older))
+    expect(await api.load()).toEqual({
+      ...stored,
+      auto_choices: { ...older.auto_choices, smart_stops: false },
+    })
   })
 
   it.each([

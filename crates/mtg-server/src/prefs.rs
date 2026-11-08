@@ -83,6 +83,7 @@ pub(crate) async fn get(
         auto_choices: AutoChoices {
             order_triggers: stored.auto_order_triggers,
             assign_damage: stored.auto_assign_damage,
+            smart_stops: stored.auto_smart_stops,
         },
     }))
 }
@@ -105,6 +106,7 @@ pub(crate) async fn put(
         end_turn_by_hand: prefs.end_turn_by_hand,
         auto_order_triggers: prefs.auto_choices.order_triggers,
         auto_assign_damage: prefs.auto_choices.assign_damage,
+        auto_smart_stops: prefs.auto_choices.smart_stops,
     };
     s.repo
         .put(s.user, &stored)

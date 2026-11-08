@@ -23,6 +23,7 @@ fn prefs(on: bool) -> StoredPrefs {
         end_turn_by_hand: on,
         auto_order_triggers: on,
         auto_assign_damage: !on,
+        auto_smart_stops: on,
     }
 }
 

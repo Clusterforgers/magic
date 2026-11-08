@@ -232,9 +232,10 @@ At each priority decision the actor asks the seat, passes for it at once or pass
 | 3 | A stop of the seat for this side and step, or a by-hand window | Ask, whether it can act or not |
 | 4 | A default window and the seat can act | Ask |
 | 5 | A default window and the seat cannot act | `Dwell`; pass at once in its own main phase with an empty stack |
-| 6 | Anything else | Pass at once, whatever the seat holds |
+| 6 | Smart stops on, no yield, and a permanent of the seat has an ability its timing lets it use (`smart_stops::can_answer_now`, costs left out) | Ask when such an ability can be paid now, `Dwell` otherwise |
+| 7 | Anything else | Pass at once, whatever the seat holds |
 
-The default windows are both main phases on the seat's own turn, declare attackers and declare blockers on any turn, and any step with an object of another seat on the stack. `Own` stops are for the seat's turns, `Opponent` stops for any other seat's.
+The default windows are both main phases on the seat's own turn, declare attackers and declare blockers on any turn, and any step with an object of another seat on the stack. `Own` stops are for the seat's turns, `Opponent` stops for any other seat's. Rule 6 (`windows::smart`, `AutoChoices.smart_stops`, off by default) reads only the battlefield and never a cost, so whether a step is a window shows no card in hand; inside one the hand can only decide Ask or `Dwell` (a discard cost), which the dwell hides, and a spell in hand never makes the seat asked.
 
 A question that leaves one legal answer and lists only options in sight of every seat (`mtg_engine::choose::sole_answer`: the targets a triggered ability must take, the only modes, number, option or replacement effect) is answered with it for a seat in `Off` mode, in the same run of passes; in Full Control it is asked. A payment the seat cannot make (`YesNoOptions::only_no`, counted from its floating mana, untapped mana abilities with their life, energy, sacrifice and tap costs, and its life, counters and permanents) is declined the same way, so an opponent learns only what the battlefield already shows. A discard, a search, a reveal or an exile from the hand, in a cost or a mana source (`YesNoOptions::unseen`), and every other question whose one answer could come from a hidden zone is always asked.
 

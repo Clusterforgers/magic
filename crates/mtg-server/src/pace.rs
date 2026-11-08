@@ -1179,6 +1179,7 @@ mod tests {
         AutoChoices {
             order_triggers,
             assign_damage,
+            smart_stops: false,
         }
     }
 

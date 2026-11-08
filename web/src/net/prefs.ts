@@ -43,8 +43,16 @@ function isStop(value: unknown): value is Stop {
   )
 }
 
-function isAutoChoices(value: unknown): value is AutoChoices {
-  return isRecord(value) && isFlag(value.order_triggers) && isFlag(value.assign_damage)
+/** Two flags, and `smart_stops`, which an older server leaves out. */
+function isAutoChoices(
+  value: unknown,
+): value is Omit<AutoChoices, 'smart_stops'> & { smart_stops?: boolean } {
+  return (
+    isRecord(value) &&
+    isFlag(value.order_triggers) &&
+    isFlag(value.assign_damage) &&
+    (value.smart_stops === undefined || isFlag(value.smart_stops))
+  )
 }
 
 function readPrefs(body: unknown): UserPrefs | null {
@@ -58,7 +66,7 @@ function readPrefs(body: unknown): UserPrefs | null {
   return {
     default_stops: body.default_stops,
     end_turn_by_hand: body.end_turn_by_hand,
-    auto_choices: body.auto_choices,
+    auto_choices: { ...body.auto_choices, smart_stops: body.auto_choices.smart_stops ?? false },
   }
 }
 

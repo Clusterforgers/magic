@@ -201,7 +201,7 @@ export function initialPlayState(): PlayState {
     stops: [],
     fullControl: 'Off',
     endTurnByHand: false,
-    autoChoices: { order_triggers: false, assign_damage: false },
+    autoChoices: { order_triggers: false, assign_damage: false, smart_stops: false },
     autoYields: [],
     castWhenAsked: null,
     byHand: null,

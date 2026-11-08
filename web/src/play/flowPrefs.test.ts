@@ -16,8 +16,8 @@ import { STOP_STEPS } from './stops'
 
 const SIDES: StopSide[] = ['Own', 'Opponent']
 const pinned = (side: StopSide, step: Stop['step']): Stop => ({ side, step, keep: true })
-const OFF = { order_triggers: false, assign_damage: false }
-const BOTH = { order_triggers: true, assign_damage: true }
+const OFF = { order_triggers: false, assign_damage: false, smart_stops: false }
+const BOTH = { order_triggers: true, assign_damage: true, smart_stops: true }
 
 beforeEach(() => {
   window.localStorage.clear()
@@ -106,10 +106,11 @@ describe('welcome requests', () => {
     [BOTH, BOTH, []],
     [OFF, OFF, []],
     [
-      { order_triggers: true, assign_damage: false },
-      { order_triggers: true, assign_damage: true },
-      [{ type: 'AutoChoices', choices: { order_triggers: true, assign_damage: false } }],
+      { ...BOTH, assign_damage: false },
+      BOTH,
+      [{ type: 'AutoChoices', choices: { ...BOTH, assign_damage: false } }],
     ],
+    [{ ...OFF, smart_stops: true }, OFF, [{ type: 'AutoChoices', choices: { ...OFF, smart_stops: true } }]],
   ])('with auto choices saved %j and held %j sends %j', (saved, held, expected) => {
     const prefs = { defaultStops: [], endTurnByHand: false, autoChoices: saved }
     expect(
