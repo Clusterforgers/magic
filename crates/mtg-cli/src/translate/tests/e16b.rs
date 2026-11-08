@@ -75,8 +75,10 @@ fn an_amount_by_the_optional_cost_picks_between_two_amounts() {
     let text = card(OPTIONAL, spell);
     assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
     let found = serde_json::to_string(&abilities(&text)).unwrap();
-    assert!(found.contains(r#""AdditionalCostPaid""#), "{found}");
-    assert!(found.contains("4") && found.contains("2"), "{found}");
+    assert!(
+        found.contains(r#"{"When":{"condition":"AdditionalCostPaid","otherwise":2,"then":4}}"#),
+        "{found}"
+    );
 }
 
 #[test]

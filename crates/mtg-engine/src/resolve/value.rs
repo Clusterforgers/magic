@@ -2384,6 +2384,15 @@ impl<'a> Scope<'a> {
             .is_some_and(GameObject::cast_off_sorcery_timing)
     }
 
+    /// Whether `inner` held as the spell the source is, or the permanent it became, was cast, while it is still the object
+    /// named.
+    fn held_as_cast(&self, inner: &Condition) -> bool {
+        self.state
+            .object(self.source.id)
+            .filter(|source| source.counter() == self.source.counter)
+            .is_some_and(|source| source.held_as_cast(inner))
+    }
+
     /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is
     /// or came from was cast for while that is still the object named.
     fn cast_way(&self) -> Option<CastWay> {
@@ -2550,11 +2559,7 @@ impl<'a> Scope<'a> {
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
-            Condition::AsCast(inner) => self
-                .state
-                .object(self.source.id)
-                .filter(|source| source.counter() == self.source.counter)
-                .is_some_and(|source| source.held_as_cast(inner)),
+            Condition::AsCast(inner) => self.held_as_cast(inner),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::ChosenWord { name, word } => {
                 matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)
