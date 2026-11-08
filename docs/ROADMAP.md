@@ -79,7 +79,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (db1a) A deck entry can be marked "play by hand" by its owner (also for a Verified card), so a card that misbehaves is fixed at the table: a flag on `DeckLineBody` and the stored line, the engine hosting the card as manual, the check counting it as played by hand
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 
-- [ ] (ma6b) Playwright: the by-hand mark opens the clause list by a press and the `h` key opens it on the focused card, for a Partial card on a two-seat table at desktop and phone size, and the cast and entering lines are in both logs
 - [ ] Playwright games with corpus decks that ask every decision kind
 
 ## Cards
