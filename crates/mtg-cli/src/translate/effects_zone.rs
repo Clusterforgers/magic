@@ -1707,6 +1707,8 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "GainControl",
             "RememberFound",
             "RememberRevealed",
+            "ImprintFound",
+            "ImprintRevealed",
             "ValidDescription",
             "OptionalFoundMove",
             "Attacking",
@@ -1715,7 +1717,8 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     )?;
     // Forge remembers every card revealed, the one found included; where the found card goes elsewhere, "the cards
     // revealed this way" may mean the rest only (Spoils of the Vault), so only one destination for all is read.
-    let remembers = p.get("RememberRevealed") == Some("True");
+    let split = super::e17b_memory::split(p);
+    let remembers = split.is_none() && p.get("RememberRevealed") == Some("True");
     // The cards revealed are all of them, the found one included, so remembering both is remembering the revealed ones.
     let found_too = remembers && p.get("RememberFound") == Some("True");
     let all_seen = remembers && !found_too && p.has("FoundDestination") && every_revealed(ctx)?;
@@ -1748,7 +1751,7 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some("Battlefield") => Some(Goes::To(json!({"Battlefield": {"tapped": tapped}}))),
         Some(other) => return unmapped(format!("key:DigUntil.FoundDestination={other}")),
     };
-    if p.get("RememberFound") == Some("True") && !found_too {
+    if split.is_none() && p.get("RememberFound") == Some("True") && !found_too {
         ctx.remembered = Some(json!({ "Bound": found }));
     }
     let rest_to = revealed_to(p)?;
@@ -1769,15 +1772,25 @@ pub fn dig_until(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let together = found_too
         && matches!(found_to, Some(Goes::Exile))
         && p.get("RevealedDestination") == Some("Exile");
-    if let Some(found_to) = found_to.filter(|_| !together) {
-        let found_move = moves(&json!({"Bound": found}), found_to);
+    let mut found_move = found_to
+        .filter(|_| !together)
+        .map(|to| moves(&json!({"Bound": found}), to));
+    let mut rest = moves(&json!({"Bound": revealed}), rest_to);
+    if let Some(slots) = split {
+        match found_move.as_mut() {
+            Some(found_move) if !optional => {
+                super::e17b_memory::bind(ctx, slots, found_move, &mut rest)?;
+            }
+            _ => return unmapped("key:DigUntil.split-memory-shape"),
+        }
+    }
+    if let Some(found_move) = found_move {
         if optional {
             effects.extend(super::frame::ask(vec![found_move], &who));
         } else {
             effects.push(found_move);
         }
     }
-    let mut rest = moves(&json!({"Bound": revealed}), rest_to);
     if all_seen {
         ctx.remembered = Some(json!({ "Bound": revealed }));
     } else if remembers {

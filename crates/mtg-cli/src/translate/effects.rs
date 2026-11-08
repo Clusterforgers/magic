@@ -19,6 +19,9 @@ pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
 /// is paid as it resolves: its effects and those after it happen if the cost is paid.
 #[allow(clippy::too_many_lines)] // the chain reader walks every kind of sub-ability link in one place
 pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
+    if let Some(out) = super::e17b_memory::returned_with_counters(ctx, p, top) {
+        return out;
+    }
     ctx.mark_parent();
     // A condition on a line that picks its own target reads that target, which the line declares only after it.
     let coming = p

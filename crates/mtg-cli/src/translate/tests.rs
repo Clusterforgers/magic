@@ -682,6 +682,7 @@ mod e14d;
 mod e14f;
 mod e15e;
 mod e16a;
+mod e17b;
 mod en2;
 mod en3_discard;
 mod en3_reveal;
