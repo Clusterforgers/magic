@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c1cb870a-8c1f-435c-b678-e456c4d2d627",
+  "name": "Banewasp Affliction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banewasp Affliction",
+      "oracle_fingerprint": "ff8f5d2f90acc54b5e567cfa9a4f8ba1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "24ac7e7e-b60d-4965-91c1-7ea7e6387737",
+  "name": "Rending Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rending Flame",
+      "oracle_fingerprint": "e31f73b16ee92e458df7a0dab03478fe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Spirit" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

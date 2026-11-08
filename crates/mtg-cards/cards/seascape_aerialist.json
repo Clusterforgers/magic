@@ -1,0 +1,53 @@
+{
+  "oracle_id": "877c6bb4-487c-4eea-b4af-f28fe1515fb6",
+  "name": "Seascape Aerialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seascape Aerialist",
+      "oracle_fingerprint": "067eff999131c6524aa22e7d56c1d2e3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

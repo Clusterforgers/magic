@@ -42,6 +42,22 @@ struct Spells {
     without_you: String,
 }
 
+/// Whether `zones` names every zone a spell can be cast from: the grant does not narrow where the spell is.
+fn every_zone(zones: &str) -> bool {
+    ["Hand", "Graveyard", "Library", "Exile", "Command"]
+        .iter()
+        .all(|zone| zones.split(',').any(|named| named == *zone))
+}
+
+/// One alternative without the caster's `YouCtrl` (`Card.nonCreature+YouCtrl` is `Card.nonCreature`); `None` when it
+/// does not say the caster controls the spell.
+fn drop_you(alternative: &str) -> Option<String> {
+    ["+YouCtrl", ".YouCtrl"]
+        .iter()
+        .find(|mark| alternative.contains(**mark))
+        .map(|mark| alternative.replacen(mark, "", 1))
+}
+
 /// `Instant.YouCtrl,Sorcery.YouCtrl` as the spells of any alternative that the controller casts.
 fn spells_of(valid: &str) -> Tr<Spells> {
     if valid.is_empty() || valid == "False" || valid.contains("IsRemembered") {
@@ -49,10 +65,10 @@ fn spells_of(valid: &str) -> Tr<Spells> {
     }
     let mut kept = Vec::new();
     for alternative in valid.split(',') {
-        if !alternative.contains(".YouCtrl") {
+        let Some(spell) = drop_you(alternative) else {
             return unmapped("key:Effect.ForgetOnCast-not-your-spells");
-        }
-        kept.push(alternative.replacen(".YouCtrl", "", 1));
+        };
+        kept.push(spell);
     }
     Ok(Spells {
         without_you: kept.join(","),
@@ -64,7 +80,13 @@ fn benefit(ctx: &Ctx, part: &Params, spells: &Spells) -> Tr<Value> {
     // The line may repeat which spells it covers, in the words of the lines that name the spell: it must be the same set.
     let same = |key: &str| match part.get(key) {
         None => true,
-        Some(text) => text.replace(".YouCtrl", "") == spells.without_you,
+        Some(text) => {
+            let kept: Vec<String> = text
+                .split(',')
+                .map(|one| drop_you(one).unwrap_or_else(|| one.to_owned()))
+                .collect();
+            kept.join(",") == spells.without_you
+        }
     };
     match part.get("Mode").unwrap_or_default() {
         mode @ ("ReduceCost" | "RaiseCost") => {
@@ -146,6 +168,9 @@ fn benefit(ctx: &Ctx, part: &Params, spells: &Spells) -> Tr<Value> {
             if part.get("MayPlay") != Some("True")
                 || !matches!(part.get("ValidSA"), None | Some("Spell"))
                 || !same("Affected")
+                || !part.get("AffectedZone").is_none_or(every_zone)
+                // The free cast only waives the cost: where the spell is cast from stays as the spell allows.
+                || !matches!(part.get("MayPlayDontGrantZonePermissions"), None | Some("True"))
             {
                 return unmapped("static:MayPlay-next-spell-shape");
             }

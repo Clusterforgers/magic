@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "40295a9b-3a5a-402e-8baf-546cdad223b0",
+  "oracle_id": "760d6cb2-5d8a-495c-9853-f96a1efa5775",
+  "multiverse_ids": [],
+  "resource_id": "A3E7CB25EACA62474A2481691C846C935EED4227A0F6118DC46EA77E3A835627",
+  "mtgo_id": 151119,
+  "arena_id": 105564,
+  "tcgplayer_id": 697296,
+  "cardmarket_id": 892267,
+  "name": "The Immortal Weapons",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/40295a9b-3a5a-402e-8baf-546cdad223b0",
+  "scryfall_uri": "https://scryfall.com/card/msc/547/the-immortal-weapons?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:38:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.jpg?1783903099",
+    "normal": "https://cards.scryfall.io/normal/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.jpg?1783903099",
+    "large": "https://cards.scryfall.io/large/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.jpg?1783903099",
+    "png": "https://cards.scryfall.io/png/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.png?1783903099",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.jpg?1783903099",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.jpg?1783903099",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.webp?1783903099",
+    "grid": "https://cards.scryfall.io/grid/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.webp?1783903099",
+    "display": "https://cards.scryfall.io/display/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.webp?1783903099",
+    "art": "https://cards.scryfall.io/art/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.webp?1783903099",
+    "crop": "https://cards.scryfall.io/crop/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.webp?1783903099",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/0/40295a9b-3a5a-402e-8baf-546cdad223b0.jpg?1783903099"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Warrior Hero",
+  "oracle_text": "When The Immortal Weapons enter, return target instant or sorcery card from your graveyard to your hand.\nWhenever you cast a noncreature spell, target creature gets +2/+0 and gains menace until end of turn. (It can't be blocked except by two or more creatures.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/40295a9b-3a5a-402e-8baf-546cdad223b0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A760d6cb2-5d8a-495c-9853-f96a1efa5775&unique=prints",
+  "collector_number": "547",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Palumbo",
+  "artist_ids": [
+    "04ce1c75-e30c-4b7a-8cb0-b53e4ecc2f39"
+  ],
+  "illustration_id": "4cc163f2-7cc7-4660-a560-5839f2edc1bf",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 25542,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.89",
+    "eur_foil": null,
+    "tix": "0.86"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BImmortal%2BWeapons",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BImmortal%2BWeapons",
+    "edhrec": "https://edhrec.com/route/?cc=The+Immortal+Weapons"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697296%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892267&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151119?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

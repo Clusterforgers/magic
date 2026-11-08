@@ -237,6 +237,10 @@ function durationWords(
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     UntilTurnSkipped: ' until the turn it skips',
+    UntilCastFromExile:
+      source === null
+        ? ' until its source is cast from exile'
+        : ` until ${n.card(source.id)} is cast from exile`,
     Forever: '',
   }
   return UNTIL[duration]

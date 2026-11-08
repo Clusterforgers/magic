@@ -1,0 +1,26 @@
+{
+  "oracle_id": "af08dae2-ba32-4a34-b8c1-b49d45ce0b6b",
+  "name": "Yoke of the Damned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yoke of the Damned",
+      "oracle_fingerprint": "86898b31abd6ca75b137978e659dcd3a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

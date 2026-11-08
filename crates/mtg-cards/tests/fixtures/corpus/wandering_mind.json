@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "b57491d9-ac52-4598-ac36-bed842f141a1",
+  "oracle_id": "0fa886c2-9b58-4368-b2d0-e619c62a554f",
+  "multiverse_ids": [
+    686102
+  ],
+  "mtgo_id": 135934,
+  "tcgplayer_id": 609641,
+  "cardmarket_id": 805012,
+  "name": "Wandering Mind",
+  "lang": "en",
+  "released_at": "2025-01-24",
+  "uri": "https://api.scryfall.com/cards/b57491d9-ac52-4598-ac36-bed842f141a1",
+  "scryfall_uri": "https://scryfall.com/card/inr/252/wandering-mind?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:01:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.jpg?1783908070",
+    "normal": "https://cards.scryfall.io/normal/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.jpg?1783908070",
+    "large": "https://cards.scryfall.io/large/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.jpg?1783908070",
+    "png": "https://cards.scryfall.io/png/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.png?1783908070",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.jpg?1783908070",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.jpg?1783908070",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.webp?1783908070",
+    "grid": "https://cards.scryfall.io/grid/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.webp?1783908070",
+    "display": "https://cards.scryfall.io/display/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.webp?1783908070",
+    "art": "https://cards.scryfall.io/art/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.webp?1783908070",
+    "crop": "https://cards.scryfall.io/crop/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.webp?1783908070",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/5/b57491d9-ac52-4598-ac36-bed842f141a1.jpg?1783908070"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Horror",
+  "oracle_text": "Flying\nWhen this creature enters, look at the top six cards of your library. You may reveal a noncreature, nonland card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set": "inr",
+  "set_name": "Innistrad Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b57491d9-ac52-4598-ac36-bed842f141a1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0fa886c2-9b58-4368-b2d0-e619c62a554f&unique=prints",
+  "collector_number": "252",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Simon Dominic",
+  "artist_ids": [
+    "b0e80135-db5a-4b88-a0bc-815a0e94faa1"
+  ],
+  "illustration_id": "2b358217-ba1b-40e7-8945-dc62701ab4cc",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20115,
+  "penny_rank": 3469,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2025-01-07"
+  },
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": "0.16",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.08",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=686102&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWandering%2BMind",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWandering%2BMind",
+    "edhrec": "https://edhrec.com/route/?cc=Wandering+Mind"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F609641%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=805012&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/135934?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

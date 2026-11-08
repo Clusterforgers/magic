@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c66dc0d3-b98c-40a2-be35-e455b4658828",
+  "name": "Avalanche Caller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avalanche Caller",
+      "oracle_fingerprint": "662a60a23ac36e257ee7235a4d50dc27",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "Supertype": "Snow" }, { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" },
+                    { "AddKeyword": "Hexproof" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

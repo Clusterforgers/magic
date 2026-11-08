@@ -1,0 +1,27 @@
+{
+  "oracle_id": "571cb4b6-b4e5-40a2-a970-42c1ab65c8a9",
+  "name": "Overkill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overkill",
+      "oracle_fingerprint": "f2ab7d2a7cb8157bb19f923b40bd0df2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": -9999 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

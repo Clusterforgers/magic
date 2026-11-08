@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "b44f758e-716a-408e-96d4-b58403591c2a",
+  "oracle_id": "c394d4b6-cfb8-4639-90cb-a322a25c0a2f",
+  "multiverse_ids": [
+    677976
+  ],
+  "resource_id": "76DB77D2532B1EF017CC1653F33DE57AF686A9712A7EC9A3831935E3FD91CBAF",
+  "mtgo_id": 134846,
+  "arena_id": 93686,
+  "tcgplayer_id": 591765,
+  "cardmarket_id": 797943,
+  "name": "Dropkick Bomber",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/b44f758e-716a-408e-96d4-b58403591c2a",
+  "scryfall_uri": "https://scryfall.com/card/fdn/537/dropkick-bomber?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:15:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.jpg?1783908953",
+    "normal": "https://cards.scryfall.io/normal/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.jpg?1783908953",
+    "large": "https://cards.scryfall.io/large/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.jpg?1783908953",
+    "png": "https://cards.scryfall.io/png/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.png?1783908953",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.jpg?1783908953",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.jpg?1783908953",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.webp?1783908953",
+    "grid": "https://cards.scryfall.io/grid/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.webp?1783908953",
+    "display": "https://cards.scryfall.io/display/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.webp?1783908953",
+    "art": "https://cards.scryfall.io/art/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.webp?1783908953",
+    "crop": "https://cards.scryfall.io/crop/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.webp?1783908953",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/4/b44f758e-716a-408e-96d4-b58403591c2a.jpg?1783908953"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Goblin Warrior",
+  "oracle_text": "Other Goblins you control get +1/+1.\n{R}: Until end of turn, another target Goblin you control gains flying and \"When this creature deals combat damage, sacrifice it.\"",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b44f758e-716a-408e-96d4-b58403591c2a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac394d4b6-cfb8-4639-90cb-a322a25c0a2f&unique=prints",
+  "collector_number": "537",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I've always enjoyed kicking stuff, so this was an ideal career opportunity.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Quintin Gleim",
+  "artist_ids": [
+    "25fbebee-23a4-4431-bd63-14ec82f3c2b9"
+  ],
+  "illustration_id": "f8bb15a7-cecf-4f11-bbd6-7a1ef4e31518",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "beginnerbox"
+  ],
+  "edhrec_rank": 9888,
+  "prices": {
+    "usd": "1.40",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.71",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=677976&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDropkick%2BBomber",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDropkick%2BBomber",
+    "edhrec": "https://edhrec.com/route/?cc=Dropkick+Bomber"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F591765%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=797943&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/134846?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

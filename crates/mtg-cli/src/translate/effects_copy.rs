@@ -221,7 +221,7 @@ fn clone(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             && shape.destination.as_deref() == Some("Battlefield")
     });
     if let Some(word) = p.get("Defined")
-        && !matches!(word, "Targeted" | "ParentTarget")
+        && !matches!(word, "Targeted" | "ParentTarget" | "Remembered")
         && !(entered && matches!(word, "TriggeredCard" | "TriggeredCardLKICopy"))
     {
         return unmapped(format!("defined:Clone.{word}"));

@@ -446,12 +446,16 @@ pub fn held_objects(ctx: &Ctx, slot: Slot) -> Tr<Value> {
 }
 
 /// The keys that remember the objects the line acts on (its target or `Defined$`), for verbs that cannot fail to act.
-const ACTED_ON: [(&str, &str); 5] = [
+const ACTED_ON: [(&str, &str); 9] = [
     ("DealDamage", "RememberDamaged"),
     ("PutCounter", "RememberPut"),
     ("PutCounter", "RememberCards"),
     ("Tap", "RememberTapped"),
     ("GainControl", "RememberControlled"),
+    ("Pump", "RememberPumped"),
+    ("Goad", "RememberGoaded"),
+    ("Animate", "RememberAnimated"),
+    ("Phases", "RememberAffected"),
 ];
 
 /// One line of an ability. `run` maps the verb. The `Remember*`/`Imprint*` keys bind what the verb acted on to the
@@ -495,7 +499,7 @@ pub fn line(
     let mut line = p.without(&[]);
     let mut acted: Vec<Slot> = Vec::new();
     let mut moved: Vec<Slot> = Vec::new();
-    for (key, slot) in &keys {
+    for (key, slot) in keys.iter().filter(|_| !super::e17b_memory::splits(api, p)) {
         if let Some(&(_, _, own)) = IMPRINT_AS
             .iter()
             .find(|(verb, imprint, _)| *verb == api && imprint == key)

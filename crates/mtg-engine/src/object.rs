@@ -471,6 +471,9 @@ pub struct GameObject {
     /// The conditions of the card asked "as you cast this spell" (`Condition::AsCast`) that held as it was cast; it stays
     /// with the permanent the spell becomes as `cast` does.
     pub(crate) held_as_cast: Vec<mtg_cards::value::Condition>,
+    /// The amounts of the card counted "as you cast this spell" (`Amount::CountedAsCast`) with what each counted then; it
+    /// stays with the permanent the spell becomes as `cast` does.
+    pub(crate) counted_as_cast: Vec<(mtg_cards::value::Amount, i64)>,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -529,6 +532,7 @@ impl GameObject {
             cast_from_graveyard: false,
             off_sorcery_timing: false,
             held_as_cast: Vec::new(),
+            counted_as_cast: Vec::new(),
             cast: None,
             kind: ObjectKind::Card,
             choices: Choices::default(),
@@ -569,6 +573,7 @@ impl GameObject {
             cast_from_graveyard: false,
             off_sorcery_timing: false,
             held_as_cast: Vec::new(),
+            counted_as_cast: Vec::new(),
             cast: None,
             kind: ObjectKind::Ability,
             choices,
@@ -802,6 +807,7 @@ impl GameObject {
             self.cast = None;
             self.off_sorcery_timing = false;
             self.held_as_cast.clear();
+            self.counted_as_cast.clear();
         }
     }
 
@@ -809,6 +815,15 @@ impl GameObject {
     /// becomes.
     pub fn held_as_cast(&self, condition: &mtg_cards::value::Condition) -> bool {
         self.held_as_cast.contains(condition)
+    }
+
+    /// What `amount`, one the card counts "as you cast this spell", counted as the spell was cast; kept by the permanent it
+    /// becomes, `None` when it was not cast.
+    pub fn counted_as_cast(&self, amount: &mtg_cards::value::Amount) -> Option<i64> {
+        self.counted_as_cast
+            .iter()
+            .find(|(counted, _)| counted == amount)
+            .map(|(_, number)| *number)
     }
 
     /// Whether the spell was cast at a time its caster couldn't have cast a sorcery; kept by the permanent it becomes.
@@ -936,6 +951,7 @@ impl PartialEq for GameObject {
             && self.cast == other.cast
             && self.off_sorcery_timing == other.off_sorcery_timing
             && self.held_as_cast == other.held_as_cast
+            && self.counted_as_cast == other.counted_as_cast
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -986,6 +1002,9 @@ impl Hash for GameObject {
         }
         if !self.held_as_cast.is_empty() {
             self.held_as_cast.hash(state);
+        }
+        if !self.counted_as_cast.is_empty() {
+            self.counted_as_cast.hash(state);
         }
         self.counter.hash(state);
         self.kind.hash(state);

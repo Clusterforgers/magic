@@ -401,7 +401,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
-        Amount::EvenShare(total) => reads_of_amount(total),
+        // A copy that was not cast reads the inner amount now.
+        Amount::EvenShare(total) | Amount::CountedAsCast(total) => reads_of_amount(total),
         Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
         Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
             reads_of_amount(of).or(reads_of_amount(by))

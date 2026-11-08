@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b16b10ec-a6a3-4bda-a561-9b7bb8eee194",
+  "name": "Laccolith Whelp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laccolith Whelp",
+      "oracle_fingerprint": "18fb85681442e200023d2b995de03ef6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

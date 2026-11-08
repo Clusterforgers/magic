@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d160887f-f78e-4a66-9766-0b7dd852a784",
+  "name": "Jubilant Mascot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jubilant Mascot",
+      "oracle_fingerprint": "862bd5815c1e6301a11c07e3352bdda3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{3}{W}",
+                  "paid": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "oracle_id": "c3ea6af5-48b9-45d2-9576-46cacb2db5b0",
+  "name": "Dark Leo & Shredder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Leo & Shredder",
+      "oracle_fingerprint": "ce217f70ef7f117f8f10974e832d713a",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{W}{B}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Ninja" }, "Attacking", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Deathtouch" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ninja",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ninja"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Ninja" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "who": "Triggering",
+                        "amount": { "Half": { "of": { "Life": "Triggering" }, "up": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

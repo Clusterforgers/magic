@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8a7c6391-020a-4d7a-8abb-702631bbee56",
+  "name": "Karn, Silver Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn, Silver Golem",
+      "oracle_fingerprint": "1d770ea200d7afe7a81f38310ee3b6b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "BecomesBlocked": { "what": ["This"] } },
+                { "Blocks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

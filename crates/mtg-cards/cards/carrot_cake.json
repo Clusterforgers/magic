@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5fe3aabd-3271-41bf-ae50-f6efaba7c4ae",
+  "name": "Carrot Cake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carrot Cake",
+      "oracle_fingerprint": "3a86ddd73296b4e29d7f0908c91cefe8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Sacrificed": { "what": ["This"], "by": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rabbit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rabbit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

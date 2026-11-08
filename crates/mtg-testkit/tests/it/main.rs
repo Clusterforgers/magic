@@ -215,6 +215,8 @@ mod e16a_history;
 mod e16b_as_cast;
 mod e16c_player_counters;
 mod e16c_token_attacking;
+mod e17a_until_cast;
+mod e17b_memories;
 mod elimination;
 mod embalm;
 mod en3_source;

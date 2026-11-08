@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9a50418c-3cdc-4e3e-b02c-6da646093120",
+  "name": "Lead by Example",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lead by Example",
+      "oracle_fingerprint": "2017d1cc1214556514b1e0d4cefa9a80",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
