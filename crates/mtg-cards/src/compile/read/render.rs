@@ -946,6 +946,11 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                     let others = (equipped != text).then_some(equipped);
                     e15g_that_spell(when, std::iter::once(text).chain(others))
                 })
+                // The controller of "that spell or ability" is the one of what targeted the card.
+                .filter(|text| {
+                    !text.contains("that spell or ability's controller")
+                        || matches!(when, TriggerPattern::BecomesTarget { .. })
+                })
                 .collect()
         }
         Ability::Activated {
