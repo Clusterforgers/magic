@@ -1,7 +1,7 @@
 // The run of the layout gate that `layout.spec.ts` and `accounts.spec.ts` share: a themed browser context and a page held to the rules at every size.
 import { expect } from '@playwright/test'
 import type { Browser, BrowserContext, BrowserContextOptions, Page } from '@playwright/test'
-import { measure, SIZES, settle, sizeName, storeTheme, TEXT_FLOOR } from './layoutAudit'
+import { GATE_SIZES, measure, SIZES, settle, sizeName, storeTheme, TEXT_FLOOR } from './layoutAudit'
 import type { Ask, Theme } from './layoutAudit'
 
 /** What a page is held to besides the rules every page keeps. */
@@ -50,10 +50,10 @@ export async function expectTheme(page: Page, theme: Theme): Promise<void> {
     .toBe(theme === 'dark')
 }
 
-/** Holds the page to the rules at every size, down the six and back up, and fails with each size that breaks one. */
+/** Holds the page to the rules at every gate size, down and back up, and fails with each size that breaks one. */
 export async function holdsAtEverySize(page: Page, rules: Rules, label: string): Promise<void> {
   const broken: string[] = []
-  for (const size of [...SIZES, ...SIZES.toReversed()]) {
+  for (const size of [...GATE_SIZES, ...GATE_SIZES.toReversed()]) {
     const fits = size.width >= rules.fitsFrom
     const ask: Ask = { actions: rules.actions, reveal: !fits, exempt: rules.exempt ?? [], floor: TEXT_FLOOR }
     await page.setViewportSize(size)

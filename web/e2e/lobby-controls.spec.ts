@@ -146,3 +146,20 @@ test('the host removes a guest, who is told so, and the guest who joins again ca
     for (const context of contexts) await context.close()
   }
 })
+
+test('a host types a seat count above 12 into the create form and gets that many seats; a count past the most is refused in words', async ({
+  page,
+}) => {
+  await page.goto('/new')
+  await page.getByRole('radio', { name: /^Normal/ }).check()
+  const seats = page.getByLabel('Seats', { exact: true })
+  await seats.fill('2500')
+  await expect(seats).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByText('Enter a whole number of seats from 2 to 256.')).toBeVisible()
+  await seats.fill('16')
+  await expect(seats).toHaveAttribute('aria-invalid', 'false')
+  await page.getByLabel('Your name').fill(unique('Host'))
+  await page.getByRole('button', { name: 'Create game' }).click()
+  await expect(page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
+  await expect(seatRows(page)).toHaveCount(16)
+})

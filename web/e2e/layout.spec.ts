@@ -1,4 +1,4 @@
-// Goal: the layout gate. Every page that needs no account (Play, Create, a lobby, an invite link, sign-in, register, the game-over screen) and the development routes that stand for the pages that do (the table, a lobby, the builder) keep the layout rules in Chromium at the six sizes of docs/ui-design.md (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768, 390x844), down and back up, in the light and the dark theme: the page never scrolls sideways, no element is cut off sideways by the window or a box that clips it, no text is under 12 px, every primary action is in the window and not covered, and a page meant to fit the window never scrolls down. Decks, My games and the builder with a real deck need Postgres and are held by accounts.spec.ts.
+// Goal: the layout gate. Every page that needs no account (Play, Create, a lobby, an invite link, sign-in, register, the game-over screen) and the development routes that stand for the pages that do (the table, a lobby, the builder) keep the layout rules in Chromium at the six sizes of docs/ui-design.md (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768, 390x844) and 1600x1000, 1400x900, 768x1024 and 360x740, down and back up, in the light and the dark theme: the page never scrolls sideways, no element is cut off sideways by the window or a box that clips it, no text is under 12 px, every primary action is in the window and not covered, and a page meant to fit the window never scrolls down. Decks, My games and the builder with a real deck need Postgres and are held by accounts.spec.ts.
 import { expect, test } from '@playwright/test'
 import type { APIRequestContext, BrowserContext, Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
@@ -84,6 +84,17 @@ function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prom
       // A panel scene opens its row once the table is up, in the rail's panel or the sheet where the side area is one.
       if (query.startsWith('panel=')) await page.locator('[data-slot="commands-panel"] [data-open]').waitFor()
     },
+  }
+}
+
+/** Shows the Deck pane with Stats and the cards played by hand open; from 1440 px they sit in the rail, which has no disclosure to click. */
+async function openStats(page: Page): Promise<void> {
+  await showPane(page, 'Stats')
+  for (const name of [/^Stats/, /^Played by hand/]) {
+    const heading = page.getByRole('region', { name: 'Deck', exact: true }).getByRole('button', { name })
+    if ((await heading.count()) > 0 && (await heading.getAttribute('aria-expanded')) !== 'true') {
+      await heading.click()
+    }
   }
 }
 
@@ -256,14 +267,10 @@ const STOPS: readonly Stop[] = [
     name: 'The deck builder (dev), the stats and the cards played by hand opened',
     fitsFrom: 640,
     actions: { Save: 'text:Save' },
-    afterResize: (page) => showPane(page, 'Stats'),
+    afterResize: openStats,
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/builder`)
-      await showPane(page, 'Stats')
-      for (const name of [/^Stats/, /^Played by hand/]) {
-        const heading = page.getByRole('region', { name: 'Deck', exact: true }).getByRole('button', { name })
-        if ((await heading.getAttribute('aria-expanded')) !== 'true') await heading.click()
-      }
+      await openStats(page)
       await expect(page.getByRole('list', { name: 'Cards played by hand' })).toBeVisible()
     },
   },
