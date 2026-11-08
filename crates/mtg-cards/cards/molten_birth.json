@@ -1,0 +1,35 @@
+{
+  "oracle_id": "aeaae9cc-f30f-4d7e-86f3-3132ef47e987",
+  "name": "Molten Birth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Birth",
+      "oracle_fingerprint": "6638c98599888186bb8070c568b3c7c7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              { "FlipCoin": { "win": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

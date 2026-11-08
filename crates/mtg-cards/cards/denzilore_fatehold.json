@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0f8de7f0-c61d-415d-b4db-4959374343da",
+  "name": "Denzilore Fatehold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Denzilore Fatehold",
+      "oracle_fingerprint": "a820ec3785ad30b85513bee6e06eb87a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Scried", "who": "You" } },
+                { "Did": { "action": "Surveilled", "who": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

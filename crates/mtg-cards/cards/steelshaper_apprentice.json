@@ -1,0 +1,25 @@
+{
+  "oracle_id": "bf325b3a-0b28-4660-8b51-4334b59a9034",
+  "name": "Steelshaper Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steelshaper Apprentice",
+      "oracle_fingerprint": "2c8df7d296a3a26034cae3eeccae98d7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap", { "ReturnToHand": { "filter": ["This"] } }],
+            "effects": [
+              {
+                "Search": { "filter": [{ "Subtype": "Equipment" }], "reveal": true, "as": "found" }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

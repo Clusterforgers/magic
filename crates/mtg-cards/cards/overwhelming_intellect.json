@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8038337b-aff9-49aa-800c-0e12d2688765",
+  "name": "Overwhelming Intellect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwhelming Intellect",
+      "oracle_fingerprint": "4cbaa408d7bd3beec3474d9ccfbb7762",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "RememberValue": {
+                  "value": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "Draw": { "count": { "Remembered": { "on": "This", "slot": "remembered_number" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

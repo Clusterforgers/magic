@@ -112,6 +112,9 @@ pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
     if r.words("your life total") {
         return Some(Amount::Life(Ref::You));
     }
+    if r.words("your speed") {
+        return Some(Amount::Speed(Ref::You));
+    }
     if r.words("the amount of life you gained this turn") {
         return Some(Amount::Tallied {
             who: Ref::You,
@@ -288,6 +291,10 @@ fn sentence(power: &Amount, toughness: &Amount) -> Option<String> {
 
 /// The wordings of a count: `value_text`, and the sum that begins with a number as a word ("one plus the number of ...").
 pub(super) fn value_texts(amount: &Amount) -> Vec<String> {
+    let players = super::r9w_players::r9w_number_texts(amount);
+    if !players.is_empty() {
+        return players;
+    }
     let Some(text) = value_text(amount) else {
         return Vec::new();
     };
@@ -323,7 +330,16 @@ pub(super) fn value_text(amount: &Amount) -> Option<String> {
 }
 
 pub(super) fn counting_text(amount: &Amount) -> Option<String> {
+    if let Some(text) = super::r11w_tallies::said(amount) {
+        return Some(text);
+    }
+    if let Some(text) = super::e16a_history::said(amount) {
+        return Some(text);
+    }
     match amount {
+        Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_number_texts(amount)
+            .into_iter()
+            .next(),
         Amount::DieResult(which) => Some(super::chance::c11e_result_text(*which).to_owned()),
         Amount::Tallied {
             who: Ref::You,
@@ -333,6 +349,7 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
             died_text(amount, false).map(|text| format!("the number of {text}"))
         }
         Amount::Life(Ref::You) => Some("your life total".to_owned()),
+        Amount::Speed(Ref::You) => Some("your speed".to_owned()),
         Amount::CardTypes(of) => Some(format!(
             "the number of card types among {}",
             counted_text(of)?
@@ -505,6 +522,14 @@ pub(super) fn died_each(r: &mut Reader<'_>) -> Option<Amount> {
         TurnTally::CreaturesDied
     };
     r.word("creature").then_some(())?;
+    if what == TurnTally::CreaturesDied
+        && r.words("that left the battlefield under your control this turn")
+    {
+        return Some(Amount::Tallied {
+            who: Ref::You,
+            what: TurnTally::CreaturesLeftUnder,
+        });
+    }
     if r.words("that died under your control this turn") {
         return Some(Amount::Tallied {
             who: Ref::You,
@@ -525,6 +550,11 @@ pub(super) fn died_text(amount: &Amount, each: bool) -> Option<String> {
     };
     if let Some(text) = you_did_text(*what, each) {
         return (*who == Ref::You).then_some(text);
+    }
+    if *what == TurnTally::CreaturesLeftUnder {
+        let noun = if each { "creature" } else { "creatures" };
+        return (*who == Ref::You)
+            .then(|| format!("{noun} that left the battlefield under your control this turn"));
     }
     let kind = match what {
         TurnTally::CreaturesDied | TurnTally::CreaturesDiedUnder => "",

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "08dfe42e-35c0-4be0-abba-57269792ff3d",
+  "name": "Chittering Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chittering Rats",
+      "oracle_fingerprint": "74811a1d4b2cda8c91d463f67b1ac9a4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "26d3a818-7faf-443a-a6bd-9773edaedf17",
+  "name": "Orim's Chant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orim's Chant",
+      "oracle_fingerprint": "aad43528b64326e7f8be18c1aa7534ed",
+      "abilities": [
+        { "Keyword": { "Kicker": "{W}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "Cast": {} } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }] },
+                        "mods": ["CantAttack"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

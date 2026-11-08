@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2769751d-ca67-4d6e-93c9-9587367ae8ab",
+  "name": "Trespasser's Curse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trespasser's Curse",
+      "oracle_fingerprint": "17c211b2e9812c752a075e6a21fa757c",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "AttachedPlayer" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

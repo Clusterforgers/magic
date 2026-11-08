@@ -1,0 +1,74 @@
+{
+  "oracle_id": "68a91b87-1845-419b-aae7-ee1237554946",
+  "name": "Gleam of Authority",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gleam of Authority",
+      "oracle_fingerprint": "ab8307639c8b5783e048b2d030a2aaa8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Counters": {
+                      "on": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Not": { "Is": "Attached" } }
+                        ]
+                      },
+                      "counter": "+1/+1"
+                    }
+                  },
+                  "toughness": {
+                    "Counters": {
+                      "on": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Not": { "Is": "Attached" } }
+                        ]
+                      },
+                      "counter": "+1/+1"
+                    }
+                  }
+                }
+              },
+              { "AddKeyword": "Vigilance" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{W}" }, "Tap"],
+                    "effects": [{ "Bolster": { "count": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Vigilance" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{W}" }, "Tap"],
+                    "effects": [{ "Bolster": { "count": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

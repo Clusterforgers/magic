@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2d8aa053-289d-40d9-baa7-9bd1c5b8e957",
+  "name": "Greenbelt Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greenbelt Guardian",
+      "oracle_fingerprint": "3b5031ccc5ffec0dad222257785599d1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

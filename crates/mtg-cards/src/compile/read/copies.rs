@@ -32,9 +32,6 @@ use crate::value::Amount;
 /// The name the token of a copy that a delayed effect acts on is bound to.
 pub(super) const COPY: &str = "copy";
 
-/// The name the token that populate copies is chosen as.
-const CHOSEN: &str = "token";
-
 /// How many tokens a copy makes and how they enter.
 struct Made {
     /// The number of tokens.
@@ -157,6 +154,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         count,
         tapped,
         attacking,
+        against: None,
         bind: (gains.is_some() || delay.is_some()).then(|| COPY.to_owned()),
     };
     let copy = Ref::Bound(COPY.to_owned());
@@ -164,6 +162,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     effects.extend(gains);
     if let Some((verb, step)) = delay {
         effects.push(Effect::DelayedTrigger {
+            until: None,
             when: TriggerPattern::StepBegins {
                 step,
                 whose: Ref::EachPlayer,
@@ -181,6 +180,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                     who: Ref::You,
                     filter: Selector(vec![Pred::Is(copy)]),
                     count: Amount::one(),
+                    bind: None,
                 }
             }],
         });
@@ -350,6 +350,7 @@ fn each_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         count: Amount::one(),
         tapped: false,
         attacking: false,
+        against: None,
         bind: None,
     }])
 }
@@ -367,6 +368,7 @@ pub(super) fn each_text(effect: &Effect, from: &Selector) -> Option<String> {
         count,
         tapped: false,
         attacking: false,
+        against: None,
         bind: None,
     } = effect
     else {
@@ -450,6 +452,7 @@ fn populate_later(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             duration: Duration::Forever,
         },
         Effect::DelayedTrigger {
+            until: None,
             when: TriggerPattern::StepBegins {
                 step: Step::End,
                 whose: Ref::EachPlayer,
@@ -460,6 +463,7 @@ fn populate_later(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 who: Ref::You,
                 filter: Selector(vec![Pred::Is(token)]),
                 count: Amount::one(),
+                bind: None,
             }],
         },
     ])
@@ -472,38 +476,9 @@ pub fn then_populate(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     populate(r)
 }
 
-/// The two steps of populate.
+/// The two steps of populate, from the macro table.
 fn populate_steps() -> Vec<Effect> {
-    vec![
-        Effect::Choose {
-            who: Ref::You,
-            from: Ref::Each(populated()),
-            count: Bounds::default(),
-            bind: CHOSEN.to_owned(),
-            rest_as: None,
-        },
-        Effect::CreateToken {
-            who: Ref::You,
-            token: TokenRef::CopyOf {
-                of: Ref::Bound(CHOSEN.to_owned()),
-                except: Vec::new(),
-                no_mana_cost: false,
-            },
-            count: Amount::one(),
-            tapped: false,
-            attacking: false,
-            bind: None,
-        },
-    ]
-}
-
-/// The tokens populate chooses from.
-fn populated() -> Selector {
-    Selector(vec![
-        Pred::Type(CardType::Creature),
-        Pred::Token,
-        Pred::ControlledBy(Ref::You),
-    ])
+    crate::macros::action_effects("populate", 1, &Ref::This).unwrap_or_default()
 }
 
 /// Whether the effects begin with the two steps of populate.
@@ -670,8 +645,12 @@ fn not_legendary(r: &mut Reader<'_>, subject: Subject) -> Option<Modification> {
     Some(Modification::RemoveSupertype(Supertype::Legendary))
 }
 
-/// What follows "it has": keywords, or an ability in quotes.
+/// What follows "it has": keywords, an ability in quotes, or "this ability" (the copy keeps the ability that makes it).
 fn has(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
+    if r.words("this ability") {
+        mods.push(Modification::ThisAbility);
+        return Some(());
+    }
     if let Some(ability) = r
         .quoted(abilities::triggered)
         .or_else(|| r.quoted(abilities::activated))
@@ -689,6 +668,10 @@ fn has(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
         granted_keywords(r)
     }) {
         mods.extend(more.into_iter().map(Modification::AddKeyword));
+    }
+    // "it has flying and this ability": the keywords, then the ability that makes the copy.
+    if r.words("and this ability") {
+        mods.push(Modification::ThisAbility);
     }
     Some(())
 }
@@ -733,6 +716,13 @@ fn is(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
     }
     (r.word("a") || r.word("an")).then_some(())?;
     let size = power_toughness(r);
+    // "a 4/4 black Zombie": the size, the colors and the creature types, which replace the others.
+    if let Some(sized) = size.clone()
+        && let Some(found) = r.attempt(|r| super::g12b_copy_kinds::g12b_kinds(r, sized.clone()))
+    {
+        mods.extend(found);
+        return Some(());
+    }
     let mut kinds = Vec::new();
     loop {
         if let Some(name) = subtype(r) {
@@ -903,8 +893,22 @@ fn listed_text(parts: &[String], subject: Subject) -> Option<String> {
     Some(format!("{text}, and {last}"))
 }
 
-/// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`.
+/// The parts of the exceptions, one for each change; a type alone is "it's an artifact" with `terse`. A size, colors and
+/// creature types at the head are one part: "it's a 4/4 black Zombie".
 fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<Vec<String>> {
+    let Some((run, text)) = super::g12b_copy_kinds::g12b_kinds_text(mods) else {
+        return plain_parts(mods, subject, terse);
+    };
+    (subject != Subject::They).then_some(())?;
+    let mut parts = vec![format!("{} {text}", subject.is())];
+    if run < mods.len() {
+        parts.extend(plain_parts(&mods[run..], subject, terse)?);
+    }
+    Some(parts)
+}
+
+/// The parts of the exceptions, one for each change, with no head of creature types.
+fn plain_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<Vec<String>> {
     let is_kind = |found: &Modification| {
         matches!(
             found,
@@ -916,10 +920,14 @@ fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Opti
     while let Some(first) = rest.first() {
         // Keywords in a row are one phrase, and so are types and subtypes with the size before them.
         let run = match first {
-            Modification::AddKeyword(_) => rest
-                .iter()
-                .take_while(|found| matches!(found, Modification::AddKeyword(_)))
-                .count(),
+            // "it has flying and this ability" is one phrase with the keywords before it.
+            Modification::AddKeyword(_) => {
+                let keywords = rest
+                    .iter()
+                    .take_while(|found| matches!(found, Modification::AddKeyword(_)))
+                    .count();
+                keywords + usize::from(rest.get(keywords) == Some(&Modification::ThisAbility))
+            }
             Modification::SetPT { .. } => 1 + rest[1..].iter().take_while(|m| is_kind(m)).count(),
             kind if is_kind(kind) => rest.iter().take_while(|m| is_kind(m)).count(),
             // The subtypes of a type that replaces the others, and the keywords that come with them.
@@ -939,10 +947,18 @@ fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Opti
         let (these, after) = rest.split_at_checked(run)?;
         rest = after;
         parts.push(match first {
-            Modification::AddKeyword(_) => format!("{} {}", subject.has(), granted_text(these)?),
+            Modification::AddKeyword(_) => match these.split_last() {
+                Some((Modification::ThisAbility, keywords)) => format!(
+                    "{} {} and this ability",
+                    subject.has(),
+                    granted_text(keywords)?
+                ),
+                _ => format!("{} {}", subject.has(), granted_text(these)?),
+            },
             Modification::GrantAbility(ability) => {
                 format!("{} \"{}\"", subject.has(), render::ability(ability)?)
             }
+            Modification::ThisAbility => format!("{} this ability", subject.has()),
             _ if subject == Subject::They => return None,
             Modification::RemoveSupertype(Supertype::Legendary) => {
                 format!("{} legendary", subject.isnt()?)
@@ -1009,6 +1025,7 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
         count,
         tapped,
         attacking,
+        against: None,
         bind,
     } = effect
     else {
@@ -1235,6 +1252,7 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect, plural: bool) -> Op
         return None;
     };
     let Effect::DelayedTrigger {
+        until: None,
         when:
             TriggerPattern::StepBegins {
                 step,
@@ -1266,6 +1284,7 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect, plural: bool) -> Op
                 who: Ref::You,
                 filter,
                 count,
+                ..
             },
         ] if filter.0 == [Pred::Is(copy)] && count.is_one() => "sacrifice",
         _ => return None,

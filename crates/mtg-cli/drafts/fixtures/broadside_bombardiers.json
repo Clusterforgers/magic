@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "9721f8da-39ed-4ada-a571-61e08a86032b",
+  "oracle_id": "e0c00a74-bdf8-4fee-8042-42c5878e9e3c",
+  "multiverse_ids": [
+    640046
+  ],
+  "mtgo_id": 119178,
+  "tcgplayer_id": 526203,
+  "cardmarket_id": 743463,
+  "name": "Broadside Bombardiers",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/9721f8da-39ed-4ada-a571-61e08a86032b",
+  "scryfall_uri": "https://scryfall.com/card/lcc/86/broadside-bombardiers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.jpg?1783913908",
+    "normal": "https://cards.scryfall.io/normal/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.jpg?1783913908",
+    "large": "https://cards.scryfall.io/large/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.jpg?1783913908",
+    "png": "https://cards.scryfall.io/png/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.png?1783913908",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.jpg?1783913908",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.jpg?1783913908",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.webp?1783913908",
+    "grid": "https://cards.scryfall.io/grid/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.webp?1783913908",
+    "display": "https://cards.scryfall.io/display/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.webp?1783913908",
+    "art": "https://cards.scryfall.io/art/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.webp?1783913908",
+    "crop": "https://cards.scryfall.io/crop/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.webp?1783913908",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/7/9721f8da-39ed-4ada-a571-61e08a86032b.jpg?1783913908"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Goblin Pirate",
+  "oracle_text": "Menace, haste\nBoast — Sacrifice another creature or artifact: This creature deals damage equal to 2 plus the sacrificed permanent's mana value to any target. (Activate only if this creature attacked this turn and only once each turn.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Boast",
+    "Haste",
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "banned",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9721f8da-39ed-4ada-a571-61e08a86032b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae0c00a74-bdf8-4fee-8042-42c5878e9e3c&unique=prints",
+  "collector_number": "86",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "When they ran short on cannonballs, they went for the pots and pans.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomek Larek",
+  "artist_ids": [
+    "9061457f-e55b-4755-9965-715872ff2a70"
+  ],
+  "illustration_id": "5b054365-0497-4dd8-a373-838d5a7a4989",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5183,
+  "prices": {
+    "usd": "3.66",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.57",
+    "eur_foil": null,
+    "tix": "7.56"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640046&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBroadside%2BBombardiers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBroadside%2BBombardiers",
+    "edhrec": "https://edhrec.com/route/?cc=Broadside+Bombardiers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F526203%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743463&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119178?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

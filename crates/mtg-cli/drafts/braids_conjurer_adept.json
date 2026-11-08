@@ -1,0 +1,41 @@
+{
+  "oracle_id": "359b8f2c-831e-47d0-9267-dae79cecb63a",
+  "name": "Braids, Conjurer Adept",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Braids, Conjurer Adept",
+      "oracle_fingerprint": "87f185d69ef7e525db9e1253575811bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Creature" },
+                          { "Type": "Artifact" },
+                          { "Type": "Land" }
+                        ]
+                      },
+                      { "In": "Hand" },
+                      { "OwnedBy": "Triggering" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

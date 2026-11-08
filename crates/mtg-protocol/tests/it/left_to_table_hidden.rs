@@ -23,7 +23,7 @@ use crate::common::table::Table;
 /// An effect no step prepared for: the engine cannot run it.
 fn failing() -> Effect {
     Effect::GainLife {
-        who: Ref::Bound("nothing".to_owned()),
+        who: Ref::Affected,
         amount: Amount::Fixed(1),
     }
 }

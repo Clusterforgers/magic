@@ -1,0 +1,42 @@
+{
+  "oracle_id": "47ecedec-7bf7-4a3b-ac33-2bf203fa50d9",
+  "name": "Prismari Pledgemage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismari Pledgemage",
+      "oracle_fingerprint": "d1a661bf1319c7b2d15c02e5d90fe573",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "eefeeab1-b9f2-451a-9250-eb7b54d00fc1",
+  "name": "Captain Ripley Vance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Ripley Vance",
+      "oracle_fingerprint": "405a0ca74041f9abcad2b9fd78c32ea1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 3
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

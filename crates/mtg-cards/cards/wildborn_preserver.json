@@ -1,0 +1,46 @@
+{
+  "oracle_id": "55cec4bc-3de6-4c0d-a4cc-c5a30849fbda",
+  "name": "Wildborn Preserver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildborn Preserver",
+      "oracle_fingerprint": "9907db606923c3bb0195f293721cf650",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": { "Subtype": "Human" } },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "X" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

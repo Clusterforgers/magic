@@ -51,6 +51,7 @@ fn draw_when_it_dies() -> Ability {
         from: ZoneKind::Battlefield,
         targets: Vec::new(),
         effects: vec![Effect::Draw {
+            bind: None,
             who: Ref::You,
             count: Amount::one(),
         }],
@@ -64,6 +65,7 @@ fn sacrifice_it() -> Effect {
         who: Ref::ControllerOf(Box::new(blitzed.clone())),
         filter: Selector(vec![Pred::Is(blitzed)]),
         count: Amount::one(),
+        bind: None,
     }
 }
 
@@ -117,7 +119,7 @@ mod tests {
             enters.as_slice(),
             [
                 Effect::Choose { .. },
-                Effect::DelayedTrigger {
+                Effect::DelayedTrigger { until: None,
                     when: TriggerPattern::StepBegins {
                         step: Step::End,
                         ..

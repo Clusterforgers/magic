@@ -13,7 +13,7 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "In": "Graveyard" }, { "Type": "Creature" }, { "OwnedBy": "You" }]
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
                 }
               }
             ],
@@ -21,22 +21,26 @@
               {
                 "CreateToken": {
                   "token": {
-                    "CopyOf": { "of": { "Target": 0 }, "except": [{ "AddType": "Artifact" }] }
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "AddType": "Artifact" }, { "AddKeyword": "Haste" }]
+                    }
                   },
                   "as": "copy"
                 }
               },
               {
-                "Continuous": {
-                  "affected": { "Bound": "copy" },
-                  "mods": [{ "AddKeyword": "Haste" }],
-                  "duration": "Forever"
-                }
-              },
-              {
                 "DelayedTrigger": {
                   "when": { "StepBegins": { "step": "End" } },
-                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }]
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "copy" } },
+                        "filter": [{ "Is": { "Bound": "copy" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                      }
+                    }
+                  ]
                 }
               }
             ]

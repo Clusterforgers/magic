@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a6eb06dc-a62d-4fdb-b336-e304d8d68c92",
+  "name": "Usher of the Fallen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Usher of the Fallen",
+      "oracle_fingerprint": "062885a0d78901671e8dd50530c4f538",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

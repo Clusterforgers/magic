@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c82091b2-f2f1-4a85-80d6-91ab218f0a94",
+  "name": "Farsight Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farsight Mask",
+      "oracle_fingerprint": "d53cf1cbd770646846cfd48b4d180048",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "Opponents" }], "to": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Untapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

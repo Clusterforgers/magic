@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c16d5daf-4995-4342-815c-a6b29d594f26",
+  "name": "Barrowin of Clan Undurr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barrowin of Clan Undurr",
+      "oracle_fingerprint": "894c07d2c876ec18333ce67736a219d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Venture": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

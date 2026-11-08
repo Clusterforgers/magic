@@ -1,0 +1,47 @@
+{
+  "oracle_id": "94dc9937-91e3-4c38-a544-c1cdb6989222",
+  "name": "Brain Pry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brain Pry",
+      "oracle_fingerprint": "1d6b7b6fa67cf331e08a741b167f7942",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "CardName": [{ "Not": { "Type": "Land" } }] },
+                  "as": "name"
+                }
+              },
+              {
+                "Bind": {
+                  "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              { "Discard": { "who": { "Target": 0 }, "filter": [{ "ChosenAs": "name" }] } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [{ "ChosenAs": "name" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

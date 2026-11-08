@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2b211adb-de44-4468-b65d-907a09aa7e9d",
+  "name": "Abattoir Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abattoir Ghoul",
+      "oracle_fingerprint": "ca5aef68e95cc3cbcdb804752b8fad67",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

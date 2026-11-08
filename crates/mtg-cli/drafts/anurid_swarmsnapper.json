@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fd275ea7-9ccc-4148-9b33-392a612486dd",
+  "name": "Anurid Swarmsnapper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anurid Swarmsnapper",
+      "oracle_fingerprint": "c11de07f2364298f827209f2f322933a",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "BlocksAdditional": 1 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

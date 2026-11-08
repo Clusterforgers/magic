@@ -1,0 +1,52 @@
+{
+  "oracle_id": "52e73390-75e4-45a1-8dbe-96e7cceb0a14",
+  "name": "Woeleecher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woeleecher",
+      "oracle_fingerprint": "c396620f114d8efd46a65a6d2f9931a4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Counters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": { "Counters": { "on": { "Target": 0 }, "counter": "-1/-1" } }
+                    }
+                  },
+                  "slot": "remembered_number"
+                }
+              },
+              { "RemoveCounters": { "from": { "Target": 0 }, "counter": "-1/-1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f3bd9bfe-847f-4ed1-88aa-6aa6b3fa7199",
+  "name": "Obstinate Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obstinate Gargoyle",
+      "oracle_fingerprint": "9e46103a46fa76ea8166e89a487a1f9f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Modified"] } }
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

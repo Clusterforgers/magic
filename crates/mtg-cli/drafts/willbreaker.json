@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7c365041-806f-42d6-a2ff-40e20dd8e9f0",
+  "name": "Willbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Willbreaker",
+      "oracle_fingerprint": "47defef4b95d63081403c74c09677fb8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  { "In": "Battlefield" }
+                ],
+                "by": [
+                  { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "TriggeringFirst",
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

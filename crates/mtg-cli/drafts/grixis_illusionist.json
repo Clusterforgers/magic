@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c231698b-c584-4047-9668-5322e4b0065b",
+  "name": "Grixis Illusionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grixis Illusionist",
+      "oracle_fingerprint": "2ce483828def0b03cf9b08a6162702a1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

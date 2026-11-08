@@ -1,0 +1,69 @@
+{
+  "oracle_id": "45c4e67c-e452-41c5-8baa-050819a1321f",
+  "name": "Ceta Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ceta Sanctuary",
+      "oracle_fingerprint": "88667467b008b0add75cd9f16fdc5e26",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }] },
+                              "op": "Gt",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": { "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }] }
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": [{ "Color": "Green" }, { "ControlledBy": "You" }] },
+                              "op": "Gt",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": {
+                            "Count": [{ "Color": "Green" }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              { "Discard": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

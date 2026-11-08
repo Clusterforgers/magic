@@ -1,0 +1,42 @@
+{
+  "oracle_id": "499b4cf9-2aaa-45a0-8362-77b727b7f7cc",
+  "name": "Puca's Eye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puca's Eye",
+      "oracle_fingerprint": "315d90ef7c33f3655f6f626ad5e61389",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } },
+                "op": "Eq",
+                "right": 5
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "807e35c0-8ea1-44a5-abac-51fd516aad03",
+  "name": "Invasion of the Giants",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of the Giants",
+      "oracle_fingerprint": "504434753f76d10d4ed7ed3579c8393e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Pay": {
+                  "cost": [{ "RevealFromHand": { "filter": [{ "Subtype": "Giant" }] } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }]
+                            }
+                          }
+                        ],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Subtype": "Giant" }],
+                      "benefit": { "Cost": { "change": "Reduce", "mana": "{1}", "per": 2 } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

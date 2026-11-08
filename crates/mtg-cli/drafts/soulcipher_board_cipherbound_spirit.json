@@ -1,0 +1,81 @@
+{
+  "oracle_id": "6469c7fd-6c0f-4233-8c38-4742ddcf3c3f",
+  "name": "Soulcipher Board // Cipherbound Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulcipher Board",
+      "oracle_fingerprint": "967b8f8786750bc6c9738739df410887",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "omen" }, "count": 3 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "You" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "omen" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": ["This", { "Not": { "HasCounter": { "Other": "omen" } } }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cipherbound Spirit",
+      "oracle_fingerprint": "ca2cd9d805e8fabd7b9ee684e8088e26",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

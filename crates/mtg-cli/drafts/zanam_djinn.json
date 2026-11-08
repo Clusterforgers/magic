@@ -1,0 +1,55 @@
+{
+  "oracle_id": "049fc248-4e46-43de-986d-fa023a3e8792",
+  "name": "Zanam Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zanam Djinn",
+      "oracle_fingerprint": "8f412f3d8d960720dff73f5abd0d2129",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Blue" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "White" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Blue" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Black" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Blue" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Red" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "Blue" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Green" }] }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

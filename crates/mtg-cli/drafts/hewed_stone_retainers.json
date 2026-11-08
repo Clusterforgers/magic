@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a27938d2-9a15-4a87-9e77-dea37347cf62",
+  "name": "Hewed Stone Retainers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hewed Stone Retainers",
+      "oracle_fingerprint": "0802852559453ee7e9ed72b7c15ffba7",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Tally": {
+                      "event": "SpellCast",
+                      "who": "EachPlayer",
+                      "filter": [{ "ControlledBy": "You" }]
+                    }
+                  },
+                  "op": "Le",
+                  "right": 0
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

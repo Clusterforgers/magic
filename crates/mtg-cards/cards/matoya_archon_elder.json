@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ef6c0054-3a89-4fac-b822-37c7d2514489",
+  "name": "Matoya, Archon Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Matoya, Archon Elder",
+      "oracle_fingerprint": "561aeed54e83eda994906212bf2e4503",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Scried", "who": "You" } },
+                { "Did": { "action": "Surveilled", "who": "You" } }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

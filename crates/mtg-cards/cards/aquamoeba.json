@@ -1,0 +1,27 @@
+{
+  "oracle_id": "55de434c-0fb9-4127-81b6-47c1c0b088fe",
+  "name": "Aquamoeba",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aquamoeba",
+      "oracle_fingerprint": "75cb5e7a7f4d01f9df4d69aeeb9b62bb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

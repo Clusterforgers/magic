@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ec44ca05-6b10-4be2-b4df-967535967fce",
+  "name": "Duskmantle Guildmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duskmantle Guildmage",
+      "oracle_fingerprint": "7167f2e1c2baa3b60f64ba40034eaf2a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}{B}",
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "LoseLife": { "who": { "OwnerOf": "Triggering" }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}{B}",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

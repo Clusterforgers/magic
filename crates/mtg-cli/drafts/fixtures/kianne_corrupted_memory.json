@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "d970c966-9a89-4c4c-ac73-8cf8fffe7721",
+  "oracle_id": "7fc9e800-da66-4dda-a56d-79daec9e943e",
+  "multiverse_ids": [
+    675459
+  ],
+  "mtgo_id": 131405,
+  "tcgplayer_id": 577842,
+  "cardmarket_id": 787300,
+  "name": "Kianne, Corrupted Memory",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/d970c966-9a89-4c4c-ac73-8cf8fffe7721",
+  "scryfall_uri": "https://scryfall.com/card/dsc/2/kianne-corrupted-memory?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.jpg?1783909664",
+    "normal": "https://cards.scryfall.io/normal/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.jpg?1783909664",
+    "large": "https://cards.scryfall.io/large/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.jpg?1783909664",
+    "png": "https://cards.scryfall.io/png/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.png?1783909664",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.jpg?1783909664",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.jpg?1783909664",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.webp?1783909664",
+    "grid": "https://cards.scryfall.io/grid/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.webp?1783909664",
+    "display": "https://cards.scryfall.io/display/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.webp?1783909664",
+    "art": "https://cards.scryfall.io/art/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.webp?1783909664",
+    "crop": "https://cards.scryfall.io/crop/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.webp?1783909664",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/9/d970c966-9a89-4c4c-ac73-8cf8fffe7721.jpg?1783909664"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Illusion",
+  "oracle_text": "As long as Kianne's power is even, you may cast noncreature spells as though they had flash.\nAs long as Kianne's power is odd, you may cast creature spells as though they had flash.\nWhenever you draw a card, put a +1/+1 counter on Kianne.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d970c966-9a89-4c4c-ac73-8cf8fffe7721/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7fc9e800-da66-4dda-a56d-79daec9e943e&unique=prints",
+  "collector_number": "2",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mila Pesic",
+  "artist_ids": [
+    "81c5ec23-220b-4efa-b7df-9e49dd371e8d"
+  ],
+  "illustration_id": "bc5cf4a9-a86b-495f-bd24-e0f75e648800",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11295,
+  "preview": {
+    "source": "Infrecuentes",
+    "source_uri": "https://www.youtube.com/watch?v=n1tWgZ8r_Qw",
+    "previewed_at": "2024-09-07"
+  },
+  "prices": {
+    "usd": "0.45",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.66",
+    "eur_foil": "0.32",
+    "tix": "2.99"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675459&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKianne%252C%2BCorrupted%2BMemory",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKianne%252C%2BCorrupted%2BMemory",
+    "edhrec": "https://edhrec.com/route/?cc=Kianne%2C+Corrupted+Memory"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F577842%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=787300&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131405?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

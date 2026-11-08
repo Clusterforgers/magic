@@ -146,6 +146,7 @@ pub(super) fn c11a_first_spell(r: &mut Reader<'_>) -> Option<Ability> {
     };
     (!x && r.words("to cast")).then_some(())?;
     Some(Ability::CostModifier {
+        targeting: None,
         applies_to: c11a_spells_of(kind),
         change,
         mana,
@@ -158,6 +159,8 @@ pub(super) fn c11a_first_spell(r: &mut Reader<'_>) -> Option<Ability> {
             op: Cmp::Eq,
             right: Amount::Fixed(before),
         }),
+        activating: None,
+        least: 0,
     })
 }
 

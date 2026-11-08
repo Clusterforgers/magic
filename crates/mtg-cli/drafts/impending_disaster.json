@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cf0799f3-ef64-4fcc-924a-5265e52c9727",
+  "name": "Impending Disaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impending Disaster",
+      "oracle_fingerprint": "66fc0c9e7f6a885e6688d7b510776c3d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Type": "Land" }] }, "op": "Ge", "right": 7 }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              { "Destroy": { "what": { "Each": [{ "Type": "Land" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

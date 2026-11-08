@@ -1,0 +1,56 @@
+{
+  "oracle_id": "09ac5adf-f722-417e-b0fc-7ed0d8c9abd6",
+  "name": "Apathy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apathy",
+      "oracle_fingerprint": "fcfc9d0076758293d2d58aa55eab265a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [
+                    { "Discard": { "who": "Triggering", "random": true, "as": "discarded" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Is": { "Bound": "discarded" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Untap": { "what": "Attached" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "532ee9c3-391c-44db-8ed5-a1d28fd7f876",
+  "name": "Splinter's Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splinter's Technique",
+      "oracle_fingerprint": "7b66ae45c1d69caaffe2e5bf7dfc8e7e",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{1}{B}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "97e5d788-2dd3-4c8e-9ab6-f4ea9c7a9a3d",
+  "name": "Rith, the Awakener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rith, the Awakener",
+      "oracle_fingerprint": "7e2449b5ff46aa85e99382855b9e3bbc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{G}",
+                  "paid": [
+                    { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Saproling",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Saproling"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": { "Count": [{ "ChosenAs": "chosen" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

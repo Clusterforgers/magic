@@ -1,0 +1,50 @@
+{
+  "oracle_id": "836ecd67-6487-4f3d-9e08-013746be829a",
+  "name": "Revival // Revenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revival",
+      "oracle_fingerprint": "c43fec4c838fba60bfc03836f8bd552d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Revenge",
+      "oracle_fingerprint": "fdf53ab2cde23eaf2f12162ccd012b5c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "SetLife": { "amount": { "Times": { "by": 2, "of": { "Life": "You" } } } } },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Half": { "of": { "Life": { "Target": 0 } }, "up": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e9685c61-e33d-4ae0-9dd3-7fd0df5eb46f",
+  "name": "Quintessential Katana",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quintessential Katana",
+      "oracle_fingerprint": "602ce200bc0bc7bc37b8ba3fcb4ce0dd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Batch": { "DealsDamage": { "source": ["This"], "combat": true } } },
+                    "effects": [{ "Untap": { "what": "This" } }, { "GainLife": { "amount": 2 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Ninja" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e0b5c772-e029-4b8d-be67-b1584700e377",
+  "name": "First Day of Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "First Day of Class",
+      "oracle_fingerprint": "b9a5153f78fb10072222b62a2d459193",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "to": "Battlefield"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Learn": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

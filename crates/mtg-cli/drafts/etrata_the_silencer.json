@@ -1,0 +1,54 @@
+{
+  "oracle_id": "2ee87667-ec9d-4ced-b7e6-df3fd18b0ed6",
+  "name": "Etrata, the Silencer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Etrata, the Silencer",
+      "oracle_fingerprint": "2663790f901de0f05152edbf1537e43a",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "hit" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "HasCounter": { "Other": "hit" } },
+                          { "OwnedBy": "Triggering" },
+                          { "In": "Exile" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "LoseGame": { "who": "Triggering" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

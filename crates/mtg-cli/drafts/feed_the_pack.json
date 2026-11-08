@@ -1,0 +1,80 @@
+{
+  "oracle_id": "48981194-6465-4900-8cea-206f8ab5d00e",
+  "name": "Feed the Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feed the Pack",
+      "oracle_fingerprint": "f7089bbf9ae0354ba8b87c160329b0f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, { "Not": "Token" }],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": {
+                                  "left": {
+                                    "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Toughness" }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": [
+                                {
+                                  "CreateToken": {
+                                    "token": {
+                                      "Custom": {
+                                        "name": "Wolf",
+                                        "colors": ["Green"],
+                                        "types": ["Creature"],
+                                        "subtypes": ["Wolf"],
+                                        "power": 2,
+                                        "toughness": 2
+                                      }
+                                    },
+                                    "count": {
+                                      "Stat": {
+                                        "of": { "Bound": "sacrificed" },
+                                        "stat": "Toughness"
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

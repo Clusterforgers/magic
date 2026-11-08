@@ -1,6 +1,6 @@
 //! Folding combat events: declarations, damage assignment and damage.
 
-use mtg_cards::value::CounterKind;
+use mtg_cards::value::{CounterKind, TallyEvent};
 use mtg_core::card::CardType;
 
 use super::{invalid, player_mut};
@@ -21,7 +21,7 @@ fn on_battlefield(state: &GameState, id: mtg_core::ids::ObjectId) -> bool {
 }
 
 /// A creature that was not declared as an attacker joins the attack, unblocked (CR 508.4).
-fn join_attack(
+pub(super) fn join_attack(
     state: &mut GameState,
     object: mtg_core::ids::ObjectId,
     target: crate::combat::AttackTarget,
@@ -127,18 +127,32 @@ fn damage_player(
     if in_combat && amount > 0 {
         record_hit(state, source);
     }
+    let loses_life = !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss);
+    // The damage is dealt in full; a life floor only changes the life lost (CR 120.3a, 614.1).
+    let lost = if loses_life {
+        let before = player_mut(state, id)?.life;
+        let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+        match crate::rules::damage_life_floor(state, id, before) {
+            Some(floor) => wanted.min(before.saturating_sub(floor)),
+            _ => wanted,
+        }
+    } else {
+        0
+    };
     if amount > 0 {
         state.tally_by(id, Tally::Hurt, amount);
-        if !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) {
-            state.tally_loss(id, amount);
+        let kind = if in_combat {
+            Tally::E16aCombatHurt
+        } else {
+            Tally::E16aNoncombatHurt
+        };
+        state.tally_by(id, kind, amount);
+        if lost > 0 {
+            state.tally_loss(id, u32::try_from(lost).unwrap_or(0));
         }
     }
     let player = player_mut(state, id)?;
-    if !matches!(form, DamageForm::Infect | DamageForm::NoLifeLoss) {
-        player.life = player
-            .life
-            .saturating_sub(i32::try_from(amount).unwrap_or(i32::MAX));
-    }
+    player.life = player.life.saturating_sub(lost);
     let poison = match form {
         DamageForm::Infect => amount.saturating_add(toxic),
         _ => toxic,
@@ -160,7 +174,7 @@ fn damage_player(
 }
 
 /// Notes that the creature `source` dealt combat damage to a player, with its controller and creature types as they are now
-/// (prowl, CR 702.76a).
+/// and whether it is a commander (prowl, CR 702.76a; freerunning, CR 702.173a).
 fn record_hit(state: &mut GameState, source: mtg_core::ids::ObjectId) {
     let Some(controller) = crate::characteristics::controller_of(state, source) else {
         return;
@@ -170,6 +184,7 @@ fn record_hit(state: &mut GameState, source: mtg_core::ids::ObjectId) {
         controller,
         types,
         every_type,
+        commander: state.is_commander(source),
     });
 }
 
@@ -218,11 +233,27 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     target_left: false,
                 })
                 .collect();
-            for (attacker, _) in attackers {
+            for (attacker, at) in attackers {
                 tally(state, *attacker, Tally::Attacked);
-                if let Some(controller) = crate::characteristics::controller_of(state, *attacker) {
+                let controller = crate::characteristics::controller_of(state, *attacker);
+                if let Some(controller) = controller {
                     state.tally(controller, Tally::Attackers);
                 }
+                let against = match at {
+                    crate::combat::AttackTarget::Player(player) => Target::Player(*player),
+                    crate::combat::AttackTarget::Planeswalker(object) => {
+                        match state.object(*object).map(GameObject::reference) {
+                            Some(object) => Target::Object(object),
+                            None => continue,
+                        }
+                    }
+                };
+                state.record(
+                    TallyEvent::Attacked,
+                    controller,
+                    (*attacker, Some(against)),
+                    1,
+                );
             }
             state.combat.attackers_declared = true;
         }
@@ -244,6 +275,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     .ok_or_else(|| invalid(format!("{attacker:?} is not attacking")))?;
                 target.blockers.push(*blocker);
                 target.blocked = true;
+                let blocked = state.object(*attacker).map(GameObject::reference);
+                state.record(
+                    TallyEvent::Blocked,
+                    Some(*player),
+                    (*blocker, blocked.map(Target::Object)),
+                    1,
+                );
             }
             state.combat.blockers_declared.push(*player);
         }
@@ -266,17 +304,30 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             deathtouch,
             form,
             toxic,
-        } => match target {
-            DamageTarget::Player(id) => {
-                damage_player(state, *source, *id, (*amount, *form, *toxic))?;
-            }
-            DamageTarget::Object(id) => {
-                damage_object(state, *id, *amount, *deathtouch, *form)?;
-                if *amount > 0 {
-                    state.note_damaged_by(*id, *source);
+            ..
+        } => {
+            let hit = match target {
+                DamageTarget::Player(id) => {
+                    damage_player(state, *source, *id, (*amount, *form, *toxic))?;
+                    Target::Player(*id)
                 }
+                DamageTarget::Object(id) => {
+                    damage_object(state, *id, *amount, *deathtouch, *form)?;
+                    if *amount > 0 {
+                        state.note_damaged_by(*id, *source);
+                    }
+                    match state.object(*id).map(GameObject::reference) {
+                        Some(object) => Target::Object(object),
+                        None => return Ok(()),
+                    }
+                }
+            };
+            if let Some(resolving) = state.resolving.as_mut() {
+                resolving.g10c_dealt = resolving.g10c_dealt.saturating_add(*amount);
             }
-        },
+            let dealer = crate::characteristics::controller_of(state, *source);
+            state.record(TallyEvent::Damaged, dealer, (*source, Some(hit)), *amount);
+        }
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::JoinedAttack { object, target } => join_attack(state, *object, *target)?,
         Event::RemovedFromCombat { object } => state.combat.remove_object(*object),

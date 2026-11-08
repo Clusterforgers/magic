@@ -1,0 +1,99 @@
+{
+  "oracle_id": "cb33e07b-9599-4979-991f-df0c43ddac31",
+  "name": "Nicol Bolas, God-Pharaoh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nicol Bolas, God-Pharaoh",
+      "oracle_fingerprint": "ad1881907b2f94fe0622fe85616bbf16",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "found_exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked2" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Opponent",
+                    { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "ControlledBy": "Opponents" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 7 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 12 },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "ControlledBy": "Opponents" }, { "Not": { "Type": "Land" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

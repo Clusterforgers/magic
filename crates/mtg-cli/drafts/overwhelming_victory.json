@@ -1,0 +1,31 @@
+{
+  "oracle_id": "20d94561-7526-4305-8d2d-7daf62729ff4",
+  "name": "Overwhelming Victory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwhelming Victory",
+      "oracle_fingerprint": "8eed39edffe9fc66ecbc64b9f1fb7257",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5, "excess": { "as": "excess" } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": { "Bound": "excess" }, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

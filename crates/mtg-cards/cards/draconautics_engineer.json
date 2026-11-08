@@ -1,0 +1,54 @@
+{
+  "oracle_id": "380d8d64-9aec-4656-b5b8-d336ebf803c8",
+  "name": "Draconautics Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draconautics Engineer",
+      "oracle_fingerprint": "6e5000797717db4d135c26286634d4c1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur", "Dragon"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

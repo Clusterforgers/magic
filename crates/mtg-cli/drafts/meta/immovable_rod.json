@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "You may choose not to untap CARDNAME during your untap step.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "For as long as CARDNAME remains tapped, another target permanent loses all abilities and can't attack or block.",
+      "abilities": [],
+      "gap": "key:Effect.static.AddHiddenKeyword"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME becomes untapped, venture into the dungeon.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 65
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 66,
+          "end": 132
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 133,
+          "end": 262
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

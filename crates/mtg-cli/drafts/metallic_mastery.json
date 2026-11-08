@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7de034a4-a42a-4e60-9ec9-5e9bb9987cfa",
+  "name": "Metallic Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metallic Mastery",
+      "oracle_fingerprint": "77142f6fe6e4f4142031fa50b213ccc1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

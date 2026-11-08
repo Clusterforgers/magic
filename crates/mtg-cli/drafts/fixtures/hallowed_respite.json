@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "f2877523-6321-47e6-8be4-755ec21676c6",
+  "oracle_id": "2d72454f-3d87-4acc-9f46-b8c579f44af8",
+  "multiverse_ids": [
+    535021
+  ],
+  "resource_id": "57EF2DFA3191A9BF71A55FA7CC69A81BE11F4A34EA3E5C5B64F2632A5DC46F4A",
+  "mtgo_id": 93456,
+  "arena_id": 78592,
+  "tcgplayer_id": 248221,
+  "cardmarket_id": 575083,
+  "name": "Hallowed Respite",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/f2877523-6321-47e6-8be4-755ec21676c6",
+  "scryfall_uri": "https://scryfall.com/card/mid/227/hallowed-respite?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:52:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.jpg?1783925561",
+    "normal": "https://cards.scryfall.io/normal/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.jpg?1783925561",
+    "large": "https://cards.scryfall.io/large/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.jpg?1783925561",
+    "png": "https://cards.scryfall.io/png/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.png?1783925561",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.jpg?1783925561",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.jpg?1783925561",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.webp?1783925561",
+    "grid": "https://cards.scryfall.io/grid/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.webp?1783925561",
+    "display": "https://cards.scryfall.io/display/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.webp?1783925561",
+    "art": "https://cards.scryfall.io/art/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.webp?1783925561",
+    "crop": "https://cards.scryfall.io/crop/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.webp?1783925561",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/2/f2877523-6321-47e6-8be4-755ec21676c6.jpg?1783925561"
+  },
+  "mana_cost": "{W}{U}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile target nonlegendary creature, then return it to the battlefield under its owner's control. If it entered under your control, put a +1/+1 counter on it. Otherwise, tap it.\nFlashback {1}{W}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set": "mid",
+  "set_name": "Innistrad: Midnight Hunt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f2877523-6321-47e6-8be4-755ec21676c6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2d72454f-3d87-4acc-9f46-b8c579f44af8&unique=prints",
+  "collector_number": "227",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason A. Engle",
+  "artist_ids": [
+    "02e2b5de-4341-464c-8fdb-a1adbf873bc0"
+  ],
+  "illustration_id": "cd331cf0-7abe-4028-82e3-d7de21d1f225",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15579,
+  "penny_rank": 10921,
+  "preview": {
+    "source": "Card Kingdom",
+    "source_uri": "https://blog.cardkingdom.com/innistrad-midnight-hunt-exclusive-preview-card-hallowed-respite/",
+    "previewed_at": "2021-09-09"
+  },
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.25",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=535021&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHallowed%2BRespite",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHallowed%2BRespite",
+    "edhrec": "https://edhrec.com/route/?cc=Hallowed+Respite"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248221%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=575083&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93456?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

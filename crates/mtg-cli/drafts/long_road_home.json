@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a8f53018-c496-41f3-bc3f-3c4703b9e4e1",
+  "name": "Long Road Home",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Long Road Home",
+      "oracle_fingerprint": "3bf59311ddf7caa167ccb9eb9bb1e98b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

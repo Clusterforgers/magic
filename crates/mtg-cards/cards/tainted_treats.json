@@ -1,0 +1,40 @@
+{
+  "oracle_id": "60826714-b9fd-4c89-b9f2-1a3c3229686b",
+  "name": "Tainted Treats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Treats",
+      "oracle_fingerprint": "f9fe003323cfc7cfbc6a2080e6d45a14",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "food" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

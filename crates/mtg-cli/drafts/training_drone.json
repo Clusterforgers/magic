@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4b40ad5f-b270-44e9-b62f-e94912bc3346",
+  "name": "Training Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Training Drone",
+      "oracle_fingerprint": "917936679d6d704b157e9c9485926bc5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": ["This", { "Not": { "HasAttached": [{ "Subtype": "Equipment" }] } }]
+            },
+            "mods": ["CantAttack", "CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

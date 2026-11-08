@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a5122d52-cebc-435b-a077-cc64376d7a86",
+  "name": "Mortipede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mortipede",
+      "oracle_fingerprint": "8fd409cf50e7911255d7b1989d39f2a1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

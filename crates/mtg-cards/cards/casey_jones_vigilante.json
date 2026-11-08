@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bc163b5a-0b1a-4257-8c07-5c7d5284015f",
+  "name": "Casey Jones, Vigilante",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Casey Jones, Vigilante",
+      "oracle_fingerprint": "7205e4e46cce5b88d12207eff8a24352",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Discard": { "count": 3, "random": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "oracle_id": "df4bb104-d939-434f-8a1c-e89beda27c90",
+  "name": "Monument to Perfection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monument to Perfection",
+      "oracle_fingerprint": "6a28bd39f5a5ce752e94198afb05ee9f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    {
+                      "AnyOf": [
+                        { "Supertype": "Basic" },
+                        { "Subtype": "Locus" },
+                        { "Subtype": "Sphere" }
+                      ]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Land" } },
+                                { "Not": { "Supertype": "Basic" } }
+                              ]
+                            }
+                          },
+                          { "Subtype": "Sphere" },
+                          { "Subtype": "Locus" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ],
+                    "stat": "Name"
+                  }
+                },
+                "op": "Ge",
+                "right": 9
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 9, "toughness": 9 } },
+                    { "SetCreatureTypes": ["Phyrexian", "Construct"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Indestructible" },
+                    { "AddKeyword": { "Toxic": 9 } },
+                    "LoseAbilities"
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

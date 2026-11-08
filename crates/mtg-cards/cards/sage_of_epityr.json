@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ef893585-246c-4028-bd2b-14ac51ce29be",
+  "name": "Sage of Epityr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage of Epityr",
+      "oracle_fingerprint": "5cd69a3e860ac31316a72e09db608887",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

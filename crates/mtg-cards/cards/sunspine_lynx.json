@@ -1,0 +1,48 @@
+{
+  "oracle_id": "479adf64-f42c-4cb6-bf25-648c044bca8b",
+  "name": "Sunspine Lynx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunspine Lynx",
+      "oracle_fingerprint": "d727bb20c0b6686e16c8417e080a29b3",
+      "abilities": [
+        { "Rule": { "rule": { "CantGainLife": "EachPlayer" } } },
+        { "Rule": { "rule": { "DamageCantBePrevented": {} } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Bound": "each" },
+                              "amount": {
+                                "Count": [
+                                  { "Type": "Land" },
+                                  { "Not": { "Supertype": "Basic" } },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "3998a60d-9521-4100-8d41-3e612972a3de",
+  "name": "Kuja, Genome Sorcerer // Trance Kuja, Fate Defied",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kuja, Genome Sorcerer",
+      "oracle_fingerprint": "81c31d9c7a4db0c21dfcd6acfef07c6f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wizard",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "SpellCast": {
+                                "what": [{ "Not": { "Type": "Creature" } }],
+                                "by": "You"
+                              }
+                            },
+                            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trance Kuja, Fate Defied",
+      "oracle_fingerprint": "709672929cb1ef05191070e4f27a30c9",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

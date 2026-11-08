@@ -1,0 +1,39 @@
+{
+  "oracle_id": "40155cfb-078a-4359-9551-9c71266d8a1c",
+  "name": "Flowering Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flowering Field",
+      "oracle_fingerprint": "fd06c7d549259a0134cac1a21add38e0",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [
+                      {
+                        "Shield": {
+                          "when": { "Damage": { "to": { "Target": 0 } } },
+                          "by": { "PreventUpTo": 1 },
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

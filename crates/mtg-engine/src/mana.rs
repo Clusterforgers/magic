@@ -13,7 +13,7 @@
 use std::cmp::Reverse;
 use std::collections::BTreeMap;
 
-use mtg_cards::spend::{ManaLasts, SpendOn};
+use mtg_cards::spend::{ManaLasts, SpendOn, SpendTraits};
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaSymbol, ManaType, PHYREXIAN_LIFE};
 use serde::{Deserialize, Serialize};
@@ -23,6 +23,7 @@ use crate::help::{self, Convoked, Help, Used};
 use crate::mana_cost::{self, Forced};
 use crate::mana_plan::{Needs, complete_with, covers_cost, plan, rest_after, spent_of};
 use crate::mana_repeat;
+use crate::mana_snow;
 use crate::mana_takes::{assignment, solving, sources_of, without_taken};
 use crate::spend::{Restricted, Spend, Spent, Step};
 
@@ -41,6 +42,23 @@ pub struct ManaPool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Kept>", optional))]
     kept: Option<Box<Kept>>,
+    /// Of `counts`, the mana whose source is known, oldest first, so a spell counts "mana from a Treasure" tapped before it
+    /// was cast (CR 106.4); a public fact, like the pool.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Pooled>>", optional))]
+    // Boxed so a decision that holds a pool stays small.
+    #[allow(clippy::box_collection)]
+    sources: Option<Box<Vec<Pooled>>>,
+}
+
+/// One mana in a pool and what made it: the kind of its source as the mana was added.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Pooled {
+    /// The type of the mana.
+    pub mana: ManaType,
+    /// The source's types, supertypes and subtypes.
+    pub from: SpendTraits,
 }
 
 /// The mana of a pool without a restriction that stays past the end of the step, by type in the order of `ManaPool.counts`.
@@ -90,6 +108,27 @@ impl ManaPool {
         self.counts[mana.index()] += 1;
     }
 
+    /// The mana without a restriction whose source is known, oldest first.
+    pub fn sources(&self) -> &[Pooled] {
+        self.sources.as_deref().map_or(&[], Vec::as_slice)
+    }
+
+    /// [`ManaPool::add_restricted`] that also notes the kind of the source of mana that may be spent on anything.
+    pub(crate) fn add_from(
+        &mut self,
+        mana: ManaType,
+        only: Vec<SpendOn>,
+        lasts: ManaLasts,
+        from: Option<SpendTraits>,
+    ) {
+        if let (true, Some(from)) = (only.is_empty(), from) {
+            self.sources
+                .get_or_insert_with(Box::default)
+                .push(Pooled { mana, from });
+        }
+        self.add_restricted(mana, only, lasts);
+    }
+
     /// The mana without a restriction that outlasts the step, if any.
     pub fn kept(&self) -> Option<&Kept> {
         self.kept.as_deref()
@@ -122,11 +161,22 @@ impl ManaPool {
 
     /// Removes one `mana` that may be spent on anything, the mana that goes soonest first; false (and no change) if there is none.
     pub(crate) fn spend(&mut self, mana: ManaType) -> bool {
+        let had = self.get(mana) > 0;
+        self.spend_noting(mana);
+        had
+    }
+
+    /// [`ManaPool::spend`] that tells the kind of the source of the mana spent: mana with a known source goes first, so a
+    /// spell that asks where its mana came from sees it. `None` when there is no such mana or its source is not known.
+    pub(crate) fn spend_noting(&mut self, mana: ManaType) -> Option<SpendTraits> {
         let at = mana.index();
-        let Some(left) = self.counts[at].checked_sub(1) else {
-            return false;
-        };
+        let left = self.counts[at].checked_sub(1)?;
         self.counts[at] = left;
+        let from = self.sources.as_mut().and_then(|held| {
+            let at = held.iter().position(|unit| unit.mana == mana)?;
+            Some(held.remove(at).from)
+        });
+        self.tidy_sources();
         if let Some(kept) = self.kept.as_mut() {
             if kept.combat_end[at] + kept.turn_end[at] > left {
                 if kept.combat_end[at] > 0 {
@@ -137,7 +187,44 @@ impl ManaPool {
             }
             self.tidy_kept();
         }
-        true
+        from
+    }
+
+    /// Keeps no more known sources of a type than the pool holds of it, the newest, and drops the record once it is empty.
+    fn tidy_sources(&mut self) {
+        let Some(held) = self.sources.as_mut() else {
+            return;
+        };
+        for mana in ManaType::ALL {
+            let have = usize::try_from(self.counts[mana.index()]).unwrap_or(usize::MAX);
+            let mut noted = held.iter().filter(|unit| unit.mana == mana).count();
+            held.retain(|unit| {
+                if unit.mana != mana || noted <= have {
+                    return true;
+                }
+                noted -= 1;
+                false
+            });
+        }
+        if held.is_empty() {
+            self.sources = None;
+        }
+    }
+
+    /// The pool without the restricted units at these places.
+    pub(crate) fn without_restricted(&self, places: &[usize]) -> ManaPool {
+        let mut pool = self.clone();
+        if let Some(held) = pool.restricted.as_mut() {
+            let mut at = 0;
+            held.retain(|_| {
+                at += 1;
+                !places.contains(&(at - 1))
+            });
+            if held.is_empty() {
+                pool.restricted = None;
+            }
+        }
+        pool
     }
 
     /// Removes one mana equal to `unit`; false (and no change) if there is none.
@@ -175,6 +262,7 @@ impl ManaPool {
         }
         self.kept = Some(Box::new(left));
         self.tidy_kept();
+        self.tidy_sources();
         if let Some(units) = self.restricted.as_mut() {
             units.retain(|unit| unit.lasts > through);
             if units.is_empty() {
@@ -633,10 +721,13 @@ fn by_permanent(sources: &[ManaOption]) -> Vec<Vec<ManaOption>> {
     for group in &mut groups {
         group.sort_by_key(|o| o.source);
     }
-    // Permanents that add restricted mana come first: it is of less use than mana without a restriction.
+    // Permanents that add restricted mana come first: it is of less use than mana without a restriction. A snow source
+    // is worth keeping for an {S} ability, so those come last.
     groups.sort_by_key(|g| {
         (
-            g.iter().all(|o| o.only.is_empty()),
+            g.iter()
+                .all(|o| o.only.is_empty() || mana_snow::is_snow(&o.only)),
+            g.iter().any(|o| mana_snow::is_snow(&o.only)),
             g.len(),
             g.first().map(|o| o.source),
         )
@@ -998,6 +1089,25 @@ pub fn can_afford_with(
     life: i32,
     spend: &Spend,
 ) -> bool {
+    let snow = cost.snow();
+    if snow == 0 {
+        return can_afford_plain(cost, pool, sources, help, life, spend);
+    }
+    let rest = cost.without_snow();
+    mana_snow::choices(pool, sources, spend, snow)
+        .iter()
+        .any(|c| can_afford_plain(&rest, &c.pool, &c.sources, help, life, spend))
+}
+
+/// [`can_afford_with`] for a cost without `{S}`.
+fn can_afford_plain(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    life: i32,
+    spend: &Spend,
+) -> bool {
     let floating = pool.floating(spend);
     let sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     within_energy(&sources, &[]).iter().any(|sources| {
@@ -1013,7 +1123,7 @@ pub fn can_afford_with(
     })
 }
 
-/// How much a payment is wanted, lower first: less life, then fewer creatures tapped and cards exiled to help, then fewer sacrifices, then fewer sources that do more than add mana, then fewer taps, then more restricted mana spent, then taps of the kinds the sources make most of.
+/// How much a payment is wanted, lower first: less life, then fewer creatures tapped and cards exiled to help, then fewer sacrifices, then fewer sources that do more than add mana, then fewer taps, then fewer snow sources, then more restricted mana spent, then taps of the kinds the sources make most of.
 ///
 /// Restricted mana is of less use than mana without a restriction, so spending it keeps the rest. The last part keeps a
 /// scarce color untapped when a hybrid symbol can be paid with either of two.
@@ -1023,6 +1133,7 @@ fn preference(
     sources: &[ManaOption],
 ) -> (
     u32,
+    usize,
     usize,
     usize,
     usize,
@@ -1039,12 +1150,15 @@ fn preference(
     let common = used.iter().map(|o| plenty(o.produces)).sum();
     let sacrificed = used.iter().filter(|o| o.sacrifice).count();
     let extras = used.iter().filter(|o| o.extra).count();
+    // A snow source stays untapped for a later {S} unless the payment needs it.
+    let snow = used.iter().filter(|o| mana_snow::is_snow(&o.only)).count();
     (
         payment.life,
         payment.convoke.len() + payment.improvise.len() + payment.delve.len(),
         sacrificed,
         extras,
         payment.taps.len(),
+        snow,
         Reverse(restricted_used(payment, sources)),
         Reverse(common),
     )
@@ -1081,6 +1195,29 @@ pub fn auto_payment(
 /// They are used only when mana cannot pay the cost without them, then as few as possible (cards last, so creatures
 /// that are tapped anyway go first); mana and life are chosen for the rest as [`auto_payment`] does.
 pub fn auto_payment_with(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    life: i32,
+    spend: &Spend,
+) -> Option<Payment> {
+    let snow = cost.snow();
+    if snow == 0 {
+        return auto_plain(cost, pool, sources, help, life, spend);
+    }
+    let rest = cost.without_snow();
+    let mut best = None;
+    for c in mana_snow::choices(pool, sources, spend, snow) {
+        if let Some(payment) = auto_plain(&rest, &c.pool, &c.sources, help, life, spend) {
+            keep_better(&mut best, c.join(payment), sources);
+        }
+    }
+    best
+}
+
+/// [`auto_payment_with`] for a cost without `{S}`.
+fn auto_plain(
     cost: &ManaCost,
     pool: &ManaPool,
     sources: &[ManaOption],
@@ -1245,11 +1382,17 @@ pub fn check_payment_with(
     spend: &Spend,
     payment: &Payment,
 ) -> Result<Spent, PaymentError> {
+    let snow = cost.snow();
+    let cost = &cost.snow_as_generic();
     mana_repeat::forged(payment)?;
     let sources = mana_repeat::expand(sources, cost);
     let payment = mana_repeat::unfold(payment, &sources);
-    check_expanded(cost, pool, &sources, help, tapped, life, spend, &payment)
-        .map(mana_repeat::fold_spent)
+    let got = check_expanded(cost, pool, &sources, help, tapped, life, spend, &payment)
+        .map(mana_repeat::fold_spent)?;
+    if mana_snow::spent_snow(&got) < snow {
+        return Err(PaymentError::MissingSnow);
+    }
+    Ok(got)
 }
 
 /// [`check_payment_with`] over the sources `mana_repeat::expand` made, for a payment that names the copies.
@@ -1389,6 +1532,39 @@ pub fn complete_payment(
 // Every argument is a different thing a payment depends on; the callers each have them all.
 #[allow(clippy::too_many_arguments)]
 pub fn complete_payment_with(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    partial: &Payment,
+) -> Result<Payment, PaymentError> {
+    let snow = cost.snow();
+    if snow == 0 {
+        return complete_plain(cost, pool, sources, help, tapped, life, spend, partial);
+    }
+    let whole = cost.snow_as_generic();
+    let already = mana_snow::held_snow(sources, partial);
+    if already >= snow {
+        return complete_plain(&whole, pool, sources, help, tapped, life, spend, partial);
+    }
+    let (rest_pool, rest_sources) = mana_snow::without_partial(pool, sources, partial);
+    let mut refusal = PaymentError::MissingSnow;
+    for c in mana_snow::choices(&rest_pool, &rest_sources, spend, snow - already) {
+        let joined = c.join(partial.clone());
+        match complete_plain(&whole, pool, sources, help, tapped, life, spend, &joined) {
+            Ok(done) => return Ok(done),
+            Err(error) => refusal = error,
+        }
+    }
+    Err(refusal)
+}
+
+/// [`complete_payment_with`] for a cost without `{S}`.
+#[allow(clippy::too_many_arguments)]
+fn complete_plain(
     cost: &ManaCost,
     pool: &ManaPool,
     sources: &[ManaOption],
@@ -2011,6 +2187,23 @@ mod tests {
         assert_eq!(payment.pool.len(), 2);
     }
 
+    #[rstest]
+    #[case::a_plain_cost_keeps_the_snow_land("{1}{U}", "UUU", false)]
+    #[case::snow_in_first_place_still_pays_when_it_must("{U}{U}{U}", "UUU", true)]
+    fn auto_payment_leaves_snow_sources_untapped_unless_needed(
+        #[case] cost_text: &str,
+        #[case] spec: &str,
+        #[case] snow_tapped: bool,
+    ) {
+        let mut sources = lands(spec);
+        sources[0].only = vec![SpendOn::Snow];
+        let payment = auto_payment(&cost(cost_text), &ManaPool::default(), &sources, LIFE).unwrap();
+        assert_eq!(
+            payment.taps.iter().any(|tap| tap.object == ObjectId(0)),
+            snow_tapped
+        );
+    }
+
     #[test]
     fn auto_payment_keeps_the_scarcer_color_untapped_for_generic() {
         let cost = cost("{1}");
@@ -2313,6 +2506,7 @@ mod tests {
         match *first {
             ManaSymbol::Generic(0) => pays(rest, spent, life),
             ManaSymbol::Generic(n) => generic(n),
+            ManaSymbol::Snow => generic(1),
             ManaSymbol::Colored(c) => colour(c),
             ManaSymbol::Colorless => one(ManaType::Colorless),
             ManaSymbol::Hybrid(a, b) => colour(a) || colour(b),
@@ -2381,6 +2575,7 @@ mod tests {
         let life = || ([0; 6], 0, 2);
         let choices: Vec<Way> = match *first {
             ManaSymbol::Generic(n) => vec![generic(n)],
+            ManaSymbol::Snow => vec![generic(1)],
             ManaSymbol::Colored(c) => vec![colour(c)],
             ManaSymbol::Colorless => vec![colourless()],
             ManaSymbol::Hybrid(a, b) => vec![colour(a), colour(b)],

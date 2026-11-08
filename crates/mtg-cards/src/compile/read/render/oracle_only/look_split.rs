@@ -31,6 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Move {
             what: Ref::Bound(moved_kept),
             to: Destination::Hand,
+            ..
         },
         Effect::Choose {
             who: Ref::You,
@@ -46,6 +47,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                     place: Place::Bottom,
                     order: None,
                 },
+            ..
         },
         Effect::Exile {
             what: Ref::Bound(taken),
@@ -68,6 +70,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let only_one = *first == Bounds::default() && *second == Bounds::default();
     let play = *permission
         == CastPermission {
+            rather: None,
             who: Ref::You,
             what: Selector::default(),
             from: Some(crate::refs::ZoneKind::Exile),
@@ -77,6 +80,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             play: true,
             once: false,
             additional: None,
+            spend_as: crate::modify::SpendAs::Normal,
+            when: None,
         };
     let Some(words) = u32::try_from(*count).ok().and_then(count_word) else {
         return;

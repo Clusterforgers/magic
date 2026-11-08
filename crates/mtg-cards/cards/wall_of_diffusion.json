@@ -1,0 +1,15 @@
+{
+  "oracle_id": "ae42f803-f4ac-45f3-9ce7-227a59096f19",
+  "name": "Wall of Diffusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Diffusion",
+      "oracle_fingerprint": "94f265490248a55a36f8850ca6ca978e",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "BlockAsThoughShadow" } } } }
+      ]
+    }
+  ]
+}

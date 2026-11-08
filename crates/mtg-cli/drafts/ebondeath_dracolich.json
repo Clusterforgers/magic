@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1a6fce11-e77c-41f1-9ff7-9a93b18071db",
+  "name": "Ebondeath, Dracolich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ebondeath, Dracolich",
+      "oracle_fingerprint": "7b785ddf9a14bfc26a2b505d8e04d9ec",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "Type": "Creature" },
+                      { "Not": { "Named": "Ebondeath, Dracolich" } }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

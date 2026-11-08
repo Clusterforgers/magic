@@ -1,0 +1,43 @@
+{
+  "oracle_id": "eb0b5b5f-54d3-49c6-9ad8-d44a5551acdb",
+  "name": "Kindred Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindred Charge",
+      "oracle_fingerprint": "4b7d5f0f6040e05a705d5671216effde",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ChosenAs": "chosen" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "except": [{ "AddKeyword": "Haste" }]
+                    }
+                  },
+                  "as": "copy2"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy2" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

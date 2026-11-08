@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e6ae536a-95c0-495d-98b8-200b3564dd79",
+  "name": "Destructive Tampering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Destructive Tampering",
+      "oracle_fingerprint": "5ddfa41d4938fc8601ec46fa24feffd1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "Not": { "HasKeyword": "Flying" } }
+                              ]
+                            },
+                            "mods": ["CantBlock"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

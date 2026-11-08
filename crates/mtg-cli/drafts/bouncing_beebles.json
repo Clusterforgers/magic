@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4fa46972-d953-4328-9c31-96e134234133",
+  "name": "Bouncing Beebles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bouncing Beebles",
+      "oracle_fingerprint": "4f75a36f43ad95d4a2d703f25251486d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Defending" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

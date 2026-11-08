@@ -1,0 +1,58 @@
+{
+  "oracle_id": "11e30c21-41a8-4f2f-b37a-db10656b7cad",
+  "name": "Gandalf, Party Guest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gandalf, Party Guest",
+      "oracle_fingerprint": "31714d1481ff9b15665728e7126cd9e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Count": [
+                                        { "Subtype": "Wizard" },
+                                        { "Supertype": "Legendary" },
+                                        { "ControlledBy": "You" }
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

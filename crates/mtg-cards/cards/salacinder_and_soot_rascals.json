@@ -1,0 +1,35 @@
+{
+  "oracle_id": "58a1f533-5559-4897-9cbf-ff6066770330",
+  "name": "Salacinder and Soot, Rascals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Salacinder and Soot, Rascals",
+      "oracle_fingerprint": "37e92ecf4157f872c137e8d614fbd65a",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "SpellCast": { "what": [{ "Subtype": "Elemental" }], "by": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Conjure": { "name": "Rite of Flame", "zone": "Hand" } }] },
+                    { "effects": [{ "Conjure": { "name": "Take Inventory", "zone": "Hand" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

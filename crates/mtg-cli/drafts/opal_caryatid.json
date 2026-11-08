@@ -1,0 +1,38 @@
+{
+  "oracle_id": "eabcb1bd-5317-4e01-8f18-94f01c12c852",
+  "name": "Opal Caryatid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal Caryatid",
+      "oracle_fingerprint": "d6b867209732eaf3848e15ce663a4fe9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "SetCreatureTypes": ["Soldier"] },
+                    { "SetTypes": ["Creature"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

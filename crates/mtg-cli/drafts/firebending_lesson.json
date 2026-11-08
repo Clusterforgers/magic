@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a9282f91-638e-414b-8b3d-9a99e30aec96",
+  "name": "Firebending Lesson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firebending Lesson",
+      "oracle_fingerprint": "72b9376c78fc0c3321c6ffc29dfb0042",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "When": { "condition": "Kicked", "then": 5, "otherwise": 2 } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

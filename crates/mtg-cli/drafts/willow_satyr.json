@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c7c660bd-5f58-464c-bc75-dd244b7ca535",
+  "name": "Willow Satyr",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Willow Satyr",
+      "oracle_fingerprint": "ff9ba3354d08fa7d1c3685b88bd2aa46",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 187 }
+          }
+        }
+      ]
+    }
+  ]
+}

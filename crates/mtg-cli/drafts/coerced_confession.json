@@ -1,0 +1,42 @@
+{
+  "oracle_id": "49b84c50-ca0a-4947-8225-ae41aa08e1f1",
+  "name": "Coerced Confession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coerced Confession",
+      "oracle_fingerprint": "5300b8885614dd20d240e2c41e4f879c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 4, "as": "milled" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

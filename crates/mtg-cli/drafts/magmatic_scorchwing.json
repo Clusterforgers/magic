@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9b2826a1-d701-4e11-ba58-6d79a8312156",
+  "name": "Magmatic Scorchwing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmatic Scorchwing",
+      "oracle_fingerprint": "18ef6f1b1dc3cedb8a25f2f3da983279",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Land" },
+                    { "OwnedBy": "You" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "In": "Library" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b8d395a3-0bfe-45c3-bb3a-820d4f235b88",
+  "name": "Nomads en-Kor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nomads en-Kor",
+      "oracle_fingerprint": "acbd95562d6c8cd26bf11d1a4fc030d6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

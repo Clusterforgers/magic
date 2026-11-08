@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "dfd1442d-ac66-4475-8704-1eaaa76f4365",
+  "oracle_id": "2847c8a0-f6aa-4e4a-a7b8-fc116436a264",
+  "multiverse_ids": [
+    202507
+  ],
+  "mtgo_id": 38506,
+  "mtgo_foil_id": 38507,
+  "name": "Demonic Hordes",
+  "lang": "en",
+  "released_at": "2011-01-10",
+  "uri": "https://api.scryfall.com/cards/dfd1442d-ac66-4475-8704-1eaaa76f4365",
+  "scryfall_uri": "https://scryfall.com/card/me4/76/demonic-hordes?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:17:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.jpg?1783941445",
+    "normal": "https://cards.scryfall.io/normal/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.jpg?1783941445",
+    "large": "https://cards.scryfall.io/large/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.jpg?1783941445",
+    "png": "https://cards.scryfall.io/png/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.png?1783941445",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.jpg?1783941445",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.jpg?1783941445",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.webp?1783941445",
+    "grid": "https://cards.scryfall.io/grid/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.webp?1783941445",
+    "display": "https://cards.scryfall.io/display/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.webp?1783941445",
+    "art": "https://cards.scryfall.io/art/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.webp?1783941445",
+    "crop": "https://cards.scryfall.io/crop/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.webp?1783941445",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/f/dfd1442d-ac66-4475-8704-1eaaa76f4365.jpg?1783941445"
+  },
+  "mana_cost": "{3}{B}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "{T}: Destroy target land.\nAt the beginning of your upkeep, unless you pay {B}{B}{B}, tap this creature and sacrifice a land of an opponent's choice.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d38a13b7-6615-4c89-be7d-3b4eaacf1875",
+  "set": "me4",
+  "set_name": "Masters Edition IV",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/d38a13b7-6615-4c89-be7d-3b4eaacf1875",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame4&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me4?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dfd1442d-ac66-4475-8704-1eaaa76f4365/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2847c8a0-f6aa-4e4a-a7b8-fc116436a264&unique=prints",
+  "collector_number": "76",
+  "digital": true,
+  "rarity": "rare",
+  "flavor_text": "Created to destroy Dominiaria, demons can sometimes be bent to a more focused purpose.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jesper Myrfors",
+  "artist_ids": [
+    "c011318e-8503-48c1-a990-46e50aff48a0"
+  ],
+  "illustration_id": "7e61c768-a46b-4237-b3df-f57e8c3035e9",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25465,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=202507&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDemonic%2BHordes",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDemonic%2BHordes",
+    "edhrec": "https://edhrec.com/route/?cc=Demonic+Hordes"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DDemonic%2BHordes%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Demonic+Hordes&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/38506?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

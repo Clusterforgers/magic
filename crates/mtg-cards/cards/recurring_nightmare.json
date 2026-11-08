@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a6708b11-1bcd-4208-a967-fe91f2e3313c",
+  "name": "Recurring Nightmare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recurring Nightmare",
+      "oracle_fingerprint": "ae0267119dfd2c227a29ae3a1c995ac1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } },
+              { "ReturnToHand": { "filter": ["This"] } }
+            ],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -9,14 +9,30 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": "Player", "bounds": { "min": 0, "max": 1 } }],
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
             "effects": [
               { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
               {
                 "RepeatEach": {
                   "over": { "Target": 0 },
-                  "as": "this",
-                  "effects": [{ "Mill": { "who": { "Target": 0 } } }]
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Mill": {
+                        "who": { "Bound": "each" },
+                        "count": {
+                          "Half": {
+                            "of": {
+                              "Count": [{ "OwnedBy": { "Bound": "each" } }, { "In": "Library" }]
+                            },
+                            "up": false
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             ]

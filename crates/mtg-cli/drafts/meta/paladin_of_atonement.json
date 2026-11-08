@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of each upkeep, if you lost life last turn, put a +1/+1 counter on CARDNAME.",
+      "abilities": [],
+      "gap": "amount:PlayerCountPropertyYou$LifeLostLastTurn"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME dies, you gain life equal to its toughness.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 98
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 99,
+          "end": 161
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

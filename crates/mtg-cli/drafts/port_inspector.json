@@ -1,0 +1,19 @@
+{
+  "oracle_id": "25450b06-3065-4b4f-975e-586d045e5815",
+  "name": "Port Inspector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Port Inspector",
+      "oracle_fingerprint": "7d1782b4f7438bef615433142616f007",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "LookAtHand": { "of": "Defending" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

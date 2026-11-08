@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9e88796b-f37f-4f9f-9a6f-695db2801f0e",
+  "name": "Vampire's Bite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire's Bite",
+      "oracle_fingerprint": "2e3031714a56a368a711702d3c628e4d",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{B}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

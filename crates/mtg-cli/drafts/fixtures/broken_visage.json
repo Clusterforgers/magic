@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "9e934eed-d37c-4ede-b867-87bd17269b78",
+  "oracle_id": "8e1d750e-44a7-47b1-8e0a-5f8b15d48b41",
+  "multiverse_ids": [
+    184589
+  ],
+  "mtgo_id": 30618,
+  "mtgo_foil_id": 30619,
+  "name": "Broken Visage",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/9e934eed-d37c-4ede-b867-87bd17269b78",
+  "scryfall_uri": "https://scryfall.com/card/me2/81/broken-visage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:37:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.jpg?1783942625",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.jpg?1783942625",
+    "large": "https://cards.scryfall.io/large/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.jpg?1783942625",
+    "png": "https://cards.scryfall.io/png/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.png?1783942625",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.jpg?1783942625",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.jpg?1783942625",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.webp?1783942625",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.webp?1783942625",
+    "display": "https://cards.scryfall.io/display/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.webp?1783942625",
+    "art": "https://cards.scryfall.io/art/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.webp?1783942625",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.webp?1783942625",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9e934eed-d37c-4ede-b867-87bd17269b78.jpg?1783942625"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target nonartifact attacking creature. It can't be regenerated. Create a black Spirit creature token. Its power is equal to that creature's power and its toughness is equal to that creature's toughness. Sacrifice the token at the beginning of the next end step.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9e934eed-d37c-4ede-b867-87bd17269b78/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8e1d750e-44a7-47b1-8e0a-5f8b15d48b41&unique=prints",
+  "collector_number": "81",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mike Kimble",
+  "artist_ids": [
+    "06235390-cfc9-4418-827c-02d890bf54e5"
+  ],
+  "illustration_id": "17c32501-6f87-4be1-8ada-c9046ef4d19e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30217,
+  "penny_rank": 16768,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184589&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBroken%2BVisage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBroken%2BVisage",
+    "edhrec": "https://edhrec.com/route/?cc=Broken+Visage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DBroken%2BVisage%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Broken+Visage&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30618?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

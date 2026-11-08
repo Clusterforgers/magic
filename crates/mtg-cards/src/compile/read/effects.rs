@@ -40,7 +40,8 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 103] = [
+const TEMPLATES: [Template; 107] = [
+    super::keyword_actions::keyword_action,
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
     super::w20c_taken::w20c_untap_and_take,
@@ -87,6 +88,7 @@ const TEMPLATES: [Template; 103] = [
     super::actions::connive,
     super::prepare::becomes_prepared,
     super::actions::goad,
+    super::actions::suspect,
     super::manifest::manifest,
     draws::wheel,
     super::turns::extra_turn,
@@ -122,6 +124,7 @@ const TEMPLATES: [Template; 103] = [
     copy_spells::becomes_copy,
     copy_spells::choose_and_become,
     create::tokens,
+    super::g12b_counters_of::g12b_put_of,
     counters::put,
     counters::remove,
     counters::moving,
@@ -143,12 +146,14 @@ const TEMPLATES: [Template; 103] = [
     super::w9c_replaced::w9c_shield,
     super::attack_tax::rule_effect,
     super::w14a_limits::w14a_block_limit_each,
+    super::g10d_spell_costs::g10d_spell_cost,
     super::w14a_wanderer::w14a_keep_one,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 16] = [
+pub(super) const IMPERATIVES: [Template; 17] = [
     super::actions::goad,
+    super::actions::suspect,
     super::manifest::manifest,
     chain,
     removal,
@@ -313,7 +318,10 @@ pub(super) fn mana_cost(r: &mut Reader<'_>) -> Option<Cost> {
 
 /// "It can't be regenerated." changes the destruction before it.
 fn regeneration(r: &mut Reader<'_>, effects: &mut [Effect]) -> Option<()> {
-    let Some(Effect::Destroy { what, regenerate }) = effects.last_mut() else {
+    let Some(Effect::Destroy {
+        what, regenerate, ..
+    }) = effects.last_mut()
+    else {
         return None;
     };
     let single = matches!(what, Ref::Target(_)) && r.targets.first()?.bounds.is_one();
@@ -446,6 +454,7 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 place: Place::Top,
                 order,
             },
+            bind: None,
         },
     ])
 }
@@ -496,15 +505,18 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "amass" => Effect::Amass {
             subtype: Subtype(super::selectors::plural_subtype(r)?),
             count: points(r)?,
+            bind: None,
         },
         "sacrifice" => itself_sacrificed(r, who)?,
         "draw" => Effect::Draw {
+            bind: None,
             who,
             count: draws::drawn(r)?,
         },
         "mill" => Effect::Mill {
             who,
             count: cards_counted(r)?,
+            bind: None,
         },
         "shuffle" => {
             r.need("your library")?;
@@ -517,6 +529,9 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
                 who,
                 count,
                 random,
+                filter: None,
+                by: None,
+                optional: false,
                 bind: None,
             }
         }
@@ -534,6 +549,7 @@ fn itself_sacrificed(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
         who,
         filter: Selector::this(),
         count: Amount::one(),
+        bind: None,
     })
 }
 
@@ -580,6 +596,17 @@ pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
         r.need("equal to")?;
         if r.words("the life lost this way") {
             return Some(Amount::LifeLostThisWay);
+        }
+        if r.words("the damage dealt this way") {
+            return Some(Amount::DamageDealtThisWay);
+        }
+        let one_player = r.targets.len() == 1
+            && matches!(r.targets[0].what, Targetable::Player | Targetable::Opponent);
+        if one_player && r.words("the damage already dealt to that player this turn") {
+            return Some(Amount::Tallied {
+                who: Ref::Target(0),
+                what: crate::value::TurnTally::DamageTaken,
+            });
         }
         return r.attempt(its_stat).or_else(|| defining::value(r));
     }
@@ -709,12 +736,14 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     let who = who.clone();
     Some(match r.take_word()? {
         "draw" | "draws" => Effect::Draw {
+            bind: None,
             who,
             count: draws::drawn(r)?,
         },
         "mill" | "mills" => Effect::Mill {
             who,
             count: cards_counted(r)?,
+            bind: None,
         },
         "incubate" | "incubates" => Effect::Incubate {
             who,
@@ -727,6 +756,9 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
                 who,
                 count,
                 random,
+                filter: None,
+                by: None,
+                optional: false,
                 bind: None,
             }
         }
@@ -804,7 +836,12 @@ fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
     let filter = phrase(r, form)?;
     filter.0.iter().all(describes_a_kind).then_some(())?;
     r.words("of their choice");
-    Some(Effect::Sacrifice { who, filter, count })
+    Some(Effect::Sacrifice {
+        who,
+        filter,
+        count,
+        bind: None,
+    })
 }
 
 /// Whether a predicate says what kind of permanent it is, and nothing of who has it or where.
@@ -852,6 +889,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         return Some(vec![Effect::Move {
             what,
             to: Destination::Hand,
+            bind: None,
         }]);
     }
     let what = target_object(r).or_else(|| up_to_one_object(r))?;
@@ -877,6 +915,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                     transformed: false,
                     counters: Vec::new(),
                 },
+                bind: None,
             }]);
         }
         r.need("to your hand")?;
@@ -889,6 +928,7 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Move {
         what,
         to: Destination::Hand,
+        bind: None,
     }])
 }
 
@@ -908,6 +948,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         return Some(vec![Effect::Move {
             what: card,
             to: Destination::Hand,
+            bind: None,
         }]);
     }
     Some(vec![
@@ -919,6 +960,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             rest_as: None,
         },
         Effect::DelayedTrigger {
+            until: None,
             when: TriggerPattern::StepBegins {
                 step: Step::End,
                 whose: Ref::EachPlayer,
@@ -928,6 +970,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             effects: vec![Effect::Move {
                 what: Ref::Bound(LATER.to_owned()),
                 to: Destination::Hand,
+                bind: None,
             }],
         },
     ])
@@ -974,6 +1017,7 @@ fn return_chosen(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(RETURNED.to_owned()),
             to: Destination::Hand,
+            bind: None,
         },
     ])
 }
@@ -1005,6 +1049,7 @@ fn return_any_number(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(RETURNED.to_owned()),
             to: Destination::Hand,
+            bind: None,
         },
     ])
 }
@@ -1020,6 +1065,7 @@ fn return_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         return Some(vec![Effect::Move {
             what: Ref::This,
             to: Destination::Hand,
+            bind: None,
         }]);
     }
     r.need("to the battlefield")?;
@@ -1032,6 +1078,7 @@ fn return_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             transformed: false,
             counters: Vec::new(),
         },
+        bind: None,
     }])
 }
 
@@ -1046,6 +1093,7 @@ fn shuffle_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             place: Place::Shuffled,
             order: None,
         },
+        bind: None,
     }])
 }
 
@@ -1092,6 +1140,7 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
                         transformed: false,
                         ..
                     },
+                ..
             },
         ] => true,
         _ => false,
@@ -1212,6 +1261,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "destroy" => Effect::Destroy {
             what,
             regenerate: true,
+            bind: None,
         },
         "exile" => Effect::Exile {
             what,
@@ -1222,7 +1272,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "tap" => Effect::Tap { what, bind: None },
         "untap" => Effect::Untap { what },
         "regenerate" => Effect::Regenerate { what },
-        _ => Effect::Counter { what },
+        _ => Effect::Counter { what, bind: None },
     }])
 }
 
@@ -1587,6 +1637,8 @@ fn produced(r: &mut Reader<'_>, counted: &mut Option<Amount>) -> Option<Produce>
             Produce::Fixed(vec![mana])
         } else if let Some(combination) = r.attempt(combination) {
             combination
+        } else if r.words("two mana of different colors") {
+            Produce::two_different_colors()
         } else if let Some(count) = r.attempt(several_of_one_color) {
             Produce::AnyColor(count)
         } else if r.words("one mana of the chosen color") {

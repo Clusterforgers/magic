@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5726c4b1-0613-4724-b1fc-2e7f398bf1af",
+  "name": "Instill Furor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Instill Furor",
+      "oracle_fingerprint": "0b31391202a3a680c17eab6aa97e9579",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                    "effects": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": ["This", { "Not": "AttackedThisTurn" }] },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

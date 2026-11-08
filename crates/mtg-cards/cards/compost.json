@@ -1,0 +1,24 @@
+{
+  "oracle_id": "4681bcc2-8a46-44cd-8b04-6ab140904dea",
+  "name": "Compost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Compost",
+      "oracle_fingerprint": "e045f690938de03a1022c276a57137e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Color": "Black" }, { "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

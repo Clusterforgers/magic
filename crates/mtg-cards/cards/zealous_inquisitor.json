@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e85f6251-8801-414b-adc9-5488794e7456",
+  "name": "Zealous Inquisitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zealous Inquisitor",
+      "oracle_fingerprint": "4bd1d8f96f79f2146b49839e494e4e94",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

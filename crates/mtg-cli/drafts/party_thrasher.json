@@ -1,0 +1,32 @@
+{
+  "oracle_id": "03cd7583-d054-4359-8c94-7776c54198ed",
+  "name": "Party Thrasher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Party Thrasher",
+      "oracle_fingerprint": "40c7ad1bfeca6048f820dd94e7a75378",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "Not": { "Type": "Creature" } },
+                { "WasCast": { "from": "Exile" } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 173, "end": 350 }
+          }
+        }
+      ]
+    }
+  ]
+}

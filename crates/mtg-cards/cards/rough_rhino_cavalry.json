@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3ac94b28-4b0a-4121-99b9-9cd7dff7948c",
+  "name": "Rough Rhino Cavalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rough Rhino Cavalry",
+      "oracle_fingerprint": "6f5e467eebe046621c6c809a3293270d",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 2 } } },
+        {
+          "Activated": {
+            "cost": "{8}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

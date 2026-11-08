@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b6b83b88-0660-4227-895e-78ac43d01b66",
+  "name": "Varolz, the Scar-Striped",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Varolz, the Scar-Striped",
+      "oracle_fingerprint": "14b07f52b15494891850131ce0b92863",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+            },
+            "mods": [{ "AddKeyword": { "Scavenge": ["OwnManaCost"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

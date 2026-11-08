@@ -25,14 +25,14 @@
                             "who": { "Target": 0 },
                             "from": {
                               "Each": [
-                                { "ControlledBy": { "Target": 0 } },
-                                { "Type": "Enchantment" }
+                                { "Type": "Enchantment" },
+                                { "ControlledBy": { "Target": 0 } }
                               ]
                             },
-                            "as": "x"
+                            "as": "picked"
                           }
                         },
-                        { "Exile": { "what": { "Bound": "x" } } }
+                        { "Exile": { "what": { "Bound": "picked" } } }
                       ]
                     }
                   ]

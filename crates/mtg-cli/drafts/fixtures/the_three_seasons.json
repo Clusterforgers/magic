@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "48ce03b3-ec7c-46df-b89a-55405f3b5245",
+  "oracle_id": "a38ebf4a-064c-4517-a553-15f0a252c159",
+  "multiverse_ids": [
+    503847
+  ],
+  "mtgo_id": 87805,
+  "arena_id": 75278,
+  "tcgplayer_id": 230885,
+  "cardmarket_id": 532972,
+  "name": "The Three Seasons",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/48ce03b3-ec7c-46df-b89a-55405f3b5245",
+  "scryfall_uri": "https://scryfall.com/card/khm/231/the-three-seasons?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:36:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.jpg?1783928189",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.jpg?1783928189",
+    "large": "https://cards.scryfall.io/large/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.jpg?1783928189",
+    "png": "https://cards.scryfall.io/png/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.png?1783928189",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.jpg?1783928189",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.jpg?1783928189",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.webp?1783928189",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.webp?1783928189",
+    "display": "https://cards.scryfall.io/display/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.webp?1783928189",
+    "art": "https://cards.scryfall.io/art/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.webp?1783928189",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.webp?1783928189",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/48ce03b3-ec7c-46df-b89a-55405f3b5245.jpg?1783928189"
+  },
+  "mana_cost": "{G}{U}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Mill three cards.\nII — Return up to two target snow permanent cards from your graveyard to your hand.\nIII — Choose three cards in each graveyard. Their owners shuffle those cards into their libraries.",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/48ce03b3-ec7c-46df-b89a-55405f3b5245/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa38ebf4a-064c-4517-a553-15f0a252c159&unique=prints",
+  "collector_number": "231",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Adam Paquette",
+  "artist_ids": [
+    "89023dad-e6c0-41e0-83fb-eb2bfbbdc3f2"
+  ],
+  "illustration_id": "0852db67-590f-4349-a266-fe54cc12a57f",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16910,
+  "penny_rank": 9048,
+  "preview": {
+    "source": "LigaMagic",
+    "source_uri": "https://ligamagic.com.br/?view=artigos/view&aid=3684",
+    "previewed_at": "2021-01-18"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.20",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503847&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BThree%2BSeasons",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BThree%2BSeasons",
+    "edhrec": "https://edhrec.com/route/?cc=The+Three+Seasons"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230885%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=532972&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87805?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

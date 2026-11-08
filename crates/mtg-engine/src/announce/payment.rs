@@ -48,7 +48,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
             total.spend,
         ),
         // An attack is paid for by `attack_tax::next` and never gets here.
-        (What::Spell(_) | What::Attack(..), None) | (What::Attack(..), _) => Next::Drop,
+        (What::Spell(_) | What::Attack(..), None) | (What::Attack(..) | What::Block(_), _) => {
+            Next::Drop
+        }
         (What::Ability(ability), Some(cost)) => pay(
             ctx,
             ability.object,
@@ -67,7 +69,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
 
 /// What the payment of the cost being announced is for: the spell or the ability, with whether the cost has {X}.
 pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
-    let x = XCost::of(ctx.state, ctx.what, ctx.ability);
+    let x = XCost::of(ctx.state, ctx.player, ctx.what, ctx.ability);
     let has_x = x.is_some();
     match ctx.what {
         // Only an `{X}` of the mana cost is mana for X: "pay X life" is paid with life.
@@ -79,7 +81,7 @@ pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
         )
         .cast_as(way),
         What::Ability(ability) => Spend::for_ability(ctx.state, ability.object, has_x),
-        What::Trigger(_) | What::Attack(..) => Spend::other(),
+        What::Trigger(_) | What::Attack(..) | What::Block(_) => Spend::other(),
     }
 }
 

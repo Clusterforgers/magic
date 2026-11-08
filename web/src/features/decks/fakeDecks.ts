@@ -26,6 +26,7 @@ export const counts = (over: Partial<Counts> = {}): Counts => ({
   total: 100,
   verified: 100,
   read: 0,
+  forge: 0,
   partial: 0,
   manual: 0,
   stale: 0,
@@ -121,9 +122,9 @@ export function reportOf(
   const state: DeckState =
     legality.length > 0 || all.unplayable > 0
       ? 'blocked'
-      : all.verified + all.read < all.total
+      : all.verified + all.read + all.forge < all.total
         ? 'manual_play'
-        : all.read > 0
+        : all.read + all.forge > 0
           ? 'read'
           : 'verified'
   const toRead = new Set(cards.filter((card) => card.draft === 'pending').map((card) => card.oracle_id)).size

@@ -5,11 +5,14 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_cards::cost::CostItem;
 use mtg_cards::definition::Layout;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaType;
+use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::AbilityObject;
@@ -62,12 +65,22 @@ pub struct ObjectRef {
 pub enum Chosen {
     /// A colour.
     Color(mtg_core::color::Color),
+    /// One or more colours, in the order they were chosen.
+    Colors(Vec<mtg_core::color::Color>),
     /// A creature type.
     CreatureType(mtg_core::card::Subtype),
     /// A land type, which a landwalk the source grants names (CR 702.14).
     LandType(mtg_core::card::Subtype),
     /// A player (public, like every choice made as a permanent enters).
     Player(PlayerId),
+    /// A card type.
+    CardType(mtg_core::card::CardType),
+    /// A card name (CR 201.3).
+    Name(String),
+    /// A number.
+    Number(u32),
+    /// One of the words a choice offered.
+    Word(String),
     /// The chapter a Saga with read ahead entered at (CR 702.155): lower chapters don't trigger.
     Chapter(u32),
 }
@@ -98,6 +111,20 @@ pub enum FaceDown {
         /// The permanent that hid it.
         by: ObjectRef,
     },
+    /// A card an effect exiled face down: it stays in exile with its own characteristics and only the player who exiled it
+    /// may look at it, whatever becomes of the effect's source.
+    Held {
+        /// The source of the effect.
+        by: ObjectRef,
+        /// The player who exiled it.
+        looker: PlayerId,
+    },
+    /// A card an effect exiled face down that no player may look at (CR 406.3): it keeps its own characteristics, and only
+    /// a rule that grants a look shows it.
+    Sealed {
+        /// The source of the effect.
+        by: ObjectRef,
+    },
 }
 
 impl FaceDown {
@@ -107,6 +134,8 @@ impl FaceDown {
     pub fn may_look(self, owner: PlayerId, controller: PlayerId, viewer: PlayerId) -> bool {
         match self {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
+            FaceDown::Held { looker, .. } => looker == viewer,
+            FaceDown::Sealed { .. } => false,
             FaceDown::Morph | FaceDown::Disguise | FaceDown::Manifest | FaceDown::Cloak => {
                 controller == viewer
             }
@@ -115,6 +144,8 @@ impl FaceDown {
 }
 
 /// The designations of a permanent: marks the rules put on it that it keeps only while it stays on the battlefield.
+// Independent marks of the rules, not the states of one machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Designations {
     /// It has become monstrous (CR 701.37).
@@ -123,6 +154,10 @@ pub struct Designations {
     pub(crate) renowned: bool,
     /// It is prepared: its controller may cast a copy of its spell face.
     pub(crate) prepared: bool,
+    /// It is suspected (CR 701.60): it has menace and can't block.
+    pub(crate) suspected: bool,
+    /// It is a solved Case (CR 719.3): its "Solved" abilities work.
+    pub(crate) solved: bool,
     /// The level a Class has reached (CR 716.2); 0 until a level ability resolves, which reads as level 1.
     pub(crate) level: u32,
     /// How many permanents it devoured as it entered (CR 702.82).
@@ -188,6 +223,10 @@ pub struct PermanentState {
     pub(crate) face: Option<u8>,
     /// The mana spent to cast the spell, which its enters triggers read (CR 601.2h).
     pub(crate) spent: Vec<ManaType>,
+    /// The sources of that mana.
+    pub(crate) spent_from: Vec<mtg_cards::spend::SpentFrom>,
+    /// The creatures that convoked the spell, which its enters triggers read (CR 702.51).
+    pub(crate) convoked: Vec<ObjectRef>,
     /// The copy effect that makes the permanent a copy of another object (CR 707): its copiable values replace the card's.
     pub(crate) copy: Option<CopyEffect>,
     /// The cards the permanent is made of once a mutating creature spell has merged with it (CR 729).
@@ -211,6 +250,7 @@ impl PermanentState {
         x: Option<u32>,
         face: Option<u8>,
         spent: Vec<ManaType>,
+        spent_from: Vec<mtg_cards::spend::SpentFrom>,
     ) -> Self {
         PermanentState {
             tapped: false,
@@ -231,6 +271,8 @@ impl PermanentState {
             x,
             face,
             spent,
+            spent_from,
+            convoked: Vec::new(),
             copy: None,
             merged: None,
             phased: PhasedState::default(),
@@ -308,6 +350,17 @@ impl PermanentState {
     /// Whether the permanent is prepared; a permanent that leaves the battlefield is a new object and is not.
     pub const fn prepared(&self) -> bool {
         self.designations.prepared
+    }
+
+    /// Whether the permanent is suspected (CR 701.60); a permanent that leaves the battlefield is a new object and is not.
+    pub const fn suspected(&self) -> bool {
+        self.designations.suspected
+    }
+
+    /// Whether the permanent is a solved Case (CR 719.3); a permanent that leaves the battlefield is a new object and is
+    /// not.
+    pub const fn solved(&self) -> bool {
+        self.designations.solved
     }
 
     /// The level of a Class (CR 716.2): 1 as it enters, higher once its level abilities resolve; a permanent that
@@ -391,6 +444,8 @@ pub struct GameObject {
     pub(crate) face_down: Option<FaceDown>,
     /// The player who may cast the card from exile as the permanent card of an Adventure it was exiled "on" (CR 715.4); a zone change clears it.
     pub(crate) adventure: Option<PlayerId>,
+    /// The number of the turn the card was plotted in (CR 702.170), while it lies face up in exile; a zone change clears it.
+    pub(crate) plotted: Option<u32>,
     /// The permanent a card in exile waits for: it returns to the battlefield once that permanent has left it
     /// (CR 610.3); a zone change clears it.
     pub(crate) exiled_until: Option<ObjectRef>,
@@ -400,15 +455,54 @@ pub struct GameObject {
     /// The creature a card in exile is encoded on (cipher, CR 702.99); a zone change of the card clears it, and a creature
     /// that has left the battlefield is another object, so the link ends with it.
     pub(crate) encoded_on: Option<ObjectRef>,
+    /// The creature a card in exile haunts (CR 702.55), as it was when the card was exiled; a zone change of the card
+    /// clears it.
+    pub(crate) haunting: Option<ObjectRef>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
     pub(crate) cast_from_graveyard: bool,
+    /// The kind of zone the spell was cast from and the player who cast it; it stays with the permanent the spell becomes and
+    /// a zone change from anywhere else clears it.
+    pub(crate) cast: Option<(mtg_cards::refs::ZoneKind, PlayerId)>,
+    /// The spell was cast at a time its caster couldn't have cast a sorcery (`Condition::CastOffSorceryTiming`); it stays
+    /// with the permanent the spell becomes as `cast` does.
+    pub(crate) off_sorcery_timing: bool,
+    /// The conditions of the card asked "as you cast this spell" (`Condition::AsCast`) that held as it was cast; it stays
+    /// with the permanent the spell becomes as `cast` does.
+    pub(crate) held_as_cast: Vec<mtg_cards::value::Condition>,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
     /// The spell or ability on the stack this one is a copy of (CR 707.10).
     pub(crate) stack_copy: Option<ObjectRef>,
+}
+
+/// The prototype form a card prints (CR 718.3): its mana cost, power and toughness.
+pub(crate) fn prototype_form(card: &CardDefinition) -> Option<(&ManaCost, i32, i32)> {
+    crate::ability_reader::printed_rules(card).find_map(|rule| match &**rule {
+        Ability::Keyword(Keyword::Prototype {
+            cost,
+            power,
+            toughness,
+        }) => cost.0.iter().find_map(|part| match part {
+            CostItem::Mana(mana) => Some((mana.rest(), *power, *toughness)),
+            _ => None,
+        }),
+        _ => None,
+    })
+}
+
+/// The copiable values of a card cast with its prototype: the prototype's mana cost, power and toughness in place of the
+/// printed ones (CR 718.3c). Colors follow the cost unless an indicator sets them.
+pub(crate) fn with_prototype_values(mut values: CardDefinition) -> CardDefinition {
+    if let Some((cost, power, toughness)) = prototype_form(&values) {
+        let cost = cost.clone();
+        values.mana_cost = Some(cost);
+        values.power = Some(power);
+        values.toughness = Some(toughness);
+    }
+    values
 }
 
 impl GameObject {
@@ -426,11 +520,16 @@ impl GameObject {
             card_counters: BTreeMap::new(),
             face_down: None,
             adventure: None,
+            plotted: None,
             exiled_until: None,
             encoded_on: None,
+            haunting: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
+            off_sorcery_timing: false,
+            held_as_cast: Vec::new(),
+            cast: None,
             kind: ObjectKind::Card,
             choices: Choices::default(),
             ability: None,
@@ -461,11 +560,16 @@ impl GameObject {
             card_counters: BTreeMap::new(),
             face_down: None,
             adventure: None,
+            plotted: None,
             exiled_until: None,
             encoded_on: None,
+            haunting: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
+            off_sorcery_timing: false,
+            held_as_cast: Vec::new(),
+            cast: None,
             kind: ObjectKind::Ability,
             choices,
             ability: Some(Box::new(ability)),
@@ -537,6 +641,28 @@ impl GameObject {
         }
     }
 
+    /// The sources of the mana spent to cast this card, kept as [`GameObject::mana_spent`] is.
+    pub fn mana_spent_from(&self) -> &[mtg_cards::spend::SpentFrom] {
+        match &self.permanent {
+            Some(permanent) => &permanent.spent_from,
+            None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
+                self.choices.spent_from()
+            }
+            None => &[],
+        }
+    }
+
+    /// The creatures that convoked this card's spell, kept as [`GameObject::mana_spent`] keeps the mana (CR 702.51).
+    pub fn convoked(&self) -> &[ObjectRef] {
+        match &self.permanent {
+            Some(permanent) => &permanent.convoked,
+            None if self.kind != ObjectKind::Ability && self.zone == Zone::Stack => {
+                self.choices.convoked()
+            }
+            None => &[],
+        }
+    }
+
     /// The X this card was cast with: what the spell announced while it is on the stack and what the permanent
     /// remembers after; none elsewhere, where X is 0 (CR 107.3g, 202.3e).
     pub fn announced_x(&self) -> Option<u32> {
@@ -602,10 +728,30 @@ impl GameObject {
         }
     }
 
+    /// The prototype form of a card cast for its prototype cost (CR 718.3): its mana cost, power and toughness, which the
+    /// spell and the permanent have in place of the printed ones. A copy has the form of the card it copies.
+    pub fn prototype(&self) -> Option<(&ManaCost, i32, i32)> {
+        if self.cast_way() != Some(CastWay::Prototype) {
+            return None;
+        }
+        prototype_form(self.card())
+    }
+
+    /// The mana cost of the face in use: the prototype cost for a prototyped spell or permanent.
+    pub fn mana_cost(&self) -> Option<&ManaCost> {
+        match self.prototype() {
+            Some((cost, _, _)) => Some(cost),
+            None => self.card().mana_cost.as_ref(),
+        }
+    }
+
     /// The printed mana value of the face in use, without the X of a spell on the stack. A transforming double-faced
     /// permanent with its back face up has the mana value of its front face (CR 712.8e); a copy of that face has the
     /// back face's own, which is 0 (CR 707.8).
     pub fn mana_value(&self) -> u32 {
+        if let Some((cost, _, _)) = self.prototype() {
+            return cost.mana_value();
+        }
         let whole = self.whole_card();
         if whole.layout == Layout::Transform && self.face().is_some() {
             whole.mana_value()
@@ -648,6 +794,33 @@ impl GameObject {
         self.cast_from_hand
     }
 
+    /// Forgets how the spell was cast; the permanent a spell becomes keeps who cast it and from where.
+    pub(crate) fn forget_cast(&mut self, from: crate::zones::Zone, to: crate::zones::Zone) {
+        self.cast_from_hand = false;
+        self.cast_from_graveyard = false;
+        if !(from == crate::zones::Zone::Stack && to == crate::zones::Zone::Battlefield) {
+            self.cast = None;
+            self.off_sorcery_timing = false;
+            self.held_as_cast.clear();
+        }
+    }
+
+    /// Whether `condition`, one the card asks "as you cast this spell", held as the spell was cast; kept by the permanent it
+    /// becomes.
+    pub fn held_as_cast(&self, condition: &mtg_cards::value::Condition) -> bool {
+        self.held_as_cast.contains(condition)
+    }
+
+    /// Whether the spell was cast at a time its caster couldn't have cast a sorcery; kept by the permanent it becomes.
+    pub const fn cast_off_sorcery_timing(&self) -> bool {
+        self.off_sorcery_timing
+    }
+
+    /// The kind of zone the spell was cast from and who cast it; kept by the permanent it becomes.
+    pub const fn cast_record(&self) -> Option<(mtg_cards::refs::ZoneKind, PlayerId)> {
+        self.cast
+    }
+
     /// Whether the spell was cast from a graveyard.
     pub const fn cast_from_graveyard(&self) -> bool {
         self.cast_from_graveyard
@@ -664,6 +837,11 @@ impl GameObject {
         self.encoded_on
     }
 
+    /// The creature this card in exile haunts (CR 702.55), as it was when the card was exiled haunting it.
+    pub const fn haunting(&self) -> Option<ObjectRef> {
+        self.haunting
+    }
+
     /// Whether a card in exile waits for an opponent of its exiler to become the monarch and one has.
     pub(crate) const fn monarch_released(&self) -> bool {
         matches!(self.monarch_wait, Some((_, true)))
@@ -672,6 +850,11 @@ impl GameObject {
     /// The player who may cast the card from exile as the creature of the Adventure it was exiled on.
     pub const fn on_adventure(&self) -> Option<PlayerId> {
         self.adventure
+    }
+
+    /// The number of the turn the card was plotted in, while it lies plotted in exile (CR 702.170).
+    pub const fn plotted(&self) -> Option<u32> {
+        self.plotted
     }
 
     /// The printed card types of the face in use (no effects applied); a bestowed Aura is no creature (CR 702.103b).
@@ -743,11 +926,16 @@ impl PartialEq for GameObject {
             && self.card_counters == other.card_counters
             && self.face_down == other.face_down
             && self.adventure == other.adventure
+            && self.plotted == other.plotted
             && self.exiled_until == other.exiled_until
             && self.encoded_on == other.encoded_on
+            && self.haunting == other.haunting
             && self.monarch_wait == other.monarch_wait
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
+            && self.cast == other.cast
+            && self.off_sorcery_timing == other.off_sorcery_timing
+            && self.held_as_cast == other.held_as_cast
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -770,11 +958,15 @@ impl Hash for GameObject {
         self.card_counters.hash(state);
         self.face_down.hash(state);
         self.adventure.hash(state);
+        self.plotted.hash(state);
         if let Some(until) = self.exiled_until {
             until.hash(state);
         }
         if let Some(carrier) = self.encoded_on {
             carrier.hash(state);
+        }
+        if let Some(haunted) = self.haunting {
+            haunted.hash(state);
         }
         if let Some(wait) = self.monarch_wait {
             wait.hash(state);
@@ -785,6 +977,15 @@ impl Hash for GameObject {
         }
         if self.cast_from_graveyard {
             "graveyard".hash(state);
+        }
+        if let Some(cast) = self.cast {
+            cast.hash(state);
+        }
+        if self.off_sorcery_timing {
+            "off sorcery timing".hash(state);
+        }
+        if !self.held_as_cast.is_empty() {
+            self.held_as_cast.hash(state);
         }
         self.counter.hash(state);
         self.kind.hash(state);

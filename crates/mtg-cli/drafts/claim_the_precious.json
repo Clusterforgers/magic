@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8b0a0991-2327-45ea-b47f-c31db367fa1d",
+  "name": "Claim the Precious",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Claim the Precious",
+      "oracle_fingerprint": "0293ec62678f07c4a80869ac260c0cfc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

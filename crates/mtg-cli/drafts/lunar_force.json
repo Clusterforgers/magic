@@ -1,0 +1,22 @@
+{
+  "oracle_id": "31b18e10-c74d-4384-a0e2-def0b3ec4799",
+  "name": "Lunar Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lunar Force",
+      "oracle_fingerprint": "1ee7a11d3c0562a067e1039fbe49e8f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              { "Counter": { "what": "Triggering" } },
+              { "Sacrifice": { "filter": ["This"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

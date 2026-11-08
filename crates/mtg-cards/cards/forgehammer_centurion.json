@@ -1,0 +1,57 @@
+{
+  "oracle_id": "fa519a46-11ab-4ab8-9286-904ce2746c03",
+  "name": "Forgehammer Centurion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forgehammer Centurion",
+      "oracle_fingerprint": "21c3c8950ced151a683aa9012bf6a714",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                  { "ControlledBy": "You" },
+                  "Other"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": { "Other": "oil" }, "count": 2 } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": ["CantBlock"],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "3759f1de-eda1-4f09-b12b-ea5f5fc731d7",
+  "name": "Federation Field Medic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Federation Field Medic",
+      "oracle_fingerprint": "d06d629910d9f6d6a8491c60efbb65e6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Vigilance" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Count": [{ "ControlledBy": "You" }, "HasAnyCounter"] },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Draw": {} }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

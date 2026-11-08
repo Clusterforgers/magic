@@ -1,0 +1,56 @@
+{
+  "oracle_id": "fdf0fba8-f335-419c-b96b-e99037727c43",
+  "name": "Kinscaer Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinscaer Sentry",
+      "oracle_fingerprint": "45ea515c27c9b572590b501fad225331",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "ControlledBy": "You" },
+                              "Attacking"
+                            ]
+                          }
+                        }
+                      },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved2"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

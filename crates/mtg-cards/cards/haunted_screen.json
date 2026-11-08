@@ -1,0 +1,45 @@
+{
+  "oracle_id": "49f92c0b-16ac-4cf0-8ec3-e3638990ee75",
+  "name": "Haunted Screen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunted Screen",
+      "oracle_fingerprint": "4373495b389ce8948fd754deb20f2fa1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{7}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 7 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddSubtype": "Spirit" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

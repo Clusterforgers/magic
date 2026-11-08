@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7a07971a-bfc3-4d36-ad8a-b9d395cbd6e9",
+  "name": "Rhystic Scrying",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Scrying",
+      "oracle_fingerprint": "5dcd460c6f5a9a616a190919b16ea44d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{2}",
+                  "paid": [{ "Discard": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

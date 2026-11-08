@@ -1,0 +1,56 @@
+{
+  "oracle_id": "4df0d381-fc05-4d30-9307-48963aa2ecfd",
+  "name": "Robber of the Rich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Robber of the Rich",
+      "oracle_fingerprint": "5087f6c46fd64e02b750bf97945a2f13",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "Defending" }, { "In": "Hand" }] },
+                "op": "Gt",
+                "right": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "Defending", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyColor",
+                      "when": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Attacked",
+                              "who": "EachPlayer",
+                              "filter": [{ "Subtype": "Rogue" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

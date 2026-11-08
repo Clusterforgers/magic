@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f895ec2e-7481-4280-a5c0-38b58c440faf",
+  "name": "Frostwielder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frostwielder",
+      "oracle_fingerprint": "e39369be85836b13b1e0bdad484589ea",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "41e58eb8-e5b9-4ef6-be1f-00e28cebb998",
+  "oracle_id": "29356966-652d-4456-84c8-7aeab5fc8d05",
+  "multiverse_ids": [
+    670972
+  ],
+  "mtgo_id": 128265,
+  "arena_id": 92705,
+  "tcgplayer_id": 561275,
+  "cardmarket_id": 779693,
+  "name": "Flubs, the Fool",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/41e58eb8-e5b9-4ef6-be1f-00e28cebb998",
+  "scryfall_uri": "https://scryfall.com/card/blc/356/flubs-the-fool?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:43:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.jpg?1783910621",
+    "normal": "https://cards.scryfall.io/normal/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.jpg?1783910621",
+    "large": "https://cards.scryfall.io/large/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.jpg?1783910621",
+    "png": "https://cards.scryfall.io/png/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.png?1783910621",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.jpg?1783910621",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.jpg?1783910621",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.webp?1783910621",
+    "grid": "https://cards.scryfall.io/grid/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.webp?1783910621",
+    "display": "https://cards.scryfall.io/display/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.webp?1783910621",
+    "art": "https://cards.scryfall.io/art/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.webp?1783910621",
+    "crop": "https://cards.scryfall.io/crop/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.webp?1783910621",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/1/41e58eb8-e5b9-4ef6-be1f-00e28cebb998.jpg?1783910621"
+  },
+  "mana_cost": "{G}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Frog Scout",
+  "oracle_text": "You may play an additional land on each of your turns.\nWhenever you play a land or cast a spell, draw a card if you have no cards in hand. Otherwise, discard a card.",
+  "power": "0",
+  "toughness": "5",
+  "colors": [
+    "G",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": true,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set": "blc",
+  "set_name": "Bloomburrow Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/41e58eb8-e5b9-4ef6-be1f-00e28cebb998/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A29356966-652d-4456-84c8-7aeab5fc8d05&unique=prints",
+  "collector_number": "356",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "He knows exactly where he's going and exactly how he isn't getting there.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Adam Rex",
+  "artist_ids": [
+    "445bd2fb-4a70-4599-87a4-83cf5979fc56"
+  ],
+  "illustration_id": "1c7a057d-4259-41df-95e5-1cb262fb516b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "extendedart"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "buyabox"
+  ],
+  "edhrec_rank": 6141,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/bloomburrow/card-image-gallery",
+    "previewed_at": "2024-07-09"
+  },
+  "prices": {
+    "usd": "2.83",
+    "usd_foil": "9.16",
+    "usd_etched": null,
+    "eur": "0.89",
+    "eur_foil": "2.93",
+    "tix": "6.58"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=670972&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFlubs%252C%2Bthe%2BFool",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFlubs%252C%2Bthe%2BFool",
+    "edhrec": "https://edhrec.com/route/?cc=Flubs%2C+the+Fool"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F561275%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=779693&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128265?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

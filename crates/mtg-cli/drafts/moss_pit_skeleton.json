@@ -1,0 +1,50 @@
+{
+  "oracle_id": "edf0e7c0-d9a1-4d29-9cee-5267d3a3978f",
+  "name": "Moss-Pit Skeleton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moss-Pit Skeleton",
+      "oracle_fingerprint": "bb789689cd17ce04110fbb232aeb76e2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "CountersPut": {
+                  "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "counter": "+1/+1"
+                }
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

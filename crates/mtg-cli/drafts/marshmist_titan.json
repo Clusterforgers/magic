@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f8b1ac76-2f9b-454e-a20a-1cb79c23f414",
+  "name": "Marshmist Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marshmist Titan",
+      "oracle_fingerprint": "640f4bd228888f40bb382533a8505409",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Devotion": ["Black"] }
+          }
+        }
+      ]
+    }
+  ]
+}

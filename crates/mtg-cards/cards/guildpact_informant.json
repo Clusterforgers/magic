@@ -1,0 +1,31 @@
+{
+  "oracle_id": "330f97ee-6bb2-4a4b-a8bc-411659dc4260",
+  "name": "Guildpact Informant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guildpact Informant",
+      "oracle_fingerprint": "218240294e2949cc57cee69ac94773ec",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Planeswalker" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

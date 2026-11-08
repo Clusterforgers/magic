@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a14d89b6-23eb-4337-8dee-93c39b0efbf1",
+  "name": "Territory Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Territory Forge",
+      "oracle_fingerprint": "5fade306ce7319725b379d4050dd625c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "GainAbilitiesOf": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

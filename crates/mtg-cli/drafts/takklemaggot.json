@@ -1,0 +1,26 @@
+{
+  "oracle_id": "31d01633-86f8-4a3f-9c28-f6968e056ba3",
+  "name": "Takklemaggot",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Takklemaggot",
+      "oracle_fingerprint": "4a8bf84cd4cd99109e42172e55583cc2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": { "Other": "-0/-1" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 122, "end": 556 }
+          }
+        }
+      ]
+    }
+  ]
+}

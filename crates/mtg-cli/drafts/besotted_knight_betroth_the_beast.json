@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c7b6d2cd-9105-404b-88f0-a67037fb2120",
+  "name": "Besotted Knight // Betroth the Beast",
+  "impl_status": "Full",
+  "faces": [
+    { "name": "Besotted Knight", "oracle_fingerprint": "e3b0c44298fc1c149afbf4c8996fb924" },
+    {
+      "name": "Betroth the Beast",
+      "oracle_fingerprint": "c180ea283d1a580b89d021d78b46853d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Royal",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": { "Ward": "{1}" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

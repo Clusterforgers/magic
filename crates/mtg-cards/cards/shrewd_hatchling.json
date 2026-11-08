@@ -1,0 +1,46 @@
+{
+  "oracle_id": "011371f0-a7f1-47a5-9883-22a14cfe4de9",
+  "name": "Shrewd Hatchling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrewd Hatchling",
+      "oracle_fingerprint": "9006a8a98fd40b9b818cf210bf3ff5c1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 4 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U/R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CanBlockOnly": [{ "Not": { "Is": "This" } }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Blue" }], "by": "You" } },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": "-1/-1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Red" }], "by": "You" } },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

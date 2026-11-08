@@ -46,13 +46,27 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !otherwise.is_empty() {
         return otherwise;
     }
+    let taxes = super::g11c_taxes::g11c_pair_texts(first, second);
+    if !taxes.is_empty() {
+        return taxes;
+    }
     let attacking = super::attack_pairs::texts(first, second);
     if !attacking.is_empty() {
         return attacking;
     }
+    let attached = super::r6b_pairs::r6b_texts(first, second);
+    if !attached.is_empty() {
+        return attached;
+    }
     let chosen = super::c4_chosen_pairs::texts(first, second);
     if !chosen.is_empty() {
         return chosen;
+    }
+    if let Some(one) = super::r6c_pairs::merged(first, second) {
+        let written = super::render::written_variants(&one);
+        if !written.is_empty() {
+            return written;
+        }
     }
     let (
         Ability::Static {

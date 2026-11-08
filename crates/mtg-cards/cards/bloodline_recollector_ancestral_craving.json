@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c8e9a7e1-28ae-40e3-8715-1bb0aa2057c7",
+  "name": "Bloodline Recollector // Ancestral Craving",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodline Recollector",
+      "oracle_fingerprint": "d1accaa8dc730a23190b0a2a45b11979",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ancestral Craving",
+      "oracle_fingerprint": "0c76db08b05c231a66a788e0906ec962",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 3 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

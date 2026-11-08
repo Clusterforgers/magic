@@ -1,0 +1,105 @@
+{
+  "oracle_id": "7799413d-e313-4a05-ad28-f4c926c26d28",
+  "name": "Vraska's Final Mercy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska's Final Mercy",
+      "oracle_fingerprint": "e2cdea26ca57800a25a23e9637adb36d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "LoseLife": { "amount": 2 } },
+                        { "Destroy": { "what": { "Target": 0 } } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "LoseLife": { "amount": 2 } },
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Count": [
+                                    { "Subtype": "Jace" },
+                                    "Token",
+                                    { "ControlledBy": "You" }
+                                  ]
+                                },
+                                "op": "Lt",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Jace",
+                                      "colors": ["Blue"],
+                                      "types": ["Planeswalker"],
+                                      "subtypes": ["Jace"],
+                                      "abilities": [
+                                        {
+                                          "Loyalty": {
+                                            "cost": { "Minus": 1 },
+                                            "effects": [{ "Surveil": {} }]
+                                          }
+                                        },
+                                        {
+                                          "Loyalty": {
+                                            "cost": { "Minus": 3 },
+                                            "effects": [{ "Draw": {} }]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                            },
+                            "as": "jace"
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Bound": "jace" },
+                            "counter": "loyalty",
+                            "count": 6
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ use mtg_cards::read::ability_wording;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
-use super::finish;
+use super::{ResolveError, finish};
 use crate::abilities::AbilityObject;
 use crate::events::Event;
 use crate::object::{GameObject, ObjectRef};
@@ -26,19 +26,21 @@ pub struct LeftToTable {
 
 /// The events that end the resolution of `object`, whose `rules` failed, as one that left the rest to the table: the
 /// steps already folded stand, the ability is logged and the spell or ability ends as after any resolution. None while the
-/// card does not run on a read, so its error stays the game's.
+/// card does not run on a read and the engine does play what it asks for, so that error stays the game's.
 pub(super) fn left_to_table(
     state: &GameState,
     object: &GameObject,
     rules: &Ability,
+    error: &ResolveError,
 ) -> Option<Vec<Event>> {
     let source = object
         .ability()
         .map_or_else(|| object.reference(), AbilityObject::source);
-    if !state
+    // What the engine does not play yet is never a reason to stop a game, whoever wrote the card.
+    let on_a_read = state
         .source_object(source.id)
-        .is_some_and(|holder| holder.card().read)
-    {
+        .is_some_and(|holder| holder.card().read);
+    if !on_a_read && !matches!(error, ResolveError::Unsupported(_)) {
         return None;
     }
     let mut events = vec![Event::AbilityLeftToTable(Box::new(LeftToTable {

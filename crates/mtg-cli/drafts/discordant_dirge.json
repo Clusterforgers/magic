@@ -1,0 +1,41 @@
+{
+  "oracle_id": "edd4741b-3ee6-421a-8bac-d60736755356",
+  "name": "Discordant Dirge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Discordant Dirge",
+      "oracle_fingerprint": "ce5809e01f0007c9807da5a47721828c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "verse" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "SacrificeSelf"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "verse" } } },
+                  "by": "You",
+                  "optional": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5b0cb089-087d-4b91-9e63-8186dc737a00",
+  "name": "Tahngarth's Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tahngarth's Rage",
+      "oracle_fingerprint": "0317074ba4f16835ae8a0a7ce48a3ecc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, "Attacking"]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -1 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Not": "Attacking" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

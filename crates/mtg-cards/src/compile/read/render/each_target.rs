@@ -146,6 +146,8 @@ fn what_they_do(effect: &Effect) -> Option<&'static str> {
                     of: Ref::Target(0),
                     stat: StatKind::Power,
                 },
+            unpreventable: false,
+            ..
         } => Some("deals damage equal to its power to"),
         _ => None,
     }

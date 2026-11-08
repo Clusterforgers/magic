@@ -60,8 +60,19 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   useLayoutEffect(() => {
     latest.current = chosen
   })
+  // "With different names": a card whose name a chosen card has is closed until that card is put back.
+  const sameName = useMemo(() => {
+    const shut = new Set<ObjectId>()
+    if (options.one_per_name !== true) return shut
+    const taken = new Set(chosen.map((id) => byId.get(id)?.name).filter((name) => name !== undefined))
+    for (const id of from) {
+      const name = byId.get(id)?.name
+      if (!chosen.includes(id) && name !== undefined && taken.has(name)) shut.add(id)
+    }
+    return shut
+  }, [options.one_per_name, chosen, from, byId])
   const press = (id: ObjectId): void => {
-    if (!fromSet.has(id)) return
+    if (!fromSet.has(id) || sameName.has(id)) return
     const next = pressedCard(latest.current, id, hi)
     if (next === latest.current) return
     latest.current = next
@@ -69,7 +80,10 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   }
 
   const closed = hi > 1 && chosen.length >= hi
-  const open = hi === 0 || closed ? NONE : from
+  const open = useMemo(
+    () => (hi === 0 || closed ? NONE : from.filter((id) => !sameName.has(id))),
+    [hi, closed, from, sameName],
+  )
   const marks = useMemo(() => markCards(own, open, chosen), [own, open, chosen])
   useCardMarks(marks, press, { toggles: true })
 
@@ -116,6 +130,7 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
         cards={from}
         chosen={chosen}
         closed={closed}
+        shut={sameName}
         labels={labels}
         objects={byId}
         onPress={press}

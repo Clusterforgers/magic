@@ -1,0 +1,72 @@
+{
+  "oracle_id": "08a0c661-5ed5-47a6-aa1d-3114bf5db3fb",
+  "name": "Preston Garvey, Minuteman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Preston Garvey, Minuteman",
+      "oracle_fingerprint": "23f35aeffeb8c32e302d6e06a9299088",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Settlement",
+                      "colors": ["Green"],
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              {
+                                "GrantAbility": {
+                                  "Activated": {
+                                    "cost": ["Tap"],
+                                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [{ "HasAttached": [{ "Subtype": "Aura" }] }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

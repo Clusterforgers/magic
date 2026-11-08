@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1175d482-d8a2-467f-bc50-2f4b241966bb",
+  "name": "Arashin Sunshield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arashin Sunshield",
+      "oracle_fingerprint": "31b1cf371bdf4c2f6ba27e89d979f416",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

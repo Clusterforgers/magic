@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e5f25cbd-39e4-4806-8dba-9a552356696d",
+  "name": "Golden Wish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golden Wish",
+      "oracle_fingerprint": "18a994a44af5aa452952314b3c39df2e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "OwnedBy": "You" }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

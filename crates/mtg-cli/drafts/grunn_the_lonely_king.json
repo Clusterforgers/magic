@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e3d6d146-47f4-46f9-9a15-2ea649093668",
+  "name": "Grunn, the Lonely King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grunn, the Lonely King",
+      "oracle_fingerprint": "45beb5b6034c4f4cfe536f61e33ac7b2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 5 } },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

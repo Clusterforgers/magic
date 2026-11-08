@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9e7bd032-8946-4d72-9910-b224823bc940",
+  "name": "Fractalize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fractalize",
+      "oracle_fingerprint": "a4aad25905af48ed0f0c0decbca31a0e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": { "Sum": ["X", 1] }, "toughness": { "Sum": ["X", 1] } } },
+                    { "SetColors": ["Green", "Blue"] },
+                    { "SetCreatureTypes": ["Fractal"] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

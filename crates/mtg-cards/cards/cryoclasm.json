@@ -1,0 +1,28 @@
+{
+  "oracle_id": "77c14618-ced1-4a46-a7fd-06cb2f7f38ff",
+  "name": "Cryoclasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryoclasm",
+      "oracle_fingerprint": "a333e519a39b8cedfeeb1e6c85180585",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Subtype": "Plains" }, { "Subtype": "Island" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

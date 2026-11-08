@@ -1,0 +1,52 @@
+{
+  "oracle_id": "05075332-6856-4147-a22d-3a5bd1e96b7b",
+  "name": "Phyrexian Warhorse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Warhorse",
+      "oracle_fingerprint": "ce688eb779fe58161de253f76cecba4f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

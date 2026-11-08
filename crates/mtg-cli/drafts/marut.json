@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4ba37a9e-6b80-4099-bd79-736123d0554b",
+  "name": "Marut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marut",
+      "oracle_fingerprint": "4ae495970df933d50f43e469ec38c77e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "ManaSpent": { "of": null, "from": { "subtypes": ["Treasure"] } } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "ManaSpent": { "of": null, "from": { "subtypes": ["Treasure"] } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

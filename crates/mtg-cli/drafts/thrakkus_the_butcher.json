@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f7cd7ede-51c1-4117-99b5-484d0d80c95f",
+  "name": "Thrakkus the Butcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrakkus the Butcher",
+      "oracle_fingerprint": "26035a298e488d1a0f1481bfdb8b7060",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                  "as": "doubled",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "doubled" },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": { "Bound": "doubled" }, "stat": "Power" } },
+                              "toughness": 0
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

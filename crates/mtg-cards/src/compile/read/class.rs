@@ -34,6 +34,7 @@ pub(super) fn plan(text: &str) -> Option<Plan> {
         },
         head: vec![(header.to_owned(), up)],
         lines: lines.map(str::to_owned).collect(),
+        conditions: Vec::new(),
     })
 }
 
@@ -48,6 +49,7 @@ fn level_up(level: u32, cost: Cost) -> Ability {
             level: level.saturating_sub(1),
         }),
         limit: None,
+        by: crate::ability::Activators::Controller,
         from: ZoneKind::Battlefield,
         targets: Vec::new(),
         effects: vec![Effect::BecomeLevel { level }],

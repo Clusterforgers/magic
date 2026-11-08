@@ -1,0 +1,38 @@
+{
+  "oracle_id": "852e3d89-64a0-4b32-be2b-b1d6cd7c2f64",
+  "name": "Omenport Vigilante",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omenport Vigilante",
+      "oracle_fingerprint": "3923d2c63737de1c323c343bddd615e7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "Crimes" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

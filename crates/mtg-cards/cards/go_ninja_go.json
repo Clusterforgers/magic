@@ -1,0 +1,59 @@
+{
+  "oracle_id": "46f77c8c-6817-4aea-a80a-d91f508ccbd0",
+  "name": "Go Ninja Go",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Go Ninja Go",
+      "oracle_fingerprint": "e9b2ee67b55a0fda98926781274a73d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                        { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "Target": 0 },
+                            "amount": {
+                              "Greatest": {
+                                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                                "stat": "Power"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

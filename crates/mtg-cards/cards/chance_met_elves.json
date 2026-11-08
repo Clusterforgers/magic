@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8958a6fe-76ef-45e3-8522-6bc13486b447",
+  "name": "Chance-Met Elves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chance-Met Elves",
+      "oracle_fingerprint": "6a0be8655e8800ee43003d589c5da320",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

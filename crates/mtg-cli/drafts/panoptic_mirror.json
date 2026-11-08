@@ -1,0 +1,64 @@
+{
+  "oracle_id": "505cb78d-b292-4d16-b3f2-110164b4cc93",
+  "name": "Panoptic Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panoptic Mirror",
+      "oracle_fingerprint": "879a743eb8cd027c6250a82d857e3144",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              { "Remember": { "what": { "Bound": "exiled2" }, "slot": "imprinted" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                            { "ExiledWith": "This" },
+                            { "In": "Exile" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "CopyCard": { "what": { "Bound": "picked" }, "as": "copy2" } },
+                    { "CastFromZone": { "what": { "Bound": "copy2" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

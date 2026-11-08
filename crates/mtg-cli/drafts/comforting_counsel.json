@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5fd193c0-ed9f-4afb-b6cd-c1a20008fc0b",
+  "name": "Comforting Counsel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Comforting Counsel",
+      "oracle_fingerprint": "26dbab685c643ec29ec393a07ef7df97",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "growth" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "growth" }, "op": "Ge", "to": 5 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

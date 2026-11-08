@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cd02e276-3c2d-4177-aa60-294a31bae0db",
+  "name": "Wanderguard Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanderguard Sentry",
+      "oracle_fingerprint": "a81b2425951e2cd0fe083e6ee6126579",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

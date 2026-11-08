@@ -1,0 +1,59 @@
+{
+  "oracle_id": "4012b400-7dcd-43d6-8806-39a3cb743d8f",
+  "name": "Neyali, Suns' Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neyali, Suns' Vanguard",
+      "oracle_fingerprint": "92cff8ab5c6fe78f4868a2cb794e064e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }, "Token"]
+            },
+            "mods": [{ "AddKeyword": "DoubleStrike" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "when": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Attacked",
+                              "who": "EachPlayer",
+                              "filter": [{ "Type": "Creature" }, "Token"]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

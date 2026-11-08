@@ -1,0 +1,46 @@
+{
+  "oracle_id": "31af78dd-e962-4d9a-b696-f3048be03486",
+  "name": "Virtue of Strength // Garenbrig Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Virtue of Strength",
+      "oracle_fingerprint": "062bd6e0017dc8401199530615bf6e80",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "ManaProduced": {
+                "what": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                "who": "You",
+                "change": { "Times": 3 }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Garenbrig Growth",
+      "oracle_fingerprint": "dc4e3dd64d1f928121d034d0353d9471",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

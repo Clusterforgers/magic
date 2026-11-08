@@ -11,11 +11,13 @@ import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import {
   distinctTargets,
+  fitsTotal,
   objectWords,
   sameTarget,
   subjectWords,
   targetKey,
   targetsSentence,
+  totalWords,
 } from '../targetText'
 import type { PromptComponent } from '../types'
 import { useObjects } from '../useCombatNames'
@@ -27,6 +29,8 @@ import { useObjects } from '../useCombatNames'
  * draws no card to press. The chosen targets are listed with a button each to
  * take them back, Undo takes back the last one, and Confirm sends them once there are enough. A spell can be taken
  * back with Cancel, since nothing is paid yet; a triggered ability cannot, so it has no Cancel and waits for a target.
+ * With a most for the total mana value the sentence tells the total so far, and a target that would go over it is
+ * neither marked nor taken.
  */
 export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options }) => {
   const { answer } = usePrompt()
@@ -84,12 +88,17 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
   const has = (target: Target): boolean => chosen.some((picked) => sameTarget(picked, target))
   // With room for one a click on another target changes the choice; with room for several a full choice is closed.
   const closed = max > 1 && chosen.length >= max
+  // A most for the total mana value: a target that would take the chosen ones over it cannot be added.
+  const total = options.total ?? undefined
+  const fits = (target: Target, current: readonly Target[]): boolean =>
+    fitsTotal(options.legal, total, current, target)
   const pick = (target: Target): void =>
     setChosen((current) => {
       if (current.some((picked) => sameTarget(picked, target))) {
         return current.filter((picked) => !sameTarget(picked, target))
       }
       if (max === 1) return [target]
+      if (!fits(target, current)) return current
       return current.length < max ? [...current, target] : current
     })
 
@@ -97,9 +106,16 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
     () => chosen.flatMap((target) => ('Object' in target ? [target.Object.id] : [])),
     [chosen],
   )
+  const fittingIds = useMemo(
+    () =>
+      offered.flatMap((target) =>
+        'Object' in target && fitsTotal(options.legal, total, chosen, target) ? [target.Object.id] : [],
+      ),
+    [offered, options.legal, total, chosen],
+  )
   const marks = useMemo(
-    () => markCards(own, closed ? [] : objectIds, chosenIds),
-    [own, closed, objectIds, chosenIds],
+    () => markCards(own, closed ? [] : fittingIds, chosenIds),
+    [own, closed, fittingIds, chosenIds],
   )
   const onCard = (id: ObjectId): void => {
     const target = offered.find((candidate) => 'Object' in candidate && candidate.Object.id === id)
@@ -107,13 +123,15 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
   }
   useCardMarks(marks, onCard, { toggles: true })
 
-  const text = targetsSentence({
+  const sentence = targetsSentence({
     subject: subjectWords(source?.name, triggered),
     wording: options.wording ?? '',
     min,
     max,
     chosen: chosen.length,
   })
+  const totalText = totalWords(options.legal, total, chosen)
+  const text = totalText === '' ? sentence : `${sentence} ${totalText}`
   const cancelWords = source?.zone === 'Battlefield' ? 'Cancel the ability' : 'Cancel the spell'
 
   return (
@@ -155,7 +173,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
               size="sm"
               variant={picked ? 'default' : 'outline'}
               aria-pressed={picked}
-              disabled={closed && !picked}
+              disabled={(closed || !fits(target, chosen)) && !picked}
               onClick={() => pick(target)}
             >
               {labelOf(target)}

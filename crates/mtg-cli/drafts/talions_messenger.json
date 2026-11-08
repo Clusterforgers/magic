@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3a721a4c-696b-44d1-858d-20040bd01909",
+  "name": "Talion's Messenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talion's Messenger",
+      "oracle_fingerprint": "9696323ec8db8775680f5e80c9826d02",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

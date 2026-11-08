@@ -1,0 +1,19 @@
+{
+  "oracle_id": "97c188c4-3f27-428e-a4f6-4213f44898fc",
+  "name": "Mirrormere Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrormere Guardian",
+      "oracle_fingerprint": "9c923bbdf3723e59161a6bef4ab0b100",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

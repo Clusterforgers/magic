@@ -1,0 +1,24 @@
+{
+  "oracle_id": "32972d7a-c7c6-437c-8e7c-6c7d56b130e4",
+  "name": "Scourge of Nel Toth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scourge of Nel Toth",
+      "oracle_fingerprint": "9e8393c5479ad4425658f658d1265dda",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "AltCast": {
+            "way": "Alternative",
+            "cost": [
+              { "Mana": "{B}{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": 2 } }
+            ],
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

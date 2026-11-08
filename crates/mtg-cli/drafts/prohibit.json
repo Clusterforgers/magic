@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d95f1797-56f9-41be-a5fe-8398961f4b8b",
+  "name": "Prohibit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prohibit",
+      "oracle_fingerprint": "0c47d3a87789d21f05e8769cb66deb63",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": { "When": { "condition": "Kicked", "then": 4, "otherwise": 2 } }
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

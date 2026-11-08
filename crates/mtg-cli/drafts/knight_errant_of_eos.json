@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4bd20d79-0861-494a-a8f2-f6ddb5088004",
+  "name": "Knight-Errant of Eos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight-Errant of Eos",
+      "oracle_fingerprint": "98667c2100344b3f977f9fd69a6f0d0c",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "CountOf": { "of": "Convoked", "filter": [] } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept2" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": { "Library": { "place": "Bottom" } } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

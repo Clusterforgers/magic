@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ea56ca6e-721d-43c7-9a30-4be7c85c67d3",
+  "name": "Flamestick Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamestick Courier",
+      "oracle_fingerprint": "d955723f05854faac1638f434e64e137",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Goblin" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

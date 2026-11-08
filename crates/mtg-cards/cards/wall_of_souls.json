@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2c85c9ea-c3fd-4981-a65c-4405bd87764e",
+  "name": "Wall of Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Souls",
+      "oracle_fingerprint": "4682d7546a398fd6df1b89453af31807",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This", "combat": true } } },
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

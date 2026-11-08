@@ -1,0 +1,33 @@
+{
+  "oracle_id": "58838588-13d5-4948-babf-d09cc59d76a1",
+  "name": "Crystal Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Seer",
+      "oracle_fingerprint": "69de8cd6ceaa355b928af4dfcc453436",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{U}",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

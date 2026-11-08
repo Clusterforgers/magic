@@ -183,6 +183,7 @@ mod tests {
             mana: 0,
             most: None,
             most_at: Vec::new(),
+            cant_alone: Vec::new(),
         }
     }
 

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "493acba2-92b0-43a4-9f4b-d49a91ca77f5",
+  "name": "Rag Dealer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rag Dealer",
+      "oracle_fingerprint": "fab1b51faad0d1d30362d51b1ad8bb9a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

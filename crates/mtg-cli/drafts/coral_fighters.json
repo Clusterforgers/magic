@@ -1,0 +1,38 @@
+{
+  "oracle_id": "8a397a64-542f-43fb-bf54-27ac651e1819",
+  "name": "Coral Fighters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coral Fighters",
+      "oracle_fingerprint": "77335ca0e78e7125d6d692c8af1abfa0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "who": "Defending", "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Bottom" } } }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "2366640a-ca4a-4325-8578-1ec78d0382cc",
+  "oracle_id": "0236ad13-d8e4-49b4-b397-fe2f6136665d",
+  "multiverse_ids": [
+    562997
+  ],
+  "tcgplayer_id": 273058,
+  "cardmarket_id": 660268,
+  "name": "Astarion's Thirst",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/2366640a-ca4a-4325-8578-1ec78d0382cc",
+  "scryfall_uri": "https://scryfall.com/card/clb/114/astarions-thirst?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.jpg?1783922768",
+    "normal": "https://cards.scryfall.io/normal/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.jpg?1783922768",
+    "large": "https://cards.scryfall.io/large/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.jpg?1783922768",
+    "png": "https://cards.scryfall.io/png/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.png?1783922768",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.jpg?1783922768",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.jpg?1783922768",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.webp?1783922768",
+    "grid": "https://cards.scryfall.io/grid/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.webp?1783922768",
+    "display": "https://cards.scryfall.io/display/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.webp?1783922768",
+    "art": "https://cards.scryfall.io/art/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.webp?1783922768",
+    "crop": "https://cards.scryfall.io/crop/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.webp?1783922768",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/3/2366640a-ca4a-4325-8578-1ec78d0382cc.jpg?1783922768"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile target creature. Put X +1/+1 counters on a commander creature you control, where X is the power of the creature exiled this way.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2366640a-ca4a-4325-8578-1ec78d0382cc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0236ad13-d8e4-49b4-b397-fe2f6136665d&unique=prints",
+  "collector_number": "114",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Stop bleeding. It's distracting.\"\n—Astarion, the Decadent",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Winona Nelson",
+  "artist_ids": [
+    "e45fe8d3-75d6-42c9-a2df-e945ad81ea27"
+  ],
+  "illustration_id": "47c0bf21-f67f-4e30-a328-876a62f50cb7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3753,
+  "preview": {
+    "source": "Ladee Danger",
+    "source_uri": "https://twitter.com/Brttnymchlle/status/1529198599036293120",
+    "previewed_at": "2022-05-24"
+  },
+  "prices": {
+    "usd": "1.69",
+    "usd_foil": "2.67",
+    "usd_etched": null,
+    "eur": "1.81",
+    "eur_foil": "2.50",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562997&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAstarion%2527s%2BThirst",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAstarion%2527s%2BThirst",
+    "edhrec": "https://edhrec.com/route/?cc=Astarion%27s+Thirst"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273058%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=660268&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Astarion%27s+Thirst&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

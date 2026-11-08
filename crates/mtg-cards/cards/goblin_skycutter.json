@@ -1,0 +1,31 @@
+{
+  "oracle_id": "34ee9883-ed7f-4c63-987f-96a5474c195d",
+  "name": "Goblin Skycutter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Skycutter",
+      "oracle_fingerprint": "f9b1ad6ba917e7ec78e578732e9ee07e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

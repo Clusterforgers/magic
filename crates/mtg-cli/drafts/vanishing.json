@@ -1,0 +1,15 @@
+{
+  "oracle_id": "cd2791e8-0b61-49b8-8b72-ff2737df1049",
+  "name": "Vanishing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanishing",
+      "oracle_fingerprint": "b6ccc4ca6ee37ae7301dddf4891784b9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Activated": { "cost": "{U}{U}", "effects": [{ "PhaseOut": { "what": "Attached" } }] } }
+      ]
+    }
+  ]
+}

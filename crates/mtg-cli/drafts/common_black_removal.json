@@ -1,0 +1,69 @@
+{
+  "oracle_id": "f64eff0e-dda7-457b-adf9-aa4e537f4f58",
+  "name": "Common Black Removal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Common Black Removal",
+      "oracle_fingerprint": "9ad72238db7e93eb10149b87575a109f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        { "CreateToken": { "token": { "Named": "food" } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        { "CreateToken": { "token": { "Named": "treasure" } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "as": "card"
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Bound": "card" },
+                            "counter": { "Other": "menace" }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        {
+                          "Mill": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "count": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

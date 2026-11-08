@@ -24,6 +24,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             who: Ref::EachPlayer,
             count,
             bind,
+            sealed: false,
         },
         Effect::RepeatEach {
             over: Ref::Bound(over),
@@ -36,6 +37,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     };
     let [
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(cast),
             free: true,

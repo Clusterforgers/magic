@@ -1,0 +1,80 @@
+{
+  "oracle_id": "3cc745d2-5021-43ff-ace8-35011011e62a",
+  "name": "Strefan, Maurer Progenitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strefan, Maurer Progenitor",
+      "oracle_fingerprint": "ad45daeb399ca56fad3ab38a4dd319f2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "blood" },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "EachPlayer",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Sacrifice": { "filter": [{ "Subtype": "Blood" }, "Token"], "count": 2 } }
+                  ],
+                  "paid": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Subtype": "Vampire" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": { "tapped": true } },
+                        "as": "moved2"
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "moved2" } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "moved2" },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

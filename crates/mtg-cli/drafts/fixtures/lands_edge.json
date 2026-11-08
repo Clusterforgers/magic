@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "41798dd9-8ce8-4642-89c2-7356ea129d4e",
+  "oracle_id": "82d58f2d-66a4-4154-9826-01ca8e8d32d0",
+  "multiverse_ids": [
+    2848
+  ],
+  "tcgplayer_id": 3415,
+  "cardmarket_id": 7639,
+  "name": "Land's Edge",
+  "lang": "en",
+  "released_at": "1995-07-01",
+  "uri": "https://api.scryfall.com/cards/41798dd9-8ce8-4642-89c2-7356ea129d4e",
+  "scryfall_uri": "https://scryfall.com/card/chr/52/lands-edge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:56:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.jpg?1783947364",
+    "normal": "https://cards.scryfall.io/normal/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.jpg?1783947364",
+    "large": "https://cards.scryfall.io/large/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.jpg?1783947364",
+    "png": "https://cards.scryfall.io/png/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.png?1783947364",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.jpg?1783947364",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.jpg?1783947364",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.webp?1783947364",
+    "grid": "https://cards.scryfall.io/grid/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.webp?1783947364",
+    "display": "https://cards.scryfall.io/display/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.webp?1783947364",
+    "art": "https://cards.scryfall.io/art/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.webp?1783947364",
+    "crop": "https://cards.scryfall.io/crop/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.webp?1783947364",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/1/41798dd9-8ce8-4642-89c2-7356ea129d4e.jpg?1783947364"
+  },
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "World Enchantment",
+  "oracle_text": "Discard a card: If the discarded card was a land card, this enchantment deals 2 damage to target player or planeswalker. Any player may activate this ability.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "985eab7d-655a-4cb0-ba74-d48c8dcfb3d4",
+  "set": "chr",
+  "set_name": "Chronicles",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/985eab7d-655a-4cb0-ba74-d48c8dcfb3d4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Achr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/chr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/41798dd9-8ce8-4642-89c2-7356ea129d4e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A82d58f2d-66a4-4154-9826-01ca8e8d32d0&unique=prints",
+  "collector_number": "52",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brian Snõddy",
+  "artist_ids": [
+    "770b4e16-de76-49ed-949f-84e6d2e06d25"
+  ],
+  "illustration_id": "aa465231-75eb-4bba-9590-75fd48d3d477",
+  "border_color": "white",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20244,
+  "prices": {
+    "usd": "1.07",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.82",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2848&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLand%2527s%2BEdge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLand%2527s%2BEdge",
+    "edhrec": "https://edhrec.com/route/?cc=Land%27s+Edge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3415%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7639&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Land%27s+Edge&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

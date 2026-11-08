@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "811026ed-1bae-4464-bdfe-dcec76259152",
+  "oracle_id": "55be0fd0-b371-4b9e-920f-3123bb37a1e0",
+  "multiverse_ids": [
+    157207
+  ],
+  "mtgo_id": 30168,
+  "mtgo_foil_id": 30169,
+  "tcgplayer_id": 27101,
+  "cardmarket_id": 19482,
+  "name": "Dream Thief",
+  "lang": "en",
+  "released_at": "2008-07-25",
+  "uri": "https://api.scryfall.com/cards/811026ed-1bae-4464-bdfe-dcec76259152",
+  "scryfall_uri": "https://scryfall.com/card/eve/20/dream-thief?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:38:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.jpg?1783942691",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.jpg?1783942691",
+    "large": "https://cards.scryfall.io/large/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.jpg?1783942691",
+    "png": "https://cards.scryfall.io/png/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.png?1783942691",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.jpg?1783942691",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.jpg?1783942691",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.webp?1783942691",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.webp?1783942691",
+    "display": "https://cards.scryfall.io/display/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.webp?1783942691",
+    "art": "https://cards.scryfall.io/art/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.webp?1783942691",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.webp?1783942691",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/811026ed-1bae-4464-bdfe-dcec76259152.jpg?1783942691"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Faerie Rogue",
+  "oracle_text": "Flying\nWhen this creature enters, draw a card if you've cast another blue spell this turn.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "86b4dfef-f2d1-49d6-825d-7df6bda44357",
+  "set": "eve",
+  "set_name": "Eventide",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/86b4dfef-f2d1-49d6-825d-7df6bda44357",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeve&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eve?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/811026ed-1bae-4464-bdfe-dcec76259152/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A55be0fd0-b371-4b9e-920f-3123bb37a1e0&unique=prints",
+  "collector_number": "20",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Awylla's salvaged dreams would finally be put to good use.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Howard Lyon",
+  "artist_ids": [
+    "6dd06426-59fe-4b9c-aad5-6da8446a5c3d"
+  ],
+  "illustration_id": "3e286f6a-08bf-4e84-9373-1f85859da6d9",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24282,
+  "penny_rank": 14872,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.98",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.53",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=157207&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDream%2BThief",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDream%2BThief",
+    "edhrec": "https://edhrec.com/route/?cc=Dream+Thief"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F27101%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=19482&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30168?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

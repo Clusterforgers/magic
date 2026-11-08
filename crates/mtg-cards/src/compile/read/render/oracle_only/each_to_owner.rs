@@ -32,6 +32,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         let Effect::Move {
             what: Ref::Each(selector),
             to: Destination::Hand,
+            ..
         } = effect
         else {
             continue;

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e15504a7-2b67-4185-b916-172145f10b19",
+  "name": "Yorion, Sky Nomad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yorion, Sky Nomad",
+      "oracle_fingerprint": "2da197342a72c74ea3e89cec0c3113bd",
+      "abilities": [
+        { "Keyword": { "Companion": { "ExtraCards": 20 } } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      "Other",
+                      { "OwnedBy": "You" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Not": { "Type": "Land" } },
+                        "Other",
+                        { "OwnedBy": "You" },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

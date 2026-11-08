@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e078585e-7058-4746-a884-3c9a14630a1b",
+  "name": "Erebos's Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erebos's Intervention",
+      "oracle_fingerprint": "0f59f7349e1f240190f8cea7a16be4be",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": { "Times": { "by": -1, "of": "X" } },
+                                  "toughness": { "Times": { "by": -1, "of": "X" } }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        { "GainLife": { "amount": "X" } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "In": "Graveyard" }] },
+                          "bounds": { "min": 0, "max": { "Times": { "by": 2, "of": "X" } } }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

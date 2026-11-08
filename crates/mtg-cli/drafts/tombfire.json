@@ -15,7 +15,7 @@
                 "Exile": {
                   "what": {
                     "Each": [
-                      { "HasKeyword": { "Flashback": [] } },
+                      { "HasKeywordNamed": "Flashback" },
                       { "In": "Graveyard" },
                       { "OwnedBy": { "Target": 0 } }
                     ]

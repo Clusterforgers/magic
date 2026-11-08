@@ -1,0 +1,71 @@
+{
+  "oracle_id": "66e66543-1f56-4e62-9183-3804843db101",
+  "name": "Froghemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Froghemoth",
+      "oracle_fingerprint": "2d68311cda01555f23c99e16d74e04e7",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": { "Object": [{ "OwnedBy": "Triggering" }, { "In": "Graveyard" }] },
+                "bounds": { "min": 0, "max": "Triggering" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" }
+                    ]
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Not": { "Type": "Creature" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "81c40bd8-b989-41e8-9527-eae8fb87311d",
+  "name": "Cavern Harpy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavern Harpy",
+      "oracle_fingerprint": "0154f7a6e4abeab32116a01e83035fbc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Black" }, { "Color": "Blue" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 1 }],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

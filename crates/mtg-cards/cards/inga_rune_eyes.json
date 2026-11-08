@@ -1,0 +1,44 @@
+{
+  "oracle_id": "78afa295-c9f4-4a81-9f7b-5746a3cf6b31",
+  "name": "Inga Rune-Eyes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inga Rune-Eyes",
+      "oracle_fingerprint": "074506ec1b11e9cafb2fb523ab66396f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Died",
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

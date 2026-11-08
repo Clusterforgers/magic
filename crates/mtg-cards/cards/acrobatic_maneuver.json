@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1aa1cf50-ee79-4bef-826b-5f1a9e1aa1a5",
+  "name": "Acrobatic Maneuver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acrobatic Maneuver",
+      "oracle_fingerprint": "a9e191243c8fab70297e4fdc8963c01e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "9c9b1871-e776-4373-ba89-e009131cb6f7",
+  "name": "Amphibious Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amphibious Kavu",
+      "oracle_fingerprint": "8bbc18358ecc503ee8383c19920597c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Blocks": {
+                    "what": ["This"],
+                    "blocking": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }
+                    ]
+                  }
+                },
+                {
+                  "BecomesBlocked": {
+                    "what": ["This"],
+                    "by": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }
+                    ],
+                    "once": true
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

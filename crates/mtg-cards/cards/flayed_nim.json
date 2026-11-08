@@ -1,0 +1,28 @@
+{
+  "oracle_id": "857818d4-6cf0-4234-b9e0-d7181ba6b54f",
+  "name": "Flayed Nim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flayed Nim",
+      "oracle_fingerprint": "bfffd4dfc9a315cf42e3b7b226fa7efb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": "Triggering" } }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{2}{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

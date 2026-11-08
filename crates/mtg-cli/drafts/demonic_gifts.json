@@ -1,0 +1,49 @@
+{
+  "oracle_id": "162bcc9d-6edf-4b3b-83e6-2c933e2a5967",
+  "name": "Demonic Gifts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Gifts",
+      "oracle_fingerprint": "e19b85497b051fc2fd837b98b2af9160",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

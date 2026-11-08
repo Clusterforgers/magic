@@ -1,0 +1,30 @@
+{
+  "oracle_id": "468a8c2e-0cc2-4108-809d-42ca1eb25ff2",
+  "name": "Ring of Immortals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ring of Immortals",
+      "oracle_fingerprint": "0d1a05005602d1392c933cb9bae965f7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Subtype": "Aura" }] },
+                    { "Targeting": [{ "ControlledBy": "You" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

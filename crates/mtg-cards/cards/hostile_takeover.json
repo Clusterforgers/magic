@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5c7f91af-8bac-4da1-b9e5-f15989c9d53c",
+  "name": "Hostile Takeover",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hostile Takeover",
+      "oracle_fingerprint": "76f2a7ac3846a813af5c43b6a6cfa196",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

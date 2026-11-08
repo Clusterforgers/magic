@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8dcf15fd-f000-4424-b74c-22fc2642b8c3",
+  "name": "Prophecy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prophecy",
+      "oracle_fingerprint": "2b758a47a99a08ae86a6a8ece1526e21",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 1 } }]
+                }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

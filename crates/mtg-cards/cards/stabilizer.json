@@ -1,0 +1,20 @@
+{
+  "oracle_id": "856c79ae-feab-4df9-8269-fffee7a44193",
+  "name": "Stabilizer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stabilizer",
+      "oracle_fingerprint": "b1e214319fe78c1ea4a7b37b6fe68b74",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "EachPlayer", "action": { "ActivateKind": { "kind": "Cycling" } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

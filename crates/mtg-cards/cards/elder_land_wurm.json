@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5948381a-419d-4b8b-8ea2-ea623cb0d606",
+  "name": "Elder Land Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elder Land Wurm",
+      "oracle_fingerprint": "5c27b1d97a9de8da64edc49f7c64259c",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "RemoveKeyword": "Defender" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e4b15cba-9cd7-422d-9ca6-39243bf67dca",
+  "name": "Mardu Heart-Piercer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Heart-Piercer",
+      "oracle_fingerprint": "717d9a7f7f57d15ca55df993c25e4383",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

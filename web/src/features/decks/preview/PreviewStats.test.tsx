@@ -16,6 +16,8 @@ describe('SupportBar', () => {
     expect(states()).toEqual(['verified', 'partial', 'manual', 'stale', 'unplayable'])
     rerender(<SupportBar counts={counts({ total: 10, verified: 7, read: 3 })} />)
     expect(states()).toEqual(['verified', 'read', 'partial', 'manual'])
+    rerender(<SupportBar counts={counts({ total: 10, verified: 7, forge: 3 })} />)
+    expect(states()).toEqual(['verified', 'forge', 'partial', 'manual'])
   })
 
   it('draws a segment as wide as the share of each state and none for a state without copies', () => {

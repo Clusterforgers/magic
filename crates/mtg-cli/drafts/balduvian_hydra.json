@@ -1,0 +1,40 @@
+{
+  "oracle_id": "29a12f75-d66d-457f-85c4-6b9450adc0d8",
+  "name": "Balduvian Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Hydra",
+      "oracle_fingerprint": "0fb9066461c3b4d96505adde6953fca5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "+1/+0" }, "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "+1/+0" } } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}{R}{R}",
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "+1/+0" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

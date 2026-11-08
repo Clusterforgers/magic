@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5370ee80-0354-454f-a16e-ec133e432ecb",
+  "name": "Breaching Dragonstorm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Breaching Dragonstorm",
+      "oracle_fingerprint": "14c1d61a638bb4ea48ea49efbd351858",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 232 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

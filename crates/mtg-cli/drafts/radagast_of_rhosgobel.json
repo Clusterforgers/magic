@@ -1,0 +1,51 @@
+{
+  "oracle_id": "84d648c7-655e-4590-a3e0-366a8a4a4cb3",
+  "name": "Radagast of Rhosgobel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radagast of Rhosgobel",
+      "oracle_fingerprint": "cb198fabaa01ccc8216ff2e1e4b9bb13",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

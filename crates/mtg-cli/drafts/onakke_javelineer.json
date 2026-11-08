@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e834b281-279f-4df3-9c0e-764502b809c5",
+  "name": "Onakke Javelineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Onakke Javelineer",
+      "oracle_fingerprint": "ada2c975dc6bad7c15f77e9b48d20e7e",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Either": ["Player", { "Object": [{ "Type": "Battle" }] }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

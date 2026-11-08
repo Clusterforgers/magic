@@ -38,6 +38,7 @@ fn crowd(seats: usize, size: u64, mana: u32) -> Decision {
     let options = AttackOptions {
         most: None,
         most_at: Vec::new(),
+        cant_alone: Vec::new(),
         attackers,
         required: Vec::new(),
         mana,

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a188fe7e-68de-4c7c-806c-bfe8fc7b44bf",
+  "name": "Pithing Needle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pithing Needle",
+      "oracle_fingerprint": "af7fa45b4559e63a7274eeec2e103980",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CardName" }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": { "Each": ["ChosenName"] }, "action": { "Activate": [] } } }
+          }
+        }
+      ]
+    }
+  ]
+}

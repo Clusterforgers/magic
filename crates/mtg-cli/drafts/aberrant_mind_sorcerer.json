@@ -1,0 +1,61 @@
+{
+  "oracle_id": "753ead8c-f3f8-42fe-931d-79f5ee3ece54",
+  "name": "Aberrant Mind Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aberrant Mind Sorcerer",
+      "oracle_fingerprint": "c45da4bf9f73ba6aa5e7c3e016dc0f94",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "May": {
+                            "effects": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Top" } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 20,
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

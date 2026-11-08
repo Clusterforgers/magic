@@ -26,7 +26,11 @@ pub fn w14a_limit_while(r: &mut Reader<'_>) -> Option<Ability> {
 
 /// What `w14a_limit_while` reads, written back; nothing for another rule.
 pub fn w14a_limit_while_texts(rule: &GameRule, condition: &Condition) -> Vec<String> {
-    let limits = w8a_limit_texts(rule);
+    let mut limits = w8a_limit_texts(rule);
+    // "As long as ~ is untapped, creatures can't attack you unless ...", "As long as ~ is attacking, creatures can't block
+    // unless ...".
+    limits.extend(super::attack_tax::static_texts(rule));
+    limits.extend(super::g11c_taxes::g11c_block_texts(rule));
     as_long_as::texts(condition)
         .iter()
         .flat_map(|held| {

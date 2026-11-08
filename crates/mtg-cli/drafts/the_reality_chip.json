@@ -1,0 +1,29 @@
+{
+  "oracle_id": "751f22bc-bcea-4213-a37b-b5f72448a4c4",
+  "name": "The Reality Chip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Reality Chip",
+      "oracle_fingerprint": "9946cbb6aeb2b5560b187b20696ba349",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["TopOfLibrary"], "from": "Library", "play": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": { "Reconfigure": "{2}{U}" } }
+      ]
+    }
+  ]
+}

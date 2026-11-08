@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d1cfbbcc-4aee-4400-b5a8-18713829ae72",
+  "name": "Wrong Turn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrong Turn",
+      "oracle_fingerprint": "9d373ae3f01bdea423405d67805f4a58",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }, { "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

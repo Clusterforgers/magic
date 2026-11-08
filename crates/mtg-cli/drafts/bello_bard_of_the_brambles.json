@@ -1,0 +1,61 @@
+{
+  "oracle_id": "fb773114-6161-46a3-ab30-1853958fbcb0",
+  "name": "Bello, Bard of the Brambles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bello, Bard of the Brambles",
+      "oracle_fingerprint": "3d97358cadfa196499629bee0c117995",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Type": "Artifact" } },
+                          { "Not": { "Not": { "Subtype": "Equipment" } } }
+                        ]
+                      }
+                    },
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Type": "Enchantment" } },
+                          { "Not": { "Not": { "Subtype": "Aura" } } }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                { "ControlledBy": "You" },
+                { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+              ]
+            },
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Indestructible" },
+              { "AddKeyword": "Haste" },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Elemental" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

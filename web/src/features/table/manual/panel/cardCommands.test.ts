@@ -40,38 +40,43 @@ describe('which commands a picked card offers', () => {
       'an untapped creature of the seat',
       card(),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'blocks', 'transform', 'sacrifice', 'give'],
     ],
     [
       'a summoning sick creature of the seat',
       permanent({ summoning_sick: true }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'unsick', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'unsick', 'blocks', 'transform', 'sacrifice', 'give'],
     ],
     [
       'a land',
       card({ types: ['Land'], subtypes: [] }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'grant', 'transform', 'sacrifice', 'give'],
     ],
     [
       'an unattached Aura',
       card({ subtypes: ['Aura'], types: ['Enchantment'] }),
       {},
-      ['move', 'counters', 'tap', 'attach', 'damage', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'attach', 'damage', 'grant', 'transform', 'sacrifice', 'give'],
     ],
     [
       'an attached Equipment',
       { ...EQUIPMENT, attached_to: 20 },
       {},
-      ['move', 'counters', 'tap', 'attach', 'unattach', 'damage', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'attach', 'unattach', 'damage', 'grant', 'transform', 'sacrifice', 'give'],
     ],
-    ['a card in the seat hand', card({ zone: { Hand: SEAT }, permanent: null }), {}, ['move', 'discard']],
+    [
+      'a card in the seat hand',
+      card({ zone: { Hand: SEAT }, permanent: null }),
+      {},
+      ['move', 'discard', 'back'],
+    ],
     [
       'a card in the seat graveyard',
       card({ zone: { Graveyard: SEAT }, permanent: null }),
       {},
-      ['move', 'damage', 'give'],
+      ['move', 'damage', 'give', 'back'],
     ],
     [
       'an instant in the seat graveyard',
@@ -83,7 +88,7 @@ describe('which commands a picked card offers', () => {
       'a card the seat owns in exile',
       card({ zone: 'Exile', permanent: null }),
       {},
-      ['move', 'damage', 'give'],
+      ['move', 'damage', 'give', 'back'],
     ],
     [
       'a card of an opponent in exile',
@@ -91,18 +96,23 @@ describe('which commands a picked card offers', () => {
       {},
       ['move'],
     ],
-    ['a creature of an opponent', card({ owner: 1, controller: 1 }), {}, ['move', 'counters', 'tap', 'pump']],
+    [
+      'a creature of an opponent',
+      card({ owner: 1, controller: 1 }),
+      {},
+      ['move', 'counters', 'tap', 'pump', 'grant'],
+    ],
     [
       'a creature the seat controls and an opponent owns',
       card({ owner: 1 }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'blocks', 'transform', 'sacrifice', 'give'],
     ],
     [
       'a token of the seat',
       card({ kind: 'Token' }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'blocks', 'sacrifice', 'give'],
     ],
   ])('%s: %j', (_name, object, over, expected) => {
     expect(ids(object, over)).toEqual(expected)
@@ -119,7 +129,7 @@ describe('which commands a picked card offers', () => {
     expect(commands[0]?.unavailable).toMatch(/Only Bo/)
     expect(
       commands.filter((command) => command.unavailable === undefined).map((command) => command.id),
-    ).toEqual(['counters', 'tap', 'pump'])
+    ).toEqual(['counters', 'tap', 'pump', 'grant'])
   })
 
   it('names the tap row after what it does', () => {
@@ -319,6 +329,7 @@ describe('no manual action is lost to the shorter menu', () => {
     attach: 'Attach',
     damage: 'Damage',
     pump: 'Pump',
+    grant: 'GrantAbility',
   }
   /** Every kind of action the menu offered before the panel's Card, You, Library and Make groups, bar the library actions of the other item. */
   const BEFORE = [

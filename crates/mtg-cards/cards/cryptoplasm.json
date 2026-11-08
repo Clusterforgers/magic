@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e7bef318-2720-45bc-b663-aafd724bc511",
+  "name": "Cryptoplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptoplasm",
+      "oracle_fingerprint": "1603a511f7942068f68d3479c3295fb7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Target": 0 },
+                        "except": ["ThisAbility"],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

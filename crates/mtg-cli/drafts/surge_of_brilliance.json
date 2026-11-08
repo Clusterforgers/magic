@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4d720849-56cd-4b78-b9a7-7b9484702f0f",
+  "name": "Surge of Brilliance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surge of Brilliance",
+      "oracle_fingerprint": "44bb2c9e6dd2cf08adf93d525f390657",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Tally": {
+                      "event": "SpellCast",
+                      "who": "EachPlayer",
+                      "filter": [
+                        { "ControlledBy": "You" },
+                        {
+                          "AnyOf": [
+                            { "Not": { "WasCast": { "from": "Hand" } } },
+                            { "Not": { "OwnedBy": "You" } }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{U}" } }
+      ]
+    }
+  ]
+}

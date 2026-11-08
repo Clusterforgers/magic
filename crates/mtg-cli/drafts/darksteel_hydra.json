@@ -1,0 +1,50 @@
+{
+  "oracle_id": "9f46989f-e12e-4086-87f5-da650bc65322",
+  "name": "Darksteel Hydra",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Darksteel Hydra",
+      "oracle_fingerprint": "aa1a5491133cfc61ee2b7de9a2db4e4e",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": "X" } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "oil" } } }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "oil" } } }
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 161, "end": 275 }
+          }
+        }
+      ]
+    }
+  ]
+}

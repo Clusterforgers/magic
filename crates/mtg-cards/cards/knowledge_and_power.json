@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ed68b5ca-c52a-40e0-89ac-6276a3c4fdeb",
+  "name": "Knowledge and Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knowledge and Power",
+      "oracle_fingerprint": "73e64f7f9388cfe7e7eab63438802f58",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

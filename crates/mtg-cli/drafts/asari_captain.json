@@ -1,0 +1,47 @@
+{
+  "oracle_id": "32e7385e-525e-4925-8cfd-bfea21fcd1bf",
+  "name": "Asari Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Asari Captain",
+      "oracle_fingerprint": "ba1bc72ee4fd8fe85d105c2e11b2470a",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

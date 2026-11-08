@@ -178,6 +178,55 @@ fn lore_counters_come_as_the_precombat_main_phase_begins_and_the_saga_leaves_aft
     Ok(())
 }
 
+/// CR 714.3b: the controller puts the lore counter of the precombat main phase, so "whenever you put one or more
+/// counters" triggers for the controller's Saga and not for another player's.
+#[rstest]
+fn the_turn_based_lore_counter_is_put_by_the_sagas_controller(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let when: mtg_cards::trigger::TriggerPattern = serde_json::from_str(
+        r#"{"Caused":{"inner":{"CountersPut":{"counter":{"Other":"lore"}}},"by":"You"}}"#,
+    )
+    .unwrap();
+    let gain = serde_json::from_str(r#"{"GainLife":{"amount":7}}"#).unwrap();
+    let sigurd = mtg_testkit::trigger_cards::watcher("Sigurd", when, vec![gain]);
+    let scenario = Scenario::new(seats)
+        .battlefield(
+            0,
+            [
+                ready(sigurd),
+                with_counters(ready(saga("Tale", THREE)), CounterKind::lore(), 1),
+            ],
+        )
+        .battlefield(
+            1,
+            [with_counters(
+                ready(saga("Rival", THREE)),
+                CounterKind::lore(),
+                1,
+            )],
+        )
+        .at(1, 0, Step::Upkeep);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let start = life(&driver, 0);
+    driver.pass_until(Step::Main1)?;
+    assert_eq!(lore(&driver, "Tale"), 2);
+    assert_eq!(lore(&driver, "Rival"), 1);
+    let gained = settle(&mut driver, &[], "Tale")?;
+    assert_eq!(
+        gained.iter().sum::<u32>(),
+        9,
+        "{gained:?}: Sigurd once, and chapter II"
+    );
+    assert_eq!(gained.len(), 2);
+    assert_eq!(life(&driver, 0), start + 9);
+    // The rival's Saga gets its counter in the rival's turn: no trigger for seat 0.
+    driver.idle_until(2, Step::Main1)?;
+    assert_eq!(lore(&driver, "Rival"), 2);
+    assert_eq!(life(&driver, 0), start + 9);
+    Ok(())
+}
+
 #[rstest]
 #[case::the_line_of_two(TWICE, &[3, 3, 4])]
 #[case::one_line_each(THREE, &[1, 2, 4])]
@@ -461,4 +510,18 @@ fn bot_games_with_sagas_keep_every_invariant_and_replay() {
     assert!(chapters > 0, "some chapter ability triggered");
     assert!(in_order > 0, "chapters triggered in order");
     assert!(left > 0, "some Saga left after its last chapter");
+}
+
+#[test]
+fn a_saga_played_as_a_land_enters_with_a_lore_counter() -> Result<(), ScriptError> {
+    let land = std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Saga Land")
+            .with_type(mtg_core::card::CardType::Land)
+            .with_type(mtg_core::card::CardType::Enchantment)
+            .with_subtype("Saga"),
+    );
+    let mut driver = Driver::from_scenario(table(2, vec![land]))?;
+    driver.play_land("Saga Land")?;
+    assert_eq!(lore(&driver, "Saga Land"), 1);
+    Ok(())
 }

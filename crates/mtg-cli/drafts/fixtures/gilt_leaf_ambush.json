@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "47bf7254-4302-41a0-bc87-d7dc437ff38d",
+  "oracle_id": "e5a06062-0513-48af-b92a-420ebbeb1695",
+  "multiverse_ids": [
+    145984
+  ],
+  "mtgo_id": 28201,
+  "mtgo_foil_id": 28202,
+  "tcgplayer_id": 15505,
+  "cardmarket_id": 17955,
+  "name": "Gilt-Leaf Ambush",
+  "lang": "en",
+  "released_at": "2007-10-12",
+  "uri": "https://api.scryfall.com/cards/47bf7254-4302-41a0-bc87-d7dc437ff38d",
+  "scryfall_uri": "https://scryfall.com/card/lrw/214/gilt-leaf-ambush?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:41:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.jpg?1783942863",
+    "normal": "https://cards.scryfall.io/normal/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.jpg?1783942863",
+    "large": "https://cards.scryfall.io/large/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.jpg?1783942863",
+    "png": "https://cards.scryfall.io/png/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.png?1783942863",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.jpg?1783942863",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.jpg?1783942863",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.webp?1783942863",
+    "grid": "https://cards.scryfall.io/grid/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.webp?1783942863",
+    "display": "https://cards.scryfall.io/display/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.webp?1783942863",
+    "art": "https://cards.scryfall.io/art/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.webp?1783942863",
+    "crop": "https://cards.scryfall.io/crop/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.webp?1783942863",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/7/47bf7254-4302-41a0-bc87-d7dc437ff38d.jpg?1783942863"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Kindred Instant — Elf",
+  "oracle_text": "Create two 1/1 green Elf Warrior creature tokens. Clash with an opponent. If you win, those creatures gain deathtouch until end of turn. (Each clashing player reveals the top card of their library, then puts that card on their choice of the top or bottom. A player wins if their card had a greater mana value. Any amount of damage a creature with deathtouch deals to a creature is enough to destroy it.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Clash"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "27b171ac-b2ef-4a80-92d1-6d9e71f3e3ca",
+      "component": "token",
+      "name": "Elf Warrior",
+      "type_line": "Token Creature — Elf Warrior",
+      "uri": "https://api.scryfall.com/cards/27b171ac-b2ef-4a80-92d1-6d9e71f3e3ca"
+    },
+    {
+      "object": "related_card",
+      "id": "47bf7254-4302-41a0-bc87-d7dc437ff38d",
+      "component": "combo_piece",
+      "name": "Gilt-Leaf Ambush",
+      "type_line": "Kindred Instant — Elf",
+      "uri": "https://api.scryfall.com/cards/47bf7254-4302-41a0-bc87-d7dc437ff38d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30ec97cb-dca9-4bf4-a98b-310f9d8ceaff",
+  "set": "lrw",
+  "set_name": "Lorwyn",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/30ec97cb-dca9-4bf4-a98b-310f9d8ceaff",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alrw&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lrw?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/47bf7254-4302-41a0-bc87-d7dc437ff38d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae5a06062-0513-48af-b92a-420ebbeb1695&unique=prints",
+  "collector_number": "214",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steve Prescott",
+  "artist_ids": [
+    "a1139fb8-41f5-4a9e-9a74-f662e1a23b35"
+  ],
+  "illustration_id": "fcd45621-ad92-4309-8a03-430df87810ba",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20538,
+  "penny_rank": 11111,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.75",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.85",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=145984&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGilt-Leaf%2BAmbush",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGilt-Leaf%2BAmbush",
+    "edhrec": "https://edhrec.com/route/?cc=Gilt-Leaf+Ambush"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F15505%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=17955&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28201?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

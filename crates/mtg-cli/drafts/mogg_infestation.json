@@ -1,0 +1,42 @@
+{
+  "oracle_id": "cfd61b53-83c6-4886-8503-ddcb92dc7f85",
+  "name": "Mogg Infestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogg Infestation",
+      "oracle_fingerprint": "471231af4ac1f84676092e197e4cbac1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "destroyed"
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Times": { "by": 2, "of": { "Bound": "destroyed~moved" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

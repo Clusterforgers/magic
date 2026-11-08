@@ -64,6 +64,17 @@ pub struct Snapshot {
         ts(as = "Option<Vec<mtg_core::mana::ManaType>>", optional)
     )]
     pub spent: Vec<ManaType>,
+    /// The sources of that mana.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
+    )]
+    pub spent_from: Vec<mtg_cards::spend::SpentFrom>,
+    /// The creatures that convoked its spell (CR 702.51).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
+    pub convoked: Vec<ObjectRef>,
     /// The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
     /// the card as a whole.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -86,6 +97,15 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(skip))]
     pub mutations: Option<u32>,
+    /// The permanent it was attached to, as the object it was then: what "enchanted creature" names once the Aura has
+    /// left (CR 112.7a, 608.2h).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub host: Option<ObjectRef>,
+    /// Whether it was suspected (CR 701.60): "if the sacrificed creature was suspected" reads it after it has left.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub suspected: bool,
 }
 
 impl Snapshot {
@@ -131,6 +151,8 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         paid: object.paid_costs().to_vec(),
         way: object.cast_way(),
         spent: object.mana_spent().to_vec(),
+        spent_from: object.mana_spent_from().to_vec(),
+        convoked: object.convoked().to_vec(),
         face: object.face(),
         copy: copiable(object),
         merged: object.merged().map(|cards| match object.copy_effect() {
@@ -138,6 +160,16 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
             None => cards.shared(),
         }),
         mutations: object.merged().map(crate::merged::Merged::mutations),
+        host: (object.zone() == Zone::Battlefield)
+            .then(|| {
+                object
+                    .permanent()
+                    .and_then(crate::object::PermanentState::attached_to)
+            })
+            .flatten(),
+        suspected: object
+            .permanent()
+            .is_some_and(crate::object::PermanentState::suspected),
     })
 }
 
@@ -359,6 +391,19 @@ mod tests {
     #[case::one_taken_away(&[Modification::RemoveKeyword(Keyword::Flying)], &[Keyword::Lifelink])]
     #[case::one_taken_away_that_was_not_there(
         &[Modification::RemoveKeyword(Keyword::Haste)],
+        &[Keyword::Flying, Keyword::Lifelink]
+    )]
+    #[case::locked_away(&[Modification::LockKeyword(Keyword::Flying)], &[Keyword::Lifelink])]
+    #[case::locked_before_it_is_given(
+        &[Modification::LockKeyword(Keyword::Haste), Modification::AddKeyword(Keyword::Haste)],
+        &[Keyword::Flying, Keyword::Lifelink]
+    )]
+    #[case::locked_after_it_is_given(
+        &[Modification::AddKeyword(Keyword::Haste), Modification::LockKeyword(Keyword::Haste)],
+        &[Keyword::Flying, Keyword::Lifelink]
+    )]
+    #[case::locked_one_of_two_given(
+        &[Modification::LockKeyword(Keyword::Haste), Modification::AddKeyword(Keyword::Flying), Modification::AddKeyword(Keyword::Haste)],
         &[Keyword::Flying, Keyword::Lifelink]
     )]
     #[case::every_ability_taken_away(&[Modification::LoseAbilities], &[])]

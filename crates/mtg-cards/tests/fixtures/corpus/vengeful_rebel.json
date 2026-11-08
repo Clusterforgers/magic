@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3",
+  "oracle_id": "273bf1a8-42a9-4db5-bd83-06db4cb5e5df",
+  "multiverse_ids": [
+    423740
+  ],
+  "mtgo_id": 62685,
+  "mtgo_foil_id": 62686,
+  "tcgplayer_id": 126442,
+  "cardmarket_id": 294823,
+  "name": "Vengeful Rebel",
+  "lang": "en",
+  "released_at": "2017-01-20",
+  "uri": "https://api.scryfall.com/cards/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3",
+  "scryfall_uri": "https://scryfall.com/card/aer/73/vengeful-rebel?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:59:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.jpg?1783936758",
+    "normal": "https://cards.scryfall.io/normal/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.jpg?1783936758",
+    "large": "https://cards.scryfall.io/large/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.jpg?1783936758",
+    "png": "https://cards.scryfall.io/png/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.png?1783936758",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.jpg?1783936758",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.jpg?1783936758",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.webp?1783936758",
+    "grid": "https://cards.scryfall.io/grid/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.webp?1783936758",
+    "display": "https://cards.scryfall.io/display/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.webp?1783936758",
+    "art": "https://cards.scryfall.io/art/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.webp?1783936758",
+    "crop": "https://cards.scryfall.io/crop/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.webp?1783936758",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/e/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3.jpg?1783936758"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Aetherborn Warrior",
+  "oracle_text": "Revolt — When this creature enters, if a permanent left the battlefield under your control this turn, target creature an opponent controls gets -3/-3 until end of turn.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Revolt"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4a0db50-8826-4e73-833c-3fd934375f96",
+  "set": "aer",
+  "set_name": "Aether Revolt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a4a0db50-8826-4e73-833c-3fd934375f96",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aaer&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/aer?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6e34edfc-77fc-43b5-bad6-1c4c2a76c8c3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A273bf1a8-42a9-4db5-bd83-06db4cb5e5df&unique=prints",
+  "collector_number": "73",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Some aetherborn joined the rebellion for profit, others for the sake of their freedom, still others for revenge.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomasz Jedruszek",
+  "artist_ids": [
+    "bba69285-2445-4a4b-a847-59397be972ea"
+  ],
+  "illustration_id": "12b90c36-450a-40ab-9c4c-03650dba5048",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28622,
+  "penny_rank": 6830,
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.44",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=423740&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVengeful%2BRebel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVengeful%2BRebel",
+    "edhrec": "https://edhrec.com/route/?cc=Vengeful+Rebel"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F126442%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=294823&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/62685?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

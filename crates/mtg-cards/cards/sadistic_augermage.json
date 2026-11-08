@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7f08c592-8ddd-4f52-95c3-5649cbb24d3a",
+  "name": "Sadistic Augermage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sadistic Augermage",
+      "oracle_fingerprint": "f297ff00a0a711169583d667a6a73f19",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "as": "picked2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked2" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

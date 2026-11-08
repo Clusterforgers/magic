@@ -1,0 +1,45 @@
+{
+  "oracle_id": "cddb3ec4-01a2-4f4d-a690-3486c73c3df8",
+  "name": "Eldrazi Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldrazi Mimic",
+      "oracle_fingerprint": "70186d3566c4029fa5eb50ce49d657b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", "Colorless", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                              "toughness": { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

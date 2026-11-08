@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c63402b2-1f8c-4004-82d8-48ea26bfe3fc",
+  "name": "Shimmerwilds Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimmerwilds Growth",
+      "oracle_fingerprint": "53dd87a1fe7187eeeb30eded3a7eabe6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        { "Static": { "affected": "Attached", "mods": ["SetChosenColor"] } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Type": "Land" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

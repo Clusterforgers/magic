@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b86ba0aa-89f3-4924-b3c4-f7ca44468e9b",
+  "name": "Mai and Zuko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mai and Zuko",
+      "oracle_fingerprint": "fe97e45ef0fc5a8d943b568da4b48411",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 3 } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Ally" }, { "Type": "Artifact" }] }],
+                "flash": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

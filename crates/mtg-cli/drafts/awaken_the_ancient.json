@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0fd27f59-36ec-4235-8e1f-4a4a14972f4a",
+  "name": "Awaken the Ancient",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awaken the Ancient",
+      "oracle_fingerprint": "b340b0cac013360ef0704296bf7cc547",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Mountain" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 7, "toughness": 7 } },
+              { "AddKeyword": "Haste" },
+              { "SetColors": ["Red"] },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Giant" }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

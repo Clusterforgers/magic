@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d5cdfa86-a234-4ddd-bfa0-4a3bc51eebce",
+  "name": "Saiba Trespassers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saiba Trespassers",
+      "oracle_fingerprint": "46413b7e6d8e39e0a6b19779ce30175e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

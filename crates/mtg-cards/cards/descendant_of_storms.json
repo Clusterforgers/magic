@@ -1,0 +1,79 @@
+{
+  "oracle_id": "ca773c52-ca64-463c-99cf-e71b59d2cff7",
+  "name": "Descendant of Storms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descendant of Storms",
+      "oracle_fingerprint": "6abe5a7f611f7dcd37644061613fda02",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{W}",
+                  "paid": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": [{ "Is": "This" }, { "In": "Battlefield" }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Either": {
+                              "first": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
+                              "second": [
+                                {
+                                  "CreateToken": {
+                                    "token": {
+                                      "Sized": {
+                                        "size": 1,
+                                        "token": {
+                                          "name": "Spirit",
+                                          "colors": ["White"],
+                                          "types": ["Creature"],
+                                          "subtypes": ["Spirit"]
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "otherwise": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Sized": {
+                                  "size": 1,
+                                  "token": {
+                                    "name": "Spirit",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Spirit"]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

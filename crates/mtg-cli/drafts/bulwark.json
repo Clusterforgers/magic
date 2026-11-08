@@ -1,0 +1,37 @@
+{
+  "oracle_id": "259da825-02f7-4e72-8f44-01683330f457",
+  "name": "Bulwark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bulwark",
+      "oracle_fingerprint": "3e6563b1a595ea9bc12f70416c813e21",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

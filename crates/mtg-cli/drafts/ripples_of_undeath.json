@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2acf8e34-9215-4a72-a24f-09d3bdd0083a",
+  "name": "Ripples of Undeath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ripples of Undeath",
+      "oracle_fingerprint": "6f9d8457577d54bfb055d260de3b0af8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Pay": {
+                  "cost": [{ "Mana": "{1}" }, { "PayLife": 3 }],
+                  "paid": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Is": { "Bound": "milled" } },
+                            { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

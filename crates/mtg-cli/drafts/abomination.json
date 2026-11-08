@@ -1,0 +1,57 @@
+{
+  "oracle_id": "2c57c4e9-0a46-45d6-92db-9203fb722b60",
+  "name": "Abomination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abomination",
+      "oracle_fingerprint": "3dd765dc8dfc462d126147a9c68b7a1a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }
+                ],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [
+                  { "Type": "Creature" },
+                  { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }
+                ]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

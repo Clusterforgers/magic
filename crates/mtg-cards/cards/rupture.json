@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d2179a54-4b45-4b67-a31c-aa1a7bcfda2c",
+  "name": "Rupture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rupture",
+      "oracle_fingerprint": "812fdbf157a38516748c25233f506625",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "sacrificed" } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "EachPlayer",
+                  "amount": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

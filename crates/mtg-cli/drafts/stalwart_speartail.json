@@ -1,0 +1,34 @@
+{
+  "oracle_id": "35c516e7-4431-4f23-a8a7-dbc8c0bbb615",
+  "name": "Stalwart Speartail",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Stalwart Speartail",
+      "oracle_fingerprint": "4ea5b46a49a305ffc65f5a8e9c5eb13c",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 148 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

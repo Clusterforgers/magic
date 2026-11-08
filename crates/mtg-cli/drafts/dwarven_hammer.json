@@ -1,0 +1,50 @@
+{
+  "oracle_id": "a6365f98-f652-492b-81de-5f8cd6fe0a1c",
+  "name": "Dwarven Hammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Hammer",
+      "oracle_fingerprint": "9b1f9e748074a1c1285ced6c5dbef3fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dwarf Berserker",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dwarf", "Berserker"],
+                            "power": 2,
+                            "toughness": 1
+                          }
+                        },
+                        "as": "token"
+                      }
+                    },
+                    { "Attach": { "what": "This", "to": { "Bound": "token" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

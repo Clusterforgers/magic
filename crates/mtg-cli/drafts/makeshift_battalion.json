@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8b6e2feb-9e8f-4912-ada0-1614502d9813",
+  "name": "Makeshift Battalion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Makeshift Battalion",
+      "oracle_fingerprint": "a937af4f757f317e5216b7f333275d34",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

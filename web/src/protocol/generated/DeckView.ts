@@ -37,17 +37,15 @@ updated_at: string,
  */
 cards: Array<DeckLineView>, 
 /**
- * `verified`, `read`, `manual_play`, `blocked`, or `unchecked` when no check is stored or the deck or its
- * cards' rules changed since.
+ * `verified`, `read`, `manual_play` or `blocked`: the state of the check run now, whatever was stored.
  */
 state: DeckState, 
 /**
- * True exactly when `state` is `verified`: the stored check is clean, its hashes equal the ones
- * computed now, and the check of now is clean too.
+ * True exactly when `state` is `verified`.
  */
 verified: boolean, 
 /**
- * A check is stored but the deck, the rules of its cards or what the engine runs changed since it.
+ * Always false; kept so older clients still read the field.
  */
 changed: boolean, 
 /**

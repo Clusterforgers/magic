@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f4964f74-07c0-4edc-984d-57722fb16961",
+  "name": "Furious Spinesplitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furious Spinesplitter",
+      "oracle_fingerprint": "4c7353de794e5801182c92b88a972018",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "DamageTaken" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

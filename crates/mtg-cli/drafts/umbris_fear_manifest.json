@@ -1,0 +1,73 @@
+{
+  "oracle_id": "af31febb-af53-4b48-b930-9e1f9e5d8f26",
+  "name": "Umbris, Fear Manifest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umbris, Fear Manifest",
+      "oracle_fingerprint": "90f0c4e826cdf49db17867c0795a4b24",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "OwnedBy": "Opponents" }, { "In": "Exile" }] },
+                  "toughness": { "Count": [{ "OwnedBy": "Opponents" }, { "In": "Exile" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Nightmare" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Horror" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Exile": { "what": { "Bound": "revealed2" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

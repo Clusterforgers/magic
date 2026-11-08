@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5c679c43-5990-4dcf-a36e-865c17bdea32",
+  "name": "Mistform Dreamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Dreamer",
+      "oracle_fingerprint": "a686cfe867f67602276827f33303076e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

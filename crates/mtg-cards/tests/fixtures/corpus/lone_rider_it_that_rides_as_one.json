@@ -1,0 +1,198 @@
+{
+  "object": "card",
+  "id": "9a55b60a-5d90-4f73-984e-53fdcc0366e4",
+  "oracle_id": "849741a3-9e64-41a9-a4f4-d146a7d42389",
+  "multiverse_ids": [
+    414324,
+    414325
+  ],
+  "mtgo_id": 61086,
+  "mtgo_foil_id": 61087,
+  "tcgplayer_id": 119746,
+  "cardmarket_id": 290935,
+  "name": "Lone Rider // It That Rides as One",
+  "lang": "en",
+  "released_at": "2016-07-22",
+  "uri": "https://api.scryfall.com/cards/9a55b60a-5d90-4f73-984e-53fdcc0366e4",
+  "scryfall_uri": "https://scryfall.com/card/emn/33/lone-rider-it-that-rides-as-one?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:11:59Z",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Knight // Creature — Eldrazi Horror",
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Transform",
+    "First strike",
+    "Trample"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Lone Rider",
+      "mana_cost": "{1}{W}",
+      "type_line": "Creature — Human Knight",
+      "oracle_text": "First strike, lifelink\nAt the beginning of the end step, if you gained 3 or more life this turn, transform this creature.",
+      "colors": [
+        "W"
+      ],
+      "power": "1",
+      "toughness": "1",
+      "flavor_text": "\"Horse and rider are often of one mind.\"\n—Ulda, Gavony Rider",
+      "artist": "Daarken",
+      "artist_id": "e607a0d4-fc12-4c01-9e3f-501f5269b9cb",
+      "illustration_id": "6c36f05e-9f9b-436a-9d6b-70c7b2341d28",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "normal": "https://cards.scryfall.io/normal/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "large": "https://cards.scryfall.io/large/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "png": "https://cards.scryfall.io/png/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.png?1783937519",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "thumb": "https://cards.scryfall.io/thumb/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "grid": "https://cards.scryfall.io/grid/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "display": "https://cards.scryfall.io/display/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "art": "https://cards.scryfall.io/art/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "crop": "https://cards.scryfall.io/crop/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "jpeg": "https://cards.scryfall.io/normal/front/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "It That Rides as One",
+      "mana_cost": "",
+      "type_line": "Creature — Eldrazi Horror",
+      "oracle_text": "First strike, trample, lifelink",
+      "colors": [],
+      "power": "4",
+      "toughness": "4",
+      "flavor_text": "\". . . but until this morning, I'd never seen them be of one body.\"\n—Ulda, Gavony Rider",
+      "artist": "Daarken",
+      "artist_id": "e607a0d4-fc12-4c01-9e3f-501f5269b9cb",
+      "illustration_id": "92ea1f4a-2e30-4b31-8feb-4b86507c4c3a",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "normal": "https://cards.scryfall.io/normal/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "large": "https://cards.scryfall.io/large/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "png": "https://cards.scryfall.io/png/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.png?1783937519",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519",
+        "thumb": "https://cards.scryfall.io/thumb/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "grid": "https://cards.scryfall.io/grid/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "display": "https://cards.scryfall.io/display/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "art": "https://cards.scryfall.io/art/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "crop": "https://cards.scryfall.io/crop/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.webp?1783937519",
+        "jpeg": "https://cards.scryfall.io/normal/back/9/a/9a55b60a-5d90-4f73-984e-53fdcc0366e4.jpg?1783937519"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "cd8586f9-97e2-438d-b74f-1e53c811f314",
+      "component": "combo_piece",
+      "name": "Eldritch Moon Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/cd8586f9-97e2-438d-b74f-1e53c811f314"
+    },
+    {
+      "object": "related_card",
+      "id": "9a55b60a-5d90-4f73-984e-53fdcc0366e4",
+      "component": "combo_piece",
+      "name": "Lone Rider // It That Rides as One",
+      "type_line": "Creature — Human Knight // Creature — Eldrazi Horror",
+      "uri": "https://api.scryfall.com/cards/9a55b60a-5d90-4f73-984e-53fdcc0366e4"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f0e4093-334f-4439-bbb5-a0affafd0ffc",
+  "set": "emn",
+  "set_name": "Eldritch Moon",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f0e4093-334f-4439-bbb5-a0affafd0ffc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aemn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/emn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9a55b60a-5d90-4f73-984e-53fdcc0366e4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A849741a3-9e64-41a9-a4f4-d146a7d42389&unique=prints",
+  "collector_number": "33",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "mooneldrazidfc"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13287,
+  "penny_rank": 2378,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "1.65",
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": "1.65",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=414324&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLone%2BRider%2B%252F%252F%2BIt%2BThat%2BRides%2Bas%2BOne",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLone%2BRider%2B%252F%252F%2BIt%2BThat%2BRides%2Bas%2BOne",
+    "edhrec": "https://edhrec.com/route/?cc=Lone+Rider"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F119746%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=290935&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/61086?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

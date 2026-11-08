@@ -1,0 +1,74 @@
+{
+  "oracle_id": "5f0fa785-37ab-46a8-9ec0-6f8b29576d93",
+  "name": "Teferi, Temporal Pilgrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi, Temporal Pilgrim",
+      "oracle_fingerprint": "aac03d6f1f34053157cc3f2b7b4186cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+          }
+        },
+        { "Loyalty": { "cost": "Zero", "effects": [{ "Draw": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": "Vigilance" },
+                        {
+                          "Triggered": {
+                            "when": { "Drew": { "who": "You" } },
+                            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 12 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "ControlledBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

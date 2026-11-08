@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9662c579-f414-4c2d-b133-0f5f21d5c28a",
+  "name": "Nettling Nuisance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nettling Nuisance",
+      "oracle_fingerprint": "5618dd99afa156191254e0a08db5c9b6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Pirate",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pirate"],
+                      "power": 4,
+                      "toughness": 2,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": ["Goaded"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8fda6c20-04dc-4b60-9313-896a032ee5cb",
+  "name": "Havengul Skaab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Havengul Skaab",
+      "oracle_fingerprint": "cf2a8a03c760b61c03fb9d983748a47c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

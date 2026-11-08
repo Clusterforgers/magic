@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ec238819-81f6-4904-922d-298a17cbac7e",
+  "name": "Shrewd Storyteller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrewd Storyteller",
+      "oracle_fingerprint": "805cf9d8add64ad88da47da8dbf059f1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

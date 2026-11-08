@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e015ea73-8260-4dd7-9531-7d5cbff9a1e7",
+  "name": "Obsidian Battle-Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obsidian Battle-Axe",
+      "oracle_fingerprint": "729d2cf64e024cb9fd674f1ec17c457e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Warrior" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

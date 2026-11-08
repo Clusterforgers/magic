@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2ee9d018-02c7-43e7-ba2e-95e36d8ac0e8",
+  "name": "Shadow of the Second Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow of the Second Sun",
+      "oracle_fingerprint": "de2cd4c31186f95cbd4f856aa4f3494c",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "AttachedPlayer" } },
+            "effects": [{ "AddPhase": { "phases": ["Beginning"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

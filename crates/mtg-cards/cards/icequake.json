@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8c0a6ac1-b1cc-405a-95fb-f06b7fecbb54",
+  "name": "Icequake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icequake",
+      "oracle_fingerprint": "ce26e4eb70743bc87847c0dde1f4ef03",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Land" }, { "Supertype": "Snow" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

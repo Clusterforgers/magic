@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ee049bf3-b31c-4dcc-996f-bb076848432b",
+  "name": "Kindly Ancestor // Ancestor's Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindly Ancestor",
+      "oracle_fingerprint": "8b556cb8ad0bf0f0b94decf60c228b30",
+      "abilities": [{ "Keyword": "Lifelink" }, { "Keyword": { "Disturb": "{1}{W}" } }]
+    },
+    {
+      "name": "Ancestor's Embrace",
+      "oracle_fingerprint": "bcbd24d4c71cdaf03d9c8d88aabfe35f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Lifelink" }] } },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

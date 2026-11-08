@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4baf3db8-6f35-4101-9b21-15f4384c249a",
+  "name": "Krovikan Whispers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krovikan Whispers",
+      "oracle_fingerprint": "a3a762c40b27cdae6f9edf7b0f8d101b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Keyword": { "CumulativeUpkeep": "{U/B}" } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

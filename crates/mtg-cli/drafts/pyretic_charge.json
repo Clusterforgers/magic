@@ -1,0 +1,55 @@
+{
+  "oracle_id": "01766d9b-b2af-4a27-9e65-08c82e7d7637",
+  "name": "Pyretic Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyretic Charge",
+      "oracle_fingerprint": "da11989bca4c9e5d0c28c368cf3cfb5f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              { "Draw": { "count": 4 } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Is": { "Bound": "discarded" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{3}{R}" } }
+      ]
+    }
+  ]
+}

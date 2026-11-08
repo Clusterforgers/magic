@@ -1,0 +1,42 @@
+{
+  "oracle_id": "afad2e76-4b53-4884-8f96-ba68b0808990",
+  "name": "Reality Scramble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reality Scramble",
+      "oracle_fingerprint": "b70f9106ecfc4ea495086323d5fee38d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "OwnedBy": "You" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "RevealUntil": {
+                  "filter": [{ "SharesType": { "Bound": "moved" } }],
+                  "as": "found2",
+                  "revealed_as": "revealed3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Retrace" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "7a7425ba-4478-4bc4-855f-abf947ea4fa2",
+  "name": "Lure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lure",
+      "oracle_fingerprint": "38a84a56e297464b58c3f2e25a58fcde",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "Attached", "quirk": { "MustBeBlocked": "Every" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

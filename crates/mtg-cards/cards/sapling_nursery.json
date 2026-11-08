@@ -1,0 +1,60 @@
+{
+  "oracle_id": "8bcbae66-1854-480e-a449-33e5389610ab",
+  "name": "Sapling Nursery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sapling Nursery",
+      "oracle_fingerprint": "02fa2d8fd6c2c4dca8a31719be281c95",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Forest" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Treefolk",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Treefolk"],
+                      "power": 3,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "ExileSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Treefolk" }, { "Subtype": "Forest" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "98bf6311-bc9b-4bf8-ac83-c041973b86d0",
+  "name": "Self-Destruct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Self-Destruct",
+      "oracle_fingerprint": "4df34e87b6012e4d798364aaec299e38",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                    { "Object": [{ "Type": "Planeswalker" }, { "Not": { "Is": { "Target": 0 } } }] },
+                    { "Object": [{ "Type": "Battle" }, { "Not": { "Is": { "Target": 0 } } }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

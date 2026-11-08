@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b5e0aa12-920d-4700-a287-5ca24933abb1",
+  "name": "Oketra's Last Mercy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oketra's Last Mercy",
+      "oracle_fingerprint": "fb4b400c051f67f7b3174a5bf6f11736",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "SetLife": { "amount": { "StartingLife": "You" } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

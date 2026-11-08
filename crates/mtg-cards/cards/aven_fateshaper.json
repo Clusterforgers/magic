@@ -1,0 +1,42 @@
+{
+  "oracle_id": "739d93c4-8d7b-4a54-bb6e-1d283e333392",
+  "name": "Aven Fateshaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Fateshaper",
+      "oracle_fingerprint": "de26ac6b3ca1e69f5c2cfb25ff63262c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{U}",
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

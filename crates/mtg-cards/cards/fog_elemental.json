@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b304fcc0-899e-433f-b6df-5cea504dc4ba",
+  "name": "Fog Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fog Elemental",
+      "oracle_fingerprint": "eb2582da3fb0877908607bcebdd02226",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": "This" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bfff503e-3d16-436c-afe5-ec6a03794725",
+  "name": "Study the Classics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Study the Classics",
+      "oracle_fingerprint": "907c711585b60eccf672a70af853c1dd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "GainLife": {
+                  "amount": { "Counters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

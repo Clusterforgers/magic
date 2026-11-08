@@ -1,0 +1,54 @@
+{
+  "oracle_id": "fd09875f-71a1-41c2-b404-ff58f4d4cb6c",
+  "name": "Triad of Fates",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triad of Fates",
+      "oracle_fingerprint": "e3912f3be35543b6337415269bd0c662",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "fate" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "HasCounter": { "Other": "fate" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "HasCounter": { "Other": "fate" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "Draw": { "who": { "ControllerOf": { "Target": 0 } }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

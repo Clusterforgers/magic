@@ -1,0 +1,44 @@
+{
+  "oracle_id": "049d8b06-db90-4b9c-8195-d987b3ef1005",
+  "name": "Courier of Comestibles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Courier of Comestibles",
+      "oracle_fingerprint": "c038838a15cd2f48c196ee63c451e981",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": { "filter": [{ "Subtype": "Food" }], "reveal": true, "as": "found" }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "food" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

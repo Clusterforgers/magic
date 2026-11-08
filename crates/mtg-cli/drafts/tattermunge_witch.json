@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b1696989-7f00-41ec-82a4-fd10aed7a7f9",
+  "name": "Tattermunge Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tattermunge Witch",
+      "oracle_fingerprint": "f594474e28c6d49389f79a2331f8f2f2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "Not": "Unblocked" }]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

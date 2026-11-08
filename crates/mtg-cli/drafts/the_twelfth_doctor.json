@@ -1,0 +1,58 @@
+{
+  "oracle_id": "9ecf19ba-754e-4bb3-b526-fe9df87a0f08",
+  "name": "The Twelfth Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Twelfth Doctor",
+      "oracle_fingerprint": "b5035b4833aeac3ec1af303bdf8b32f8",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "Not": { "WasCast": { "from": "Hand" } } },
+                    { "Not": { "OwnedBy": "You" } }
+                  ]
+                },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Demonstrate" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "ControlledBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Not": { "WasCast": { "from": "Hand" } } },
+                          { "Not": { "OwnedBy": "You" } }
+                        ]
+                      },
+                      { "Not": { "Is": "Affected" } }
+                    ]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCopied": { "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

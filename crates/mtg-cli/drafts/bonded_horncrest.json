@@ -1,0 +1,15 @@
+{
+  "oracle_id": "bf71c210-8fef-4eda-a943-8c52cbae6159",
+  "name": "Bonded Horncrest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonded Horncrest",
+      "oracle_fingerprint": "b35aff9e37c7d2987b9315c8bbb166c7",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantBlockAlone" } } } }
+      ]
+    }
+  ]
+}

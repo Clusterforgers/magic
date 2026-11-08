@@ -1,0 +1,28 @@
+{
+  "oracle_id": "853587be-9709-43a4-81c9-5b6dabe523cf",
+  "name": "Machine Man, Model X-51",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Machine Man, Model X-51",
+      "oracle_fingerprint": "402a53ad5cd9da1682dbe56e95cbc7b4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

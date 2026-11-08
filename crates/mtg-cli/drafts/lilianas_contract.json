@@ -1,0 +1,55 @@
+{
+  "oracle_id": "6858702a-e563-4dcb-a50d-65406cea7c86",
+  "name": "Liliana's Contract",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Contract",
+      "oracle_fingerprint": "bb601fe905908d0fe74a2e81176b001d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 4 } }, { "LoseLife": { "amount": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }],
+                    "stat": "Name"
+                  }
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }],
+                          "stat": "Name"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

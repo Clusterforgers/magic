@@ -1,4 +1,4 @@
-/** Goal: every decision kind has a prompt in the registry and the twenty the table is built for (the eight it has always asked, the targets of a spell or ability, the order of triggers, yes or no, an option, modes, cards, an order of cards, a scry, a number, which replacement applies, a division and the optional costs) are built; the stand-in for the others is the generic prompt (`GenericPrompt.test.tsx`), so the table never shows a blank where a decision is waiting. */
+/** Goal: every decision kind has a prompt in the registry and the twenty-one the table is built for (the eight it has always asked, the targets of a spell or ability, the order of triggers, yes or no, an option, modes, cards, an order of cards, a scry, a number, a card name, which replacement applies, a division and the optional costs) are built; the stand-in for the others is the generic prompt (`GenericPrompt.test.tsx`), so the table never shows a blank where a decision is waiting. */
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
@@ -35,7 +35,7 @@ const BUILT: DecisionName[] = [
 describe('the registry', () => {
   it('has a prompt for each decision kind and for nothing else', () => {
     expect(Object.keys(PROMPTS).toSorted()).toEqual([...NAMES].toSorted())
-    expect(NAMES).toHaveLength(20)
+    expect(NAMES).toHaveLength(21)
   })
 
   it.each(BUILT)('has a built prompt for %s, not the stand-in', (name) => {

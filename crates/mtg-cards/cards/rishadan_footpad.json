@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a59f147b-3e03-4e82-aa34-48c220ea32e6",
+  "name": "Rishadan Footpad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rishadan Footpad",
+      "oracle_fingerprint": "6f515388d07133b42f23c1dbf3ebe696",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": "{2}",
+                        "unpaid": [{ "Sacrifice": { "who": { "Bound": "each" }, "filter": [] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

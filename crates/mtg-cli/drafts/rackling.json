@@ -1,0 +1,36 @@
+{
+  "oracle_id": "41d116d7-3b1e-4777-b3c0-54f8ca6b2785",
+  "name": "Rackling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rackling",
+      "oracle_fingerprint": "2bf2b05eead0f23268804500a9e0cd0a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Sum": [
+                      3,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8060d231-7477-441d-b249-8e75aa1d7791",
+  "name": "Ravening Warg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravening Warg",
+      "oracle_fingerprint": "8e733735cf78b38695b928c64ec7b668",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

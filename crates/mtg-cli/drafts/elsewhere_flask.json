@@ -1,0 +1,34 @@
+{
+  "oracle_id": "610618f9-8186-44b6-8041-0a5b70f11cc1",
+  "name": "Elsewhere Flask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elsewhere Flask",
+      "oracle_fingerprint": "0bd48c808c76bd51e1ef9a5e9713194b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

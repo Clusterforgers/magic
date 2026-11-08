@@ -1,0 +1,33 @@
+{
+  "oracle_id": "196cacb0-a26a-4540-9143-57867a638085",
+  "name": "Martyr of Frost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr of Frost",
+      "oracle_fingerprint": "37cffc9127ad2b0300ff2c97acdbf6bc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "RevealFromHand": { "filter": [{ "Color": "Blue" }], "count": "X" } },
+              "SacrificeSelf"
+            ],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

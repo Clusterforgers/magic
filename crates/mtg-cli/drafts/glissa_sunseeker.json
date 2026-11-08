@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bf4b9330-72df-426f-820c-77e37f7e9130",
+  "name": "Glissa Sunseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glissa Sunseeker",
+      "oracle_fingerprint": "d440258284780c4729a588c755b27609",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Eq",
+                      "right": { "ManaInPool": "You" }
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

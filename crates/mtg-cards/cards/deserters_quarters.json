@@ -1,0 +1,30 @@
+{
+  "oracle_id": "aa8e0e77-4bbe-42d3-a3db-034fd114f9d7",
+  "name": "Deserter's Quarters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deserter's Quarters",
+      "oracle_fingerprint": "78fd63149539253597ecd797bb0cbf75",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

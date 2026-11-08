@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6ffe71c0-acb5-4ba9-8c2f-719330e1ea69",
+  "name": "Phoenix Fleet Airship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phoenix Fleet Airship",
+      "oracle_fingerprint": "1d6b358fcdb5cfdd89410906bd90662c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Sacrificed" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "ControlledBy": "You" }, { "Named": "Phoenix Fleet Airship" }]
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "4c90ca5c-551c-4da5-9482-62521b1ae17c",
+  "name": "Matsu-Tribe Birdstalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Matsu-Tribe Birdstalker",
+      "oracle_fingerprint": "5eecd0ae515a7a348ef6de38a0df8589",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Reach" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

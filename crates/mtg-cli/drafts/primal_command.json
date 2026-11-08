@@ -1,0 +1,67 @@
+{
+  "oracle_id": "350f5c0a-563f-41c5-8f7b-10f409bb4d3b",
+  "name": "Primal Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Command",
+      "oracle_fingerprint": "af99d864b9b1db321a7274baf37a2a83",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 7 } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Creature" } }] } }],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": "Top" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                            },
+                            "to": { "Library": { "place": "Shuffled" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Creature" }],
+                            "reveal": true,
+                            "as": "found"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

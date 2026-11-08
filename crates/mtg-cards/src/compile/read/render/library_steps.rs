@@ -36,6 +36,7 @@ impl Writer<'_> {
                     Effect::Move {
                         what: Ref::Bound(moved),
                         to: Destination::Library { place, order: None },
+                        ..
                     },
                 ] = inner.as_slice()
                 else {
@@ -93,6 +94,7 @@ impl Writer<'_> {
                     place: Place::Shuffled,
                     order: None,
                 },
+            ..
         } = effect
         else {
             return None;

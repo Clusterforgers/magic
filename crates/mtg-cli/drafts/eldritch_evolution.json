@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0f77c0c9-4dc4-489a-b547-e93287c4d1a5",
+  "name": "Eldritch Evolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldritch Evolution",
+      "oracle_fingerprint": "0bf1d247b1f5d8184d5198a839ece97d",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Sum": [{ "Stat": { "of": "Paid", "stat": "ManaValue" } }, 2] }
+                      }
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

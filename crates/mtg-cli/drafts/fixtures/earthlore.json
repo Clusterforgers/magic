@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "319d252e-7c43-47d6-8873-f69b0e063256",
+  "oracle_id": "91fbffd1-0886-45fa-bf3e-4c9864458431",
+  "multiverse_ids": [
+    2555
+  ],
+  "tcgplayer_id": 4655,
+  "cardmarket_id": 6331,
+  "name": "Earthlore",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/319d252e-7c43-47d6-8873-f69b0e063256",
+  "scryfall_uri": "https://scryfall.com/card/ice/231/earthlore?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.jpg?1783947480",
+    "normal": "https://cards.scryfall.io/normal/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.jpg?1783947480",
+    "large": "https://cards.scryfall.io/large/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.jpg?1783947480",
+    "png": "https://cards.scryfall.io/png/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.png?1783947480",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.jpg?1783947480",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.jpg?1783947480",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.webp?1783947480",
+    "grid": "https://cards.scryfall.io/grid/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.webp?1783947480",
+    "display": "https://cards.scryfall.io/display/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.webp?1783947480",
+    "art": "https://cards.scryfall.io/art/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.webp?1783947480",
+    "crop": "https://cards.scryfall.io/crop/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.webp?1783947480",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/1/319d252e-7c43-47d6-8873-f69b0e063256.jpg?1783947480"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land you control\nTap enchanted land: Target blocking creature gets +1/+2 until end of turn. Activate only if enchanted land is untapped.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/319d252e-7c43-47d6-8873-f69b0e063256/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A91fbffd1-0886-45fa-bf3e-4c9864458431&unique=prints",
+  "collector_number": "231",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Even the ground is our friend.\"\n—Kolbjörn, Elder Druid of the Juniper Order",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Drew Tucker",
+  "artist_ids": [
+    "22eef389-7b21-4dda-95dc-4c9a0f1bf4dd"
+  ],
+  "illustration_id": "29c6ddf7-df40-41b7-a5db-7f61edea957c",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30742,
+  "prices": {
+    "usd": "0.11",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2555&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEarthlore",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEarthlore",
+    "edhrec": "https://edhrec.com/route/?cc=Earthlore"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4655%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6331&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Earthlore&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

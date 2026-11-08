@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b15af529-a61a-4228-bf2a-7304c9050720",
+  "name": "Sailmonger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sailmonger",
+      "oracle_fingerprint": "05a76ab14a41322eaee1af5961780236",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

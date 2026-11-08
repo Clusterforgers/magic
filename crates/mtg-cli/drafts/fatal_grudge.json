@@ -1,0 +1,27 @@
+{
+  "oracle_id": "37114872-9804-4ee8-a443-21ea6eaddb0c",
+  "name": "Fatal Grudge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatal Grudge",
+      "oracle_fingerprint": "02023b377874d6584bcfbe1311ce9898",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "SharesType": "Paid" }] } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

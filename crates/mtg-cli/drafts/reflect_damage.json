@@ -1,0 +1,46 @@
+{
+  "oracle_id": "21565b0d-f814-49ca-8613-f40040c4ba6c",
+  "name": "Reflect Damage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reflect Damage",
+      "oracle_fingerprint": "35c5d9e14b727fdbc2304fdc43822e32",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "DealDamage": {
+                          "source": "Dealer",
+                          "to": { "ControllerOf": "Dealer" },
+                          "amount": "Triggering"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

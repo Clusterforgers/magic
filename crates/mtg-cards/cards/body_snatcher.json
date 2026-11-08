@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e04688e0-672b-407f-a2c9-fd7292926483",
+  "name": "Body Snatcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Body Snatcher",
+      "oracle_fingerprint": "bf899c24f3f4f3e64077b9875b39c45b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [{ "Exile": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": "This" } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

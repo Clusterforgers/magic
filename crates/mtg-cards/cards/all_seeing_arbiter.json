@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f15460d9-0133-436c-b0fe-1661989124f0",
+  "name": "All-Seeing Arbiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All-Seeing Arbiter",
+      "oracle_fingerprint": "609e06dc4babbb4931f2dea4adee1025",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Distinct": {
+                                "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                                "stat": "ManaValue"
+                              }
+                            }
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

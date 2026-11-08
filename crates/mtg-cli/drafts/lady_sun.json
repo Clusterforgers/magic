@@ -1,0 +1,36 @@
+{
+  "oracle_id": "dcc363a7-652d-4d2b-9081-3e5735120f21",
+  "name": "Lady Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lady Sun",
+      "oracle_fingerprint": "bbb1d2d1a9e259c5abc3beeb95c83a35",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Any": [
+                    { "Step": "Upkeep" },
+                    { "Step": "Draw" },
+                    { "Step": "Main1" },
+                    { "Step": "BeginCombat" }
+                  ]
+                }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand" } },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

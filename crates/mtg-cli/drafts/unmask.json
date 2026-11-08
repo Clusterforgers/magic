@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1a3a274d-41da-47db-ad41-5720f36a7963",
+  "name": "Unmask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unmask",
+      "oracle_fingerprint": "28fdc0ce539618e464342b2434e02904",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Black" }, "Other"] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

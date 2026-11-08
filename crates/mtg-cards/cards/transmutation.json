@@ -1,0 +1,27 @@
+{
+  "oracle_id": "72a75113-4ddf-460d-8d9b-03931c2788da",
+  "name": "Transmutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transmutation",
+      "oracle_fingerprint": "6e52135956c37bcc74234d8e3b4801ec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

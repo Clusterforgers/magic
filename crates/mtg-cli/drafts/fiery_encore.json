@@ -1,0 +1,60 @@
+{
+  "oracle_id": "921e7f6b-bf49-46f1-9fdd-b0e5fde5a5a1",
+  "name": "Fiery Encore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Encore",
+      "oracle_fingerprint": "fef23593f5c92b1f8d13c1a9fa120e53",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": {
+                                "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

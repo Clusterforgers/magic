@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f1c303d8-6d77-4bc6-82d1-2a409a6f2cfd",
+  "name": "Belbe, Corrupted Observer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Belbe, Corrupted Observer",
+      "oracle_fingerprint": "bb6298e90da8dfcb0ad61e2541fbd2ad",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "who": "Triggering",
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "Compare": {
+                                "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

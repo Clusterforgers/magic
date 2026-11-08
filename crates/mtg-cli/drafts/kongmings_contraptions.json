@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c3327ffe-f47f-4f5b-b929-a7706ef4932d",
+  "name": "Kongming's Contraptions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kongming's Contraptions",
+      "oracle_fingerprint": "2dfd89bff7430e9b901a422fdeb42e97",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "Attacked",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "DidThisTurn": { "event": "Attacked", "to": "You", "combat": true } }
+                        ]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                { "Step": "DeclareAttackers" }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

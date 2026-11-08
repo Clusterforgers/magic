@@ -1,0 +1,39 @@
+{
+  "oracle_id": "cb58055f-8190-4bc7-ad32-844ca66fd2b0",
+  "name": "Arashin Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arashin Sovereign",
+      "oracle_fingerprint": "ba5128ef1b6ae1ee122135f49c186473",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ChooseValue": { "kind": { "Options": ["Top", "Bottom"] }, "as": "way" } },
+                    {
+                      "If": {
+                        "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                        "then": [
+                          { "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }
+                        ],
+                        "otherwise": [
+                          { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

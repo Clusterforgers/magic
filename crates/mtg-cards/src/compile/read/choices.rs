@@ -27,6 +27,10 @@ fn header(choose: &Bounds, modes: usize, repeat: bool) -> Option<String> {
         (1, Some(1)) => "one".to_owned(),
         (1, Some(2)) if modes == 2 => "one or both".to_owned(),
         (1, None) => "one or more".to_owned(),
+        // As many as there are modes, which never repeat (r5b).
+        (1, Some(most)) if !repeat && modes >= 3 && usize::try_from(most).ok() == Some(modes) => {
+            "one or more".to_owned()
+        }
         (0, None) => "any number".to_owned(),
         (0, Some(most)) if most >= 1 => format!("up to {}", word(most)?),
         (min, Some(most)) if min == most && min >= 2 => word(min)?.to_owned(),

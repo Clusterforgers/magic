@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "be667162-cd28-403c-b65f-dadc5459e757",
+  "oracle_id": "f1ae1dcd-76cd-4714-9df2-1ab0ebd2ca41",
+  "multiverse_ids": [
+    433100
+  ],
+  "tcgplayer_id": 139923,
+  "cardmarket_id": 300483,
+  "name": "Crosis, the Purger",
+  "lang": "en",
+  "released_at": "2017-08-25",
+  "uri": "https://api.scryfall.com/cards/be667162-cd28-403c-b65f-dadc5459e757",
+  "scryfall_uri": "https://scryfall.com/card/c17/168/crosis-the-purger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:44:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.jpg?1783935884",
+    "normal": "https://cards.scryfall.io/normal/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.jpg?1783935884",
+    "large": "https://cards.scryfall.io/large/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.jpg?1783935884",
+    "png": "https://cards.scryfall.io/png/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.png?1783935884",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.jpg?1783935884",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.jpg?1783935884",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.webp?1783935884",
+    "grid": "https://cards.scryfall.io/grid/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.webp?1783935884",
+    "display": "https://cards.scryfall.io/display/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.webp?1783935884",
+    "art": "https://cards.scryfall.io/art/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.webp?1783935884",
+    "crop": "https://cards.scryfall.io/crop/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.webp?1783935884",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/e/be667162-cd28-403c-b65f-dadc5459e757.jpg?1783935884"
+  },
+  "mana_cost": "{3}{U}{B}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Dragon",
+  "oracle_text": "Flying\nWhenever Crosis deals combat damage to a player, you may pay {2}{B}. If you do, choose a color, then that player reveals their hand and discards all cards of that color.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5caec427-0c78-4c37-b4ec-30f7e0ba9abf",
+  "set": "c17",
+  "set_name": "Commander 2017",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5caec427-0c78-4c37-b4ec-30f7e0ba9abf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac17&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c17?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/be667162-cd28-403c-b65f-dadc5459e757/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af1ae1dcd-76cd-4714-9df2-1ab0ebd2ca41&unique=prints",
+  "collector_number": "168",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rahn",
+  "artist_ids": [
+    "7742047e-0f80-4c0f-a530-d07460165e86"
+  ],
+  "illustration_id": "ad9ee2ad-9405-437d-a386-52bbbdd7d649",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14035,
+  "prices": {
+    "usd": "0.63",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=433100&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCrosis%252C%2Bthe%2BPurger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCrosis%252C%2Bthe%2BPurger",
+    "edhrec": "https://edhrec.com/route/?cc=Crosis%2C+the+Purger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F139923%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=300483&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Crosis%2C+the+Purger&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

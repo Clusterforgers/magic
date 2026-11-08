@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fffaa634-42a0-4038-b027-24f28754fec7",
+  "name": "Firesong and Sunspeaker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Firesong and Sunspeaker",
+      "oracle_fingerprint": "130ec268df17b2bbb008a45853e7eca5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "Color": "Red" },
+                { "ControlledBy": "You" },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Lifelink" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 58, "end": 193 }
+          }
+        }
+      ]
+    }
+  ]
+}

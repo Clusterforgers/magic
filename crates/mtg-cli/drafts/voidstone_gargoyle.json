@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1a1a6548-26ef-49f4-9e6d-b98bea1bd149",
+  "name": "Voidstone Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voidstone Gargoyle",
+      "oracle_fingerprint": "86ac939092865a7a17630dac1e8976a6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "NonlandCardName" }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "EachPlayer", "action": { "Cast": { "filter": ["ChosenName"] } } }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "ActivateKind": { "kind": "Every", "sources": ["ChosenName"] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

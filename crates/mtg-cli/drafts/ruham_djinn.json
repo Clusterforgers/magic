@@ -1,0 +1,55 @@
+{
+  "oracle_id": "16ad3b64-a87f-47e8-8e7b-b97bf084a3d2",
+  "name": "Ruham Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruham Djinn",
+      "oracle_fingerprint": "36c5c5fc23cf3967e2c75617f1f3c0ef",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "White" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Blue" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "White" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Black" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "White" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Red" }] }
+                    }
+                  },
+                  {
+                    "Test": {
+                      "left": { "Count": [{ "Color": "White" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "Color": "Green" }] }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

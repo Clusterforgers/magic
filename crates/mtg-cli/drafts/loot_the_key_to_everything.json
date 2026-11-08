@@ -1,0 +1,37 @@
+{
+  "oracle_id": "542be13f-b9c0-4b79-b486-be576c531a82",
+  "name": "Loot, the Key to Everything",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loot, the Key to Everything",
+      "oracle_fingerprint": "372766291f467ef40da54b27946cf8f4",
+      "abilities": [
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "ExileTop": {
+                  "count": {
+                    "CardTypes": [{ "Not": { "Type": "Land" } }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

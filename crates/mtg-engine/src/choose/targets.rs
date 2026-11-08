@@ -1,7 +1,7 @@
 //! `ChooseTargets`: who and what a target specification may name, the decision that picks them, and the
 //! recheck on resolution that uses the same rule (CR 115, 608.2b).
 
-use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable};
+use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable};
 use mtg_cards::value::{Amount, CastWay};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -50,6 +50,7 @@ pub(crate) fn options_before_x(
         None,
         &[],
         None,
+        None,
     )
 }
 
@@ -84,6 +85,7 @@ pub(crate) fn targets_met(
             x,
             &[],
             None,
+            None,
         )
         .is_some()
     })
@@ -101,6 +103,18 @@ fn without_x(what: &Targetable) -> Targetable {
                 .collect(),
         )),
         Targetable::Either(kinds) => Targetable::Either(kinds.iter().map(without_x).collect()),
+        Targetable::Together { what, rule } => Targetable::Together {
+            what: Box::new(without_x(what)),
+            rule: rule.clone(),
+        },
+        Targetable::Another { what, earlier } => Targetable::Another {
+            what: Box::new(without_x(what)),
+            earlier: earlier.clone(),
+        },
+        Targetable::ChosenBy { who, what } => Targetable::ChosenBy {
+            who: who.clone(),
+            what: Box::new(without_x(what)),
+        },
         other => other.clone(),
     }
 }
@@ -135,13 +149,42 @@ pub struct TargetOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PlayerId>>", optional))]
     pub apart: Vec<PlayerId>,
+    /// For a specification whose targets must share or differ in something, how; `None` for any other.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub together: Option<Together>,
+    /// For a specification whose targets' mana values may add up to at most a number, that number and the mana value
+    /// of each legal target; `None` for any other.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub total: Option<Total>,
+}
+
+/// A most for the mana values of the chosen targets added up ("with total mana value 3 or less").
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Total {
+    /// The most the mana values may add up to.
+    pub most: u32,
+    /// The mana value of each legal target, in the order of `legal`.
+    pub values: Vec<u32>,
+}
+
+/// How the targets chosen for one specification relate: a key per legal target, in the order of `legal`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Together {
+    /// Whether every target must have the same key; else no two may.
+    pub alike: bool,
+    /// The key of each legal target: its controller (owner, outside the battlefield), name or mana value.
+    pub keys: Vec<u64>,
 }
 
 impl TargetOptions {
     /// The targets a chooser may take any of together: the first legal target of each player when no two may belong to
     /// one player, else every legal target.
     pub fn c10_dice_choosable(&self) -> &[Target] {
-        if self.apart.is_empty() {
+        if self.apart.is_empty() && self.together.is_none() {
             return &self.legal;
         }
         let each = usize::try_from(self.max).unwrap_or(usize::MAX);
@@ -189,6 +232,18 @@ fn candidates(scope: &Scope<'_>, what: &Targetable) -> Result<Vec<Target>, Resol
             .into_iter()
             .map(Target::Object)
             .collect(),
+        Targetable::Together { what, .. } | Targetable::ChosenBy { what, .. } => {
+            candidates(scope, what)?
+        }
+        Targetable::Another { what, earlier } => {
+            let mut taken = Vec::new();
+            for index in earlier {
+                taken.extend(scope.refs(&Ref::Target(*index)).unwrap_or_default());
+            }
+            let mut all = candidates(scope, what)?;
+            all.retain(|target| !taken.contains(target));
+            all
+        }
         Targetable::Either(kinds) => {
             let mut all = Vec::new();
             for kind in kinds {
@@ -211,7 +266,7 @@ pub fn legal_targets(
     source: ObjectId,
     controller: PlayerId,
 ) -> Vec<Target> {
-    legal_for(state, spec, source, controller, None, None)
+    legal_for(state, spec, source, controller, None, None, &[])
 }
 
 /// [`legal_targets`] for an ability that triggered: what it triggered on is what "that player" in the specification
@@ -223,6 +278,7 @@ pub(crate) fn legal_for(
     controller: PlayerId,
     cause: Option<&Cause>,
     x: Option<u32>,
+    earlier: &[Vec<Target>],
 ) -> Vec<Target> {
     let source = state.object(source).map_or(
         ObjectRef {
@@ -231,11 +287,15 @@ pub(crate) fn legal_for(
         },
         GameObject::reference,
     );
-    legal_from(state, spec, source, &[], controller, cause, x)
+    legal_from(state, spec, source, &[], controller, cause, x, earlier)
 }
 
 /// [`legal_for`] for a source named by its reference, with the snapshots that say how objects were when they have gone:
 /// a resolving ability reads the source it came from as it was (CR 608.2h), which protection from a colour needs.
+/// `earlier` are the targets chosen for the specifications before this one (of its mode), which a filter reads as
+/// `Target(0)` onwards (CR 601.2c: "another target creature that player controls").
+// Every argument is a different thing the legal targets depend on.
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn legal_from(
     state: &GameState,
     spec: &TargetSpec,
@@ -244,9 +304,11 @@ pub(crate) fn legal_from(
     controller: PlayerId,
     cause: Option<&Cause>,
     x: Option<u32>,
+    earlier: &[Vec<Target>],
 ) -> Vec<Target> {
     let announced = Choices {
         x,
+        targets: earlier.to_vec(),
         ..Choices::default()
     };
     let mut scope = Scope::announcing(state, controller, source);
@@ -265,17 +327,24 @@ pub(crate) fn legal_from(
     legal.retain(|target| match target {
         Target::Object(object) => {
             !crate::w17b_statics::w17b_shielded_in_graveyard(state, object.id)
+                && !forbidden_target(state, Target::Object(*object), source)
                 && !keywords::protects(state, object.id, source.id, controller)
                 && !keywords::protected_from(state, keywords::Holder::Object(object.id), origin)
         }
         Target::Player(player) => {
             !keywords::protects_player(state, *player, controller)
+                && !forbidden_target(state, Target::Player(*player), source)
                 && !keywords::protected_from(state, keywords::Holder::Player(*player), origin)
         }
     });
     legal.sort_unstable();
     legal.dedup();
     legal
+}
+
+/// Whether a prohibition keeps the spell or ability of `by` from targeting `target` (`GameRule::Cant`).
+fn forbidden_target(state: &GameState, target: Target, by: ObjectRef) -> bool {
+    crate::prohibit::forbidden(state, crate::prohibit::Doing::BeTargeted { target, by })
 }
 
 /// Whether `target` is among the legal targets of `spec`.
@@ -290,6 +359,8 @@ pub fn is_legal(
 }
 
 /// The decision for the specification `index`, or `None` when it cannot be met: fewer legal targets than its minimum.
+/// `earlier` are the targets of the specifications before it (of its mode); `None` while they are not chosen yet, when
+/// what reads them is left out of the specification, since some choice of them may allow what the rest allows.
 // Every argument is a different thing the legal targets depend on; the callers each have them all.
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn options_for(
@@ -303,10 +374,30 @@ pub(crate) fn options_for(
     x: Option<u32>,
     paid: &[usize],
     way: Option<CastWay>,
+    earlier: Option<&[Vec<Target>]>,
 ) -> Option<TargetOptions> {
-    let legal = legal_for(state, spec, source, controller, cause, x);
+    let relaxed;
+    let spec = if earlier.is_some() {
+        spec
+    } else {
+        relaxed = TargetSpec {
+            what: without_earlier_reads(&spec.what),
+            ..spec.clone()
+        };
+        &relaxed
+    };
+    let legal = legal_for(
+        state,
+        spec,
+        source,
+        controller,
+        cause,
+        x,
+        earlier.unwrap_or(&[]),
+    );
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
     let (legal, apart) = c10_dice_first_of_each(&legal, c10_dice_apart(state, spec, &legal));
+    let (legal, together, available) = group_together(state, spec, legal, available);
     let amount_of = |amount: &Amount| -> Option<u32> {
         if let Amount::Fixed(n) = amount {
             return Some(u32::try_from(*n).unwrap_or(0));
@@ -344,6 +435,13 @@ pub(crate) fn options_for(
     // A specification whose most is zero asks for nothing, whatever its least is (a target only a promised gift adds).
     let min = amount_of(&spec.bounds.min)?.min(max);
     let (min, max) = c10_dice_per_player_bounds(&apart, min, max);
+    let (legal, total, available) = match &spec.what {
+        Targetable::Together {
+            rule: TargetSet::TotalManaValueAtMost(most),
+            ..
+        } => totalled(state, legal, amount_of(most)?, min)?,
+        _ => (legal, None, available),
+    };
     if available < min {
         return None;
     }
@@ -357,7 +455,90 @@ pub(crate) fn options_for(
         wording: wording::spec(spec),
         triggered: false,
         apart,
+        together,
+        total,
     })
+}
+
+/// The legal targets of a specification whose mana values may add up to at most `most`, without those over it alone,
+/// with the mana value of each and how many can be chosen together; `None` when not even the `min` smallest fit.
+fn totalled(
+    state: &GameState,
+    legal: Vec<Target>,
+    most: u32,
+    min: u32,
+) -> Option<(Vec<Target>, Option<Total>, u32)> {
+    let value = |target: &Target| {
+        target
+            .object()
+            .and_then(|object| state.object(object.id))
+            .map_or(0, GameObject::mana_value)
+    };
+    let (legal, values): (Vec<Target>, Vec<u32>) = legal
+        .into_iter()
+        .map(|target| {
+            let mana = value(&target);
+            (target, mana)
+        })
+        .filter(|(_, mana)| *mana <= most)
+        .unzip();
+    let mut sorted = values.clone();
+    sorted.sort_unstable();
+    let mut sum = 0u32;
+    let mut together = 0u32;
+    for mana in sorted {
+        sum = sum.saturating_add(mana);
+        if sum > most {
+            break;
+        }
+        together += 1;
+    }
+    if together < min {
+        return None;
+    }
+    Some((legal, Some(Total { most, values }), together))
+}
+
+/// Without what reads the targets of earlier specifications, for a check made before they are chosen: a predicate
+/// about an earlier target, and "another" around a kind.
+fn without_earlier_reads(what: &Targetable) -> Targetable {
+    fn reads(by: &Ref) -> bool {
+        match by {
+            Ref::Target(_) => true,
+            Ref::ControllerOf(inner) | Ref::OwnerOf(inner) => reads(inner),
+            _ => false,
+        }
+    }
+    fn earlier(pred: &Pred) -> bool {
+        match pred {
+            Pred::ControlledBy(by) | Pred::OwnedBy(by) | Pred::Is(by) => reads(by),
+            Pred::Not(inner) => earlier(inner),
+            _ => false,
+        }
+    }
+    match what {
+        Targetable::Object(selector) => Targetable::Object(Selector(
+            selector
+                .0
+                .iter()
+                .filter(|pred| !earlier(pred))
+                .cloned()
+                .collect(),
+        )),
+        Targetable::Either(kinds) => {
+            Targetable::Either(kinds.iter().map(without_earlier_reads).collect())
+        }
+        Targetable::Together { what, rule } => Targetable::Together {
+            what: Box::new(without_earlier_reads(what)),
+            rule: rule.clone(),
+        },
+        Targetable::Another { what, .. } => without_earlier_reads(what),
+        Targetable::ChosenBy { who, what } => Targetable::ChosenBy {
+            who: who.clone(),
+            what: Box::new(without_earlier_reads(what)),
+        },
+        other => other.clone(),
+    }
 }
 
 /// Leaves out of `legal` the objects an earlier specification took, when `spec` says "another target": a `Not` of an
@@ -407,6 +588,8 @@ pub(crate) fn answer(
         }
     }
     c10_dice_check_apart(options, &targets)?;
+    check_together(options, &targets)?;
+    check_total(options, &targets)?;
     let count = u32::try_from(targets.len()).unwrap_or(u32::MAX);
     let wanted = if count < options.min {
         Some(options.min)
@@ -486,6 +669,144 @@ fn c10_dice_per_player_bounds(apart: &[PlayerId], min: u32, max: u32) -> (u32, u
         if min > 0 { each } else { 0 },
         if max > 0 { each } else { 0 },
     )
+}
+
+/// The key `rule` reads from a legal target.
+fn together_key(state: &GameState, rule: &TargetSet, target: &Target) -> u64 {
+    let object = match target {
+        Target::Player(player) => return player.get(),
+        Target::Object(object) => state.object(object.id),
+    };
+    let Some(object) = object else {
+        return u64::MAX;
+    };
+    match rule {
+        TargetSet::SameController | TargetSet::DifferentControllers => {
+            let who = if object.zone() == Zone::Battlefield {
+                object.controller()
+            } else {
+                object.owner()
+            };
+            who.get()
+        }
+        TargetSet::DifferentNames => {
+            let mut hasher = std::collections::hash_map::DefaultHasher::new();
+            std::hash::Hash::hash(&object.card().name, &mut hasher);
+            std::hash::Hasher::finish(&hasher)
+        }
+        TargetSet::DifferentManaValues | TargetSet::TotalManaValueAtMost(_) => {
+            u64::from(object.mana_value())
+        }
+    }
+}
+
+/// The legal targets of a `Together` specification with the ones that can be chosen together in front (the largest
+/// group sharing a key, or the first of each key), the keys in that order, and how many can be chosen together;
+/// unchanged, and `available`, for any other specification.
+fn group_together(
+    state: &GameState,
+    spec: &TargetSpec,
+    legal: Vec<Target>,
+    available: u32,
+) -> (Vec<Target>, Option<Together>, u32) {
+    let Targetable::Together { rule, .. } = &spec.what else {
+        return (legal, None, available);
+    };
+    if matches!(rule, TargetSet::TotalManaValueAtMost(_)) {
+        return (legal, None, available);
+    }
+    let alike = matches!(rule, TargetSet::SameController);
+    let keyed: Vec<(Target, u64)> = legal
+        .iter()
+        .map(|target| (*target, together_key(state, rule, target)))
+        .collect();
+    let mut sizes: Vec<(u64, usize)> = Vec::new();
+    for (_, key) in &keyed {
+        match sizes.iter_mut().find(|(seen, _)| seen == key) {
+            Some(entry) => entry.1 += 1,
+            None => sizes.push((*key, 1)),
+        }
+    }
+    let (front, count) = if alike {
+        let mut best: Option<(u64, usize)> = None;
+        for entry in &sizes {
+            if best.is_none_or(|top| entry.1 > top.1) {
+                best = Some(*entry);
+            }
+        }
+        let Some((best, size)) = best else {
+            return (legal, None, 0);
+        };
+        let (mut front, back): (Vec<_>, Vec<_>) =
+            keyed.into_iter().partition(|(_, key)| *key == best);
+        front.extend(back);
+        (front, size)
+    } else {
+        let mut taken = Vec::new();
+        let (mut front, mut back) = (Vec::new(), Vec::new());
+        for (target, key) in keyed {
+            if taken.contains(&key) {
+                back.push((target, key));
+            } else {
+                taken.push(key);
+                front.push((target, key));
+            }
+        }
+        let count = front.len();
+        front.extend(back);
+        (front, count)
+    };
+    let (legal, keys) = front.into_iter().unzip();
+    (
+        legal,
+        Some(Together { alike, keys }),
+        u32::try_from(count).unwrap_or(u32::MAX),
+    )
+}
+
+/// Refuses targets that break the rule of a `Together` specification.
+fn check_together(options: &TargetOptions, targets: &[Target]) -> Result<(), EngineError> {
+    let Some(together) = &options.together else {
+        return Ok(());
+    };
+    let mut seen: Vec<u64> = Vec::new();
+    for target in targets {
+        let Some(key) = options
+            .legal
+            .iter()
+            .position(|legal| legal == target)
+            .and_then(|at| together.keys.get(at))
+        else {
+            continue;
+        };
+        let clash = if together.alike {
+            seen.first().is_some_and(|first| first != key)
+        } else {
+            seen.contains(key)
+        };
+        if clash {
+            return Err(IllegalAnswer::Duplicate("target that breaks the set rule").into());
+        }
+        seen.push(*key);
+    }
+    Ok(())
+}
+
+/// Refuses targets whose mana values add up to more than the options allow.
+fn check_total(options: &TargetOptions, targets: &[Target]) -> Result<(), EngineError> {
+    let Some(total) = &options.total else {
+        return Ok(());
+    };
+    let sum: u64 = targets
+        .iter()
+        .filter_map(|target| options.legal.iter().position(|legal| legal == target))
+        .filter_map(|at| total.values.get(at))
+        .map(|mana| u64::from(*mana))
+        .sum();
+    if sum > u64::from(total.most) {
+        return Err(IllegalAnswer::NotOffered("targets over the total mana value").into());
+    }
+    Ok(())
 }
 
 /// Refuses two targets of one player when the options say whose each is.
@@ -678,6 +999,7 @@ mod tests {
             None,
             &[],
             None,
+            None,
         );
         assert_eq!(options.map(|o| (o.min, o.max)), expected);
     }
@@ -700,6 +1022,8 @@ mod tests {
             wording: String::new(),
             triggered: false,
             apart: Vec::new(),
+            together: None,
+            total: None,
         }
     }
 

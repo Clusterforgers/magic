@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cc22c210-efd0-494c-8560-448b038b3c5f",
+  "name": "Orim's Touch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orim's Touch",
+      "oracle_fingerprint": "55d8f175570c7400194fb36bfcb95b5f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventCounted": {
+                      "When": { "condition": "Kicked", "then": 4, "otherwise": 2 }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

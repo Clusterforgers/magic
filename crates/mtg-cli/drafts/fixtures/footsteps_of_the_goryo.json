@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "ca7bedbe-8b87-402f-9a0c-83e46ae10279",
+  "oracle_id": "d0e8d9f0-86e9-46b7-ba6f-2976ff9148d6",
+  "multiverse_ids": [
+    74400
+  ],
+  "mtgo_id": 22076,
+  "mtgo_foil_id": 22077,
+  "tcgplayer_id": 12436,
+  "cardmarket_id": 12664,
+  "name": "Footsteps of the Goryo",
+  "lang": "en",
+  "released_at": "2005-06-03",
+  "uri": "https://api.scryfall.com/cards/ca7bedbe-8b87-402f-9a0c-83e46ae10279",
+  "scryfall_uri": "https://scryfall.com/card/sok/68/footsteps-of-the-goryo?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:02:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.jpg?1783944155",
+    "normal": "https://cards.scryfall.io/normal/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.jpg?1783944155",
+    "large": "https://cards.scryfall.io/large/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.jpg?1783944155",
+    "png": "https://cards.scryfall.io/png/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.png?1783944155",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.jpg?1783944155",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.jpg?1783944155",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.webp?1783944155",
+    "grid": "https://cards.scryfall.io/grid/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.webp?1783944155",
+    "display": "https://cards.scryfall.io/display/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.webp?1783944155",
+    "art": "https://cards.scryfall.io/art/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.webp?1783944155",
+    "crop": "https://cards.scryfall.io/crop/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.webp?1783944155",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/a/ca7bedbe-8b87-402f-9a0c-83e46ae10279.jpg?1783944155"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery — Arcane",
+  "oracle_text": "Return target creature card from your graveyard to the battlefield. Sacrifice that creature at the beginning of the next end step.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4db16ad3-2b95-442f-bb6b-e9aa7fe7f769",
+  "set": "sok",
+  "set_name": "Saviors of Kamigawa",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4db16ad3-2b95-442f-bb6b-e9aa7fe7f769",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asok&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sok?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ca7bedbe-8b87-402f-9a0c-83e46ae10279/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad0e8d9f0-86e9-46b7-ba6f-2976ff9148d6&unique=prints",
+  "collector_number": "68",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "In the case of violent deaths, kami offered a chance for revenge if the deceased offered up its corpse as a host to the invading kami.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chippy",
+  "artist_ids": [
+    "a36f01a0-e51a-48b2-a556-b9b3bc73f969"
+  ],
+  "illustration_id": "8c460dd4-e37f-4332-a4a0-017d1a3e671c",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13531,
+  "prices": {
+    "usd": "1.42",
+    "usd_foil": "14.99",
+    "usd_etched": null,
+    "eur": "0.88",
+    "eur_foil": "12.34",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=74400&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFootsteps%2Bof%2Bthe%2BGoryo",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFootsteps%2Bof%2Bthe%2BGoryo",
+    "edhrec": "https://edhrec.com/route/?cc=Footsteps+of+the+Goryo"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F12436%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=12664&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/22076?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6a4ace6b-ef3a-4d11-89d7-958f98dcc445",
+  "name": "Dash Hopes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dash Hopes",
+      "oracle_fingerprint": "2da787e5f9b24a61371d3e501790f42b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "PayLife": 5 }],
+                  "paid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

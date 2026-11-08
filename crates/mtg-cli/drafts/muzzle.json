@@ -1,0 +1,20 @@
+{
+  "oracle_id": "bdf497b5-166f-46a7-8e18-ae0b8f97768c",
+  "name": "Muzzle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muzzle",
+      "oracle_fingerprint": "560a1eabca8551550eba58533c636815",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "Type": "Creature" }, { "Is": "Attached" }] } },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

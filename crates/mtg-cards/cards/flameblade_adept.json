@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b1c721e6-d0b1-4443-937d-89f7c3a459e6",
+  "name": "Flameblade Adept",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flameblade Adept",
+      "oracle_fingerprint": "6356bd40cd636e6a503004ed0f63482f",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

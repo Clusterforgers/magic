@@ -1,0 +1,23 @@
+{
+  "oracle_id": "aead53ef-ffcf-4ae2-ab81-40aa9627adc9",
+  "name": "Death Pits of Rath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Pits of Rath",
+      "oracle_fingerprint": "aba276b4cf120e77181ab185008393ea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": { "source": [], "to": { "Each": [{ "Type": "Creature" }] } }
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

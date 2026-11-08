@@ -1,0 +1,33 @@
+{
+  "oracle_id": "96162b22-41e7-4559-aa1b-c18f42abcb52",
+  "name": "Jade Statue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jade Statue",
+      "oracle_fingerprint": "e26e491a9d4144bdcb96ad53605e0b13",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "condition": "InCombat",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 6 } },
+                    { "SetCreatureTypes": ["Golem"] },
+                    { "AddType": "Creature" },
+                    { "AddType": "Artifact" }
+                  ],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

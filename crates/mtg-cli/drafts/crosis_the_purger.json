@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f1ae1dcd-76cd-4714-9df2-1ab0ebd2ca41",
+  "name": "Crosis, the Purger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crosis, the Purger",
+      "oracle_fingerprint": "103b3fae49069667f0a20cda29126f24",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{B}",
+                  "paid": [
+                    { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+                    {
+                      "Reveal": {
+                        "what": { "Each": [{ "OwnedBy": "Triggering" }, { "In": "Hand" }] }
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": "Triggering",
+                        "count": {
+                          "Count": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "Triggering" },
+                            { "ChosenAs": "chosen" }
+                          ]
+                        },
+                        "filter": [{ "ChosenAs": "chosen" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

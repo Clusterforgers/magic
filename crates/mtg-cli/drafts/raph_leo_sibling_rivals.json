@@ -1,0 +1,29 @@
+{
+  "oracle_id": "57f39ce2-ecbb-4262-8140-03aba5c4303f",
+  "name": "Raph & Leo, Sibling Rivals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raph & Leo, Sibling Rivals",
+      "oracle_fingerprint": "d0b3ad134fc67995255167124e614630",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": "FirstCombat",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": 1, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "cc33444e-da8c-4af5-b3ed-552e91b0e656",
+  "name": "Sword of the Paruns",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of the Paruns",
+      "oracle_fingerprint": "814eec7063b7635349f6fdf366838293",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, "Tapped"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Untapped", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, "Untapped"] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "condition": {
+              "Compare": { "left": { "Count": [{ "Is": "Attached" }] }, "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "TapOrUntap": { "what": "Attached" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

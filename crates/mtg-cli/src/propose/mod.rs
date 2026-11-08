@@ -1,5 +1,5 @@
 //! `propose`: sends a card, the DSL reference and the nearest hand-written files to a model and keeps the proposals the
-//! checker accepts (`docs/cards-dsl.md`, Model-assisted reading). The person who runs it supplies the API key and pays.
+//! checker accepts (`docs/cards-dsl.md`, Proposals and drafts). The person who runs it supplies the API key and pays.
 
 pub mod anthropic;
 pub mod budget;
@@ -8,6 +8,7 @@ pub mod c11i_openai;
 pub mod examples;
 pub mod fake;
 pub mod forge_hint;
+pub mod lines;
 pub mod model;
 pub mod outcome;
 pub mod prompt;
@@ -283,6 +284,9 @@ pub async fn command(
     args: &ProposeArgs,
     progress: Progress,
 ) -> Result<String, CliError> {
+    if args.lines {
+        lines::check_args(args)?;
+    }
     let url = database_url.ok_or_else(|| {
         CliError::Config("no database: set DATABASE_URL or pass --database-url".into())
     })?;
@@ -309,6 +313,12 @@ pub async fn run_command(
     env: &dyn Fn(&str) -> Option<String>,
     api: &AnthropicConfig,
 ) -> Result<String, CliError> {
+    if args.lines {
+        lines::check_args(args)?;
+        let cards = stored_cards(db).await?;
+        let out = args.out.clone().unwrap_or_else(|| default_out(cache));
+        return lines::command(cards, out, args, progress, api).await;
+    }
     let cards = stored_cards(db).await?;
     let within = if args.precons {
         Some(precon_oracle_ids(db).await?)
@@ -393,6 +403,7 @@ async fn w2a_promote_run(
         draft: false,
         no_smoke: false,
         drafts: None,
+        source: None,
         files,
     };
     Ok(w2a_promote(db, cache, &args).await?.render())

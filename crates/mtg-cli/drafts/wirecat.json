@@ -14,8 +14,8 @@
             "condition": {
               "Compare": {
                 "left": { "Count": [{ "Type": "Enchantment" }] },
-                "op": "Gt",
-                "right": 0
+                "op": "Ge",
+                "right": 1
               }
             }
           }

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f9cdaecd-9621-4a9a-888e-748ecfe551fd",
+  "name": "Deadly Allure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Allure",
+      "oracle_fingerprint": "e1820db81c319cee9d5336cc94369968",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{G}" } }
+      ]
+    }
+  ]
+}

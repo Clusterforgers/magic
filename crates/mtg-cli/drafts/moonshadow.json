@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a3635b3f-839c-4fe5-83a5-7c70e8630184",
+  "name": "Moonshadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonshadow",
+      "oracle_fingerprint": "ed0c2cbc0998bf5165a8e4320b4e56f2",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 6 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "OwnedBy": "You" }, { "Not": "Token" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": ["This", { "HasCounter": "-1/-1" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

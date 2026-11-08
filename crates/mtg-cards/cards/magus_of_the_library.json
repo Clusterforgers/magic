@@ -1,0 +1,32 @@
+{
+  "oracle_id": "69266cb7-50eb-43d2-96d6-fc3c85be49f7",
+  "name": "Magus of the Library",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Library",
+      "oracle_fingerprint": "ec3d0b6cf6a911f52692e397f85566ec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Eq",
+                "right": 7
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

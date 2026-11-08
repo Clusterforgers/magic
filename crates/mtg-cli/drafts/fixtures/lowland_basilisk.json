@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "2c3cce7a-637f-4c68-af30-6f89f6c9f096",
+  "oracle_id": "effe239e-ade0-4ee2-99d7-f93b2f5ef585",
+  "multiverse_ids": [
+    397398
+  ],
+  "mtgo_id": 56812,
+  "mtgo_foil_id": 56813,
+  "name": "Lowland Basilisk",
+  "lang": "en",
+  "released_at": "2015-05-06",
+  "uri": "https://api.scryfall.com/cards/2c3cce7a-637f-4c68-af30-6f89f6c9f096",
+  "scryfall_uri": "https://scryfall.com/card/tpr/178/lowland-basilisk?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:27:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.jpg?1783938460",
+    "normal": "https://cards.scryfall.io/normal/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.jpg?1783938460",
+    "large": "https://cards.scryfall.io/large/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.jpg?1783938460",
+    "png": "https://cards.scryfall.io/png/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.png?1783938460",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.jpg?1783938460",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.jpg?1783938460",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.webp?1783938460",
+    "grid": "https://cards.scryfall.io/grid/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.webp?1783938460",
+    "display": "https://cards.scryfall.io/display/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.webp?1783938460",
+    "art": "https://cards.scryfall.io/art/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.webp?1783938460",
+    "crop": "https://cards.scryfall.io/crop/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.webp?1783938460",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/c/2c3cce7a-637f-4c68-af30-6f89f6c9f096.jpg?1783938460"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Basilisk",
+  "oracle_text": "Whenever this creature deals damage to a creature, destroy that creature at end of combat.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41b3e002-ab58-46a0-8024-056ee843e267",
+  "set": "tpr",
+  "set_name": "Tempest Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41b3e002-ab58-46a0-8024-056ee843e267",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atpr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tpr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2c3cce7a-637f-4c68-af30-6f89f6c9f096/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aeffe239e-ade0-4ee2-99d7-f93b2f5ef585&unique=prints",
+  "collector_number": "178",
+  "digital": true,
+  "rarity": "uncommon",
+  "flavor_text": "Unlike their cousins, Rathi basilisks turn their victims into puddles of flowstone.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "4d57db28-bf94-4f36-b393-fe218f79e031",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31189,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397398&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLowland%2BBasilisk",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLowland%2BBasilisk",
+    "edhrec": "https://edhrec.com/route/?cc=Lowland+Basilisk"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DLowland%2BBasilisk%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Lowland+Basilisk&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56812?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "852d2a7f-5082-4668-978d-51776cad2cfd",
+  "name": "Jeska and Kamahl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeska and Kamahl",
+      "oracle_fingerprint": "28ef2dbc73e3e10ab4043e167b768f6a",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Opponent",
+                    { "Object": [{ "Type": "Planeswalker" }] },
+                    { "Object": [{ "Type": "Battle" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

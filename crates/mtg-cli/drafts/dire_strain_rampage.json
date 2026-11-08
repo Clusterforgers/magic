@@ -1,0 +1,81 @@
+{
+  "oracle_id": "55281479-9d30-4f3e-afd0-66b0df5de68c",
+  "name": "Dire-Strain Rampage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dire-Strain Rampage",
+      "oracle_fingerprint": "3ceed503dbd93c6cc28092aceece87fd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Sum": [
+                              {
+                                "Count": [
+                                  { "Is": { "Bound": "destroyed" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  },
+                                  { "Type": "Land" }
+                                ]
+                              },
+                              1
+                            ]
+                          }
+                        },
+                        "as": "found2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found2" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{R}{G}" } }
+      ]
+    }
+  ]
+}

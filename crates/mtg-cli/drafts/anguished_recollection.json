@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d55f4fed-5296-4d5d-a8d6-b1a434874a0e",
+  "name": "Anguished Recollection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anguished Recollection",
+      "oracle_fingerprint": "ddea77b941c63ac8a98b39fd0bab1c9d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Seek": {
+                        "filter": [{ "Not": { "SharesType": { "Bound": "discarded" } } }],
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

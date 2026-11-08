@@ -1,0 +1,28 @@
+{
+  "oracle_id": "04da8c46-9703-47f2-974b-c144464ec380",
+  "name": "Spontaneous Flight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spontaneous Flight",
+      "oracle_fingerprint": "2bd3b63fc7a9cfb51f25dbd0a00c3a18",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flying" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "d3cad867-142c-4e9d-bcd8-0e7ed1fd2f77",
+  "name": "Sinuous Benthisaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinuous Benthisaur",
+      "oracle_fingerprint": "4a7e96d44b6a1bf53014bbc0cbdc6dd7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Cave" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "In": "Battlefield" } }
+                              ]
+                            }
+                          },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Cave" } },
+                                { "Not": { "OwnedBy": "You" } },
+                                { "Not": { "In": "Graveyard" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e75e40a5-a9ae-4789-96c1-0e19d1ce59c5",
+  "name": "Tidecaller Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidecaller Mentor",
+      "oracle_fingerprint": "c84c10972daf54fccaa471a7523193ba",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "142409ce-1187-4554-bc07-6432c4d22dbc",
+  "name": "Okiba Salvage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Okiba Salvage",
+      "oracle_fingerprint": "31a3526f0ac8cfc42bf4feaa56f8732b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

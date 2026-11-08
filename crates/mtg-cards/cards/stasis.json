@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a8cf1379-0195-4e11-b994-481ef1284245",
+  "name": "Stasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stasis",
+      "oracle_fingerprint": "8a70fa858a277ca896d3f6d17be0a7ca",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Cant": { "who": "EachPlayer", "action": { "SkipStep": "Untap" } } } }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{U}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

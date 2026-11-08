@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5f085af7-ce66-4019-9516-d1650ee7b6e0",
+  "name": "Scarab of the Unseen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scarab of the Unseen",
+      "oracle_fingerprint": "2b8f9d4667c82447e0013b1fbe2b7ce2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "OwnedBy": "You" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Subtype": "Aura" }, { "AttachedTo": { "Target": 0 } }] },
+                  "to": "Hand"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

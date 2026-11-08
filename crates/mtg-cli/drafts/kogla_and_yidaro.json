@@ -1,0 +1,53 @@
+{
+  "oracle_id": "fe8c2b7e-f80d-4acb-a976-edcf436a78a9",
+  "name": "Kogla and Yidaro",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kogla and Yidaro",
+      "oracle_fingerprint": "6a6553d9aa7904ee54f431bbb3f7caf0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Haste" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 138, "end": 292 }
+          }
+        }
+      ]
+    }
+  ]
+}

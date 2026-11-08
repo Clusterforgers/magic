@@ -6,12 +6,13 @@ use std::sync::Arc;
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_cards::modify::Duration;
-use mtg_cards::refs::ZoneKind;
+use mtg_cards::refs::{TargetSpec, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
 use crate::choose::Target;
+use crate::copies::KeptSpell;
 use crate::error::EngineError;
 use crate::fold::invalid;
 use crate::object::ObjectRef;
@@ -47,11 +48,23 @@ pub struct DelayedCreated {
     /// Whether it waits only until the end of the turn it was set up in, also when it triggers once.
     #[serde(default)]
     pub this_turn: bool,
+    /// How long it waits instead ("until your next turn"), also when it triggers once.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub until: Option<Duration>,
+    /// The targets it chooses as it goes on the stack (a reflexive trigger).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub targets: Vec<TargetSpec>,
     /// What it does.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub effects: Vec<Effect>,
     /// The names the resolution had bound when it set the trigger up, which the delayed ability reads as they were.
     pub bindings: Vec<(String, Vec<Target>)>,
+    /// The spell that set it up, as it resolved, when the ability copies it after it has left the stack (epic).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub kept: Option<Box<KeptSpell>>,
 }
 
 /// A delayed triggered ability waiting for its event.
@@ -67,6 +80,7 @@ pub struct Delayed {
     pub(crate) once: bool,
     pub(crate) duration: Duration,
     pub(crate) turn: u32,
+    pub(crate) kept: Option<Arc<KeptSpell>>,
 }
 
 // The rules follow from the log (the creating event), so they are hashed with the other fields once, here.
@@ -82,6 +96,10 @@ impl Hash for Delayed {
         self.once.hash(state);
         self.duration.hash(state);
         self.turn.hash(state);
+        // Left out while there is none, so the hash of a game without epic is the one it always had.
+        if let Some(kept) = &self.kept {
+            kept.hash(state);
+        }
     }
 }
 
@@ -109,6 +127,11 @@ impl Delayed {
         }
     }
 
+    /// The spell that set it up, as it resolved, when the ability copies it (epic).
+    pub fn kept(&self) -> Option<&KeptSpell> {
+        self.kept.as_deref()
+    }
+
     /// How long it lasts: until it triggers (`Forever`, for one that triggers once) or the end of the turn.
     pub const fn duration(&self) -> &Duration {
         &self.duration
@@ -132,6 +155,11 @@ impl Delayed {
             Duration::UntilYourNextTurn | Duration::UntilEndOfYourNextTurn => {
                 turn.number() != self.turn && turn.active() == self.controller
             }
+            Duration::UntilYourNextEndStep => {
+                turn.number() != self.turn
+                    && turn.active() == self.controller
+                    && turn.step() >= Step::End
+            }
             Duration::WhileSourceOnBattlefield => !state.object(self.source.id).is_some_and(|o| {
                 o.counter() == self.source.counter && o.zone().is_permanent_zone()
             }),
@@ -140,8 +168,11 @@ impl Delayed {
             // does.
             Duration::UntilOpponentBecomesMonarch
             | Duration::WhileYouControlSource
+            | Duration::WhileSourceTapped
             | Duration::WhileHasCounter(_)
-            | Duration::NextUntapStep => true,
+            | Duration::NextUntapStep
+            | Duration::UntilPaid(_)
+            | Duration::UntilTurnSkipped => true,
         }
     }
 }
@@ -170,17 +201,20 @@ pub(crate) fn fold_created(
             intervening_if: None,
             limit: None,
             from: ZoneKind::Battlefield,
-            targets: Vec::new(),
+            targets: created.targets.clone(),
             effects: created.effects.clone(),
         }),
         bindings,
         once: created.once,
-        duration: if created.once && !created.this_turn {
+        duration: if let Some(until) = &created.until {
+            until.clone()
+        } else if created.once && !created.this_turn {
             Duration::Forever
         } else {
             Duration::UntilEndOfTurn
         },
         turn: state.turn.number,
+        kept: created.kept.as_deref().cloned().map(Arc::new),
     });
     Ok(())
 }
@@ -233,11 +267,14 @@ mod tests {
             },
             once: false,
             this_turn: false,
+            until: None,
             effects: vec![mtg_cards::effect::Effect::GainLife {
                 who: Ref::You,
                 amount: mtg_cards::value::Amount::Fixed(1),
             }],
+            targets: Vec::new(),
             bindings,
+            kept: None,
         }
     }
 

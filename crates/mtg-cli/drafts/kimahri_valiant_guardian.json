@@ -1,0 +1,44 @@
+{
+  "oracle_id": "6d42e81a-84d3-4c90-9c69-c0d562c66cac",
+  "name": "Kimahri, Valiant Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kimahri, Valiant Guardian",
+      "oracle_fingerprint": "822e85ad1a1531821d48f34a98cbdae8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Target": 0 },
+                        "except": [
+                          { "SetName": "Kimahri, Valiant Guardian" },
+                          { "AddKeyword": "Vigilance" },
+                          "ThisAbility"
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

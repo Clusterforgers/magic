@@ -24,7 +24,6 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Duration, Modification as Wanted};
 use mtg_cards::refs::{Pred, Ref, Selector as Named, ZoneKind};
-use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
@@ -150,6 +149,9 @@ pub(crate) struct Applied {
 pub(crate) struct Held {
     id: ObjectId,
     pub(crate) chars: Characteristics,
+    /// Its power and toughness once the layers that set them are through (7a and 7b, CR 613.4): the base the modifiers
+    /// and counters of 7c add to. Until then, as the card prints them.
+    pub(crate) base_pt: (Option<i32>, Option<i32>),
     pub(crate) controller: PlayerId,
     /// The abilities it has: the printed ones less those lost, then those given, in the order they were given.
     pub(crate) abilities: Vec<HeldAbility>,
@@ -158,6 +160,13 @@ pub(crate) struct Held {
     /// The keywords its keyword counters give with the timestamp each held since: an effect older than the counter does not
     /// take it away (CR 613.7).
     counter_keywords: Vec<(Keyword, u64)>,
+    /// The keywords it can't have or gain any more (a lock): a later effect that adds one adds nothing.
+    locked: Vec<Keyword>,
+    /// The mana cost its card prints, which a keyword given "equal to its mana cost" reads.
+    own_cost: Option<mtg_core::mana::ManaCost>,
+    /// Whether it has the ability "This creature can't block" its suspected designation gives (CR 701.60c): an effect
+    /// that takes every ability away takes it too.
+    pub(crate) suspect_cant_block: bool,
     /// The effects that changed it.
     pub(crate) applied: Vec<Applied>,
 }
@@ -188,13 +197,25 @@ impl Held {
                 ));
             }
         }
+        // A suspected permanent has menace and "This creature can't block" as long as it is suspected (CR 701.60c).
+        let suspected = object
+            .permanent()
+            .is_some_and(crate::object::PermanentState::suspected);
+        if suspected && !keywords.contains(&Keyword::Menace) {
+            keywords.push(Keyword::Menace);
+        }
+        let chars = base(object);
         Held {
             id,
-            chars: base(object),
+            base_pt: (chars.power, chars.toughness),
+            chars,
             controller: object.controller(),
             abilities,
             keywords,
             counter_keywords: Vec::new(),
+            locked: Vec::new(),
+            own_cost: object.mana_cost().cloned(),
+            suspect_cant_block: suspected,
             applied: Vec::new(),
         }
     }
@@ -204,6 +225,7 @@ impl Held {
     fn outside(state: &GameState, object: &GameObject) -> Held {
         let mut held = Held::new(object);
         held.chars = outside(state, object, None);
+        held.base_pt = (held.chars.power, held.chars.toughness);
         held
     }
 
@@ -232,9 +254,49 @@ impl Held {
     /// Gives back the keywords of the keyword counters put on after the effect with the timestamp `stamp` that `named` selects.
     fn keep_newer_counter_keywords(&mut self, stamp: u64, named: impl Fn(&Keyword) -> bool) {
         for (keyword, since) in &self.counter_keywords {
-            if *since > stamp && named(keyword) && !self.keywords.contains(keyword) {
+            if *since > stamp
+                && named(keyword)
+                && !self.locked.contains(keyword)
+                && !self.keywords.contains(keyword)
+            {
                 self.keywords.push(keyword.clone());
             }
+        }
+    }
+
+    /// Takes every ability and keyword away; a land type that sets the abilities (`land`) takes only those of the rules
+    /// text, so the "can't block" of a suspected land creature stays (CR 305.7, 701.60c).
+    fn lose_abilities(&mut self, land: bool) {
+        self.keywords.clear();
+        self.abilities.clear();
+        self.suspect_cant_block &= land;
+    }
+
+    /// Takes away the one ability at `address` ("~ loses this ability"); the others stay.
+    fn e15g_lose(&mut self, address: crate::abilities::AbilityRef) {
+        self.abilities.retain(|held| {
+            !(held.address.ability == address.ability && held.address.source == address.source)
+        });
+    }
+
+    /// Gives the abilities `borrowed` names, each kept under its donor; an object never borrows from itself.
+    fn gain_borrowed(&mut self, borrowed: &[crate::effects::Borrowed], stamp: u64) {
+        for ability in borrowed {
+            if ability.donor == self.id {
+                continue;
+            }
+            self.abilities.push(HeldAbility {
+                address: AbilityRef::granted(
+                    self.id,
+                    Grant::Borrowed {
+                        donor: ability.donor,
+                        ability: ability.index,
+                    },
+                ),
+                body: Arc::clone(&ability.body),
+                since: stamp,
+                keyword: None,
+            });
         }
     }
 
@@ -251,6 +313,12 @@ impl Held {
         match modification {
             Modification::SetController(player) => self.controller = *player,
             Modification::AddKeyword(keyword) => {
+                let own = self.own_cost.clone().unwrap_or_default();
+                let read = keyword.clone().with_own_mana_cost(&own);
+                let keyword = &read;
+                if self.locked.contains(keyword) {
+                    return;
+                }
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());
                 }
@@ -267,7 +335,12 @@ impl Held {
                         },
                     ));
             }
-            Modification::RemoveKeyword(keyword) => {
+            Modification::RemoveKeyword(keyword) | Modification::LockKeyword(keyword) => {
+                if matches!(modification, Modification::LockKeyword(_))
+                    && !self.locked.contains(keyword)
+                {
+                    self.locked.push(keyword.clone());
+                }
                 self.keywords.retain(|held| held != keyword);
                 self.keep_newer_counter_keywords(stamp, |held| held == keyword);
                 self.abilities.retain(|held| {
@@ -277,24 +350,30 @@ impl Held {
             }
             // The land has no ability of its rules text any more (CR 305.7); a layer 6 effect can still give one.
             Modification::LoseAbilities | Modification::SetLandTypes(_) => {
-                self.keywords.clear();
-                self.abilities.clear();
+                self.lose_abilities(matches!(modification, Modification::SetLandTypes(_)));
                 self.keep_newer_counter_keywords(stamp, |_| true);
             }
+            Modification::LoseAbility(address) => self.e15g_lose(*address),
             Modification::GrantAbility(granted) => self.abilities.push(HeldAbility {
                 address: AbilityRef::granted(self.id, origin),
                 body: Arc::clone(granted),
                 since: stamp,
                 keyword: None,
             }),
+            Modification::GainAbilities(borrowed) => self.gain_borrowed(borrowed, stamp),
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
+            | Modification::AddSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::GrantText(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
+            | Modification::AddColors(_)
             | Modification::SetPowerToughness { .. }
+            | Modification::SetPower(_)
+            | Modification::SetToughness(_)
             | Modification::ModifyPowerToughness { .. }
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
@@ -391,8 +470,11 @@ impl GameState {
     /// can be in play (a game of cards with none costs nothing) and while the pass itself is under way, which reads its own
     /// objects.
     pub(crate) fn layers(&self) -> &Layers {
-        let nothing_to_derive =
-            self.effects.is_empty() && !self.statics_possible && !self.possible.counters;
+        let nothing_to_derive = self.effects.is_empty()
+            && self.ring.is_empty()
+            && !self.statics_possible
+            && !self.possible.counters
+            && !self.possible.suspected;
         if nothing_to_derive || COMPUTING.with(Cell::get) {
             return &EMPTY;
         }
@@ -502,9 +584,22 @@ struct Cand<'a> {
 
 impl Cand<'_> {
     /// The order effects apply in when nothing depends on anything: the characteristic-defining abilities first (CR
-    /// 613.3), then by timestamp, registered effects by id before static ones by source, ability and modification.
-    fn order(&self) -> (bool, u64, Key) {
-        (!self.defining, self.timestamp, self.key)
+    /// 613.3), then by timestamp, registered effects by id before static ones by source, ability and modification, with
+    /// the loss of abilities first within an ability.
+    fn order(&self) -> (bool, u64, Key, bool, Key) {
+        // Within one static ability the loss of all abilities applies first, so what the same ability gives stays (CR 613.1f).
+        let loses = match &self.what {
+            Source::Static(cand) => matches!(
+                &*cand.body,
+                Ability::Static { mods, .. } if matches!(mods.get(cand.index), Some(Wanted::LoseAbilities))
+            ),
+            Source::Registered(_) => false,
+        };
+        let group = match self.key {
+            Key::Static(address, _) => Key::Static(address, 0),
+            key @ Key::Effect(_) => key,
+        };
+        (!self.defining, self.timestamp, group, !loses, self.key)
     }
 }
 
@@ -512,9 +607,18 @@ impl Cand<'_> {
 #[derive(Debug, Clone, PartialEq)]
 struct Foot {
     modification: Modification,
+    /// What it does to an object whose amounts read the object itself (`Ref::Affected`), else the same change for all.
+    each: BTreeMap<ObjectId, Modification>,
     set: BTreeSet<ObjectId>,
     /// The players it gives a keyword to or takes one from.
     players: BTreeSet<PlayerId>,
+}
+
+impl Foot {
+    /// The change made to the object `id`.
+    fn change_for(&self, id: ObjectId) -> &Modification {
+        self.each.get(&id).unwrap_or(&self.modification)
+    }
 }
 
 /// The effects of a static ability that began to apply in an earlier layer: they go on applying to the permanents they
@@ -544,19 +648,31 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)
         | Wanted::RemoveSupertype(_)
+        | Wanted::AddSupertype(_)
+        | Wanted::SetName(_)
+        | Wanted::ThisAbility
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
+        | Wanted::SetLandTypesChosen(_)
+        | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddChosenSubtype
         | Wanted::AddAllCreatureTypes => Layer::Type,
-        Wanted::SetColors(_) => Layer::Color,
+        Wanted::SetColors(_)
+        | Wanted::AddColors(_)
+        | Wanted::SetColorsChosen(_)
+        | Wanted::SetChosenColor => Layer::Color,
         Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
+        | Wanted::LockKeyword(_)
         | Wanted::GrantAbility(_)
+        | Wanted::LoseThisAbility
+        | Wanted::GainAbilitiesOf(_)
         | Wanted::LoseAbilities => Layer::Ability,
         Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,
-        Wanted::SetPT { .. } => Layer::PtSet,
+        Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) => Layer::PtSet,
         Wanted::ModifyPT { .. } => Layer::PtModify,
         Wanted::SwitchPT => Layer::PtSwitch,
         Wanted::CantAttack
@@ -644,9 +760,11 @@ struct Pass<'a> {
 /// without it (a dropped effect never comes back, so this ends), so that the check reads the control as the layers left
 /// it and never the control as a stale state records it (CR 611.2b, 613.7).
 fn compute(state: &GameState) -> Layers {
+    let rings = crate::ring::effects(state);
     let mut registered: Vec<&ContinuousEffect> = state
         .effects()
         .iter()
+        .chain(&rings)
         .filter(|effect| effect.is_active_before_control(state))
         .collect();
     loop {
@@ -692,9 +810,15 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             .iter()
             .filter_map(|id| state.object(*id)?.permanent())
             .any(|permanent| {
-                power_toughness_from_counters(permanent) != 0 || has_keyword_counter(permanent)
+                power_toughness_from_counters(permanent) != (0, 0) || has_keyword_counter(permanent)
             });
-    if registered.is_empty() && !statics_in_play && !counters_in_play {
+    let suspected_in_play = state.possible.suspected
+        && state
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter_map(|id| state.object(*id)?.permanent())
+            .any(crate::object::PermanentState::suspected);
+    if registered.is_empty() && !statics_in_play && !counters_in_play && !suspected_in_play {
         return Layers {
             held: BTreeMap::new(),
             players: BTreeMap::new(),
@@ -720,6 +844,22 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             }
         }
     }
+    // A spell an effect names on the stack is changed by it like a permanent ("target spell becomes red"), and the change
+    // stays with the permanent it becomes (CR 400.7a, `effects::follow_spell`).
+    for effect in &registered {
+        if let Selector::Objects(named) = &effect.selector {
+            for reference in named {
+                if let Some(object) = state.object(reference.id).filter(|object| {
+                    object.zone() == Zone::Stack
+                        && object.kind() != ObjectKind::Ability
+                        && object.reference() == *reference
+                }) {
+                    held.entry(reference.id)
+                        .or_insert_with(|| Held::outside(state, object));
+                }
+            }
+        }
+    }
     let mut pass = Pass {
         state,
         held,
@@ -730,6 +870,11 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
     };
     for layer in LAYERS {
         pass.run(Some(layer));
+        if layer == Layer::PtSet {
+            for held in pass.held.values_mut() {
+                held.base_pt = (held.chars.power, held.chars.toughness);
+            }
+        }
     }
     pass.run(None);
     Layers {
@@ -815,14 +960,12 @@ impl<'a> Pass<'a> {
             let Some(permanent) = state.object(*id).and_then(GameObject::permanent) else {
                 continue;
             };
-            let net = power_toughness_from_counters(permanent);
-            if net != 0 {
-                held.chars.power = held.chars.power.map(|power| power.saturating_add(net));
-                held.chars.toughness = held
-                    .chars
-                    .toughness
-                    .map(|toughness| toughness.saturating_add(net));
-            }
+            let (power, toughness) = power_toughness_from_counters(permanent);
+            held.chars.power = held.chars.power.map(|base| base.saturating_add(power));
+            held.chars.toughness = held
+                .chars
+                .toughness
+                .map(|base| base.saturating_add(toughness));
         }
     }
 
@@ -1017,6 +1160,7 @@ impl<'a> Pass<'a> {
                         .collect(),
                 };
                 Some(Foot {
+                    each: BTreeMap::new(),
                     modification: effect.modification.clone(),
                     set,
                     players: BTreeSet::new(),
@@ -1024,6 +1168,39 @@ impl<'a> Pass<'a> {
             }
             Source::Static(cand) => self.static_footprint(view, cand),
         }
+    }
+
+    /// The change a static ability makes, and for each object it applies to the change that differs because its amounts read
+    /// the object itself.
+    fn lowered(
+        &self,
+        scope: &Scope<'_>,
+        wanted: &Wanted,
+        set: &BTreeSet<ObjectId>,
+    ) -> Option<(Modification, BTreeMap<ObjectId, Modification>)> {
+        let read = std::cell::Cell::new(false);
+        let first = set
+            .iter()
+            .next()
+            .and_then(|id| self.state.object(*id))
+            .map(GameObject::reference);
+        let probe = match first {
+            Some(object) => scope.clone().with_affected(object, &read),
+            None => scope.clone(),
+        };
+        let modification = lower(&probe, wanted).ok()?;
+        let mut each = BTreeMap::new();
+        if read.get() {
+            for id in set {
+                let object = self.state.object(*id)?.reference();
+                let flag = std::cell::Cell::new(false);
+                each.insert(
+                    *id,
+                    lower(&scope.clone().with_affected(object, &flag), wanted).ok()?,
+                );
+            }
+        }
+        Some((modification, each))
     }
 
     fn static_footprint(&self, view: View<'_>, cand: &StaticCand) -> Option<Foot> {
@@ -1069,12 +1246,19 @@ impl<'a> Pass<'a> {
         let set = if let Some(started) = started {
             started.set.clone()
         } else {
-            if let Some(condition) = condition
-                && !scope.holds(condition).unwrap_or(false)
-            {
-                return None;
-            }
-            match affected {
+            // A condition that reads the affected object holds for some of them and not for the others.
+            let asked = std::cell::Cell::new(false);
+            let per_object = if let Some(condition) = condition {
+                let probe = scope.clone().with_affected(cand.holder, &asked);
+                let holds = probe.holds(condition).unwrap_or(false);
+                if !asked.get() && !holds {
+                    return None;
+                }
+                asked.get()
+            } else {
+                false
+            };
+            let chosen: BTreeSet<ObjectId> = match affected {
                 Ref::This => BTreeSet::from([cand.holder.id]),
                 Ref::Attached => {
                     let host = self.state.host_of(cand.holder.id)?;
@@ -1095,15 +1279,30 @@ impl<'a> Pass<'a> {
                 }
                 // The data check keeps every other reference out of a static ability.
                 _ => BTreeSet::new(),
+            };
+            match condition {
+                Some(condition) if per_object => chosen
+                    .into_iter()
+                    .filter(|id| {
+                        let flag = std::cell::Cell::new(false);
+                        self.state.object(*id).is_some_and(|object| {
+                            scope
+                                .clone()
+                                .with_affected(object.reference(), &flag)
+                                .holds(condition)
+                                .unwrap_or(false)
+                        })
+                    })
+                    .collect(),
+                _ => chosen,
             }
         };
         let wanted = mods.get(cand.index)?;
-        let modification = {
-            let _reading = Needing::enter(reads_of_modification(wanted));
-            lower(&scope, wanted).ok()?
-        };
+        let _reading = Needing::enter(reads_of_modification(wanted));
+        let (modification, each) = self.lowered(&scope, wanted, &set)?;
         Some(Foot {
             modification,
+            each,
             set,
             players,
         })
@@ -1144,12 +1343,13 @@ impl<'a> Pass<'a> {
         }
         for id in &foot.set {
             if let Some(held) = self.held.get_mut(id) {
-                held.change(&foot.modification, cand.origin, cand.timestamp);
+                let change = foot.change_for(*id);
+                held.change(change, cand.origin, cand.timestamp);
                 held.applied.push(Applied {
                     origin: cand.origin,
                     layer: cand.layer,
                     timestamp: cand.timestamp,
-                    modification: foot.modification.clone(),
+                    modification: change.clone(),
                 });
             }
         }
@@ -1167,7 +1367,7 @@ impl<'a> Pass<'a> {
                     held.push(keyword.clone());
                 }
             }
-            Modification::RemoveKeyword(keyword) => {
+            Modification::RemoveKeyword(keyword) | Modification::LockKeyword(keyword) => {
                 if let Some(held) = self.players.get_mut(&player) {
                     held.keywords.retain(|kept| kept != keyword);
                 }
@@ -1218,12 +1418,13 @@ impl<'a> Pass<'a> {
                 .iter()
                 .filter_map(|id| {
                     let mut trial = self.held.get(id)?.without_history();
-                    trial.change(&by_b.modification, waiting[b].origin, waiting[b].timestamp);
+                    let change = by_b.change_for(*id);
+                    trial.change(change, waiting[b].origin, waiting[b].timestamp);
                     trial.applied.push(Applied {
                         origin: waiting[b].origin,
                         layer: waiting[b].layer,
                         timestamp: waiting[b].timestamp,
-                        modification: by_b.modification.clone(),
+                        modification: change.clone(),
                     });
                     Some((*id, trial))
                 })
@@ -1299,12 +1500,17 @@ fn has_keyword_counter(permanent: &PermanentState) -> bool {
         .any(|(kind, _)| kind.keyword().is_some())
 }
 
-/// What the +1/+1 and -1/-1 counters on a permanent add to its power and to its toughness: one for each +1/+1 counter and
-/// minus one for each -1/-1 counter.
-fn power_toughness_from_counters(permanent: &PermanentState) -> i32 {
-    let plus = i64::from(permanent.counters_of(&CounterKind::PlusOnePlusOne));
-    let minus = i64::from(permanent.counters_of(&CounterKind::MinusOneMinusOne));
-    i32::try_from(plus - minus).unwrap_or(if plus > minus { i32::MAX } else { i32::MIN })
+/// What the counters on a permanent add to its power and to its toughness, summed over every kind that carries numbers
+/// (`+1/+1`, `-1/-1`, `+2/+0`, `-0/-1`): each counter adds its kind's amount, whatever the other kinds do.
+fn power_toughness_from_counters(permanent: &PermanentState) -> (i32, i32) {
+    let (mut power, mut toughness) = (0_i64, 0_i64);
+    for (kind, count) in permanent.counters() {
+        let (p, t) = kind.power_toughness();
+        power += i64::from(p) * i64::from(count);
+        toughness += i64::from(t) * i64::from(count);
+    }
+    let clamp = |n: i64| i32::try_from(n).unwrap_or(if n > 0 { i32::MAX } else { i32::MIN });
+    (clamp(power), clamp(toughness))
 }
 
 /// What the effect changes in the objects it applies to.
@@ -1377,6 +1583,8 @@ pub(crate) fn outside(
 }
 
 #[cfg(test)]
+mod base_pt;
+#[cfg(test)]
 mod c4_control;
 #[cfg(test)]
 mod characteristic_keywords;
@@ -1392,6 +1600,8 @@ mod deck_auras;
 mod defining;
 #[cfg(test)]
 mod dependencies;
+#[cfg(test)]
+mod g9b_chosen;
 #[cfg(test)]
 mod keyword_counters;
 #[cfg(test)]

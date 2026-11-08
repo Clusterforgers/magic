@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8fc72080-8d4d-427d-ae30-065bc8ee9a28",
+  "name": "Tidal Visionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidal Visionary",
+      "oracle_fingerprint": "bd7cffe139df6b3f3ff169a5e5134617",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

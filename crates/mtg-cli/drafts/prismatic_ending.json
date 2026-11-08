@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2cb98ca9-d7bb-416b-a17e-ee5f8e4d78f2",
+  "name": "Prismatic Ending",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismatic Ending",
+      "oracle_fingerprint": "44f4d58eaa1bbf244b7e7cdd6a96d1cd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Not": { "Type": "Land" } },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": "ColorsSpent" } }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

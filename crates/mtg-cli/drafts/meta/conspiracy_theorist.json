@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME attacks, you may pay {1} and discard a card. If you do, draw a card.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you discard one or more nonland cards, you may exile one of them from your graveyard. If you do, you may cast it this turn.",
+      "abilities": [],
+      "gap": "key:Effect.RememberObjects=ExiledCards"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 91
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 92,
+          "end": 224
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

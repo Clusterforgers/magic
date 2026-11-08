@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e7e60afe-5ddf-406b-86e1-e82e2a660432",
+  "name": "Spiteful Returned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiteful Returned",
+      "oracle_fingerprint": "dca3b0c153453f2235bd6f0bfc835969",
+      "abilities": [
+        { "Keyword": { "Bestow": "{3}{B}" } },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Is": "Attached" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Defending", "amount": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

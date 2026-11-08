@@ -1,0 +1,24 @@
+{
+  "oracle_id": "043fa53c-8a46-4fbd-836f-2403c62e0121",
+  "name": "Oran-Rief Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oran-Rief Recluse",
+      "oracle_fingerprint": "58dff14797b3aad420b1f3927eea5a16",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{G}" } },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

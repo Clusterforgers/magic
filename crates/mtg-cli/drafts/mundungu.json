@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3fb4161d-a5b9-411d-942c-2fdb039e7bde",
+  "name": "Mundungu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mundungu",
+      "oracle_fingerprint": "86891762b3663e790a5472b0fa42567e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "Mana": "{1}" }, { "PayLife": 1 }],
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

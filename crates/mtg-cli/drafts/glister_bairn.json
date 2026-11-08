@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6a7229a8-1634-4278-ab50-0ec2b51edac1",
+  "name": "Glister Bairn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glister Bairn",
+      "oracle_fingerprint": "015ea05531433245e6df8d936a92c8da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" }
+                        },
+                        "toughness": {
+                          "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

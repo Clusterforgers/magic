@@ -8,6 +8,7 @@ import {
   draftKind,
   EMPTY_DRAFT,
   heldOf,
+  keywordWords,
   KNOWN_COUNTERS,
   LIMITS,
   manualMenu,
@@ -16,6 +17,8 @@ import {
 } from '../offers'
 import type { Draft, ManualGroup, ManualItem, ManualMenu, MenuInput } from '../offers'
 import type { Preview } from './commands'
+
+type GrantAction = Extract<ManualAction, { GrantAbility: unknown }>
 
 /** The commands of a card, in the order of its menu. */
 export type CardCommandId =
@@ -27,9 +30,14 @@ export type CardCommandId =
   | 'unattach'
   | 'damage'
   | 'pump'
+  | 'grant'
   | 'unsick'
   | 'sacrifice'
   | 'give'
+  | 'transform'
+  | 'back'
+  | 'defender'
+  | 'blocks'
 
 /** One command of the picked card. */
 export interface CardCommand {
@@ -185,6 +193,15 @@ export function cardCommands(menu: ManualMenu): CardCommand[] {
       unavailable: pump.unavailable,
     })
   }
+  const grant = find(effects, 'grant')
+  if (grant !== undefined) {
+    commands.push({
+      id: 'grant',
+      label: 'Give ability',
+      effect: 'Give the permanent a keyword or a line of text, until end of turn or for good.',
+      unavailable: grant.unavailable,
+    })
+  }
   return commands
 }
 
@@ -214,6 +231,32 @@ export function controlCommands(input: MenuInput): CardCommand[] {
         unavailable: off,
       })
     }
+    if (object.types.includes('Creature')) {
+      if ((object.keywords ?? []).includes('Defender')) {
+        out.push({
+          id: 'defender',
+          label: 'May attack despite defender',
+          effect: 'Until end of turn, it may attack as though it did not have defender.',
+          action: { AttackDespiteDefender: { object: object.id } },
+          unavailable: off,
+        })
+      }
+      out.push({
+        id: 'blocks',
+        label: 'Block additional creatures…',
+        effect: 'Until end of turn, it can block more creatures.',
+        unavailable: off,
+      })
+    }
+    if (object.kind !== 'Token') {
+      out.push({
+        id: 'transform',
+        label: 'Transform',
+        effect: 'Turn a double-faced permanent over to its other face.',
+        action: { Transform: { object: object.id } },
+        unavailable: off,
+      })
+    }
     out.push({
       id: 'sacrifice',
       label: 'Sacrifice',
@@ -237,6 +280,15 @@ export function controlCommands(input: MenuInput): CardCommand[] {
       effect: 'Put it onto the battlefield under another seat’s control.',
       seats: others,
       unavailable: off ?? noOne,
+    })
+  }
+  if ((kind === 'hand' || kind === 'graveyard' || kind === 'exile') && object.owner === seat && !spell) {
+    out.push({
+      id: 'back',
+      label: 'Onto the battlefield back face up',
+      effect: 'Put a double-faced card onto the battlefield with its back face up.',
+      action: { MoveBack: { object: object.id } },
+      unavailable: off,
     })
   }
   return out
@@ -345,6 +397,23 @@ export function previewOfCard(command: CardCommand, draft: CardDraft, context: C
       return sends(command, `${name}: no longer summoning sick this turn`, 'Remove summoning sickness')
     case 'sacrifice':
       return sends(command, `${name}: the battlefield → graveyard, sacrificed`, `Sacrifice ${name}`)
+    case 'transform':
+      return sends(command, `${name}: turned over to its other face`, `Turn over ${name}`)
+    case 'defender':
+      return sends(command, `${name}: may attack this turn despite defender`, `Let ${name} attack`)
+    case 'blocks': {
+      const count = draft.count
+      if (!Number.isInteger(count) || count < 1 || count > LIMITS.blocks) {
+        return { problem: `Choose from 1 to ${LIMITS.blocks} more creatures.` }
+      }
+      return {
+        preview: `${name}: can block ${count} more ${count === 1 ? 'creature' : 'creatures'} this turn`,
+        apply: `Block ${count} more`,
+        action: { BlockAdditional: { object: object.id, count } },
+      }
+    }
+    case 'back':
+      return sends(command, `${name}: onto the battlefield, back face up`, `Put ${name} back face up`)
     case 'give': {
       const to = command.seats?.find((seat) => String(seat) === draft.giveTo)
       if (to === undefined) return { problem: 'Choose the seat that gains control.' }
@@ -356,6 +425,18 @@ export function previewOfCard(command: CardCommand, draft: CardDraft, context: C
           : `${name}: control → ${who}`,
         apply: `Give ${name} to ${who}`,
         action: { GiveControl: { object: object.id, to } },
+      }
+    }
+    case 'grant': {
+      const built = buildAction('grant', { ...input, draft })
+      if ('problem' in built) return { problem: built.problem }
+      const { grant, until_end_of_turn } = (built.action as GrantAction).GrantAbility
+      const what = 'Keyword' in grant ? keywordWords(grant.Keyword) : `“${grant.Text}”`
+      const lasts = until_end_of_turn ? 'until end of turn' : 'for good'
+      return {
+        preview: `${name}: gains ${what} ${lasts}`,
+        apply: `Give ${what}`,
+        action: built.action,
       }
     }
     case 'pump': {

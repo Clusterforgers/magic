@@ -1,0 +1,42 @@
+{
+  "oracle_id": "42a96276-fddc-435e-bd47-04f9c6001ec7",
+  "name": "Skarrgan Firebird",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skarrgan Firebird",
+      "oracle_fingerprint": "dfe8951c61697224ddd4d6e61baead05",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bloodthirst", "amount": 3 } } },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{R}{R}{R}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "DamageTaken" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

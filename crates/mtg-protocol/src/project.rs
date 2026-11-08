@@ -150,9 +150,9 @@ fn zone_view(state: &GameState, viewer: PlayerId, zone: Zone) -> ZoneView {
 fn keyword_names(state: &GameState, id: ObjectId) -> Vec<String> {
     let mut names: Vec<String> = Vec::new();
     for keyword in keywords_of(state, id) {
-        let name = keyword.name();
-        if !names.iter().any(|seen| seen == name) {
-            names.push(name.to_owned());
+        let name = keyword.shown_name();
+        if !names.contains(&name) {
+            names.push(name);
         }
     }
     names
@@ -178,7 +178,9 @@ fn given_keyword_names(keywords: &[Keyword]) -> Vec<String> {
     let mut protecting = false;
     for keyword in keywords {
         let word = match keyword {
-            Keyword::Protection(quality) => protection_quality_word(quality),
+            Keyword::Protection(quality) | Keyword::ProtectionSparing { from: quality, .. } => {
+                protection_quality_word(quality)
+            }
             _ => None,
         };
         match (word, names.last_mut()) {
@@ -187,7 +189,7 @@ fn given_keyword_names(keywords: &[Keyword]) -> Vec<String> {
                 last.push_str(word);
             }
             (Some(word), _) => names.push(format!("Protection from {word}")),
-            (None, _) => names.push(keyword.name().to_owned()),
+            (None, _) => names.push(keyword.shown_name()),
         }
         protecting = word.is_some();
     }
@@ -199,9 +201,9 @@ fn printed_keyword_names(card: &CardDefinition) -> Vec<String> {
     let mut names: Vec<String> = Vec::new();
     for rules in &card.rules {
         if let Ability::Keyword(keyword) = &**rules {
-            let name = keyword.name();
-            if !names.iter().any(|seen| seen == name) {
-                names.push(name.to_owned());
+            let name = keyword.shown_name();
+            if !names.contains(&name) {
+                names.push(name);
             }
         }
     }
@@ -363,6 +365,8 @@ impl ObjectView {
             // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
             summoning_sick: summoning_sick(state, id),
             prepared: p.prepared(),
+            suspected: p.suspected(),
+            solved: p.solved(),
             phased_out: object.zone() == Zone::PhasedOut,
             exerted: !p.exerted().is_empty(),
             level: subtypes
@@ -479,6 +483,7 @@ impl ObjectView {
             read: printed && card.read,
             partial: printed && card.partial,
             note: mtg_engine::sight::note_of(state, id).map(str::to_owned),
+            granted: mtg_engine::manual_grant::granted_by_hand(state, id),
             identity: identity_of(state, object, card).filter(|_| printed),
             activated,
         })
@@ -527,6 +532,7 @@ impl ObjectView {
             read: false,
             partial: false,
             note: None,
+            granted: Vec::new(),
             identity: None,
             activated: Vec::new(),
         }
@@ -549,6 +555,9 @@ impl PlayerView {
                 .map(|(kind, count)| (kind.clone(), count))
                 .collect(),
             citys_blessing: state.has_citys_blessing(seat),
+            speed: state.speed(seat),
+            ring_level: state.ring_level(seat),
+            ring_bearer: state.ring_bearer(seat),
             enchanted_by: state.attachments_of_player(seat),
             mulligans: player.mulligans(),
             mulligan: player.mulligan_status(),

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9038a457-ce01-4f6d-9e2b-5220f08b4290",
+  "name": "Call a Surprise Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call a Surprise Witness",
+      "oracle_fingerprint": "caf3620c6d6367ae37ef535e7a7386db",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Spirit" }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "moved" }, "counter": { "Other": "flying" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

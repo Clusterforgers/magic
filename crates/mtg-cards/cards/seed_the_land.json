@@ -1,0 +1,35 @@
+{
+  "oracle_id": "75b39a67-6720-482f-935a-c142ca0f7891",
+  "name": "Seed the Land",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seed the Land",
+      "oracle_fingerprint": "015c07acb7dd136d0bc0f531503378a0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Land" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

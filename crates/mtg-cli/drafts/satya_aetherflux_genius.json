@@ -1,0 +1,65 @@
+{
+  "oracle_id": "ce8af7dd-49df-4419-9776-4157efc60b0f",
+  "name": "Satya, Aetherflux Genius",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Satya, Aetherflux Genius",
+      "oracle_fingerprint": "f0e0056b8fc94e141fea54e32f18cfc2",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": "Token" },
+                    { "ControlledBy": "You" },
+                    "Other"
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Target": 0 } } },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy"
+                }
+              },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Pay": {
+                        "cost": [{ "PayEnergy": 1 }],
+                        "times": { "Stat": { "of": { "Bound": "copy" }, "stat": "ManaValue" } },
+                        "unpaid": [
+                          {
+                            "Sacrifice": {
+                              "filter": [{ "Is": { "Bound": "copy" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

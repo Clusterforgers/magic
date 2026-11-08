@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c07340bb-04b6-4a80-9999-727b8ab3534d",
+  "name": "Éomer of the Riddermark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Éomer of the Riddermark",
+      "oracle_fingerprint": "bcceeed507b4e03434b9d28d1b6ef615",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "GreatestAmong": { "stat": "Power", "group": [{ "Type": "Creature" }] } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

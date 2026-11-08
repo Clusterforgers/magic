@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6dcc62f8-2fd9-473b-9e6a-2dd7e610f855",
+  "name": "Field of Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Field of Dreams",
+      "oracle_fingerprint": "f31b104c4a8c6f64dc044617fe3380d7",
+      "abilities": [{ "Rule": { "rule": { "RevealTop": "EachPlayer" } } }]
+    }
+  ]
+}

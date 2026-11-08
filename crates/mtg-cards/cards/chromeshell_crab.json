@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8cbac2e8-5755-433b-9f42-7fd5c214aab3",
+  "name": "Chromeshell Crab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chromeshell Crab",
+      "oracle_fingerprint": "a8f2680c98dab42beefbaa175eff0b73",
+      "abilities": [
+        { "Keyword": { "Morph": "{4}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExchangeControl": {
+                        "what": [{ "Target": 0 }, { "Target": 1 }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

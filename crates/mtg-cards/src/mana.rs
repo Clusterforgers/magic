@@ -118,7 +118,6 @@ mod tests {
     }
 
     #[rstest]
-    #[case::snow("{S}", "S")]
     #[case::y("{2}{Y}", "Y")]
     fn unsupported_symbols_are_named(#[case] text: &str, #[case] symbol: &str) {
         assert_eq!(

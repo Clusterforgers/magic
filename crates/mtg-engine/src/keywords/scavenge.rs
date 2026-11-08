@@ -30,6 +30,7 @@ impl KeywordRules for Scavenge {
             timing: Timing::Sorcery,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Graveyard,
             targets: vec![TargetSpec {
                 what: Targetable::Object(Selector(vec![Pred::Type(CardType::Creature)])),

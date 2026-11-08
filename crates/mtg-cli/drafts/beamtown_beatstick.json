@@ -1,0 +1,43 @@
+{
+  "oracle_id": "035e33ab-adfe-4831-bdbc-52f4ddc7ffe8",
+  "name": "Beamtown Beatstick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beamtown Beatstick",
+      "oracle_fingerprint": "d89db87b2bbffefd41273ec769efff92",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "DealsDamage": {
+                    "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                    "to": "EachPlayer",
+                    "combat": true
+                  }
+                },
+                {
+                  "DealsDamage": {
+                    "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                    "to": { "Each": [{ "Type": "Battle" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "feb9cce1-6c3c-4e04-93ee-d646a888bc29",
+  "name": "Exert Influence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exert Influence",
+      "oracle_fingerprint": "a4a9ba9b099bee12ea5f63733f0dd179",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [
+                            { "Type": "Creature" },
+                            { "Compare": { "stat": "Power", "op": "Le", "to": "ColorsSpent" } }
+                          ]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

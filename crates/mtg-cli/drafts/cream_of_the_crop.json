@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b61a87e3-dc98-4db9-abed-b47b677d81ab",
+  "name": "Cream of the Crop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cream of the Crop",
+      "oracle_fingerprint": "23e777dbcc618c0f26fbeaad5c7f12ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "LookAtTop": {
+                        "count": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                        "as": "top"
+                      }
+                    },
+                    { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept2" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest3" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

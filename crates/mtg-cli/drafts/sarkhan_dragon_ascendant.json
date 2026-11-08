@@ -1,0 +1,46 @@
+{
+  "oracle_id": "71cb48e2-2328-471c-a04a-7b6461f378f4",
+  "name": "Sarkhan, Dragon Ascendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarkhan, Dragon Ascendant",
+      "oracle_fingerprint": "2207051c80c60aab8e961f416ba62686",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Behold": { "filter": [{ "Subtype": "Dragon" }] } }],
+                  "paid": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddSubtype": "Dragon" }, { "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "dadfcd91-3000-448e-a304-be425ff68644",
+  "oracle_id": "0f5f6f3e-1b3c-43e2-b11d-bd454366845c",
+  "multiverse_ids": [
+    640029
+  ],
+  "mtgo_id": 119142,
+  "tcgplayer_id": 525719,
+  "cardmarket_id": 743446,
+  "name": "Bronzebeak Foragers",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/dadfcd91-3000-448e-a304-be425ff68644",
+  "scryfall_uri": "https://scryfall.com/card/lcc/69/bronzebeak-foragers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.jpg?1783913914",
+    "normal": "https://cards.scryfall.io/normal/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.jpg?1783913914",
+    "large": "https://cards.scryfall.io/large/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.jpg?1783913914",
+    "png": "https://cards.scryfall.io/png/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.png?1783913914",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.jpg?1783913914",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.jpg?1783913914",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.webp?1783913914",
+    "grid": "https://cards.scryfall.io/grid/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.webp?1783913914",
+    "display": "https://cards.scryfall.io/display/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.webp?1783913914",
+    "art": "https://cards.scryfall.io/art/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.webp?1783913914",
+    "crop": "https://cards.scryfall.io/crop/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.webp?1783913914",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/a/dadfcd91-3000-448e-a304-be425ff68644.jpg?1783913914"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "When this creature enters, for each opponent, exile up to one target nonland permanent that player controls until this creature leaves the battlefield.\n{X}{W}: Put target card with mana value X exiled with this creature into its owner's graveyard. You gain X life.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dadfcd91-3000-448e-a304-be425ff68644/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0f5f6f3e-1b3c-43e2-b11d-bd454366845c&unique=prints",
+  "collector_number": "69",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brian Valeza",
+  "artist_ids": [
+    "bb2a9339-bbe4-445f-9736-3c43379ee076"
+  ],
+  "illustration_id": "4e541957-505f-4d10-946d-539c785893ba",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4047,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://youtu.be/Q2oJ_cxBG-I?si=RznU7Imz6dXAaccB",
+    "previewed_at": "2023-11-01"
+  },
+  "prices": {
+    "usd": "0.97",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.30",
+    "eur_foil": null,
+    "tix": "1.78"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640029&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBronzebeak%2BForagers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBronzebeak%2BForagers",
+    "edhrec": "https://edhrec.com/route/?cc=Bronzebeak+Foragers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525719%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743446&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119142?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

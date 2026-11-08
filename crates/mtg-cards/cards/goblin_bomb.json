@@ -1,0 +1,46 @@
+{
+  "oracle_id": "061e2ef6-ce8d-4319-b525-96b9c2824001",
+  "name": "Goblin Bomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Bomb",
+      "oracle_fingerprint": "2b85692e7bc5e6bd6e57a1621120f942",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [{ "PutCounters": { "on": "This", "counter": { "Other": "fuse" } } }],
+                        "lose": [
+                          { "RemoveCounters": { "from": "This", "counter": { "Other": "fuse" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "RemoveCounters": { "counter": { "Other": "fuse" }, "count": 5 } },
+              "SacrificeSelf"
+            ],
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 20 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

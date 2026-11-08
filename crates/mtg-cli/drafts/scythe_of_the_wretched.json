@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9dc26b9f-3b02-46f2-88f8-eb6dffa04ee5",
+  "name": "Scythe of the Wretched",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scythe of the Wretched",
+      "oracle_fingerprint": "8ba3f17423285638ed60118955167d66",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "moved" } } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

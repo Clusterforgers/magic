@@ -25,7 +25,9 @@ impl KeywordRules for Protection {
         holder: Holder,
         source: Source<'_>,
     ) -> bool {
-        let Keyword::Protection(quality) = keyword else {
+        let (Keyword::Protection(quality) | Keyword::ProtectionSparing { from: quality, .. }) =
+            keyword
+        else {
             return false;
         };
         let (controller, anchor) = match holder {

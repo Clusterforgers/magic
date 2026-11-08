@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e446bfa6-54b8-4dfa-98d3-023d12b7543d",
+  "name": "Callous Deceiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Callous Deceiver",
+      "oracle_fingerprint": "b58d5255e02b68085b1b54324300b379",
+      "abilities": [
+        { "Activated": { "cost": "{1}", "effects": [{ "LookAtTop": { "as": "top" } }] } },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "limit": "OncePerTurn",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "ModifyPT": { "power": 1, "toughness": 0 } },
+                          { "AddKeyword": "Flying" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

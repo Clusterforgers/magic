@@ -1,0 +1,67 @@
+{
+  "oracle_id": "e7f735ce-e53b-40c0-b449-1f28fdfb2484",
+  "name": "Into the Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Fire",
+      "oracle_fingerprint": "7f80d31dd05854024b502fdf40df72e4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": {
+                              "Each": [
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Creature" },
+                                    { "Type": "Planeswalker" },
+                                    { "Type": "Battle" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "amount": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                            "count": {
+                              "min": 0,
+                              "max": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                            },
+                            "as": "picked"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "picked" },
+                            "to": { "Library": { "place": "Bottom" } },
+                            "as": "moved2"
+                          }
+                        },
+                        { "Draw": { "count": { "Sum": [{ "Bound": "moved2~moved" }, 1] } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

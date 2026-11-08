@@ -1,0 +1,72 @@
+{
+  "oracle_id": "547da0ef-f1e1-4b04-ba83-4845552b0dc4",
+  "name": "Nimble Hobbit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimble Hobbit",
+      "oracle_fingerprint": "9d22c900ad8625a79bb247f4165cabb3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Pay": {
+                        "cost": "{2}{W}",
+                        "paid": [
+                          {
+                            "Reflexive": {
+                              "targets": [
+                                {
+                                  "what": {
+                                    "Object": [
+                                      { "Type": "Creature" },
+                                      { "ControlledBy": "Opponents" }
+                                    ]
+                                  }
+                                }
+                              ],
+                              "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+                        "paid": [
+                          {
+                            "Reflexive": {
+                              "targets": [
+                                {
+                                  "what": {
+                                    "Object": [
+                                      { "Type": "Creature" },
+                                      { "ControlledBy": "Opponents" }
+                                    ]
+                                  }
+                                }
+                              ],
+                              "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

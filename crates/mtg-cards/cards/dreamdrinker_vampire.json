@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5b4e1163-09aa-4597-9a41-e1e384975056",
+  "name": "Dreamdrinker Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamdrinker Vampire",
+      "oracle_fingerprint": "763fede58261424b37209aee9b99af68",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Activated": { "cost": "{1}{B}", "effects": [{ "Adapt": { "count": 1 } }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

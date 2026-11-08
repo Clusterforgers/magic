@@ -1,0 +1,15 @@
+{
+  "oracle_id": "74b631c5-9420-496e-8845-3b050d3d5340",
+  "name": "Streetwise Negotiator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Streetwise Negotiator",
+      "oracle_fingerprint": "6a2b069bf53d33d39250a643696f3f39",
+      "abilities": [
+        { "Keyword": { "Backup": { "count": 1 } } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AssignsByToughness" } } } }
+      ]
+    }
+  ]
+}

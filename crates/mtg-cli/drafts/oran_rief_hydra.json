@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1b065a17-14a4-433f-a6c8-2c8212f505c7",
+  "name": "Oran-Rief Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oran-Rief Hydra",
+      "oracle_fingerprint": "8f0fe2ace492a778383d4e796d5991e3",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      { "CountOf": { "of": "Triggering", "filter": [{ "Subtype": "Forest" }] } },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

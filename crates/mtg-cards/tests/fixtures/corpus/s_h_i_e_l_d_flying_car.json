@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "8e651410-b829-4468-b866-a9dd15f909ad",
+  "oracle_id": "12d51534-a98d-487b-9ba9-c10861dff992",
+  "multiverse_ids": [],
+  "resource_id": "0EC2362A7D07794D76173A1668B0966D9F07A3481DC0A9EC78F40EB197252864",
+  "mtgo_id": 152333,
+  "arena_id": 104968,
+  "tcgplayer_id": 696479,
+  "cardmarket_id": 891055,
+  "name": "S.H.I.E.L.D. Flying Car",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/8e651410-b829-4468-b866-a9dd15f909ad",
+  "scryfall_uri": "https://scryfall.com/card/msh/74/shield-flying-car?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:35:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.jpg?1783902952",
+    "normal": "https://cards.scryfall.io/normal/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.jpg?1783902952",
+    "large": "https://cards.scryfall.io/large/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.jpg?1783902952",
+    "png": "https://cards.scryfall.io/png/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.png?1783902952",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.jpg?1783902952",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.jpg?1783902952",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.webp?1783902952",
+    "grid": "https://cards.scryfall.io/grid/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.webp?1783902952",
+    "display": "https://cards.scryfall.io/display/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.webp?1783902952",
+    "art": "https://cards.scryfall.io/art/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.webp?1783902952",
+    "crop": "https://cards.scryfall.io/crop/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.webp?1783902952",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/e/8e651410-b829-4468-b866-a9dd15f909ad.jpg?1783902952"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Flash\nFlying\nWhen this Vehicle enters, exile up to one target creature you control. Return that card to the battlefield under its owner's control at the beginning of the next end step.\nCrew 1",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Crew",
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ba9bf625-681c-4a4e-ab48-399b2fecac6b",
+  "set": "msh",
+  "set_name": "Marvel Super Heroes",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/ba9bf625-681c-4a4e-ab48-399b2fecac6b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsh&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msh?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8e651410-b829-4468-b866-a9dd15f909ad/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A12d51534-a98d-487b-9ba9-c10861dff992&unique=prints",
+  "collector_number": "74",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paulius Daščioras",
+  "artist_ids": [
+    "1a3e5355-7388-4f77-b024-ad97c4e53578"
+  ],
+  "illustration_id": "00013082-82f5-4c6d-9aee-17c85167de7f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 19797,
+  "penny_rank": 4792,
+  "preview": {
+    "source": "bilibili",
+    "source_uri": "https://t.bilibili.com/1209509206316548104",
+    "previewed_at": "2026-06-02"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.15",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DS.H.I.E.L.D.%2BFlying%2BCar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DS.H.I.E.L.D.%2BFlying%2BCar",
+    "edhrec": "https://edhrec.com/route/?cc=S.H.I.E.L.D.+Flying+Car"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F696479%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891055&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/152333?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

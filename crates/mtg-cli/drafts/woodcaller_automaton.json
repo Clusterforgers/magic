@@ -1,0 +1,45 @@
+{
+  "oracle_id": "124c3af4-8545-479a-b44c-446da1c8b535",
+  "name": "Woodcaller Automaton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodcaller Automaton",
+      "oracle_fingerprint": "02c0af1e4e855b727e7755044aca71ff",
+      "abilities": [
+        { "Keyword": { "Prototype": { "cost": "{2}{G}{G}", "power": 3, "toughness": 3 } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Toughness" } }
+                      }
+                    },
+                    { "AddSubtype": "Treefolk" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

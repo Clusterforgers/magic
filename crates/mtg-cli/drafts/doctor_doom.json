@@ -1,0 +1,70 @@
+{
+  "oracle_id": "9e4fa592-71f8-4c71-8c91-78e6326cd736",
+  "name": "Doctor Doom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doctor Doom",
+      "oracle_fingerprint": "801f3a27f39b0408d0f281feddd523ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Doombot",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot", "Villain"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Creature" } },
+                              { "Not": { "Type": "Artifact" } }
+                            ]
+                          }
+                        },
+                        { "Subtype": "Plan" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

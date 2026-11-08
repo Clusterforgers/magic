@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e16f79c1-ffbb-4893-b62a-d4e9d15e2b16",
+  "name": "Gonti, Night Minister",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gonti, Night Minister",
+      "oracle_fingerprint": "b3be0f11796b587592016a279adcc1f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Spell", { "Not": { "OwnedBy": "You" } }] } },
+            "effects": [
+              { "CreateToken": { "who": "Triggering", "token": { "Named": "treasure" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 86, "end": 354 }
+          }
+        }
+      ]
+    }
+  ]
+}

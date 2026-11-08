@@ -1,0 +1,40 @@
+{
+  "oracle_id": "bd50ba7a-e360-4074-99dc-e3d4c6824d77",
+  "name": "Slithering Shade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slithering Shade",
+      "oracle_fingerprint": "fcd88f11fc32aaf6403b894b49417b89",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

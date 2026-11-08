@@ -1,0 +1,43 @@
+{
+  "oracle_id": "cfe4d707-41b3-4897-b13a-dcae8f1f3350",
+  "name": "Bring Low",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bring Low",
+      "oracle_fingerprint": "bfebb4ba255d8e4b4320399e43f20423",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "CountOf": {
+                              "of": { "Target": 0 },
+                              "filter": [{ "Type": "Creature" }, { "HasCounter": "+1/+1" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

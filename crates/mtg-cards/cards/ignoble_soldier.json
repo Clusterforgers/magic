@@ -1,0 +1,27 @@
+{
+  "oracle_id": "52a61983-53e2-440f-af03-cebe57b102f2",
+  "name": "Ignoble Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ignoble Soldier",
+      "oracle_fingerprint": "0f443ed30ca81780c7e47a9fbb020e7c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3efecb6c-7c21-4b3b-9612-e3916f91c680",
+  "name": "Disturbing Plot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disturbing Plot",
+      "oracle_fingerprint": "028d667c34603fb5efa536670fdfeeb6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": "Conspire" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "64ca54ee-1502-4fae-b919-7e4457e641c0",
+  "name": "Swimmer in Nightmares",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swimmer in Nightmares",
+      "oracle_fingerprint": "16ea86bbfa0b8ddaaf8ada64be7c604b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "EachPlayer",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Planeswalker" },
+                    { "Subtype": "Ashiok" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@ use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Ref, Selector, TargetSpec, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, Condition};
+use crate::value::{Amount, CastWay, Condition};
 
 /// When an activated ability may be activated.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -29,11 +29,48 @@ impl Timing {
     }
 }
 
+/// Who may activate an ability.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+pub enum Activators {
+    /// The controller of the permanent (the default).
+    #[default]
+    Controller,
+    /// Any player (CR 602.2).
+    Anyone,
+    /// The opponents of its controller.
+    Opponents,
+}
+
+impl Activators {
+    /// Whether this is the default, so serialization can leave it out.
+    pub const fn is_controller(&self) -> bool {
+        matches!(self, Activators::Controller)
+    }
+}
+
 /// A limit on how often an ability can be used.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Limit {
     /// Once each turn.
     OncePerTurn,
+    /// Once each game for the object that has it (an exhaust ability, CR 702.177).
+    OncePerGame,
+    /// This many times each turn (a limit of 2 or 3, CR 602.5b).
+    TimesPerTurn(u32),
+    /// "Do this only once each turn" on a trigger whose first step is optional: spent only when that step is done.
+    OncePerTurnDone,
+}
+
+impl Limit {
+    /// The limit of a triggered ability whose first step is a choice ("you may", "you may pay"): "do this only once
+    /// each turn" counts the times it is done; the same limit on a step that is always done is a plain once each turn.
+    pub fn done_once(effects: &[crate::effect::Effect]) -> Self {
+        use crate::effect::Effect;
+        match effects.first() {
+            Some(Effect::May { .. } | Effect::Pay { .. }) => Limit::OncePerTurnDone,
+            _ => Limit::OncePerTurn,
+        }
+    }
 }
 
 /// The loyalty cost of a planeswalker ability (CR 606.4).
@@ -72,6 +109,29 @@ pub enum CostChange {
     Reduce,
 }
 
+/// A kind of activated ability whose cost a modifier changes or whose activation a prohibition forbids.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ActivationKind {
+    /// Any activated ability that is not a mana ability.
+    Any,
+    /// A loyalty ability of a planeswalker (CR 606).
+    Loyalty,
+    /// The equip ability (CR 702.6).
+    Equip,
+    /// The cycling ability (CR 702.29).
+    Cycling,
+    /// A mana ability (CR 605).
+    Mana,
+    /// Every activated ability, mana abilities included (CR 605.1a).
+    Every,
+}
+
+/// Whether a count is zero, so serialization can leave it out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(count: &u32) -> bool {
+    *count == 0
+}
+
 /// Whether a flag is off, so serialization can leave it out (serde calls it with a reference).
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_false(flag: &bool) -> bool {
@@ -103,6 +163,9 @@ pub enum Ability {
         /// How often.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         limit: Option<Limit>,
+        /// Who may activate it.
+        #[serde(default, skip_serializing_if = "Activators::is_controller")]
+        by: Activators,
         /// The zone it can be activated from.
         #[serde(default, skip_serializing_if = "ZoneKind::is_battlefield")]
         from: ZoneKind,
@@ -197,6 +260,17 @@ pub enum Ability {
         /// It applies only while this holds.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         condition: Option<Condition>,
+        /// The change is to the cost of activating abilities of this kind (the objects `applies_to` selects have them), not
+        /// to the cost of casting spells.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        activating: Option<ActivationKind>,
+        /// Only an activation with a target this selects ("equip abilities that target this creature"), judged with the
+        /// targets announced; before they are, while some object in play matches. Abilities only.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        targeting: Option<Selector>,
+        /// A reduction never takes the cost below this much mana (the cost itself when it is already less).
+        #[serde(default, skip_serializing_if = "is_zero")]
+        least: u32,
     },
     /// "As an additional cost to cast this spell, you may ..." (CR 118.8): a cost the caster may pay as the spell is announced,
     /// read by `Condition::AdditionalCostPaid`; without "you may" (`required`) the spell is cast only by paying it (CR 601.2b).
@@ -218,11 +292,43 @@ pub enum Ability {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         cost: Option<Cost>,
     },
+    /// An alternative cost to cast this card for (CR 118.9) with the zone it is cast from, the condition that opens it and
+    /// the timing: one row of the table of alternative costs (warp, surge, web-slinging, impending). The spell remembers the
+    /// way it was cast (`Condition::CastWith`), and what the permanent does because of it is written as abilities that read
+    /// that condition.
+    AltCast {
+        /// The tag the spell and the permanent remember.
+        way: CastWay,
+        /// What is paid in place of the mana cost; nothing when absent (a free cast).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cost: Option<Cost>,
+        /// The zone the card is cast from.
+        #[serde(default = "ZoneKind::hand", skip_serializing_if = "ZoneKind::is_hand")]
+        from: ZoneKind,
+        /// The cast is open only while this holds for the caster; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
+        /// The card is cast as though it had flash.
+        #[serde(default, skip_serializing_if = "is_false")]
+        flash: bool,
+    },
     /// "Cast this spell only during combat." (CR 601.3): the spell is cast only while the condition holds for the caster,
     /// in every way it can be cast.
     CastOnly {
         /// What must hold as the spell is cast.
         condition: Condition,
+    },
+    /// "If this card is in your opening hand, you may begin the game with it on the battlefield." (CR 103.6): the card
+    /// is asked about once its owner has kept a hand.
+    OpeningHand,
+    /// "You may reveal this card from your opening hand. If you do, at the beginning of the first upkeep, ..." (CR
+    /// 103.6): once its owner has kept a hand they may reveal it, which sets up a delayed triggered ability that waits
+    /// for `when`, triggers once and does `effects`.
+    OpeningReveal {
+        /// The event the delayed trigger waits for.
+        when: TriggerPattern,
+        /// What it does.
+        effects: Vec<Effect>,
     },
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),
@@ -303,6 +409,7 @@ mod tests {
             timing: Timing::Instant,
             condition: None,
             limit: None,
+            by: Activators::Controller,
             from: ZoneKind::Battlefield,
             targets: vec![],
             effects: vec![add(&[ManaType::Colorless, ManaType::Colorless])],

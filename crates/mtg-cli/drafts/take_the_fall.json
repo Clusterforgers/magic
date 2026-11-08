@@ -1,0 +1,65 @@
+{
+  "oracle_id": "279f3aa5-5807-4797-8cd1-e009984a3691",
+  "name": "Take the Fall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Take the Fall",
+      "oracle_fingerprint": "fed46dad496b2098e987f2b94c95d29b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Count": [
+                                        {
+                                          "AnyOf": [
+                                            { "Subtype": "Assassin" },
+                                            { "Subtype": "Mercenary" },
+                                            { "Subtype": "Pirate" },
+                                            { "Subtype": "Rogue" },
+                                            { "Subtype": "Warlock" }
+                                          ]
+                                        },
+                                        { "ControlledBy": "You" }
+                                      ]
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": 4,
+                                "otherwise": 1
+                              }
+                            }
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

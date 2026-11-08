@@ -1,0 +1,69 @@
+{
+  "oracle_id": "165bdc68-1da0-47db-a069-978fc4c04b3f",
+  "name": "Caustic Bronco",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caustic Bronco",
+      "oracle_fingerprint": "48016ab69cc0ed817cc28eef6b07b692",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Hand",
+                  "as": "moved4"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "HasKeyword": "Saddled" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "HasKeyword": "Saddled" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "who": "Opponents",
+                        "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 3 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "51eca246-591e-4ea8-8432-9f4c1f16a65e",
+  "oracle_id": "8ce7f05c-6352-49e8-95b3-8ab87106b75e",
+  "multiverse_ids": [
+    509427
+  ],
+  "mtgo_id": 86487,
+  "tcgplayer_id": 233896,
+  "cardmarket_id": 542871,
+  "name": "Draining Whelk",
+  "lang": "en",
+  "released_at": "2021-03-19",
+  "uri": "https://api.scryfall.com/cards/51eca246-591e-4ea8-8432-9f4c1f16a65e",
+  "scryfall_uri": "https://scryfall.com/card/tsr/62/draining-whelk?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:30:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.jpg?1783927851",
+    "normal": "https://cards.scryfall.io/normal/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.jpg?1783927851",
+    "large": "https://cards.scryfall.io/large/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.jpg?1783927851",
+    "png": "https://cards.scryfall.io/png/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.png?1783927851",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.jpg?1783927851",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.jpg?1783927851",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.webp?1783927851",
+    "grid": "https://cards.scryfall.io/grid/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.webp?1783927851",
+    "display": "https://cards.scryfall.io/display/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.webp?1783927851",
+    "art": "https://cards.scryfall.io/art/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.webp?1783927851",
+    "crop": "https://cards.scryfall.io/crop/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.webp?1783927851",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/1/51eca246-591e-4ea8-8432-9f4c1f16a65e.jpg?1783927851"
+  },
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Illusion",
+  "oracle_text": "Flash\nFlying\nWhen this creature enters, counter target spell. Put X +1/+1 counters on this creature, where X is that spell's mana value.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "11e90d1b-0502-43e6-b056-e24836523c13",
+  "set": "tsr",
+  "set_name": "Time Spiral Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/11e90d1b-0502-43e6-b056-e24836523c13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/51eca246-591e-4ea8-8432-9f4c1f16a65e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8ce7f05c-6352-49e8-95b3-8ab87106b75e&unique=prints",
+  "collector_number": "62",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Tedin",
+  "artist_ids": [
+    "9ee9a9cc-c09e-486f-918b-69f80cbc4188"
+  ],
+  "illustration_id": "0c9e9eea-c3bf-4e98-bdef-fff8c67dc736",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13403,
+  "penny_rank": 7294,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://twitter.com/mtgjp/status/1365225175252402176",
+    "previewed_at": "2021-02-26"
+  },
+  "prices": {
+    "usd": "0.41",
+    "usd_foil": "0.85",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.32",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=509427&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDraining%2BWhelk",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDraining%2BWhelk",
+    "edhrec": "https://edhrec.com/route/?cc=Draining+Whelk"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F233896%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=542871&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/86487?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

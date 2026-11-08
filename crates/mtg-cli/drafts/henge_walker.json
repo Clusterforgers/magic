@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d4c13349-2faa-46ec-bd8e-80a4e59ef407",
+  "name": "Henge Walker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Henge Walker",
+      "oracle_fingerprint": "e0405b871a2d0553c11275cc4c34fbe5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Any": [
+                {
+                  "Compare": { "left": { "ManaSpent": { "of": "White" } }, "op": "Ge", "right": 3 }
+                },
+                { "Compare": { "left": { "ManaSpent": { "of": "Blue" } }, "op": "Ge", "right": 3 } },
+                {
+                  "Compare": { "left": { "ManaSpent": { "of": "Black" } }, "op": "Ge", "right": 3 }
+                },
+                { "Compare": { "left": { "ManaSpent": { "of": "Red" } }, "op": "Ge", "right": 3 } },
+                {
+                  "Compare": { "left": { "ManaSpent": { "of": "Green" } }, "op": "Ge", "right": 3 }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "oracle_id": "008a11c1-d283-49fe-abd7-ff4fe8b1fe79",
+  "name": "Rhovanion Rampager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhovanion Rampager",
+      "oracle_fingerprint": "67f0c3cb1150ab9741d8046a4de7f417",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "PutCounters": {
+                              "on": "This",
+                              "counter": "+1/+1",
+                              "count": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Amass": {
+                  "subtype": "Goblin",
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

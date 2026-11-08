@@ -1,0 +1,86 @@
+{
+  "oracle_id": "21e3895b-f6b6-48af-9161-71b422818004",
+  "name": "Scholarship Sponsor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scholarship Sponsor",
+      "oracle_fingerprint": "7b316c3d2e90bc280aa35532a439d794",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [{ "Type": "Land" }, { "ControlledBy": { "Bound": "each" } }]
+                            },
+                            "op": "Lt",
+                            "right": {
+                              "Largest": {
+                                "who": "EachPlayer",
+                                "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        },
+                        "then": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "each" },
+                              "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                              "count": {
+                                "min": 0,
+                                "max": {
+                                  "Sum": [
+                                    {
+                                      "Largest": {
+                                        "who": "EachPlayer",
+                                        "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                                      }
+                                    },
+                                    {
+                                      "Times": {
+                                        "by": -1,
+                                        "of": {
+                                          "Count": [
+                                            { "Type": "Land" },
+                                            { "ControlledBy": { "Bound": "each" } }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "as": "found2"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "found2" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          },
+                          { "Shuffle": { "who": { "Bound": "each" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

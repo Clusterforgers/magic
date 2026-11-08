@@ -1,0 +1,55 @@
+{
+  "oracle_id": "2494101a-2c6b-45d8-95fe-e62bf9a25130",
+  "name": "Imskir Iron-Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imskir Iron-Eater",
+      "oracle_fingerprint": "4d12bf460bf091432bb74eef110f7596",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "up": false
+                    }
+                  }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": {
+                    "Half": {
+                      "of": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}" }, { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

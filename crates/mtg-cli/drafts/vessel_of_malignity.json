@@ -1,0 +1,31 @@
+{
+  "oracle_id": "795a9f45-e4ee-457c-b260-17b9f09c3ba6",
+  "name": "Vessel of Malignity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vessel of Malignity",
+      "oracle_fingerprint": "5279e04c6f972621afdc1dc7f317a80d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

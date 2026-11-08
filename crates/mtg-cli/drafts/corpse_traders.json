@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e94297af-1236-4c9a-860f-2ee6a0d12e5e",
+  "name": "Corpse Traders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpse Traders",
+      "oracle_fingerprint": "11d8d468d9452a5afb3b46d29cc8d09d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              { "Discard": { "who": { "Target": 0 }, "by": "You" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

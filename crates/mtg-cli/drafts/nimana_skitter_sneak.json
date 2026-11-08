@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d3168d01-12ea-4a93-9519-82a3544b5bf6",
+  "name": "Nimana Skitter-Sneak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimana Skitter-Sneak",
+      "oracle_fingerprint": "e01aa95cb5b3ca3d6a9f01f24592f641",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

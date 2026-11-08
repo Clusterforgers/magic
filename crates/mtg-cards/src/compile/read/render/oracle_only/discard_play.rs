@@ -44,6 +44,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         return;
     };
     let wanted = CastPermission {
+        rather: None,
         who: Ref::You,
         what: Selector::default(),
         from: Some(ZoneKind::Exile),
@@ -53,6 +54,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         play: true,
         once: false,
         additional: None,
+        spend_as: crate::modify::SpendAs::Normal,
+        when: None,
     };
     if !targets.is_empty() || *permission != wanted {
         return;

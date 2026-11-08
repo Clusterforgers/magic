@@ -1,0 +1,36 @@
+{
+  "oracle_id": "41d16975-d6c0-4343-bea2-4f360ead9a1c",
+  "name": "Wild Magic Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Magic Surge",
+      "oracle_fingerprint": "54df2b7d36e2e262da6b3c888dec522f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "Opponents" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "RevealUntil": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesType": { "Target": 0 } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

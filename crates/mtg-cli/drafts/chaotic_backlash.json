@@ -1,0 +1,36 @@
+{
+  "oracle_id": "be6cb3e6-7492-4e30-83a9-9bc413e50cdc",
+  "name": "Chaotic Backlash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaotic Backlash",
+      "oracle_fingerprint": "9863f941ccc373156e17d132ab636834",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Color": "Blue" }, { "Color": "White" }] },
+                          { "ControlledBy": { "Target": 0 } }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

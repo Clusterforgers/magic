@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bc5d9899-1a1c-4779-b9f0-b00f2c233699",
+  "name": "Thassa's Rebuff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thassa's Rebuff",
+      "oracle_fingerprint": "4162a3f2a0ccd419046ebfedae1dbeab",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Devotion": ["Blue"] },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "731898d3-465b-4ecb-a346-b91881714ebc",
+  "name": "Saddled Rimestag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saddled Rimestag",
+      "oracle_fingerprint": "9636340899c5294df587fbd823ad8e18",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

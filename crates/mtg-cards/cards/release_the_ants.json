@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b420e429-9dec-4993-a45f-3458795e5cbe",
+  "name": "Release the Ants",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Release the Ants",
+      "oracle_fingerprint": "cce742e9b93f24ece924b27255f061f6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "Clash": { "win": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

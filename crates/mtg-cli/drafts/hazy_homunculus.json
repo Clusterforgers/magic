@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1af26f29-627c-48e5-a19d-deb43a11a846",
+  "name": "Hazy Homunculus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hazy Homunculus",
+      "oracle_fingerprint": "1be1a8b08c78ee0832dc4d669265826a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Land" }, { "ControlledBy": "Defending" }, "Untapped"]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

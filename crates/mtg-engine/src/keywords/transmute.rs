@@ -32,11 +32,13 @@ impl KeywordRules for Transmute {
             timing: Timing::Sorcery,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Hand,
             targets: Vec::new(),
             effects: vec![
                 Effect::Search {
                     who: Ref::You,
+                    of: None,
                     zone: ZoneKind::Library,
                     also: Vec::new(),
                     filter: Selector(vec![Pred::Compare {
@@ -49,11 +51,13 @@ impl KeywordRules for Transmute {
                     }]),
                     count: Bounds::default(),
                     reveal: true,
+                    distinct: false,
                     bind: FOUND.into(),
                 },
                 Effect::Move {
                     what: Ref::Bound(FOUND.into()),
                     to: Destination::Hand,
+                    bind: None,
                 },
                 Effect::Shuffle { who: Ref::You },
             ],

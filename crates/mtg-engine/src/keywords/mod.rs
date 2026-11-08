@@ -12,6 +12,7 @@ mod annihilator;
 mod ascend;
 pub(crate) mod awaken;
 mod backup;
+mod bargain;
 mod battle_cry;
 mod bestow;
 mod blitz;
@@ -26,7 +27,9 @@ mod changeling;
 mod choose_a_background;
 pub(crate) mod cipher;
 mod companion;
+mod conspire;
 mod convoke;
+mod craft;
 mod crew;
 mod cumulative_upkeep;
 mod cycling;
@@ -50,6 +53,7 @@ mod embalm;
 mod enchant;
 mod encore;
 mod entwine;
+pub(crate) mod epic;
 mod equip;
 mod escape;
 mod eternalize;
@@ -71,6 +75,7 @@ pub mod gift;
 mod graft;
 mod gravestorm;
 mod haste;
+mod haunt;
 mod hexproof;
 mod hideaway;
 mod horsemanship;
@@ -85,6 +90,7 @@ mod landwalk;
 mod level_up;
 mod lifelink;
 mod living_weapon;
+mod macro_keyword;
 mod madness;
 mod mayhem;
 mod melee;
@@ -104,18 +110,22 @@ mod partner;
 mod partner_group;
 mod partner_with;
 mod persist;
+pub(crate) mod plot;
 mod protection;
 #[cfg(test)]
 mod provided;
 mod prowess;
 mod prowl;
+mod r6f_flash_sacrifice;
 mod ravenous;
 mod reach;
 mod rebound;
 mod reconfigure;
+mod recover;
 mod replicate;
 mod retrace;
 mod riot;
+mod ripple;
 mod saddle;
 mod scavenge;
 mod shadow;
@@ -125,6 +135,7 @@ mod soulbond;
 mod spectacle;
 mod split_second;
 mod squad;
+mod start_your_engines;
 mod station;
 mod storm;
 mod sunburst;
@@ -408,8 +419,9 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Defender => &defender::Defender,
         Keyword::Indestructible => &indestructible::Indestructible,
         Keyword::Hexproof => &hexproof::Hexproof,
+        Keyword::HexproofFrom(_) => &hexproof::HexproofFrom,
         Keyword::Shroud => &shroud::Shroud,
-        Keyword::Protection(_) => &protection::Protection,
+        Keyword::Protection(_) | Keyword::ProtectionSparing { .. } => &protection::Protection,
         Keyword::Prowess => &prowess::Prowess,
         Keyword::Convoke => &convoke::Convoke,
         Keyword::Delve => &delve::Delve,
@@ -449,6 +461,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Encore(_) => &encore::Encore,
         Keyword::Squad(_) => &squad::Squad,
         Keyword::Foretell(_) => &foretell::Foretell,
+        Keyword::Plot(_) => &plot::Plot,
         Keyword::Daybound => &daybound::Daybound,
         Keyword::Nightbound => &nightbound::Nightbound,
         Keyword::Wither => &wither::Wither,
@@ -502,6 +515,8 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Backup { .. } => &backup::Backup,
         Keyword::Devour { .. } => &devour::Devour,
         Keyword::Casualty(_) => &casualty::Casualty,
+        Keyword::Bargain => &bargain::Bargain,
+        Keyword::Conspire => &conspire::Conspire,
         Keyword::Demonstrate => &demonstrate::Demonstrate,
         Keyword::Hideaway(_) => &hideaway::Hideaway,
         Keyword::Gift(_) => &gift::Gift,
@@ -530,9 +545,14 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Afterlife(_) => &afterlife::Afterlife,
         Keyword::Horsemanship => &horsemanship::Horsemanship,
         Keyword::Phasing => &w7e_phasing::Phasing,
-        Keyword::Spectacle(_) => &spectacle::Spectacle,
+        Keyword::Spectacle(_)
+        | Keyword::Freerunning(_)
+        | Keyword::Assist
+        | Keyword::Prototype { .. } => &spectacle::Spectacle,
+        Keyword::Craft(_) => &craft::Craft,
         Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
         Keyword::Cipher => &cipher::Cipher,
+        Keyword::Haunt => &haunt::Haunt,
         Keyword::Graft(_) => &graft::Graft,
         Keyword::Afflict(_) => &afflict::Afflict,
         Keyword::Replicate(_) => &replicate::Replicate,
@@ -544,8 +564,14 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
+        Keyword::StartYourEngines => &start_your_engines::StartYourEngines,
         Keyword::JobSelect => &job_select::JobSelect,
         Keyword::EquipTo { .. } => &equip::EquipTo,
+        Keyword::FlashSacrifice => &r6f_flash_sacrifice::FlashSacrifice,
+        Keyword::Recover(_) => &recover::Recover,
+        Keyword::Ripple(_) => &ripple::Ripple,
+        Keyword::Epic => &epic::Epic,
+        Keyword::Macro { .. } => &macro_keyword::MacroKeyword,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
     }
@@ -682,14 +708,26 @@ pub(crate) fn protects(
 ) -> bool {
     keywords_of(state, holder).into_iter().any(|keyword| {
         rules(keyword).restricts_targeting(state, keyword, holder, source, controller)
+            && !crate::combat_quirks::ignores_protection(
+                state,
+                crate::combat_quirks::Holder::Object(holder),
+                keyword,
+                controller,
+            )
     })
 }
 
 /// Whether a keyword of the player `holder` stops `controller`'s spell or ability from targeting them.
 pub(crate) fn protects_player(state: &GameState, holder: PlayerId, controller: PlayerId) -> bool {
-    player_keywords(state, holder)
-        .into_iter()
-        .any(|keyword| rules(keyword).restricts_player_targeting(keyword, holder, controller))
+    player_keywords(state, holder).into_iter().any(|keyword| {
+        rules(keyword).restricts_player_targeting(keyword, holder, controller)
+            && !crate::combat_quirks::ignores_protection(
+                state,
+                crate::combat_quirks::Holder::Player(holder),
+                keyword,
+                controller,
+            )
+    })
 }
 
 /// Whether a keyword of `holder` protects it from `source` (CR 702.16): the one reader of protection for damage,
@@ -771,7 +809,12 @@ mod tests {
             Keyword::Indestructible,
             Keyword::Hexproof,
             Keyword::Shroud,
+            Keyword::HexproofFrom(Selector::default()),
             Keyword::Protection(Selector::default()),
+            Keyword::ProtectionSparing {
+                from: Selector::default(),
+                spares: Selector::default(),
+            },
             Keyword::Prowess,
             Keyword::Convoke,
             Keyword::Delve,
@@ -815,6 +858,7 @@ mod tests {
             Keyword::Encore(cost()),
             Keyword::Squad(cost()),
             Keyword::Foretell(cost()),
+            Keyword::Plot(cost()),
             Keyword::Daybound,
             Keyword::Nightbound,
             Keyword::Wither,
@@ -882,11 +926,14 @@ mod tests {
                 of: Selector::default(),
             },
             Keyword::Casualty(2),
+            Keyword::Bargain,
+            Keyword::Conspire,
             Keyword::Offspring(cost()),
             Keyword::Demonstrate,
             Keyword::Hideaway(4),
             Keyword::Gift(GiftKind::Card),
             Keyword::ForMirrodin,
+            Keyword::StartYourEngines,
             Keyword::JobSelect,
             Keyword::EquipTo {
                 to: Box::default(),
@@ -898,14 +945,23 @@ mod tests {
                 count: 3,
                 cost: cost(),
             },
+            Keyword::Prototype {
+                cost: cost(),
+                power: 2,
+                toughness: 1,
+            },
+            Keyword::Assist,
+            Keyword::Craft(cost()),
             Keyword::Gravestorm,
             Keyword::Sunburst,
             Keyword::Afterlife(2),
             Keyword::Horsemanship,
             Keyword::Phasing,
             Keyword::Spectacle(cost()),
+            Keyword::Freerunning(cost()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
+            Keyword::Haunt,
             Keyword::Graft(2),
             Keyword::Afflict(2),
             Keyword::Replicate(cost()),
@@ -917,6 +973,14 @@ mod tests {
             Keyword::ReadAhead,
             Keyword::Exert {
                 once_per_turn: false,
+            },
+            Keyword::FlashSacrifice,
+            Keyword::Recover(cost()),
+            Keyword::Ripple(4),
+            Keyword::Epic,
+            Keyword::Macro {
+                name: "bushido".to_owned(),
+                amount: 2,
             },
         ]
     }
@@ -937,8 +1001,10 @@ mod tests {
         "Keyword.Defender",
         "Keyword.Indestructible",
         "Keyword.Hexproof",
+        "Keyword.HexproofFrom",
         "Keyword.Shroud",
         "Keyword.Protection",
+        "Keyword.ProtectionSparing",
         "Keyword.Prowess",
         "Keyword.BattleCry",
         "Keyword.Ward",
@@ -964,6 +1030,7 @@ mod tests {
         "Keyword.Dredge",
         "Keyword.Suspend",
         "Keyword.Foretell",
+        "Keyword.Plot",
         "Keyword.Morph",
         "Keyword.Megamorph",
         "Keyword.Disguise",
@@ -1015,6 +1082,8 @@ mod tests {
         "Keyword.Backup",
         "Keyword.Devour",
         "Keyword.Casualty",
+        "Keyword.Bargain",
+        "Keyword.Conspire",
         "Keyword.Offspring",
         "Keyword.Demonstrate",
         "Keyword.Hideaway",
@@ -1024,6 +1093,11 @@ mod tests {
         "Keyword.Saddle",
         "Keyword.Saddled",
         "Keyword.Exert",
+        "Keyword.FlashSacrifice",
+        "Keyword.Recover",
+        "Keyword.Ripple",
+        "Keyword.Epic",
+        "Keyword.Macro",
         "Keyword.Station",
         "Keyword.Myriad",
         "Keyword.Squad",
@@ -1040,20 +1114,26 @@ mod tests {
         "Keyword.Fabricate",
         "Keyword.Ascend",
         "Keyword.ForMirrodin",
+        "Keyword.StartYourEngines",
         "Keyword.JobSelect",
         "Keyword.EquipTo",
         "Keyword.Encore",
         "Keyword.Scavenge",
         "Keyword.Transmute",
         "Keyword.Awaken",
+        "Keyword.Assist",
+        "Keyword.Craft",
+        "Keyword.Prototype",
         "Keyword.Gravestorm",
         "Keyword.Sunburst",
         "Keyword.Afterlife",
         "Keyword.Horsemanship",
         "Keyword.Phasing",
         "Keyword.Spectacle",
+        "Keyword.Freerunning",
         "Keyword.UmbraArmor",
         "Keyword.Cipher",
+        "Keyword.Haunt",
         "Keyword.Graft",
         "Keyword.Afflict",
         "Keyword.Replicate",
@@ -1146,6 +1226,7 @@ mod tests {
     #[case::indestructible(Keyword::Indestructible, Hooks { indestructible: true, ..Hooks::none() })]
     #[case::hexproof(Keyword::Hexproof, Hooks { shields_player: true, ..Hooks::none() })]
     #[case::shroud(Keyword::Shroud, Hooks { shields_player: true, ..Hooks::none() })]
+    #[case::hexproof_from(Keyword::HexproofFrom(Selector::default()), Hooks::none())]
     #[case::protection(Keyword::Protection(Selector::default()), Hooks::none())]
     #[case::first_strike(Keyword::FirstStrike, Hooks { damage: damage(|d| d.first_strike = true), ..Hooks::none() })]
     #[case::double_strike(Keyword::DoubleStrike, Hooks { damage: damage(|d| d.double_strike = true), ..Hooks::none() })]
@@ -1203,6 +1284,11 @@ mod tests {
     #[case::dethrone(Keyword::Dethrone, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::umbra_armor(Keyword::UmbraArmor, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cipher(Keyword::Cipher, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::haunt(Keyword::Haunt, Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::flash_sacrifice(Keyword::FlashSacrifice, Hooks { timing: true, abilities: 1, ..Hooks::none() })]
+    #[case::recover(Keyword::Recover(Cost::mana("{R}{R}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::ripple(Keyword::Ripple(4), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::epic(Keyword::Epic, Hooks::none())]
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
@@ -1213,6 +1299,7 @@ mod tests {
     #[case::harmonize(Keyword::Harmonize(Cost::mana("{4}{R}".parse().unwrap())), Hooks::none())]
     #[case::read_ahead(Keyword::ReadAhead, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::macro_keyword(Keyword::Macro { name: "bushido".to_owned(), amount: 2 }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::vanishing(Keyword::Vanishing(3), Hooks { abilities: 3, ..Hooks::none() })]
@@ -1220,6 +1307,8 @@ mod tests {
     #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::devour(Keyword::Devour { counters: 2, of: Selector::default() }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::casualty(Keyword::Casualty(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::bargain(Keyword::Bargain, Hooks::none())]
+    #[case::conspire(Keyword::Conspire, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::demonstrate(Keyword::Demonstrate, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::hideaway(Keyword::Hideaway(4), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::gift(Keyword::Gift(GiftKind::Card), Hooks { abilities: 1, ..Hooks::none() })]
@@ -1231,6 +1320,7 @@ mod tests {
     #[case::decayed(Keyword::Decayed, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ascend(Keyword::Ascend, Hooks::none())]
+    #[case::start_your_engines(Keyword::StartYourEngines, Hooks::none())]
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::equip_to(Keyword::EquipTo { to: Box::default(), cost: Cost::mana("{1}".parse().unwrap()) }, Hooks { abilities: 1, ..Hooks::none() })]
@@ -1242,6 +1332,10 @@ mod tests {
     #[case::horsemanship(Keyword::Horsemanship, Hooks::none())]
     #[case::phasing(Keyword::Phasing, Hooks::none())]
     #[case::spectacle(Keyword::Spectacle(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
+    #[case::freerunning(Keyword::Freerunning(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
+    #[case::assist(Keyword::Assist, Hooks::none())]
+    #[case::craft(Keyword::Craft(Cost::mana("{2}{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::prototype(Keyword::Prototype { cost: Cost::mana("{1}{U}{U}".parse().unwrap()), power: 2, toughness: 1 }, Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
@@ -1265,6 +1359,8 @@ mod tests {
                 ("Entwine", false, OptionalKind::Entwine),
                 ("Squad", true, OptionalKind::Kicker),
                 ("Casualty", false, OptionalKind::Additional),
+                ("Bargain", false, OptionalKind::Additional),
+                ("Conspire", false, OptionalKind::Additional),
                 ("Offspring", false, OptionalKind::Additional),
                 ("Gift a card", false, OptionalKind::Gift),
                 ("Replicate", true, OptionalKind::Kicker),

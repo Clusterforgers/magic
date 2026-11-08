@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3b78f940-f840-4d4d-a09b-147202963367",
+  "name": "Grim Contest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Contest",
+      "oracle_fingerprint": "168ffbbedc3f0d19b55ba6c9eef1117a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 1 },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Target": 1 }, "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

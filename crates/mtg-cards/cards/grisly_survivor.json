@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8fe1e619-f827-43f5-acaf-3b79aa671d1d",
+  "name": "Grisly Survivor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grisly Survivor",
+      "oracle_fingerprint": "b58cabb5af51965b3fb6a93b12d8ea99",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

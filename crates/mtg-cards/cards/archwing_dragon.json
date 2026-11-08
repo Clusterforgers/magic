@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a0a706b2-b237-4183-82fa-2140a23b89e3",
+  "name": "Archwing Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archwing Dragon",
+      "oracle_fingerprint": "259ce76e0ce5cdd377754f6cb6f61c7c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

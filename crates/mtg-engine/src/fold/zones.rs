@@ -1,7 +1,7 @@
 //! Folding events that move objects between zones.
 
 use mtg_cards::definition::Layout;
-use mtg_cards::value::CastWay;
+use mtg_cards::value::{CastWay, TallyEvent};
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -18,6 +18,7 @@ use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
 /// Moves `id` to `to`, creating or dropping permanent state and leaving combat as needed.
+#[allow(clippy::too_many_lines)]
 pub(super) fn move_object(
     state: &mut GameState,
     id: ObjectId,
@@ -28,6 +29,8 @@ pub(super) fn move_object(
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
     let (was_creature, w14b_phyrexian) = w14b_dying_kind(state, id, to);
+    tally_nonland_leaving(state, id, to);
+    log_death(state, id, to);
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
     if to == Zone::Battlefield {
@@ -59,12 +62,12 @@ pub(super) fn move_object(
     {
         object.face_down = None;
     }
-    object.adventure = None;
+    (object.adventure, object.plotted) = (None, None);
     object.exiled_until = None;
     object.encoded_on = None;
+    object.haunting = None;
     object.monarch_wait = None;
-    object.cast_from_hand = false;
-    object.cast_from_graveyard = false;
+    object.forget_cast(from, to);
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
         std::mem::take(&mut object.choices.optional_costs)
@@ -92,6 +95,16 @@ pub(super) fn move_object(
     } else {
         Vec::new()
     };
+    let spent_from = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.spent_from().to_vec()
+    } else {
+        Vec::new()
+    };
+    let convoked = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.convoked().to_vec()
+    } else {
+        Vec::new()
+    };
     if from == Zone::Stack {
         object.choices = Choices::default();
     }
@@ -105,7 +118,9 @@ pub(super) fn move_object(
         state.combat.permanent_left(id);
     }
     if to == Zone::Battlefield {
-        let mut permanent = PermanentState::entering(timestamp, paid, way, x, face, spent);
+        let mut permanent =
+            PermanentState::entering(timestamp, paid, way, x, face, spent, spent_from);
+        permanent.convoked = convoked;
         permanent.doors = crate::dk1c5_rooms::Doors::entering(&object.def, face);
         object.permanent = Some(permanent);
     } else if to != Zone::Stack {
@@ -114,10 +129,12 @@ pub(super) fn move_object(
     crate::w17b_statics::w17b_restore_counters(object, w17b_kept);
     let (owner, token) = (object.owner, object.kind == ObjectKind::Token);
     let entered = object.reference();
+    let resolved = from == Zone::Stack && to == Zone::Battlefield;
+    crate::effects::follow_spell(&mut state.effects, entered, resolved);
     if to == Zone::Battlefield {
         state.tally_object(entered, None, Tally::Entered);
     }
-    w21a_tally_graveyards(state, (from, to), owner, entered);
+    w21a_tally_graveyards(state, (from, to), (owner, controlled_by), entered);
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Graved);
         if was_creature {
@@ -137,18 +154,72 @@ pub(super) fn move_object(
 }
 
 /// Counts a card that left a graveyard for its owner, and a card put into a graveyard from the battlefield for the card as
-/// it lies there (`Pred::GravedThisTurn`).
+/// it lies there (`Pred::GravedThisTurn`), and logs a permanent that entered the battlefield (`TallyEvent::Entered`).
 fn w21a_tally_graveyards(
     state: &mut GameState,
     (from, to): (Zone, Zone),
-    owner: PlayerId,
+    (owner, controller_before): (PlayerId, PlayerId),
     card: ObjectRef,
 ) {
+    if from == Zone::Battlefield && to != Zone::Battlefield {
+        state.tally(controller_before, Tally::PermanentsLeftUnder);
+    }
     if matches!(from, Zone::Graveyard(_)) && !matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::W21aLeftGraveyard);
     }
+    if to == Zone::Battlefield {
+        let controller = state.object(card.id).map(GameObject::controller);
+        if let Some(controller) = controller {
+            state.log_event(TallyEvent::Entered, controller, card.id);
+        }
+    }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally_object(card, None, Tally::W21aGraved);
+    }
+    let permanent_card = state.object(card.id).is_some_and(|object| {
+        object.kind() != ObjectKind::Token
+            && [
+                CardType::Artifact,
+                CardType::Battle,
+                CardType::Creature,
+                CardType::Enchantment,
+                CardType::Land,
+                CardType::Planeswalker,
+            ]
+            .iter()
+            .any(|kind| object.base_types().contains(*kind))
+    });
+    if permanent_card && matches!(to, Zone::Graveyard(_)) {
+        state.tally(owner, Tally::Descended);
+    }
+    if matches!(to, Zone::Graveyard(_)) {
+        let card = state
+            .object(card.id)
+            .filter(|object| object.kind() != ObjectKind::Token);
+        if let Some(creature) = card.map(|object| object.base_types().contains(CardType::Creature))
+        {
+            state.tally(owner, Tally::G10cCardsGraved);
+            if creature {
+                state.tally(owner, Tally::G10cCreatureCardsGraved);
+            }
+        }
+    }
+    state.tally_object(
+        card,
+        None,
+        Tally::ArrivedFrom(crate::resolve::zone_kind(from)),
+    );
+}
+
+/// Logs a permanent put into a graveyard from the battlefield as it last existed there (`TallyEvent::Died`).
+fn log_death(state: &mut GameState, id: ObjectId, to: Zone) {
+    let on_battlefield = state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Battlefield);
+    if let Some(controller) = on_battlefield.map(GameObject::controller)
+        && matches!(to, Zone::Graveyard(_))
+    {
+        state.log_event(TallyEvent::Died, controller, id);
     }
 }
 
@@ -174,6 +245,28 @@ fn w14b_dying_kind(state: &GameState, id: ObjectId, to: Zone) -> (bool, bool) {
         chars.types.contains(CardType::Creature),
         chars.has_subtype(&printed, &phyrexian),
     )
+}
+
+/// Counts a nonland permanent (void) and a creature about to leave the battlefield for `to` for the player who controls it.
+fn tally_nonland_leaving(state: &mut GameState, id: ObjectId, to: Zone) {
+    let Some(controller) = state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Battlefield)
+        .map(GameObject::controller)
+    else {
+        return;
+    };
+    let chars = crate::characteristics::characteristics(state, id);
+    let nonland = chars
+        .as_ref()
+        .is_some_and(|chars| !chars.types.contains(CardType::Land));
+    let creature = chars.is_some_and(|chars| chars.types.contains(CardType::Creature));
+    if nonland && to != Zone::Battlefield {
+        state.tally(controller, Tally::NonlandLeft);
+    }
+    if creature && to != Zone::Battlefield {
+        state.tally(controller, Tally::CreaturesLeftUnder);
+    }
 }
 
 /// Counts a creature put into a graveyard from the battlefield for its owner, and for the player who controlled it.
@@ -242,6 +335,26 @@ fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
 
 /// A spell with aftermath that is cast from a graveyard is exiled by a replacement effect when it leaves the stack
 /// (CR 702.127a), so the game has replacement effects to look for.
+/// The conditions the card of `spell` asks "as you cast this spell" that hold for `player` as it is cast.
+fn held_as_cast(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+) -> Vec<mtg_cards::value::Condition> {
+    let Some(object) = state.objects.get(&spell) else {
+        return Vec::new();
+    };
+    let asked = object.card().as_cast_conditions();
+    if asked.is_empty() {
+        return asked;
+    }
+    let scope = crate::resolve::Scope::announcing(state, player, object.reference());
+    asked
+        .into_iter()
+        .filter(|condition| scope.holds(condition).unwrap_or(false))
+        .collect()
+}
+
 fn note_aftermath(state: &mut GameState, spell: ObjectId, from: Zone) {
     if matches!(from, Zone::Graveyard(_)) && crate::keywords::aftermath::has(state, spell) {
         state.possible.replacements = true;
@@ -256,6 +369,9 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    if choices.way == Some(CastWay::Warp) {
+        state.tally(player, Tally::Warped);
+    }
     let mana = u32::try_from(choices.spent().len()).unwrap_or(u32::MAX);
     state.tally_by(player, Tally::W9aSpellMana, mana);
     for target in choices.targeted_objects() {
@@ -274,11 +390,15 @@ fn spell_cast(
         )));
     }
     expect_in(state, object, from)?;
+    crate::rules::spend_next_spells(state, player, object);
     if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
         state.tally_object(source, None, Tally::C11bOnceUsed);
     }
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
+    // Read before the spell joins the stack; a spell cast while another resolves is cast off sorcery timing.
+    let off_sorcery_timing =
+        !crate::priority::sorcery_timing(state, player) || state.resolving().is_some();
     move_object(state, object, Zone::Stack, Placement::Top)?;
     set_controller(state, object, player);
     let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
@@ -300,12 +420,19 @@ fn spell_cast(
         spell.choices.clone_from(choices);
         spell.cast_from_hand = matches!(from, Zone::Hand(_));
         spell.cast_from_graveyard = matches!(from, Zone::Graveyard(_));
+        spell.cast = Some((crate::resolve::zone_kind(from), player));
+        spell.off_sorcery_timing = off_sorcery_timing;
         if choices.way == Some(CastWay::FaceDown) {
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
         }
     }
+    let held_as_cast = held_as_cast(state, player, object);
+    if let Some(spell) = state.objects.get_mut(&object) {
+        spell.held_as_cast = held_as_cast;
+    }
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
+    state.log_event(TallyEvent::SpellCast, player, object);
     // A spell cast for its flashback cost, or with its buyback cost paid, is moved by a replacement effect.
     let bought_back = state.objects.get(&object).is_some_and(|spell| {
         payments(spell.card(), &choices.optional_costs, OptionalKind::Buyback) > 0
@@ -319,6 +446,29 @@ fn spell_cast(
     }
     reset_passes(state);
     Ok(())
+}
+
+/// What a move for `cause` counts: a card milled, and a land played that a replacement put elsewhere than the
+/// battlefield, which still uses its owner's land play (CR 305.2).
+fn tally_moved(state: &mut GameState, cause: ZoneCause, object: ObjectId) {
+    if cause == ZoneCause::Milled {
+        w13b_tally_milled(state, object);
+    }
+    if cause == ZoneCause::LandPlayed
+        && let Some(owner) = state.objects.get(&object).map(GameObject::owner)
+    {
+        state.turn.lands_played += 1;
+        state.tally(owner, Tally::LandsPlayed);
+    }
+}
+
+/// A card exiled haunting a creature keeps the creature it haunts (CR 702.55a).
+fn link_haunting(state: &mut GameState, card: ObjectId, cause: &ZoneCause) {
+    if let ZoneCause::Haunting { of } = cause
+        && let Some(object) = state.objects.get_mut(&card)
+    {
+        object.haunting = Some(*of);
+    }
 }
 
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
@@ -359,14 +509,17 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 )));
             }
             let before = state.objects.get(object).map(|o| o.controller);
+            log_sacrifice(state, (*cause, *from), before, *object);
             move_object(state, *object, *to, Placement::Top)?;
             if *cause == ZoneCause::Discarded
                 && let Zone::Hand(player) = *from
             {
                 tally_discard(state, player, *object);
             }
-            if *cause == ZoneCause::Milled {
-                w13b_tally_milled(state, *object);
+            tally_sacrifice(state, (*cause, *from), before);
+            tally_moved(state, *cause, *object);
+            if *cause == ZoneCause::Plotted {
+                mark_plotted(state, *object);
             }
             if *cause == ZoneCause::Adventure
                 && let Some(card) = state.objects.get_mut(object)
@@ -389,6 +542,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             {
                 object.encoded_on = Some(*by);
             }
+            link_haunting(state, *object, cause);
             if let ZoneCause::ExiledUntilMonarch { by } = cause {
                 state.possible.linked_exile = true;
                 if let Some(object) = state.objects.get_mut(object) {
@@ -435,6 +589,43 @@ fn card_drawn(
         state.tally(player, Tally::C6BlkDrawStepDrawn);
     }
     Ok(())
+}
+
+/// Marks the card as plotted in the current turn (CR 702.170a).
+fn mark_plotted(state: &mut GameState, object: ObjectId) {
+    if let Some(card) = state.objects.get_mut(&object) {
+        card.plotted = Some(state.turn.number());
+    }
+}
+
+/// Counts a sacrificed permanent for the player who controlled it as it left.
+fn tally_sacrifice(
+    state: &mut GameState,
+    (cause, from): (ZoneCause, Zone),
+    controller: Option<PlayerId>,
+) {
+    if cause == ZoneCause::Sacrificed
+        && from == Zone::Battlefield
+        && let Some(controller) = controller
+    {
+        state.tally(controller, Tally::Sacrificed);
+    }
+}
+
+/// Logs a permanent about to be sacrificed as it last existed on the battlefield (`TallyEvent::Sacrificed`), so "an
+/// artifact you've sacrificed this turn" judges what it was, not the card in the graveyard.
+fn log_sacrifice(
+    state: &mut GameState,
+    (cause, from): (ZoneCause, Zone),
+    controller: Option<PlayerId>,
+    id: ObjectId,
+) {
+    if cause == ZoneCause::Sacrificed
+        && from == Zone::Battlefield
+        && let Some(controller) = controller
+    {
+        state.log_event(TallyEvent::Sacrificed, controller, id);
+    }
 }
 
 /// Counts the card `id` milled this turn while it lies in the graveyard it was milled into.
@@ -571,6 +762,42 @@ pub(super) fn bottom(
     Ok(())
 }
 
+/// Moves cards that are in a library to just beneath its top `below` cards, in the order given from the top down; a library
+/// of fewer other cards takes them on its bottom (CR 401.7).
+pub(super) fn insert(
+    state: &mut GameState,
+    player: PlayerId,
+    cards: &[ObjectId],
+    below: u32,
+) -> Result<(), EngineError> {
+    let zone = Zone::Library(player);
+    let library = state.zones.get(zone);
+    let distinct = cards
+        .iter()
+        .enumerate()
+        .all(|(at, card)| !cards[..at].contains(card));
+    if !distinct || !cards.iter().all(|card| library.contains(card)) {
+        return Err(invalid(
+            "inserted cards are not all in the library, once each",
+        ));
+    }
+    let rest: Vec<ObjectId> = library
+        .iter()
+        .filter(|card| !cards.contains(card))
+        .copied()
+        .collect();
+    let above = usize::try_from(below).unwrap_or(usize::MAX).min(rest.len());
+    let (deep, top) = rest.split_at(rest.len() - above);
+    let arranged = deep
+        .iter()
+        .chain(cards.iter().rev())
+        .chain(top)
+        .copied()
+        .collect();
+    state.zones.set(zone, arranged);
+    Ok(())
+}
+
 fn owner_of(state: &GameState, id: ObjectId) -> Result<PlayerId, EngineError> {
     state
         .object(id)
@@ -591,7 +818,16 @@ fn resolve_spell(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         let owner = owner_of(state, id)?;
         move_object(state, id, Zone::Graveyard(owner), Placement::Top)?;
     } else {
+        let sneaking = crate::sneak::target_of(state, id);
         move_object(state, id, Zone::Battlefield, Placement::Top)?;
+        // The creature enters attacking, never declared as an attacker (CR 508.4).
+        if let Some(target) = sneaking
+            && state
+                .object(id)
+                .is_some_and(|o| o.zone() == Zone::Battlefield)
+        {
+            super::combat::join_attack(state, id, target)?;
+        }
     }
     priority_to_active(state);
     Ok(())
@@ -610,5 +846,11 @@ fn leave_game(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
     }
     state.combat.remove_object(id);
     state.combat.permanent_left(id);
-    player_mut(state, object.owner).map(|_| ())
+    let owner = object.owner;
+    // An ability of it that another player controls stays on the stack and resolves with its last known information
+    // (CR 800.4a, 113.7a), so the object is kept apart from the game like a token that ceased to exist.
+    if object.kind != crate::object::ObjectKind::Ability {
+        state.ceased.insert(id, object);
+    }
+    player_mut(state, owner).map(|_| ())
 }

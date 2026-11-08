@@ -1,0 +1,39 @@
+{
+  "oracle_id": "efd31076-2bbe-4c65-9166-19ec0e832b57",
+  "name": "Harness Infinity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harness Infinity",
+      "oracle_fingerprint": "265027c61ae9caebb18e7bdf06220571",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "to": "Graveyard",
+                  "as": "moved"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "Not": { "Is": { "Bound": "moved" } } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

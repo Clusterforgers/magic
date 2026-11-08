@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d3fb83af-8fc4-4f26-b2df-be5dd3ac56b2",
+  "name": "Ronom Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ronom Hulk",
+      "oracle_fingerprint": "a7a5905ff94d8d334bfc81b483c38599",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Supertype": "Snow" }] } },
+        { "Keyword": { "CumulativeUpkeep": "{1}" } }
+      ]
+    }
+  ]
+}

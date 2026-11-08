@@ -5,6 +5,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::{Pred, Selector};
 use mtg_cards::value::{Amount, Condition};
 use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
@@ -252,6 +253,10 @@ fn a_spell_without_the_keywords_has_no_optional_costs() {
 
 fn read(game: &GameState, object: crate::object::ObjectRef) -> (bool, i64) {
     let scope = Scope::announcing(game, SEAT, object);
+    let by_pred = scope
+        .selects(&Selector(vec![Pred::Kicked]), object)
+        .unwrap();
+    assert_eq!(by_pred, scope.holds(&Condition::Kicked).unwrap());
     (
         scope.holds(&Condition::Kicked).unwrap(),
         scope.amount(&Amount::Kicks).unwrap(),
@@ -305,6 +310,43 @@ fn the_spell_remembers_what_it_paid_while_it_is_on_the_stack_and_the_permanent_a
     let gone = game.object(card).unwrap();
     assert_eq!(gone.paid_costs().len(), 0);
     assert_eq!(read(&game, gone.reference()), (false, 0));
+}
+
+#[rstest]
+#[case::not_bargained(&[], false)]
+#[case::bargained(&[0], true)]
+fn a_bargained_spell_and_its_permanent_hold_the_additional_cost_predicate(
+    #[case] paid: &[usize],
+    #[case] bargained: bool,
+) {
+    let mut game = table(creature(vec![Keyword::Bargain]), 0);
+    let card = game.zone(Zone::Hand(SEAT))[0];
+    let holds = |game: &GameState| {
+        let object = game.object(card).unwrap().reference();
+        let scope = Scope::announcing(game, SEAT, object);
+        let by_pred = scope
+            .selects(&Selector(vec![Pred::AdditionalCostPaid]), object)
+            .unwrap();
+        assert_eq!(
+            by_pred,
+            scope.holds(&Condition::AdditionalCostPaid).unwrap()
+        );
+        by_pred
+    };
+    assert!(!holds(&game));
+    let choices = Choices {
+        optional_costs: paid.to_vec(),
+        ..Choices::default()
+    };
+    let cast = Event::SpellCast {
+        player: SEAT,
+        object: card,
+        choices,
+    };
+    apply_event(&mut game, &cast).unwrap();
+    assert_eq!(holds(&game), bargained);
+    apply_event(&mut game, &Event::SpellResolved { object: card }).unwrap();
+    assert_eq!(holds(&game), bargained);
 }
 
 #[test]

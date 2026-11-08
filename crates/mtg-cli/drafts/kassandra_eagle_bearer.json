@@ -1,0 +1,41 @@
+{
+  "oracle_id": "745b9a2c-bcd7-4db9-8cd0-d38be2ef6270",
+  "name": "Kassandra, Eagle Bearer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kassandra, Eagle Bearer",
+      "oracle_fingerprint": "832a18572311cf8db5cdaab6bd7a5ad8",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard", "Hand"],
+                  "filter": [{ "Named": "The Spear of Leonidas" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 272 }
+          }
+        }
+      ]
+    }
+  ]
+}

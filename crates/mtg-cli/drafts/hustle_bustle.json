@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e294d85f-caf2-4939-99d3-7ca5bba2b8d1",
+  "name": "Hustle // Bustle",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hustle",
+      "oracle_fingerprint": "a78b897fb0588b0d3b46c8a8ea87bab1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              },
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bustle",
+      "oracle_fingerprint": "cc12e92d051bbe2fa1be50a6517af49a",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 112 }
+          }
+        }
+      ]
+    }
+  ]
+}

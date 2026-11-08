@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b98123b2-c913-41b9-bb24-10a287d24bca",
+  "name": "Megatherium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Megatherium",
+      "oracle_fingerprint": "89804be642a6eef6bfc2a8ad09e74ac8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

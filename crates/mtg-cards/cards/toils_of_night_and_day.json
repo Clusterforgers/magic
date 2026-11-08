@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a50be01d-821f-4fdc-b12a-4a1a76432a21",
+  "name": "Toils of Night and Day",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toils of Night and Day",
+      "oracle_fingerprint": "b8c53e7c18787e0a36e81225e7785d82",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [] } },
+              { "what": { "Object": [{ "Not": { "Is": { "Target": 0 } } }] } }
+            ],
+            "effects": [
+              { "TapOrUntap": { "what": { "Target": 0 } } },
+              { "TapOrUntap": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "09535c14-ae50-4528-b9db-7eacee14e3fa",
+  "oracle_id": "4d324f8c-2139-4910-b3c3-731a2e820d6b",
+  "multiverse_ids": [
+    74003
+  ],
+  "mtgo_id": 21952,
+  "mtgo_foil_id": 21953,
+  "tcgplayer_id": 12417,
+  "cardmarket_id": 12645,
+  "name": "Deathknell Kami",
+  "lang": "en",
+  "released_at": "2005-06-03",
+  "uri": "https://api.scryfall.com/cards/09535c14-ae50-4528-b9db-7eacee14e3fa",
+  "scryfall_uri": "https://scryfall.com/card/sok/65/deathknell-kami?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:02:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.jpg?1783944157",
+    "normal": "https://cards.scryfall.io/normal/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.jpg?1783944157",
+    "large": "https://cards.scryfall.io/large/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.jpg?1783944157",
+    "png": "https://cards.scryfall.io/png/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.png?1783944157",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.jpg?1783944157",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.jpg?1783944157",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.webp?1783944157",
+    "grid": "https://cards.scryfall.io/grid/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.webp?1783944157",
+    "display": "https://cards.scryfall.io/display/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.webp?1783944157",
+    "art": "https://cards.scryfall.io/art/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.webp?1783944157",
+    "crop": "https://cards.scryfall.io/crop/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.webp?1783944157",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/9/09535c14-ae50-4528-b9db-7eacee14e3fa.jpg?1783944157"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flying\n{2}: This creature gets +1/+1 until end of turn. Sacrifice it at the beginning of the next end step.\nSoulshift 1 (When this creature dies, you may return target Spirit card with mana value 1 or less from your graveyard to your hand.)",
+  "power": "0",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Soulshift"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4db16ad3-2b95-442f-bb6b-e9aa7fe7f769",
+  "set": "sok",
+  "set_name": "Saviors of Kamigawa",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4db16ad3-2b95-442f-bb6b-e9aa7fe7f769",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asok&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sok?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/09535c14-ae50-4528-b9db-7eacee14e3fa/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4d324f8c-2139-4910-b3c3-731a2e820d6b&unique=prints",
+  "collector_number": "65",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Puddnhead",
+  "artist_ids": [
+    "b082dd2b-8fff-4b1b-b2cf-26396ac3ba53"
+  ],
+  "illustration_id": "9f9796f4-65fc-4fd2-a9a6-65a408e10866",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27710,
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": "0.47",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.40",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=74003&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeathknell%2BKami",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeathknell%2BKami",
+    "edhrec": "https://edhrec.com/route/?cc=Deathknell+Kami"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F12417%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=12645&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/21952?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

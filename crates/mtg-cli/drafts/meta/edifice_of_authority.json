@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Target creature can't attack this turn. Put a brick counter on CARDNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Until your next turn, target creature can't attack or block and its activated abilities can't be activated. Activate only if there are three or more brick counters on CARDNAME.",
+      "abilities": [],
+      "gap": "effect:Effect-static-CantAttack,CantBlock,CantBeActivated"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 87
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 88,
+          "end": 279
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

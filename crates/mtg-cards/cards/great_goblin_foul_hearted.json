@@ -1,0 +1,30 @@
+{
+  "oracle_id": "080f504f-20c8-4975-837c-d704e879d7f5",
+  "name": "Great Goblin, Foul-Hearted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Great Goblin, Foul-Hearted",
+      "oracle_fingerprint": "c29bf339d7defa015043e20b5fc528d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Amass": { "subtype": "Goblin", "count": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Army" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

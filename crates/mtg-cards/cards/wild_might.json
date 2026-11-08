@@ -1,0 +1,42 @@
+{
+  "oracle_id": "3f8fa982-73ee-410a-8873-0afc8a6f11fc",
+  "name": "Wild Might",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Might",
+      "oracle_fingerprint": "ae66e14d4af2c48a51942bc196cd79e7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

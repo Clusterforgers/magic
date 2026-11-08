@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f379fa0b-e9fc-4307-a574-a0c95e5e7f72",
+  "name": "Chrome Replicator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chrome Replicator",
+      "oracle_fingerprint": "88f78163dd64e6fb2b2892cf09abfb2f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "MostCommon": {
+                    "of": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": "Token" },
+                      { "ControlledBy": "You" }
+                    ],
+                    "stat": "Name"
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

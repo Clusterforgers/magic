@@ -1,0 +1,39 @@
+{
+  "oracle_id": "22e36922-a81a-4a0c-b698-51b48bd91ce6",
+  "name": "Viconia, Drow Apostate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viconia, Drow Apostate",
+      "oracle_fingerprint": "7e834f261099a6dbba2e42907353620e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

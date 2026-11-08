@@ -1,0 +1,59 @@
+{
+  "oracle_id": "1ea4f882-6872-4d9e-9532-5ba2bf848d00",
+  "name": "The Lady of Otaria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Lady of Otaria",
+      "oracle_fingerprint": "9f5baf7d1c4564c7447351d651e49327",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Dwarf" }], "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Land" }, { "ControlledBy": "You" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Dwarf" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

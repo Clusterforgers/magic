@@ -205,6 +205,23 @@ pub struct SpellCopy {
     #[serde(default, skip_serializing_if = "Choices::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Choices>", optional))]
     pub choices: Choices,
+    /// The spell had left the stack: the copy is made from what a delayed trigger kept of it (epic, CR 702.50a).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub left: bool,
+}
+
+/// A spell as it resolved, which the delayed trigger it set up keeps so that the trigger can copy it after it has left
+/// the stack (epic, CR 702.50a).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct KeptSpell {
+    /// The spell, as it was.
+    pub of: ObjectRef,
+    /// Its copiable values: the face it was in use as.
+    pub definition: Arc<CardDefinition>,
+    /// What it announced: the modes, X, optional costs and targets.
+    #[serde(default, skip_serializing_if = "Choices::is_empty")]
+    pub choices: Choices,
 }
 
 /// A card in exile was copied (CR 707.12): the copy is a token card in exile, owned by the player who made it, who may
@@ -285,7 +302,7 @@ pub(crate) fn fold_spell(state: &mut GameState, copy: &SpellCopy) -> Result<(), 
             copy.controller
         )));
     }
-    if !on_the_stack(state, copy.of, false) {
+    if !copy.left && !on_the_stack(state, copy.of, false) {
         return Err(invalid(format!(
             "{:?} is not a spell on the stack",
             copy.of
@@ -477,6 +494,9 @@ pub(crate) fn note_definition(state: &mut GameState, definition: &CardDefinition
     if crate::ability_reader::definition_works_elsewhere(definition) {
         state.possible.elsewhere = true;
     }
+    if crate::ability_reader::definition_lets_others_activate(definition) {
+        state.possible.others_activate = true;
+    }
 }
 
 /// Whether the object may be copied: an object of the game that is not an ability. A double-faced permanent is copied
@@ -508,7 +528,18 @@ pub(crate) fn copiable_values(
             (Some(merged), None) => merged.top().card(),
             (None, None) => object.card(),
         };
-        return may_be_copied(object).then(|| printed.copiable());
+        // A prototyped permanent or spell has its prototype values as copiable values (CR 718.3c).
+        let prototyped = object.copy_effect().is_none()
+            && object.merged().is_none()
+            && object.prototype().is_some();
+        return may_be_copied(object).then(|| {
+            let values = printed.copiable();
+            if prototyped {
+                crate::object::with_prototype_values(values)
+            } else {
+                values
+            }
+        });
     }
     let shot = shot.filter(|shot| shot.reference() == reference)?;
     if let Some(copy) = &shot.copy {
@@ -525,8 +556,16 @@ pub(crate) fn copiable_values(
         .source_object(reference.id)
         .filter(|card| card.kind() != ObjectKind::Ability)?;
     let whole = card.whole_card();
-    Some(whole.face(shot.face.unwrap_or(0)).copiable())
+    let values = whole.face(shot.face.unwrap_or(0)).copiable();
+    Some(if shot.way == Some(mtg_cards::value::CastWay::Prototype) {
+        crate::object::with_prototype_values(values)
+    } else {
+        values
+    })
 }
+
+#[cfg(test)]
+mod prototype_tests;
 
 #[cfg(test)]
 mod tests {

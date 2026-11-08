@@ -20,28 +20,59 @@ pub(super) fn zone_of(kind: ZoneKind, player: PlayerId) -> Result<Zone, ResolveE
         ZoneKind::Hand => Ok(Zone::Hand(player)),
         ZoneKind::Graveyard => Ok(Zone::Graveyard(player)),
         ZoneKind::Exile => Ok(Zone::Exile),
-        ZoneKind::Battlefield | ZoneKind::Stack | ZoneKind::Command => Err(ResolveError::Invalid(
-            format!("a search of {kind:?} is not a search the rules know"),
-        )),
+        ZoneKind::Battlefield | ZoneKind::Stack | ZoneKind::Command | ZoneKind::Outside => {
+            Err(ResolveError::Invalid(format!(
+                "a search of {kind:?} is not a search the rules know"
+            )))
+        }
     }
+}
+
+/// Nothing is outside a Commander game (no sideboard), so the search finds nothing and asks nothing.
+pub(super) fn nothing_outside(bind: &str) -> Run {
+    Run::Done {
+        events: Vec::new(),
+        bound: vec![(bind.to_owned(), Vec::new())],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    }
+}
+
+/// The first card of each name, in the order chosen: "with different names" keeps one of a kind (CR 201.3).
+pub(super) fn one_per_name(state: &crate::state::GameState, cards: Vec<ObjectId>) -> Vec<ObjectId> {
+    let mut seen: Vec<&str> = Vec::new();
+    let mut kept = Vec::new();
+    for id in cards {
+        let Some(name) = state.object(id).map(|card| card.card().name.as_str()) else {
+            continue;
+        };
+        if !seen.contains(&name) {
+            seen.push(name);
+            kept.push(id);
+        }
+    }
+    kept
 }
 
 /// Each player the effect names who is still in the game, in turn order, searches their zone for the cards that match
 /// the filter and chooses between `count.min` and `count.max` of them; the cards chosen of all the players are bound to
 /// the name. The searcher alone is asked and sees the matches, so nobody else learns what the zone holds. A hidden zone
-/// does not have to give up what it holds (CR 701.23b), so in a library or a hand the fewest is 0 and a player may find
-/// none even when cards match; a public zone gives up as many as `count.min` asks. Nothing matching is no question.
+/// does not have to give up cards of a stated quality (CR 701.23b), so in a library or a hand the fewest is 0 and a player
+/// may find none even when cards match; a public zone, or a search for any cards, gives up as many as `count.min` asks. Nothing matching is no question.
 /// Everyone chooses before anything is logged. Each search is one `CardsFound`, private to the searcher whether
 /// or not a card was found, and the cards are revealed to every seat in one `Revealed` after it when the effect says so.
 /// A player who can't search libraries does not search one.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
+        of,
         zone,
         also,
         filter,
         count,
         reveal,
+        distinct,
         bind,
     } = effect
     else {
@@ -56,12 +87,28 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(usize::MAX),
     };
     let required = usize::try_from(cx.scope.amount(&count.min)?.max(0)).unwrap_or(usize::MAX);
-    let fewest = if matches!(zone, ZoneKind::Library | ZoneKind::Hand) {
+    // Only cards of a stated quality may stay hidden (CR 701.23b): "search your library for three cards" finds three.
+    let fewest = if matches!(zone, ZoneKind::Library | ZoneKind::Hand) && !filter.is_empty() {
         0
     } else {
         required
     };
     let text = wording::search(*zone, filter, required, most);
+    // Another player's zone: the one player `of` names; nobody left to name is nothing to search.
+    let owner = match of {
+        None => None,
+        Some(reference) => {
+            let owners = cx.scope.players(reference)?;
+            match owners
+                .first()
+                .copied()
+                .filter(|player| state.is_alive(*player))
+            {
+                Some(player) => Some(player),
+                None => return Ok(Run::events(Vec::new())),
+            }
+        }
+    };
     let mut searches: Vec<(PlayerId, Zone)> = Vec::new();
     let mut selections = Vec::new();
     for player in cx
@@ -74,7 +121,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         if *zone == ZoneKind::Library && cant_search(state, player) {
             continue;
         }
-        let place = zone_of(*zone, player)?;
+        let place = zone_of(*zone, owner.unwrap_or(player))?;
         let mut matches: Vec<ObjectId> = Vec::new();
         for id in state.zone(place) {
             if let Some(card) = state.object(*id)
@@ -86,10 +133,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         // By id, which says nothing of where the cards lie in the library.
         matches.sort_unstable();
         searches.push((player, place));
+        let found = fewest.min(matches.len());
         selections.push(Selection {
+            one_per_name: *distinct,
             player,
             from: matches,
-            min: fewest,
+            min: found,
             max: most.max(fewest),
             text: text.clone(),
         });
@@ -101,6 +150,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     let mut found: Vec<Target> = Vec::new();
     for ((player, place), (_, cards)) in searches.into_iter().zip(taken) {
+        let cards = if *distinct {
+            one_per_name(state, cards)
+        } else {
+            cards
+        };
         found.extend(
             cards
                 .iter()
@@ -245,7 +299,6 @@ mod tests {
     #[case::any_number(BASIC_LAND, r#","count":{"min":0,"max":null}"#, &["Forest", "Island", "Forest"], 3, "Search your library for any number of basic land cards.")]
     #[case::a_land_type(r#"[{"AnyOf":[{"Subtype":"Forest"},{"Subtype":"Island"}]}]"#, "", &["Forest", "Island", "Forest", "Stomping Ground"], 1, "Search your library for a Forest or Island card.")]
     #[case::a_name(r#"[{"Named":"Wolf"}]"#, "", &["Wolf"], 1, "Search your library for a card named Wolf.")]
-    #[case::any_card("[]", "", &["Forest", "Island", "Forest", "Wolf", "Stomping Ground"], 1, "Search your library for a card.")]
     fn the_searcher_is_asked_for_the_matches_alone_and_may_find_none(
         #[case] filter: &str,
         #[case] count: &str,
@@ -277,6 +330,35 @@ mod tests {
             options.from.windows(2).all(|pair| pair[0] < pair[1]),
             "the cards are listed by id, which says nothing of their places in the library"
         );
+    }
+
+    #[rstest]
+    #[case::distinct(true, &["Forest", "Island"])]
+    #[case::any_names(false, &["Forest", "Island", "Forest"])]
+    fn different_names_keeps_one_card_of_each_name(#[case] distinct: bool, #[case] kept: &[&str]) {
+        let game = game();
+        let flag = if distinct { r#","distinct":true"# } else { "" };
+        let effect = search(&format!(
+            r#"{{"Search":{{"filter":{BASIC_LAND},"count":{{"min":0,"max":3}}{flag},"as":"found"}}}}"#
+        ));
+        let decision = asked(run_with(&game, Vec::new(), &effect).unwrap());
+        let options = options_of(&decision);
+        // The client is told, and the most is the number of names on offer.
+        assert_eq!(options.one_per_name, distinct);
+        assert_eq!(options.max, if distinct { 2 } else { 3 });
+        let cards = options.from.clone();
+        let cards = if distinct {
+            one_per_name(&game, cards)
+        } else {
+            cards
+        };
+        let journal = vec![(ME, Choice::Cards(cards))];
+        let (_, found) = done(run_with(&game, journal, &effect).unwrap());
+        let names: Vec<String> = found
+            .iter()
+            .map(|t| name(&game, t.object().unwrap().id))
+            .collect();
+        assert_eq!(names, kept);
     }
 
     #[rstest]
@@ -381,6 +463,26 @@ mod tests {
             2,
             "the cards of both players are bound together"
         );
+    }
+
+    /// A search for any cards has no stated quality to hide (CR 701.23b): the searcher finds as many as asked.
+    #[rstest]
+    #[case::a_card("", 1, 1)]
+    #[case::three_cards(r#","count":{"min":3,"max":3}"#, 3, 3)]
+    #[case::up_to_three_cards(r#","count":{"min":0,"max":3}"#, 0, 3)]
+    fn a_search_for_any_cards_finds_as_many_as_asked(
+        #[case] count: &str,
+        #[case] min: u32,
+        #[case] max: u32,
+    ) {
+        let game = game();
+        let effect = search(&format!(
+            r#"{{"Search":{{"filter":[]{count},"as":"found"}}}}"#
+        ));
+        let decision = asked(run_with(&game, Vec::new(), &effect).unwrap());
+        let options = options_of(&decision);
+        assert_eq!(options.from.len(), 5);
+        assert_eq!((options.min, options.max), (min, max));
     }
 
     /// The graveyard of seat 0 holds two Forests and an Elf.

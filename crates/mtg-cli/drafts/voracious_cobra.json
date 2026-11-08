@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5b2e1105-5af0-4f34-bfe9-15a2f6881edd",
+  "name": "Voracious Cobra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voracious Cobra",
+      "oracle_fingerprint": "60095fc372cc5fa6b0dc3287139d30c6",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "06af8e20-6f60-400d-9120-c99311232dde",
+  "name": "Knacksaw Clique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knacksaw Clique",
+      "oracle_fingerprint": "44246bb9c7735dc71cce7c23f51937f3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Untap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "oracle_id": "2737a78c-77ed-4bd0-ac0d-39ca2d816e83",
+  "name": "Angrath, Minotaur Pirate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Angrath, Minotaur Pirate",
+      "oracle_fingerprint": "3f7e9ef15aa5ddbe46f2148ca9e7add2",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "AnyOf": [
+                                { "ControlledBy": { "Target": 0 } },
+                                { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                              ]
+                            }
+                          ]
+                        },
+                        "amount": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Pirate" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 206, "end": 322 }
+          }
+        }
+      ]
+    }
+  ]
+}

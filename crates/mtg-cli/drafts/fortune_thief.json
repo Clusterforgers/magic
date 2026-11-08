@@ -1,0 +1,15 @@
+{
+  "oracle_id": "860add4f-8fe4-4441-b394-f3a48d610b90",
+  "name": "Fortune Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fortune Thief",
+      "oracle_fingerprint": "e80a8711f37505d3451658ee027e61e1",
+      "abilities": [
+        { "Rule": { "rule": { "LifeFloor": { "who": "You", "floor": 1 } } } },
+        { "Keyword": { "Morph": "{R}{R}" } }
+      ]
+    }
+  ]
+}

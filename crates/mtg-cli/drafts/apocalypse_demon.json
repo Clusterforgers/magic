@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5b8084b2-0c3c-4a54-86dc-41f4fe513e99",
+  "name": "Apocalypse Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apocalypse Demon",
+      "oracle_fingerprint": "6097b12ed868038b8298ca3457e8d815",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "toughness": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "unpaid": [{ "Tap": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

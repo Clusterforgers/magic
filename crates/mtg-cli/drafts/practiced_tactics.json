@@ -1,0 +1,32 @@
+{
+  "oracle_id": "612c9079-adae-4fe5-9a72-8efc09ddfe5c",
+  "name": "Practiced Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Practiced Tactics",
+      "oracle_fingerprint": "8deab61b361d021791574d3b2605134a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Times": { "by": 2, "of": { "Party": "You" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

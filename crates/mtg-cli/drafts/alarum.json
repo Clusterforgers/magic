@@ -1,0 +1,28 @@
+{
+  "oracle_id": "18e96674-6fd8-4046-a3fe-7ba80138d85d",
+  "name": "Alarum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alarum",
+      "oracle_fingerprint": "3c0c84b53409b7aad8fc69417847b6a6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Attacking" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

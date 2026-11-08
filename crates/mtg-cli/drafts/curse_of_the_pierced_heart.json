@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f22c3624-6bd5-4761-b8ad-ac301ad9351c",
+  "name": "Curse of the Pierced Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Pierced Heart",
+      "oracle_fingerprint": "1d5750803edf6d929899805ad1b073a1",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "Triggering" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+                }
+              },
+              { "DealDamage": { "to": { "Bound": "card" }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

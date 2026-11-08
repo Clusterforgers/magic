@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8c888122-9d05-4641-931c-83f771ba9d09",
+  "name": "Blessed Respite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessed Respite",
+      "oracle_fingerprint": "beb9471f56ea98b0e28614e1a1b84a75",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

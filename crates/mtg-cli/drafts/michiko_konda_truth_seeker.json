@@ -1,0 +1,19 @@
+{
+  "oracle_id": "fbe190eb-fd4b-40e7-9a17-48c96b60f653",
+  "name": "Michiko Konda, Truth Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Michiko Konda, Truth Seeker",
+      "oracle_fingerprint": "9fe33c5b3dc3d14487bc14eb97f2c30e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "Opponents" }], "to": "You" } },
+            "effects": [{ "Sacrifice": { "who": { "ControllerOf": "Dealer" }, "filter": [] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

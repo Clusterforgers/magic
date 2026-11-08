@@ -1,0 +1,32 @@
+{
+  "oracle_id": "18e421c0-2879-4ad8-b027-397f168dfbc2",
+  "name": "Krark, the Thumbless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krark, the Thumbless",
+      "oracle_fingerprint": "a0b7d2a07f81236d7a74f7ab54f7363b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }],
+                  "lose": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

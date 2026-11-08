@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b2f2645f-5f74-456a-bd02-83169d8b8a7e",
+  "name": "Vraan, Executioner Thane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraan, Executioner Thane",
+      "oracle_fingerprint": "be1c1f641c8663ed9f45243cafd9573a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

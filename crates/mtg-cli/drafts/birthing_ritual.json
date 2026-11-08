@@ -1,0 +1,143 @@
+{
+  "oracle_id": "37a5ab64-12e4-4aad-9a09-46a26fe9953b",
+  "name": "Birthing Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Birthing Ritual",
+      "oracle_fingerprint": "7bf4434b39d72595d073731083b117b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "sacrificed2" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "LookAtTop": { "count": 7, "as": "top3" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top3" } },
+                            { "Type": "Creature" },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": {
+                                  "Sum": [
+                                    {
+                                      "Stat": {
+                                        "of": { "Bound": "sacrificed2" },
+                                        "stat": "ManaValue"
+                                      }
+                                    },
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kept4"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "kept4" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top3" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "LookAtTop": { "count": 7, "as": "top6" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top6" } },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": {
+                                  "Sum": [
+                                    {
+                                      "Stat": {
+                                        "of": { "Bound": "sacrificed2" },
+                                        "stat": "ManaValue"
+                                      }
+                                    },
+                                    1
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 0 },
+                        "as": "kept7"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept7" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top6" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

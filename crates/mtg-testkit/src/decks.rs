@@ -751,7 +751,7 @@ mod tests {
                         ManaSymbol::Phyrexian(_) => 5,
                         ManaSymbol::HybridPhyrexian(..) => 6,
                         ManaSymbol::ColorlessHybrid(_) => 7,
-                        ManaSymbol::ColorlessPhyrexian => 8,
+                        ManaSymbol::ColorlessPhyrexian | ManaSymbol::Snow => 8,
                     };
                     seen[kind] = true;
                 }

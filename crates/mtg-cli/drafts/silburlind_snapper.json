@@ -1,0 +1,32 @@
+{
+  "oracle_id": "eb2fe2f7-60f7-44d3-8d4a-4e102012435d",
+  "name": "Silburlind Snapper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silburlind Snapper",
+      "oracle_fingerprint": "77f3d86c08f057d744ea90cfdb9791e0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

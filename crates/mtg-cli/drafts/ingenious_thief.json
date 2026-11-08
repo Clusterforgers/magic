@@ -12,7 +12,7 @@
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "targets": [{ "what": "Player" }],
-            "effects": [{ "LookAtTop": { "who": { "Target": 0 }, "as": "hand" } }]
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }]
           }
         }
       ]

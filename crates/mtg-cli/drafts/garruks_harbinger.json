@@ -1,0 +1,65 @@
+{
+  "oracle_id": "2dbe384b-71c4-43f9-be35-ba2894021b85",
+  "name": "Garruk's Harbinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garruk's Harbinger",
+      "oracle_fingerprint": "14781e0f08969622e54313c7f5cfb607",
+      "abilities": [
+        { "Keyword": { "HexproofFrom": [{ "Color": "Black" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Planeswalker" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "LookAtTop": { "count": "Triggering", "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Creature" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Planeswalker" } },
+                                { "Not": { "Subtype": "Garruk" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "oracle_id": "ecc3e2ac-6534-4350-92f4-2c1f578d854e",
+  "name": "Hedron-Field Purists",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hedron-Field Purists",
+      "oracle_fingerprint": "7e026c95d5dee69b4ec70f2b252747bb",
+      "abilities": [
+        { "Keyword": { "LevelUp": "{2}{W}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 1, "toughness": 4 } },
+              {
+                "GrantAbility": {
+                  "Replacement": {
+                    "when": { "Damage": { "to": "You" } },
+                    "by": { "PreventUpTo": 1 }
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Replacement": {
+                    "when": {
+                      "Damage": {
+                        "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    },
+                    "by": { "PreventUpTo": 1 }
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "HasCounter": { "Other": "level" } },
+                    { "CounterCount": { "kind": { "Other": "level" }, "op": "Le", "to": 4 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 2, "toughness": 5 } },
+              {
+                "GrantAbility": {
+                  "Replacement": {
+                    "when": { "Damage": { "to": "You" } },
+                    "by": { "PreventUpTo": 2 }
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Replacement": {
+                    "when": {
+                      "Damage": {
+                        "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    },
+                    "by": { "PreventUpTo": 2 }
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "level" }, "op": "Ge", "to": 5 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

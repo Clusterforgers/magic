@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5efea57b-937d-46ac-999e-490316e0f820",
+  "name": "Aether Membrane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Membrane",
+      "oracle_fingerprint": "e72094e659cdc3a1ab60155cecf4f645",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Move": { "what": { "Bound": "event" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

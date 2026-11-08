@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a4555bd2-be42-442a-8ead-3398318e91c5",
+  "name": "Citanul Woodreaders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Citanul Woodreaders",
+      "oracle_fingerprint": "5edc90b8189bd7a6bf1167448040b9f8",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

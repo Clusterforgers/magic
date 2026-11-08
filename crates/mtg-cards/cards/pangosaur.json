@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0b350f23-9150-40c7-8ac7-86adfdb8ba52",
+  "name": "Pangosaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pangosaur",
+      "oracle_fingerprint": "a993896691a300a233005a920345ecdf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "PlayedLand", "what": [{ "Type": "Land" }] } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

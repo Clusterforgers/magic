@@ -1,0 +1,40 @@
+{
+  "oracle_id": "818f908c-9af6-4edc-bb0e-193bc830e2e4",
+  "name": "Chandra, Flameshaper",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chandra, Flameshaper",
+      "oracle_fingerprint": "67aefe4c892e8bd0109d8b6e2928cbb1",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 107 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 108, "end": 254 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 8 },
+                "divide": 8
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

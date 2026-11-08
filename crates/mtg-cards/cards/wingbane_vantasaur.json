@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ab96c929-f855-40c2-b726-11c4a0ffb59e",
+  "name": "Wingbane Vantasaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wingbane Vantasaur",
+      "oracle_fingerprint": "383aedf3be4983973fc976a11d64b2df",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Conjure": { "name": "Savage Stomp", "zone": "Hand" } }] },
+                    { "effects": [{ "Conjure": { "name": "Naturalize", "zone": "Hand" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

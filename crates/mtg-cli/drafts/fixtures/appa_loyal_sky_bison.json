@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "a9b2a843-c6fe-4d19-801e-1538e4381ab0",
+  "oracle_id": "c6e28cf0-81c7-4f52-a29b-988cc6fd31ee",
+  "multiverse_ids": [],
+  "resource_id": "3A8EBB3275647D40A6FFD2693FB4491582DD5C99E1BFB1551308238ABA0AB6BD",
+  "mtgo_id": 144494,
+  "arena_id": 97282,
+  "tcgplayer_id": 661921,
+  "cardmarket_id": 857404,
+  "name": "Appa, Loyal Sky Bison",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/a9b2a843-c6fe-4d19-801e-1538e4381ab0",
+  "scryfall_uri": "https://scryfall.com/card/tla/9/appa-loyal-sky-bison?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:10:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.jpg?1783905006",
+    "normal": "https://cards.scryfall.io/normal/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.jpg?1783905006",
+    "large": "https://cards.scryfall.io/large/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.jpg?1783905006",
+    "png": "https://cards.scryfall.io/png/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.png?1783905006",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.jpg?1783905006",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.jpg?1783905006",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.webp?1783905006",
+    "grid": "https://cards.scryfall.io/grid/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.webp?1783905006",
+    "display": "https://cards.scryfall.io/display/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.webp?1783905006",
+    "art": "https://cards.scryfall.io/art/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.webp?1783905006",
+    "crop": "https://cards.scryfall.io/crop/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.webp?1783905006",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/9/a9b2a843-c6fe-4d19-801e-1538e4381ab0.jpg?1783905006"
+  },
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Bison Ally",
+  "oracle_text": "Flying\nWhenever Appa enters or attacks, choose one —\n• Target creature you control gains flying until end of turn.\n• Airbend another target nonland permanent you control. (Exile it. While it's exiled, its owner may cast it for {2} rather than its mana cost.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Airbend"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a9b2a843-c6fe-4d19-801e-1538e4381ab0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac6e28cf0-81c7-4f52-a29b-988cc6fd31ee&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "airnomads",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomoyo Asatani",
+  "artist_ids": [
+    "eaa3e9b8-209c-4bd3-9f0e-a39442ccfc60"
+  ],
+  "illustration_id": "b263346d-0429-4570-a6ed-514b6e082c0c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6170,
+  "penny_rank": 6615,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=DxIomU_20bc",
+    "previewed_at": "2025-10-31"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.22",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAppa%252C%2BLoyal%2BSky%2BBison",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAppa%252C%2BLoyal%2BSky%2BBison",
+    "edhrec": "https://edhrec.com/route/?cc=Appa%2C+Loyal+Sky+Bison"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F661921%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857404&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144494?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

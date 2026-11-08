@@ -1,0 +1,34 @@
+{
+  "oracle_id": "74e6dd0f-2866-4d45-a214-8b09b837bc02",
+  "name": "Slipstream Eel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slipstream Eel",
+      "oracle_fingerprint": "4fb7d26d1693372ebe5a518e9e059286",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": { "Cycling": "{1}{U}" } }
+      ]
+    }
+  ]
+}

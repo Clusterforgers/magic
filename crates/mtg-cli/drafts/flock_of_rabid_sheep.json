@@ -1,0 +1,48 @@
+{
+  "oracle_id": "d3bb9cfe-08ec-4c32-846a-2c16b9675e97",
+  "name": "Flock of Rabid Sheep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flock of Rabid Sheep",
+      "oracle_fingerprint": "6f7dd2a928fb611751cd79f8dd573249",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Rabid Sheep",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Sheep"],
+                                  "power": 2,
+                                  "toughness": 2
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "times": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

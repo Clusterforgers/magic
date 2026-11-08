@@ -1,0 +1,73 @@
+{
+  "oracle_id": "5542afeb-285f-4889-9d09-46ce20d0d189",
+  "name": "Lesser Werewolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lesser Werewolf",
+      "oracle_fingerprint": "aff7155713aa788ea72332384205349c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "condition": { "Step": "DeclareBlockers" },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "BlockedBy": "This" }, { "Blocks": "This" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 1 } }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "-0/-1" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 1 } }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

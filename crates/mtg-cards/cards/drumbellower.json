@@ -1,0 +1,24 @@
+{
+  "oracle_id": "03dee43b-6377-4f7b-956b-a384160322e4",
+  "name": "Drumbellower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drumbellower",
+      "oracle_fingerprint": "cd3898af9d6cdfac10a263a624b4dc47",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "UntapDuring": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "whose": "Opponents"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

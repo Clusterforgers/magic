@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b52788ff-9956-400a-bf26-17e58f673af0",
+  "name": "Skullscorch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullscorch",
+      "oracle_fingerprint": "3bc76dc070265d7005eb1f869998cb9a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": [{ "DamageToYou": 4 }],
+                  "unpaid": [{ "Discard": { "who": { "Target": 0 }, "count": 2, "random": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

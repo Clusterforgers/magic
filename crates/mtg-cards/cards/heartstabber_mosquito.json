@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f8fca88f-5eab-4854-913c-44261720a4d2",
+  "name": "Heartstabber Mosquito",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartstabber Mosquito",
+      "oracle_fingerprint": "c0c720aef8e25ef09559fa4f123f2517",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{B}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

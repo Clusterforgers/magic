@@ -1,0 +1,44 @@
+{
+  "oracle_id": "83b9a734-ee92-44c8-bf47-ca69b6d6405e",
+  "name": "Jhoira, Ageless Innovator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jhoira, Ageless Innovator",
+      "oracle_fingerprint": "5156e024d4fa72a929d01e2b5212d89f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "ingenuity" }, "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": {
+                            "Counters": { "on": "This", "counter": { "Other": "ingenuity" } }
+                          }
+                        }
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

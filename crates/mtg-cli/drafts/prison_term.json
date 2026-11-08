@@ -1,0 +1,43 @@
+{
+  "oracle_id": "31caa417-12f7-468b-9f3a-ccfb80e5bc2f",
+  "name": "Prison Term",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prison Term",
+      "oracle_fingerprint": "6d6901b61fd38f3662e6aea370d63227",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

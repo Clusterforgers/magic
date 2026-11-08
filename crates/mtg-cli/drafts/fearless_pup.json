@@ -1,0 +1,30 @@
+{
+  "oracle_id": "61295adf-9a58-479a-b6e5-403aa0876c22",
+  "name": "Fearless Pup",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fearless Pup",
+      "oracle_fingerprint": "05cef9cd4d8171159bf856f763359d62",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

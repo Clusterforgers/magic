@@ -1,0 +1,35 @@
+{
+  "oracle_id": "331b6834-6bb4-40fa-b80b-22d67b34734f",
+  "name": "Sidar Kondo of Jamuraa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sidar Kondo of Jamuraa",
+      "oracle_fingerprint": "a3414d2b680f7e36ead350b642308e55",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+              ]
+            },
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Not": { "HasKeyword": "Flying" } },
+                  { "Not": { "HasKeyword": "Reach" } },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "oracle_id": "b1298ce8-b318-4d5b-83f2-e274726dfca5",
+  "name": "Crown of Empires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Empires",
+      "oracle_fingerprint": "dd3a280359d144aa23f32b81f865e54a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Product": [
+                                  {
+                                    "Count": [
+                                      { "Type": "Artifact" },
+                                      { "Named": "Scepter of Empires" },
+                                      { "ControlledBy": "You" }
+                                    ]
+                                  },
+                                  {
+                                    "Count": [
+                                      { "Type": "Artifact" },
+                                      { "Named": "Throne of Empires" },
+                                      { "ControlledBy": "You" }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Tap": { "what": { "Target": 0 } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Product": [
+                                  {
+                                    "Count": [
+                                      { "Type": "Artifact" },
+                                      { "Named": "Scepter of Empires" },
+                                      { "ControlledBy": "You" }
+                                    ]
+                                  },
+                                  {
+                                    "Count": [
+                                      { "Type": "Artifact" },
+                                      { "Named": "Throne of Empires" },
+                                      { "ControlledBy": "You" }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

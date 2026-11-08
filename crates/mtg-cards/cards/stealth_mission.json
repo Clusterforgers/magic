@@ -1,0 +1,30 @@
+{
+  "oracle_id": "92419fbf-7a1b-428f-92d6-e9fd510dbfac",
+  "name": "Stealth Mission",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stealth Mission",
+      "oracle_fingerprint": "f72bcc053e2d00c90e2e893055b8eb93",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

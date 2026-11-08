@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5fae52ed-1b84-406e-951d-b0d329dc48a7",
+  "name": "Glimpse of Nature",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimpse of Nature",
+      "oracle_fingerprint": "19ba85a3050fb5ee2bb3ffd3b3a69db7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3a128587-c751-4b27-b608-d4e47646b80e",
+  "name": "View from Above",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "View from Above",
+      "oracle_fingerprint": "882a47e05955b674e34dd147c6121427",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Color": "White" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

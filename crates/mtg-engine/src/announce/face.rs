@@ -28,7 +28,7 @@ pub(super) fn run(
         return None;
     }
     let usable = if let Some(granted) = granted {
-        faces::grantable_faces(state, player, card, granted)
+        faces::grantable_faces(state, player, card, &granted)
     } else {
         let seat = state.player(player)?;
         let pool: ManaPool = seat.mana().clone();

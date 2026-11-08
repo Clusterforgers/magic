@@ -8,6 +8,13 @@ use crate::refs::Ref;
 use crate::value::Condition;
 
 impl Writer<'_> {
+    /// The clash wordings of `w15c_clash`, `w11c_clash` and `w9b_clash` that open the effects, in that order.
+    pub(super) fn clashes(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+        super::w15c_clash::w15c_clash(effects)
+            .or_else(|| self.w11c_clash(effects))
+            .or_else(|| self.w9b_clash(effects))
+    }
+
     /// The clash wordings of `w11c_clash` that open the effects, as sentences, and the number of effects they cover.
     pub(super) fn w11c_clash(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         let Some(Effect::Clash {

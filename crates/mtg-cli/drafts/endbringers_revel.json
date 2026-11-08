@@ -1,0 +1,22 @@
+{
+  "oracle_id": "4ca2511d-76f0-470c-b522-b75fb08932d9",
+  "name": "Endbringer's Revel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endbringer's Revel",
+      "oracle_fingerprint": "e62ef4c7f64120e6c8ac07fcadb201b7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}",
+            "timing": "Sorcery",
+            "by": "Anyone",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

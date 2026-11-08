@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9259e918-ace5-4f13-9035-d8bc8c820d25",
+  "name": "March from the Black Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "March from the Black Gate",
+      "oracle_fingerprint": "8a2d3021f2c56764b49411ee09c1502c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": [{ "Subtype": "Army" }, { "ControlledBy": "You" }] } }
+              ]
+            },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

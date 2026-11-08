@@ -1,0 +1,28 @@
+{
+  "oracle_id": "65ad90f5-4dae-494b-83fb-8052e77e0b12",
+  "name": "Guerrilla Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guerrilla Tactics",
+      "oracle_fingerprint": "822029f6b34d841be6c8781ce4fc6cfc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": { "inner": { "Discarded": { "what": ["This"] } }, "by": "Opponents" }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

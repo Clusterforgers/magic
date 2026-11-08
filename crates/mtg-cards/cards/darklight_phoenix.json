@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e4b51c2d-7e56-435b-89d6-85e33df65879",
+  "name": "Darklight Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darklight Phoenix",
+      "oracle_fingerprint": "b9d75efd1cf40b890584e1c5f59311a6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

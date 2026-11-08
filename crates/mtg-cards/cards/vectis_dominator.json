@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1ed63322-f877-4f1c-90bd-e1adb3668d6d",
+  "name": "Vectis Dominator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vectis Dominator",
+      "oracle_fingerprint": "d1b217525206176f719d461703c942c7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "PayLife": 2 }],
+                  "unpaid": [{ "Tap": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

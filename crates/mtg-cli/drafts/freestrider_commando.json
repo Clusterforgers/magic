@@ -1,0 +1,23 @@
+{
+  "oracle_id": "09117016-5fd1-4590-9867-aad65d3097e3",
+  "name": "Freestrider Commando",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Freestrider Commando",
+      "oracle_fingerprint": "d0126bfa4f3e87700085e09613a8e0ef",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": {
+              "Compare": { "left": { "ManaSpent": { "of": null } }, "op": "Eq", "right": 0 }
+            }
+          }
+        },
+        { "Keyword": { "Plot": "{3}{G}" } }
+      ]
+    }
+  ]
+}

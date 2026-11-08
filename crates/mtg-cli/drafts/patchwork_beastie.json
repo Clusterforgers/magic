@@ -1,0 +1,44 @@
+{
+  "oracle_id": "6cf995e9-115a-4659-bace-9fbe75898b48",
+  "name": "Patchwork Beastie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patchwork Beastie",
+      "oracle_fingerprint": "e321b90fce775729c1b83ba06dabf74a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "op": "Ge",
+                        "right": 4
+                      }
+                    },
+                    "then": 0,
+                    "otherwise": 1
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "May": { "effects": [{ "Mill": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

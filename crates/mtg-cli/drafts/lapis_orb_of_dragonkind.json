@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c61ab8e1-ef23-465d-bcd3-f771434988b2",
+  "name": "Lapis Orb of Dragonkind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lapis Orb of Dragonkind",
+      "oracle_fingerprint": "54651cb2671ae4434a2cd66eeb9179fa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [
+                    {
+                      "When": {
+                        "spell": { "types": ["Creature"], "subtypes": ["Dragon"] },
+                        "effects": [{ "Scry": { "count": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

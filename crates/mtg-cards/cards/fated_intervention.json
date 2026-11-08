@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6f85342b-b55b-461b-a3dc-17815e02d04d",
+  "name": "Fated Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fated Intervention",
+      "oracle_fingerprint": "17e658ded5e50bb1487eb6abd0890721",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Centaur",
+                      "colors": ["Green"],
+                      "types": ["Enchantment", "Creature"],
+                      "subtypes": ["Centaur"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              { "If": { "condition": "YourTurn", "then": [{ "Scry": { "count": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "06ada754-da78-4eda-8be7-3ac4f06115c4",
+  "name": "Thoughtcutter Agent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thoughtcutter Agent",
+      "oracle_fingerprint": "b5570ec590333d154cbf3546f2096500",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{B}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

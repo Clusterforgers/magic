@@ -1,0 +1,44 @@
+{
+  "oracle_id": "db99d52b-bbe6-4a48-8f2c-bf77912dc0a9",
+  "name": "She-Hulk, Attorney-at-Law",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "She-Hulk, Attorney-at-Law",
+      "oracle_fingerprint": "f97af336782f0c1b5199737093f42cd8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{6}{G/W}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{2}{G/W}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "MultiplyCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

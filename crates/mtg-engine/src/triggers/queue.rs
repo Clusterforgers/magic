@@ -81,7 +81,7 @@ impl PendingTrigger {
             source: self.trigger.origin,
         };
         match ability_reader::keyword_adding_as_it_was(state, address, &self.trigger.snapshot) {
-            Some(keyword) => wording::keyword_trigger(keyword.name(), &said),
+            Some(keyword) => wording::keyword_trigger(&keyword.shown_name(), &said),
             None => said,
         }
     }
@@ -118,8 +118,9 @@ pub(crate) fn fold_triggered(state: &mut GameState, t: &Triggered) -> Result<(),
             t.ability, t.source
         )));
     };
-    if limit == &Some(Limit::OncePerTurn)
-        && !state.limits_spent.insert((t.source, t.origin, t.ability))
+    // "Do this only once each turn" is spent as its choice is done (`fold::resolution`), not as it triggers.
+    if let Some(limit) = limit.filter(|limit| *limit != Limit::OncePerTurnDone)
+        && !state.spend_limit(limit, t.source, t.origin, t.ability)
     {
         return Err(invalid(format!(
             "ability {} of {:?} already triggered this turn",
@@ -394,6 +395,7 @@ mod tests {
                 snapshots: Vec::new(),
                 amount: 0,
                 source: None,
+                against: None,
             },
             snapshot: snapshot(state, object.id()).unwrap(),
             delayed: None,

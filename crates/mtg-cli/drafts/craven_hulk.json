@@ -1,0 +1,14 @@
+{
+  "oracle_id": "3cd13364-3ee8-4a00-986a-489b0ccf90c7",
+  "name": "Craven Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Craven Hulk",
+      "oracle_fingerprint": "f785553afa003d3aefd67f0eb3850def",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantBlockAlone" } } } }
+      ]
+    }
+  ]
+}

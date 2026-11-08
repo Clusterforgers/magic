@@ -14,10 +14,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         Effect::Move {
             what: Ref::Target(0),
             to: Destination::Hand,
+            ..
         },
         Effect::Move {
             what: Ref::Target(1),
             to: Destination::Hand,
+            ..
         },
     ] = effects.as_slice()
     else {

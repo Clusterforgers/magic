@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6420e8a0-3ef4-4f95-bb6a-12409eef4d48",
+  "name": "Skullcap Snail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullcap Snail",
+      "oracle_fingerprint": "92d6deb0575e7e44c87854893ea467d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

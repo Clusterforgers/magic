@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6f23621e-eceb-402e-a8d3-8e2b734762b3",
+  "name": "Banishing Knack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banishing Knack",
+      "oracle_fingerprint": "102b6f6ea7532f4b945ba7d2ddfba0d3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                          "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -11,8 +11,8 @@
           "Triggered": {
             "when": { "SpellCast": {} },
             "effects": [
-              { "Sacrifice": { "filter": ["This"] } },
-              { "Counter": { "what": "Triggering" } }
+              { "Counter": { "what": "Triggering" } },
+              { "Sacrifice": { "filter": ["This"] } }
             ]
           }
         }

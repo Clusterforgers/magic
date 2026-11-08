@@ -10,24 +10,26 @@
         { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
             "effects": [
-              { "LookAtTop": { "count": 3, "as": "top" } },
-              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
-              { "ExileHidden": { "what": { "Bound": "kept" } } },
-              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } },
+              { "LookAtTop": { "who": "Triggering", "count": 3, "as": "top" } },
               {
-                "Rule": {
-                  "rule": {
-                    "MayCast": { "what": [{ "Is": { "Bound": "kept" } }], "from": "Exile" }
-                  },
-                  "duration": "Forever"
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "kept2"
                 }
               },
+              { "ExileHidden": { "what": { "Bound": "kept2" }, "held": true, "as": "exiled4" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "what": [{ "Is": { "Bound": "kept" } }], "from": "Exile" }
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "spend_as": "AnyType"
+                    }
                   },
                   "duration": "Forever"
                 }

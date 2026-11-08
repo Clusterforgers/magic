@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2ccdc60a-49a9-44b9-a7af-0ebf18b26785",
+  "name": "Sword of Fire and Ice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Fire and Ice",
+      "oracle_fingerprint": "f053ccb01b8c7ad4a80c63aa5062304d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "Red" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Blue" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }, { "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

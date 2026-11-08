@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2dc6637a-0b51-462b-9f18-571146bb4558",
+  "name": "Shortcut to Mushrooms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shortcut to Mushrooms",
+      "oracle_fingerprint": "62776d7f111db71cb3611683a6c5213d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

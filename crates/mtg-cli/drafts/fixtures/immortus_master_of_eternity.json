@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "c8bd16f1-f8f2-44d2-a737-40f08a4cff3f",
+  "oracle_id": "8952a7e6-4ede-42bb-b90c-00ea4f24f8f8",
+  "multiverse_ids": [],
+  "resource_id": "C86B331225EE7E67ED1EF6E7F3E1480745A2CB403CABE748E471D4A6C23772FE",
+  "mtgo_id": 151695,
+  "arena_id": 105633,
+  "tcgplayer_id": 697200,
+  "cardmarket_id": 891963,
+  "name": "Immortus, Master of Eternity",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f",
+  "scryfall_uri": "https://scryfall.com/card/msc/623/immortus-master-of-eternity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.jpg?1783903073",
+    "normal": "https://cards.scryfall.io/normal/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.jpg?1783903073",
+    "large": "https://cards.scryfall.io/large/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.jpg?1783903073",
+    "png": "https://cards.scryfall.io/png/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.png?1783903073",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.jpg?1783903073",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.jpg?1783903073",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.webp?1783903073",
+    "grid": "https://cards.scryfall.io/grid/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.webp?1783903073",
+    "display": "https://cards.scryfall.io/display/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.webp?1783903073",
+    "art": "https://cards.scryfall.io/art/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.webp?1783903073",
+    "crop": "https://cards.scryfall.io/crop/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.webp?1783903073",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/8/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f.jpg?1783903073"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Hero Villain",
+  "oracle_text": "{T}: Add {U} for each card you've drawn this turn. Spend this mana only to cast noncreature spells.\nPower-up — {5}{U}{U}: Each player shuffles their hand and graveyard into their library, then draws seven cards. Put a +1/+1 counter on Immortus. (Activate each power-up ability only once. Reduce the cost by his mana cost if he entered this turn.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Power-up"
+  ],
+  "produced_mana": [
+    "U"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c8bd16f1-f8f2-44d2-a737-40f08a4cff3f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8952a7e6-4ede-42bb-b90c-00ea4f24f8f8&unique=prints",
+  "collector_number": "623",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "7ac43260-8b22-4090-8692-34638674f3fe",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 18668,
+  "prices": {
+    "usd": "2.11",
+    "usd_foil": "6.49",
+    "usd_etched": null,
+    "eur": "3.50",
+    "eur_foil": "7.87",
+    "tix": "1.50"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DImmortus%252C%2BMaster%2Bof%2BEternity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DImmortus%252C%2BMaster%2Bof%2BEternity",
+    "edhrec": "https://edhrec.com/route/?cc=Immortus%2C+Master+of+Eternity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697200%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891963&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151695?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

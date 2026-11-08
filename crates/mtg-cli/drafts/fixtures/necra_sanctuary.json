@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d",
+  "oracle_id": "2586a59d-8501-4c22-9d69-f4bf91de7024",
+  "multiverse_ids": [
+    27136
+  ],
+  "mtgo_id": 16320,
+  "mtgo_foil_id": 16321,
+  "tcgplayer_id": 7998,
+  "cardmarket_id": 3157,
+  "name": "Necra Sanctuary",
+  "lang": "en",
+  "released_at": "2001-06-04",
+  "uri": "https://api.scryfall.com/cards/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d",
+  "scryfall_uri": "https://scryfall.com/card/apc/45/necra-sanctuary?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:22:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.jpg?1783945349",
+    "normal": "https://cards.scryfall.io/normal/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.jpg?1783945349",
+    "large": "https://cards.scryfall.io/large/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.jpg?1783945349",
+    "png": "https://cards.scryfall.io/png/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.png?1783945349",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.jpg?1783945349",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.jpg?1783945349",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.webp?1783945349",
+    "grid": "https://cards.scryfall.io/grid/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.webp?1783945349",
+    "display": "https://cards.scryfall.io/display/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.webp?1783945349",
+    "art": "https://cards.scryfall.io/art/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.webp?1783945349",
+    "crop": "https://cards.scryfall.io/crop/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.webp?1783945349",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/a/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d.jpg?1783945349"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, if you control a green or white permanent, target player loses 1 life. If you control a green permanent and a white permanent, that player loses 3 life instead.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e4e00913-d08d-4899-86ea-5cf631e09ce0",
+  "set": "apc",
+  "set_name": "Apocalypse",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e4e00913-d08d-4899-86ea-5cf631e09ce0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aapc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/apc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5a0bf165-d7eb-4ae6-b30a-4e9fd55f401d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2586a59d-8501-4c22-9d69-f4bf91de7024&unique=prints",
+  "collector_number": "45",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Peterson",
+  "artist_ids": [
+    "0fc26d3b-4c0e-41d1-8eb3-286ab55a2328"
+  ],
+  "illustration_id": "887937cf-d445-4199-91d3-f5d488164e8a",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30804,
+  "penny_rank": 12221,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "4.04",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "1.70",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=27136&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNecra%2BSanctuary",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNecra%2BSanctuary",
+    "edhrec": "https://edhrec.com/route/?cc=Necra+Sanctuary"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7998%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3157&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/16320?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "dc25033c-4863-4619-886f-7b9976ae1c7c",
+  "name": "Incisor Steed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incisor Steed",
+      "oracle_fingerprint": "af57814db034696787de34216aed5999",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                    "op": "Ge",
+                    "right": 3
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 3
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

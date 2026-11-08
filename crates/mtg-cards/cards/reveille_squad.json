@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2531eb1a-ae24-450a-b8e8-dbbd65eaad64",
+  "name": "Reveille Squad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reveille Squad",
+      "oracle_fingerprint": "97d10f35fbdb0682f53c3eced1b9794f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "GroupAttacksAt": { "what": [{ "Type": "Creature" }], "at": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Untapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

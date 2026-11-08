@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1e8f17ab-4616-44de-adfd-010882cfcd42",
+  "name": "Greater Harvester",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greater Harvester",
+      "oracle_fingerprint": "d43a42028973cd00d7fc22f8b3884110",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Sacrifice": { "filter": [] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Sacrifice": { "who": "Triggering", "filter": [], "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

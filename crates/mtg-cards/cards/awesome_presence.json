@@ -1,0 +1,17 @@
+{
+  "oracle_id": "d6efff61-2087-4f48-a8a8-6c465190dad9",
+  "name": "Awesome Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awesome Presence",
+      "oracle_fingerprint": "cae3746f789aee47f9ea5e09d9d7b922",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Rule": { "rule": { "BlockTax": { "attackers": [{ "Is": "Attached" }], "mana": "{3}" } } }
+        }
+      ]
+    }
+  ]
+}

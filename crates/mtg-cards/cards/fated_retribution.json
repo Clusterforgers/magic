@@ -1,0 +1,27 @@
+{
+  "oracle_id": "28cfafdb-5014-44e3-9133-4554129c1aee",
+  "name": "Fated Retribution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fated Retribution",
+      "oracle_fingerprint": "aa0628c755cac83392041beb71ea1342",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  }
+                }
+              },
+              { "If": { "condition": "YourTurn", "then": [{ "Scry": { "count": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "580996d4-db9a-4b57-a0e1-a2dbb524121a",
+  "name": "Razorlash Transmogrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razorlash Transmogrant",
+      "oracle_fingerprint": "42bb70542cfc07be0ad9d33e6d35e502",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{B}{B}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Largest": {
+                              "who": "Opponents",
+                              "of": [
+                                { "Type": "Land" },
+                                { "Not": { "Supertype": "Basic" } },
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 4
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ],
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": { "what": "This", "to": { "Battlefield": { "counters": [["+1/+1", 1]] } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

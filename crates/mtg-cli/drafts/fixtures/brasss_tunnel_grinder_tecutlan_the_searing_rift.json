@@ -1,0 +1,182 @@
+{
+  "object": "card",
+  "id": "d61d8895-7f2e-4c77-951f-4f1a49e96f57",
+  "oracle_id": "af1553eb-4f9f-4335-9078-56649bd8d8fc",
+  "multiverse_ids": [
+    636843,
+    636844
+  ],
+  "mtgo_id": 118082,
+  "arena_id": 87283,
+  "tcgplayer_id": 525084,
+  "cardmarket_id": 743025,
+  "name": "Brass's Tunnel-Grinder // Tecutlan, the Searing Rift",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/d61d8895-7f2e-4c77-951f-4f1a49e96f57",
+  "scryfall_uri": "https://scryfall.com/card/lci/135/brasss-tunnel-grinder-tecutlan-the-searing-rift?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:36:11Z",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact // Legendary Land — Cave",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Transform",
+    "Discover"
+  ],
+  "produced_mana": [
+    "R"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Brass's Tunnel-Grinder",
+      "mana_cost": "{2}{R}",
+      "type_line": "Legendary Artifact",
+      "oracle_text": "When Brass's Tunnel-Grinder enters, discard any number of cards, then draw that many cards plus one.\nAt the beginning of your end step, if you descended this turn, put a bore counter on Brass's Tunnel-Grinder. Then if there are three or more bore counters on it, remove those counters and transform it. (You descended if a permanent card was put into your graveyard from anywhere.)",
+      "colors": [
+        "R"
+      ],
+      "artist": "Cristi Balanescu",
+      "artist_id": "c09ede88-a1b5-4a18-9895-dc8a965d28a5",
+      "illustration_id": "f3395339-a1c8-4767-be3f-94486f037bec",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "normal": "https://cards.scryfall.io/normal/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "large": "https://cards.scryfall.io/large/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "png": "https://cards.scryfall.io/png/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.png?1783913771",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "thumb": "https://cards.scryfall.io/thumb/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "grid": "https://cards.scryfall.io/grid/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "display": "https://cards.scryfall.io/display/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "art": "https://cards.scryfall.io/art/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "crop": "https://cards.scryfall.io/crop/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "jpeg": "https://cards.scryfall.io/normal/front/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Tecutlan, the Searing Rift",
+      "mana_cost": "",
+      "type_line": "Legendary Land — Cave",
+      "oracle_text": "(Transforms from Brass's Tunnel-Grinder.)\n{T}: Add {R}.\nWhenever you cast a permanent spell using mana produced by Tecutlan, discover X, where X is that spell's mana value.",
+      "colors": [],
+      "artist": "Cristi Balanescu",
+      "artist_id": "c09ede88-a1b5-4a18-9895-dc8a965d28a5",
+      "illustration_id": "9d6561ca-738b-480d-bde2-6d12308993a0",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "normal": "https://cards.scryfall.io/normal/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "large": "https://cards.scryfall.io/large/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "png": "https://cards.scryfall.io/png/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.png?1783913771",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771",
+        "thumb": "https://cards.scryfall.io/thumb/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "grid": "https://cards.scryfall.io/grid/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "display": "https://cards.scryfall.io/display/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "art": "https://cards.scryfall.io/art/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "crop": "https://cards.scryfall.io/crop/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.webp?1783913771",
+        "jpeg": "https://cards.scryfall.io/normal/back/d/6/d61d8895-7f2e-4c77-951f-4f1a49e96f57.jpg?1783913771"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set": "lci",
+  "set_name": "The Lost Caverns of Ixalan",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alci&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lci?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d61d8895-7f2e-4c77-951f-4f1a49e96f57/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaf1553eb-4f9f-4335-9078-56649bd8d8fc&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Cristi Balanescu",
+  "artist_ids": [
+    "c09ede88-a1b5-4a18-9895-dc8a965d28a5"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 1602,
+  "penny_rank": 2189,
+  "preview": {
+    "source": "Bobbie-Christine",
+    "source_uri": "",
+    "previewed_at": "2023-10-27"
+  },
+  "prices": {
+    "usd": "2.68",
+    "usd_foil": "4.17",
+    "usd_etched": null,
+    "eur": "2.69",
+    "eur_foil": "3.62",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=636843&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBrass%2527s%2BTunnel-Grinder%2B%252F%252F%2BTecutlan%252C%2Bthe%2BSearing%2BRift",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBrass%2527s%2BTunnel-Grinder%2B%252F%252F%2BTecutlan%252C%2Bthe%2BSearing%2BRift",
+    "edhrec": "https://edhrec.com/route/?cc=Brass%27s+Tunnel-Grinder"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525084%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743025&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118082?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

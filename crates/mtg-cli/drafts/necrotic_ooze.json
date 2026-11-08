@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2fdeb920-2e48-4308-9517-743eec219c04",
+  "name": "Necrotic Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrotic Ooze",
+      "oracle_fingerprint": "b7e193d2f925fe1fd5b9c5d07c338554",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "GainAbilitiesOf": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

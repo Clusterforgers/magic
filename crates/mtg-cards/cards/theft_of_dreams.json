@@ -1,0 +1,27 @@
+{
+  "oracle_id": "008011e2-7b82-4962-af6e-be627112f37f",
+  "name": "Theft of Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Theft of Dreams",
+      "oracle_fingerprint": "b7fae155a850d88573aa134ca3d326cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

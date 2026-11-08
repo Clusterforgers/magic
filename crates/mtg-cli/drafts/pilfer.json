@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d13f0907-de39-4a90-940a-831740d7aa9b",
+  "name": "Pilfer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pilfer",
+      "oracle_fingerprint": "daed12d3769f725a8a9bbf9c97b13781",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "35142b01-4b8d-4335-a943-a3172fa04573",
+  "name": "Mindspring Merfolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindspring Merfolk",
+      "oracle_fingerprint": "b70fcb843683568a85249a9d603f3ef9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{U}{U}" }, "Tap"],
+            "limit": "OncePerGame",
+            "effects": [
+              { "Draw": { "count": "X" } },
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Merfolk" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

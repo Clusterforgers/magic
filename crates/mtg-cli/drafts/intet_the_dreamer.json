@@ -1,0 +1,61 @@
+{
+  "oracle_id": "9518ffbc-bb3d-4f48-a900-f5bad8302a87",
+  "name": "Intet, the Dreamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intet, the Dreamer",
+      "oracle_fingerprint": "ccd38a42cbcb992476be13bffbbe15f5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{U}",
+                  "paid": [
+                    {
+                      "ExileHidden": {
+                        "what": {
+                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                        },
+                        "sealed": true,
+                        "as": "exiled"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "LookAtExiled": {
+                            "what": [{ "In": "Exile" }],
+                            "only": { "Bound": "exiled" }
+                          }
+                        },
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "free": true,
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "WhileSourceOnBattlefield"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

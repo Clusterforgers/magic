@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b5adbd37-8d98-4c65-b42d-cd9db94e7222",
+  "name": "Benalish Lancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benalish Lancer",
+      "oracle_fingerprint": "d77a994b8b2b43d21981ac6563611ca0",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{W}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "FirstStrike" }]
+              }
+            },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,18 @@
     {
       "name": "Drannith Magistrate",
       "oracle_fingerprint": "e715ec507144569964610973e5cd2179",
-      "abilities": [{ "Rule": { "rule": { "CantCastSpells": { "who": "Opponents" } } } }]
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": { "Cast": { "filter": [{ "Not": { "WasCast": { "from": "Hand" } } }] } }
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "bfcffe67-7db6-41bb-bfcc-400cbb8c8a9c",
+  "name": "Jace's Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Triumph",
+      "oracle_fingerprint": "e52dae9aed035cf75c3a8d44b0730c4f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Planeswalker" },
+                              { "Subtype": "Jace" },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

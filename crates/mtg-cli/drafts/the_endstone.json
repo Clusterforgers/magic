@@ -1,0 +1,39 @@
+{
+  "oracle_id": "57ee0730-3ac5-4f17-ac82-bd4a6673c2bb",
+  "name": "The Endstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Endstone",
+      "oracle_fingerprint": "feb3bcbcc2907fadb3e0f146dadd2db0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                { "SpellCast": { "by": "You" } }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "SetLife": { "amount": { "Half": { "of": { "StartingLife": "You" }, "up": true } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a9a6c2ba-30ba-4e45-9ea0-ea9833342069",
+  "name": "Dragon Broodmother",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Broodmother",
+      "oracle_fingerprint": "270249b86ec68aa74597bd001c0f6d7e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        {
+                          "Keyword": { "Devour": { "counters": 2, "of": [{ "Type": "Creature" }] } }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

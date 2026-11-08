@@ -1,0 +1,34 @@
+{
+  "oracle_id": "266561cc-d014-48cc-ba5d-fa72f3a91736",
+  "name": "Stay Hidden, Stay Silent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stay Hidden, Stay Silent",
+      "oracle_fingerprint": "1d116a57372621e2c5fb7a052156dd55",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Activated": {
+            "cost": "{4}{U}{U}",
+            "timing": "Sorcery",
+            "effects": [
+              { "Move": { "what": "Attached", "to": { "Library": { "place": "Shuffled" } } } },
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "59813845-48c9-4af2-8beb-91d58aac09ee",
+  "oracle_id": "52d8e492-b7b7-4ad4-8f1f-5c50993e55e0",
+  "multiverse_ids": [
+    651772
+  ],
+  "mtgo_id": 123382,
+  "tcgplayer_id": 534566,
+  "cardmarket_id": 753069,
+  "name": "Lonis, Genetics Expert",
+  "lang": "en",
+  "released_at": "2024-02-23",
+  "uri": "https://api.scryfall.com/cards/59813845-48c9-4af2-8beb-91d58aac09ee",
+  "scryfall_uri": "https://scryfall.com/card/clu/37/lonis-genetics-expert?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:16:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.jpg?1783912573",
+    "normal": "https://cards.scryfall.io/normal/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.jpg?1783912573",
+    "large": "https://cards.scryfall.io/large/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.jpg?1783912573",
+    "png": "https://cards.scryfall.io/png/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.png?1783912573",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.jpg?1783912573",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.jpg?1783912573",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.webp?1783912573",
+    "grid": "https://cards.scryfall.io/grid/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.webp?1783912573",
+    "display": "https://cards.scryfall.io/display/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.webp?1783912573",
+    "art": "https://cards.scryfall.io/art/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.webp?1783912573",
+    "crop": "https://cards.scryfall.io/crop/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.webp?1783912573",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/9/59813845-48c9-4af2-8beb-91d58aac09ee.jpg?1783912573"
+  },
+  "mana_cost": "{1}{G/U}{G/U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Snake Elf Detective",
+  "oracle_text": "Evolve (Whenever a creature you control enters, if that creature has greater power or toughness than this creature, put a +1/+1 counter on this creature.)\nWhenever one or more +1/+1 counters are put on Lonis, investigate that many times.\nWhenever you sacrifice a Clue, put a +1/+1 counter on another target creature you control.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Evolve",
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ef607895-d6d2-44ab-a6b4-84af55fce593",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/ef607895-d6d2-44ab-a6b4-84af55fce593"
+    },
+    {
+      "object": "related_card",
+      "id": "59813845-48c9-4af2-8beb-91d58aac09ee",
+      "component": "combo_piece",
+      "name": "Lonis, Genetics Expert",
+      "type_line": "Legendary Creature — Snake Elf Detective",
+      "uri": "https://api.scryfall.com/cards/59813845-48c9-4af2-8beb-91d58aac09ee"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set": "clu",
+  "set_name": "Ravnica: Clue Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/59813845-48c9-4af2-8beb-91d58aac09ee/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A52d8e492-b7b7-4ad4-8f1f-5c50993e55e0&unique=prints",
+  "collector_number": "37",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "simic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kai Carpenter",
+  "artist_ids": [
+    "dcd3cf0d-67b7-4b73-8e62-1d318bf6209c"
+  ],
+  "illustration_id": "7bb2c8ec-0191-4053-bf5e-729be5aadb22",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11218,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/magic-the-gathering-ravnica-clue-edition-spoilers-standalone-board-game",
+    "previewed_at": "2024-01-22"
+  },
+  "prices": {
+    "usd": "5.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.78",
+    "eur_foil": null,
+    "tix": "1.80"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=651772&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLonis%252C%2BGenetics%2BExpert",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLonis%252C%2BGenetics%2BExpert",
+    "edhrec": "https://edhrec.com/route/?cc=Lonis%2C+Genetics+Expert"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F534566%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753069&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/123382?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

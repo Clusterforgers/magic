@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c469133e-174d-476b-b135-bbf15e415e72",
+  "name": "Aggressive Negotiations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aggressive Negotiations",
+      "oracle_fingerprint": "14d48c19436523b690f67bd90e9a1f9b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Opponent" },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

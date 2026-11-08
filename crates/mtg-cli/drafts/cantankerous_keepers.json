@@ -1,0 +1,34 @@
+{
+  "oracle_id": "77c97dad-17cc-4a28-a48b-907c044d9034",
+  "name": "Cantankerous Keepers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cantankerous Keepers",
+      "oracle_fingerprint": "5421e341c0f60c11e48f86394790af17",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Elf" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Elf" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

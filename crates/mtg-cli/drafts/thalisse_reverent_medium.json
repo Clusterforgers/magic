@@ -1,0 +1,42 @@
+{
+  "oracle_id": "77cf4fb1-593f-4240-96d9-6ae9084baeac",
+  "name": "Thalisse, Reverent Medium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thalisse, Reverent Medium",
+      "oracle_fingerprint": "5fadc259e9f273388063abc8d6b39420",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Tally": {
+                      "event": "Entered",
+                      "who": "EachPlayer",
+                      "filter": ["Token", { "OwnedBy": "You" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

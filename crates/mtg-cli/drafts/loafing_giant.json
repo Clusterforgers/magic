@@ -1,0 +1,44 @@
+{
+  "oracle_id": "038dce4c-f754-45ef-98a4-4e16f931a65c",
+  "name": "Loafing Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loafing Giant",
+      "oracle_fingerprint": "3e3bc0003b4892f2b4d6f36120cdd1fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              { "Mill": { "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

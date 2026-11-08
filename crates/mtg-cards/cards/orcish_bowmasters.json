@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ea5103f5-27e0-4eb1-902c-7f34652d6bf3",
+  "name": "Orcish Bowmasters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Bowmasters",
+      "oracle_fingerprint": "c2c7596e58d8707e6ae25cd121d0011b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Drew": { "who": "Opponents", "first_in_draw_step": false } }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "Amass": { "subtype": "Orc", "count": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

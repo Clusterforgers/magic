@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fed3bc35-4269-48f0-9133-a595ce49c2d1",
+  "name": "Ice Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ice Out",
+      "oracle_fingerprint": "0b9a10f3922137a575e7c08104b5b12a",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": "AdditionalCostPaid"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

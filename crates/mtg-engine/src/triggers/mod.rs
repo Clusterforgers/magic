@@ -2,14 +2,21 @@
 //! APNAP order, with the delayed ones (CR 603.7) that effects set up.
 //!
 //! Detection is a function of events and data ([`detect()`]); the queue is state, so a log folds to the same queue
-//! and an engine rebuilt from it carries on (`docs/cards-dsl.md`, Triggers).
+//! and an engine rebuilt from it carries on (`docs/cards-dsl.md`, Triggers, replacement and layers).
 
+mod cause_of;
 mod delayed;
 mod detect;
 #[cfg(test)]
+mod detect_against;
+#[cfg(test)]
 mod detect_batches;
 #[cfg(test)]
+mod detect_caused;
+#[cfg(test)]
 mod detect_crewed;
+#[cfg(test)]
+mod detect_did;
 #[cfg(test)]
 mod detect_events;
 #[cfg(test)]
@@ -18,6 +25,7 @@ mod detect_except;
 mod detect_nth;
 #[cfg(test)]
 mod detect_turn_nth;
+mod life_floor;
 mod queue;
 mod reads_x;
 mod state;
@@ -45,11 +53,13 @@ use crate::keywords;
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
+pub(crate) use cause_of::{CausedBy, cause_of};
 pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::detect;
 pub(crate) use detect::{needs_before, step_matches};
 pub use queue::PendingTrigger;
 pub(crate) use reads_x::read as x_read;
+pub(crate) use w11c_crime::g10c_note_crime;
 
 pub(crate) use delayed::{fold_created, fold_expired};
 pub(crate) use queue::{fold_ordered, fold_removed, fold_triggered, next as sweep, removing, take};
@@ -84,14 +94,14 @@ pub struct Triggered {
 /// triggers.
 fn effects_trigger(effects: &[Effect]) -> bool {
     effects.iter().any(|effect| match effect {
-        Effect::DelayedTrigger { .. } => true,
+        Effect::DelayedTrigger { .. } | Effect::Reflexive { .. } => true,
         Effect::Continuous { mods, .. } => grants_trigger(mods),
         Effect::If {
             then, otherwise, ..
         } => effects_trigger(then) || effects_trigger(otherwise),
-        Effect::May { effects, .. } | Effect::RepeatEach { effects, .. } => {
-            effects_trigger(effects)
-        }
+        Effect::May { effects, .. }
+        | Effect::RepeatEach { effects, .. }
+        | Effect::RepeatWhile { effects, .. } => effects_trigger(effects),
         Effect::RollDice { results, .. } => results.iter().any(|row| effects_trigger(&row.effects)),
         Effect::FlipCoin { win, lose, .. }
         | Effect::Clash { win, lose, .. }
@@ -104,6 +114,7 @@ fn effects_trigger(effects: &[Effect]) -> bool {
             first: win,
             second: lose,
         } => effects_trigger(win) || effects_trigger(lose),
+        Effect::OneOf { options, .. } => options.iter().any(|option| effects_trigger(option)),
         Effect::Pay { paid, unpaid, .. } => effects_trigger(paid) || effects_trigger(unpaid),
         Effect::CastFromZone { otherwise, .. } => effects_trigger(otherwise),
         Effect::Modal { modes, .. } => modes.iter().any(|mode| effects_trigger(&mode.effects)),
@@ -166,9 +177,9 @@ fn effects_state_trigger(effects: &[Effect]) -> bool {
         Effect::If {
             then, otherwise, ..
         } => effects_state_trigger(then) || effects_state_trigger(otherwise),
-        Effect::May { effects, .. } | Effect::RepeatEach { effects, .. } => {
-            effects_state_trigger(effects)
-        }
+        Effect::May { effects, .. }
+        | Effect::RepeatEach { effects, .. }
+        | Effect::RepeatWhile { effects, .. } => effects_state_trigger(effects),
         Effect::RollDice { results, .. } => results
             .iter()
             .any(|row| effects_state_trigger(&row.effects)),
@@ -183,6 +194,7 @@ fn effects_state_trigger(effects: &[Effect]) -> bool {
             first: win,
             second: lose,
         } => effects_state_trigger(win) || effects_state_trigger(lose),
+        Effect::OneOf { options, .. } => options.iter().any(|option| effects_state_trigger(option)),
         Effect::Pay { paid, unpaid, .. } => {
             effects_state_trigger(paid) || effects_state_trigger(unpaid)
         }

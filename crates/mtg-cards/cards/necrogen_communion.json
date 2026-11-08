@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ff58459a-0015-4012-86c0-580da4e02676",
+  "name": "Necrogen Communion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrogen Communion",
+      "oracle_fingerprint": "9afbfa9278ecce8281cd705a7c62884e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": { "Toxic": 2 } }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

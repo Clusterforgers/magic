@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0d44d4f3-9713-4d18-a985-9e7ff0df85d3",
+  "name": "Robber Fly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Robber Fly",
+      "oracle_fingerprint": "ce0d6b671fc9b1bc2a3171920b31f3fd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Discard": {
+                  "who": "Defending",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Defending" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "who": "Defending",
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

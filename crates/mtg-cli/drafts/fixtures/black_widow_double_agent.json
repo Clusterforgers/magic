@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522",
+  "oracle_id": "e6c181f1-f4f7-4a96-b50c-717cf2a02098",
+  "multiverse_ids": [],
+  "resource_id": "2A57D68E631C6D0E94F53AAACA24232D8570E9774AE40CC9F7984E4A470BB2A4",
+  "mtgo_id": 152603,
+  "arena_id": 105103,
+  "tcgplayer_id": 696318,
+  "cardmarket_id": 890575,
+  "name": "Black Widow, Double Agent",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522",
+  "scryfall_uri": "https://scryfall.com/card/msh/208/black-widow-double-agent?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:35:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.jpg?1783902905",
+    "normal": "https://cards.scryfall.io/normal/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.jpg?1783902905",
+    "large": "https://cards.scryfall.io/large/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.jpg?1783902905",
+    "png": "https://cards.scryfall.io/png/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.png?1783902905",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.jpg?1783902905",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.jpg?1783902905",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.webp?1783902905",
+    "grid": "https://cards.scryfall.io/grid/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.webp?1783902905",
+    "display": "https://cards.scryfall.io/display/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.webp?1783902905",
+    "art": "https://cards.scryfall.io/art/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.webp?1783902905",
+    "crop": "https://cards.scryfall.io/crop/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.webp?1783902905",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/a/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522.jpg?1783902905"
+  },
+  "mana_cost": "{1}{W}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Hero Villain",
+  "oracle_text": "Deathtouch\nWhenever a creature you control attacks alone, it gains first strike and menace until end of turn. (It can't be blocked except by two or more creatures.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ba9bf625-681c-4a4e-ab48-399b2fecac6b",
+  "set": "msh",
+  "set_name": "Marvel Super Heroes",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/ba9bf625-681c-4a4e-ab48-399b2fecac6b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsh&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msh?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aa8dbbb9-36a5-48e0-9e30-aeed0fb5d522/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae6c181f1-f4f7-4a96-b50c-717cf2a02098&unique=prints",
+  "collector_number": "208",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Careful, I bite.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michael MacRae",
+  "artist_ids": [
+    "4704d907-4fb1-402c-858f-bacf989fa156"
+  ],
+  "illustration_id": "00ded980-ce84-4cb4-bd51-2bab02ae2ab5",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 18782,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.17",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlack%2BWidow%252C%2BDouble%2BAgent",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlack%2BWidow%252C%2BDouble%2BAgent",
+    "edhrec": "https://edhrec.com/route/?cc=Black+Widow%2C+Double+Agent"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F696318%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=890575&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/152603?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

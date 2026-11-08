@@ -1,0 +1,50 @@
+{
+  "oracle_id": "eefe2d53-4856-465d-a900-77836ef9ae07",
+  "name": "Prophet of the Scarab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prophet of the Scarab",
+      "oracle_fingerprint": "f63a6581d9897eaab4f3aa011af41ec6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+                          "op": "Lt",
+                          "right": {
+                            "Count": [
+                              { "Subtype": "Zombie" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      },
+                      "then": {
+                        "Count": [
+                          { "Subtype": "Zombie" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "otherwise": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "oracle_id": "64c986f0-e786-419c-9b51-8c316c8fae0e",
+  "name": "Scriv, the Obligator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scriv, the Obligator",
+      "oracle_fingerprint": "d6612cca449f77e0ef962cf0ab0b8c80",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Contract",
+                      "colors": ["White"],
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+                            "effects": [
+                              {
+                                "If": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "CountOf": {
+                                          "of": "Triggering",
+                                          "filter": [{ "AttackingPlayer": "Opponents" }]
+                                        }
+                                      },
+                                      "op": "Ge",
+                                      "right": 1
+                                    }
+                                  },
+                                  "then": [
+                                    {
+                                      "Continuous": {
+                                        "affected": "Triggering",
+                                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                                        "duration": "UntilEndOfTurn"
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "If": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": {
+                                        "CountOf": {
+                                          "of": "Triggering",
+                                          "filter": [{ "AttackingPlayer": "Opponents" }]
+                                        }
+                                      },
+                                      "op": "Eq",
+                                      "right": 0
+                                    }
+                                  },
+                                  "then": [
+                                    {
+                                      "LoseLife": {
+                                        "who": { "ControllerOf": "Triggering" },
+                                        "amount": 2
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

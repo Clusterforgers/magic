@@ -1,0 +1,46 @@
+{
+  "oracle_id": "60c8a1d4-8d0a-4906-bcaf-d3a09d57c452",
+  "name": "Cryptolith Fragment // Aurora of Emrakul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptolith Fragment",
+      "oracle_fingerprint": "086ad19bf2db03edec993e68dde0cd4f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              { "LoseLife": { "who": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": { "left": { "HighestLife": "EachPlayer" }, "op": "Le", "right": 10 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aurora of Emrakul",
+      "oracle_fingerprint": "664e854e300a607b17acc1b4b722c87a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

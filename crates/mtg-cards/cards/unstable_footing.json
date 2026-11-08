@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fb901095-2ea4-4b9e-ad5a-2892894dc4c3",
+  "name": "Unstable Footing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstable Footing",
+      "oracle_fingerprint": "3ae80ca2bc89de208d055fa61d602f7d",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{R}" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "UntilEndOfTurn" } },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 5, "unpreventable": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

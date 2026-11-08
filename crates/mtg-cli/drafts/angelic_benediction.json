@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6b19377c-f178-49cb-95f8-fd3451acc7cf",
+  "name": "Angelic Benediction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Benediction",
+      "oracle_fingerprint": "bb190e6991799f1e3b1cdf75ef42fd63",
+      "abilities": [
+        { "Keyword": "Exalted" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "May": { "effects": [{ "Tap": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

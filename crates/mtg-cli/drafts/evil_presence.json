@@ -1,0 +1,15 @@
+{
+  "oracle_id": "3d8ac41c-0566-48b2-a744-39db2f72272c",
+  "name": "Evil Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evil Presence",
+      "oracle_fingerprint": "d8aecf79a75e2ff35636ca40c2fe8729",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetLandTypes": ["Swamp"] }] } }
+      ]
+    }
+  ]
+}

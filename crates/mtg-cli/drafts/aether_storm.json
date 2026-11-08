@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ff4297d3-3d96-4bd6-a606-1bdc20a6df2b",
+  "name": "Aether Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Storm",
+      "oracle_fingerprint": "482159b0eed3c5a4dd827cb506fd7aa5",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "Cast": { "filter": [{ "Type": "Creature" }] } }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 4 }],
+            "by": "Anyone",
+            "effects": [{ "Destroy": { "what": "This", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

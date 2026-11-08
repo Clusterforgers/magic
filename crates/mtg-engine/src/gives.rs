@@ -91,6 +91,12 @@ impl Gives {
                 self.set = Some((*power, *toughness));
                 return;
             }
+            // A base power or toughness set alone shows no mark of its own, nor one ability taken away.
+            Modification::SetPower(_)
+            | Modification::SetToughness(_)
+            | Modification::LoseAbility(_) => {
+                return;
+            }
             Modification::AddKeyword(keyword) => {
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());
@@ -108,18 +114,21 @@ impl Gives {
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities => GivenRule::LoseAbilities,
-            Modification::RemoveKeyword(_) => GivenRule::LoseKeyword,
-            Modification::GrantAbility(_) => GivenRule::GainAbility,
+            Modification::RemoveKeyword(_) | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
+            Modification::GrantAbility(_)
+            | Modification::GainAbilities(_)
+            | Modification::GrantText(_) => GivenRule::GainAbility,
             Modification::SetController(_) => GivenRule::SetController,
             Modification::SwitchPowerToughness => GivenRule::SwitchPowerToughness,
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
+            | Modification::AddSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => GivenRule::ChangeTypes,
-            Modification::SetColors(_) => GivenRule::SetColors,
+            Modification::SetColors(_) | Modification::AddColors(_) => GivenRule::SetColors,
             Modification::Goaded { .. } => GivenRule::Goaded,
         };
         self.rule(rule);
@@ -160,6 +169,7 @@ pub fn gives(state: &GameState, id: ObjectId) -> Option<Gives> {
 fn from(state: &GameState, applied: &Applied, id: ObjectId) -> bool {
     match applied.origin {
         Grant::Static { source, .. } => source == id,
+        Grant::Borrowed { .. } => false,
         Grant::Effect(effect) => state
             .effects()
             .iter()

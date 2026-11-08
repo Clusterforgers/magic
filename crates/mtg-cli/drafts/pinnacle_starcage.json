@@ -1,0 +1,75 @@
+{
+  "oracle_id": "10e0b563-4dfc-4530-a010-0ba40bdf02ac",
+  "name": "Pinnacle Starcage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pinnacle Starcage",
+      "oracle_fingerprint": "160aaaefc47f5dd909020be168c63c4b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                    ]
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}{W}{W}",
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Graveyard",
+                  "as": "moved"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "moved" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              },
+              { "Sacrifice": { "filter": ["This"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

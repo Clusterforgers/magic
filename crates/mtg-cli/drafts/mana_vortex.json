@@ -1,0 +1,44 @@
+{
+  "oracle_id": "98b88734-09e2-4209-a787-9b5b345391f9",
+  "name": "Mana Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Vortex",
+      "oracle_fingerprint": "bf9bdfba1bb38c93ac320552072997c9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "Sacrifice": { "who": "Triggering", "filter": [{ "Type": "Land" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": { "left": { "Count": [{ "Type": "Land" }] }, "op": "Eq", "right": 0 }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

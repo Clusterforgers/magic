@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e1a5c389-6a56-4da7-b7c4-e26fdec224e5",
+  "name": "Inevitable End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inevitable End",
+      "oracle_fingerprint": "3fe430d63afd18bf2859a2b1acb349ff",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

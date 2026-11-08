@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b46bac37-5b45-4be5-93d0-76e48dbd9f74",
+  "name": "Camera Launcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Camera Launcher",
+      "oracle_fingerprint": "604aa1668323ea404b97d38f9b928da5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -669,8 +669,8 @@ impl Driver {
             }
             DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
             DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Cancel),
-            DecisionKind::DeclareAttackers(o) => Answer::DeclareAttackers(o.required_attack()),
-            DecisionKind::DeclareBlockers(o) => Answer::DeclareBlockers(o.required_blocks()),
+            DecisionKind::DeclareAttackers(o) => Answer::DeclareAttackers(o.legal_attack()),
+            DecisionKind::DeclareBlockers(o) => Answer::DeclareBlockers(o.legal_blocks()),
             DecisionKind::AssignDamage(o) => Answer::AssignDamage(
                 o.blockers
                     .iter()
@@ -689,18 +689,25 @@ impl Driver {
                 o.legal.iter().copied().take(o.min as usize).collect(),
             )),
             DecisionKind::ChooseMode(o) if o.can_cancel => Answer::ChooseMode(ModeChoice::Cancel),
-            DecisionKind::ChooseMode(o) => Answer::ChooseMode(ModeChoice::Modes(
-                o.modes
-                    .iter()
-                    .take(o.min as usize)
-                    .map(|m| m.index)
-                    .collect(),
-            )),
+            DecisionKind::ChooseMode(o) => {
+                Answer::ChooseMode(ModeChoice::Modes(if o.cheapest.is_empty() {
+                    o.modes
+                        .iter()
+                        .take(o.min as usize)
+                        .map(|m| m.index)
+                        .collect()
+                } else {
+                    o.cheapest.iter().copied().take(o.min as usize).collect()
+                }))
+            }
             // Backing out of a cast is the passive way through an announcement.
             DecisionKind::ChooseNumber(o) if o.can_cancel => {
                 Answer::ChooseNumber(NumberChoice::Cancel)
             }
             DecisionKind::ChooseNumber(o) => Answer::ChooseNumber(NumberChoice::Number(o.min)),
+            DecisionKind::ChooseName(_) => {
+                Answer::ChooseName(mtg_engine::choose::NameChoice(String::new()))
+            }
             DecisionKind::DivideAmount(o) if o.can_cancel => {
                 Answer::DivideAmount(DivideChoice::Cancel)
             }

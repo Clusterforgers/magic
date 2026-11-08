@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2a5376aa-8996-476e-9ee8-1426b0944091",
+  "name": "Nivea, Beloved Battlemage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nivea, Beloved Battlemage",
+      "oracle_fingerprint": "89ab66c64a96ee6a8091727325104c3b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Untap": { "what": "Triggering" } },
+                    { "RemoveFromCombat": { "what": "Triggering" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 93, "end": 309 }
+          }
+        }
+      ]
+    }
+  ]
+}

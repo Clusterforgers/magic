@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a468f6ab-c0a8-4295-8b01-7147d3f889b4",
+  "name": "Air Nomad Student",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Air Nomad Student",
+      "oracle_fingerprint": "464d826ffa49caa29a68cafd3700267d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Not": "AttackedThisTurn" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

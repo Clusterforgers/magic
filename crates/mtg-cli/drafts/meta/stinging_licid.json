@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "CARDNAME loses this ability and becomes an Aura enchantment with enchant creature. Attach it to target creature. You may pay {U} to end this effect.",
+      "abilities": [],
+      "gap": "key:Animate.RemoveThisAbility"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever enchanted creature becomes tapped, CARDNAME deals 2 damage to that creature's controller.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 166
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 167,
+          "end": 270
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

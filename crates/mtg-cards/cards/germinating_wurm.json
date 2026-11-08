@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8735c62d-1508-4bdc-a5d0-f7c68d892a5e",
+  "name": "Germinating Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Germinating Wurm",
+      "oracle_fingerprint": "9cbcbdd1e9075c6cbc9c00c7940afc90",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

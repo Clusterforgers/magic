@@ -1,0 +1,90 @@
+{
+  "oracle_id": "63fd77e2-348a-4f6c-88b4-465fbe339d29",
+  "name": "Spiteful Repossession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiteful Repossession",
+      "oracle_fingerprint": "9a232fce61303baed3e297f1d20b14af",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "Opponents",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": {
+                                  "left": {
+                                    "Sum": [
+                                      {
+                                        "Count": [
+                                          { "Type": "Land" },
+                                          { "ControlledBy": { "Bound": "each" } }
+                                        ]
+                                      },
+                                      {
+                                        "Times": {
+                                          "by": -1,
+                                          "of": {
+                                            "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Bound": "each" },
+                                    "amount": {
+                                      "Sum": [
+                                        {
+                                          "Count": [
+                                            { "Type": "Land" },
+                                            { "ControlledBy": { "Bound": "each" } }
+                                          ]
+                                        },
+                                        {
+                                          "Times": {
+                                            "by": -1,
+                                            "of": {
+                                              "Count": [
+                                                { "Type": "Land" },
+                                                { "ControlledBy": "You" }
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": "DamageDealtThisWay" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e1894a57-0faa-4e0d-8ab9-e4785f0457a4",
+  "name": "Hellion Eruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellion Eruption",
+      "oracle_fingerprint": "0adc894750874185288fbfe9934664ea",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hellion",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Hellion"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  },
+                  "count": { "Bound": "sacrificed~moved" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

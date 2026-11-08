@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5c30a92b-2e88-4e66-b0a5-fa05304136e7",
+  "name": "Extract Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extract Power",
+      "oracle_fingerprint": "b5381ea825c3f834170c23e78501a272",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled4" },
+                      "play": true
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

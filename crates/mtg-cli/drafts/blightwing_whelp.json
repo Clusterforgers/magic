@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a6a5cc17-ceb5-4a65-addd-08d3692d3297",
+  "name": "Blightwing Whelp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blightwing Whelp",
+      "oracle_fingerprint": "1e8f0fb42ad97300748932b09669a20f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Counters": { "on": "Triggering", "counter": "poison" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

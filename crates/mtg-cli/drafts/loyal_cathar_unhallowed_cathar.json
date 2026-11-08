@@ -1,0 +1,45 @@
+{
+  "oracle_id": "bf28a2ed-cad7-48a7-9dec-06e43af73e9c",
+  "name": "Loyal Cathar // Unhallowed Cathar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loyal Cathar",
+      "oracle_fingerprint": "2b195064a3cf936e2d9403bb220f5bad",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                  "as": "event"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "event" },
+                        "to": { "Battlefield": { "under": "You", "transformed": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unhallowed Cathar",
+      "oracle_fingerprint": "6789c3591d527fd5afdf867fd8025deb",
+      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+    }
+  ]
+}

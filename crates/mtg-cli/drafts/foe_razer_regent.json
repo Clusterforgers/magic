@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e7dd3e2c-34a5-4097-b6d1-2ccd097fe57f",
+  "name": "Foe-Razer Regent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Foe-Razer Regent",
+      "oracle_fingerprint": "5a711d109832efd30fbfb6c85f16218e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 198 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "58c33104-2406-4849-88f3-d629e433aca0",
+  "name": "Pious Kitsune",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pious Kitsune",
+      "oracle_fingerprint": "769626a5aaaa84278942f5f749fdbf95",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "devotion" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Type": "Creature" }, { "Named": "Eight-and-a-Half-Tails" }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "GainLife": {
+                        "amount": {
+                          "Counters": { "on": "This", "counter": { "Other": "devotion" } }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "devotion" } } }],
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

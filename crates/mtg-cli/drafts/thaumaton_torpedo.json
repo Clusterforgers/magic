@@ -1,0 +1,49 @@
+{
+  "oracle_id": "9f9ae015-dc59-4ecb-a2bb-668496b48a48",
+  "name": "Thaumaton Torpedo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thaumaton Torpedo",
+      "oracle_fingerprint": "f03dde5089334c46de4c7b8e7c9d895a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{6}" },
+              "Tap",
+              "SacrificeSelf",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Attacked",
+                              "who": "EachPlayer",
+                              "filter": [{ "Subtype": "Spacecraft" }, { "ControlledBy": "You" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

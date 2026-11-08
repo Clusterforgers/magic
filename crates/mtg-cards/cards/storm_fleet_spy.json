@@ -1,0 +1,26 @@
+{
+  "oracle_id": "42081a57-b521-45c2-928d-0a0a4641818d",
+  "name": "Storm Fleet Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Fleet Spy",
+      "oracle_fingerprint": "0bdab54b2bbfab20cb90cb575cfc6d19",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

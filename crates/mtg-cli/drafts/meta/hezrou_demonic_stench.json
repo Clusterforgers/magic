@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever one or more creatures you control become blocked, each blocking creature gets -1/-1 until end of turn.",
+      "abilities": [],
+      "gap": "trigger:AttackerBlockedOnce"
+    },
+    {
+      "face": 1,
+      "tag": "A",
+      "text": "Each creature that blocked this turn gets -1/-1 until end of turn.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 111
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 134
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

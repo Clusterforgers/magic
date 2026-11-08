@@ -1,0 +1,54 @@
+{
+  "oracle_id": "4230c7a3-4591-411e-afab-d2bfb58446de",
+  "name": "Phantasmal Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantasmal Sphere",
+      "oracle_fingerprint": "5dd520786ed28311f608fa0a9fd8c295",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Sized": {
+                      "size": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                      "token": {
+                        "name": "Orb",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Orb"],
+                        "abilities": [{ "Keyword": "Flying" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

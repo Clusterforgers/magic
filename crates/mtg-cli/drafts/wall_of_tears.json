@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5825d718-6a32-4f4c-9b56-1a50051cfe28",
+  "name": "Wall of Tears",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Tears",
+      "oracle_fingerprint": "9a016671d32323f6da4055f33fcf71c9",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Move": { "what": { "Bound": "event" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

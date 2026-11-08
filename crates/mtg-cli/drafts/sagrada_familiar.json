@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ba621907-7aaa-448a-8acc-5d28521eb581",
+  "name": "Sagrada Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sagrada Familiar",
+      "oracle_fingerprint": "7f9d7cb69ffc7aee9776d916e8e70d5d",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Defender" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              "Commander",
+              { "ControlledBy": "You" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": ["Commander", { "ControlledBy": "You" }], "by": "You" }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Stained Glass",
+                      "colors": ["White", "Blue", "Black", "Red", "Green"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Stained", "Glass"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "Triggering", "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

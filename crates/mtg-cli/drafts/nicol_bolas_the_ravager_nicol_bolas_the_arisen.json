@@ -1,0 +1,90 @@
+{
+  "oracle_id": "55e4b27e-5447-4fc2-8cae-a03e344600c6",
+  "name": "Nicol Bolas, the Ravager // Nicol Bolas, the Arisen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nicol Bolas, the Ravager",
+      "oracle_fingerprint": "040046ba03bd20bd48e821b482248614",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{U}{B}{R}",
+            "timing": "Sorcery",
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nicol Bolas, the Arisen",
+      "oracle_fingerprint": "76968543393038b24c8bd37ee027a89a",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 2 }, "effects": [{ "Draw": { "count": 2 } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 10 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 12 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ExileTop": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Sum": [{ "Count": [{ "OwnedBy": { "Target": 0 } }, { "In": "Library" }] }, -1]
+                  },
+                  "as": "exiled"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

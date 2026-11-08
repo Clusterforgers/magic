@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5902e074-7154-4fc7-8776-b87e8b1925e7",
+  "name": "Aegis Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aegis Angel",
+      "oracle_fingerprint": "195d446d071d57c5533f8d56991543bb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

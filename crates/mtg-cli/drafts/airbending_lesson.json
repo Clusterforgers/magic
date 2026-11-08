@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e101b744-9175-4aa5-bf80-d6944359e538",
+  "name": "Airbending Lesson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Airbending Lesson",
+      "oracle_fingerprint": "8ca50bdb5ebbf8ec7f84d62e4e00f022",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "airbent" } },
+              {
+                "Rule": {
+                  "rule": { "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" } },
+                  "duration": "Forever"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

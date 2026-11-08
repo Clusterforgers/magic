@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a81b7629-9db9-4351-8d0e-c45a7a6167d4",
+  "name": "Ral's Dispersal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ral's Dispersal",
+      "oracle_fingerprint": "c4e152fa133a5a3925d1972c5d71f238",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Ral, Caller of Storms" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

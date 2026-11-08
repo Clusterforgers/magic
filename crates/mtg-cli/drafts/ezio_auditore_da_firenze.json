@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3017ac79-37f1-4cc1-8efd-4add027618a2",
+  "name": "Ezio Auditore da Firenze",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ezio Auditore da Firenze",
+      "oracle_fingerprint": "284bf88ace183b5455332202be515178",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Subtype": "Assassin" },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Freerunning": "{B}{B}" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 185, "end": 336 }
+          }
+        }
+      ]
+    }
+  ]
+}

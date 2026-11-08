@@ -1,0 +1,22 @@
+{
+  "oracle_id": "5c5d1a62-3b83-4812-82bb-d95b39b990b4",
+  "name": "Faerie Tauntings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Tauntings",
+      "oracle_fingerprint": "0abf03acae342a4339affdf58c2f2c98",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [
+              { "May": { "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "f068a0f3-48bc-4d5d-be79-c23c0be11c27",
+  "name": "Bladewing's Thrall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bladewing's Thrall",
+      "oracle_fingerprint": "d45939b50c74aa8852ef9a07d6b037b7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Subtype": "Dragon" }], "to": "Battlefield" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": { "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

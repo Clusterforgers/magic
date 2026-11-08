@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7d5126a9-ab81-4de6-817d-3b4b84c7ca5f",
+  "name": "Prismwake Merrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismwake Merrow",
+      "oracle_fingerprint": "6abb3bee2b280a24a6209ab397ab6a43",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Colors", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "02b5ea0b-c0a3-4213-9064-e688190fca5e",
+  "name": "Screaming Seahawk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Screaming Seahawk",
+      "oracle_fingerprint": "65117d54b170548561edef9eaed288ce",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Screaming Seahawk" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever CARDNAME attacks, exile up to one target creature card from a graveyard. If you do, conjure a duplicate of it into your graveyard. The duplicate perpetually becomes a black Skeleton with base power and toughness 3/1 in addition to its other colors and types.",
+      "abilities": [],
+      "gap": "key:MakeCard.ImprintMade"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME dies, return another target creature card with power or toughness 1 from your graveyard to the battlefield.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 279
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 280,
+          "end": 413
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

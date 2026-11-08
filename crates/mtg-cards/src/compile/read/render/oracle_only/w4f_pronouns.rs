@@ -33,9 +33,16 @@ pub(super) fn add(texts: &mut Vec<String>) {
 fn w4f_gendered(text: &str, [subject, object, possessive, reflexive]: [&str; 4]) -> String {
     let words: Vec<&str> = text.split(' ').collect();
     let mut named = false;
+    // A target named after the card's last mention owns the next "it" and "its": "return target permanent to its owner's hand".
+    let mut target_last = false;
     let mut out: Vec<String> = Vec::with_capacity(words.len());
     for (at, word) in words.iter().enumerate() {
         let core = word.trim_end_matches(['.', ',', ':', ';', '"']);
+        if core == "target" {
+            target_last = true;
+        } else if core.starts_with('~') {
+            target_last = false;
+        }
         let tail = &word[core.len()..];
         let after_preposition = at
             .checked_sub(1)
@@ -46,6 +53,7 @@ fn w4f_gendered(text: &str, [subject, object, possessive, reflexive]: [&str; 4])
             && tail.is_empty()
             && next.is_some_and(|next| next.ends_with('s') || W4F_AUXILIARIES.contains(&next));
         let replaced = match core {
+            _ if target_last => None,
             "it" if subject_here => Some(subject.to_owned()),
             "It" if subject_here => Some(w4f_capital(subject)),
             "it" => Some(object.to_owned()),

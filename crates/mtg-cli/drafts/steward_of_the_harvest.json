@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1bb7a942-c4b9-47a2-9782-3ec3efcdaff5",
+  "name": "Steward of the Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steward of the Harvest",
+      "oracle_fingerprint": "ac33c3f89fa65f7cd14b28bb5839a77e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Type": "Land" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

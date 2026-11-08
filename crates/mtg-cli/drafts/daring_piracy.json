@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ae74efc6-4649-4783-a3a5-7a34d4667f64",
+  "name": "Daring Piracy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daring Piracy",
+      "oracle_fingerprint": "4a30ddda74eb1febb5544240cd295e5a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pirate",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pirate"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Menace" }, { "Keyword": "Haste" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

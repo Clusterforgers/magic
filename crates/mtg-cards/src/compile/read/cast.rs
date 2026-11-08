@@ -44,6 +44,7 @@ pub fn exile_top(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         who: Ref::You,
         count,
         bind: IMPULSE.to_owned(),
+        sealed: false,
     }])
 }
 
@@ -81,6 +82,7 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
             (r.word("it") || r.words("that card")).then_some(())?;
             r.need("without paying its mana cost")?;
             Effect::CastFromZone {
+                rather: None,
                 who: Ref::You,
                 what: Ref::Bound(FOUND.to_owned()),
                 free: true,
@@ -124,6 +126,7 @@ fn bottom_in_a_random_order() -> Effect {
             place: Place::Bottom,
             order: Some(Order::Random),
         },
+        bind: None,
     }
 }
 
@@ -157,14 +160,15 @@ pub fn discover_text(effects: &[Effect]) -> Option<(String, usize)> {
 /// The two sentences the effects at the front of the list are when they are an impulse draw, and how many effects they take.
 pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
     let [
-        Effect::ExileTop { count, .. },
+        Effect::ExileTop { count, bind, .. },
         Effect::Rule { duration, .. },
         ..,
     ] = effects
     else {
         return None;
     };
-    if effects.get(..2)? != impulse(count.clone(), duration.clone()) {
+    // The name the cards are bound to is the translator's choice; the permission must name the same one.
+    if effects.get(..2)? != impulse_named(count, duration, bind) {
         return None;
     }
     let cards = if count.is_one() {
@@ -185,6 +189,22 @@ pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
     ))
 }
 
+/// The impulse draw with the exiled cards bound to `bind` (r7d).
+fn impulse_named(count: &Amount, duration: &Duration, bind: &str) -> Vec<Effect> {
+    let mut effects = impulse(count.clone(), duration.clone());
+    for effect in &mut effects {
+        match effect {
+            Effect::ExileTop { bind: named, .. } => bind.clone_into(named),
+            Effect::Rule {
+                rule: crate::modify::GameRule::MayCast(permission),
+                ..
+            } => permission.only = Some(Ref::Bound(bind.to_owned())),
+            _ => {}
+        }
+    }
+    effects
+}
+
 /// The other wordings of an impulse draw in the text of an ability: the duration may come first and the cards may be
 /// "them".
 pub fn impulse_wordings(text: String) -> Vec<String> {
@@ -197,6 +217,23 @@ pub fn impulse_wordings(text: String) -> Vec<String> {
         (
             "You may play those cards this turn",
             "Until end of turn, you may play those cards",
+        ),
+        // r7d: one card may be "it", and the duration may follow the permission.
+        (
+            "You may play that card this turn",
+            "You may play it this turn",
+        ),
+        (
+            "Until the end of your next turn, you may play that card",
+            "You may play that card until the end of your next turn",
+        ),
+        (
+            "You may play that card until the end of your next turn",
+            "You may play it until the end of your next turn",
+        ),
+        (
+            "Until the end of your next turn, you may play those cards",
+            "You may play those cards until the end of your next turn",
         ),
         ("You may play those cards", "You may play them"),
         ("you may play those cards", "you may play them"),
@@ -225,6 +262,7 @@ fn exiled_with_source() -> Ref {
 /// The player may play or cast the card at no cost, during the resolution.
 fn free_cast(what: Ref, play: bool) -> Effect {
     Effect::CastFromZone {
+        rather: None,
         who: Ref::You,
         what,
         free: true,
@@ -333,8 +371,12 @@ pub fn text(effect: &Effect) -> Option<String> {
         Effect::ExileTop {
             who: Ref::You,
             count,
+            sealed,
             ..
-        } => format!("exile {} of your library", top_text(count)?),
+        } => {
+            let face = if *sealed { " face down" } else { "" };
+            format!("exile {} of your library{face}", top_text(count)?)
+        }
         Effect::ExileUntil {
             who: Ref::You,
             filter: Selector(preds),
@@ -357,7 +399,7 @@ pub fn text(effect: &Effect) -> Option<String> {
                 points_text(count)?
             )
         }
-        Effect::CastFromZone {
+        Effect::CastFromZone { rather: None,
             who: Ref::You,
             what: Ref::Bound(name),
             free: true,
@@ -416,6 +458,7 @@ pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             rest_as: None,
         },
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(FROM_HAND.to_owned()),
             free: true,

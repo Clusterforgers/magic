@@ -1,0 +1,36 @@
+{
+  "oracle_id": "599402d9-2ea6-4709-b010-b35636be8c8c",
+  "name": "Sky Cycle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sky Cycle",
+      "oracle_fingerprint": "89b4cab742aab508f0656dc1a5a6e768",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

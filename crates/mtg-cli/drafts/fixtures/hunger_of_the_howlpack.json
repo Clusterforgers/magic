@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "23676697-2b84-4e9f-9e38-4fd58085a698",
+  "oracle_id": "296dee6b-6ec1-4ea4-8dc3-23080dd37646",
+  "multiverse_ids": [
+    382285
+  ],
+  "tcgplayer_id": 83223,
+  "cardmarket_id": 267307,
+  "name": "Hunger of the Howlpack",
+  "lang": "en",
+  "released_at": "2014-06-06",
+  "uri": "https://api.scryfall.com/cards/23676697-2b84-4e9f-9e38-4fd58085a698",
+  "scryfall_uri": "https://scryfall.com/card/cns/168/hunger-of-the-howlpack?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:42:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.jpg?1783939343",
+    "normal": "https://cards.scryfall.io/normal/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.jpg?1783939343",
+    "large": "https://cards.scryfall.io/large/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.jpg?1783939343",
+    "png": "https://cards.scryfall.io/png/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.png?1783939343",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.jpg?1783939343",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.jpg?1783939343",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.webp?1783939343",
+    "grid": "https://cards.scryfall.io/grid/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.webp?1783939343",
+    "display": "https://cards.scryfall.io/display/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.webp?1783939343",
+    "art": "https://cards.scryfall.io/art/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.webp?1783939343",
+    "crop": "https://cards.scryfall.io/crop/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.webp?1783939343",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/3/23676697-2b84-4e9f-9e38-4fd58085a698.jpg?1783939343"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Put a +1/+1 counter on target creature.\nMorbid — Put three +1/+1 counters on that creature instead if a creature died this turn.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Morbid"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d4ebb59-a50b-45b8-8fff-ab70767819a5",
+  "set": "cns",
+  "set_name": "Conspiracy",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/7d4ebb59-a50b-45b8-8fff-ab70767819a5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acns&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cns?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/23676697-2b84-4e9f-9e38-4fd58085a698/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A296dee6b-6ec1-4ea4-8dc3-23080dd37646&unique=prints",
+  "collector_number": "168",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Werewolves are an unholy mix of a predator's instinct and a human's hatred.\"\n—Alena, trapper of Kessig",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nils Hamm",
+  "artist_ids": [
+    "c540d1fc-1500-457f-93cf-d6069ee66546"
+  ],
+  "illustration_id": "3e12d318-cda5-4ffa-86d5-96fcd3a792e3",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18380,
+  "penny_rank": 9437,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.70",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=382285&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHunger%2Bof%2Bthe%2BHowlpack",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHunger%2Bof%2Bthe%2BHowlpack",
+    "edhrec": "https://edhrec.com/route/?cc=Hunger+of+the+Howlpack"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F83223%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=267307&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Hunger+of+the+Howlpack&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

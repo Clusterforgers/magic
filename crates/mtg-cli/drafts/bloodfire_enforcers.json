@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5e4facd9-d416-4ade-ba71-6da32b12a891",
+  "name": "Bloodfire Enforcers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodfire Enforcers",
+      "oracle_fingerprint": "78f427953b8509e862a96a6c27c9a9f3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Type": "Instant" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Type": "Sorcery" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

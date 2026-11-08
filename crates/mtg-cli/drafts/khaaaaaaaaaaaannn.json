@@ -1,0 +1,39 @@
+{
+  "oracle_id": "45b1a19b-6a0c-4534-9106-99c2e5fc30d6",
+  "name": "Khaaaaaaaaaaaannn!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Khaaaaaaaaaaaannn!",
+      "oracle_fingerprint": "c7982ee98bd36739c6ee99809e6688a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Times": { "by": 2, "of": "X" } }
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

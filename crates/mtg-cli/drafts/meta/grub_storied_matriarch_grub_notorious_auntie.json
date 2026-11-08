@@ -1,0 +1,119 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Menace",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever this creature enters or transforms into CARDNAME, return up to one target Goblin card from your graveyard to your hand.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever this creature enters or transforms into CARDNAME, return up to one target Goblin card from your graveyard to your hand.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your first main phase, you may pay {R}. If you do, transform NICKNAME.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "K",
+      "text": "Menace",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "Whenever NICKNAME attacks, you may blight 1. If you do, create a tapped and attacking token that's a copy of the blighted creature, except it has \"At the beginning of the end step, sacrifice this token.\"",
+      "abilities": [],
+      "gap": "key:CopyPermanent.TokenAttacking"
+    },
+    {
+      "face": 1,
+      "tag": "T",
+      "text": "At the beginning of your first main phase, you may pay {B}. If you do, transform NICKNAME.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 6
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 7,
+          "end": 150
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 151,
+          "end": 237
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 0,
+          "end": 6
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 7,
+          "end": 206
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 1,
+        "span": {
+          "start": 207,
+          "end": 293
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

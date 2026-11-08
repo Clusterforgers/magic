@@ -1,0 +1,38 @@
+{
+  "oracle_id": "405cd74a-6b44-4a80-b53c-ff1406d8ff45",
+  "name": "Enlarge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enlarge",
+      "oracle_fingerprint": "0543dbcbf693ba0a7c263806ea1070a3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 7, "toughness": 7 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4b681770-eea3-459c-ad5b-138834213f8c",
+  "name": "Wu Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wu Spy",
+      "oracle_fingerprint": "eadff3113c59096aab195cd2ae18bd36",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

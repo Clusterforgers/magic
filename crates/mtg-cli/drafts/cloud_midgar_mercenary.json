@@ -1,0 +1,55 @@
+{
+  "oracle_id": "33d2584b-bf29-4c22-bd45-14ba2fb98c0e",
+  "name": "Cloud, Midgar Mercenary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloud, Midgar Mercenary",
+      "oracle_fingerprint": "4e52548a5f36b4c237ffe8c2ac057596",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": { "filter": [{ "Subtype": "Equipment" }], "reveal": true, "as": "found" }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "source": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": "This" },
+                            { "Not": { "HasAttached": [{ "Subtype": "Equipment" }] } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Equipment" } },
+                            { "Not": { "AttachedTo": "This" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1dc51112-ee5d-492a-9c79-80ebcad60bc8",
+  "name": "Undertow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undertow",
+      "oracle_fingerprint": "f61c24f0a46ed544041cb5cc1237bc88",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Island" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Island" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

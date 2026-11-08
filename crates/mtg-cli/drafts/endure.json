@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f4cd32f0-d6aa-4497-b8db-a0bf4c3c31de",
+  "name": "Endure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endure",
+      "oracle_fingerprint": "7268b49ed0de3b893b57f2e650e851c0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Each": [{ "ControlledBy": "You" }] } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

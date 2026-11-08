@@ -2,7 +2,7 @@
  * The abilities a Priority prompt lets the viewer activate from the table: which permanents and cards of the hand, the
  * graveyard, the exile and the command zone carry one, what each is called, and the plays a card with several offers in a chooser.
  * Mana abilities are never listed here: they stay the business of `PriorityOptions.mana_abilities` and are no play
- * (docs/arena-flow.md).
+ * (docs/ui-design.md).
  */
 import type {
   AbilityRef,
@@ -11,6 +11,7 @@ import type {
   ManaOption,
   ObjectId,
   ObjectView,
+  PaidEnd,
   PlayerId,
   PriorityAction,
   PriorityOptions,
@@ -111,6 +112,17 @@ function unlockPlay(option: FaceOption): Play {
   }
 }
 
+/** The line of an effect the holder may end by paying for it (a special action, CR 116.2c): "You may pay {W} to end this effect." */
+function endPlay(option: PaidEnd): Play {
+  const cost = costText(option.cost)
+  return {
+    key: `end-${option.effect}`,
+    label: `Pay ${cost}: end the effect`,
+    words: `Pay ${cost} to end the effect on this card`,
+    action: { EndEffect: option.effect },
+  }
+}
+
 /**
  * The cards of `seat` with something to do besides casting or playing them: each ability in `options.abilities` whose
  * card the seat may use it from, and each locked door of a Room of the seat that it may unlock now. An ability the
@@ -123,8 +135,9 @@ export function abilityPlays(
 ): Activations {
   const abilities = options.abilities ?? []
   const doors = options.unlockable ?? []
+  const ends = options.endable ?? []
   const special = specialActions(options)
-  if (seat === null || abilities.length + doors.length + special.length === 0) return NONE
+  if (seat === null || abilities.length + doors.length + ends.length + special.length === 0) return NONE
   const found = new Map<ObjectId, Play[]>()
   const add = (id: ObjectId, play: Play): void => {
     const list = found.get(id)
@@ -153,6 +166,10 @@ export function abilityPlays(
       add(option.card, unlockPlay(option))
     }
   }
+  for (const option of ends) {
+    const object = objectsById[option.object]
+    if (object !== undefined && object.zone === 'Battlefield') add(option.object, endPlay(option))
+  }
   for (const [id, verb, action] of special) {
     const object = objectsById[id]
     if (object === undefined || !usable(object, seat)) continue
@@ -169,6 +186,7 @@ function specialActions(options: PriorityOptions): Special[] {
   return [
     ...(options.suspendable ?? []).map((id): Special => [id, 'Suspend', { Suspend: id }]),
     ...(options.foretellable ?? []).map((id): Special => [id, 'Foretell', { Foretell: id }]),
+    ...(options.plottable ?? []).map((id): Special => [id, 'Plot', { Plot: id }]),
     ...(options.turnable ?? []).map((id): Special => [id, 'Turn face up', { TurnFaceUp: id }]),
     ...(options.faces ?? [])
       .filter((face) => face.face === 1 && !face.land)

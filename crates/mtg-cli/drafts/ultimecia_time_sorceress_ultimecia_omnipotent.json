@@ -1,0 +1,53 @@
+{
+  "oracle_id": "70773879-b773-4e81-99ca-8f4bba478962",
+  "name": "Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultimecia, Time Sorceress",
+      "oracle_fingerprint": "0998224ed51f27313cbe2bfc1ecfdcb0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Mana": "{4}{U}{U}{B}{B}" },
+                    { "ExileFromGraveyard": { "filter": [], "count": 8 } }
+                  ],
+                  "paid": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ultimecia, Omnipotent",
+      "oracle_fingerprint": "551c9db502c3a4d6b255ad65a4045cc2",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

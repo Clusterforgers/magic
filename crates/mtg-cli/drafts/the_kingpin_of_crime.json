@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3eeeb159-aa45-4a9b-9618-8542604b9830",
+  "name": "The Kingpin of Crime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Kingpin of Crime",
+      "oracle_fingerprint": "a993d97962ad6490be8645e6ac9a6781",
+      "abilities": [
+        { "Keyword": "Extort" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 2 }],
+                  "paid": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Combat": {
+                            "who": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" },
+                                {
+                                  "Test": {
+                                    "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                    "op": "Lt",
+                                    "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                                  }
+                                }
+                              ]
+                            },
+                            "quirk": "AssignsByToughness"
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

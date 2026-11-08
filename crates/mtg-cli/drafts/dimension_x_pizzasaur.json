@@ -1,0 +1,28 @@
+{
+  "oracle_id": "29a9aff7-184c-459d-8002-e0287d978764",
+  "name": "Dimension X Pizzasaur",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dimension X Pizzasaur",
+      "oracle_fingerprint": "a7705bb5f849a133d70585c0ce6103ee",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 207 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "GainLife": { "amount": 3 } },
+              { "LoseLife": { "who": "Opponents", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

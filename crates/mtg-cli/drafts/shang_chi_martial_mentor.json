@@ -1,0 +1,52 @@
+{
+  "oracle_id": "14d3e014-9c4f-4864-8f1e-a45ac27e4dbf",
+  "name": "Shang-Chi, Martial Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shang-Chi, Martial Mentor",
+      "oracle_fingerprint": "1c9330585b7554e288f3728560162a43",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "In": "Battlefield" }
+                  ]
+                },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{G}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{3}{G}{G}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

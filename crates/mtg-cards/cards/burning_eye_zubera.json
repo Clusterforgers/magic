@@ -1,0 +1,27 @@
+{
+  "oracle_id": "24bf8773-c8bb-494c-a0af-aef80f5b3d47",
+  "name": "Burning-Eye Zubera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning-Eye Zubera",
+      "oracle_fingerprint": "8ee82daa7f6ce136895d71fdde1441b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "This", "what": "DamageDealtTo" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

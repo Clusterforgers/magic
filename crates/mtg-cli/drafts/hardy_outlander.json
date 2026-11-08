@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d0a33e9b-dc1e-4643-b179-851f3c71a99d",
+  "name": "Hardy Outlander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hardy Outlander",
+      "oracle_fingerprint": "80a7f210917eb7a2895b5bcc9d6396dd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "AttacksPlayer": { "what": ["This"], "at": "EachPlayer" } },
+                    "if": {
+                      "Compare": {
+                        "left": { "Life": "Against" },
+                        "op": "Ge",
+                        "right": { "HighestLife": "Opponents" }
+                      }
+                    },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                        }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [
+                            {
+                              "ModifyPT": {
+                                "power": { "Stat": { "of": "This", "stat": "Power" } },
+                                "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                              }
+                            }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

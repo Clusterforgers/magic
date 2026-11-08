@@ -1,0 +1,42 @@
+{
+  "oracle_id": "82b327c6-5cd9-4bee-bef4-860522bded9c",
+  "name": "Myr Reservoir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Reservoir",
+      "oracle_fingerprint": "697887ca064f23cd64e75b8d85d351be",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [
+                    { "Spell": { "subtypes": ["Myr"] } },
+                    { "Ability": { "subtypes": ["Myr"], "facts": ["OnBattlefield"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Myr" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "f429ca15-c578-4c1d-a604-fd5509c92dba",
+  "name": "Lodestone Needle // Guidestone Compass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lodestone Needle",
+      "oracle_fingerprint": "576c70c8063bd430d477ae0c474d1cba",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" }, "count": 2 }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{2}{U}" },
+              { "Craft": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Guidestone Compass",
+      "oracle_fingerprint": "86585d797ce2fa7e305937c75c682d7b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Explore": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

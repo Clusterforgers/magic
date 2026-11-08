@@ -1,0 +1,112 @@
+{
+  "oracle_id": "6be0bf15-fdcb-4425-9bd8-3c39039cab7d",
+  "name": "Mordenkainen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mordenkainen",
+      "oracle_fingerprint": "a298b8fc72718bea6f95db4f765840e0",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dog Illusion",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dog", "Illusion"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Times": {
+                                      "by": 2,
+                                      "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                                    }
+                                  },
+                                  "toughness": {
+                                    "Times": {
+                                      "by": 2,
+                                      "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                                    }
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "to": { "Library": { "place": "Top" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "Not": { "Is": { "Bound": "moved" } } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "CreateEmblem": {
+                  "abilities": [{ "Rule": { "rule": { "NoMaxHandSize": "You" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

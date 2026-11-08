@@ -1,0 +1,85 @@
+{
+  "oracle_id": "45f386ba-ad62-4c0e-b6ad-ae02ca8f2bec",
+  "name": "Blood on the Snow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood on the Snow",
+      "oracle_fingerprint": "71194c816750d932570885e4445d8f98",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                                { "OwnedBy": "You" },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": {
+                                      "ManaSpent": {
+                                        "of": null,
+                                        "from": { "supertypes": ["Snow"] }
+                                      }
+                                    }
+                                  }
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "as": "picked"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "Destroy": { "what": { "Each": [{ "Type": "Planeswalker" }] } } },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                                { "OwnedBy": "You" },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": {
+                                      "ManaSpent": {
+                                        "of": null,
+                                        "from": { "supertypes": ["Snow"] }
+                                      }
+                                    }
+                                  }
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "as": "picked2"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

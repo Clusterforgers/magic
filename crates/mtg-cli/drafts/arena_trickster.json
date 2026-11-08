@@ -1,0 +1,20 @@
+{
+  "oracle_id": "69c27223-d676-4916-899b-297dc4ed2d59",
+  "name": "Arena Trickster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arena Trickster",
+      "oracle_fingerprint": "21ceed098d69808102d11ee50442a1a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e743b4ec-65bf-4e8d-ad87-6746a2e6ba73",
+  "name": "Snow Devil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snow Devil",
+      "oracle_fingerprint": "1148ef45a27e90c161d7ee572bc4372a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "All": [
+                {
+                  "Matches": {
+                    "subject": "Attached",
+                    "selector": [{ "Type": "Creature" }, "Blocking"]
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Land" },
+                        { "Supertype": "Snow" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

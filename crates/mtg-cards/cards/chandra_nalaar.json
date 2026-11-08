@@ -1,0 +1,62 @@
+{
+  "oracle_id": "f4da7a43-e9d5-47ea-b2f0-3cf55a156f4a",
+  "name": "Chandra Nalaar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra Nalaar",
+      "oracle_fingerprint": "5d5f59fb7122151a853447c9eba6abc7",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 10 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "AnyOf": [
+                                { "ControlledBy": { "Target": 0 } },
+                                { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                              ]
+                            }
+                          ]
+                        },
+                        "amount": 10
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

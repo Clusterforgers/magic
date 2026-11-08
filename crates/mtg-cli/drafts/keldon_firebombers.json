@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d5e02fa5-827e-414b-acb5-932de4bb3ee3",
+  "name": "Keldon Firebombers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keldon Firebombers",
+      "oracle_fingerprint": "b32ab8b0ca858288805a750818ec8ba0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "Chooser" }] },
+                  "count": { "min": 3, "max": 3 },
+                  "as": "card"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Land" }, { "Not": { "Is": { "Bound": "card" } } }],
+                  "count": {
+                    "Count": [{ "Type": "Land" }, { "Not": { "Is": { "Bound": "card" } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f33ef275-632e-46c8-a735-042dee340a12",
+  "name": "Prying Questions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prying Questions",
+      "oracle_fingerprint": "fc29e0ad82c342b8d6e9bd7a1c625683",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

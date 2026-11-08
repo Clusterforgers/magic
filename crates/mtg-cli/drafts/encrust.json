@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2e056743-78ff-45b6-80df-7486d52d5df6",
+  "name": "Encrust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Encrust",
+      "oracle_fingerprint": "4e3d7bc85696ee91e72fe7d60d79075a",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }] }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "ActivateKind": { "kind": "Every", "sources": [{ "Is": "Attached" }] } }
+              }
+            }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

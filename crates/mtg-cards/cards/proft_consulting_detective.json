@@ -1,0 +1,31 @@
+{
+  "oracle_id": "45473bdb-b96f-4213-a46d-b2dbdf6b5e56",
+  "name": "Proft, Consulting Detective",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proft, Consulting Detective",
+      "oracle_fingerprint": "695d3771aa46bde0c4df4cfe2ee2dca7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Scried", "who": "You" } },
+                { "Did": { "action": "Surveilled", "who": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

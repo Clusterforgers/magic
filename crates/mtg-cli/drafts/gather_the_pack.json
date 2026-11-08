@@ -1,0 +1,57 @@
+{
+  "oracle_id": "8f31d870-872d-4671-80d1-8d2ecd2c38d2",
+  "name": "Gather the Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gather the Pack",
+      "oracle_fingerprint": "1b89ce259ef350f21d8aaaaf78a45cd3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

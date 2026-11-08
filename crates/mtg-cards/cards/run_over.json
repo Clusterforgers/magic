@@ -1,0 +1,45 @@
+{
+  "oracle_id": "2b1bec38-5aaf-4ca0-9a04-fb4367c59c1e",
+  "name": "Run Over",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Run Over",
+      "oracle_fingerprint": "888a5a8426217feae4f051a11698dbc6",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              {
+                "Targeting": [
+                  { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b206d3bc-1203-4f00-997e-5da706346a24",
+  "name": "Hand of Emrakul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hand of Emrakul",
+      "oracle_fingerprint": "f316f3174d2764c53309558e59b27547",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Subtype": "Eldrazi" }, { "Subtype": "Spawn" }],
+                  "count": 4
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Annihilator": 1 } }
+      ]
+    }
+  ]
+}

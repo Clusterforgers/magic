@@ -1,0 +1,15 @@
+{
+  "oracle_id": "285cf707-df0c-4eb9-8f60-5d052ee8eb8c",
+  "name": "Entangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entangler",
+      "oracle_fingerprint": "fe53102ad71b67aad4f13e62c91c3844",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "BlocksAdditional": 99 }] } }
+      ]
+    }
+  ]
+}

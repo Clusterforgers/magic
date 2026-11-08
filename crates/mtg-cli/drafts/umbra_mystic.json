@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c0a4f47c-c7f9-4b95-aa1b-30580e4cf030",
+  "name": "Umbra Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umbra Mystic",
+      "oracle_fingerprint": "8947f885c9788ebf591090b7ffd8b5ce",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Subtype": "Aura" },
+                { "AttachedTo": { "Each": [{ "ControlledBy": "You" }] } }
+              ]
+            },
+            "mods": [{ "AddKeyword": "UmbraArmor" }]
+          }
+        }
+      ]
+    }
+  ]
+}

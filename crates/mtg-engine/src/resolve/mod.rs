@@ -12,6 +12,17 @@ mod prim;
 mod share;
 mod tree;
 mod value;
+#[cfg(test)]
+mod value_count_tests;
+mod value_fill;
+#[cfg(test)]
+mod value_fill_tests;
+#[cfg(test)]
+mod value_general;
+#[cfg(test)]
+mod value_players_where_tests;
+#[cfg(test)]
+mod value_test_tests;
 
 use std::sync::Arc;
 
@@ -21,19 +32,19 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 pub(crate) use inline::{run_inline, w5d_run_instead};
 pub use left::LeftToTable;
-pub(crate) use prim::lower;
+pub(crate) use prim::{first_step_done, lower};
 pub use value::{Bindings, ResolveError, Scope};
 pub(crate) use value::{CastTargets, zone_kind};
 
 use crate::abilities::{AbilityObject, AbilityRef};
 use crate::ability_reader::abilities_of;
 use crate::announce::Pending;
-use crate::choose::{Choice, Target, announced_specs, targets_before};
+use crate::choose::{Choice, Target, announced_specs, spec_bases, targets_before};
 use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::flow;
-use crate::keywords::{awaken, cipher, gift};
+use crate::keywords::{awaken, cipher, epic, gift};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
@@ -44,6 +55,12 @@ pub(crate) const CLEAR: &str = "~clear:";
 
 /// The prefix of a bound name in a finished step that records the X its payment announced (`~x:3`) instead.
 pub(crate) const W6C_PAID_X: &str = "~x:";
+
+/// The prefix of a bound name in a finished step that keeps a number (`~let:<number>:<name>`) for `Amount::Bound` instead.
+pub(crate) const LET: &str = "~let:";
+/// The prefix of a bound name in a finished step that records a chosen value (`~value:<as>` and the value as JSON after
+/// a tab) instead: what `Effect::ChooseValue` remembers for the rest of the resolution.
+pub(crate) const CHOSEN_VALUE: &str = "~value:";
 
 /// The prefix of the bound name (`~legal:<index>`) under which the first step records the targets of a specification
 /// that are legal as the resolution begins: the later steps act on them even after an earlier step made them illegal
@@ -73,6 +90,8 @@ pub struct Resolving {
     pub(crate) shown: Vec<Shown>,
     /// The life the resolution has made players lose so far, which "the life lost this way" reads.
     pub(crate) lost: u32,
+    /// The damage the resolution has dealt so far, after prevention, which "the damage dealt this way" reads.
+    pub(crate) g10c_dealt: u32,
     /// The dice rolled so far in the resolution, in the order logged, which "the result" reads.
     pub(crate) rolled: Vec<u32>,
     /// The permanents the resolution has destroyed so far, as the objects they were, which "destroyed this way" reads.
@@ -83,8 +102,12 @@ pub struct Resolving {
     pub(crate) w11b_phased: Vec<ObjectRef>,
     /// The X announced as a payment in the resolution was made ("you may pay {X}{R}. If you do"), which the effects after it read.
     pub(crate) w6c_paid_x: Option<u32>,
+    /// The numbers `Let` steps fixed, by name, which `Amount::Bound` reads.
+    pub(crate) lets: Vec<(String, i64)>,
     /// The zones the resolution has searched so far, by the player who searched, which "if you search your library this way" reads.
     pub(crate) searched: Vec<(PlayerId, Zone)>,
+    /// The values the resolution has chosen so far, by name, which `ChosenAs` reads.
+    pub(crate) chosen: std::collections::BTreeMap<String, crate::object::Chosen>,
 }
 
 impl Resolving {
@@ -97,12 +120,15 @@ impl Resolving {
             journal: Vec::new(),
             shown: Vec::new(),
             lost: 0,
+            g10c_dealt: 0,
             rolled: Vec::new(),
             destroyed: Vec::new(),
             w14b_exiled: Vec::new(),
             w11b_phased: Vec::new(),
             w6c_paid_x: None,
+            lets: Vec::new(),
             searched: Vec::new(),
+            chosen: std::collections::BTreeMap::new(),
         }
     }
 
@@ -150,7 +176,7 @@ pub enum Progress {
 }
 
 /// A cast a resolution has a player make.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Cast {
     /// Who casts it.
     pub player: PlayerId,
@@ -162,6 +188,8 @@ pub struct Cast {
     pub way: Option<mtg_cards::value::CastWay>,
     /// The card is cast transformed.
     pub transformed: bool,
+    /// What it is cast for rather than its mana cost.
+    pub rather: Option<mtg_cards::cost::Cost>,
 }
 
 /// Where a step goes after its effect.
@@ -248,9 +276,31 @@ pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityR
 fn rules_of(state: &GameState, object: &GameObject) -> Option<Arc<Ability>> {
     match object.ability() {
         Some(ability) => Some(ability.shared_rules()),
-        None => spell_ability(state, object.id())
-            .map(|(_, rules)| cipher::encoded(object, gift::before(object, rules))),
+        None => spell_ability(state, object.id()).map(|(_, rules)| {
+            epic::with_epic(object, cipher::encoded(object, gift::before(object, rules)))
+        }),
     }
+}
+
+/// Whether `position` of the resolution under way is inside a `Together` batch, whose events are detected as one after
+/// the last (CR 603.2c).
+pub(crate) fn together_at(state: &GameState, position: &[usize]) -> bool {
+    let Some(object) = state
+        .resolving()
+        .and_then(|resolving| state.object(resolving.object))
+    else {
+        return false;
+    };
+    rules_of(state, object).is_some_and(|rules| {
+        tree::inside_together(rules.effects(), &object.choices().modes, position)
+    })
+}
+
+/// Whether the resolution stands inside a `Together` batch.
+pub(crate) fn together_open(state: &GameState) -> bool {
+    state
+        .resolving()
+        .is_some_and(|resolving| together_at(state, resolving.position()))
 }
 
 /// Whether resolving the object runs effects; a permanent spell, or a card whose text is left to the table, does not.
@@ -282,6 +332,7 @@ fn scope_of<'a>(
         source: ability.map_or_else(|| object.reference(), AbilityObject::source),
         choices: object.choices(),
         specs: announced_specs(rules, chosen),
+        spec_bases: spec_bases(rules, chosen),
         target_base,
         bindings: &resolving.bindings,
         snapshots,
@@ -290,6 +341,13 @@ fn scope_of<'a>(
         layered: None,
         casting: None,
         cast_targets: None,
+        affected: None,
+        candidate: std::cell::Cell::new(None),
+        chooser: std::cell::Cell::new(None),
+        asker: None,
+        caused: None,
+        granter: ability.and_then(|a| a.origin().granter()),
+        as_was: false,
     }
 }
 
@@ -390,7 +448,7 @@ fn step_with(
     };
     // A rules error of a card on a player's read leaves the ability to the table; any other card's stops the game.
     run_step(state, resolving, object, &rules, run).or_else(|error| {
-        left::left_to_table(state, object, &rules)
+        left::left_to_table(state, object, &rules, &error)
             .map(Progress::Done)
             .ok_or_else(|| error.into())
     })
@@ -411,12 +469,24 @@ fn run_step(
             intervening_if: Some(condition),
             ..
         } = rules
+        && !matches!(condition, mtg_cards::value::Condition::AtTrigger(_))
         && !scope.holds(condition)?
     {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {
             object: object.id(),
             outcome: ResolutionOutcome::Lapsed,
         }]));
+    }
+    // "Do this only once each turn": once it was done this turn, the ability does nothing.
+    if resolving.position == START
+        && let Ability::Triggered {
+            limit: Some(limit @ mtg_cards::ability::Limit::OncePerTurnDone),
+            ..
+        } = rules
+        && let Some(ability) = object.ability()
+        && state.limit_spent(*limit, ability.source(), ability.origin(), ability.index())
+    {
+        return Ok(Progress::Done(finish(state, object)));
     }
     // CR 702.131a: an instant or sorcery spell with ascend gives the blessing before any of its effects.
     if resolving.position == START
@@ -465,6 +535,10 @@ fn run_step(
                         .map(|name| (format!("{CLEAR}{name}"), Vec::new())),
                 );
             }
+            // What a permanent exiles it remembers as exiled with it (CR 607.2a), whichever effect exiled it.
+            if let Some(remembered) = crate::memory::exiled_by(cx.scope.source, &events, state) {
+                events.push(remembered);
+            }
             events.push(Event::StepDone {
                 position,
                 bound,
@@ -486,12 +560,14 @@ pub(crate) fn next(state: &GameState) -> flow::Progress {
             free,
             way,
             transformed,
+            rather,
         })) => flow::Progress::Put(Box::new(Pending::during_resolution(
             player,
             card,
             free,
             way,
             transformed,
+            rather,
         ))),
         Err(error) => flow::Progress::Fail(error),
     }
@@ -538,6 +614,7 @@ mod tests {
                     timing: Timing::Instant,
                     condition: None,
                     limit: None,
+                    by: mtg_cards::ability::Activators::Controller,
                     from: ZoneKind::Battlefield,
                     targets: Vec::new(),
                     effects: vec![gain(1), gain(2), gain(4)],

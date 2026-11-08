@@ -9,12 +9,50 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": [{ "ControlledBy": "You" }], "to": "Battlefield" } },
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Subtype": "Aura" },
+                  { "ControlledBy": "You" },
+                  { "WasCast": { "by": "You" } }
+                ],
+                "to": "Battlefield"
+              }
+            },
             "effects": [
               {
                 "May": {
                   "effects": [
-                    { "Search": { "filter": [{ "HasKeyword": "Aftermath" }], "as": "card" } }
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Subtype": "Aura" },
+                          "CanEnchantSource",
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Le",
+                              "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                            }
+                          },
+                          {
+                            "Not": {
+                              "SharesName": {
+                                "Each": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "BattlefieldAttached": { "to": "This" } }
+                      }
+                    },
+                    { "Shuffle": {} }
                   ]
                 }
               }

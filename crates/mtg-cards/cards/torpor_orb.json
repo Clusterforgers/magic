@@ -1,0 +1,27 @@
+{
+  "oracle_id": "97326cad-b13c-4e52-82ce-850a39e5ff08",
+  "name": "Torpor Orb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torpor Orb",
+      "oracle_fingerprint": "2fdc036d01c447f59200422b338ea773",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Trigger": {
+                    "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

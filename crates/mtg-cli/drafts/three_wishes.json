@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6b3110a5-fd38-4d09-9073-c8a6f3f17840",
+  "name": "Three Wishes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Three Wishes",
+      "oracle_fingerprint": "dc05e5fa3fb15bd73912cb12a15cefa8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled4" }, "play": true }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Move": { "what": { "Bound": "exiled4" }, "to": "Graveyard" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

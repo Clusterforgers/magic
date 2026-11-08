@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4649991c-4f2c-49c8-9e18-d0ae36328553",
+  "name": "Unified Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unified Strike",
+      "oracle_fingerprint": "08de64bed0cd4cc92eee45f36be59375",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [
+                            { "Type": "Creature" },
+                            {
+                              "Compare": {
+                                "stat": "Power",
+                                "op": "Le",
+                                "to": { "Count": [{ "Subtype": "Soldier" }] }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

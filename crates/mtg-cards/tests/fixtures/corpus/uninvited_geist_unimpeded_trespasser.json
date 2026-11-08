@@ -1,0 +1,201 @@
+{
+  "object": "card",
+  "id": "4dea7c9f-ce66-447b-9f1b-d9bca5806153",
+  "oracle_id": "5c975dbb-aabb-43fe-877c-c3950019a584",
+  "multiverse_ids": [
+    409839,
+    409840
+  ],
+  "mtgo_id": 59822,
+  "mtgo_foil_id": 59823,
+  "tcgplayer_id": 116231,
+  "cardmarket_id": 289102,
+  "name": "Uninvited Geist // Unimpeded Trespasser",
+  "lang": "en",
+  "released_at": "2016-04-08",
+  "uri": "https://api.scryfall.com/cards/4dea7c9f-ce66-447b-9f1b-d9bca5806153",
+  "scryfall_uri": "https://scryfall.com/card/soi/94/uninvited-geist-unimpeded-trespasser?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:16:30Z",
+  "cmc": 3.0,
+  "type_line": "Creature — Spirit // Creature — Spirit",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Skulk",
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Uninvited Geist",
+      "mana_cost": "{2}{U}",
+      "type_line": "Creature — Spirit",
+      "oracle_text": "Skulk (This creature can't be blocked by creatures with greater power.)\nWhen this creature deals combat damage to a player, transform it.",
+      "colors": [
+        "U"
+      ],
+      "power": "2",
+      "toughness": "2",
+      "flavor_text": "A slow knock at midnight is best left unanswered.",
+      "artist": "Dan Murayama Scott",
+      "artist_id": "f852fa13-137e-40f2-bbc1-0f01df09c0e0",
+      "illustration_id": "8bf4d1fd-ad02-4110-9f2c-10686cc13d97",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "normal": "https://cards.scryfall.io/normal/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "large": "https://cards.scryfall.io/large/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "png": "https://cards.scryfall.io/png/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.png?1783937790",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "thumb": "https://cards.scryfall.io/thumb/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "grid": "https://cards.scryfall.io/grid/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "display": "https://cards.scryfall.io/display/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "art": "https://cards.scryfall.io/art/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "crop": "https://cards.scryfall.io/crop/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "jpeg": "https://cards.scryfall.io/normal/front/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Unimpeded Trespasser",
+      "mana_cost": "",
+      "type_line": "Creature — Spirit",
+      "oracle_text": "This creature can't be blocked.",
+      "colors": [
+        "U"
+      ],
+      "color_indicator": [
+        "U"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "flavor_text": "Knocking was simply a formality.",
+      "artist": "Dan Murayama Scott",
+      "artist_id": "f852fa13-137e-40f2-bbc1-0f01df09c0e0",
+      "illustration_id": "c24a11a5-a10b-4890-9cf2-da20aaad75d4",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "normal": "https://cards.scryfall.io/normal/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "large": "https://cards.scryfall.io/large/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "png": "https://cards.scryfall.io/png/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.png?1783937790",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790",
+        "thumb": "https://cards.scryfall.io/thumb/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "grid": "https://cards.scryfall.io/grid/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "display": "https://cards.scryfall.io/display/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "art": "https://cards.scryfall.io/art/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "crop": "https://cards.scryfall.io/crop/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.webp?1783937790",
+        "jpeg": "https://cards.scryfall.io/normal/back/4/d/4dea7c9f-ce66-447b-9f1b-d9bca5806153.jpg?1783937790"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4dea7c9f-ce66-447b-9f1b-d9bca5806153",
+      "component": "combo_piece",
+      "name": "Uninvited Geist // Unimpeded Trespasser",
+      "type_line": "Creature — Spirit // Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/4dea7c9f-ce66-447b-9f1b-d9bca5806153"
+    },
+    {
+      "object": "related_card",
+      "id": "4d323ead-24f5-42e4-9e23-aa14eb66264d",
+      "component": "combo_piece",
+      "name": "Shadows Over Innistrad Checklist 1",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/4d323ead-24f5-42e4-9e23-aa14eb66264d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set": "soi",
+  "set_name": "Shadows over Innistrad",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4dea7c9f-ce66-447b-9f1b-d9bca5806153/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5c975dbb-aabb-43fe-877c-c3950019a584&unique=prints",
+  "collector_number": "94",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Dan Murayama Scott",
+  "artist_ids": [
+    "f852fa13-137e-40f2-bbc1-0f01df09c0e0"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "sunmoondfc"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24225,
+  "penny_rank": 16513,
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.26",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=409839&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUninvited%2BGeist%2B%252F%252F%2BUnimpeded%2BTrespasser",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUninvited%2BGeist%2B%252F%252F%2BUnimpeded%2BTrespasser",
+    "edhrec": "https://edhrec.com/route/?cc=Uninvited+Geist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F116231%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=289102&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/59822?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

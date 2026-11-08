@@ -1,0 +1,37 @@
+{
+  "oracle_id": "74027ba4-a6ba-4696-baf1-60ef0b27ee0a",
+  "name": "Chalice of the Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chalice of the Void",
+      "oracle_fingerprint": "68afa3354a588ef7ee492aa7aad38969",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Eq",
+                      "to": { "Counters": { "on": "This", "counter": "charge" } }
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [{ "Counter": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

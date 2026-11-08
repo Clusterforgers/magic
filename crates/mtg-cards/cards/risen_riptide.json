@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e682ad51-001c-4465-951e-43df96b7d3b9",
+  "name": "Risen Riptide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Risen Riptide",
+      "oracle_fingerprint": "51ca0e48d412ba8d92ed691652a478d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Kicked"], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 5, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7fe67cef-38c8-4071-86df-71053818d908",
+  "name": "Liliana's Influence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Influence",
+      "oracle_fingerprint": "81f0a23deacbe5b2afc59a46012fc20e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                  "counter": "-1/-1"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Liliana, Death Wielder" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

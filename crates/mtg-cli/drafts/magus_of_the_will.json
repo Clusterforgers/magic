@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f32c5530-6692-4d47-8789-c73da23fd5b7",
+  "name": "Magus of the Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Will",
+      "oracle_fingerprint": "423c2ecc0ad801d1941726f091e558f9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap", "ExileSelf"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Graveyard", "play": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Not": "Token" }, { "OwnedBy": "You" }],
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

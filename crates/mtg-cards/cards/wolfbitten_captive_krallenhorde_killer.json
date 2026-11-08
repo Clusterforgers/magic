@@ -1,0 +1,67 @@
+{
+  "oracle_id": "7f59252f-3a37-4a22-938c-001f3208bd94",
+  "name": "Wolfbitten Captive // Krallenhorde Killer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolfbitten Captive",
+      "oracle_fingerprint": "52a1ea75b60bd11124ea2207c7333dd7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Krallenhorde Killer",
+      "oracle_fingerprint": "bf1e72a5f7bfd9d87fea0dc7e4b18c7c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

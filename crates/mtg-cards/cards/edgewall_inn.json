@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4dfd33e8-7e30-493b-8564-f7df5f0257aa",
+  "name": "Edgewall Inn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Edgewall Inn",
+      "oracle_fingerprint": "416c85145a5480eda57f24b63c3e335e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": { "Object": [{ "OwnedBy": "You" }, "HasAdventure", { "In": "Graveyard" }] }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

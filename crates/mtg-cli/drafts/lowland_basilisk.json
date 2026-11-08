@@ -1,0 +1,29 @@
+{
+  "oracle_id": "effe239e-ade0-4ee2-99d7-f93b2f5ef585",
+  "name": "Lowland Basilisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lowland Basilisk",
+      "oracle_fingerprint": "588cbf7e0adb3d5a49cb630789cd19be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

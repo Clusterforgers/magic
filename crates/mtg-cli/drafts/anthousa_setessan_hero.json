@@ -1,0 +1,37 @@
+{
+  "oracle_id": "141f952b-9e9f-48c5-9c88-b1504dfa73bc",
+  "name": "Anthousa, Setessan Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anthousa, Setessan Hero",
+      "oracle_fingerprint": "0a5a9a91897e2c8cfa2f68da44be778b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddSubtype": "Warrior" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

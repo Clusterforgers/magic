@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d70ee6f1-541b-43b4-897c-68a231beb894",
+  "name": "Shipwreck Sifters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shipwreck Sifters",
+      "oracle_fingerprint": "73db85343ea8c3786e785a42f17e07f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Discarded": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "HasKeywordNamed": "Disturb" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

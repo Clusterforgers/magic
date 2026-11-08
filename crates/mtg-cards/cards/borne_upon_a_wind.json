@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ce19962d-94f9-4b2b-b668-963c0acce308",
+  "name": "Borne Upon a Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Borne Upon a Wind",
+      "oracle_fingerprint": "07da51a84d4f284c63cbf2b8ca951f25",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Rule": { "rule": { "MayCast": { "flash": true } }, "duration": "UntilEndOfTurn" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

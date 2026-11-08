@@ -1,0 +1,27 @@
+{
+  "oracle_id": "db1a29f9-1608-4502-a366-89048c2e9bda",
+  "name": "Captured by Lagacs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captured by Lagacs",
+      "oracle_fingerprint": "92a40c4535c6e91c70476e3a3e643824",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

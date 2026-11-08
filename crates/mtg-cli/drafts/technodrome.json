@@ -1,0 +1,29 @@
+{
+  "oracle_id": "51c0b46c-c379-420a-a4a4-d18724c759aa",
+  "name": "Technodrome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Technodrome",
+      "oracle_fingerprint": "304ae1557e8aebc459ea12a949863d8d",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": {
+              "Each": ["This", { "Compare": { "stat": "Power", "op": "Lt", "to": 6 } }]
+            },
+            "mods": ["CantAttack", "CantBlock"]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Other"] } }],
+            "effects": [{ "Draw": {} }, { "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

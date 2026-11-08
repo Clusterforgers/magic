@@ -1,0 +1,28 @@
+{
+  "oracle_id": "92e287b1-7cb1-4536-8942-d1ad059bf9bc",
+  "name": "Meglonoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meglonoth",
+      "oracle_fingerprint": "64adb50c4aa0429b7a5fe21ffa638ce6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": "Triggering" },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

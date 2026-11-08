@@ -1,0 +1,28 @@
+{
+  "oracle_id": "13efba9f-aedd-4ec0-a387-60c09b887341",
+  "name": "Cinderheart Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinderheart Giant",
+      "oracle_fingerprint": "7dacdaa3f7aea1129c29f4cb81a9a35e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "as": "card"
+                }
+              },
+              { "DealDamage": { "to": { "Bound": "card" }, "amount": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

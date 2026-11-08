@@ -1,0 +1,29 @@
+{
+  "oracle_id": "29ccf76e-dfa3-4144-8ec2-6d56ae0bfa9e",
+  "name": "Chronozoa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chronozoa",
+      "oracle_fingerprint": "4ff923dc2934817a18f41b9cc8bfd018",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Vanishing": 3 } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Not": { "HasCounter": { "Other": "time" } } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

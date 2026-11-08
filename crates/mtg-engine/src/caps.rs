@@ -26,6 +26,7 @@ const RUNS: &[&str] = &[
     "Ability.Triggered",
     "Ability.Loyalty",
     "Ability.Limit",
+    "Ability.By",
     "Ability.From",
     "Ability.Sorcery",
     "Ability.Condition",
@@ -49,6 +50,7 @@ const RUNS: &[&str] = &[
     "Trigger.Drew",
     "Trigger.Discarded",
     "Trigger.Tapped",
+    "Trigger.TappedNotAttacking",
     "Trigger.Untapped",
     "Trigger.PhasedOut",
     "Trigger.PhasedIn",
@@ -57,13 +59,16 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesBlocked",
     "Trigger.Unblocked",
     "Trigger.GroupAttacks",
+    "Trigger.GroupAttacksAt",
     "Trigger.CountersPut",
     "Trigger.CountersRemoved",
+    "Trigger.PlayerCountersPut",
     "Trigger.Chapter",
     "Trigger.Attached",
     "Trigger.Cycled",
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
+    "Trigger.RingTempts",
     "Trigger.CoinFlipWon",
     "Trigger.W15cClashWon",
     "Trigger.DiceRolled",
@@ -85,8 +90,13 @@ const RUNS: &[&str] = &[
     "Trigger.W11cCrime",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
+    "Trigger.ResolvedToGraveyard",
     "Trigger.Batch",
     "Trigger.Nth",
+    "Trigger.Caused",
+    "Trigger.Did",
+    "Ability.OpeningHand",
+    "Ability.OpeningReveal",
     "Amount.Triggering",
     "Amount.Players",
     "Amount.Greatest",
@@ -97,12 +107,14 @@ const RUNS: &[&str] = &[
     "Amount.HighestLife",
     "Amount.LowestHand",
     "Amount.LifeLostThisWay",
+    "Amount.DamageDealtThisWay",
     "Amount.Destroyed",
     "Amount.Exiled",
     "Amount.PhasedOut",
     "Amount.Distinct",
     "Amount.DieResult",
     "Cost.Tap",
+    "Cost.Untap",
     "Cost.Mana",
     "Cost.Mana.X",
     "Cost.Loyalty.X",
@@ -119,22 +131,68 @@ const RUNS: &[&str] = &[
     "Cost.Discard",
     "Cost.RemoveCounters",
     "Cost.ExileFromGraveyard",
+    "Cost.Craft",
     "Cost.TapPermanents",
+    "Cost.UntapPermanents",
+    "Cost.PutCounters",
+    "Cost.Exert",
+    "Cost.OwnManaCost",
+    "Cost.RemoveCountersAmong",
+    "Cost.PayLife.Counted.Activated",
+    "Cost.PayEnergy.Counted.Activated",
+    "Cost.PayLife.Counted.Rather",
+    "Cost.PayEnergy.Counted.Rather",
+    "Cost.Mill.Counted.Activated",
+    "Cost.RemoveCounters.Counted.Activated",
+    "Cost.Sacrifice.Counted.Activated",
+    "Cost.Discard.Counted.Activated",
+    "Cost.ExileFromGraveyard.Counted.Activated",
+    "Cost.Craft.Counted.Activated",
+    "Cost.ExileFromHand.Counted.Activated",
+    "Cost.RevealFromHand.Counted.Activated",
+    "Cost.TapPermanents.Counted.Activated",
+    "Cost.ReturnToHand.Counted.Activated",
+    "Cost.PutCounters.Counted.Activated",
+    "Cost.UntapPermanents.Counted.Activated",
+    "Cost.RemoveCountersAmong.Counted.Activated",
     "Cost.ReturnToHand",
     "Cost.ExileFromHand",
     "Cost.RevealFromHand",
     "Cost.OneOf",
     "Cost.TapPower",
     "Cost.Changed",
+    "Cost.DamageToYou",
+    "Cost.Unattach",
+    "Cost.ExileTop",
+    "Cost.Draw",
+    "Cost.DiscardRandom",
+    "Cost.CollectEvidence",
+    "Cost.Blight",
+    "Cost.Behold",
+    "Cost.ToLibrary",
+    "Cost.Forage",
+    "Cost.Waterbend",
+    "Cost.XAtLeast",
+    "Cost.ExiledToGraveyard",
+    "Cost.DamageToYou.Counted.Activated",
+    "Cost.ExileTop.Counted.Activated",
+    "Cost.Draw.Counted.Activated",
+    "Cost.DiscardRandom.Counted.Activated",
+    "Cost.Behold.Counted.Activated",
+    "Cost.ToLibrary.Counted.Activated",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
+    "Effect.Discard.Filter",
+    "Effect.Discard.Chooser",
     "Effect.Mill",
     "Effect.Scry",
     "Effect.LookAtTop",
+    "Effect.LookAtHand",
     "Effect.Reveal",
     "Effect.Search",
     "Search.Zones",
+    "Search.Of",
     "Effect.Shuffle",
     "Effect.Move",
     "Effect.Move.Battlefield",
@@ -145,6 +203,9 @@ const RUNS: &[&str] = &[
     "Effect.ExileTop",
     "Effect.ExileHidden",
     "Effect.Encode",
+    "Effect.Remember",
+    "Effect.Forget",
+    "Effect.RememberValue",
     "Effect.CopyCard",
     "Effect.Manifest",
     "Effect.Cloak",
@@ -153,8 +214,11 @@ const RUNS: &[&str] = &[
     "Effect.Destroy",
     "Effect.Exile",
     "Effect.Sacrifice",
+    "Effect.SacrificeUpTo",
     "Effect.Counter",
     "Effect.DealDamage",
+    "Effect.DealDamage.Excess",
+    "Effect.DealDamage.Unpreventable",
     "Effect.GainLife",
     "Effect.LoseLife",
     "Effect.AddMana",
@@ -163,10 +227,14 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.ChosenColor",
     "Effect.AddMana.OrChosenColor",
     "Effect.AddMana.Restricted",
+    "Effect.AddMana.Uncounterable",
     "Effect.AddMana.Lasts",
     "Effect.AddMana.WhenSpent",
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
+    "Effect.AddMana.EachColorAmong",
+    "Effect.AddMana.Devotion",
+    "Effect.AddMana.Enters",
     "Effect.AddMana.OfTapped",
     "Effect.AddMana.AnyCombination",
     "Effect.AddMana.AnyColor",
@@ -174,8 +242,10 @@ const RUNS: &[&str] = &[
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
+    "Effect.RemoveAllCounters",
     "Effect.MoveCounters",
     "Effect.MultiplyCounters",
+    "Effect.PutCountersOf",
     "Effect.Tap",
     "Effect.Untap",
     "Effect.TapOrUntap",
@@ -186,9 +256,21 @@ const RUNS: &[&str] = &[
     "Effect.JoinAttack",
     "Effect.Transform",
     "Effect.Flip",
+    "Effect.TurnFaceUp",
     "Effect.Prepare",
+    "Effect.Suspect",
+    "Effect.Unsuspect",
+    "Effect.Solve",
     "Effect.WinGame",
+    "Effect.LoseGame",
+    "Effect.DrawGame",
+    "Effect.SetLife",
+    "Effect.ExchangeLife",
+    "Effect.RemoveDamage",
+    "Effect.RepeatWhile",
+    "Effect.SeparatePiles",
     "Effect.ExtraTurn",
+    "Effect.EndTurn",
     "Effect.AddPhase",
     "Effect.Surveil",
     "Effect.Proliferate",
@@ -199,6 +281,8 @@ const RUNS: &[&str] = &[
     "Effect.Connive",
     "Effect.Amass",
     "Effect.Incubate",
+    "Effect.Conjure",
+    "Effect.Seek",
     "Effect.Monstrosity",
     "Effect.Renown",
     "Effect.Exploit",
@@ -209,6 +293,7 @@ const RUNS: &[&str] = &[
     "Effect.Learn",
     "Effect.Crewed",
     "Effect.BecomeMonarch",
+    "Effect.RingTempts",
     "Effect.Venture",
     "Trigger.Ventured",
     "Trigger.CompletedDungeon",
@@ -228,16 +313,21 @@ const RUNS: &[&str] = &[
     "Trigger.DayNightChanges",
     "ReplaceBy.DayIfNeither",
     "ReplaceBy.EntersPrepared",
+    "ReplaceBy.ChooseWord",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
     "Effect.CopyAbility",
+    "Effect.ChangeTargets",
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
+    "Copy.Except.ThisAbility",
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
+    "Duration.WhileSourceTapped",
     "Duration.WhileHasCounter",
+    "Duration.UntilPaid",
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
@@ -249,15 +339,23 @@ const RUNS: &[&str] = &[
     "Rule.MustAttack",
     "Rule.MustAttackPlayers",
     "Rule.AttackTax",
+    "Rule.BlockTax",
     "Rule.AttackLimit",
     "Rule.AttackLimitAt",
     "Rule.BlockLimit",
     "Rule.BlockLimitEach",
     "Rule.MustBlock",
+    "Rule.MustBlockAttacker",
+    "Rule.Combat",
+    "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
+    "Rule.CantBeRegenerated",
     "Rule.CantGainLife",
     "Rule.NoLifeLossFromDamage",
+    "Rule.LifeFloor",
     "Rule.RadiationGainsLife",
+    "Rule.ManaProduced",
+    "Rule.MayCastRather",
     "Rule.LifeTotalCantChange",
     "Rule.PlayersHave",
     "Rule.CantDraw",
@@ -266,35 +364,75 @@ const RUNS: &[&str] = &[
     "Rule.SkipExtraTurns",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
+    "Rule.MaxHandSize",
+    "Rule.HandSizeChange",
+    "Rule.NoLegendRule",
+    "Rule.NoLegendRuleFor",
+    "Rule.UntapDuring",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
+    "Rule.LookAtExiled",
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
+    "Rule.NextSpell",
+    "Rule.SpellCost",
     "Rule.DamageCantBePrevented",
     "Rule.GraveyardCardsUntargetable",
     "Rule.CantLoseGame",
     "Rule.CantCastSpells",
     "Rule.ToughnessAssignsDamage",
     "Rule.CountersRemain",
+    "Rule.Cant",
+    "Rule.Cant.Activate",
+    "Rule.Cant.BeTargeted",
+    "Rule.Cant.PlayLand",
+    "Rule.Cant.Sacrifice",
+    "Rule.Cant.PutCounter",
+    "Rule.Cant.PutCounterOf",
+    "Rule.Cant.Trigger",
+    "Rule.Cant.Attach",
+    "Rule.Cant.BeAttachedBy",
+    "Rule.Cant.Discard",
+    "Rule.Cant.Exile",
+    "Rule.Cant.Transform",
+    "Rule.Cant.SkipStep",
+    "Rule.Cant.SkipTurn",
+    "Rule.Cant.Cast",
+    "Rule.Cant.Attack",
+    "Rule.Cant.ActivateKind",
     VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
     "Mod.AddProtectionFromChosenColor",
     "Mod.AddProtectionFromChosenCardType",
     "Mod.SetPT",
+    "Mod.SetPower",
+    "Mod.SetToughness",
     "Mod.SwitchPT",
     "Mod.AddType",
     "Mod.RemoveType",
     "Mod.SetTypes",
     "Mod.RemoveSupertype",
+    "Mod.AddSupertype",
+    "Mod.SetName",
+    "Mod.ThisAbility",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.SetLandTypes",
     "Mod.AddAllCreatureTypes",
     "Mod.SetColors",
+    "Mod.AddColors",
+    "Mod.SetColorsChosen",
+    "Mod.SetLandTypesChosen",
+    "Mod.SetCreatureTypesChosen",
+    "Mod.AddChosenSubtype",
+    "Mod.SetChosenColor",
     "Mod.RemoveKeyword",
+    "Mod.LockKeyword",
     "Mod.GrantAbility",
+    "Mod.GainAbilitiesOf",
     "Mod.LoseAbilities",
+    "Mod.LoseThisAbility",
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantAttackYou",
@@ -309,18 +447,27 @@ const RUNS: &[&str] = &[
     "Mod.BlocksAdditional",
     "Mod.Goaded",
     "Effect.DelayedTrigger",
+    "Effect.Reflexive",
     "Effect.If",
     "Effect.May",
+    "Effect.Together",
     "Effect.Pay",
     "Effect.Pay.Counted",
     "Effect.Pay.X",
     "Effect.Pay.X.Energy",
+    "Effect.Pay.SacrificeSelf",
+    "Effect.Pay.ExileSelf",
     "Effect.Choose",
     "Effect.ChooseAtRandom",
+    "Effect.ChooseValue",
     "Effect.Modal",
     "Effect.RepeatEach",
     "Effect.RollDice",
     "Target.PerPlayer",
+    "Target.Together",
+    "Target.TotalManaValue",
+    "Target.Another",
+    "Target.ChosenBy",
     "Effect.FlipCoin",
     "Effect.Clash",
     "Effect.Modal.AtRandom",
@@ -328,9 +475,16 @@ const RUNS: &[&str] = &[
     "Effect.Modal.OnceEver",
     "Effect.Modal.AllIf",
     "Effect.Vote",
+    "Effect.Let",
+    "Effect.Bind",
+    "Effect.Modal.Who",
+    "Effect.Modal.ModeCosts",
+    "Effect.Modal.ExtraModeCost",
+    "Effect.Modal.DifferentPlayers",
     "Effect.Planechase",
     "Effect.VillainousChoice",
     "Effect.Either",
+    "Effect.OneOf",
     "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",
@@ -347,6 +501,8 @@ const RUNS: &[&str] = &[
     "Keyword.Hexproof",
     "Keyword.Shroud",
     "Keyword.Protection",
+    "Keyword.ProtectionSparing",
+    "Keyword.HexproofFrom",
     "Keyword.Prowess",
     "Keyword.BattleCry",
     "Keyword.Ward",
@@ -361,6 +517,7 @@ const RUNS: &[&str] = &[
     "Keyword.Entwine",
     "Ability.AdditionalCost",
     "Ability.FreeCast",
+    "Ability.AltCast",
     "Ability.CastOnly",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
@@ -377,9 +534,24 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Dredge",
     "Keyword.Suspend",
     "Keyword.Foretell",
+    "Keyword.Plot",
     "Keyword.Morph",
     "Keyword.Megamorph",
     "Keyword.Disguise",
+    "Keyword.TurnUp.Cost.PayLife",
+    "Keyword.TurnUp.Cost.Mill",
+    "Keyword.TurnUp.Cost.Draw",
+    "Keyword.TurnUp.Cost.DiscardRandom",
+    "Keyword.TurnUp.Cost.RemoveCounters",
+    "Keyword.TurnUp.Cost.Sacrifice",
+    "Keyword.TurnUp.Cost.Discard",
+    "Keyword.TurnUp.Cost.ExileFromGraveyard",
+    "Keyword.TurnUp.Cost.ExileFromHand",
+    "Keyword.TurnUp.Cost.RevealFromHand",
+    "Keyword.TurnUp.Cost.TapPermanents",
+    "Keyword.TurnUp.Cost.ReturnToHand",
+    "Keyword.TurnUp.Cost.DamageToYou",
+    "Keyword.TurnUp.Cost.ExileTop",
     "Keyword.Daybound",
     "Keyword.Nightbound",
     "Keyword.Fuse",
@@ -395,27 +567,53 @@ const RUNS: &[&str] = &[
     "Keyword.Skulk",
     "Keyword.Shadow",
     "Condition.CastWith",
+    "Condition.CastOffSorceryTiming",
+    "Condition.AsCast",
     "Condition.ManaSpent",
     "Rule.MayCast",
     "Condition.Kicked",
     "Condition.KickedWith",
     "Condition.Performed",
+    "Condition.ChosenWord",
+    "Condition.EnteredAs",
     "Amount.Kicks",
     "Amount.Mutations",
     "Amount.Promised",
+    "Amount.ResolvedThisTurn",
     "Amount.CastWith",
     "Amount.ColorsSpent",
     "Amount.PermanentsGraved",
     "Amount.CommanderCasts",
+    "Amount.Speed",
     "Amount.Tallied",
     "Amount.Largest",
+    "Amount.HighestCounters",
     "Amount.StartingLife",
+    "Amount.CastLastTurn",
     "Amount.Party",
+    "Amount.Tally",
+    "Amount.CommanderColors",
+    "Amount.Remembered",
+    "Amount.TurnNumber",
+    "Amount.TriggeringTargets",
+    "Amount.When",
+    "Amount.ManaSpent",
+    "Amount.ManaColors",
+    "Amount.MostCommon",
+    "Amount.CountOf",
+    "Amount.Product",
+    "Amount.Random",
+    "Amount.ManaInPool",
+    "Amount.Doors",
+    "Condition.StartingPlayer",
+    "Condition.Among",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
+    "ReplaceWhen.Countered",
+    "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
     "ReplaceWhen.Draw",
@@ -424,18 +622,31 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
     "ReplaceBy.Prevent",
+    "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",
+    "ReplaceBy.PreventCounted",
+    "ReplaceBy.PreventHalf",
     "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
+    "ReplaceBy.Untapped",
+    "ReplaceBy.IntoLibrary",
     "ReplaceBy.Instead",
+    "ReplaceBy.InsteadNext",
+    "ReplaceBy.RedirectUpTo",
+    "ReplaceBy.Redirect",
     "ReplaceBy.PreventAnd",
     "ReplaceBy.PreventAllBut",
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
+    "ReplaceBy.WithCountersAnd",
+    "ReplaceBy.Tribute",
+    "ReplaceBy.Amplify",
+    "ReplaceBy.MayWithCounters",
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
     "ReplaceBy.RevealOrTapped",
+    "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
     "Keyword.Partner",
     "Keyword.PartnerWith",
@@ -472,6 +683,8 @@ const RUNS: &[&str] = &[
     "Keyword.Backup",
     "Keyword.Devour",
     "Keyword.Casualty",
+    "Keyword.Bargain",
+    "Keyword.Conspire",
     "Keyword.Offspring",
     "Keyword.Demonstrate",
     "Keyword.Hideaway",
@@ -482,6 +695,8 @@ const RUNS: &[&str] = &[
     "Keyword.Saddle",
     "Keyword.Saddled",
     "Keyword.Exert",
+    "Keyword.FlashSacrifice",
+    "Keyword.Macro",
     "Keyword.Station",
     "Keyword.Myriad",
     "Keyword.Squad",
@@ -489,12 +704,15 @@ const RUNS: &[&str] = &[
     "Keyword.Riot",
     "Keyword.Decayed",
     "ReplaceBy.Riot",
+    "ReplaceBy.WithCounterOf",
     "Keyword.Fabricate",
     "Keyword.Ascend",
     "Keyword.ForMirrodin",
+    "Keyword.StartYourEngines",
     "Keyword.JobSelect",
     "Keyword.EquipTo",
     "Condition.CitysBlessing",
+    "Condition.MaxSpeed",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
     "Keyword.Retrace",
@@ -509,6 +727,9 @@ const RUNS: &[&str] = &[
     "Keyword.Scavenge",
     "Keyword.Transmute",
     "Keyword.Awaken",
+    "Keyword.Assist",
+    "Keyword.Craft",
+    "Keyword.Prototype",
     "Keyword.Gravestorm",
     "Keyword.Sunburst",
     "Keyword.Afterlife",
@@ -516,8 +737,10 @@ const RUNS: &[&str] = &[
     "Keyword.Phasing",
     "Amount.Devoured",
     "Keyword.Spectacle",
+    "Keyword.Freerunning",
     "Keyword.UmbraArmor",
     "Keyword.Cipher",
+    "Keyword.Haunt",
     "Keyword.Graft",
     "Keyword.Afflict",
     "Keyword.Replicate",
@@ -527,6 +750,9 @@ const RUNS: &[&str] = &[
     "Keyword.Emerge",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
+    "Keyword.Recover",
+    "Keyword.Ripple",
+    "Keyword.Epic",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -537,10 +763,33 @@ const RUNS: &[&str] = &[
     "Condition.InCombat",
     "Condition.FirstCombat",
     "Rule.CanBeCommander",
+    "Rule.AnyNumberInDeck",
     "Pred.Modified",
+    "Pred.RingBearer",
+    "Pred.HasAdventure",
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
+    "Pred.SpentFrom",
     "Pred.GravedThisTurn",
+    "Pred.ArrivedFrom",
+    "Pred.DidThisTurn",
+    "Pred.WasCast",
+    "Pred.CastWith",
+    "Pred.Test",
+    "Pred.TopOfLibrary",
+    "Pred.BottomOfLibrary",
+    "Pred.TopOfGraveyard",
+    "Pred.TopCreatureOfGraveyard",
+    "Pred.BlockedBy",
+    "Pred.Blocks",
+    "Pred.TargetedBy",
+    "Pred.SingleTarget",
+    "Pred.GreatestAmong",
+    "Pred.LeastAmong",
+    "Pred.HasKeywordNamed",
+    "Pred.CounterCount",
+    "Pred.Suspended",
+    "Pred.Kicked",
 ];
 
 /// The capabilities of this engine.
@@ -596,9 +845,12 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", true)]
+    #[case::discarding_matching_cards("Effect.Discard.Filter", true)]
+    #[case::discarding_cards_another_player_chooses("Effect.Discard.Chooser", true)]
     #[case::milling("Effect.Mill", true)]
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
+    #[case::looking_at_a_hand("Effect.LookAtHand", true)]
     #[case::revealing("Effect.Reveal", true)]
     #[case::shuffling("Effect.Shuffle", true)]
     #[case::moving("Effect.Move", true)]
@@ -608,6 +860,7 @@ mod tests {
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
+    #[case::searching_another_library("Search.Of", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
@@ -617,6 +870,7 @@ mod tests {
     #[case::paying_life("Cost.PayLife", true)]
     #[case::paying_a_counted_amount_of_life("Cost.PayLife.Counted", false)]
     #[case::once_a_turn("Ability.Limit", true)]
+    #[case::other_activators("Ability.By", true)]
     #[case::other_zones("Ability.From", true)]
     #[case::sorcery_timing("Ability.Sorcery", true)]
     #[case::activation_conditions("Ability.Condition", true)]
@@ -657,6 +911,10 @@ mod tests {
     #[case::moving_instead("ReplaceBy.MoveTo", true)]
     #[case::entering_tapped("ReplaceBy.Tapped", true)]
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
+    #[case::entering_with_counters_and_a_change("ReplaceBy.WithCountersAnd", true)]
+    #[case::tribute("ReplaceBy.Tribute", true)]
+    #[case::amplify("ReplaceBy.Amplify", true)]
+    #[case::entering_with_counters_by_choice("ReplaceBy.MayWithCounters", true)]
     #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
     #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]
     #[case::doing_something_instead("ReplaceBy.Instead", true)]
@@ -682,6 +940,7 @@ mod tests {
     #[case::continuous_effects("Effect.Continuous", true)]
     #[case::control_for_as_long_as_you_control_the_source("Duration.WhileYouControlSource", true)]
     #[case::continuous_for_as_long_as_it_has_a_counter("Duration.WhileHasCounter", true)]
+    #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
         false
@@ -692,15 +951,26 @@ mod tests {
     #[case::protection_from_a_chosen_card_type("Mod.AddProtectionFromChosenCardType", true)]
     #[case::shroud("Keyword.Shroud", true)]
     #[case::protection("Keyword.Protection", true)]
+    #[case::hexproof_from("Keyword.HexproofFrom", true)]
     #[case::setting_power_and_toughness("Mod.SetPT", true)]
     #[case::switching_power_and_toughness("Mod.SwitchPT", true)]
     #[case::types("Mod.AddType", true)]
     #[case::removed_types("Mod.RemoveType", true)]
     #[case::set_types("Mod.SetTypes", true)]
     #[case::removed_supertypes("Mod.RemoveSupertype", true)]
+    #[case::added_supertypes("Mod.AddSupertype", true)]
+    #[case::copy_names("Mod.SetName", true)]
+    #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
+    #[case::the_ability_kept_as_a_modification("Mod.ThisAbility", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
+    #[case::chosen_colours("Mod.SetColorsChosen", true)]
+    #[case::chosen_land_types("Mod.SetLandTypesChosen", true)]
+    #[case::chosen_creature_types("Mod.SetCreatureTypesChosen", true)]
+    #[case::the_type_chosen_as_it_entered("Mod.AddChosenSubtype", true)]
+    #[case::the_color_chosen_as_it_entered("Mod.SetChosenColor", true)]
     #[case::granted_abilities("Mod.GrantAbility", true)]
+    #[case::abilities_of_other_cards("Mod.GainAbilitiesOf", true)]
     #[case::lost_abilities("Mod.LoseAbilities", true)]
     #[case::changes_of_control("Mod.SetController", true)]
     #[case::attack_restrictions("Mod.CantAttack", true)]
@@ -714,14 +984,25 @@ mod tests {
     #[case::rules_as_static_abilities("Ability.Rule", true)]
     #[case::attack_requirements("Rule.MustAttack", true)]
     #[case::block_requirements("Rule.MustBlock", true)]
+    #[case::provoke("Rule.MustBlockAttacker", true)]
+    #[case::combat_quirks("Rule.Combat", true)]
+    #[case::ignored_hexproof("Rule.IgnoreHexproof", true)]
     #[case::spells_that_cant_be_countered("Rule.CantBeCountered", true)]
+    #[case::no_regeneration("Rule.CantBeRegenerated", true)]
     #[case::no_life_gain("Rule.CantGainLife", true)]
     #[case::no_life_loss_from_damage("Rule.NoLifeLossFromDamage", true)]
     #[case::radiation_gains_life("Rule.RadiationGainsLife", true)]
+    #[case::mana_produced("Rule.ManaProduced", true)]
+    #[case::may_cast_rather("Rule.MayCastRather", true)]
     #[case::no_drawing("Rule.CantDraw", true)]
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]
     #[case::no_maximum_hand_size("Rule.NoMaxHandSize", true)]
+    #[case::a_set_maximum_hand_size("Rule.MaxHandSize", true)]
+    #[case::a_changed_maximum_hand_size("Rule.HandSizeChange", true)]
+    #[case::no_legend_rule("Rule.NoLegendRule", true)]
+    #[case::no_legend_rule_for_some("Rule.NoLegendRuleFor", true)]
+    #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
@@ -730,10 +1011,14 @@ mod tests {
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
+    #[case::preventing_half("ReplaceBy.PreventHalf", true)]
+    #[case::preventing_the_next_damage("ReplaceBy.PreventNext", true)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
+    #[case::locked_keywords("Mod.LockKeyword", true)]
     #[case::conditions("Effect.If", true)]
     #[case::putting_counters("Effect.PutCounters", true)]
     #[case::removing_counters("Effect.RemoveCounters", true)]
+    #[case::removing_all_counters("Effect.RemoveAllCounters", true)]
     #[case::moving_counters("Effect.MoveCounters", true)]
     #[case::multiplying_counters("Effect.MultiplyCounters", true)]
     #[case::divided_amounts_read_outside_damage_and_counters("Amount.Divided.Elsewhere", false)]
@@ -747,25 +1032,41 @@ mod tests {
     #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::the_number_of_mutations("Amount.Mutations", true)]
     #[case::the_size_of_a_party("Amount.Party", true)]
+    #[case::a_logged_tally("Amount.Tally", true)]
+    #[case::commander_colors("Amount.CommanderColors", true)]
+    #[case::turn_number("Amount.TurnNumber", true)]
+    #[case::triggering_targets("Amount.TriggeringTargets", true)]
+    #[case::starting_player("Condition.StartingPlayer", true)]
+    #[case::among_players("Condition.Among", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
     #[case::destroyed_this_way("Amount.Destroyed", true)]
     #[case::distinct_values("Amount.Distinct", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]
     #[case::commander_casts("Amount.CommanderCasts", true)]
+    #[case::speed("Amount.Speed", true)]
     #[case::may("Effect.May", true)]
+    #[case::together("Effect.Together", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::choosing_at_random("Effect.ChooseAtRandom", true)]
+    #[case::choosing_a_value("Effect.ChooseValue", true)]
     #[case::modes("Effect.Modal", true)]
     #[case::repeating_for_each("Effect.RepeatEach", true)]
     #[case::rolling_dice("Effect.RollDice", true)]
     #[case::targets_for_each_player("Target.PerPlayer", true)]
+    #[case::targets_that_share_a_property("Target.Together", true)]
+    #[case::targets_another_player_chooses("Target.ChosenBy", true)]
     #[case::flipping_coins("Effect.FlipCoin", true)]
     #[case::modes_at_random("Effect.Modal.AtRandom", true)]
     #[case::modes_not_chosen_twice_in_a_turn("Effect.Modal.OnceEachTurn", true)]
+    #[case::e14c_modes_target_different_players("Effect.Modal.DifferentPlayers", true)]
     #[case::modes_not_chosen_twice_ever("Effect.Modal.OnceEver", true)]
+    #[case::modes_with_costs("Effect.Modal.ModeCosts", true)]
+    #[case::modes_with_an_extra_cost("Effect.Modal.ExtraModeCost", true)]
     #[case::every_mode_under_a_condition("Effect.Modal.AllIf", true)]
     #[case::voting("Effect.Vote", true)]
+    #[case::a_kept_number("Effect.Let", true)]
+    #[case::modes_chosen_by_another_player("Effect.Modal.Who", true)]
     #[case::c10_vp_planechase("Effect.Planechase", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
@@ -780,14 +1081,15 @@ mod tests {
     #[case::an_exception_the_copy_cannot_hold("Copy.Except.SwitchPT", false)]
     #[case::copying_spells("Effect.CopySpell", true)]
     #[case::copying_abilities("Effect.CopyAbility", true)]
+    #[case::changing_targets("Effect.ChangeTargets", true)]
     #[case::becoming_a_copy("Effect.BecomeCopy", true)]
     #[case::a_copy_until_your_next_turn("Copy.Duration.UntilYourNextTurn", true)]
     #[case::a_copy_that_ends_with_another_duration("Copy.Duration.UntilEndOfCombat", false)]
     #[case::storming("Keyword.Storm", true)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
     #[case::sacrificing_a_permanent("Cost.Sacrifice", true)]
-    #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
-    #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", false)]
+    #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", true)]
+    #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", true)]
     #[case::paying_by_discarding_the_source("Effect.Pay.DiscardSelf", false)]
     #[case::mana_abilities_of_several_mana_or_with_more_effects(
         "Ability.ManaAbility.Complex",
@@ -823,6 +1125,11 @@ mod tests {
     #[case::goading("Effect.Goad", true)]
     #[case::fighting("Effect.Fight", true)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
+    #[case::the_ring_tempting("Effect.RingTempts", true)]
+    #[case::the_ring_tempting_triggers("Trigger.RingTempts", true)]
+    #[case::the_ring_bearer("Pred.RingBearer", true)]
+    #[case::did_this_turn("Pred.DidThisTurn", true)]
+    #[case::adventure_cards("Pred.HasAdventure", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::becoming_a_level("Effect.BecomeLevel", true)]
@@ -849,11 +1156,30 @@ mod tests {
     #[case::time_travelling("Effect.TimeTravel", true)]
     #[case::extra_turns("Effect.ExtraTurn", true)]
     #[case::added_phases("Effect.AddPhase", true)]
+    #[case::ending_the_turn("Effect.EndTurn", true)]
+    #[case::cant_activate("Rule.Cant.Activate", true)]
+    #[case::cant_be_targeted("Rule.Cant.BeTargeted", true)]
+    #[case::cant_play_land("Rule.Cant.PlayLand", true)]
+    #[case::cant_sacrifice("Rule.Cant.Sacrifice", true)]
+    #[case::cant_put_counter("Rule.Cant.PutCounter", true)]
+    #[case::cant_put_counter_of("Rule.Cant.PutCounterOf", true)]
+    #[case::cant_trigger("Rule.Cant.Trigger", true)]
+    #[case::cant_attach("Rule.Cant.Attach", true)]
+    #[case::cant_be_attached_by("Rule.Cant.BeAttachedBy", true)]
+    #[case::cant_discard("Rule.Cant.Discard", true)]
+    #[case::cant_exile("Rule.Cant.Exile", true)]
+    #[case::cant_transform("Rule.Cant.Transform", true)]
+    #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
+    #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
+    #[case::cant_cast("Rule.Cant.Cast", true)]
+    #[case::cant_attack("Rule.Cant.Attack", true)]
+    #[case::cant_activate_kind("Rule.Cant.ActivateKind", true)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
+    #[case::mana_that_keeps_a_spell_from_being_countered("Effect.AddMana.Uncounterable", true)]
     #[case::mana_kept_past_the_step("Effect.AddMana.Lasts", true)]
     #[case::mana_that_sets_something_off_when_spent("Effect.AddMana.WhenSpent", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
@@ -871,6 +1197,12 @@ mod tests {
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
     #[case::tapping_permanents_as_a_cost("Cost.TapPermanents", true)]
+    #[case::gn1m_putting_counters_as_a_cost("Cost.PutCounters", true)]
+    #[case::gn1m_exerting_as_a_cost("Cost.Exert", true)]
+    #[case::gn1m_untapping_as_a_cost("Cost.UntapPermanents", true)]
+    #[case::gn1m_removing_counters_among_as_a_cost("Cost.RemoveCountersAmong", true)]
+    #[case::gn1m_a_counted_sacrifice_of_an_ability("Cost.Sacrifice.Counted.Activated", true)]
+    #[case::gn1m_a_counted_sacrifice_elsewhere("Cost.Sacrifice.Counted", false)]
     #[case::exiling_from_a_graveyard_as_a_cost("Cost.ExileFromGraveyard", true)]
     #[case::returning_to_a_hand_as_a_cost("Cost.ReturnToHand", true)]
     #[case::dealing_damage_triggers("Trigger.DealsDamage", true)]
@@ -886,8 +1218,10 @@ mod tests {
     #[case::w2e_unblocked_triggers("Trigger.Unblocked", true)]
     #[case::w2e_copy_triggers("Trigger.SpellCopied", true)]
     #[case::group_attack_triggers("Trigger.GroupAttacks", true)]
+    #[case::group_attack_at_triggers("Trigger.GroupAttacksAt", true)]
     #[case::counter_triggers("Trigger.CountersPut", true)]
     #[case::counter_removal_triggers("Trigger.CountersRemoved", true)]
+    #[case::e16c_player_counter_triggers("Trigger.PlayerCountersPut", true)]
     #[case::chapter_triggers("Trigger.Chapter", true)]
     #[case::attach_triggers("Trigger.Attached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]
@@ -908,14 +1242,25 @@ mod tests {
     #[case::w11c_crime_triggers("Trigger.W11cCrime", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
+    #[case::resolved_to_graveyard("Trigger.ResolvedToGraveyard", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
+    #[case::caused_triggers("Trigger.Caused", true)]
+    #[case::r3p1_actions_taken_by_a_player("Trigger.Did", true)]
+    #[case::r3p1_beginning_the_game_on_the_battlefield("Ability.OpeningHand", true)]
+    #[case::revealed_from_the_opening_hand("Ability.OpeningReveal", true)]
+    #[case::r3p1_untapping_the_source_as_a_cost("Cost.Untap", true)]
+    #[case::r5g_sacrificing_any_number("Effect.SacrificeUpTo", true)]
     #[case::event_amounts("Amount.Triggering", true)]
     #[case::if_you_do("Condition.Performed", true)]
+    #[case::a_chosen_word("Condition.ChosenWord", true)]
+    #[case::e15f_entered_as_a_word("Condition.EnteredAs", true)]
+    #[case::e15f_a_word_chosen_as_it_enters("ReplaceBy.ChooseWord", true)]
     #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
+    #[case::max_speed("Condition.MaxSpeed", true)]
     #[case::becoming_day_or_night("Effect.BecomeDayNight", true)]
     #[case::it_is_day("Condition.IsDay", true)]
     #[case::it_is_night("Condition.IsNight", true)]
@@ -929,8 +1274,10 @@ mod tests {
     #[case::creatures_that_are_blocked_by_few("Mod.MaxBlockers", true)]
     #[case::goaded_creatures("Mod.Goaded", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
+    #[case::looking_at_face_down_cards_in_exile("Rule.LookAtExiled", true)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
     #[case::commander_eligibility("Rule.CanBeCommander", true)]
+    #[case::r5g_any_number_in_a_deck("Rule.AnyNumberInDeck", true)]
     #[case::w17b_untargetable_graveyards("Rule.GraveyardCardsUntargetable", true)]
     #[case::w17b_cant_lose("Rule.CantLoseGame", true)]
     #[case::w17b_cant_cast("Rule.CantCastSpells", true)]
@@ -954,6 +1301,7 @@ mod tests {
     #[case::mayhem("Keyword.Mayhem", true)]
     #[case::disturb("Keyword.Disturb", true)]
     #[case::a_conditional_free_cast("Ability.FreeCast", true)]
+    #[case::an_alternative_cost_of_the_table("Ability.AltCast", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::echo("Keyword.Echo", true)]
@@ -973,6 +1321,8 @@ mod tests {
     #[case::backup("Keyword.Backup", true)]
     #[case::devour("Keyword.Devour", true)]
     #[case::casualty("Keyword.Casualty", true)]
+    #[case::bargain("Keyword.Bargain", true)]
+    #[case::conspire("Keyword.Conspire", true)]
     #[case::demonstrate("Keyword.Demonstrate", true)]
     #[case::hideaway("Keyword.Hideaway", true)]
     #[case::gift("Keyword.Gift", true)]
@@ -983,11 +1333,13 @@ mod tests {
     #[case::saddle("Keyword.Saddle", true)]
     #[case::saddled("Keyword.Saddled", true)]
     #[case::exert("Keyword.Exert", true)]
+    #[case::macro_keyword("Keyword.Macro", true)]
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::riot("Keyword.Riot", true)]
     #[case::decayed("Keyword.Decayed", true)]
     #[case::choosing_a_counter_or_haste_as_it_enters("ReplaceBy.Riot", true)]
+    #[case::choosing_the_kind_of_a_counter_as_it_enters("ReplaceBy.WithCounterOf", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]
     #[case::retrace("Keyword.Retrace", true)]
@@ -997,6 +1349,7 @@ mod tests {
     #[case::affinity("Keyword.Affinity", true)]
     #[case::typecycling("Keyword.Typecycling", true)]
     #[case::for_mirrodin("Keyword.ForMirrodin", true)]
+    #[case::start_your_engines("Keyword.StartYourEngines", true)]
     #[case::job_select("Keyword.JobSelect", true)]
     #[case::equip_to("Keyword.EquipTo", true)]
     #[case::split_second("Keyword.SplitSecond", true)]
@@ -1013,6 +1366,7 @@ mod tests {
     #[case::the_highest_life_total("Amount.HighestLife", true)]
     #[case::the_fewest_cards_in_a_hand("Amount.LowestHand", true)]
     #[case::the_life_lost_this_way("Amount.LifeLostThisWay", true)]
+    #[case::the_damage_dealt_this_way("Amount.DamageDealtThisWay", true)]
     #[case::c11e_a_die_result("Amount.DieResult", true)]
     #[case::c11e_a_roll_trigger("Trigger.DiceRolled", true)]
     #[case::myriad("Keyword.Myriad", true)]
@@ -1025,14 +1379,21 @@ mod tests {
     #[case::scavenge("Keyword.Scavenge", true)]
     #[case::transmute("Keyword.Transmute", true)]
     #[case::awaken("Keyword.Awaken", true)]
+    #[case::prototype("Keyword.Prototype", true)]
+    #[case::assist("Keyword.Assist", true)]
+    #[case::craft("Keyword.Craft", true)]
     #[case::gravestorm("Keyword.Gravestorm", true)]
     #[case::sunburst("Keyword.Sunburst", true)]
     #[case::afterlife("Keyword.Afterlife", true)]
     #[case::horsemanship("Keyword.Horsemanship", true)]
     #[case::phasing("Keyword.Phasing", true)]
     #[case::spectacle("Keyword.Spectacle", true)]
+    #[case::freerunning("Keyword.Freerunning", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::cipher("Keyword.Cipher", true)]
+    #[case::haunt("Keyword.Haunt", true)]
+    #[case::flash_sacrifice("Keyword.FlashSacrifice", true)]
+    #[case::cast_off_sorcery_timing("Condition.CastOffSorceryTiming", true)]
     #[case::graft("Keyword.Graft", true)]
     #[case::afflict("Keyword.Afflict", true)]
     #[case::replicate("Keyword.Replicate", true)]
@@ -1043,12 +1404,16 @@ mod tests {
     #[case::emerge("Keyword.Emerge", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
     #[case::read_ahead("Keyword.ReadAhead", true)]
+    #[case::recover("Keyword.Recover", true)]
+    #[case::ripple("Keyword.Ripple", true)]
+    #[case::epic("Keyword.Epic", true)]
     #[case::becoming_renowned_triggers("Trigger.BecomesRenowned", true)]
     #[case::exploiting_triggers("Trigger.Exploits", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
+    #[case::taxing_blockers("Rule.BlockTax", true)]
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]
     #[case::w10a_attack_limit_at("Rule.AttackLimitAt", true)]
     #[case::w8a_block_limit("Rule.BlockLimit", true)]

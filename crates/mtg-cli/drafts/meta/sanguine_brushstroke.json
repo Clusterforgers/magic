@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, create a Blood token and conjure a card named Blood Artist onto the battlefield.",
+      "abilities": [],
+      "gap": "name:MakeCard.Unstored"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you sacrifice a Blood token, each opponent loses 1 life and you gain 1 life.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 130
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 131,
+          "end": 216
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

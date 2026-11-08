@@ -1,0 +1,58 @@
+{
+  "oracle_id": "3c2e2e69-cd44-458f-a5b0-8591baa24e65",
+  "name": "Gelatinous Cube",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gelatinous Cube",
+      "oracle_fingerprint": "599ee6a79a254c5e7c53295371704789",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Ooze" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Target": 0 },
+                  "as": "exiled",
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}{B}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                    { "ExiledWith": "This" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Exile" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Graveyard" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

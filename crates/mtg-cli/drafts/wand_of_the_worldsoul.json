@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3d175a59-c1b4-43b8-8a1f-f7cbcefe130e",
+  "name": "Wand of the Worldsoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wand of the Worldsoul",
+      "oracle_fingerprint": "a2d1d8ee3a7c5f08d217567677d4e518",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "benefit": { "Keyword": "Convoke" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

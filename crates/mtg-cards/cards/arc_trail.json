@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f1c26b25-371e-4fbf-a43d-7fd59a364d3a",
+  "name": "Arc Trail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arc Trail",
+      "oracle_fingerprint": "447f87746d461f33aa8965bbe8c1bbbf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "AnyTarget" },
+              { "what": { "Another": { "what": "AnyTarget", "earlier": [0] } } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

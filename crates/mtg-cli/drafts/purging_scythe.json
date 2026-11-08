@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4410e3c4-b8c5-46d7-9418-7490bb69d8c4",
+  "name": "Purging Scythe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purging Scythe",
+      "oracle_fingerprint": "c3769d6a36446fcbe2fb43e9b72ade3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "LeastAmong": { "stat": "Toughness", "group": [{ "Type": "Creature" }] } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "DealDamage": { "to": { "Bound": "card" }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

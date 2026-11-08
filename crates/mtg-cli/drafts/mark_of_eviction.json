@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d9193641-a7f4-40d3-ac62-15015acece4e",
+  "name": "Mark of Eviction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mark of Eviction",
+      "oracle_fingerprint": "58a4df542d8648e80dbb972c44ca6bdc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": "Attached" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Aura" } },
+                                { "Not": { "AttachedTo": { "Each": [{ "Is": "Attached" }] } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

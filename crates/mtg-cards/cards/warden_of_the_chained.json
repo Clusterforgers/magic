@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d2f33d3a-afc6-4d15-9049-ecd33f85eb94",
+  "name": "Warden of the Chained",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warden of the Chained",
+      "oracle_fingerprint": "e6162e6e6933fa29f9503c2b806af96b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" },
+                    "Other"
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

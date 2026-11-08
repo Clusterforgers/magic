@@ -1,0 +1,40 @@
+{
+  "oracle_id": "94c9aea7-564d-4fc8-ae14-7b22cba18b95",
+  "name": "Red Tiger Mechan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Tiger Mechan",
+      "oracle_fingerprint": "72548837f497bdca2788e7feadf47913",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "AltCast": { "way": "Warp", "cost": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

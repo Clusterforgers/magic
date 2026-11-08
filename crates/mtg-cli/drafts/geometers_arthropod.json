@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7f577b46-c69d-4c75-9db5-7e10206b6b59",
+  "name": "Geometer's Arthropod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geometer's Arthropod",
+      "oracle_fingerprint": "bf174f373e7135168beefe87bcb364b2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["XInCost"], "by": "You" } },
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

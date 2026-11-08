@@ -18,6 +18,7 @@ use mtg_core::mana::ManaCost;
 use crate::announce::Next;
 use crate::answers::Outcome;
 use crate::cast::payment_decision;
+use crate::characteristics::controller_of_object;
 use crate::combat::{AttackTarget, attack_events, defending_player};
 use crate::decision::{AttackOptions, Decision, DecisionKind, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
@@ -29,6 +30,7 @@ use crate::resolve::Scope;
 use crate::rules::{Taxing, attack_taxes};
 use crate::spend::Spend;
 use crate::state::GameState;
+use crate::zones::Zone;
 
 /// What `object` costs to attack `target`: the mana of every tax in force that protects the player attacked, or the
 /// player who controls the planeswalker attacked, and taxes the creature.
@@ -169,6 +171,18 @@ fn tapped(
     Some(after)
 }
 
+/// Whether `player` controls an untapped permanent with rules the table plays by hand: the mana it makes is added
+/// by hand, which the engine cannot see, so the attack waits for it instead of being refused.
+fn by_hand(state: &GameState, player: PlayerId) -> bool {
+    state.zone(Zone::Battlefield).iter().any(|id| {
+        state.object(*id).is_some_and(|object| {
+            !object.card().manual.is_empty()
+                && controller_of_object(state, object) == player
+                && object.permanent().is_some_and(|perm| !perm.tapped())
+        })
+    })
+}
+
 /// The payment of the total cost of an attack, if its player can make it. The mana abilities offered are those of the
 /// permanents the attack leaves untapped; the object named is the first attacker.
 ///
@@ -194,7 +208,10 @@ fn payment(
         true,
         0,
     )?;
-    options.auto_available.then_some(options)
+    (options.auto_available || by_hand(&after, player)).then_some(PayOptions {
+        attack: true,
+        ..options
+    })
 }
 
 /// What a declared attack does: with nothing to pay it is made, else it is paid for first (CR 508.1h) or, if its player

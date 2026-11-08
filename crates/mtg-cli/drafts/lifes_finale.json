@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0c1d5e6b-f6b6-4dc6-9bc1-3cc00b78da36",
+  "name": "Life's Finale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Life's Finale",
+      "oracle_fingerprint": "7be01198d5b45b57d0ad334b9f827340",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "min": 0, "max": 3 },
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

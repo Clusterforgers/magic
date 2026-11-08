@@ -1,0 +1,62 @@
+{
+  "oracle_id": "88b18901-50cd-461c-b1bc-be900210be8e",
+  "name": "Conqueror's Galleon // Conqueror's Foothold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conqueror's Galleon",
+      "oracle_fingerprint": "f7e8ddc4bd716fd4ae107685331f8477",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Bind": { "what": "This", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "event" }, "as": "exiled2" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled2" },
+                        "to": { "Battlefield": { "transformed": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    },
+    {
+      "name": "Conqueror's Foothold",
+      "oracle_fingerprint": "c363904d7d6f1cc159e31132e48b1e30",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        { "Activated": { "cost": [{ "Mana": "{4}" }, "Tap"], "effects": [{ "Draw": {} }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

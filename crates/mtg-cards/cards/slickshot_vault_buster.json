@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2085642e-29be-4e13-81dc-1f2ff6c095eb",
+  "name": "Slickshot Vault-Buster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slickshot Vault-Buster",
+      "oracle_fingerprint": "2914abec690fae92f1aa5dd761519ffe",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "Crimes" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

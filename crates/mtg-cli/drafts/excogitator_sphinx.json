@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6632d9d2-10fb-48af-a58f-4e724b6fd0c3",
+  "name": "Excogitator Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excogitator Sphinx",
+      "oracle_fingerprint": "b4895f4ddab00311c701d79866dcdc02",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Subtype": "Clue" }] } }],
+            "effects": [
+              {
+                "Seek": { "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

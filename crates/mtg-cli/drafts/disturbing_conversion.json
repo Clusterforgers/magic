@@ -1,0 +1,44 @@
+{
+  "oracle_id": "adde6737-516c-4d6f-9363-388ad37d4114",
+  "name": "Disturbing Conversion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disturbing Conversion",
+      "oracle_fingerprint": "439df9d3f8e8c7ecc53be7ae78c7291d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "who": "EachPlayer", "count": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "Count": [
+                          { "OwnedBy": { "ControllerOf": "Attached" } },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

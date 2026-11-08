@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6a1a9e8a-a323-489a-b4db-b04da76662f4",
+  "name": "Auriok Siege Sled",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auriok Siege Sled",
+      "oracle_fingerprint": "97551c76916c11dfe981fee0ca473c5a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CanBlockOnly": [{ "Not": { "Is": "This" } }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

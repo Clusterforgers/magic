@@ -1,0 +1,61 @@
+{
+  "oracle_id": "ca405696-8c30-4c01-bf90-11cdf8837942",
+  "name": "Shaman of Forgotten Ways",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shaman of Forgotten Ways",
+      "oracle_fingerprint": "f26b1a34cf73408f9d52268dd1804c6f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": 2 } },
+                  "only": [{ "Spell": { "types": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{9}{G}{G}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "SetLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "each" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

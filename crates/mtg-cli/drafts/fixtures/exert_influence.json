@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "c35e9d13-ee4b-42f1-a154-18ab32947ad3",
+  "oracle_id": "feb9cce1-6c3c-4e04-93ee-d646a888bc29",
+  "multiverse_ids": [
+    401873
+  ],
+  "mtgo_id": 58613,
+  "mtgo_foil_id": 58614,
+  "tcgplayer_id": 105265,
+  "cardmarket_id": 284731,
+  "name": "Exert Influence",
+  "lang": "en",
+  "released_at": "2015-10-02",
+  "uri": "https://api.scryfall.com/cards/c35e9d13-ee4b-42f1-a154-18ab32947ad3",
+  "scryfall_uri": "https://scryfall.com/card/bfz/77/exert-influence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:23:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.jpg?1783938208",
+    "normal": "https://cards.scryfall.io/normal/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.jpg?1783938208",
+    "large": "https://cards.scryfall.io/large/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.jpg?1783938208",
+    "png": "https://cards.scryfall.io/png/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.png?1783938208",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.jpg?1783938208",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.jpg?1783938208",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.webp?1783938208",
+    "grid": "https://cards.scryfall.io/grid/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.webp?1783938208",
+    "display": "https://cards.scryfall.io/display/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.webp?1783938208",
+    "art": "https://cards.scryfall.io/art/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.webp?1783938208",
+    "crop": "https://cards.scryfall.io/crop/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.webp?1783938208",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/3/c35e9d13-ee4b-42f1-a154-18ab32947ad3.jpg?1783938208"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Converge — Gain control of target creature if its power is less than or equal to the number of colors of mana spent to cast this spell.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Converge"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "91719374-7ac5-4afa-ada8-5da964dcf1d4",
+  "set": "bfz",
+  "set_name": "Battle for Zendikar",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/91719374-7ac5-4afa-ada8-5da964dcf1d4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abfz&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bfz?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c35e9d13-ee4b-42f1-a154-18ab32947ad3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afeb9cce1-6c3c-4e04-93ee-d646a888bc29&unique=prints",
+  "collector_number": "77",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I can't control its mind—I'm not even sure it has one. But I can dominate its will.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Magali Villeneuve",
+  "artist_ids": [
+    "9e6a55ae-be4d-4c23-a2a5-135737ffd879"
+  ],
+  "illustration_id": "cb12b43b-8dda-4e1e-be2d-25f35482e49f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26001,
+  "prices": {
+    "usd": "0.13",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.29",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=401873&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExert%2BInfluence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExert%2BInfluence",
+    "edhrec": "https://edhrec.com/route/?cc=Exert+Influence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F105265%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=284731&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/58613?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

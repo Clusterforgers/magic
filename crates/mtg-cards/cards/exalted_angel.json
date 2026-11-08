@@ -10,7 +10,7 @@
         { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": ["This"] } },
+            "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
             "effects": [{ "GainLife": { "amount": "Triggering" } }]
           }
         },

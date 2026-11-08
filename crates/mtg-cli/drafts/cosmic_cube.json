@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0866a630-d962-4aa9-a15f-08b2947540ef",
+  "name": "Cosmic Cube",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cosmic Cube",
+      "oracle_fingerprint": "b77381bcfa3de9c67db5f8bc9acd2a4b",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }],
+                              "stat": "Power"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

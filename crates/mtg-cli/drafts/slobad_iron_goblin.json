@@ -1,0 +1,30 @@
+{
+  "oracle_id": "72062fb6-0329-424d-936a-882b638d6d57",
+  "name": "Slobad, Iron Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slobad, Iron Goblin",
+      "oracle_fingerprint": "d37814c067db7101f5c8628cbf69e566",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Stat": { "of": "Paid", "stat": "ManaValue" } },
+                  "only": [
+                    { "Spell": { "types": ["Artifact"] } },
+                    { "Ability": { "types": ["Artifact"], "facts": ["OnBattlefield"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

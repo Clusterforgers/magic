@@ -31,6 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             place: Place::Shuffled,
             order: None,
         },
+        bind: None,
     };
     if effects.as_slice() != [shuffled] {
         return;

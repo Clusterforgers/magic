@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0f63de7b-03f2-49ad-b217-88fe9c50d68a",
+  "name": "Snarespinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snarespinner",
+      "oracle_fingerprint": "ae16db39339974c777da156c1a1bdbe4",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e9c9a445-4386-4616-ad00-f08064d73dcd",
+  "name": "Wisecrack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wisecrack",
+      "oracle_fingerprint": "ef5d85c22810cc89acbe324910d1d9e5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Type": "Creature" }, { "Is": { "Target": 0 } }, "Attacking"]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

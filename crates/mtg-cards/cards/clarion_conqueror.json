@@ -1,0 +1,37 @@
+{
+  "oracle_id": "f1266a1b-bae6-4ded-b4d5-7586a5b6c5d0",
+  "name": "Clarion Conqueror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clarion Conqueror",
+      "oracle_fingerprint": "b918bcdeb15bd58d9c19fb17da61dca9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

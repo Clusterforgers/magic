@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ab5b49d4-e648-43f1-bcc0-7dd4763316ee",
+  "name": "Rage Nimbus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rage Nimbus",
+      "oracle_fingerprint": "031a367bc34f84c844e2e5a17998cfff",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

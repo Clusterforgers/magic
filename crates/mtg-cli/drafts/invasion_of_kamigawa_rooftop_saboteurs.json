@@ -1,0 +1,56 @@
+{
+  "oracle_id": "462fa2a4-651b-4fc1-b73b-1bd4508c8f75",
+  "name": "Invasion of Kamigawa // Rooftop Saboteurs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Kamigawa",
+      "oracle_fingerprint": "93af9972ea87b8c43b2696b8624ebdeb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rooftop Saboteurs",
+      "oracle_fingerprint": "87fcffb6ff6b50ba0b9130b54c63da71",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Battle" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

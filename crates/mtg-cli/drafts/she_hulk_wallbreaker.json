@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c8d74a25-78a9-46ad-ab24-97f6221fd8dd",
+  "name": "She-Hulk, Wallbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "She-Hulk, Wallbreaker",
+      "oracle_fingerprint": "81a15efdd8bf78bf7dd0c71da360fe9f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Hero" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "Triggering",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

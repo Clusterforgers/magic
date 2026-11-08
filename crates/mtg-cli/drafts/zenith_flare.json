@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ae005f00-3817-40ca-b8be-069a4085cfee",
+  "name": "Zenith Flare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zenith Flare",
+      "oracle_fingerprint": "062ae6eb9cd2a48be9f82e2aa7269c23",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "HasKeywordNamed": "Cycling" },
+                          { "HasKeywordNamed": "Typecycling" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "HasKeywordNamed": "Cycling" },
+                          { "HasKeywordNamed": "Typecycling" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "cf681c9e-a644-44c7-b744-34faafc67d50",
+  "name": "Immolation Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immolation Shaman",
+      "oracle_fingerprint": "45a237256f2093ee88515d5fc703a8bf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "Opponents",
+                "what": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }] },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

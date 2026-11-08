@@ -1,0 +1,64 @@
+{
+  "oracle_id": "38e64b15-47c0-4453-a51e-a53c1aebc8d0",
+  "name": "Sisters of Stone Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sisters of Stone Death",
+      "oracle_fingerprint": "ee4898de10be5beb49222be379355a76",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{G}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Blocks": "This" }, { "BlockedBy": "This" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

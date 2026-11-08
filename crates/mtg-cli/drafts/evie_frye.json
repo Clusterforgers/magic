@@ -1,0 +1,57 @@
+{
+  "oracle_id": "248cafe8-cc37-4cf3-8239-ac10e55ced13",
+  "name": "Evie Frye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evie Frye",
+      "oracle_fingerprint": "a4aa5960af2a1691d07f7f2ce7dc0da1",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Jacob Frye" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "May": { "effects": [{ "Discard": { "as": "discarded" } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": ["CantBeBlocked"],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "022e97af-2a3a-4e13-9b6b-d34fcc8cf168",
+  "name": "Archangel of Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archangel of Wrath",
+      "oracle_fingerprint": "3678ac30ccec26b2b997c00a04b8f1b6",
+      "abilities": [
+        { "Keyword": { "Kicker": "{B}" } },
+        { "Keyword": { "Kicker": "{R}" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Kicks", "op": "Eq", "right": 2 } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

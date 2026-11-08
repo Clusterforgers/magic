@@ -17,6 +17,7 @@ use mtg_core::mana::{ManaCost, ManaSymbol};
 use crate::ability_reader::printed_rules;
 use crate::characteristics::cant_be_turned_face_up;
 use crate::object::FaceDown;
+use crate::parts::{Kind, Part};
 use crate::price::Price;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -54,7 +55,10 @@ impl FaceDown {
     /// keeps its own, like a foretold or hidden card in exile.
     pub(crate) fn characteristics(self) -> Option<&'static CardDefinition> {
         match self {
-            FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => None,
+            FaceDown::Foretold { .. }
+            | FaceDown::Hideaway { .. }
+            | FaceDown::Held { .. }
+            | FaceDown::Sealed { .. } => None,
             FaceDown::Morph | FaceDown::Manifest => Some(&MORPH),
             FaceDown::Disguise | FaceDown::Cloak => Some(&DISGUISE),
         }
@@ -84,11 +88,28 @@ impl FaceDown {
     }
 }
 
-/// What turning the face-down permanent `id` face up takes: its morph, megamorph or disguise cost, paid with mana alone,
-/// and whether it is a megamorph, whose permanent gets a +1/+1 counter (CR 702.37b). A manifested or cloaked creature card
-/// can also be turned face up for its mana cost, an {X} in it counting as 0 (CR 701.40a); a card with both is turned up
-/// for the cheaper. `None` for a permanent that is not face down, has no such cost or is held down by an effect ("can't be turned face up").
+/// The mana of turning the face-down permanent `id` face up and whether it is a megamorph's, as [`turn_up`] reads it.
+#[cfg(test)]
 pub(crate) fn turn_up_cost(state: &GameState, id: ObjectId) -> Option<(ManaCost, bool)> {
+    turn_up(state, id).map(|up| (up.mana, up.megamorph))
+}
+
+/// What turning a face-down permanent face up costs (CR 702.37e, 702.168d).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct TurnUp {
+    /// The mana of the cost.
+    pub(crate) mana: ManaCost,
+    /// The parts paid besides mana, in the order the cost prints them ("Morph—Discard a card").
+    pub(crate) parts: Vec<Part>,
+    /// Whether it is a megamorph's, whose permanent gets a +1/+1 counter (CR 702.37b).
+    pub(crate) megamorph: bool,
+}
+
+/// What turning the face-down permanent `id` face up takes: its morph, megamorph or disguise cost. A manifested or
+/// cloaked creature card can also be turned face up for its mana cost, an {X} in it counting as 0 (CR 701.40a); a card
+/// with both is turned up for the cheaper, and for its mana cost when the keyword cost takes more than mana. `None` for a
+/// permanent that is not face down, has no such cost or is held down by an effect ("can't be turned face up").
+pub(crate) fn turn_up(state: &GameState, id: ObjectId) -> Option<TurnUp> {
     let object = state.object(id)?;
     let how = object.face_down()?;
     if object.zone() != Zone::Battlefield
@@ -104,33 +125,59 @@ pub(crate) fn turn_up_cost(state: &GameState, id: ObjectId) -> Option<(ManaCost,
         .then(|| card.types.contains(&CardType::Creature))
         .filter(|creature| *creature)
         .and_then(|_| card.mana_cost.clone())
-        .map(|cost| (cost, false));
+        .map(|mana| TurnUp {
+            mana,
+            parts: Vec::new(),
+            megamorph: false,
+        });
     match (printed, natural) {
-        (Some(printed), Some(natural)) => {
-            Some(if printed.0.mana_value() <= natural.0.mana_value() {
+        (Some(printed), Some(natural)) => Some(
+            if printed.parts.is_empty() && printed.mana.mana_value() <= natural.mana.mana_value() {
                 printed
             } else {
                 natural
-            })
-        }
+            },
+        ),
         (printed, natural) => printed.or(natural),
     }
 }
 
-/// The morph, megamorph or disguise cost of `card` if it is mana alone, and whether it is a megamorph's.
-fn keyword_cost(card: &CardDefinition) -> Option<(ManaCost, bool)> {
+/// The morph, megamorph or disguise cost of `card` when the engine pays it: mana and fixed parts, with no X and nothing
+/// that taps, untaps, moves or unattaches the source.
+fn keyword_cost(card: &CardDefinition) -> Option<TurnUp> {
     printed_rules(card).find_map(|rules| {
         let (cost, megamorph) = match &**rules {
             Ability::Keyword(Keyword::Morph(cost) | Keyword::Disguise(cost)) => (cost, false),
             Ability::Keyword(Keyword::Megamorph(cost)) => (cost, true),
             _ => return None,
         };
-        let price = Price::of(cost).ok()?;
-        if price.tap || price.moves_source() || price.x > 0 || !price.parts.is_empty() {
+        let price = Price::announced(cost).ok()?;
+        if price.tap
+            || price.untap
+            || price.moves_source()
+            || price.x > 0
+            || price.waterbend > 0
+            || !price.changes.is_empty()
+            || !price.parts.iter().all(turns_up)
+        {
             return None;
         }
-        Some((price.mana?, megamorph))
+        Some(TurnUp {
+            mana: price.mana.unwrap_or_default(),
+            parts: price.parts,
+            megamorph,
+        })
     })
+}
+
+/// Whether a turn-up cost may have `part`: a fixed one that needs no announced ability. Tapping creatures for a total
+/// power is checked against an ability's needs, and a creature has no host to unattach from, so neither is one.
+fn turns_up(part: &Part) -> bool {
+    match part {
+        Part::Pick(pick) => !matches!(pick.kind, Kind::TapPower),
+        Part::Unattach | Part::X(_) | Part::Among { .. } => false,
+        _ => true,
+    }
 }
 
 #[cfg(test)]

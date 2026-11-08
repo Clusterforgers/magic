@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ebfafabc-5255-4024-be59-7403bdb16ee4",
+  "name": "Anafenza, the Foremost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anafenza, the Foremost",
+      "oracle_fingerprint": "2d42e247fe1a004d419f3e26e88e8164",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Tapped", "Other", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

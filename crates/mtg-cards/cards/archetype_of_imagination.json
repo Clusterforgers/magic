@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a5458de0-0f61-49a3-a013-d90f92559809",
+  "name": "Archetype of Imagination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archetype of Imagination",
+      "oracle_fingerprint": "90bc7b29828e7243b9dfc9f77570e55c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "LockKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

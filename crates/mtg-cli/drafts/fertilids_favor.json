@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e2da8c3e-6ffc-41dd-a68a-62e64f7e9c60",
+  "name": "Fertilid's Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fertilid's Favor",
+      "oracle_fingerprint": "f46f7566cab8982cf6fe61c837466077",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

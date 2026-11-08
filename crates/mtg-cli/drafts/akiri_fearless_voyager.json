@@ -1,0 +1,99 @@
+{
+  "oracle_id": "c03ae426-2536-4c20-a73a-a24e816f76b0",
+  "name": "Akiri, Fearless Voyager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akiri, Fearless Voyager",
+      "oracle_fingerprint": "6a292ae2932b76bf35b4fb9833fdfaba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasAttached": [{ "Subtype": "Equipment" }] }
+                ],
+                "at": "EachPlayer"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasAttached": [{ "Subtype": "Equipment" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Equipment" },
+                      {
+                        "AttachedTo": {
+                          "Each": [{ "Type": "Creature" }, { "Is": { "Bound": "card" } }]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card2"
+                }
+              },
+              { "Unattach": { "what": { "Bound": "card2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card2" },
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Tap": { "what": { "Bound": "card" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card2" },
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "card" },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

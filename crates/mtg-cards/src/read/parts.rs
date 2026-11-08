@@ -6,7 +6,7 @@ use super::{Step, effects, steps};
 use crate::cost::{Cost, CostItem};
 use crate::effect::Produce;
 use crate::keyword::Keyword;
-use crate::modify::{GameRule, Modification};
+use crate::modify::{Blocking, CombatQuirk, GameRule, Modification, TapPowerAs};
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step as TurnStep, TriggerPattern};
 use crate::value::Amount;
@@ -81,12 +81,21 @@ fn cost_item(ctx: &Ctx, item: &CostItem) -> String {
             )
         ),
         CostItem::Mill(count) => format!("mill {}", phrase::counted(ctx, count, "card")),
+        CostItem::Draw(count) => format!("draw {}", phrase::counted(ctx, count, "card")),
+        CostItem::DiscardRandom(count) => {
+            format!("discard {} at random", phrase::counted(ctx, count, "card"))
+        }
         CostItem::PayEnergy(count) => format!("pay {} energy", phrase::amount(ctx, count)),
         CostItem::TapPermanents { filter, count } => {
             format!("tap {} you control", taken(ctx, count, filter))
         }
-        CostItem::ExileFromGraveyard { filter, count } => {
-            format!("exile {} from your graveyard", taken(ctx, count, filter))
+        CostItem::ExileFromGraveyard {
+            filter,
+            count,
+            any_player,
+        } => {
+            let whose = if *any_player { "a" } else { "your" };
+            format!("exile {} from {whose} graveyard", taken(ctx, count, filter))
         }
         CostItem::ReturnToHand { filter, count } => {
             format!(
@@ -159,10 +168,23 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         TriggerPattern::AttacksAlone { what } => {
             format!("{} attacks alone", phrase::selector(ctx, what))
         }
-        TriggerPattern::Blocks { what } => format!("{} blocks", phrase::selector(ctx, what)),
-        TriggerPattern::BecomesBlocked { what } => {
+        TriggerPattern::Blocks { what, blocking } if blocking.0.is_empty() => {
+            format!("{} blocks", phrase::selector(ctx, what))
+        }
+        TriggerPattern::Blocks { what, blocking } => format!(
+            "{} blocks one or more {}",
+            phrase::selector(ctx, what),
+            phrase::selector(ctx, blocking)
+        ),
+        TriggerPattern::BecomesBlocked { what, by, .. } if by.0.is_empty() => {
             format!("{} becomes blocked", phrase::selector(ctx, what))
         }
+        TriggerPattern::BecomesBlocked { what, by, once } => format!(
+            "{} becomes blocked by {}{}",
+            phrase::selector(ctx, what),
+            if *once { "one or more " } else { "" },
+            phrase::selector(ctx, by)
+        ),
         TriggerPattern::SpellCast { what, by } => {
             let spell = phrase::selector(ctx, what);
             let spell = if what.0.is_empty() {
@@ -191,12 +213,29 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         ),
         TriggerPattern::LifeGained { who } => phrase::verb(ctx, who, "gain", "life"),
         TriggerPattern::LifeLost { who } => phrase::verb(ctx, who, "lose", "life"),
-        TriggerPattern::Drew { who, .. } => phrase::verb(ctx, who, "draw", "a card"),
+        TriggerPattern::Drew {
+            who,
+            first_in_draw_step,
+            ..
+        } => {
+            let drew = phrase::verb(ctx, who, "draw", "a card");
+            match first_in_draw_step {
+                Some(true) => format!("{drew} first in a draw step"),
+                Some(false) => format!("{drew} other than the first in a draw step"),
+                None => drew,
+            }
+        }
         TriggerPattern::GroupAttacks { what, at_least } => {
             format!("{at_least} or more {} attack", phrase::selectors(ctx, what))
         }
         TriggerPattern::Tapped { what } => {
             format!("{} becomes tapped", phrase::selector(ctx, what))
+        }
+        TriggerPattern::TappedNotAttacking { what } => {
+            format!(
+                "{} becomes tapped, if it isn't being declared as an attacker",
+                phrase::selector(ctx, what)
+            )
         }
         TriggerPattern::Untapped { what } => {
             format!("{} becomes untapped", phrase::selector(ctx, what))
@@ -214,6 +253,9 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         TriggerPattern::Batch(inner) => format!("one or more times: {}", trigger(ctx, inner)),
         TriggerPattern::Nth { event, nth } => {
             format!("{} for the {nth}th time each turn", trigger(ctx, event))
+        }
+        TriggerPattern::Caused { inner, .. } => {
+            format!("{}, caused by a spell or ability", trigger(ctx, inner))
         }
         other => generic::node(ctx, other),
     }
@@ -247,7 +289,21 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             format!("{} must attack each combat if able", phrase::who(ctx, who))
         }
         GameRule::MustBlock(who) => format!("{} must block if able", phrase::who(ctx, who)),
+        GameRule::MustBlockAttacker { who, attacker } => format!(
+            "{} block{} {} if able",
+            phrase::who(ctx, who),
+            if matches!(who, Ref::This | Ref::Target(_)) {
+                "s"
+            } else {
+                ""
+            },
+            phrase::who(ctx, attacker)
+        ),
+        GameRule::Combat { who, quirk } => combat_quirk(&phrase::who(ctx, who), quirk),
         GameRule::CantBeCountered(who) => format!("{} can't be countered", phrase::who(ctx, who)),
+        GameRule::CantBeRegenerated(who) => {
+            format!("{} can't be regenerated", phrase::who(ctx, who))
+        }
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
         GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
@@ -255,6 +311,29 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             format!("{} has no maximum hand size", phrase::who(ctx, who))
         }
         GameRule::SkipDrawStep(who) => format!("{} skips the draw step", phrase::who(ctx, who)),
+        GameRule::MaxHandSize { who, size } => format!(
+            "{} has a maximum hand size of {}",
+            phrase::who(ctx, who),
+            phrase::amount(ctx, size)
+        ),
+        GameRule::HandSizeChange { who, by } => format!(
+            "{} has a maximum hand size changed by {}",
+            phrase::who(ctx, who),
+            phrase::amount(ctx, by)
+        ),
+        GameRule::NoLegendRule(who) => format!(
+            "the legend rule does not apply to {}",
+            phrase::who(ctx, who)
+        ),
+        GameRule::NoLegendRuleFor(what) => format!(
+            "the legend rule does not apply to {}",
+            phrase::selector(ctx, what)
+        ),
+        GameRule::UntapDuring { what, whose } => format!(
+            "untap {} during the untap step of {}",
+            phrase::selectors(ctx, what),
+            phrase::who(ctx, whose)
+        ),
         GameRule::MayCast(permission) => {
             let from = permission.from.map_or_else(String::new, |zone| {
                 format!(" from {}", phrase::zone_text(zone))
@@ -392,6 +471,9 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::Discarded { what } => {
             format!("{} would be discarded", phrase::selector(ctx, what))
         }
+        ReplaceWhen::Countered { what } => {
+            format!("{} would be countered", phrase::selector(ctx, what))
+        }
         ReplaceWhen::LifeGain { who } => format!("{} would gain life", phrase::who(ctx, who)),
         ReplaceWhen::Draw { who, .. } => format!("{} would draw a card", phrase::who(ctx, who)),
         other => generic::node(ctx, other),
@@ -416,6 +498,7 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             ),
         )),
         ReplaceBy::Tapped => out.push(Step::new(depth, "it enters tapped")),
+        ReplaceBy::Untapped => out.push(Step::new(depth, "it enters untapped")),
         ReplaceBy::Multiply(factor) => {
             out.push(Step::new(depth, format!("{factor} times as many")));
         }
@@ -423,6 +506,19 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
         ReplaceBy::MoveTo(zone) => out.push(Step::new(
             depth,
             format!("it goes to {} instead", phrase::zone_text(*zone)),
+        )),
+        ReplaceBy::IntoLibrary { place, reveal } => out.push(Step::new(
+            depth,
+            format!(
+                "{}it goes into its owner's library instead, {}",
+                if *reveal { "it is revealed and " } else { "" },
+                match place {
+                    crate::effect::Place::Top => "on top".to_owned(),
+                    crate::effect::Place::Bottom => "on the bottom".to_owned(),
+                    crate::effect::Place::Below(n) => format!("below the top {n}"),
+                    crate::effect::Place::Shuffled => "shuffled in".to_owned(),
+                }
+            ),
         )),
         ReplaceBy::Instead(list) => {
             out.push(Step::new(depth, "instead:"));
@@ -439,6 +535,52 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
 /// "you": a reference of a static ability's subject.
 pub(super) fn affected(ctx: &Ctx, subject: &Ref) -> String {
     phrase::who(ctx, subject)
+}
+
+/// The words of a combat rule about the creatures `who`.
+fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
+    match quirk {
+        CombatQuirk::CantAttackAlone => format!("{who} can't attack alone"),
+        CombatQuirk::CantBlockAlone => format!("{who} can't block alone"),
+        CombatQuirk::AttackDespiteDefender => {
+            format!("{who} can attack as though they didn't have defender")
+        }
+        CombatQuirk::BlockWhileTapped => format!("{who} can block as though they were untapped"),
+        CombatQuirk::MayStayTapped => {
+            format!("{who} may choose not to untap during their controller's untap step")
+        }
+        CombatQuirk::AssignsNoCombatDamage => format!("{who} assign no combat damage"),
+        CombatQuirk::AssignsAsUnblocked => {
+            format!("you may have {who} assign combat damage as though they weren't blocked")
+        }
+        CombatQuirk::AssignsByToughness => {
+            format!("{who} assign combat damage equal to their toughness rather than their power")
+        }
+        CombatQuirk::MustBeBlocked(Blocking::AtLeastOne) => {
+            format!("{who} must be blocked if able")
+        }
+        CombatQuirk::MustBeBlocked(Blocking::Every) => {
+            format!("all creatures able to block {who} do so")
+        }
+        CombatQuirk::IgnoreLandwalk(_) | CombatQuirk::IgnoreAllLandwalk => {
+            format!("{who} can be blocked as though they didn't have landwalk")
+        }
+        CombatQuirk::TapPower(TapPowerAs::Toughness) => {
+            format!("{who} crew and saddle using their toughness rather than their power")
+        }
+        CombatQuirk::TapPower(TapPowerAs::Plus(more)) => {
+            format!("{who} crew and saddle as though their power were {more} greater")
+        }
+        CombatQuirk::BlockIgnoringLandwalk => {
+            format!("{who} can block creatures with landwalk as though they didn't have it")
+        }
+        CombatQuirk::BlockAsThoughShadow => {
+            format!("{who} can block creatures with shadow as though they had shadow")
+        }
+        CombatQuirk::BlockIgnoringShadow => {
+            format!("{who} can block creatures with shadow as though they didn't have shadow")
+        }
+    }
 }
 
 #[cfg(test)]

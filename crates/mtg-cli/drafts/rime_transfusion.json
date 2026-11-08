@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d7ff0525-8617-4e0f-92db-660f67d706ca",
+  "name": "Rime Transfusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rime Transfusion",
+      "oracle_fingerprint": "4b28998b2d6411643340a99a7c628a54",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{S}",
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "CantBeBlockedBy": [
+                                { "Type": "Creature" },
+                                { "Not": { "Supertype": "Snow" } }
+                              ]
+                            }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

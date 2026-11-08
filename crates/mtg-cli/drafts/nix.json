@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fe1a9af0-1774-4d54-b59f-f42dc8afcbe9",
+  "name": "Nix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nix",
+      "oracle_fingerprint": "d96f924191b4b84b8c609772af5ecd1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        "Spell",
+                        { "Compare": { "stat": "ManaSpent", "op": "Eq", "to": 0 } }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

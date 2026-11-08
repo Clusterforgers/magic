@@ -1,0 +1,72 @@
+{
+  "oracle_id": "c6e28cf0-81c7-4f52-a29b-988cc6fd31ee",
+  "name": "Appa, Loyal Sky Bison",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Appa, Loyal Sky Bison",
+      "oracle_fingerprint": "4e5bf1bdab380d7d7289a4ce1dfd4fba",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Flying" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Other",
+                              { "Not": { "Type": "Land" } },
+                              { "ControlledBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 }, "as": "airbent" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" }
+                            },
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

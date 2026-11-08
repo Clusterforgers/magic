@@ -1,0 +1,56 @@
+{
+  "oracle_id": "debbbdb2-2fa8-413f-b394-977212915c65",
+  "name": "Mirkwood Trapper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirkwood Trapper",
+      "oracle_fingerprint": "fe1b6e7d1f64596289feb107f3a96e3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "GroupAttacksAt": { "what": [{ "Type": "Creature" }], "at": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": [{ "Type": "Creature" }] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "from": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "as": "card"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "card" },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

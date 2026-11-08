@@ -1,0 +1,42 @@
+{
+  "oracle_id": "095d9719-0db6-43de-8e4f-a0035a4c65ed",
+  "name": "Melek, Izzet Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melek, Izzet Paragon",
+      "oracle_fingerprint": "f35d61efaed79bca6f7cd9a5637a06c8",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "TopOfLibrary"
+                ],
+                "from": "Library"
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "WasCast": { "from": "Library" } },
+                  { "OwnedBy": "You" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -46,6 +46,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                 cost: cost.clone(),
                 times: times.clone(),
                 paid: vec![Effect::Draw {
+                    bind: None,
                     who: Ref::You,
                     count: Amount::one(),
                 }],

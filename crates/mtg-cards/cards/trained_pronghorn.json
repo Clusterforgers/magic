@@ -1,0 +1,27 @@
+{
+  "oracle_id": "22528380-4f47-4bd9-a1d4-79f700cba4f5",
+  "name": "Trained Pronghorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trained Pronghorn",
+      "oracle_fingerprint": "9ca6d2c83be4d33b8763ce514904a813",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

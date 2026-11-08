@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "4cd05532-686e-40dc-858b-8a77a3628c99",
+  "oracle_id": "9cac23a1-a0b3-490c-aea2-dc2928f6dc9e",
+  "multiverse_ids": [
+    401914
+  ],
+  "mtgo_id": 58367,
+  "mtgo_foil_id": 58368,
+  "tcgplayer_id": 105297,
+  "cardmarket_id": 284737,
+  "name": "Horribly Awry",
+  "lang": "en",
+  "released_at": "2015-10-02",
+  "uri": "https://api.scryfall.com/cards/4cd05532-686e-40dc-858b-8a77a3628c99",
+  "scryfall_uri": "https://scryfall.com/card/bfz/59/horribly-awry?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:23:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.jpg?1783938213",
+    "normal": "https://cards.scryfall.io/normal/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.jpg?1783938213",
+    "large": "https://cards.scryfall.io/large/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.jpg?1783938213",
+    "png": "https://cards.scryfall.io/png/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.png?1783938213",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.jpg?1783938213",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.jpg?1783938213",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.webp?1783938213",
+    "grid": "https://cards.scryfall.io/grid/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.webp?1783938213",
+    "display": "https://cards.scryfall.io/display/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.webp?1783938213",
+    "art": "https://cards.scryfall.io/art/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.webp?1783938213",
+    "crop": "https://cards.scryfall.io/crop/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.webp?1783938213",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/c/4cd05532-686e-40dc-858b-8a77a3628c99.jpg?1783938213"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Devoid (This card has no color.)\nCounter target creature spell with mana value 4 or less. If that spell is countered this way, exile it instead of putting it into its owner's graveyard.",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Devoid"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "91719374-7ac5-4afa-ada8-5da964dcf1d4",
+  "set": "bfz",
+  "set_name": "Battle for Zendikar",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/91719374-7ac5-4afa-ada8-5da964dcf1d4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abfz&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bfz?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4cd05532-686e-40dc-858b-8a77a3628c99/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9cac23a1-a0b3-490c-aea2-dc2928f6dc9e&unique=prints",
+  "collector_number": "59",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"We are nothing but dust to them—our bodies, our actions, even our words.\"\n—Jori En, expedition leader",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Clint Cearley",
+  "artist_ids": [
+    "03b75350-d5a0-4e3a-b3b4-8d4a5554385b"
+  ],
+  "illustration_id": "dd0844dc-5f3d-4436-a80d-bda0c490c9b3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "devoid"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22306,
+  "penny_rank": 6884,
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.36",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=401914&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHorribly%2BAwry",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHorribly%2BAwry",
+    "edhrec": "https://edhrec.com/route/?cc=Horribly+Awry"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F105297%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=284737&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/58367?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -13,13 +13,37 @@
               { "Sacrifice": { "filter": [{ "Type": "Land" }] } },
               {
                 "Search": {
-                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
-                  "count": { "min": 0, "max": 1 },
-                  "as": "land"
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" },
+                                { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 3,
+                        "otherwise": 2
+                      }
+                    }
+                  },
+                  "as": "found"
                 }
               },
               {
-                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
               },
               { "Shuffle": {} }
             ]

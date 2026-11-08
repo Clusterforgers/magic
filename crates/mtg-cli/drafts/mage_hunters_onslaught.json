@@ -1,0 +1,35 @@
+{
+  "oracle_id": "22195e0e-a426-48d6-b100-480c7e2bd5cc",
+  "name": "Mage Hunters' Onslaught",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mage Hunters' Onslaught",
+      "oracle_fingerprint": "850d1327b2a6792e989b6d32c2f0d424",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "Blocks": { "what": [] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

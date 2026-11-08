@@ -1,0 +1,31 @@
+{
+  "oracle_id": "fa3ae120-756d-4c52-91f9-235767539d67",
+  "name": "Mondo Gecko",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mondo Gecko",
+      "oracle_fingerprint": "98b568f244eaf1c380a82e6e096ed9c5",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 120 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

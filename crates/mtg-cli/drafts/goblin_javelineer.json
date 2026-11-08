@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e35c8206-98d0-44ab-8770-823a5ff7ab72",
+  "name": "Goblin Javelineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Javelineer",
+      "oracle_fingerprint": "c159c2a18241d67433659d62a381e4c2",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Blocks": "This" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

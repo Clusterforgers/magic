@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0be72320-f870-486b-a3fb-128024a958ec",
+  "name": "Elemental, My Dear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental, My Dear",
+      "oracle_fingerprint": "749ebb713433ea56d72049f7ea32f65c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" }, "count": "X" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

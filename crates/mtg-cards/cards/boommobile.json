@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cb3edb86-ddd5-461c-98b5-ffb4df437a39",
+  "name": "Boommobile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boommobile",
+      "oracle_fingerprint": "870bd81464f90ce7b3fa85b1d73de0bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 4 }, "only": [{ "Ability": {} }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}{2}{R}",
+            "limit": "OncePerGame",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d6ea0e58-7b14-425b-9135-57e149c0e47e",
+  "name": "Conciliator's Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conciliator's Duelist",
+      "oracle_fingerprint": "0815a2f6f855c744520703536b4ae6ff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "who": "EachPlayer", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "Targeting": [{ "Type": "Creature" }, { "In": "Battlefield" }] }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

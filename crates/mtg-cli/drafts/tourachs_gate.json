@@ -1,0 +1,60 @@
+{
+  "oracle_id": "03e27ebd-6141-4002-b41f-0bf9d6ec2908",
+  "name": "Tourach's Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tourach's Gate",
+      "oracle_fingerprint": "d0c5605fd6bd3aa5b2d28ffbf63a39ac",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Thrull" }] } }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "time" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "time" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": ["This", { "Not": { "HasCounter": { "Other": "time" } } }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Land" }, { "Is": "Attached" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

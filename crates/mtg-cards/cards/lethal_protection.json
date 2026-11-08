@@ -1,0 +1,30 @@
+{
+  "oracle_id": "49a7c053-81e9-47b7-af5c-c62cd0389ed4",
+  "name": "Lethal Protection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lethal Protection",
+      "oracle_fingerprint": "325ee6347e4724f333e25efadd3bd064",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

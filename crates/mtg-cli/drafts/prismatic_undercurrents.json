@@ -1,0 +1,34 @@
+{
+  "oracle_id": "27a3aa64-1de7-4b0c-af23-52886e7d258a",
+  "name": "Prismatic Undercurrents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismatic Undercurrents",
+      "oracle_fingerprint": "afd657efff9fb352709a1a9aaeb82ce5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": {
+                    "min": 0,
+                    "max": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                  },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } }
+      ]
+    }
+  ]
+}

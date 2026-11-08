@@ -1,0 +1,27 @@
+{
+  "oracle_id": "16cf1cf9-6900-406c-a5b4-0e5750f530e0",
+  "name": "Plague Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague Rats",
+      "oracle_fingerprint": "2ac6c09eeeffb327b1efa0235a305190",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "Named": "Plague Rats" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "Named": "Plague Rats" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

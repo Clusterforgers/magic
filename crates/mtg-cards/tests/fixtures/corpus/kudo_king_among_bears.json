@@ -1,0 +1,147 @@
+{
+  "object": "card",
+  "id": "585e4e02-4873-4a65-a9ad-30cf0d5b6f79",
+  "oracle_id": "070d22cf-2eed-4d04-b932-4b8339ea9b7a",
+  "multiverse_ids": [
+    662344
+  ],
+  "mtgo_id": 126401,
+  "arena_id": 91042,
+  "tcgplayer_id": 548608,
+  "cardmarket_id": 768046,
+  "name": "Kudo, King Among Bears",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/585e4e02-4873-4a65-a9ad-30cf0d5b6f79",
+  "scryfall_uri": "https://scryfall.com/card/mh3/192/kudo-king-among-bears?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:54:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.jpg?1783911248",
+    "normal": "https://cards.scryfall.io/normal/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.jpg?1783911248",
+    "large": "https://cards.scryfall.io/large/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.jpg?1783911248",
+    "png": "https://cards.scryfall.io/png/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.png?1783911248",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.jpg?1783911248",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.jpg?1783911248",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.webp?1783911248",
+    "grid": "https://cards.scryfall.io/grid/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.webp?1783911248",
+    "display": "https://cards.scryfall.io/display/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.webp?1783911248",
+    "art": "https://cards.scryfall.io/art/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.webp?1783911248",
+    "crop": "https://cards.scryfall.io/crop/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.webp?1783911248",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/8/585e4e02-4873-4a65-a9ad-30cf0d5b6f79.jpg?1783911248"
+  },
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Bear",
+  "oracle_text": "Other creatures have base power and toughness 2/2 and are Bears in addition to their other types.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set": "mh3",
+  "set_name": "Modern Horizons 3",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/585e4e02-4873-4a65-a9ad-30cf0d5b6f79/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A070d22cf-2eed-4d04-b932-4b8339ea9b7a&unique=prints",
+  "collector_number": "192",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Born from the greatest granite boulder, nursed on the sweetest honey, crowned amid a raging blizzard.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ekaterina Burmak",
+  "artist_ids": [
+    "2a9f3780-fcc8-4ec5-b403-ee1d1370d3b4"
+  ],
+  "illustration_id": "5786b6e6-0488-481e-8ca2-50daed4402ca",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6656,
+  "penny_rank": 9105,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/news/announcements/the-modern-horizons-3-leaks-nulldrifters-and-you",
+    "previewed_at": "2024-04-30"
+  },
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": "0.40",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "0.42",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=662344&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKudo%252C%2BKing%2BAmong%2BBears",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKudo%252C%2BKing%2BAmong%2BBears",
+    "edhrec": "https://edhrec.com/route/?cc=Kudo%2C+King+Among+Bears"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F548608%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=768046&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/126401?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

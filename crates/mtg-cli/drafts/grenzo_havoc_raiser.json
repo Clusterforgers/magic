@@ -12,12 +12,44 @@
             "when": {
               "DealsDamage": {
                 "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
-                "to": "EachPlayer"
+                "to": "EachPlayer",
+                "combat": true
               }
             },
             "effects": [
               {
-                "Rule": { "rule": { "MayCast": { "from": "Exile" } }, "duration": "UntilEndOfTurn" }
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        { "ExileTop": { "who": "Triggering", "as": "exiled" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "what": [{ "Not": { "Type": "Land" } }],
+                                "from": "Exile",
+                                "only": { "Bound": "exiled" },
+                                "spend_as": "AnyColor"
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
               }
             ]
           }

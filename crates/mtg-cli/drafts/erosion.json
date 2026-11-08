@@ -1,0 +1,46 @@
+{
+  "oracle_id": "155ee24f-a458-4df4-86d5-5eb7396ebf45",
+  "name": "Erosion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erosion",
+      "oracle_fingerprint": "379155469bfb0381339a41ae9fbbcfbc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "OneOf": {
+                  "who": "Triggering",
+                  "options": [
+                    [
+                      {
+                        "Pay": {
+                          "who": "Triggering",
+                          "cost": "{1}",
+                          "unpaid": [{ "Destroy": { "what": "Attached" } }]
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Pay": {
+                          "who": "Triggering",
+                          "cost": [{ "PayLife": 1 }],
+                          "unpaid": [{ "Destroy": { "what": "Attached" } }]
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

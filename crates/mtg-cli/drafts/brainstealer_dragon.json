@@ -1,0 +1,57 @@
+{
+  "oracle_id": "13cb958f-1e66-4219-901a-ff58275c8475",
+  "name": "Brainstealer Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brainstealer Dragon",
+      "oracle_fingerprint": "9a8328e981b5c27a9adf7c7a7e13f4fc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "who": "Opponents", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "OwnedBy": "Opponents" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "Type": "Land" } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "OwnerOf": "Triggering" },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

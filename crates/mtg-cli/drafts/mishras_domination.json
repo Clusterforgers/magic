@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ede2354a-64b0-402c-8fbe-9da90f811a9b",
+  "name": "Mishra's Domination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra's Domination",
+      "oracle_fingerprint": "28eb9686e93a5bee203da7fc498e7324",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Is": "Attached" }, { "Not": { "ControlledBy": "You" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

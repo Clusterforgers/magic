@@ -1,0 +1,45 @@
+{
+  "oracle_id": "79eed0c6-1853-4032-9d12-aebf5e15e78c",
+  "name": "Boonweaver Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boonweaver Giant",
+      "oracle_fingerprint": "6a6149d700dfeb870b72c4b27a613071",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard", "Hand"],
+                        "filter": [{ "Subtype": "Aura" }, { "OwnedBy": "You" }],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "BattlefieldAttached": { "to": "This" } }
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

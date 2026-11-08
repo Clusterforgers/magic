@@ -1,0 +1,38 @@
+{
+  "oracle_id": "641db975-cf94-44c6-a391-f540a952e0d8",
+  "name": "Savra, Queen of the Golgari",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savra, Queen of the Golgari",
+      "oracle_fingerprint": "ca9421cc6f9a57ffa3d681b79be17b02",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": { "what": [{ "Type": "Creature" }, { "Color": "Black" }], "by": "You" }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 2 }],
+                  "paid": [
+                    { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": { "what": [{ "Type": "Creature" }, { "Color": "Green" }], "by": "You" }
+            },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 2 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

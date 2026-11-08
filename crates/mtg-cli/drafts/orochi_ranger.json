@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6119fe8e-e7e2-4cc1-a44d-fe95a230db80",
+  "name": "Orochi Ranger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orochi Ranger",
+      "oracle_fingerprint": "0b4ee98313f5c0ec256d588a3074b96a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

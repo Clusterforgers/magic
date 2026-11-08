@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b760b1db-764b-4b40-8a84-691b5c9c1dbc",
+  "name": "Rimehorn Aurochs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rimehorn Aurochs",
+      "oracle_fingerprint": "d04422a8104fc328cd158493ad9504af",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Aurochs" }, "Attacking", "Other"] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{S}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": { "who": { "Target": 1 }, "attacker": { "Target": 0 } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

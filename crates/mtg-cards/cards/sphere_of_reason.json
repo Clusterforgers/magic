@@ -1,0 +1,19 @@
+{
+  "oracle_id": "de85c961-622d-4d70-8cd7-f722c1ac5ed1",
+  "name": "Sphere of Reason",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere of Reason",
+      "oracle_fingerprint": "8ca305c29c141e4f676a27379536c647",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "Color": "Blue" }] } },
+            "by": { "PreventUpTo": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

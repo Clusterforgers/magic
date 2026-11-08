@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2efd6494-c5e1-41de-bc6e-8490ff046cd1",
+  "name": "Spider-Man Noir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Man Noir",
+      "oracle_fingerprint": "88f90c1540ddf67dbb7d34ab65196839",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              { "Surveil": { "count": { "AnyCounters": "Triggering" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

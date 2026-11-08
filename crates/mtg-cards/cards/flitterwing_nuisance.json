@@ -1,0 +1,52 @@
+{
+  "oracle_id": "9148f2cb-5594-463c-a21b-a67706ec46d1",
+  "name": "Flitterwing Nuisance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flitterwing Nuisance",
+      "oracle_fingerprint": "98f41d525f33c5a6d27cb4a6ca93aa33",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, { "RemoveCounters": {} }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "DealsDamage": {
+                          "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "to": "EachPlayer",
+                          "combat": true
+                        }
+                      },
+                      {
+                        "DealsDamage": {
+                          "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "to": { "Each": [{ "Type": "Planeswalker" }] },
+                          "combat": true
+                        }
+                      }
+                    ]
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Until end of turn, up to one target creature gets +1/+1 and gains first strike, vigilance, and lifelink.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Put a +1/+1 counter on each creature you control and a loyalty counter on each other planeswalker you control.",
+      "abilities": [],
+      "gap": "key:PutCounterAll.ValidCards2"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "You get an emblem with \"If a source would deal damage to you or a planeswalker you control, prevent all but 1 of that damage.\"",
+      "abilities": [],
+      "gap": "replacement:DamageDone-prevented-amount"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 108
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 109,
+          "end": 223
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 224,
+          "end": 354
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

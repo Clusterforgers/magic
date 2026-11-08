@@ -1,0 +1,15 @@
+{
+  "oracle_id": "997478aa-b790-4269-a626-abf0cb30fea0",
+  "name": "Leyline of Lifeforce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Lifeforce",
+      "oracle_fingerprint": "8926150d2f153f256b88f0555504f8e7",
+      "abilities": [
+        "OpeningHand",
+        { "Rule": { "rule": { "CantBeCountered": { "Each": ["Spell", { "Type": "Creature" }] } } } }
+      ]
+    }
+  ]
+}

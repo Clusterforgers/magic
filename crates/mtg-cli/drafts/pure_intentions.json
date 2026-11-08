@@ -1,0 +1,34 @@
+{
+  "oracle_id": "77ef82e6-16e3-44fa-9542-252060fa6c96",
+  "name": "Pure Intentions",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pure Intentions",
+      "oracle_fingerprint": "ce28aed31b5eb3060e4de8000d78f2fc",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 140 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": { "inner": { "Discarded": { "what": ["This"] } }, "by": "Opponents" }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e1731049-9c1e-411f-86ae-5240c9010926",
+  "name": "Chimney Goyf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chimney Goyf",
+      "oracle_fingerprint": "e08f9f195a4c475456cdbc703b0b76ad",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "CardTypes": [{ "In": "Graveyard" }] },
+                  "toughness": { "Sum": [{ "CardTypes": [{ "In": "Graveyard" }] }, 1] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

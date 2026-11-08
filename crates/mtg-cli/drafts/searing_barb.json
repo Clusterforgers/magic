@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9a1622a5-c982-407b-a158-7b8ad9238aac",
+  "name": "Searing Barb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Searing Barb",
+      "oracle_fingerprint": "a759a8d31298b1d26d991a75f18cc289",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }] },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Incubate": { "count": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

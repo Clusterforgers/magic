@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1d67f5ff-1fce-45e5-b6a1-416c569351e2",
+  "name": "Gitaxian Probe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gitaxian Probe",
+      "oracle_fingerprint": "a42945cc0d99db3b11ac85c944f0c610",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LookAtHand": { "of": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

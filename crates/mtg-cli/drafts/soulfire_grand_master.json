@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e65769f4-50ae-482b-933b-ac5cf3843f2a",
+  "name": "Soulfire Grand Master",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Soulfire Grand Master",
+      "oracle_fingerprint": "28b1bf12069b4df38c8160bdf27b59eb",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "ControlledBy": "You" },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Lifelink" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 63, "end": 230 }
+          }
+        }
+      ]
+    }
+  ]
+}

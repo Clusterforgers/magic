@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6225a704-430a-4f56-ad87-0e8d87f285f5",
+  "name": "Cursed Totem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Totem",
+      "oracle_fingerprint": "a56bde6f7237670fc0810b389ae8b960",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": { "kind": "Every", "sources": [{ "Type": "Creature" }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

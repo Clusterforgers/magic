@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "05c31120-7d4a-42d9-adad-53970fdf566e",
+  "oracle_id": "8c05de43-6f9e-46c1-bc01-551a7fc570d0",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709802,
+  "name": "Jandor, Fortuned Traveler",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/05c31120-7d4a-42d9-adad-53970fdf566e",
+  "scryfall_uri": "https://scryfall.com/card/mbc/42/jandor-fortuned-traveler?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-04T18:10:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.jpg?1785867039",
+    "normal": "https://cards.scryfall.io/normal/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.jpg?1785867039",
+    "large": "https://cards.scryfall.io/large/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.jpg?1785867039",
+    "png": "https://cards.scryfall.io/png/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.png?1785867039",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.jpg?1785867039",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.jpg?1785867039",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.webp?1785867039",
+    "grid": "https://cards.scryfall.io/grid/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.webp?1785867039",
+    "display": "https://cards.scryfall.io/display/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.webp?1785867039",
+    "art": "https://cards.scryfall.io/art/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.webp?1785867039",
+    "crop": "https://cards.scryfall.io/crop/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.webp?1785867039",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/5/05c31120-7d4a-42d9-adad-53970fdf566e.jpg?1785867039"
+  },
+  "mana_cost": "{1}{R}{G}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Citizen",
+  "oracle_text": "Each Beast, Camel, Horse, Elephant, and Wolf creature you control is a Mount in addition to its other types and has saddle 2. (Tap any number of other creatures you control with total power 2 or more: That Mount becomes saddled until end of turn. Saddle only as a sorcery.)\nWhenever a saddled creature you control attacks, it gets +2/+2 until end of turn. Draw a card. Create a Food token.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "05c31120-7d4a-42d9-adad-53970fdf566e",
+      "component": "combo_piece",
+      "name": "Jandor, Fortuned Traveler",
+      "type_line": "Legendary Creature — Human Citizen",
+      "uri": "https://api.scryfall.com/cards/05c31120-7d4a-42d9-adad-53970fdf566e"
+    },
+    {
+      "object": "related_card",
+      "id": "276dedb8-3d41-499c-8804-bb1471fcb06f",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/276dedb8-3d41-499c-8804-bb1471fcb06f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/05c31120-7d4a-42d9-adad-53970fdf566e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8c05de43-6f9e-46c1-bc01-551a7fc570d0&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justin Gerard",
+  "artist_ids": [
+    "7548479e-1d37-42e1-ade0-9d88748f2f47"
+  ],
+  "illustration_id": "c62ae987-df40-4f2e-86c4-c1f6d3b65cff",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 23615,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJandor%252C%2BFortuned%2BTraveler",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJandor%252C%2BFortuned%2BTraveler",
+    "edhrec": "https://edhrec.com/route/?cc=Jandor%2C+Fortuned+Traveler"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709802%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Jandor%2C+Fortuned+Traveler&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Jandor%2C+Fortuned+Traveler&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

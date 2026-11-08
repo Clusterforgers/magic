@@ -1,0 +1,21 @@
+{
+  "oracle_id": "879ba7c4-4557-4166-adb0-b52454816e5a",
+  "name": "Enslave",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Enslave",
+      "oracle_fingerprint": "14fb0d57a1e18d4097da76e8a82f2dcb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 49, "end": 129 }
+          }
+        }
+      ]
+    }
+  ]
+}

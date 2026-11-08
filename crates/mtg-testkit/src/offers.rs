@@ -78,6 +78,7 @@ fn name_of(engine: &Engine, action: &PriorityAction) -> String {
         PriorityAction::CastSpell(id)
         | PriorityAction::Suspend(id)
         | PriorityAction::Foretell(id)
+        | PriorityAction::Plot(id)
         | PriorityAction::TurnFaceUp(id)
         | PriorityAction::CastPrepared(id) => Some(*id),
         PriorityAction::Activate(ability) => Some(ability.object),

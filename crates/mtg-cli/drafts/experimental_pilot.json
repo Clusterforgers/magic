@@ -1,0 +1,22 @@
+{
+  "oracle_id": "2b7422a2-badf-4ef2-80ff-c28e20d5387b",
+  "name": "Experimental Pilot",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Experimental Pilot",
+      "oracle_fingerprint": "72650e9fbeb7b2f67daa780b12450531",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 9, "end": 82 } }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } } }
+          }
+        }
+      ]
+    }
+  ]
+}

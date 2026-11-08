@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a6f72f15-d103-49fb-a808-054b278d00a8",
+  "name": "Melira, Sylvok Outcast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melira, Sylvok Outcast",
+      "oracle_fingerprint": "e876f185e0205f1e779cf0fd83ff2aa1",
+      "abilities": [
+        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "PutCounterOf": "poison" } } } } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "action": { "PutCounterOf": "-1/-1" }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "RemoveKeyword": "Infect" }]
+          }
+        }
+      ]
+    }
+  ]
+}

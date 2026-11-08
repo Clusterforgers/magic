@@ -1,0 +1,50 @@
+{
+  "oracle_id": "8762e9ec-e026-45aa-9c7b-d894d17c75a2",
+  "name": "Draugr's Helm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draugr's Helm",
+      "oracle_fingerprint": "bcf562539928463a1d3e0a5416f22317",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{B}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie Berserker",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie", "Berserker"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "as": "token"
+                      }
+                    },
+                    { "Attach": { "what": "This", "to": { "Bound": "token" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

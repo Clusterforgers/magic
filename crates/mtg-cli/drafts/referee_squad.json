@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e14532e9-ecc2-4028-b99e-3629533962bc",
+  "name": "Referee Squad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Referee Squad",
+      "oracle_fingerprint": "6af0c869c85289c9f1f8507689cb5563",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

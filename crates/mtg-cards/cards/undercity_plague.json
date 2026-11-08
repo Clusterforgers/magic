@@ -1,0 +1,24 @@
+{
+  "oracle_id": "aa997e63-be19-4b1a-8972-eebc8a720ded",
+  "name": "Undercity Plague",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercity Plague",
+      "oracle_fingerprint": "75994c79bbc6182ca6404205ad4d050d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "Discard": { "who": { "Target": 0 } } },
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [] } }
+            ]
+          }
+        },
+        { "Keyword": "Cipher" }
+      ]
+    }
+  ]
+}

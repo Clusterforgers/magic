@@ -1,0 +1,49 @@
+{
+  "oracle_id": "0761a0e7-d443-4bab-bb15-307c83d4a6a1",
+  "name": "Lunarch Veteran // Luminous Phantom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lunarch Veteran",
+      "oracle_fingerprint": "4d61397175f3472beb0113a58cbcf30a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        { "Keyword": { "Disturb": "{1}{W}" } }
+      ]
+    },
+    {
+      "name": "Luminous Phantom",
+      "oracle_fingerprint": "eac84879cd57c1e8898743f45c584c9a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

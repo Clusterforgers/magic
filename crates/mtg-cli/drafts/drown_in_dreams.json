@@ -1,0 +1,56 @@
+{
+  "oracle_id": "d3cec4b5-bc93-44a2-a29d-3478f0a5dac6",
+  "name": "Drown in Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drown in Dreams",
+      "oracle_fingerprint": "50148d91f85b72a54159745cd4c9f458",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Draw": { "who": { "Target": 0 }, "count": "X" } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Mill": {
+                            "who": { "Target": 0 },
+                            "count": { "Times": { "by": 2, "of": "X" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

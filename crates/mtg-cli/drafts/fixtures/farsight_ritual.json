@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "c958257e-fa70-4fa3-90a1-0497967abef3",
+  "oracle_id": "7de66ba3-6e97-4e0a-928e-7ce45dee278b",
+  "multiverse_ids": [
+    629550
+  ],
+  "mtgo_id": 116396,
+  "arena_id": 86736,
+  "tcgplayer_id": 512417,
+  "cardmarket_id": 728027,
+  "name": "Farsight Ritual",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/c958257e-fa70-4fa3-90a1-0497967abef3",
+  "scryfall_uri": "https://scryfall.com/card/woe/49/farsight-ritual?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:58:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.jpg?1783915120",
+    "normal": "https://cards.scryfall.io/normal/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.jpg?1783915120",
+    "large": "https://cards.scryfall.io/large/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.jpg?1783915120",
+    "png": "https://cards.scryfall.io/png/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.png?1783915120",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.jpg?1783915120",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.jpg?1783915120",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.webp?1783915120",
+    "grid": "https://cards.scryfall.io/grid/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.webp?1783915120",
+    "display": "https://cards.scryfall.io/display/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.webp?1783915120",
+    "art": "https://cards.scryfall.io/art/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.webp?1783915120",
+    "crop": "https://cards.scryfall.io/crop/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.webp?1783915120",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/9/c958257e-fa70-4fa3-90a1-0497967abef3.jpg?1783915120"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nLook at the top four cards of your library. If this spell was bargained, look at the top eight cards of your library instead. Put two of them into your hand and the rest on the bottom of your library in a random order.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Bargain"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set": "woe",
+  "set_name": "Wilds of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c958257e-fa70-4fa3-90a1-0497967abef3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7de66ba3-6e97-4e0a-928e-7ce45dee278b&unique=prints",
+  "collector_number": "49",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "c4ced342-b77c-46e9-b65a-b4854a014d7b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14062,
+  "penny_rank": 2240,
+  "preview": {
+    "source": "Dot Esports",
+    "source_uri": "https://dotesports.com/mtg/news/mtg-wilds-of-eldraine-exclusive-spoiler-farsight-ritual-bargains-for-card-advantage",
+    "previewed_at": "2023-08-15"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.32",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=629550&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFarsight%2BRitual",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFarsight%2BRitual",
+    "edhrec": "https://edhrec.com/route/?cc=Farsight+Ritual"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F512417%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=728027&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/116396?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,5 +1,5 @@
 //! `promote`: the proposals the checker accepts become corpus cards, a rules file in `cards/` and the card's Scryfall
-//! record from the cache as its fixture (`docs/cards-dsl.md`, Model-assisted reading).
+//! record from the cache as its fixture (`docs/cards-dsl.md`, Proposals and drafts).
 
 pub mod draft;
 pub mod fixture;
@@ -9,17 +9,18 @@ use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
 use mtg_cards::compile::compile;
-use mtg_cards::load::{Library, canonical, slug};
-use mtg_cards::proposal::{Verdict, check};
-use mtg_cards::support::{Caps, PrintedCard, Support, support};
+use mtg_cards::load::{Library, canonical, slug, unwhole};
+use mtg_cards::proposal::partial::{LedgerLine, PartialProof};
+use mtg_cards::proposal::{Report, Verdict, check, check_exact, merge, refusal};
+use mtg_cards::support::{Caps, PrintedCard, READBACK_DIFFERS, Support, support};
 use mtg_cards::{builtin, card::Card};
-use mtg_db::Database;
+use mtg_db::{Database, SOURCE_FORGE, SOURCE_SWEEP};
 
 use crate::args::PromoteArgs;
 use crate::audit::stored_cards;
 use crate::cache::Cache;
 use crate::compile::names_of;
-use crate::drafts::{self, SmokeKind};
+use crate::drafts::{self, DraftMeta, SmokeKind};
 use crate::error::CliError;
 use fixture::{w2a_oracle_cards, w2a_records};
 
@@ -37,6 +38,8 @@ pub enum W2aSkip {
     Compiled,
     /// The checker does not accept the proposal.
     Rejected(Verdict),
+    /// The compiler reads part of the card and the merged reading drops or doubles a clause (named in the detail).
+    Merge(&'static str),
     /// Accepted, but with a state that is not promoted (`Partial` is, with `--partial`).
     State(Support),
     /// The rules name a card without a corpus file (a partner), so the corpus would not load.
@@ -49,6 +52,13 @@ pub enum W2aSkip {
     NotWhole,
     /// The engine would not run the draft as a `Read` card (the loader refuses it or a primitive is missing).
     NotRead,
+    /// The translator left a gap and the card is not a Forge translation, so it is never a draft.
+    Gapped,
+    /// A Forge translation with a gap whose proof is refused, by the name of the first refusal (`OracleDiffers`,
+    /// `NoGain` or a `Refusal` of the proof).
+    Unproved(&'static str),
+    /// A clause reads back as other text than the card, so the draft may play wrong (`readback:Differs`).
+    Differs,
     /// The draft fails the smoke gate.
     Smoke(SmokeKind),
 }
@@ -57,6 +67,7 @@ impl W2aSkip {
     /// The reason in a few words.
     pub fn reason(self) -> String {
         match self {
+            W2aSkip::Merge(word) => word.to_owned(),
             W2aSkip::NoCard => "no stored card is named after the file".into(),
             W2aSkip::CorpusFile => "already a corpus card".into(),
             W2aSkip::Compiled => "the compiler makes it Verified".into(),
@@ -66,8 +77,11 @@ impl W2aSkip {
             W2aSkip::Repeated => "an earlier file promotes it".into(),
             W2aSkip::NoRecord => "no record in the cached Oracle Cards file".into(),
             W2aSkip::NotWhole => "unchecked, and not a whole card".into(),
+            W2aSkip::Gapped => "the translation has a gap".into(),
+            W2aSkip::Unproved(name) => format!("not proved: {name}"),
             W2aSkip::NotRead => "the engine does not run it as a Read card".into(),
             W2aSkip::Smoke(kind) => format!("fails the smoke gate: {}", kind.word()),
+            W2aSkip::Differs => READBACK_DIFFERS.into(),
         }
     }
 }
@@ -85,6 +99,14 @@ pub struct W2aPromotion {
     pub rules: Card,
     /// Whether it becomes a draft for players to read (an `Unchecked` proposal) and not a corpus card.
     pub draft: bool,
+    /// Who wrote the draft: `sweep` or `forge`; unused for a corpus card.
+    pub source: String,
+    /// The source's Oracle text equals the printed text; with source `forge` the draft runs without a human read.
+    pub oracle_matches: bool,
+    /// For a partial draft, the proof of its by-hand lines; none for a whole card.
+    pub proof: Option<PartialProof>,
+    /// For a partial draft, the script lines the proof was made from.
+    pub lines: Vec<LedgerLine>,
 }
 
 /// What becomes of one proposal file.
@@ -119,6 +141,8 @@ pub struct W2aBasis<'a> {
     pub partial: bool,
     /// Whether `Unchecked` proposals that are whole cards become drafts.
     pub draft: bool,
+    /// The source of the drafts when a proposal's meta names none (`--source`).
+    pub source: Option<&'a str>,
 }
 
 impl W2aBasis<'_> {
@@ -129,7 +153,18 @@ impl W2aBasis<'_> {
             || self.out.join(W2A_FIXTURES).join(&file).is_file()
     }
 
-    fn decide_one(&self, printed: &PrintedCard, text: &str) -> Result<W2aPromotion, W2aSkip> {
+    /// The proposal merged with the compiler's reading, when the compiler reads a clause the proposal lacks.
+    fn merged(&self, report: &Report, printed: &PrintedCard) -> Option<Report> {
+        merge(report, printed, self.library, self.names, self.caps)
+    }
+
+    fn decide_one(
+        &self,
+        printed: &PrintedCard,
+        text: &str,
+        meta: &DraftMeta,
+        detail: &mut Option<String>,
+    ) -> Result<W2aPromotion, W2aSkip> {
         let slug = slug(&printed.name);
         if self.has_corpus_file(printed, &slug) {
             return Err(W2aSkip::CorpusFile);
@@ -138,13 +173,67 @@ impl W2aBasis<'_> {
         if support(compiled.as_ref(), printed, self.caps).support == Support::Verified {
             return Err(W2aSkip::Compiled);
         }
-        let report = check(text, printed, self.library, self.names, self.caps);
+        let source = meta.source_or(self.source);
+        let report = if source == SOURCE_FORGE {
+            check_exact(text, printed, self.library, self.names, self.caps)
+        } else {
+            check(text, printed, self.library, self.names, self.caps)
+        };
         let verdict = report.verdict();
-        if self.draft && verdict == Verdict::Unchecked {
-            return draft::decide(printed, slug, report);
+        if self.draft && source == SOURCE_FORGE && !meta.gaps.is_empty() {
+            return draft::decide_partial(printed, slug, &report, meta, compiled.as_ref(), detail);
+        }
+        if self.draft {
+            let source = meta.source_or(self.source);
+            let trusted = source == SOURCE_FORGE && meta.oracle_matches;
+            let mut direct = None;
+            if verdict == Verdict::Unchecked || (trusted && verdict == Verdict::Mismatch) {
+                direct = Some(if meta.gaps.is_empty() {
+                    draft::decide(
+                        printed,
+                        slug.clone(),
+                        report.clone(),
+                        source.clone(),
+                        meta.oracle_matches,
+                    )
+                } else {
+                    Err(W2aSkip::Gapped)
+                });
+            }
+            let direct = match direct {
+                Some(Ok(promotion)) => return Ok(promotion),
+                other => other,
+            };
+            if trusted
+                && report
+                    .rules
+                    .as_ref()
+                    .is_some_and(|rules| unwhole(rules).is_some())
+                && let Some(merged) = self.merged(&report, printed)
+                && merged.verdict() != Verdict::Invalid
+                && let Ok(promotion) =
+                    draft::decide(printed, slug.clone(), merged, source, meta.oracle_matches)
+            {
+                return Ok(promotion);
+            }
+            if let Some(direct) = direct {
+                return direct;
+            }
+        }
+        let mut report = report;
+        if verdict == Verdict::Accepted
+            && let Some(merged) = self.merged(&report, printed)
+        {
+            if let Some(refused) = refusal(&report, &merged) {
+                *detail = Some(refused.named().to_owned());
+                return Err(W2aSkip::Merge(refused.word()));
+            }
+            if merged.verdict() == Verdict::Accepted {
+                report = merged;
+            }
         }
         let (Verdict::Accepted, Some(record), Some(rules)) =
-            (verdict, report.support, report.rules)
+            (report.verdict(), report.support, report.rules)
         else {
             return Err(W2aSkip::Rejected(verdict));
         };
@@ -161,6 +250,10 @@ impl W2aBasis<'_> {
             state,
             rules,
             draft: false,
+            source: SOURCE_SWEEP.into(),
+            oracle_matches: false,
+            proof: None,
+            lines: Vec::new(),
         })
     }
 }
@@ -184,6 +277,17 @@ pub fn w2a_names_outside(
     !library.check_generated(rules, printed, corpus).is_empty()
 }
 
+/// The metadata of a proposal: `meta/<slug>.json` beside the proposal file; none is the default.
+fn proposal_meta(file: &Path, stem: &str) -> DraftMeta {
+    let path = file
+        .parent()
+        .unwrap_or_else(|| Path::new(""))
+        .join("meta")
+        .join(format!("{stem}.json"));
+    std::fs::read_to_string(path)
+        .map_or_else(|_| DraftMeta::default(), |text| DraftMeta::parse(&text))
+}
+
 /// The fixture directory below the `mtg-cards` crate.
 const W2A_FIXTURES: &str = "tests/fixtures/corpus";
 
@@ -191,7 +295,13 @@ const W2A_FIXTURES: &str = "tests/fixtures/corpus";
 pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecision> {
     let mut by_slug: BTreeMap<String, &PrintedCard> = BTreeMap::new();
     for card in basis.cards {
-        by_slug.entry(slug(&card.name)).or_insert(card);
+        let key = slug(&card.name);
+        if by_slug
+            .get(&key)
+            .is_none_or(|kept| crate::translate::stored::plainer(&card.name, &kept.name))
+        {
+            by_slug.insert(key, card);
+        }
     }
     let mut promoted = BTreeSet::new();
     let mut decisions = Vec::new();
@@ -206,10 +316,11 @@ pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecis
             });
             continue;
         };
+        let mut detail = None;
         let outcome = if promoted.contains(&printed.oracle_id) {
             Err(W2aSkip::Repeated)
         } else {
-            basis.decide_one(printed, text)
+            basis.decide_one(printed, text, &proposal_meta(file, stem), &mut detail)
         };
         // Drafts are sorted out after the smoke gate: the first one that passes wins.
         if matches!(&outcome, Ok(promotion) if !promotion.draft) {
@@ -219,7 +330,7 @@ pub fn w2a_decide(basis: &W2aBasis, files: &[(PathBuf, String)]) -> Vec<W2aDecis
             file: file.clone(),
             card: printed.name.clone(),
             outcome,
-            detail: None,
+            detail,
         });
     }
     decisions
@@ -415,6 +526,7 @@ pub async fn w2a_promote_against(
         out: &out,
         partial: args.partial,
         draft: args.draft,
+        source: args.source.as_deref(),
     };
     let mut decisions = w2a_decide(&basis, &files);
     let records = w2a_attach_records(&mut decisions, &w2a_oracle_cards(cache)?)?;

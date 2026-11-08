@@ -1,0 +1,40 @@
+{
+  "oracle_id": "94657522-9977-4d2b-8eb6-f1e64e82cd0f",
+  "name": "Cavern Stomper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavern Stomper",
+      "oracle_fingerprint": "be3a121c96bc4baf80ef8d7937a64fcb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

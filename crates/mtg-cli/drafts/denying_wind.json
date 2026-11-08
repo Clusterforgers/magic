@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8daed4d8-1a43-4452-85dd-51b320714489",
+  "name": "Denying Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Denying Wind",
+      "oracle_fingerprint": "77c45ccef94c30898b991cc4f832461b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [],
+                  "count": { "min": 0, "max": 7 },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

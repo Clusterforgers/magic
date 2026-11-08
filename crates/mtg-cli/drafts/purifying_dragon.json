@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a45762af-4aac-40b3-a983-ea441b04c5ee",
+  "name": "Purifying Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purifying Dragon",
+      "oracle_fingerprint": "6c0249ffe05c10eec38714d749d12bc0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      { "CountOf": { "of": { "Target": 0 }, "filter": [{ "Subtype": "Zombie" }] } },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

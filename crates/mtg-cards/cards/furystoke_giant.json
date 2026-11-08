@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0cc62807-aeb4-4dfb-b001-4e40bf703497",
+  "name": "Furystoke Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furystoke Giant",
+      "oracle_fingerprint": "a9bbcfbee6afb91698eac64d5bc03be9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": "AnyTarget" }],
+                          "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ec714e79-10ec-43ea-a0ff-f8c9083fe015",
+  "name": "Growth Cycle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Growth Cycle",
+      "oracle_fingerprint": "fc02beb5b1d7eed8ca24c283edf7ce26",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": 2,
+                            "of": { "Count": [{ "Named": "Growth Cycle" }, { "In": "Graveyard" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": 2,
+                            "of": { "Count": [{ "Named": "Growth Cycle" }, { "In": "Graveyard" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

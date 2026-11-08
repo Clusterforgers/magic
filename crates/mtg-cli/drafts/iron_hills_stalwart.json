@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bd4ab393-9538-4230-b2a1-bc77099481c9",
+  "name": "Iron Hills Stalwart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Hills Stalwart",
+      "oracle_fingerprint": "8abb61e715d6b7bb7d9f5f4f2b969a7b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

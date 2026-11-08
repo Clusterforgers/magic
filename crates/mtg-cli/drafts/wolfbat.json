@@ -1,0 +1,35 @@
+{
+  "oracle_id": "adc47a25-daab-49c7-93a5-5bbf2bc20cf9",
+  "name": "Wolfbat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolfbat",
+      "oracle_fingerprint": "6109fffed41dc88119a430bb03434f76",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{B}",
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

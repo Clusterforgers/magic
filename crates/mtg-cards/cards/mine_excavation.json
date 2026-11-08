@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9bd5dc7a-11b0-48eb-bf52-2956dd3989ab",
+  "name": "Mine Excavation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mine Excavation",
+      "oracle_fingerprint": "ebf00cd6abfd6169889cccb2d68da682",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": "Conspire" }
+      ]
+    }
+  ]
+}

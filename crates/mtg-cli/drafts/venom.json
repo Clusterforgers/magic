@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ee55ca31-73f3-4e9d-8373-0a44009a25bd",
+  "name": "Venom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venom",
+      "oracle_fingerprint": "1d5fe99f0829189e3252e5043b487758",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }],
+                "by": [{ "Is": "Attached" }]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Is": "Attached" }],
+                "by": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

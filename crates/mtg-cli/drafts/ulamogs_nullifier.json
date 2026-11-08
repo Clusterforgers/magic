@@ -1,0 +1,32 @@
+{
+  "oracle_id": "bd213210-42d1-49af-9959-08188abe692a",
+  "name": "Ulamog's Nullifier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulamog's Nullifier",
+      "oracle_fingerprint": "749ba9679e18c94ee998e67717b99acb",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }], "count": 2 } }
+                  ],
+                  "paid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

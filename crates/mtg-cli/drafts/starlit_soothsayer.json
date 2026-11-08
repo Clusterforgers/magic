@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0c0940c6-8126-4d58-809e-871cf8588ef9",
+  "name": "Starlit Soothsayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starlit Soothsayer",
+      "oracle_fingerprint": "b69e36aea3814b314b27c987774e5675",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                    { "Tallied": { "who": "You", "what": "LifeLost" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

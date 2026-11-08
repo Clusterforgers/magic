@@ -1,0 +1,100 @@
+{
+  "oracle_id": "9527d2dc-d2e2-4259-aefe-2342ea07bc63",
+  "name": "An Unearthly Child",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "An Unearthly Child",
+      "oracle_fingerprint": "4ce9f720e19504dd37b73059407e9449",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Vehicle" },
+                        { "Subtype": "Doctor" },
+                        { "HasKeyword": "DoctorsCompanion" }
+                      ]
+                    }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Vehicle" },
+                        { "Subtype": "Doctor" },
+                        { "HasKeyword": "DoctorsCompanion" }
+                      ]
+                    }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Vehicle" },
+                        { "Subtype": "Doctor" },
+                        { "HasKeyword": "DoctorsCompanion" }
+                      ]
+                    }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

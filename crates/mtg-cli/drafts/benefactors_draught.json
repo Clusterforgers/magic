@@ -1,0 +1,31 @@
+{
+  "oracle_id": "85113e73-26f7-4938-b7a7-607e704af0ca",
+  "name": "Benefactor's Draught",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benefactor's Draught",
+      "oracle_fingerprint": "87e7e80d47ad1b6bd7de6ebecc59982e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Blocks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

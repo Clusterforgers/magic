@@ -6,7 +6,8 @@
 //! the same question, from 0 to the loyalty counters of the planeswalker, and removes that many.
 
 use mtg_cards::ability::{Ability, LoyaltyCost};
-use mtg_cards::value::{CastWay, CounterKind};
+use mtg_cards::cost::CostItem;
+use mtg_cards::value::{Amount, CastWay, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
@@ -39,7 +40,12 @@ pub(crate) enum XCost {
 impl XCost {
     /// The X that `what` asks for, read from the cost printed on the card or in its rules: `rules` are the rules of
     /// the ability being announced.
-    pub(crate) fn of(state: &GameState, what: &What, rules: Option<&Ability>) -> Option<XCost> {
+    pub(crate) fn of(
+        state: &GameState,
+        player: PlayerId,
+        what: &What,
+        rules: Option<&Ability>,
+    ) -> Option<XCost> {
         let symbols = match what {
             What::Spell(spell) => {
                 let card = state.object(*spell)?.card();
@@ -49,9 +55,16 @@ impl XCost {
                 }
                 u32::from(card.x_in_cost)
             }
-            What::Ability(_) => match rules? {
+            What::Ability(ability) => match rules? {
                 Ability::Activated { cost, .. } => {
-                    let price = Price::announced(cost).ok()?;
+                    let price = Price::announced_in(
+                        cost,
+                        state,
+                        player,
+                        ability.object,
+                        ability.source.granter(),
+                    )
+                    .ok()?;
                     if price.x == 0 && price.counted() {
                         return Some(XCost::Parts);
                     }
@@ -63,7 +76,7 @@ impl XCost {
                 } => return Some(XCost::Loyalty),
                 _ => 0,
             },
-            What::Trigger(_) | What::Attack(..) => 0,
+            What::Trigger(_) | What::Attack(..) | What::Block(_) => 0,
         };
         (symbols > 0).then_some(XCost::Mana { symbols })
     }
@@ -141,15 +154,25 @@ pub(crate) fn payable(
     state: &GameState,
     player: PlayerId,
     id: ObjectId,
-    fixed: bool,
+    (fixed, way): (bool, Option<CastWay>),
     cost: &ManaCost,
     pays: impl Fn(&ManaCost) -> bool,
 ) -> bool {
+    let Some(cost) = super::price::floor(state, player, id, cost) else {
+        return false;
+    };
+    let cost = &*cost;
+    let alone = pays;
+    // A spell with assist may be paid for with the help of another player (CR 702.132a).
+    let pays = |total: &ManaCost| {
+        alone(total)
+            || super::assist::helped(state, player, id, total).is_some_and(|less| alone(&less))
+    };
     let rules = spell_ability(state, id)
         .map(|(_, rules)| rules)
         .filter(|rules| targets_read_x(rules));
     let Some(rules) = rules else {
-        return pays(&cheapest(state, player, id, cost));
+        return pays(&cheapest(state, player, id, way, cost));
     };
     let symbols = state
         .object(id)
@@ -159,7 +182,7 @@ pub(crate) fn payable(
         let total = cost
             .clone()
             .with(ManaSymbol::Generic(x.saturating_mul(symbols)));
-        if !pays(&cheapest(state, player, id, &total)) {
+        if !pays(&cheapest(state, player, id, way, &total)) {
             return false;
         }
         if targets_met_at(state, id, player, &rules, x) {
@@ -225,19 +248,49 @@ struct Offer {
     except: Vec<u32>,
 }
 
+/// The least X the cost allows: craft takes at least as many materials as it names (CR 702.167a), and a cost may say
+/// "X can't be 0".
+fn least_x(ctx: &Ctx<'_>) -> u32 {
+    let Some(Ability::Activated { cost, .. }) = ctx.ability else {
+        return 0;
+    };
+    least_of(cost)
+}
+
+/// The least X the activated ability's `cost` allows (`least_x`).
+pub(crate) fn least_of(cost: &mtg_cards::cost::Cost) -> u32 {
+    cost.0
+        .iter()
+        .filter_map(|item| match item {
+            CostItem::Craft {
+                count: Amount::X,
+                least,
+                ..
+            } => Some(least.unwrap_or(1)),
+            CostItem::XAtLeast(least) => Some(*least),
+            _ => None,
+        })
+        .max()
+        .unwrap_or(0)
+}
+
 impl Offer {
     /// The values of X from 0 to `most` for which every target specification can be met, or `None` when there are
     /// none. A target specification that does not read X is the same for every value.
     fn of(ctx: &Ctx<'_>, choices: &Choices, most: u32) -> Option<Offer> {
+        let least = least_x(ctx);
+        if least > most {
+            return None;
+        }
         let specs = targets::specs(ctx, choices);
         if !specs.iter().any(reads_x) {
             return Some(Offer {
-                min: 0,
+                min: least,
                 max: most,
                 except: Vec::new(),
             });
         }
-        let met: Vec<u32> = (0..=most)
+        let met: Vec<u32> = (least..=most)
             .filter(|x| {
                 targets_met(
                     ctx.state,
@@ -379,7 +432,10 @@ mod tests {
     fn a_spell_asks_for_the_x_symbols_of_its_cost(#[case] x: u8, #[case] expected: Option<XCost>) {
         let game = state(vec![vec![spell("{G}", x)], vec![]], vec![vec![], vec![]]);
         let card = game.zone(Zone::Hand(SEAT))[0];
-        assert_eq!(XCost::of(&game, &What::Spell(card), None), expected);
+        assert_eq!(
+            XCost::of(&game, PlayerId(0), &What::Spell(card), None),
+            expected
+        );
     }
 
     #[rstest]
@@ -418,7 +474,10 @@ mod tests {
         );
         let game = state(vec![vec![card], vec![]], vec![vec![], vec![]]);
         let spell = game.zone(Zone::Hand(SEAT))[0];
-        assert_eq!(XCost::of(&game, &What::Spell(spell), None), expected);
+        assert_eq!(
+            XCost::of(&game, PlayerId(0), &What::Spell(spell), None),
+            expected
+        );
     }
 
     #[test]
@@ -432,7 +491,10 @@ mod tests {
         );
         let game = state(vec![vec![card], vec![]], vec![vec![], vec![]]);
         let spell = game.zone(Zone::Hand(SEAT))[0];
-        assert_eq!(XCost::of(&game, &What::Spell(spell), None), None);
+        assert_eq!(
+            XCost::of(&game, PlayerId(0), &What::Spell(spell), None),
+            None
+        );
     }
 
     #[rstest]
@@ -454,6 +516,14 @@ mod tests {
         r#"{"Activated":{"cost":[{"Mana":"{X}"},{"Mana":"{X}{1}"}],"effects":[{"Draw":{}}]}}"#,
         Some(XCost::Mana { symbols: 2 })
     )]
+    #[case::x_and_a_counted_part(
+        r#"{"Activated":{"cost":[{"Mana":"{X}"},{"PayLife":{"Counters":{"on":"This","counter":"charge"}}}],"effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Mana { symbols: 1 })
+    )]
+    #[case::x_life_and_a_counted_part(
+        r#"{"Activated":{"cost":[{"PayLife":"X"},{"PayEnergy":{"Counters":{"on":"This","counter":"charge"}}}],"effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Parts)
+    )]
     #[case::minus_x(
         r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{}}]}}"#,
         Some(XCost::Loyalty)
@@ -468,7 +538,10 @@ mod tests {
             ability: 0,
             source: AbilitySource::Printed,
         });
-        assert_eq!(XCost::of(&game, &what, Some(&rules(json))), expected);
+        assert_eq!(
+            XCost::of(&game, PlayerId(0), &what, Some(&rules(json))),
+            expected
+        );
     }
 
     /// What the cast of `cost` with `x` symbols of `{X}` and `lands` Forests asks first: the most X offered, or `None`
@@ -487,8 +560,9 @@ mod tests {
         let needs = Needs {
             ways: Vec::new(),
             optional: Vec::new(),
-            x: XCost::of(&game, &What::Spell(card), None),
+            x: XCost::of(&game, PlayerId(0), &What::Spell(card), None),
             price: None,
+            modes: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {
@@ -553,6 +627,7 @@ mod tests {
             optional: Vec::new(),
             x: Some(XCost::Mana { symbols: 1 }),
             price: None,
+            modes: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         assert!(matches!(announce(&game, &mut pending), Next::Drop));
@@ -602,8 +677,9 @@ mod tests {
         let needs = Needs {
             ways: Vec::new(),
             optional: Vec::new(),
-            x: XCost::of(&game, &What::Spell(card), None),
+            x: XCost::of(&game, PlayerId(0), &What::Spell(card), None),
             price: None,
+            modes: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {

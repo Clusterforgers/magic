@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "05189964-5ad0-48b7-a3af-67c7f46fe89e",
+  "oracle_id": "b345c413-df5a-4dae-8b92-5fab54a097fc",
+  "multiverse_ids": [
+    96835
+  ],
+  "mtgo_id": 23635,
+  "mtgo_foil_id": 23636,
+  "tcgplayer_id": 13781,
+  "cardmarket_id": 13263,
+  "name": "Sky Swallower",
+  "lang": "en",
+  "released_at": "2006-02-03",
+  "uri": "https://api.scryfall.com/cards/05189964-5ad0-48b7-a3af-67c7f46fe89e",
+  "scryfall_uri": "https://scryfall.com/card/gpt/34/sky-swallower?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:51:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.jpg?1783943518",
+    "normal": "https://cards.scryfall.io/normal/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.jpg?1783943518",
+    "large": "https://cards.scryfall.io/large/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.jpg?1783943518",
+    "png": "https://cards.scryfall.io/png/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.png?1783943518",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.jpg?1783943518",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.jpg?1783943518",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.webp?1783943518",
+    "grid": "https://cards.scryfall.io/grid/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.webp?1783943518",
+    "display": "https://cards.scryfall.io/display/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.webp?1783943518",
+    "art": "https://cards.scryfall.io/art/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.webp?1783943518",
+    "crop": "https://cards.scryfall.io/crop/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.webp?1783943518",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/5/05189964-5ad0-48b7-a3af-67c7f46fe89e.jpg?1783943518"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Leviathan",
+  "oracle_text": "Flying\nWhen this creature enters, target opponent gains control of all other permanents you control.",
+  "power": "8",
+  "toughness": "8",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "594b4d09-8ce1-494d-bdb2-842c124bd087",
+  "set": "gpt",
+  "set_name": "Guildpact",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/594b4d09-8ce1-494d-bdb2-842c124bd087",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Agpt&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/gpt?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/05189964-5ad0-48b7-a3af-67c7f46fe89e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab345c413-df5a-4dae-8b92-5fab54a097fc&unique=prints",
+  "collector_number": "34",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Would you trade the world for such a pet?",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "rk post",
+  "artist_ids": [
+    "81ae0f3f-1d88-4125-9aeb-b15b4c734c82"
+  ],
+  "illustration_id": "5a820ae9-62c3-498d-8760-d20db27ca9a5",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25168,
+  "penny_rank": 17960,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "2.24",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "1.05",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=96835&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSky%2BSwallower",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSky%2BSwallower",
+    "edhrec": "https://edhrec.com/route/?cc=Sky+Swallower"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F13781%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=13263&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/23635?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "object": "card",
+  "id": "0db18acd-36dd-4469-a370-430141858722",
+  "oracle_id": "e08a4569-eb90-4a95-9420-ebb8b8c0c906",
+  "multiverse_ids": [],
+  "name": "Gyox, Brutal Carnivora",
+  "lang": "en",
+  "released_at": "2023-02-28",
+  "uri": "https://api.scryfall.com/cards/0db18acd-36dd-4469-a370-430141858722",
+  "scryfall_uri": "https://scryfall.com/card/yone/22/gyox-brutal-carnivora?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:42:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0db18acd-36dd-4469-a370-430141858722.jpg?1783917738",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0db18acd-36dd-4469-a370-430141858722.jpg?1783917738",
+    "large": "https://cards.scryfall.io/large/front/0/d/0db18acd-36dd-4469-a370-430141858722.jpg?1783917738",
+    "png": "https://cards.scryfall.io/png/front/0/d/0db18acd-36dd-4469-a370-430141858722.png?1783917738",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0db18acd-36dd-4469-a370-430141858722.jpg?1783917738",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0db18acd-36dd-4469-a370-430141858722.jpg?1783917738",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0db18acd-36dd-4469-a370-430141858722.webp?1783917738",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0db18acd-36dd-4469-a370-430141858722.webp?1783917738",
+    "display": "https://cards.scryfall.io/display/front/0/d/0db18acd-36dd-4469-a370-430141858722.webp?1783917738",
+    "art": "https://cards.scryfall.io/art/front/0/d/0db18acd-36dd-4469-a370-430141858722.webp?1783917738",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0db18acd-36dd-4469-a370-430141858722.webp?1783917738",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0db18acd-36dd-4469-a370-430141858722.jpg?1783917738"
+  },
+  "mana_cost": "{1}{B}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Phyrexian Warlock",
+  "oracle_text": "At the beginning of your end step, put an oil counter on up to one target creature.\nWhenever a nontoken creature you control with one or more oil counters on it dies, conjure X duplicates of it into exile, where X is the number of oil counters on it. Those duplicates perpetually get +X/+X. Then shuffle those duplicates into your library.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Conjure"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d34ef41f-624e-4bf2-9cec-7a7325e474c5",
+  "set": "yone",
+  "set_name": "Alchemy: Phyrexia",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/d34ef41f-624e-4bf2-9cec-7a7325e474c5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ayone&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/yone?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0db18acd-36dd-4469-a370-430141858722/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae08a4569-eb90-4a95-9420-ebb8b8c0c906&unique=prints",
+  "collector_number": "22",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Ljunggren",
+  "artist_ids": [
+    "0fbd4798-76eb-46d5-a5d4-1e3a25870e34"
+  ],
+  "illustration_id": "cf0fa3b3-32c3-4e89-9e51-ce77bb3351f5",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGyox%252C%2BBrutal%2BCarnivora",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGyox%252C%2BBrutal%2BCarnivora",
+    "edhrec": "https://edhrec.com/route/?cc=Gyox%2C+Brutal+Carnivora"
+  }
+}

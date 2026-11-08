@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4d8afa5c-cef3-4e67-bd4c-ebd5c68b96a7",
+  "name": "Funeral March",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Funeral March",
+      "oracle_fingerprint": "012363722c3356d6be758fadfd3c98b1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Is": "Attached" }], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "filter": [{ "Type": "Creature" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

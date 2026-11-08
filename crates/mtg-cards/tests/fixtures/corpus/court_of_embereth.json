@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "aa68004f-66b6-460e-836c-05e8acd8651f",
+  "oracle_id": "87a82441-9dfb-49bd-8b9e-eaab2c552843",
+  "multiverse_ids": [],
+  "name": "Court of Embereth",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/aa68004f-66b6-460e-836c-05e8acd8651f",
+  "scryfall_uri": "https://scryfall.com/card/plst/WOC-24/court-of-embereth?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-25T23:46:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.jpg?1787701612",
+    "normal": "https://cards.scryfall.io/normal/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.jpg?1787701612",
+    "large": "https://cards.scryfall.io/large/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.jpg?1787701612",
+    "png": "https://cards.scryfall.io/png/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.png?1787701612",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.jpg?1787701612",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.jpg?1787701612",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.webp?1787701612",
+    "grid": "https://cards.scryfall.io/grid/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.webp?1787701612",
+    "display": "https://cards.scryfall.io/display/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.webp?1787701612",
+    "art": "https://cards.scryfall.io/art/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.webp?1787701612",
+    "crop": "https://cards.scryfall.io/crop/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.webp?1787701612",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/a/aa68004f-66b6-460e-836c-05e8acd8651f.jpg?1787701612"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, you become the monarch.\nAt the beginning of your upkeep, create a 3/1 red Knight creature token. Then if you're the monarch, this enchantment deals X damage to each opponent, where X is the number of creatures you control.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "523cbb5c-4166-4cdb-845c-9213609c921d",
+      "component": "combo_piece",
+      "name": "The Monarch",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/523cbb5c-4166-4cdb-845c-9213609c921d"
+    },
+    {
+      "object": "related_card",
+      "id": "aa68004f-66b6-460e-836c-05e8acd8651f",
+      "component": "combo_piece",
+      "name": "Court of Embereth",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/aa68004f-66b6-460e-836c-05e8acd8651f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set": "plst",
+  "set_name": "The List",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aplst&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/plst?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aa68004f-66b6-460e-836c-05e8acd8651f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A87a82441-9dfb-49bd-8b9e-eaab2c552843&unique=prints",
+  "collector_number": "WOC-24",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Peter Polach",
+  "artist_ids": [
+    "3cb68fd9-a9e9-425d-85a3-c116318a880f"
+  ],
+  "illustration_id": "c8f6135a-e06d-4190-a9f6-c5df15b7b9fb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3786,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCourt%2Bof%2BEmbereth",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCourt%2Bof%2BEmbereth",
+    "edhrec": "https://edhrec.com/route/?cc=Court+of+Embereth"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DCourt%2Bof%2BEmbereth%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Court+of+Embereth&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Court+of+Embereth&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

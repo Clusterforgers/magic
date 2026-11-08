@@ -1,0 +1,38 @@
+{
+  "oracle_id": "cde622fa-a634-409d-962c-1e4c5ddf9b3b",
+  "name": "Gatstaf Arsonists // Gatstaf Ravagers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gatstaf Arsonists",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gatstaf Ravagers",
+      "oracle_fingerprint": "b5973aca2456067e4cda86856e5b1390",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

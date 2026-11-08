@@ -1,0 +1,55 @@
+{
+  "oracle_id": "8f0738ce-1f07-422c-9895-8ac3c65f9054",
+  "name": "Ravenous Rotbelly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Rotbelly",
+      "oracle_fingerprint": "d2b7b80338403c24943e1e588f5b5206",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Subtype": "Zombie" }],
+                  "count": 3,
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Subtype": "Zombie" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "sacrificed" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": "Opponents",
+                              "filter": [{ "Type": "Creature" }],
+                              "count": { "CountOf": { "of": { "Bound": "when2" }, "filter": [] } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

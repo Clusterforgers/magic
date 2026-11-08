@@ -1,0 +1,43 @@
+{
+  "oracle_id": "b0fd6889-20b4-439b-aa97-2e90aca1675a",
+  "name": "Pelakka Predation // Pelakka Caverns",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pelakka Predation",
+      "oracle_fingerprint": "6a238eef407f5181717e55c3f3bed3d2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pelakka Caverns",
+      "oracle_fingerprint": "21b302bea123539cae84880aa0174cb9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

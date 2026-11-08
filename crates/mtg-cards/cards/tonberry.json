@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a26f3cbb-39b5-4688-92f7-26534613a9f3",
+  "name": "Tonberry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tonberry",
+      "oracle_fingerprint": "c77519984ec813f27e51924b4ef43ec2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "stun" }, "count": 1, "tapped": true } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Deathtouch" }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

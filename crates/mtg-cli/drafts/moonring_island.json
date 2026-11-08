@@ -1,0 +1,38 @@
+{
+  "oracle_id": "cf620c66-7db1-4db8-ae56-ee4bc2f77d74",
+  "name": "Moonring Island",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonring Island",
+      "oracle_fingerprint": "37ca524a2570a1895a0c10e3771f4239",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "Blue" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-//! Goal: every draft under `drafts/` is a whole rules file the checker marks `Unchecked`, in canonical form, named after
+//! Goal: every draft under `drafts/` is a whole rules file the checker marks `Unchecked` (`Mismatch` too for a trusted Forge draft), in canonical form, named after
 //! its card, with one record of the card's Scryfall data (equal to the cached Oracle Cards file where there is one),
 //! written for the text of that record, so its read hash is the one `compile` stores, and no rules file or `Verified`
 //! compiled row outranks it; the embedded set is the directory.
@@ -9,15 +9,18 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use mtg_cards::builtin;
 use mtg_cards::card::Card;
-use mtg_cards::load::{canonical, slug, unwhole};
-use mtg_cards::proposal::{Verdict, check};
+use mtg_cards::load::{Library, canonical, slug, unwhole};
+use mtg_cards::proposal::partial::PartialProof;
+use mtg_cards::proposal::{Verdict, check, check_exact};
 use mtg_cards::support::read_hash;
+use mtg_cards::validate::named_cards;
 use mtg_cards::{Caps, PrintedCard};
 use mtg_cli::cache::{Cache, default_dir};
-use mtg_cli::drafts::{self, FIXTURES, Misfit, misfits};
+use mtg_cli::drafts::{self, DraftItem, DraftMeta, FIXTURES, Misfit, misfits_proved};
 use mtg_cli::w2a_promote::fixture::w2a_oracle_cards;
 use mtg_import::scryfall::{CardRecord, cards, cards_jsonl};
 use mtg_testkit::corpus::printed_card;
@@ -96,14 +99,49 @@ pub fn items() -> (Vec<Item>, Vec<String>) {
     (found, problems)
 }
 
+/// The names a draft may name: the corpus, the drafts and every card a draft names. `promote --draft` checks each
+/// named card against every stored card, as the offer does; `every_card_a_draft_names_is_a_cached_card` checks them
+/// against the Oracle Cards file.
 fn names_of(items: &[Item]) -> BTreeSet<String> {
     let library = builtin::library().unwrap();
     let mut names = mtg_cli::w2a_promote::w2a_corpus_names(library);
     for item in items {
         names.insert(item.printed.name.to_lowercase());
         names.extend(item.printed.faces.iter().map(|f| f.name.to_lowercase()));
+        names.extend(named_cards(&item.card).iter().map(|n| n.to_lowercase()));
     }
     names
+}
+
+/// Runs on the Oracle Cards file of the cache and says so when there is none.
+#[test]
+fn every_card_a_draft_names_is_a_cached_card() {
+    let Some(file) = oracle_cards() else {
+        eprintln!(
+            "skipped: no Oracle Cards file; set MTG_REAL_DATA_DIR or run `mtg-cli fetch scryfall`"
+        );
+        return;
+    };
+    let (items, mut problems) = items();
+    let reader = BufReader::new(flate2::read::GzDecoder::new(BufReader::new(
+        fs::File::open(&file).unwrap(),
+    )));
+    let real: BTreeSet<String> = cards_jsonl(reader)
+        .filter_map(Result::ok)
+        .map(|record| printed_card(&record))
+        .flat_map(|card| {
+            let faces: Vec<String> = card.faces.iter().map(|f| f.name.to_lowercase()).collect();
+            std::iter::once(card.name.to_lowercase()).chain(faces)
+        })
+        .collect();
+    for item in &items {
+        for name in named_cards(&item.card) {
+            if !real.contains(&name.to_lowercase()) {
+                problems.push(format!("{}: no card is named `{name}`", item.slug));
+            }
+        }
+    }
+    assert!(problems.is_empty(), "{}", problems.join("\n"));
 }
 
 #[test]
@@ -178,44 +216,150 @@ fn every_draft_is_a_whole_unchecked_card_in_canonical_form_that_fits_its_record(
     let library = builtin::library().unwrap();
     let names = names_of(&items);
     let caps: Caps = mtg_engine::caps();
-    let pairs: Vec<(&PrintedCard, &Card)> = items.iter().map(|i| (&i.printed, &i.card)).collect();
-    let fits = misfits(library, &caps, &pairs);
+    let metas: Vec<DraftMeta> = items
+        .iter()
+        .map(|item| {
+            fs::read_to_string(
+                dir()
+                    .join(drafts::META_DIR)
+                    .join(format!("{}.json", item.slug)),
+            )
+            .map_or_else(|_| DraftMeta::default(), |text| DraftMeta::parse(&text))
+        })
+        .collect();
+    // Only a trusted Forge translation may carry a proof.
+    let proofs: Vec<_> = metas
+        .iter()
+        .map(|meta| {
+            (meta.source.as_deref() == Some("forge") && meta.oracle_matches)
+                .then_some(meta.proof.as_ref())
+                .flatten()
+        })
+        .collect();
+    let pairs: Vec<DraftItem> = items
+        .iter()
+        .zip(&proofs)
+        .map(|(i, proof)| (&i.printed, &i.card, *proof))
+        .collect();
+    let fits = misfits_proved(library, &caps, &pairs);
+    let jobs: Vec<_> = items.iter().zip(&fits).zip(&metas).zip(&proofs).collect();
+    let judged = par_map(&jobs, |&(((item, fit), meta), proof)| {
+        judge_draft(item, fit.as_ref(), meta, *proof, library, &names, &caps)
+    });
     let mut hashes: BTreeMap<String, &str> = BTreeMap::new();
-    for (item, fit) in items.iter().zip(fits) {
+    for (item, (found, hash)) in items.iter().zip(judged) {
         let slug = &item.slug;
-        if item.text != canonical(&item.card) {
-            problems.push(format!("{slug}: not in canonical form (`cargo run -p mtg-cli -- promote --draft` writes it)"));
-        }
-        if let Some(why) = unwhole(&item.card) {
-            problems.push(format!("{slug}: {why}"));
-        }
-        match fit {
-            None => {}
-            Some(Misfit::Outranked) => problems.push(format!(
-                "{slug}: the card is Verified without the draft: delete the draft and its record"
-            )),
-            Some(other) => problems.push(format!("{slug}: {}", other.reason())),
-        }
-        let report = check(&item.text, &item.printed, library, &names, &caps);
-        match report.verdict() {
-            Verdict::Unchecked => {}
-            Verdict::Accepted => problems.push(format!(
-                "{slug}: the checker accepts it now: promote it as a corpus card and delete the draft"
-            )),
-            other => problems.push(format!("{slug}: the checker finds it {}", other.word())),
-        }
-        if report.rules.as_ref() != Some(&item.card) {
-            problems.push(format!("{slug}: the checker completes it differently"));
-        }
-        let hash = read_hash(&item.printed, &item.card);
-        if hash.len() != 32 || !hash.bytes().all(|b| b.is_ascii_hexdigit()) {
-            problems.push(format!("{slug}: read hash {hash} is not 32 hex characters"));
-        }
+        problems.extend(found);
         if let Some(other) = hashes.insert(hash, slug) {
             problems.push(format!("{slug}: the same read hash as {other}"));
         }
     }
+    // Stable by slug: each draft's lines keep their order.
+    problems.sort_by(|a, b| slug_of(a).cmp(slug_of(b)));
     assert!(problems.is_empty(), "{}", problems.join("\n"));
+}
+
+/// The slug a problem line opens with.
+fn slug_of(problem: &str) -> &str {
+    problem.split_once(':').map_or(problem, |(slug, _)| slug)
+}
+
+/// `f` over `items` on every core, in the order of `items`.
+fn par_map<T: Sync, R: Send>(items: &[T], f: impl Fn(&T) -> R + Sync) -> Vec<R> {
+    let threads = std::thread::available_parallelism().map_or(1, usize::from);
+    let next = AtomicUsize::new(0);
+    let mut done: Vec<(usize, R)> = std::thread::scope(|scope| {
+        let workers: Vec<_> = (0..threads)
+            .map(|_| {
+                scope.spawn(|| {
+                    let mut out = Vec::new();
+                    loop {
+                        let index = next.fetch_add(1, Ordering::Relaxed);
+                        let Some(item) = items.get(index) else {
+                            break out;
+                        };
+                        out.push((index, f(item)));
+                    }
+                })
+            })
+            .collect();
+        workers
+            .into_iter()
+            .flat_map(|worker| worker.join().unwrap())
+            .collect()
+    });
+    done.sort_by_key(|(index, _)| *index);
+    done.into_iter().map(|(_, result)| result).collect()
+}
+
+/// The problems of one draft, but for a read hash it shares, and its read hash.
+fn judge_draft(
+    item: &Item,
+    fit: Option<&Misfit>,
+    meta: &DraftMeta,
+    proof: Option<&PartialProof>,
+    library: &Library,
+    names: &BTreeSet<String>,
+    caps: &Caps,
+) -> (Vec<String>, String) {
+    let mut problems = Vec::new();
+    let slug = &item.slug;
+    if item.text != canonical(&item.card) {
+        problems.push(format!(
+            "{slug}: not in canonical form (`cargo run -p mtg-cli -- promote --draft` writes it)"
+        ));
+    }
+    if let Some(why) = unwhole(&item.card).filter(|_| proof.is_none()) {
+        problems.push(format!("{slug}: {why}"));
+    }
+    match fit {
+        None => {}
+        Some(Misfit::Outranked) => problems.push(format!(
+            "{slug}: the card is Verified without the draft: delete the draft and its record"
+        )),
+        Some(other) => problems.push(format!("{slug}: {}", other.reason())),
+    }
+    let trusted = meta.source.as_deref() == Some("forge") && meta.oracle_matches;
+    // A Forge draft is judged as written, as `promote --draft` and the offer judge it: a repair would change it.
+    let judge = if meta.source.as_deref() == Some("forge") {
+        check_exact
+    } else {
+        check
+    };
+    let report = judge(&item.text, &item.printed, library, names, caps);
+    match report.verdict() {
+        // A proved partial draft is accepted as `Partial`; the proof carries it.
+        Verdict::Accepted if proof.is_some() => {}
+        Verdict::Unchecked => {}
+        Verdict::Mismatch if trusted => {}
+        // A draft that names a card without a corpus file cannot join the corpus, whose cards name corpus cards only.
+        Verdict::Accepted
+            if mtg_cli::w2a_promote::w2a_names_outside(
+                library,
+                &item.card,
+                &item.printed,
+                &mtg_cli::w2a_promote::w2a_corpus_names(library),
+            ) => {}
+        Verdict::Accepted => problems.push(format!(
+            "{slug}: the checker accepts it now: promote it as a corpus card and delete the draft"
+        )),
+        other => problems.push(format!(
+            "{slug}: the checker finds it {}{}",
+            other.word(),
+            report
+                .problems
+                .first()
+                .map_or(String::new(), |problem| format!(": {problem}"))
+        )),
+    }
+    if report.rules.as_ref() != Some(&item.card) {
+        problems.push(format!("{slug}: the checker completes it differently"));
+    }
+    let hash = read_hash(&item.printed, &item.card);
+    if hash.len() != 32 || !hash.bytes().all(|b| b.is_ascii_hexdigit()) {
+        problems.push(format!("{slug}: read hash {hash} is not 32 hex characters"));
+    }
+    (problems, hash)
 }
 
 /// The newest Oracle Cards file of `MTG_REAL_DATA_DIR` or the `mtg-cli` cache; `None` where nothing was fetched.
@@ -257,4 +401,49 @@ fn every_record_equals_the_cached_oracle_card() {
         }
     }
     assert!(problems.is_empty(), "{}", problems.join("\n"));
+}
+
+#[test]
+fn a_committed_partial_draft_reaches_the_build_with_its_proof_and_without_it_is_left_out() {
+    let (items, _) = items();
+    let library = builtin::library().unwrap();
+    let caps: Caps = mtg_engine::caps();
+    let (item, meta_text) = items
+        .iter()
+        .find_map(|item| {
+            let text = fs::read_to_string(
+                dir()
+                    .join(drafts::META_DIR)
+                    .join(format!("{}.json", item.slug)),
+            )
+            .ok()?;
+            DraftMeta::parse(&text).proof.map(|_| (item, text))
+        })
+        .expect("a committed partial draft");
+    let cards = [item.printed.clone()];
+    let files = [(item.slug.as_str(), item.text.as_str())];
+
+    let (put, counts) = drafts::fitting(
+        &files,
+        &[(item.slug.as_str(), &meta_text)],
+        library,
+        &caps,
+        &cards,
+    );
+
+    assert!(counts.invalid.is_empty(), "{:?}", counts.invalid);
+    assert_eq!(put.len(), 1);
+    assert_eq!(put[0].source, "forge");
+    assert!(put[0].proof.is_some());
+
+    let stripped = meta_text.replace("\"proof\"", "\"unproved\"");
+    let (put, counts) = drafts::fitting(
+        &files,
+        &[(item.slug.as_str(), &stripped)],
+        library,
+        &caps,
+        &cards,
+    );
+
+    assert!(put.is_empty() && counts.invalid.len() == 1, "{counts:?}");
 }

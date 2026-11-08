@@ -1,0 +1,25 @@
+{
+  "oracle_id": "60f3857d-2dcd-427e-aa0f-e2028bbc5acc",
+  "name": "The Madcap Jester",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Madcap Jester",
+      "oracle_fingerprint": "1ef86f1d980e50ab108a504a609f068c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "ExileTop": { "who": "Opponents", "as": "exiled" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 88, "end": 306 }
+          }
+        }
+      ]
+    }
+  ]
+}

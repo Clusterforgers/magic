@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a350856c-87f2-4605-999f-4e26aa362a55",
+  "name": "Proft, Sinister Mastermind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proft, Sinister Mastermind",
+      "oracle_fingerprint": "a93d4c608636e0a1f281f13f1d9eaa99",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "op": "Lt",
+                  "right": 7
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

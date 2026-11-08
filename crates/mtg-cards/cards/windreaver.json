@@ -1,0 +1,59 @@
+{
+  "oracle_id": "d6b6c27e-8028-49b1-90c6-ae0907159f85",
+  "name": "Windreaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windreaver",
+      "oracle_fingerprint": "f5bfb1a7d0ac6d27d749ee653f9a4a4c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": "{U}", "effects": [{ "Move": { "what": "This", "to": "Hand" } }] }
+        }
+      ]
+    }
+  ]
+}

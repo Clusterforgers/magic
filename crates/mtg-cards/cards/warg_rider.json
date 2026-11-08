@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3f4dd9e2-6460-413e-a3b8-96b20bf57f8b",
+  "name": "Warg Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warg Rider",
+      "oracle_fingerprint": "920b2c484abb116d6f6132b390be41ed",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
+                { "ControlledBy": "You" },
+                "Other"
+              ]
+            },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

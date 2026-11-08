@@ -3,7 +3,8 @@
 use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
-use crate::effect::{Effect, is_false};
+use crate::did::Action;
+use crate::effect::{Effect, Place, is_false};
 use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::value::{Amount, Condition, CounterKind, DayNight};
@@ -50,7 +51,7 @@ const fn is_one_attacker(count: &u32) -> bool {
 }
 
 /// The game event a triggered ability waits for (CR 603.2). Each variant is backed by one or more
-/// engine events (`docs/cards-dsl.md`, Triggers).
+/// engine events (`docs/cards-dsl.md`, Triggers, replacement and layers).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum TriggerPattern {
@@ -76,6 +77,12 @@ pub enum TriggerPattern {
         /// The zone it enters, if the pattern names one.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
+    },
+    /// A spell matching the selector resolved and its card was put into a graveyard ("when this spell card is put into a
+    /// graveyard after resolving", haunt CR 702.55a); a countered spell is not.
+    ResolvedToGraveyard {
+        /// The spell.
+        what: Selector,
     },
     /// A creature matching the selector attacks.
     Attacks {
@@ -223,6 +230,10 @@ pub enum TriggerPattern {
         /// The card drawn ("when you draw this card"); any card when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         what: Selector,
+        /// Only the first card the player draws in each of their draw steps (`true`), or every card but that one
+        /// (`false`, "except the first one they draw in each of their draw steps"); any card when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        first_in_draw_step: Option<bool>,
     },
     /// A player discards a card.
     Discarded {
@@ -238,6 +249,11 @@ pub enum TriggerPattern {
     },
     /// A permanent matching the selector becomes tapped.
     Tapped {
+        /// The permanent.
+        what: Selector,
+    },
+    /// A permanent becomes tapped, not as it attacks.
+    TappedNotAttacking {
         /// The permanent.
         what: Selector,
     },
@@ -271,11 +287,22 @@ pub enum TriggerPattern {
     Blocks {
         /// The blocker.
         what: Selector,
+        /// Only when it blocks one or more attackers matching this (empty: any). With it the trigger happens once for
+        /// each such blocker, against the first such attacker it blocks.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        blocking: Selector,
     },
     /// A creature matching the selector becomes blocked.
     BecomesBlocked {
         /// The attacker.
         what: Selector,
+        /// Only when blocked by a creature matching this (empty: any blocker). With it the trigger happens once for each such blocker and `Ref::Dealer` names that blocker.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        by: Selector,
+        /// With `by`: the trigger happens once when one or more of its blockers match ("becomes blocked by one or more
+        /// Orcs"), and names no blocker.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        once: bool,
     },
     /// A creature matching the selector attacks and isn't blocked: it is unblocked once its defending player has
     /// declared blockers (CR 509.1h).
@@ -291,11 +318,31 @@ pub enum TriggerPattern {
         #[serde(default = "one_attacker", skip_serializing_if = "is_one_attacker")]
         at_least: u32,
     },
+    /// At least this many creatures matching the selector are declared as attackers of one player together ("whenever one
+    /// or more Dragons you control attack an opponent"): it triggers once for each player attacked, with the attackers of
+    /// that player; an attack on a planeswalker is no attack on its controller.
+    GroupAttacksAt {
+        /// The attackers.
+        what: Selector,
+        /// The player attacked.
+        at: Ref,
+        /// The fewest that make it trigger.
+        #[serde(default = "one_attacker", skip_serializing_if = "is_one_attacker")]
+        at_least: u32,
+    },
     /// Counters are put on a permanent.
     CountersPut {
         /// What receives them; any permanent when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         what: Selector,
+        /// Only counters of this kind; any kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+    },
+    /// Counters are put on a player ("whenever you get one or more {E}"); `Triggering` is that player.
+    PlayerCountersPut {
+        /// Who gets them.
+        who: Ref,
         /// Only counters of this kind; any kind when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
@@ -396,6 +443,19 @@ pub enum TriggerPattern {
         /// Only this change ("whenever night becomes day"); either change when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<DayNight>,
+    },
+    /// The Ring tempts a player ("whenever the Ring tempts you"); `Triggering` is that player. With `bearer` it needs a
+    /// creature chosen as the Ring-bearer that matches ("whenever you choose a creature other than ~ as your Ring-bearer").
+    RingTempts {
+        /// Who is tempted.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The creature chosen as Ring-bearer must match this; any tempting when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        bearer: Selector,
     },
     /// A player proliferates ("whenever you proliferate"); `Triggering` is that player.
     Proliferated {
@@ -580,13 +640,28 @@ pub enum TriggerPattern {
         /// The state.
         condition: Condition,
     },
+    /// A player or object takes an action (`Action`): the one node for the keyword actions and the rest of the events
+    /// that have no pattern of their own. `Triggering` is the player and the object, when the action has them.
+    Did {
+        /// What was done.
+        action: Action,
+        /// Who did it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The object it was done to or by; anything when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// Any of the patterns ("enters or attacks"); one event triggers the ability once.
     AnyOf(Vec<TriggerPattern>),
     /// One or more events the pattern describes that happen together ("one or more creatures you control deal combat
     /// damage to a player", "one or more cards are put into your graveyard from your library"): the events of one
     /// batch (one damage step, one effect) trigger the ability once, for each player they are about when they are
-    /// about players. `Amount::Triggering` is how many events there were. It is the whole pattern of a triggered
-    /// ability, never part of an `AnyOf`.
+    /// about players. `Amount::Triggering` is how many events there were (the damage dealt for damage, the counters for
+    /// counters). It is the whole pattern of a triggered ability, never part of an `AnyOf`.
     Batch(Box<TriggerPattern>),
     /// The nth time in a turn that an event happens to a player ("whenever you draw your second card each turn",
     /// "when you cast your first spell each turn"): the turn's count of that kind of event by that player, which
@@ -599,6 +674,20 @@ pub enum TriggerPattern {
         event: Box<TriggerPattern>,
         /// Which time in the turn it must be, from one.
         nth: u32,
+    },
+    /// The event, when a spell or ability caused it ("whenever you put a -1/-1 counter on a creature", "when a spell or
+    /// ability an opponent controls causes you to discard this"): the controller of the spell or ability that is
+    /// resolving, being cast or activated when the event happens, or the controller of the source of the damage. Turn
+    /// actions and state-based actions have no cause and never match.
+    Caused {
+        /// The event, or a `Batch` of events.
+        inner: Box<TriggerPattern>,
+        /// The players who caused it; any when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// What caused it (the source of the spell or ability, or of the damage); anything when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        source: Selector,
     },
 }
 
@@ -652,6 +741,19 @@ pub enum ReplaceWhen {
         /// The card that would be discarded.
         what: Selector,
     },
+    /// A spell matching the selector would be countered (CR 701.6): the move from the stack to the graveyard of a spell an
+    /// effect counted, not of one that resolved, fizzled or could not be countered.
+    Countered {
+        /// The spell that would be countered.
+        what: Selector,
+    },
+    /// A face-down permanent matching the selector is turned face up ("As ~ is turned face up, put five +1/+1 counters
+    /// on it", CR 708.8): the counters are put on it as it turns, before any player can respond. Only `WithCounters`
+    /// on the permanent itself.
+    TurnedFaceUp {
+        /// The permanent turned face up.
+        what: Selector,
+    },
     /// Counters would be put on a permanent or a player, by an effect or as a permanent enters.
     CountersPut {
         /// What receives them; any permanent or player when absent.
@@ -702,6 +804,23 @@ pub enum EntersChoice {
     Opponent,
     /// A chapter number of the Saga, which it enters with as many lore counters (read ahead, CR 702.155).
     Chapter,
+    /// A card name (CR 201.3): any card of the game.
+    CardName,
+    /// The name of a card that is not a land ("choose a nonland card name").
+    NonlandCardName,
+    /// A card type.
+    CardType,
+    /// One of these card types ("choose artifact, creature, enchantment, instant, or sorcery").
+    CardTypeOf(mtg_core::card::CardTypes),
+    /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
+    BasicLandType,
+    /// A number from `min` to `max`.
+    Number {
+        /// The smallest number.
+        min: u32,
+        /// The largest number.
+        max: u32,
+    },
 }
 
 /// What happens instead.
@@ -714,11 +833,41 @@ pub enum ReplaceBy {
     Add(u32),
     /// The event does not happen (prevention, CR 615).
     Prevent,
+    /// The next damage event it covers does not happen, and the shield ends ("the next time a source of your choice would
+    /// deal damage to you this turn, prevent that damage"); only a shield uses it.
+    PreventNext,
     /// Up to this much of the damage is prevented (CR 615). In a shield it is the total the shield prevents ("the next
     /// 3 damage"); in a static ability it is the most each event loses.
     PreventUpTo(u32),
+    /// Up to this many of the damage in all, counted as the shield begins ("prevent the next X damage", CR 611.2c); only
+    /// a shield uses it.
+    PreventCounted(Amount),
+    /// Half of the damage is prevented, rounded up (CR 615): "prevent half that damage, rounded up"; only a static ability uses it.
+    PreventHalf,
     /// These effects happen instead.
     Instead(Vec<Effect>),
+    /// The next damage event a shield covers is replaced by these effects, as `Instead` reads it, and the shield ends
+    /// ("the next time a source of your choice would deal damage to you this turn, that damage is dealt to X instead").
+    InsteadNext(Vec<Effect>),
+    /// Up to `most` of the damage is dealt to `to` instead, by the same source, and the rest as it was (CR 614.9); only a
+    /// shield uses it, which fixes `to` as it begins and keeps the total it has left ("the next 1 damage that would be
+    /// dealt to this creature this turn is dealt to target creature you control instead").
+    RedirectUpTo {
+        /// The most damage redirected in all.
+        most: u32,
+        /// The player or permanent the damage is dealt to instead.
+        to: Ref,
+    },
+    /// All of the damage is dealt to `to` instead, by the same source (CR 614.9); only a shield uses it, which fixes `to`
+    /// as it begins ("all damage that would be dealt to ~ this turn is dealt to target creature instead"). With `next`,
+    /// only the next damage event it covers, and the shield ends ("the next time damage would be dealt to ~ this turn").
+    Redirect {
+        /// The player or permanent the damage is dealt to instead.
+        to: Ref,
+        /// Only the next damage event.
+        #[serde(default, skip_serializing_if = "is_false")]
+        next: bool,
+    },
     /// All of the damage is prevented (CR 615) and these effects happen, reading the event as `Instead` does ("prevent
     /// that damage and put that many +1/+1 counters on it").
     PreventAnd(Vec<Effect>),
@@ -733,8 +882,20 @@ pub enum ReplaceBy {
     /// The object goes to this zone instead ("exile it instead"); a card in a graveyard, a hand, the stack or exile
     /// goes to its owner's zone.
     MoveTo(ZoneKind),
+    /// The object is put into its owner's library instead, at this place ("reveal it and shuffle it into its owner's library
+    /// instead", "put it on top of its owner's library instead"); a reveal shows it to every player first.
+    IntoLibrary {
+        /// On top, on the bottom or shuffled in.
+        place: Place,
+        /// It is revealed as it moves.
+        #[serde(default, skip_serializing_if = "is_false")]
+        reveal: bool,
+    },
     /// The permanent enters tapped (CR 614.1c).
     Tapped,
+    /// The permanent enters untapped (CR 614.1c), also when another effect would have it enter tapped and is applied
+    /// first ("Lands you control enter untapped").
+    Untapped,
     /// The permanent enters with this many counters of the kind on it (CR 614.1c); they are put by an event of
     /// their own that other replacement effects can change.
     WithCounters {
@@ -745,6 +906,29 @@ pub enum ReplaceBy {
         /// It enters tapped as well ("enters tapped with two charge counters on it").
         #[serde(default, skip_serializing_if = "is_false")]
         tapped: bool,
+    },
+    /// The permanent enters with counters as `WithCounters` says, and has these changes for as long as it stays on the
+    /// battlefield ("enters with two +1/+1 counters on it and with first strike").
+    WithCountersAnd {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
+        /// What it gets besides: a keyword or an ability.
+        mods: Vec<Modification>,
+    },
+    /// Amplify N (CR 702.38): as the permanent enters, its controller reveals any number of creature cards from their hand that
+    /// share a creature type with it, and it enters with N +1/+1 counters for each.
+    Amplify(u32),
+    /// Tribute N (CR 702.104): as the permanent enters, an opponent of its controller chosen by the controller may put N +1/+1
+    /// counters on it; it remembers whether they did as a number (1 paid, 0 not) that `Amount::Chosen` reads.
+    Tribute(u32),
+    /// The permanent enters with these counters when its controller says yes as it enters ("You may have this creature enter with a +1/+1 counter on it"); asked like the payment of `PayLifeOrTapped`.
+    MayWithCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
     },
     /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
     Choose(EntersChoice),
@@ -760,6 +944,16 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
+    /// As the permanent would enter, its controller pays the cost (a sacrifice or a discard); if they don't (or can't),
+    /// it is put into its owner's graveyard instead ("If ~ would enter, sacrifice two untapped lands instead. If you do,
+    /// put ~ onto the battlefield. If you don't, put it into its owner's graveyard").
+    PayOrGraveyard {
+        /// What is paid.
+        cost: crate::cost::Cost,
+        /// The controller may decline ("you may discard a land card instead").
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
+    },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
     /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield or a card
@@ -789,8 +983,82 @@ pub enum ReplaceBy {
     Riot,
     /// As the permanent enters, it becomes day if it is neither day nor night (CR 726.2).
     DayIfNeither,
+    /// The permanent enters with one counter of the kind its controller chooses among these, as it enters ("enters
+    /// with your choice of a deathtouch counter or a lifelink counter on it").
+    WithCounterOf(Vec<CounterKind>),
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
+    /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which
+    /// `Condition::EnteredAs` reads for as long as it stays.
+    ChooseWord(Vec<String>),
+}
+
+/// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ShieldShape {
+    /// Objects named now that would go from the battlefield or the stack to a graveyard, or leave the battlefield, go
+    /// elsewhere (CR 614.1a, 611.2c).
+    Named {
+        /// It covers any move from the battlefield, not only one to a graveyard.
+        leaves: bool,
+    },
+    /// A spell named now that would be countered goes elsewhere.
+    Countered,
+    /// A class of moves or entries, judged as each happens.
+    Class,
+    /// Damage prevented, changed or redirected.
+    Damage,
+}
+
+impl ShieldShape {
+    /// The shape of a shield, or none when the engine plays no shield of this replacement.
+    #[must_use]
+    pub fn of(when: &ReplaceWhen, by: &ReplaceBy) -> Option<Self> {
+        match (when, by) {
+            (ReplaceWhen::ZoneChange { what, from, to }, ReplaceBy::MoveTo(_))
+                if names_objects(what) =>
+            {
+                match (from, to) {
+                    (Some(ZoneKind::Battlefield | ZoneKind::Stack), Some(ZoneKind::Graveyard)) => {
+                        Some(Self::Named { leaves: false })
+                    }
+                    (Some(ZoneKind::Battlefield), None) => Some(Self::Named { leaves: true }),
+                    _ => None,
+                }
+            }
+            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => Some(Self::Countered),
+            (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
+            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped)
+                if !names_objects(what) =>
+            {
+                Some(Self::Class)
+            }
+            (
+                ReplaceWhen::Damage { .. },
+                ReplaceBy::Prevent
+                | ReplaceBy::PreventNext
+                | ReplaceBy::PreventUpTo(_)
+                | ReplaceBy::PreventCounted(_)
+                | ReplaceBy::PreventAnd(_)
+                | ReplaceBy::Multiply(_)
+                | ReplaceBy::Add(_)
+                | ReplaceBy::Instead(_)
+                | ReplaceBy::InsteadNext(_)
+                | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::Redirect { .. },
+            ) => Some(Self::Damage),
+            _ => None,
+        }
+    }
+}
+
+/// Whether the selector names particular objects now (a target, what a spell damaged) rather than a kind of object.
+#[must_use]
+pub fn names_objects(what: &Selector) -> bool {
+    use crate::refs::Pred;
+    what.0
+        .iter()
+        .any(|pred| matches!(pred, Pred::Is(_) | Pred::SameCard(_) | Pred::DamagedBy(_)))
 }
 
 #[cfg(test)]
@@ -818,6 +1086,14 @@ mod tests {
     #[case::opponent_casts(
         TriggerPattern::SpellCast { what: Selector::default(), by: Ref::Opponents },
         r#"{"SpellCast":{"by":"Opponents"}}"#
+    )]
+    #[case::blocked_by_any(
+        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector::default(), once: false },
+        r#"{"BecomesBlocked":{"what":["This"]}}"#
+    )]
+    #[case::blocked_by_a_kind(
+        TriggerPattern::BecomesBlocked { what: Selector::this(), by: Selector(vec![Pred::Token]), once: false },
+        r#"{"BecomesBlocked":{"what":["This"],"by":["Token"]}}"#
     )]
     #[case::a_state(
         TriggerPattern::State { condition: Condition::Not(Box::new(Condition::YourTurn)) },

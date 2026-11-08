@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "9a0237e9-8aa5-4516-a60c-67dc2bd34b4f",
+  "oracle_id": "294f4c23-d046-4f9d-81ad-446a9b09d75b",
+  "multiverse_ids": [
+    548245
+  ],
+  "arena_id": 79924,
+  "name": "Obsessive Collector",
+  "lang": "en",
+  "released_at": "2021-12-09",
+  "uri": "https://api.scryfall.com/cards/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f",
+  "scryfall_uri": "https://scryfall.com/card/ymid/19/obsessive-collector?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T06:35:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.jpg?1783924555",
+    "normal": "https://cards.scryfall.io/normal/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.jpg?1783924555",
+    "large": "https://cards.scryfall.io/large/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.jpg?1783924555",
+    "png": "https://cards.scryfall.io/png/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.png?1783924555",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.jpg?1783924555",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.jpg?1783924555",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.webp?1783924555",
+    "grid": "https://cards.scryfall.io/grid/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.webp?1783924555",
+    "display": "https://cards.scryfall.io/display/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.webp?1783924555",
+    "art": "https://cards.scryfall.io/art/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.webp?1783924555",
+    "crop": "https://cards.scryfall.io/crop/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.webp?1783924555",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/a/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f.jpg?1783924555"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flying, ward {2}\nWhenever Obsessive Collector deals combat damage to a player, seek a card with mana value equal to the number of cards in your hand.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Seek",
+    "Ward"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8a673262-8745-452d-820a-03d5c4a4f135",
+  "set": "ymid",
+  "set_name": "Alchemy: Innistrad",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/8a673262-8745-452d-820a-03d5c4a4f135",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aymid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ymid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9a0237e9-8aa5-4516-a60c-67dc2bd34b4f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A294f4c23-d046-4f9d-81ad-446a9b09d75b&unique=prints",
+  "collector_number": "19",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Reiko Murakami",
+  "artist_ids": [
+    "342cd845-3721-48fc-9ba3-0d61d88c1b1e"
+  ],
+  "illustration_id": "45a40686-a314-45fe-960a-739a57afa5cb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "alchemy"
+  ],
+  "preview": {
+    "source": "CovertGoBlue",
+    "source_uri": "https://twitter.com/covertgoblue/status/1466907442055462924",
+    "previewed_at": "2021-12-03"
+  },
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548245&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DObsessive%2BCollector",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DObsessive%2BCollector",
+    "edhrec": "https://edhrec.com/route/?cc=Obsessive+Collector"
+  }
+}

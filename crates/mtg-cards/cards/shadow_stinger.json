@@ -1,0 +1,33 @@
+{
+  "oracle_id": "214562b1-fdf0-4d5d-93f0-594b31b80bb3",
+  "name": "Shadow Stinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow Stinger",
+      "oracle_fingerprint": "b1bb4411ba8ee3cfa7584604fc9e2774",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Rogue" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Mill": { "who": "Triggering", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

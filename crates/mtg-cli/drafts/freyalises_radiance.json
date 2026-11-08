@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d7f28d00-2ec3-4d4e-b3a6-89d33c66da28",
+  "name": "Freyalise's Radiance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Freyalise's Radiance",
+      "oracle_fingerprint": "6c7107ae555b11cffa4b0eb1def9cbcb",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
+        { "Static": { "affected": { "Each": [{ "Supertype": "Snow" }] }, "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

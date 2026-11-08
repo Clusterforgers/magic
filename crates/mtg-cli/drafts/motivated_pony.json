@@ -1,0 +1,75 @@
+{
+  "oracle_id": "44906d21-83cc-49ec-8505-4f7b020ac05f",
+  "name": "Motivated Pony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Motivated Pony",
+      "oracle_fingerprint": "c6d2c11d0b49af707878949b58a41e78",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Entered",
+                          "who": "EachPlayer",
+                          "filter": [{ "Subtype": "Food" }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Untap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Entered",
+                          "who": "EachPlayer",
+                          "filter": [{ "Subtype": "Food" }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

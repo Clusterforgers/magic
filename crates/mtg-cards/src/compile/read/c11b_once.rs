@@ -35,6 +35,7 @@ pub fn c11b_once(r: &mut Reader<'_>) -> Option<Ability> {
 /// The permission `c11b_once` gives over the cards `what` selects.
 fn c11b_permission(what: Selector) -> CastPermission {
     CastPermission {
+        rather: None,
         who: Ref::You,
         what,
         from: Some(ZoneKind::Graveyard),
@@ -44,6 +45,8 @@ fn c11b_permission(what: Selector) -> CastPermission {
         play: false,
         once: true,
         additional: None,
+        spend_as: crate::modify::SpendAs::Normal,
+        when: None,
     }
 }
 

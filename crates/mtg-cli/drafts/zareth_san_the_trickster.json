@@ -1,0 +1,81 @@
+{
+  "oracle_id": "a316b0ce-1f63-4a8e-9a6e-bfbe03ca4e9e",
+  "name": "Zareth San, the Trickster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zareth San, the Trickster",
+      "oracle_fingerprint": "fd1a5588bfe6492ebab07e66ef6fdc15",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{U}{B}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    { "Subtype": "Rogue" },
+                    "Unblocked",
+                    "Attacking",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "from": "Hand",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

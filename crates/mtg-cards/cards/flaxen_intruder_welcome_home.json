@@ -1,0 +1,68 @@
+{
+  "oracle_id": "bacedc99-46d9-4757-8a27-8df77d7c2f02",
+  "name": "Flaxen Intruder // Welcome Home",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flaxen Intruder",
+      "oracle_fingerprint": "4a9915326dfba1a354941c10ef0d611c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Welcome Home",
+      "oracle_fingerprint": "5138e1740066d13e8b3d05db628fa727",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bear",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bear"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

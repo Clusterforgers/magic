@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "e36a7eff-89c8-4799-b264-38892912ba05",
+  "oracle_id": "221d0305-94db-4791-9dc7-89ee96c7fcd6",
+  "multiverse_ids": [
+    25563
+  ],
+  "mtgo_id": 15666,
+  "mtgo_foil_id": 15667,
+  "tcgplayer_id": 2982,
+  "cardmarket_id": 2847,
+  "name": "Mana Breach",
+  "lang": "en",
+  "released_at": "2001-04-11",
+  "uri": "https://api.scryfall.com/cards/e36a7eff-89c8-4799-b264-38892912ba05",
+  "scryfall_uri": "https://scryfall.com/card/7ed/85/mana-breach?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:25:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.jpg?1783945538",
+    "normal": "https://cards.scryfall.io/normal/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.jpg?1783945538",
+    "large": "https://cards.scryfall.io/large/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.jpg?1783945538",
+    "png": "https://cards.scryfall.io/png/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.png?1783945538",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.jpg?1783945538",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.jpg?1783945538",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.webp?1783945538",
+    "grid": "https://cards.scryfall.io/grid/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.webp?1783945538",
+    "display": "https://cards.scryfall.io/display/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.webp?1783945538",
+    "art": "https://cards.scryfall.io/art/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.webp?1783945538",
+    "crop": "https://cards.scryfall.io/crop/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.webp?1783945538",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/3/e36a7eff-89c8-4799-b264-38892912ba05.jpg?1783945538"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a player casts a spell, that player returns a land they control to its owner's hand.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "230f38aa-9511-4db8-a3aa-aeddbc3f7bb9",
+  "set": "7ed",
+  "set_name": "Seventh Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/230f38aa-9511-4db8-a3aa-aeddbc3f7bb9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A7ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/7ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e36a7eff-89c8-4799-b264-38892912ba05/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A221d0305-94db-4791-9dc7-89ee96c7fcd6&unique=prints",
+  "collector_number": "85",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The mana that binds the world together can also tear it apart.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gary Ruddell",
+  "artist_ids": [
+    "086111c7-93f0-4bab-b339-6fe1c00d693c"
+  ],
+  "illustration_id": "f78129e0-4c9e-4f5d-9c4f-199fc9714ad5",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10758,
+  "penny_rank": 7169,
+  "prices": {
+    "usd": "0.81",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.08",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=25563&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMana%2BBreach",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMana%2BBreach",
+    "edhrec": "https://edhrec.com/route/?cc=Mana+Breach"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F2982%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2847&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/15666?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
