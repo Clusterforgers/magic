@@ -79,7 +79,7 @@ fn you_and_a_target_opponent_each_create_a_token(#[case] script_name: &str, #[ca
 #[test]
 fn a_token_owner_with_a_remembered_token_is_a_gap() {
     let script = "Name:Test Banker\nTypes:Sorcery\nA:SP$ Token | ValidTgts$ Opponent | TokenOwner$ TargetedAndYou | TokenScript$ c_a_treasure_sac | RememberTokens$ True\nOracle:You and target opponent each create a Treasure token.\n";
-    assert!(!gaps(script).is_empty());
+    assert_ne!(gaps(script), Vec::<String>::new());
 }
 
 #[test]
@@ -166,5 +166,5 @@ fn the_opponents_with_three_poison_counters_are_a_group(#[case] word: &str, #[ca
 #[test]
 fn a_tapped_creature_beside_another_paid_cost_is_a_gap() {
     let script = "Name:Test Sling\nTypes:Artifact\nA:AB$ DealDamage | Cost$ Sac<1/Creature> tapXType<1/Creature> | ValidTgts$ Creature | NumDmg$ X\nSVar:X:Tapped$CardPower\nOracle:Sacrifice a creature, Tap an untapped creature you control: Test Sling deals damage equal to the tapped creature's power to target creature.\n";
-    assert!(!gaps(script).is_empty());
+    assert_ne!(gaps(script), Vec::<String>::new());
 }

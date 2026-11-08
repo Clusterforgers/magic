@@ -57,6 +57,19 @@ fn remembered_player_owns(ctx: &Ctx) -> Tr<Vec<Value>> {
     }
 }
 
+/// Whether the property is a word for the one object of a trigger's event.
+fn triggered_object(prop: &str) -> bool {
+    matches!(
+        prop,
+        "TriggeredAttacker"
+            | "TriggeredAttackerLKICopy"
+            | "TriggeredCard"
+            | "TriggeredCardLKICopy"
+            | "TriggeredSource"
+            | "TriggeredSourceLKICopy"
+    )
+}
+
 /// The predicates a property of a valid-string stands for.
 fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     let one = |value: Value| Ok(vec![value]);
@@ -81,17 +94,10 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "MultiColor" => return one(json!({"Compare": {"stat": "Colors", "op": "Ge", "to": 2}})),
         "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
         "IsCommander" => return one(json!("Commander")),
-        // The creature whose attack triggered the ability.
-        "TriggeredAttacker"
-        | "TriggeredAttackerLKICopy"
-        | "TriggeredCard"
-        | "TriggeredCardLKICopy"
-        | "TriggeredSource"
-        | "TriggeredSourceLKICopy"
-            if ctx.trigger.is_some() =>
-        {
-            let attacker = super::triggered::resolve(ctx.trigger.as_ref(), prop)?;
-            return one(json!({"Is": attacker}));
+        // The creature whose attack triggered the ability, the card or the source of its event.
+        _ if ctx.trigger.is_some() && triggered_object(prop) => {
+            let object = super::triggered::resolve(ctx.trigger.as_ref(), prop)?;
+            return one(json!({"Is": object}));
         }
         // Attached to the object the line is about: its source.
         "Attached" => return one(json!({"AttachedTo": "This"})),
