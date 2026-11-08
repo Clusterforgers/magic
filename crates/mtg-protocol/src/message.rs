@@ -11,7 +11,7 @@ use mtg_engine::{Answer, Decision};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::events::{EventBatch, EventView, LogName};
+use crate::events::{EventBatch, EventView, LogHost, LogName};
 use crate::view::StateView;
 
 /// Version of this wire protocol; both sides state it in the handshake.
@@ -378,6 +378,11 @@ pub enum ServerMessage {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[ts(as = "Option<Vec<LogName>>", optional)]
         names: Vec<LogName>,
+        /// The host each attach event of `log` replaced, for those the client may read it for, by index into `log`; a
+        /// client words such a line "moves from A to B" from here. Left out while there are none.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[ts(as = "Option<Vec<LogHost>>", optional)]
+        hosts: Vec<LogHost>,
     },
     /// A chat line from a player.
     Chat {

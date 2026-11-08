@@ -414,7 +414,7 @@ describe('the fit of the page', () => {
   it('is as tall as the window under the header from sm up, a column that gives the rest to the two panes', async () => {
     await renderBuilder()
     expect(page()).toHaveClass('sm:h-[calc(100dvh-3.5rem-1px)]', 'flex', 'flex-col')
-    expect(page()).toHaveAttribute('data-width', 'wide')
+    expect(page()).toHaveAttribute('data-width', 'wider')
     const panes = searchPane().parentElement
     expect(panes).toBe(deckPane().parentElement)
     expect(panes).toHaveClass(

@@ -45,6 +45,14 @@ describe('the fold', () => {
   const group = (): HTMLElement => screen.getByRole('group', { name: 'Table effects (development)' })
   const toggle = (): HTMLElement => screen.getByRole('button', { name: 'Effects' })
 
+  it('leaves the top bar at lg and wider, where the step strip lies, for the bottom left corner', () => {
+    mount(undefined, true, false)
+    const classes = group().className
+    expect(classes).toContain('lg:bottom-1.5')
+    expect(classes).toContain('lg:left-1.5')
+    expect(classes).not.toMatch(/lg:right-\[/)
+  })
+
   it('is one button and no move until it is opened', () => {
     mount(undefined, true, false)
     expect([...group().querySelectorAll('button')]).toEqual([toggle()])

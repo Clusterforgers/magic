@@ -339,7 +339,7 @@ export function createSession(deps: SessionDeps): Session {
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
         preview: null,
-        log: mergeHistory(state.log, message.seq, message.log),
+        log: mergeHistory(state.log, message.seq, message.log, message.hosts),
         logNames: mergeLogNames(state.logNames, message.names),
         snapshots: state.snapshots + 1,
         phase: state.result === null ? 'playing' : 'over',

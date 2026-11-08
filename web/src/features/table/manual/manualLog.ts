@@ -12,6 +12,7 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   PlayerCounters: ['CountersChanged'],
   Life: ['LifeGained', 'LifeLost'],
   CreateToken: ['TokenCreated'],
+  CopyToken: ['TokenCreated'],
   Tap: ['PermanentTapped'],
   Untap: ['PermanentUntapped'],
   Draw: ['CardDrawn'],

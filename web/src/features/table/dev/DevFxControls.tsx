@@ -35,7 +35,7 @@ export function DevFxControls({
       role="group"
       aria-label="Table effects (development)"
       data-open={open || undefined}
-      className="fixed top-1.5 right-14 z-50 flex max-w-[calc(100vw-4rem)] lg:right-[26rem] lg:max-w-[calc(100vw-27rem)] flex-wrap items-center justify-end gap-1 rounded-lg border bg-popover p-1 text-xs text-popover-foreground shadow-md"
+      className="fixed top-1.5 right-14 z-50 flex max-w-[calc(100vw-4rem)] lg:top-auto lg:right-auto lg:bottom-1.5 lg:left-1.5 lg:max-w-[calc(100vw-27rem)] flex-wrap items-center justify-end gap-1 rounded-lg border bg-popover p-1 text-xs text-popover-foreground shadow-md"
     >
       <Button
         type="button"
