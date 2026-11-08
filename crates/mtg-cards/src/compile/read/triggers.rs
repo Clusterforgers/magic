@@ -1384,6 +1384,13 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             what,
             at: Ref::Opponents,
         } => said(what, "attacks one of your opponents"),
+        TriggerPattern::AttacksPlayer {
+            what,
+            at: Ref::MostLife,
+        } => said(
+            what,
+            "attacks the player with the most life or tied for most life",
+        ),
         TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
             said(what, "attacks you or a planeswalker you control")
         }
@@ -1620,6 +1627,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             super::g13d_attacked::g13d_attacked_text(&what.0, *at_least)
                 .or_else(|| group_attacks_text(what, *at_least))
         }
+        TriggerPattern::GroupAttacksAt { what, at, at_least } => {
+            super::e16c_attacks::e16c_group_at_text(what, at, *at_least)
+        }
         TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
             .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
             .or_else(|| any_of_text(patterns))
@@ -1636,7 +1646,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
 }
 
 /// "Whenever one or more creatures you control attack", "Whenever two or more Knights attack".
-fn group_attacks_text(what: &Selector, at_least: u32) -> Option<String> {
+pub(super) fn group_attacks_text(what: &Selector, at_least: u32) -> Option<String> {
     let count = if at_least == 1 {
         "one"
     } else {

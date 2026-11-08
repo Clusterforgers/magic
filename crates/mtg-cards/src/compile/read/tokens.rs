@@ -217,7 +217,7 @@ pub fn same_text(left: &str, right: &str) -> bool {
 pub fn same_written_text(left: &str, right: &str) -> bool {
     let normal = |text: &str| {
         symbols_sorted(without_period(&canonical(&super::w16_wordings::normal(
-            &super::w15_wordings::normal(text),
+            &super::e16c_attacks::normal(&super::w15_wordings::normal(text)),
         ))))
     };
     normal(left) == normal(right)

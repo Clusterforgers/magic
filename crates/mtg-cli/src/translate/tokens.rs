@@ -235,10 +235,13 @@ pub(super) fn entering_attacking(ctx: &Ctx, p: &Params, create: &mut Value) -> T
     };
     create["attacking"] = json!(true);
     if let Some(word) = word {
-        let against = defined(ctx, word)?;
-        if !matches!(against.as_str(), Some("Against" | "Defending")) {
+        // Outside an attack trigger the word names nothing the tokens can attack.
+        let Some(against) = defined(ctx, word)
+            .ok()
+            .filter(|against| matches!(against.as_str(), Some("Against" | "Defending")))
+        else {
             return unmapped(format!("key:TokenAttacking={word}"));
-        }
+        };
         create["against"] = against;
     }
     Ok(())
