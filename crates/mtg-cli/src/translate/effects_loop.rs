@@ -81,6 +81,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ControlledByPlayer",
             "Reveal",
             "RememberChosen",
+            "DefinedCards",
             "ChooseEach",
         ],
     )?;
@@ -120,7 +121,13 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if let Some(each) = p.get("ChooseEach") {
         return choose_each(ctx, p, each, &filter, chooser);
     }
-    let from = json!({"Each": filter});
+    // "Choose three target permanents ... one of them at random": the pool is the targets themselves.
+    let named = match p.get("DefinedCards") {
+        None => None,
+        Some("Targeted") if p.get("AtRandom") == Some("True") => Some(ctx.last_target()?),
+        Some(_) => return unmapped("key:ChooseCard.DefinedCards"),
+    };
+    let from = named.unwrap_or_else(|| json!({"Each": filter}));
     let bind = ctx.fresh("card");
     let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
     let effect = if p.get("AtRandom") == Some("True") {
