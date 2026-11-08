@@ -28,6 +28,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 - An ability on the stack is an `ObjectView` of its own with `kind` `Ability`, named after its source, with its `targets`; a copy of a spell is `kind: Token` with `copy.of`. `targets_legal` has the shape of `targets` and follows the check of the resolution.
 - `TableView.combat_forecast` is public, derived by `TableView::of` from `pending_combat_forecast`, so it rides in `table` and `apply` needs no extra rule.
 - `DamageOptions`, `BlockOptions`, `AttackOptions` carry what a rule requires or limits (lethal damage, minimum blockers, required attackers, most attackers), so a client never computes it; the declaration must name the required creatures or the engine refuses it.
+- A battle is attacked as `AttackTarget::Planeswalker(id)`, the variant for an attacked permanent; the client tells it apart by `types` (`Battle`), its defense is its `defense` counters and `ObjectView.protector` names the seat that protects it, public to every seat. A search of a library (the Siege's Invasion search) identifies its cards to the searching seat alone (`invasion_search_hidden.rs`).
 - A batch carries the whole table, which keeps the client fold trivial; projection builds two full views per seat per batch.
 
 ## Visibility

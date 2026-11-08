@@ -41,7 +41,11 @@ fn name_of(driver: &Driver, id: ObjectId) -> String {
 #[rstest]
 fn the_other_seats_never_see_the_cards_the_search_leaves_behind(
     #[values(2, 3, 4)] seats: usize,
-    #[values("All That Glitters", "Heliod, God of the Sun", "Hercules, Olympian Hero")]
+    #[values(
+        "All That Glitters",
+        "Heliod, God of the Sun",
+        "Hercules, Olympian Hero"
+    )]
     found: &'static str,
 ) {
     let mut table = Table::new(table(seats));
@@ -63,7 +67,10 @@ fn the_other_seats_never_see_the_cards_the_search_leaves_behind(
         for seat in 1..seats {
             let view = StateView::for_player(table.driver.state(), PlayerId::from_index(seat));
             let found_leaks = leaks(&serde_json::to_value(&view).unwrap(), &left);
-            assert!(found_leaks.is_empty(), "seat {seat}'s snapshot leaks {found_leaks:?}");
+            assert!(
+                found_leaks.is_empty(),
+                "seat {seat}'s snapshot leaks {found_leaks:?}"
+            );
         }
         let decision = table.driver.decision().unwrap().clone();
         if table.driver.state().stack().is_empty()
@@ -81,7 +88,11 @@ fn the_other_seats_never_see_the_cards_the_search_leaves_behind(
             }
             DecisionKind::ChooseCards(options) => {
                 assert_eq!(decision.player.index(), 0, "the searcher chooses");
-                offered = options.from.iter().map(|id| name_of(&table.driver, *id)).collect();
+                offered = options
+                    .from
+                    .iter()
+                    .map(|id| name_of(&table.driver, *id))
+                    .collect();
                 Answer::ChooseCards(CardsChoice(
                     options
                         .from
@@ -99,10 +110,17 @@ fn the_other_seats_never_see_the_cards_the_search_leaves_behind(
     offered.sort();
     assert_eq!(
         offered,
-        ["All That Glitters", "Heliod, God of the Sun", "Hercules, Olympian Hero"],
+        [
+            "All That Glitters",
+            "Heliod, God of the Sun",
+            "Hercules, Olympian Hero"
+        ],
         "the searcher is offered the Aura, the God and the Demigod"
     );
-    let hand = table.driver.state().zone(Zone::Hand(PlayerId::from_index(0)));
+    let hand = table
+        .driver
+        .state()
+        .zone(Zone::Hand(PlayerId::from_index(0)));
     assert!(
         hand.iter().any(|id| name_of(&table.driver, *id) == found),
         "{found} is in the searcher's hand"
