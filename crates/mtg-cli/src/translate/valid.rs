@@ -1096,6 +1096,12 @@ fn mixed_zones(ctx: &Ctx, alternatives: &[&str]) -> Tr<Option<Vec<Value>>> {
     Ok(Some(vec![json!({"AnyOf": parts})]))
 }
 
+/// Whether the card text says "target player" and names no opponent anywhere outside reminder text.
+fn player_printed(oracle: &str) -> bool {
+    let text = super::oracle::normalise(oracle, "");
+    text.contains("target player") && !text.contains("opponent")
+}
+
 fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
     // "Up to one target of each player" (`header::per_player_targets`).
     if let Some(rest) = valid.strip_prefix(super::header::FOR_EACH) {
@@ -1120,6 +1126,8 @@ fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
         kinds.push(match word {
             "Any" => json!("AnyTarget"),
             "Player" => json!("Player"),
+            // A script may target an opponent where the card says "target player" (Aggressive Sabotage).
+            "Opponent" | "Player.Opponent" if player_printed(ctx.oracle) => json!("Player"),
             "Opponent" | "Player.Opponent" => json!("Opponent"),
             other => json!({"Object": selector_in(ctx, other, zone)?}),
         });
