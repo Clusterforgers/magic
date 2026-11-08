@@ -128,13 +128,23 @@ fn spots(face: &Face, kind: char, at: usize) -> Vec<Spot> {
 /// Whether a gap names a part the line lacks (`no-Execute`, `-without-cost`, `-missing`): dropping a parameter the
 /// line needs causes it, so it says nothing about the line.
 fn lacks_part(name: &str) -> bool {
+    let lower = name.to_ascii_lowercase();
     name.starts_with("line:")
         || name.starts_with("svar:")
         || name.ends_with(['=', ':'])
         || ["no-", "without", "-missing", "nothing", "none-for"]
             .iter()
-            .any(|mark| name.contains(mark))
+            .any(|mark| lower.contains(mark))
+        || BROKEN_BY_A_DROP.contains(&name)
 }
+
+/// Gaps that dropping a parameter a line needs causes: a static without `Affected$`, a cost change without `Type$`, a
+/// target that the dropped part read.
+const BROKEN_BY_A_DROP: [&str; 3] = [
+    "static-affected:none",
+    "static:CostModifier-Type",
+    "targets:unused",
+];
 
 /// The gaps behind the first of one line: a parameter whose removal clears a gap is dropped for good and the line is
 /// read again, until nothing clears. A removal that clears a gap and shows none is preferred.

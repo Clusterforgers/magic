@@ -368,6 +368,9 @@ pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
         let keys: Vec<&str> = PREFIXED.iter().map(|(from, _)| *from).collect();
         return Ok((None, p.without(&keys)));
     }
+    let unread = unread_condition_keys(p);
+    let trimmed = (!unread.is_empty()).then(|| p.without(&unread));
+    let p = trimmed.as_ref().unwrap_or(p);
     // "If a black card was milled this way" is at least one: Forge writes `EQ1`, which two black cards would fail.
     let at_least = p.has("ConditionPresent") && says_a_was(ctx.oracle);
     let mut renamed: Vec<String> = PREFIXED
@@ -393,6 +396,33 @@ pub fn prefixed(ctx: &Ctx, p: &Params) -> Tr<(Option<Value>, Params)> {
         .collect();
     all.extend(super::header::gate_conditions(ctx, p)?);
     Ok((single(all), p.without(&keys)))
+}
+
+/// The condition keys of a chain line that Forge never tests: `ConditionDefined$` with no clause that counts what it
+/// names ("Untap it", "Then sacrifice this"), and a `ConditionCompare$ GE1` beside a `ConditionCheckSVar$`, which is the
+/// default comparison of the count.
+fn unread_condition_keys(p: &Params) -> Vec<&'static str> {
+    let present = ["ConditionPresent", "ConditionNotPresent"]
+        .iter()
+        .any(|key| p.has(key));
+    let mut keys = Vec::new();
+    if p.has("ConditionDefined")
+        && !present
+        && !["ConditionZone", "ConditionCompare", "ConditionCheckSVar"]
+            .iter()
+            .any(|key| p.has(key))
+    {
+        keys.push("ConditionDefined");
+    }
+    if p.has("ConditionCheckSVar")
+        && !present
+        && !p.has("ConditionDefined")
+        && !p.has("ConditionSVarCompare")
+        && p.get("ConditionCompare") == Some("GE1")
+    {
+        keys.push("ConditionCompare");
+    }
+    keys
 }
 
 /// Whether a sentence of the Oracle text asks whether "a" card or permanent was acted on this way ("if a black card was
