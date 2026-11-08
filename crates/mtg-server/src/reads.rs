@@ -4,6 +4,7 @@
 //! (`AttemptLimits::read_requests_per_user`); a server without a database answers 503 `cards_unavailable`.
 
 use std::collections::{HashMap, HashSet};
+use std::sync::PoisonError;
 
 use axum::Json;
 use axum::extract::rejection::PathRejection;
@@ -12,7 +13,7 @@ use axum::http::{HeaderMap, StatusCode};
 use mtg_cards::ReadState;
 use mtg_cards::deck::{DeckReport, differs_of};
 use mtg_cards::read::sheet;
-use mtg_db::{Card, DeckId, DraftKey, Verdict};
+use mtg_db::{Card, DeckId, DraftKey, IndexVersion, Verdict};
 use mtg_import::ids::OracleId;
 use mtg_protocol::rest::{
     CardDraft, DeckErrorCode, MyRead, ReadBody, ReadCard, ReadQueue, ReadQueueCard, ReadVerdict,
@@ -21,7 +22,7 @@ use sqlx::types::uuid::Uuid;
 
 use crate::api::{ApiError, read_json_limited};
 use crate::card_api::failed;
-use crate::cards::{CardSource, Rules, printed_card};
+use crate::cards::{CardSource, Rules, StoredVersion, printed_card};
 use crate::deck_cards::Loaded;
 use crate::decks::lines_of;
 use crate::fix_marks::{card_id, clean_note};
@@ -169,6 +170,25 @@ impl Session<'_> {
     /// walked off the runtime; nothing here judges a deck or a precon.
     async fn all_queue(&self) -> Result<ReadQueue, ApiError> {
         let rules = self.cards.rules().await?;
+        let cards = self
+            .cards
+            .database()
+            .cards()
+            .index_version()
+            .await
+            .map_err(|error| failed(&error))?;
+        let stamp = (rules.version().clone(), cards);
+        let held = self.cards.pending_reads();
+        if let Some(waiting) = held.get(&stamp) {
+            return self.queue(String::new(), waiting, true).await;
+        }
+        let waiting = self.pending_now(rules).await?;
+        held.keep(stamp, &waiting);
+        self.queue(String::new(), waiting, true).await
+    }
+
+    /// The cards whose current draft decides them and is pending, worked out again.
+    async fn pending_now(&self, rules: Rules) -> Result<Vec<Waiting>, ApiError> {
         let candidates: Vec<OracleId> = rules
             .library()
             .drafts()
@@ -182,10 +202,9 @@ impl Session<'_> {
             .get_many(&candidates)
             .await
             .map_err(|error| failed(&error))?;
-        let waiting = tokio::task::spawn_blocking(move || pending_of(&rules, &stored))
+        tokio::task::spawn_blocking(move || pending_of(&rules, &stored))
             .await
-            .map_err(|_| ApiError::unavailable())?;
-        self.queue(String::new(), waiting, true).await
+            .map_err(|_| ApiError::unavailable())
     }
 
     /// The queue of `waiting` as the account stands: what it has not judged, by state and popularity, each card with
@@ -236,7 +255,34 @@ impl Session<'_> {
     }
 }
 
+/// What the pending cards were worked out under: the stored rules with the drafts and verdicts, and the cards.
+type PendingStamp = (StoredVersion, IndexVersion);
+
+/// The cards waiting for a first read, kept for the stamp they were worked out under, so a page load of the queue of
+/// every card reads the library and the cards only after a draft, a verdict or an import changed them.
+#[derive(Debug, Default)]
+pub(crate) struct PendingReads {
+    held: std::sync::Mutex<Option<(PendingStamp, Vec<Waiting>)>>,
+}
+
+impl PendingReads {
+    /// The cards held for `stamp`, if these are they.
+    fn get(&self, stamp: &PendingStamp) -> Option<Vec<Waiting>> {
+        let held = self.held.lock().unwrap_or_else(PoisonError::into_inner);
+        held.as_ref()
+            .filter(|(at, _)| at == stamp)
+            .map(|(_, waiting)| waiting.clone())
+    }
+
+    /// Keeps `waiting` as the cards of `stamp`.
+    fn keep(&self, stamp: PendingStamp, waiting: &[Waiting]) {
+        let mut held = self.held.lock().unwrap_or_else(PoisonError::into_inner);
+        *held = Some((stamp, waiting.to_vec()));
+    }
+}
+
 /// A card whose draft waits for a read, before the account's verdicts are known.
+#[derive(Debug, Clone)]
 struct Waiting {
     oracle_id: OracleId,
     name: String,

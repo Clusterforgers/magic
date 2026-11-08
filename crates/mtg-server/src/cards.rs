@@ -32,6 +32,7 @@ use uuid::Uuid;
 
 use crate::images::{Images, Warmer};
 use crate::precons::{PreconCache, PreconError, PreconIndex};
+use crate::reads::PendingReads;
 use crate::recipe::{Catalog, GameRecipe};
 
 /// Why the cards of a deck could not be had.
@@ -236,6 +237,7 @@ pub struct CardSource {
     caps: Caps,
     names: Arc<NameIndex>,
     precons: Arc<PreconCache>,
+    pending: Arc<PendingReads>,
     stored: Arc<StoredRules>,
     images: Option<Images>,
     #[cfg(test)]
@@ -314,6 +316,7 @@ impl CardSource {
             caps: mtg_engine::caps(),
             names: Arc::default(),
             precons: Arc::default(),
+            pending: Arc::default(),
             stored: Arc::default(),
             images: None,
             #[cfg(test)]
@@ -349,6 +352,7 @@ impl CardSource {
         // What the library and the index hold was built from the old rules.
         self.stored = Arc::default();
         self.precons = Arc::default();
+        self.pending = Arc::default();
         self
     }
 
@@ -357,6 +361,7 @@ impl CardSource {
     pub fn with_caps(mut self, caps: Caps) -> CardSource {
         self.caps = caps;
         self.precons = Arc::default();
+        self.pending = Arc::default();
         self
     }
 
@@ -639,6 +644,12 @@ impl CardSource {
 
     /// The index of every stored precon with its deck check, kept until the precons, the cards or
     /// the printings change (`precons.rs`).
+    /// The cards waiting for a first read, kept until the stored rules, the drafts, the verdicts or the cards change
+    /// (`reads.rs`).
+    pub(crate) fn pending_reads(&self) -> &PendingReads {
+        &self.pending
+    }
+
     pub(crate) async fn precon_index(&self) -> Result<Arc<PreconIndex>, PreconError> {
         self.precons.index(self).await
     }
