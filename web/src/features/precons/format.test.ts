@@ -27,7 +27,12 @@ describe('statusOf and statusWords', () => {
     ['a clean deck', checked(preconItem()), 'whole', 'Whole deck runs'],
     ['one card by hand', checked(preconItem(), { manual: 1 }), 'hand', '1 card played by hand'],
     ['approved reads beside verified cards', checked(preconItem(), { read: 4 }), 'read', 'Whole deck runs'],
-    ['unverified drafts and Forge beside verified cards', checked(preconItem(), { unverified: 120, forge: 34 }), 'read', 'Whole deck runs'],
+    [
+      'unverified drafts and Forge beside verified cards',
+      checked(preconItem(), { unverified: 120, forge: 34 }),
+      'read',
+      'Whole deck runs',
+    ],
     [
       'a card by hand beside the reads',
       checked(preconItem(), { read: 4, manual: 1, toRead: 1 }),

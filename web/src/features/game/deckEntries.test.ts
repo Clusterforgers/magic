@@ -267,7 +267,11 @@ describe('sorting', () => {
   })
 
   it.each<[string, Partial<Counts>, string | null]>([
-    ['tiers that run whole', { verified: 60, forge: 34, unverified: 4, read: 2 }, '34 from Forge · 4 unverified · 2 read'],
+    [
+      'tiers that run whole',
+      { verified: 60, forge: 34, unverified: 4, read: 2 },
+      '34 from Forge · 4 unverified · 2 read',
+    ],
     ['unverified copies alone', { verified: 99, unverified: 1 }, '1 unverified'],
     ['nothing but Verified copies', {}, null],
   ])('breaks down a deck that runs whole with %s', (_what, over, words) => {

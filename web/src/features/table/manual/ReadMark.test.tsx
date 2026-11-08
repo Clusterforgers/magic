@@ -22,7 +22,12 @@ describe('ReadMark', () => {
 
   it('says Unverified in its own colour while no player has read the draft', () => {
     const { container } = render(
-      <ReadMark object={card({ read: true, unverified: true })} spot="corner" compact={false} text="text-xs" />,
+      <ReadMark
+        object={card({ read: true, unverified: true })}
+        spot="corner"
+        compact={false}
+        text="text-xs"
+      />,
     )
     const found = container.querySelector<HTMLElement>('[data-slot="card-read"]')
     expect(found).toHaveTextContent(/^Unverified$/)

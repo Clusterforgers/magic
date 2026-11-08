@@ -48,7 +48,16 @@ const SURFACES = ['background', 'surface', 'table', 'raised'] as const
 const FILLS = [...SURFACES, 'muted', 'secondary', 'accent'] as const
 const STATUS = ['success', 'warning', 'destructive'] as const
 const MANA = ['white', 'blue', 'black', 'red', 'green', 'gold', 'colorless'] as const
-const SUPPORT = ['verified', 'read', 'forge', 'unverified', 'partial', 'manual', 'stale', 'unplayable'] as const
+const SUPPORT = [
+  'verified',
+  'read',
+  'forge',
+  'unverified',
+  'partial',
+  'manual',
+  'stale',
+  'unplayable',
+] as const
 
 const TEXT_MIN = 4.5
 const EDGE_MIN = 3

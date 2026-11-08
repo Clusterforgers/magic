@@ -33,7 +33,12 @@ describe('the words', () => {
   })
 
   it('name the deck state and the title of the filter', () => {
-    expect([WHOLE_DECK_RUNS, UNVERIFIED, TO_READ, TO_READ_TITLE]).toEqual(['Whole deck runs', 'Unverified', 'to read', 'To read'])
+    expect([WHOLE_DECK_RUNS, UNVERIFIED, TO_READ, TO_READ_TITLE]).toEqual([
+      'Whole deck runs',
+      'Unverified',
+      'to read',
+      'To read',
+    ])
   })
 
   it('say what a draft that waits or was found wrong means for the card', () => {

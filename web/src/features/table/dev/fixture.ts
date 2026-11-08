@@ -209,7 +209,8 @@ export function buildFixture(options: FixtureOptions): Fixture {
     // Two of the viewer's creatures run on drafts: one a player read, one nobody has read yet.
     if (seat === viewer) {
       const [first, second] = mine.creatures
-      if (first !== undefined) edit(first, (object) => Object.assign(object, { read: true, unverified: true }))
+      if (first !== undefined)
+        edit(first, (object) => Object.assign(object, { read: true, unverified: true }))
       if (second !== undefined) edit(second, (object) => Object.assign(object, { read: true }))
     }
     if (seat === viewer) {

@@ -183,7 +183,10 @@ describe('checkNote', () => {
 
   it('breaks down the copies that are not Verified in a deck that runs whole', () => {
     const deck = deckIn('read', {
-      summary: summary({ state: 'read', counts: counts({ verified: 60, forge: 34, unverified: 4, read: 2 }) }),
+      summary: summary({
+        state: 'read',
+        counts: counts({ verified: 60, forge: 34, unverified: 4, read: 2 }),
+      }),
     })
     expect(checkNote(deck)).toBe('34 from Forge · 4 unverified · 2 read')
   })
