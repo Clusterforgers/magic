@@ -249,7 +249,10 @@ pub(crate) const fn is_rule(ability: &Ability) -> bool {
 
 /// Whether an ability is a cost modifier.
 pub(crate) const fn is_cost_modifier(ability: &Ability) -> bool {
-    matches!(ability, Ability::CostModifier { .. })
+    matches!(
+        ability,
+        Ability::CostModifier { .. } | Ability::FreeActivation { .. }
+    )
 }
 
 /// Whether a card with this definition prints that counters remain on it as it changes zones (CR 122.2); the rule works
@@ -270,7 +273,7 @@ pub(crate) fn w17b_definition_keeps_counters(definition: &CardDefinition) -> boo
 /// spells an affinity (`GameState::possible`).
 pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool {
     let modifier = |rules: &Ability| match rules {
-        Ability::CostModifier { .. } => true,
+        Ability::CostModifier { .. } | Ability::FreeActivation { .. } => true,
         Ability::Static { mods, .. } => {
             mods.iter()
                 .any(|given| matches!(given, WantedModification::AddKeyword(Keyword::Affinity(_))))

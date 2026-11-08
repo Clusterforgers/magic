@@ -4276,6 +4276,11 @@ impl Walker<'_> {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
             alt @ Ability::AltCast { .. } => w.alt_cast(alt),
+            Ability::FreeActivation { condition, .. } => {
+                if let Some(condition) = condition {
+                    w.at("condition", |w| w.condition(condition));
+                }
+            }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::OpeningHand => {}
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),

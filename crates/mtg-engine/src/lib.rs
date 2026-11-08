@@ -6,6 +6,7 @@
 //! [`characteristics`], never stored.
 
 mod activation_kind;
+mod free_activation;
 mod announce;
 mod answers;
 mod attach;

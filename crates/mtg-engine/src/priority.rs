@@ -215,7 +215,8 @@ fn can_activate(
     {
         return false;
     }
-    let Ok(price) = Price::announced_in(cost, state, player, object.id(), address.source.granter())
+    let cost = crate::free_activation::cost(state, player, (address, rules), cost);
+    let Ok(price) = Price::announced_in(&cost, state, player, object.id(), address.source.granter())
     else {
         return false;
     };
@@ -273,7 +274,7 @@ fn can_activate(
                 && can_pay_x(state, player, object, &price, &claimed, x))
     };
     // "X can't be 0": the least X must be paid for.
-    let least = crate::announce::least_of(cost);
+    let least = crate::announce::least_of(&cost);
     (least == 0 || affords(least))
         && announceable(state, player, object.id(), rules)
         && some_x_has_targets(state, player, object.id(), rules, affords)

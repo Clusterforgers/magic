@@ -219,6 +219,14 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
         };
         let rules = ability_reader::ability_as_it_was(state, address, &put.snapshot)
             .ok_or_else(|| invalid(format!("{source:?} has no ability {}", put.ability)))?;
+        if let Some(kind) = crate::activation_kind::specific_as_it_was(state, address, &rules, &put.snapshot) {
+            state.record(
+                mtg_cards::value::TallyEvent::KindActivated(kind),
+                Some(put.controller),
+                (source.id, None),
+                1,
+            );
+        }
         (rules, Bindings::new())
     };
     c11d_keep_modes(state, put, &rules);

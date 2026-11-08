@@ -384,6 +384,9 @@ pub enum TallyEvent {
     PlusOneCountersPut,
     /// A permanent was sacrificed (as it last was, for its controller).
     Sacrificed,
+    /// An ability of the kind was activated (the source, as for `Activated`): "the first equip ability you activate each
+    /// turn", "if you've activated a loyalty ability this turn", "if you cycled two or more cards this turn".
+    KindActivated(crate::ability::ActivationKind),
 }
 
 /// Which result of the latest die roll an amount reads.

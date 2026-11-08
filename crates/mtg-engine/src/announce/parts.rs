@@ -28,8 +28,8 @@ pub(super) fn read(
     rules: Option<&Ability>,
 ) -> Option<Box<Price>> {
     match (what, rules?) {
-        (What::Ability(ability), Ability::Activated { cost, .. }) => Price::announced_in(
-            cost,
+        (What::Ability(ability), activated @ Ability::Activated { cost, .. }) => Price::announced_in(
+            &crate::free_activation::cost(state, player, (*ability, activated), cost),
             state,
             player,
             ability.object,

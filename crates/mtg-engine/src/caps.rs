@@ -518,6 +518,7 @@ const RUNS: &[&str] = &[
     "Keyword.Entwine",
     "Ability.AdditionalCost",
     "Ability.FreeCast",
+    "Ability.FreeActivation",
     "Ability.AltCast",
     "Ability.CastOnly",
     "Condition.AdditionalCostPaid",
