@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a6d95d26-48d8-4a97-9a42-f492a61300c9",
+  "name": "Assassin's Ink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assassin's Ink",
+      "oracle_fingerprint": "bfa6e764a3f62efba6d806969a78e640",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "40b14aaa-f29e-4e84-9bdc-bc2ac9762ce9",
+  "name": "Sulfuric Vapors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sulfuric Vapors",
+      "oracle_fingerprint": "2f72d8cd5e5fc28b4cd001c201d166c4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": ["Spell", { "Color": "Red" }] } },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

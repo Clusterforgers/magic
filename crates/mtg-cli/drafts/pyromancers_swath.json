@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9931a999-ee1b-465b-a912-9f4697a01014",
+  "name": "Pyromancer's Swath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyromancer's Swath",
+      "oracle_fingerprint": "2ea06dc71ce6419b9787a064768dd6d4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "Add": 2 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

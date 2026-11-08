@@ -1,0 +1,53 @@
+{
+  "oracle_id": "94a241bf-5709-4890-8f06-017833869d62",
+  "name": "Repel Intruders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repel Intruders",
+      "oracle_fingerprint": "1c0f5ec271f20583d01d4e8c22685700",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": ["Spell", { "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "White" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Kithkin Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Kithkin", "Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Blue" },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

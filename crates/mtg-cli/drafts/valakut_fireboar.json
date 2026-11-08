@@ -1,0 +1,27 @@
+{
+  "oracle_id": "126bf98a-64d0-4de2-9bf4-f59d36ef6e25",
+  "name": "Valakut Fireboar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valakut Fireboar",
+      "oracle_fingerprint": "128fdf85c44ab480ca6e8917e01ed81c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

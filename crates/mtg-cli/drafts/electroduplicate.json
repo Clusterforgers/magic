@@ -1,0 +1,43 @@
+{
+  "oracle_id": "112f2b3f-32e7-40b1-b80e-0b99184a840c",
+  "name": "Electroduplicate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Electroduplicate",
+      "oracle_fingerprint": "754d497c628228f4bace52889e4c1bc9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        {
+                          "GrantAbility": {
+                            "Triggered": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                            }
+                          }
+                        },
+                        { "AddKeyword": "Haste" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{2}{R}{R}" } }
+      ]
+    }
+  ]
+}

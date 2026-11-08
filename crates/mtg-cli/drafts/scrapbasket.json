@@ -1,0 +1,27 @@
+{
+  "oracle_id": "779269f9-78c1-4e65-bafe-b6dea40a2b24",
+  "name": "Scrapbasket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrapbasket",
+      "oracle_fingerprint": "309930f3af0eef4fd87e849c33bacbc9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

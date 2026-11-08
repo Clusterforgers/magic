@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b3a80545-9a8a-46b2-9d8c-b0d66fb68a5d",
+  "name": "Sword of Wealth and Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Wealth and Power",
+      "oracle_fingerprint": "0bd323bd968ea746fc4bb69a386181fb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Type": "Instant" }] } },
+              { "AddKeyword": { "Protection": [{ "Type": "Sorcery" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

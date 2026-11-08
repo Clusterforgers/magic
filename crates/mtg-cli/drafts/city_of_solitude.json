@@ -1,0 +1,33 @@
+{
+  "oracle_id": "671458ac-7441-4332-9e59-a42ec8b62f31",
+  "name": "City of Solitude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "City of Solitude",
+      "oracle_fingerprint": "f306328cc0f3b97a0cba1eff7cf95839",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "PlayersWhere": { "who": "EachPlayer", "test": { "Not": "YourTurn" } } },
+                "action": { "Cast": {} }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "PlayersWhere": { "who": "EachPlayer", "test": { "Not": "YourTurn" } } },
+                "action": { "ActivateKind": { "kind": "Every" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

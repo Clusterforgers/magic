@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6c0c5832-416f-405f-bb44-c24be6f9d081",
+  "name": "Spire Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spire Serpent",
+      "oracle_fingerprint": "86c283ba7145c6e46e6e4b082f801d90",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

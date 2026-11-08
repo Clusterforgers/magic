@@ -1,0 +1,98 @@
+{
+  "oracle_id": "ff70d743-280e-476f-a3b8-92026419419d",
+  "name": "Summon: Yojimbo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Yojimbo",
+      "oracle_fingerprint": "3cec1a917fe008e01f1094f1047384be",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Tapped" }]
+                          }
+                        }
+                      ]
+                    },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "AttackTax": { "attacked": "Player", "mana": "{2}" } },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "AttackTax": { "attacked": "Player", "mana": "{2}" } },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                                { "ControlledBy": "You" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

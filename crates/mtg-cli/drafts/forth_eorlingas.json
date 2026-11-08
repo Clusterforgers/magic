@@ -1,0 +1,51 @@
+{
+  "oracle_id": "35807c14-4647-482f-9ba1-6d640fd5e8d8",
+  "name": "Forth Eorlingas!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forth Eorlingas!",
+      "oracle_fingerprint": "14310203116f5fed98d843fa3c42d3fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Knight",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Batch": {
+                      "DealsDamage": {
+                        "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "to": "EachPlayer",
+                        "combat": true
+                      }
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "BecomeMonarch": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

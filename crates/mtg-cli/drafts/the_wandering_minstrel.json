@@ -1,0 +1,70 @@
+{
+  "oracle_id": "e6e6e3d2-f2fb-46a1-8798-13a2f2efe8cc",
+  "name": "The Wandering Minstrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Wandering Minstrel",
+      "oracle_fingerprint": "149d71e3dd0d03d33bf6ae4ebb9d1cac",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+            "by": "Untapped"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Town" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 5
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["White", "Blue", "Black", "Red", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{U}{B}{R}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Town" }, { "ControlledBy": "You" }] },
+                        "toughness": { "Count": [{ "Subtype": "Town" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

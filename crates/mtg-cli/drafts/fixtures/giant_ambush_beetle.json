@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "0f6782d0-5399-4853-ae6f-0d05372dbf34",
+  "oracle_id": "c2dbdf9d-3ac1-47d8-9ad8-57e7888e5cdd",
+  "multiverse_ids": [
+    179598
+  ],
+  "mtgo_id": 32324,
+  "mtgo_foil_id": 32325,
+  "tcgplayer_id": 31738,
+  "cardmarket_id": 21016,
+  "name": "Giant Ambush Beetle",
+  "lang": "en",
+  "released_at": "2009-04-30",
+  "uri": "https://api.scryfall.com/cards/0f6782d0-5399-4853-ae6f-0d05372dbf34",
+  "scryfall_uri": "https://scryfall.com/card/arb/137/giant-ambush-beetle?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:33:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.jpg?1783942409",
+    "normal": "https://cards.scryfall.io/normal/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.jpg?1783942409",
+    "large": "https://cards.scryfall.io/large/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.jpg?1783942409",
+    "png": "https://cards.scryfall.io/png/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.png?1783942409",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.jpg?1783942409",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.jpg?1783942409",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.webp?1783942409",
+    "grid": "https://cards.scryfall.io/grid/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.webp?1783942409",
+    "display": "https://cards.scryfall.io/display/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.webp?1783942409",
+    "art": "https://cards.scryfall.io/art/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.webp?1783942409",
+    "crop": "https://cards.scryfall.io/crop/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.webp?1783942409",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/f/0f6782d0-5399-4853-ae6f-0d05372dbf34.jpg?1783942409"
+  },
+  "mana_cost": "{3}{B/G}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "Haste\nWhen this creature enters, you may have target creature block it this turn if able.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "db486ec5-141d-4781-9ee5-5456926934c1",
+  "set": "arb",
+  "set_name": "Alara Reborn",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/db486ec5-141d-4781-9ee5-5456926934c1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aarb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/arb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0f6782d0-5399-4853-ae6f-0d05372dbf34/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac2dbdf9d-3ac1-47d8-9ad8-57e7888e5cdd&unique=prints",
+  "collector_number": "137",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "It waits with absolute stillness. One might think it a statue if it weren't occasionally seen chewing on its victims.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Carl Critchlow",
+  "artist_ids": [
+    "17948f16-611a-44b8-8d10-9895a0bdfff1"
+  ],
+  "illustration_id": "927fb73d-7747-420a-b2bb-b2865b10a7d2",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30854,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.23",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=179598&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGiant%2BAmbush%2BBeetle",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGiant%2BAmbush%2BBeetle",
+    "edhrec": "https://edhrec.com/route/?cc=Giant+Ambush+Beetle"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F31738%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=21016&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/32324?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

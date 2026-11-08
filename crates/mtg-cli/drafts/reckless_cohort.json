@@ -1,0 +1,25 @@
+{
+  "oracle_id": "015b1006-decb-4d94-940e-bca550e0ad5b",
+  "name": "Reckless Cohort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Cohort",
+      "oracle_fingerprint": "21a639e8c7461804dfb83540d2e2f890",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MustAttack": "This" },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Ally" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "oracle_id": "e05f23ba-f2b2-4c40-83fa-8defce3cb978",
+  "name": "The Coming of Galactus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Coming of Galactus",
+      "oracle_fingerprint": "9ffe0e3043a009459f793b328ce9b5fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Galactus",
+                      "colors": ["Black"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elder", "Alien"],
+                      "power": 16,
+                      "toughness": 16,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": "Trample" },
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": ["This"] } },
+                            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+                            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

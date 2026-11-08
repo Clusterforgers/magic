@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "c5a462ca-0632-410d-9999-a096b71fc3ea",
+  "oracle_id": "a85390b6-e90b-4d0c-9573-eb67ce01a0aa",
+  "multiverse_ids": [
+    417444
+  ],
+  "tcgplayer_id": 122272,
+  "cardmarket_id": 292397,
+  "name": "Thicket Elemental",
+  "lang": "en",
+  "released_at": "2016-09-02",
+  "uri": "https://api.scryfall.com/cards/c5a462ca-0632-410d-9999-a096b71fc3ea",
+  "scryfall_uri": "https://scryfall.com/card/ddr/21/thicket-elemental?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:07:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.jpg?1783937269",
+    "normal": "https://cards.scryfall.io/normal/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.jpg?1783937269",
+    "large": "https://cards.scryfall.io/large/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.jpg?1783937269",
+    "png": "https://cards.scryfall.io/png/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.png?1783937269",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.jpg?1783937269",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.jpg?1783937269",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.webp?1783937269",
+    "grid": "https://cards.scryfall.io/grid/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.webp?1783937269",
+    "display": "https://cards.scryfall.io/display/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.webp?1783937269",
+    "art": "https://cards.scryfall.io/art/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.webp?1783937269",
+    "crop": "https://cards.scryfall.io/crop/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.webp?1783937269",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/5/c5a462ca-0632-410d-9999-a096b71fc3ea.jpg?1783937269"
+  },
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Kicker {1}{G} (You may pay an additional {1}{G} as you cast this spell.)\nWhen this creature enters, if it was kicked, you may reveal cards from the top of your library until you reveal a creature card. If you do, put that card onto the battlefield and shuffle all other cards revealed this way into your library.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Kicker"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "20e10d8d-c2b0-4d3f-942d-28ae9e137c6e",
+  "set": "ddr",
+  "set_name": "Duel Decks: Nissa vs. Ob Nixilis",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/20e10d8d-c2b0-4d3f-942d-28ae9e137c6e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c5a462ca-0632-410d-9999-a096b71fc3ea/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa85390b6-e90b-4d0c-9573-eb67ce01a0aa&unique=prints",
+  "collector_number": "21",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spencer",
+  "artist_ids": [
+    "dab52c11-0564-4207-a4a1-c1735c946a65"
+  ],
+  "illustration_id": "c366debc-220f-4b4d-9821-ea68e5f25446",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 20475,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=417444&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThicket%2BElemental",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThicket%2BElemental",
+    "edhrec": "https://edhrec.com/route/?cc=Thicket+Elemental"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F122272%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=292397&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Thicket+Elemental&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

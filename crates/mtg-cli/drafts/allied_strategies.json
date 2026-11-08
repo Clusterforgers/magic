@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a5ce2ccd-8c78-4749-8854-cb5fa5f4738e",
+  "name": "Allied Strategies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Allied Strategies",
+      "oracle_fingerprint": "719e47684774f0393e82a89d7f9fb0f6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

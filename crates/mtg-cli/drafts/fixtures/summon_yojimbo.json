@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "cdbc2d28-ea35-47c6-af7e-07924e9d5794",
+  "oracle_id": "ff70d743-280e-476f-a3b8-92026419419d",
+  "multiverse_ids": [],
+  "resource_id": "B4841ED85D0A0551C09E0353B4B821536B2AE368805283E85FCA0D678ADC257D",
+  "mtgo_id": 140047,
+  "tcgplayer_id": 631165,
+  "cardmarket_id": 824516,
+  "name": "Summon: Yojimbo",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/cdbc2d28-ea35-47c6-af7e-07924e9d5794",
+  "scryfall_uri": "https://scryfall.com/card/fic/28/summon:-yojimbo?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.jpg?1783906365",
+    "normal": "https://cards.scryfall.io/normal/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.jpg?1783906365",
+    "large": "https://cards.scryfall.io/large/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.jpg?1783906365",
+    "png": "https://cards.scryfall.io/png/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.png?1783906365",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.jpg?1783906365",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.jpg?1783906365",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.webp?1783906365",
+    "grid": "https://cards.scryfall.io/grid/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.webp?1783906365",
+    "display": "https://cards.scryfall.io/display/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.webp?1783906365",
+    "art": "https://cards.scryfall.io/art/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.webp?1783906365",
+    "crop": "https://cards.scryfall.io/crop/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.webp?1783906365",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/d/cdbc2d28-ea35-47c6-af7e-07924e9d5794.jpg?1783906365"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment Creature — Saga Samurai",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI — Exile target artifact, enchantment, or tapped creature an opponent controls.\nII, III — Until your next turn, creatures can't attack you unless their controller pays {2} for each of those creatures.\nIV — Create X Treasure tokens, where X is the number of opponents who control a creature with power 4 or greater.\nVigilance",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e5f4f810-f95a-41ac-9c3b-47254c03e766",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/e5f4f810-f95a-41ac-9c3b-47254c03e766"
+    },
+    {
+      "object": "related_card",
+      "id": "fb7f1e73-183f-4041-907d-700e248ac5af",
+      "component": "combo_piece",
+      "name": "Summon: Yojimbo",
+      "type_line": "Enchantment Creature — Saga Samurai",
+      "uri": "https://api.scryfall.com/cards/fb7f1e73-183f-4041-907d-700e248ac5af"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cdbc2d28-ea35-47c6-af7e-07924e9d5794/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aff70d743-280e-476f-a3b8-92026419419d&unique=prints",
+  "collector_number": "28",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Benjamin Ee",
+  "artist_ids": [
+    "7bb27cca-e4ee-43b9-be92-a181c9164204"
+  ],
+  "illustration_id": "96518799-9f7c-412f-b9c7-bc3af605f0cb",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "ffx",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2300,
+  "prices": {
+    "usd": "0.71",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.75",
+    "eur_foil": null,
+    "tix": "9.07"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSummon%253A%2BYojimbo",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSummon%253A%2BYojimbo",
+    "edhrec": "https://edhrec.com/route/?cc=Summon%3A+Yojimbo"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631165%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824516&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140047?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

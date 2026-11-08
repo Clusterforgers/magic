@@ -1,0 +1,42 @@
+{
+  "oracle_id": "58d8ff36-4a4d-40e0-b812-3d23b2c7606a",
+  "name": "Chromium, the Mutable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chromium, the Mutable",
+      "oracle_fingerprint": "aaf5bea81c581c7385bd29c22e31f0a5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "SetCreatureTypes": ["Human"] },
+                    { "AddKeyword": "Hexproof" },
+                    "LoseAbilities"
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

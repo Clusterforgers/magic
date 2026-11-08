@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e2d21635-182f-4ebf-a6f5-d4c1fd7f9705",
+  "name": "Flamehold Grappler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamehold Grappler",
+      "oracle_fingerprint": "e791f6ea3ccf3f91ad9a7e3e29f43b0e",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "by": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

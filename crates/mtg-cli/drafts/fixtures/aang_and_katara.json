@@ -1,0 +1,168 @@
+{
+  "object": "card",
+  "id": "f333ea01-124f-4125-87ab-609be40e774c",
+  "oracle_id": "481c3e14-b670-4fab-aa9f-6ce5b514096d",
+  "multiverse_ids": [],
+  "resource_id": "58ACD177E4D9BEB41102AEF6D8A4AC23E2258EBCF439BEE60F363832B701947E",
+  "mtgo_id": 145714,
+  "arena_id": 98697,
+  "tcgplayer_id": 660705,
+  "cardmarket_id": 857395,
+  "name": "Aang and Katara",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/f333ea01-124f-4125-87ab-609be40e774c",
+  "scryfall_uri": "https://scryfall.com/card/tle/69/aang-and-katara?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.jpg?1783904838",
+    "normal": "https://cards.scryfall.io/normal/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.jpg?1783904838",
+    "large": "https://cards.scryfall.io/large/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.jpg?1783904838",
+    "png": "https://cards.scryfall.io/png/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.png?1783904838",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.jpg?1783904838",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.jpg?1783904838",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.webp?1783904838",
+    "grid": "https://cards.scryfall.io/grid/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.webp?1783904838",
+    "display": "https://cards.scryfall.io/display/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.webp?1783904838",
+    "art": "https://cards.scryfall.io/art/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.webp?1783904838",
+    "crop": "https://cards.scryfall.io/crop/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.webp?1783904838",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/3/f333ea01-124f-4125-87ab-609be40e774c.jpg?1783904838"
+  },
+  "mana_cost": "{3}{G}{W}{U}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Avatar Ally",
+  "oracle_text": "Whenever Aang and Katara enter or attack, create X 1/1 white Ally creature tokens, where X is the number of tapped artifacts and/or creatures you control.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "G",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f333ea01-124f-4125-87ab-609be40e774c",
+      "component": "combo_piece",
+      "name": "Aang and Katara",
+      "type_line": "Legendary Creature — Human Avatar Ally",
+      "uri": "https://api.scryfall.com/cards/f333ea01-124f-4125-87ab-609be40e774c"
+    },
+    {
+      "object": "related_card",
+      "id": "01439983-8394-4a0c-9e9e-92a3f1927fe3",
+      "component": "token",
+      "name": "Ally",
+      "type_line": "Token Creature — Ally",
+      "uri": "https://api.scryfall.com/cards/01439983-8394-4a0c-9e9e-92a3f1927fe3"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f333ea01-124f-4125-87ab-609be40e774c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A481c3e14-b670-4fab-aa9f-6ce5b514096d&unique=prints",
+  "collector_number": "69",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brian Yuen",
+  "artist_ids": [
+    "25ac6960-1226-4597-86b5-78840ace2c33"
+  ],
+  "illustration_id": "aac8d9f4-927a-442a-9d76-e763f58f5c6a",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted",
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 9220,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/avatar-the-last-airbender-magic-the-gathering-crossover-card-reveal-scene-box",
+    "previewed_at": "2025-10-29"
+  },
+  "prices": {
+    "usd": "7.27",
+    "usd_foil": "5.75",
+    "usd_etched": null,
+    "eur": "5.96",
+    "eur_foil": "5.81",
+    "tix": "2.19"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAang%2Band%2BKatara",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAang%2Band%2BKatara",
+    "edhrec": "https://edhrec.com/route/?cc=Aang+and+Katara"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F660705%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857395&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145714?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

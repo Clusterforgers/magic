@@ -1,0 +1,44 @@
+{
+  "oracle_id": "cd3d1e5d-db12-4878-92a2-23eb8d23eaf3",
+  "name": "Blazing Torch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blazing Torch",
+      "oracle_fingerprint": "3d4ffa29ff95f773ba3d3645f42a4974",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "AnyOf": [{ "Subtype": "Vampire" }, { "Subtype": "Zombie" }] }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", { "Sacrifice": { "filter": [{ "Is": "Granter" }] } }],
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [
+                      { "DealDamage": { "source": "Granter", "to": { "Target": 0 }, "amount": 2 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

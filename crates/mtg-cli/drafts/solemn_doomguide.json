@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c3e4a6ce-4a36-43a4-8e80-3c16a9101b79",
+  "name": "Solemn Doomguide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solemn Doomguide",
+      "oracle_fingerprint": "ef365eed6f4952ee713812fee25153c6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Cleric" },
+                    { "Subtype": "Rogue" },
+                    { "Subtype": "Warrior" },
+                    { "Subtype": "Wizard" }
+                  ]
+                },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Unearth": "{1}{B}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "79c9a963-a428-45f1-a647-5a91ef64286e",
+  "name": "Hired Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hired Giant",
+      "oracle_fingerprint": "82c028946c8f9ece2eeb0760950f61a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Type": "Land" }],
+                              "as": "found2"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

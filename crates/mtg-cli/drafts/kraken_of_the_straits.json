@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c282581f-3d77-47ce-ac92-ed6217754e38",
+  "name": "Kraken of the Straits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kraken of the Straits",
+      "oracle_fingerprint": "54e322287bba200ef06c85693b05b2b1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  {
+                    "Compare": {
+                      "stat": "Power",
+                      "op": "Le",
+                      "to": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

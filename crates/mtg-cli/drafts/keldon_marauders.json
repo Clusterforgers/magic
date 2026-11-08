@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e05b850f-24cd-42b9-bc4f-0f05f9aea679",
+  "name": "Keldon Marauders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keldon Marauders",
+      "oracle_fingerprint": "fd8986da7754295285730a2df43b1da6",
+      "abilities": [
+        { "Keyword": { "Vanishing": 2 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

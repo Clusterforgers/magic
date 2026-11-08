@@ -1,0 +1,27 @@
+{
+  "oracle_id": "180efbd4-0f77-41cc-8ae2-2e6ccf853d10",
+  "name": "Archon of the Wild Rose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archon of the Wild Rose",
+      "oracle_fingerprint": "83b8de31458e1ea0ee0ada8156698afb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                "Other",
+                { "HasAttached": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+              ]
+            },
+            "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }, { "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

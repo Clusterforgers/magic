@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d360ce89-d80d-4be6-be8c-7e7758cd5840",
+  "name": "Loathsome Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loathsome Troll",
+      "oracle_fingerprint": "7bf136c9fdb1b6144fa467d2068262f2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

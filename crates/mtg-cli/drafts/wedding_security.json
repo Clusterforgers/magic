@@ -1,0 +1,33 @@
+{
+  "oracle_id": "86360908-6b8b-4c1c-9e10-4f3d389aaa3e",
+  "name": "Wedding Security",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wedding Security",
+      "oracle_fingerprint": "548e3efff76da6c92ab223d6df227694",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Blood" }, "Token", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Blood" }, "Token"] } }],
+                  "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

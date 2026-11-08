@@ -1,0 +1,83 @@
+{
+  "oracle_id": "68cf7415-b434-4284-89b4-c7d44a003eb8",
+  "name": "Saheeli, Filigree Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saheeli, Filigree Master",
+      "oracle_fingerprint": "421b1991d706dcd6eace362886d0fed8",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Scry": {} },
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": [{ "Type": "Artifact" }] } }],
+                  "paid": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2,
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                      }
+                    },
+                    {
+                      "CostModifier": {
+                        "applies_to": ["Spell", { "Type": "Artifact" }, { "ControlledBy": "You" }],
+                        "change": "Reduce",
+                        "mana": "{1}"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

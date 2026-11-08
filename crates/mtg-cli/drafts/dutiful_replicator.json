@@ -1,0 +1,45 @@
+{
+  "oracle_id": "46670c03-d7eb-489f-ba1a-c7f805c486d2",
+  "name": "Dutiful Replicator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dutiful Replicator",
+      "oracle_fingerprint": "e7bc640525ed49ba159122ffd3ebebeb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                "Token",
+                                { "ControlledBy": "You" },
+                                { "Not": { "Named": "Dutiful Replicator" } }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

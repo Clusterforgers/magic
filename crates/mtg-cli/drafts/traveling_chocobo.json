@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2e5675d3-3fb0-43b5-a65c-95aacbe48bf9",
+  "name": "Traveling Chocobo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traveling Chocobo",
+      "oracle_fingerprint": "e97788295c1dcb7f179ebc451783e48b",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["TopOfLibrary", { "AnyOf": [{ "Subtype": "Bird" }, { "Type": "Land" }] }],
+                "from": "Library",
+                "play": true
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "ZoneChange": {
+                    "what": [
+                      { "AnyOf": [{ "Type": "Land" }, { "Subtype": "Bird" }] },
+                      { "ControlledBy": "You" }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

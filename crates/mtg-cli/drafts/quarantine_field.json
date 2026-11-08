@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f8b07b1a-f9fb-427d-a5c8-b65a01f7b079",
+  "name": "Quarantine Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quarantine Field",
+      "oracle_fingerprint": "c284ab990e0c8803f56454a6a0af80ce",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "isolation" }, "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Counters": { "on": "This", "counter": { "Other": "isolation" } } }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ad225ec2-ff3a-48f6-81a7-dfdd1b75e1f7",
+  "name": "Legion Leadership // Legion Stronghold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion Leadership",
+      "oracle_fingerprint": "c9423e44dd215fc4856ab889af5e0d88",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Legion Stronghold",
+      "oracle_fingerprint": "d4aec84051741d694f319bd940388d83",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

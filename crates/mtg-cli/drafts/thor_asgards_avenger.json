@@ -1,0 +1,33 @@
+{
+  "oracle_id": "44c2fefb-5de3-4406-955a-3fabc46357d0",
+  "name": "Thor, Asgard's Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thor, Asgard's Avenger",
+      "oracle_fingerprint": "12a180bf4f59bc26af876f65d1298c36",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": "Opponents", "source": ["Other", { "ControlledBy": "You" }] }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "ControlledBy": "Opponents" }] },
+                "source": ["Other", { "ControlledBy": "You" }]
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

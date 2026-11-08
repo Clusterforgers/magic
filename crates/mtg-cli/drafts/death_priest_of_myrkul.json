@@ -1,0 +1,71 @@
+{
+  "oracle_id": "af231505-bd2e-4499-9fd5-f761dde2ecef",
+  "name": "Death-Priest of Myrkul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death-Priest of Myrkul",
+      "oracle_fingerprint": "c2c877db656fcbb550364246b1490697",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Zombie" },
+                    { "Subtype": "Skeleton" },
+                    { "Subtype": "Vampire" }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Skeleton",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Skeleton"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

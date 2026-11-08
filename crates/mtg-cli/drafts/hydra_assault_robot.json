@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a2558476-5506-4a09-93fc-b8ab33c98985",
+  "name": "HYDRA Assault Robot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "HYDRA Assault Robot",
+      "oracle_fingerprint": "55047ce12437ad5948bb2c6d0e2f987a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Villain" }, { "Type": "Artifact" }] },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

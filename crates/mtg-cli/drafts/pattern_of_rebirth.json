@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4b8856f8-3cd1-450c-a71b-eb0026e8e179",
+  "name": "Pattern of Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pattern of Rebirth",
+      "oracle_fingerprint": "35609cc04ee43290fe0763b13db2ee0f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": "Triggering" },
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": "Triggering" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

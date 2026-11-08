@@ -1,0 +1,31 @@
+{
+  "oracle_id": "adbc8970-1bbc-4f30-9a2e-eebaf074eae6",
+  "name": "Thelonite Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thelonite Druid",
+      "oracle_fingerprint": "5068a028a70994c20a834f80c973ce62",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{G}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "SetPT": { "power": 2, "toughness": 3 } }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

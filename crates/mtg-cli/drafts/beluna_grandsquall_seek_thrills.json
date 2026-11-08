@@ -1,0 +1,46 @@
+{
+  "oracle_id": "06374e6d-62fa-4833-81cd-b4d0a35e7365",
+  "name": "Beluna Grandsquall // Seek Thrills",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beluna Grandsquall",
+      "oracle_fingerprint": "f7bbb5e228bbd07bde159371e4d824eb",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "HasAdventure", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seek Thrills",
+      "oracle_fingerprint": "9e2fafd3905437a1e50a80ecb4e5bd3b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 7, "as": "milled" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      "HasAdventure",
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "e48951ed-1c32-449a-898e-e5b1c0d0ee73",
+  "name": "Magus of the Bridge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Bridge",
+      "oracle_fingerprint": "0e5c50fd34e711e9478737de77ee96f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Not": "Token" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "OwnedBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Exile": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

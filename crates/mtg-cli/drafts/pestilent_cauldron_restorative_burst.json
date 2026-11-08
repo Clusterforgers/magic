@@ -1,0 +1,111 @@
+{
+  "oracle_id": "78780f37-f215-4ae1-adce-6255b0146873",
+  "name": "Pestilent Cauldron // Restorative Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pestilent Cauldron",
+      "oracle_fingerprint": "a2235ad65d2d21a779d835964e3e2a14",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Discard": {} }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pest",
+                      "colors": ["Black", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pest"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [{ "GainLife": { "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "Mill": {
+                  "who": "Opponents",
+                  "count": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 4, "max": 4 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restorative Burst",
+      "oracle_fingerprint": "a481291753072753cec6c32a55d3b51c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Creature" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "GainLife": { "who": "EachPlayer", "amount": 4 } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "eaca2576-020b-4af4-b348-6d1b56116c41",
+  "name": "Body Launderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Body Launderer",
+      "oracle_fingerprint": "a362dfe9b0fd5447bf75c5561065d1d4",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": "Token" },
+                  "Other"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    { "OwnedBy": "You" },
+                    { "Not": { "Subtype": "Rogue" } },
+                    "Other",
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

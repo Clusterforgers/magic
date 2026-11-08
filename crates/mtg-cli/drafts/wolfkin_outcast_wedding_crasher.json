@@ -1,0 +1,76 @@
+{
+  "oracle_id": "ac3d07cd-88c4-4e22-9d86-f92d34f406d4",
+  "name": "Wolfkin Outcast // Wedding Crasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolfkin Outcast",
+      "oracle_fingerprint": "438a73799cc8178aa0f737d1094305f7",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Wedding Crasher",
+      "oracle_fingerprint": "0037019347c8623b6cd060fa197afc76",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Wolf" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Werewolf" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": "Nightbound" }
+      ]
+    }
+  ]
+}

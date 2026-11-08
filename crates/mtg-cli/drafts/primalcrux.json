@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8fa6e2fb-3b92-466a-a2cd-b1e5e9a4bf23",
+  "name": "Primalcrux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primalcrux",
+      "oracle_fingerprint": "ea5a62e7ad7760a2e7e4b7ad93ee86df",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Devotion": ["Green"] },
+                  "toughness": { "Devotion": ["Green"] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

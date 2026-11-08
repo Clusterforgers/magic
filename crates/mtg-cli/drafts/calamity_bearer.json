@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b3f7c4ac-b788-4307-9bc3-d99ce310e07c",
+  "name": "Calamity Bearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calamity Bearer",
+      "oracle_fingerprint": "0d4dea7f78d2bd606f355ed2376e67e2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "Subtype": "Giant" }, { "ControlledBy": "You" }] } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

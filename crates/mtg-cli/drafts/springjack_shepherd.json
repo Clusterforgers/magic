@@ -1,0 +1,35 @@
+{
+  "oracle_id": "325b3469-531e-4ca2-bccb-bb95258c1b54",
+  "name": "Springjack Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Springjack Shepherd",
+      "oracle_fingerprint": "53b546257e34bcbd46ad60d5e7b8a443",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goat"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Devotion": ["White"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

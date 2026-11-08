@@ -1,0 +1,24 @@
+{
+  "oracle_id": "6f885041-3e57-4a69-84f2-fd207ff9f31b",
+  "name": "Null Brooch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Null Brooch",
+      "oracle_fingerprint": "aea802a420a80cbe95f14544e176f396",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ],
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

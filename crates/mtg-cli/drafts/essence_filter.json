@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b9f63388-d1ac-4895-84c5-e5b1db187463",
+  "name": "Essence Filter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Filter",
+      "oracle_fingerprint": "4be85832a069679cc33feb5fcf7f5b74",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Either": {
+                  "first": [{ "Destroy": { "what": { "Each": [{ "Type": "Enchantment" }] } } }],
+                  "second": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [{ "Type": "Enchantment" }, { "Not": { "Color": "White" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

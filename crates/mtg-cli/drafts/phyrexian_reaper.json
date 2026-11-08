@@ -1,0 +1,24 @@
+{
+  "oracle_id": "245c3681-fc47-47fe-b6e5-34c96315c135",
+  "name": "Phyrexian Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Reaper",
+      "oracle_fingerprint": "8b71b8c6fde136d4b782d774270c172f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [{ "Type": "Creature" }, { "Color": "Green" }]
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Dealer", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

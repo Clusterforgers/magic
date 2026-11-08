@@ -1,0 +1,59 @@
+{
+  "oracle_id": "26e92eb8-7a23-4e7e-be83-244bb6078606",
+  "name": "Captain America, Liberator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain America, Liberator",
+      "oracle_fingerprint": "12b06de4ae65cb2362b644c3a7b642cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Subtype": "Equipment" },
+                          { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

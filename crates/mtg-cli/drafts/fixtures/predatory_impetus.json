@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "5835dfda-7e61-4aa8-acc3-d9b812c1c656",
+  "oracle_id": "87f22ec6-6668-4e15-b38c-fa1ac0292c6b",
+  "multiverse_ids": [
+    651907
+  ],
+  "mtgo_id": 123128,
+  "tcgplayer_id": 534593,
+  "cardmarket_id": 752636,
+  "name": "Predatory Impetus",
+  "lang": "en",
+  "released_at": "2024-02-23",
+  "uri": "https://api.scryfall.com/cards/5835dfda-7e61-4aa8-acc3-d9b812c1c656",
+  "scryfall_uri": "https://scryfall.com/card/clu/172/predatory-impetus?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:15:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.jpg?1783912528",
+    "normal": "https://cards.scryfall.io/normal/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.jpg?1783912528",
+    "large": "https://cards.scryfall.io/large/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.jpg?1783912528",
+    "png": "https://cards.scryfall.io/png/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.png?1783912528",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.jpg?1783912528",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.jpg?1783912528",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.webp?1783912528",
+    "grid": "https://cards.scryfall.io/grid/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.webp?1783912528",
+    "display": "https://cards.scryfall.io/display/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.webp?1783912528",
+    "art": "https://cards.scryfall.io/art/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.webp?1783912528",
+    "crop": "https://cards.scryfall.io/crop/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.webp?1783912528",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/8/5835dfda-7e61-4aa8-acc3-d9b812c1c656.jpg?1783912528"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +3/+3, must be blocked if able, and is goaded. (It attacks each combat if able and attacks a player other than you if able.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Goad",
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set": "clu",
+  "set_name": "Ravnica: Clue Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5835dfda-7e61-4aa8-acc3-d9b812c1c656/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A87f22ec6-6668-4e15-b38c-fa1ac0292c6b&unique=prints",
+  "collector_number": "172",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Vargas",
+  "artist_ids": [
+    "d20672ca-0555-4238-a984-fd171d36b247"
+  ],
+  "illustration_id": "2b1481b9-7baf-4679-85aa-670184f1fd41",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13864,
+  "prices": {
+    "usd": "0.13",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": null,
+    "tix": "0.01"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=651907&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPredatory%2BImpetus",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPredatory%2BImpetus",
+    "edhrec": "https://edhrec.com/route/?cc=Predatory+Impetus"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F534593%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=752636&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/123128?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

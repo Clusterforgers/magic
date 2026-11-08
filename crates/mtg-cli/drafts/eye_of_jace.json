@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c8f802ad-4621-4f71-b52d-fbc55853dc88",
+  "name": "Eye of Jace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye of Jace",
+      "oracle_fingerprint": "d370d4f4b60864fc5076a8d84d5ef906",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Surveil": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

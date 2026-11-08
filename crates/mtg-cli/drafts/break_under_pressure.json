@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8dd23c50-cc84-4064-89cd-8d52fbfbd4ab",
+  "name": "Break Under Pressure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Break Under Pressure",
+      "oracle_fingerprint": "fe5359bb7aeee1b805eb825399232450",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": {
+                          "Greatest": {
+                            "of": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              { "ControlledBy": { "Target": 0 } }
+                            ],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

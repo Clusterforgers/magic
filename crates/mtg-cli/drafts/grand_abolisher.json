@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c749f23c-40c0-4159-b84c-a70cbb062c14",
+  "name": "Grand Abolisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grand Abolisher",
+      "oracle_fingerprint": "3d2737d202cf5921baa0ce23e531c55f",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

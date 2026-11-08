@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4107d0e3-608b-4024-b433-40c5d8b63549",
+  "name": "Zealot il-Vec",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zealot il-Vec",
+      "oracle_fingerprint": "843a1bf4df35a6db9d90d873ed7887bf",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

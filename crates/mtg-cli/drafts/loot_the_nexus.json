@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a99ce9db-9b7d-45a0-bee7-0875fc62ca48",
+  "name": "Loot, the Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loot, the Nexus",
+      "oracle_fingerprint": "0f8c3d69672eca877a63d436dc6c57d7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": {
+                      "Distinct": {
+                        "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "stat": "Power"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

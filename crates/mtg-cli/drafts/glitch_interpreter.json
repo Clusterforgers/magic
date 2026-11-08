@@ -1,0 +1,46 @@
+{
+  "oracle_id": "cf2c507a-41b4-457b-bbe8-edcdfcc681ac",
+  "name": "Glitch Interpreter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glitch Interpreter",
+      "oracle_fingerprint": "6d328e4a93fc841815b24fb145038480",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["FaceDown", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand" } },
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, "Colorless", { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

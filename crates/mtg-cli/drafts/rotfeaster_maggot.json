@@ -1,0 +1,27 @@
+{
+  "oracle_id": "67d0df0f-37d1-46da-b1c3-4fc9d1e3cc05",
+  "name": "Rotfeaster Maggot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rotfeaster Maggot",
+      "oracle_fingerprint": "9abb522fa8fe0779efa8d95fcd6681e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

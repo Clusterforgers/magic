@@ -1,0 +1,28 @@
+{
+  "oracle_id": "95f05f77-bdc3-4799-910b-5ca7ffadffe3",
+  "name": "Cephalid Shrine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Shrine",
+      "oracle_fingerprint": "6f12bc4387f1efef3c519474224b054f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{1}",
+                  "times": { "Count": [{ "SharesName": "Triggering" }, { "In": "Graveyard" }] },
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

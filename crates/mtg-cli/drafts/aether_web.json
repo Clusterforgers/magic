@@ -1,0 +1,30 @@
+{
+  "oracle_id": "97e7778f-971c-4425-8f6d-f4ff3fae000f",
+  "name": "Aether Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Web",
+      "oracle_fingerprint": "16b07b9714fbc6a2d1c856d21a880af3",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Reach" }]
+          }
+        },
+        { "Rule": { "rule": { "Combat": { "who": "Attached", "quirk": "BlockIgnoringShadow" } } } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Is": "Attached" }, { "HasKeyword": "Shadow" }]
+            },
+            "mods": ["CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

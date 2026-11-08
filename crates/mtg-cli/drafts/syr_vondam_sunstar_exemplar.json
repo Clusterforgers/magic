@@ -1,0 +1,70 @@
+{
+  "oracle_id": "9e597063-c077-4236-a9e4-b0721b24677f",
+  "name": "Syr Vondam, Sunstar Exemplar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syr Vondam, Sunstar Exemplar",
+      "oracle_fingerprint": "cd94ca58f0440c033b9daa37d4a17dbd",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": ["This", { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": ["This", { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "oracle_id": "bcbe879a-4609-4493-bd7d-47c26d27e83c",
+  "name": "Bandit's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bandit's Talent",
+      "oracle_fingerprint": "c9399c73ee622b9071fe5f75f7401925",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": [{ "Discard": { "filter": [{ "Not": { "Type": "Land" } }] } }],
+                  "unpaid": [{ "Discard": { "who": "Opponents", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "All": [
+                { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                    "op": "Le",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "effects": [
+              {
+                "Draw": {
+                  "who": "Triggering",
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                            "op": "Le",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

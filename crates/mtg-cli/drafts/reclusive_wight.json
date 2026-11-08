@@ -1,0 +1,26 @@
+{
+  "oracle_id": "dbde53c1-c6b7-4775-87d3-e95166392e60",
+  "name": "Reclusive Wight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reclusive Wight",
+      "oracle_fingerprint": "e2b3ece20ca0b6fa2d1a4ff90ada2be6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

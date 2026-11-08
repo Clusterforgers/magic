@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8b1fc306-0d8f-4edb-b197-2e99f10c599e",
+  "name": "Boing!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boing!",
+      "oracle_fingerprint": "b9b751276c44b9e9f5cc0f38ba2a12ac",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 3,
+                      "effects": [{ "Scry": { "count": { "DieResult": "Only" } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

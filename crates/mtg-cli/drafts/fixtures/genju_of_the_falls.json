@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "c6ba3a2f-0224-4ace-bb49-8dc41b34fb57",
+  "oracle_id": "c546747a-1935-4c59-a45f-cad7da41fe38",
+  "multiverse_ids": [
+    442048
+  ],
+  "mtgo_id": 67032,
+  "mtgo_foil_id": 67033,
+  "tcgplayer_id": 161814,
+  "cardmarket_id": 319476,
+  "name": "Genju of the Falls",
+  "lang": "en",
+  "released_at": "2018-03-16",
+  "uri": "https://api.scryfall.com/cards/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57",
+  "scryfall_uri": "https://scryfall.com/card/a25/59/genju-of-the-falls?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:32:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.jpg?1783935178",
+    "normal": "https://cards.scryfall.io/normal/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.jpg?1783935178",
+    "large": "https://cards.scryfall.io/large/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.jpg?1783935178",
+    "png": "https://cards.scryfall.io/png/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.png?1783935178",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.jpg?1783935178",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.jpg?1783935178",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.webp?1783935178",
+    "grid": "https://cards.scryfall.io/grid/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.webp?1783935178",
+    "display": "https://cards.scryfall.io/display/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.webp?1783935178",
+    "art": "https://cards.scryfall.io/art/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.webp?1783935178",
+    "crop": "https://cards.scryfall.io/crop/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.webp?1783935178",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/6/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57.jpg?1783935178"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant Island\n{2}: Enchanted Island becomes a 3/2 blue Spirit creature with flying until end of turn. It's still a land.\nWhen enchanted Island is put into a graveyard, you may return this card from your graveyard to your hand.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41ee6e2f-69b3-4c53-8a8e-960f5e974cfc",
+  "set": "a25",
+  "set_name": "Masters 25",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41ee6e2f-69b3-4c53-8a8e-960f5e974cfc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aa25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/a25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c6ba3a2f-0224-4ace-bb49-8dc41b34fb57/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac546747a-1935-4c59-a45f-cad7da41fe38&unique=prints",
+  "collector_number": "59",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "set",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Glen Angus",
+  "artist_ids": [
+    "7be3b9e4-de9b-4a3d-884e-e67b9681d409"
+  ],
+  "illustration_id": "32fb0bfa-5a92-4987-b177-1af06e631b65",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26040,
+  "penny_rank": 14956,
+  "prices": {
+    "usd": "0.13",
+    "usd_foil": "0.20",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.25",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=442048&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGenju%2Bof%2Bthe%2BFalls",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGenju%2Bof%2Bthe%2BFalls",
+    "edhrec": "https://edhrec.com/route/?cc=Genju+of+the+Falls"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F161814%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=319476&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/67032?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5b84101e-7e23-437d-835c-409bc061ecbb",
+  "name": "Canopy Cover",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canopy Cover",
+      "oracle_fingerprint": "38aec94f9110700926e31597e0e00213",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Not": { "HasKeyword": "Flying" } },
+                  { "Not": { "HasKeyword": "Reach" } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Attached",
+                "action": { "BeTargeted": [{ "ControlledBy": "Opponents" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

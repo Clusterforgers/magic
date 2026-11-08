@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3d713c11-36a7-4b19-8c42-a9b61ef5902c",
+  "name": "Thundering Raiju",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thundering Raiju",
+      "oracle_fingerprint": "6d0ca048a2b926a9f9f2a37401bfde79",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      "Other",
+                      { "ControlledBy": "You" },
+                      "Modified"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

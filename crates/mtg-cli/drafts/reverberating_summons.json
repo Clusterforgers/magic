@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1fd78bf7-43ba-4e09-834b-14bfc1fd9d0d",
+  "name": "Reverberating Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reverberating Summons",
+      "oracle_fingerprint": "c3a40ae09a1ebbb167df7cd5c7cc9dce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "AddSubtype": "Monk" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              "SacrificeSelf"
+            ],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

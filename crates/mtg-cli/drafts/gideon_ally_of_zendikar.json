@@ -1,0 +1,81 @@
+{
+  "oracle_id": "51eae7ff-fed9-4afe-8053-7690379449dd",
+  "name": "Gideon, Ally of Zendikar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon, Ally of Zendikar",
+      "oracle_fingerprint": "5b656bbc2dbf12ff777a2d478ed53f87",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "AddSubtype": "Human" },
+                    { "AddSubtype": "Soldier" },
+                    { "AddSubtype": "Ally" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight", "Ally"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

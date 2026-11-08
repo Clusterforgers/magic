@@ -1,0 +1,73 @@
+{
+  "oracle_id": "818292cc-6261-47e4-b573-d92f03da6ded",
+  "name": "Consuming Blob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consuming Blob",
+      "oracle_fingerprint": "7294c645c960966afb1ad3fd7bce3a0a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "CardTypes": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "toughness": {
+                    "Sum": [{ "CardTypes": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }, 1]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ooze",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ooze"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "CardTypes": [{ "OwnedBy": "You" }, { "In": "Graveyard" }]
+                                  },
+                                  "toughness": {
+                                    "Sum": [
+                                      { "CardTypes": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                                      1
+                                    ]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

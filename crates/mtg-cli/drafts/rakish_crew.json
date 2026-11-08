@@ -1,0 +1,84 @@
+{
+  "oracle_id": "ddf34404-39dd-4dcf-a706-ec78d47167e9",
+  "name": "Rakish Crew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakish Crew",
+      "oracle_fingerprint": "2ea6403421478edee800d59025a220ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mercenary",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Mercenary"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "timing": "Sorcery",
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            ],
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Assassin" },
+                      { "Subtype": "Mercenary" },
+                      { "Subtype": "Pirate" },
+                      { "Subtype": "Rogue" },
+                      { "Subtype": "Warlock" }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

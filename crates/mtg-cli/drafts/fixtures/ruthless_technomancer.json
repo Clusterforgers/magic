@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "dddeb5cc-b535-4484-8a0e-ce32c4c09000",
+  "oracle_id": "4e58ad76-37c7-4531-b207-6890b39a2679",
+  "multiverse_ids": [
+    553584
+  ],
+  "mtgo_id": 97750,
+  "tcgplayer_id": 262837,
+  "cardmarket_id": 608834,
+  "name": "Ruthless Technomancer",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/dddeb5cc-b535-4484-8a0e-ce32c4c09000",
+  "scryfall_uri": "https://scryfall.com/card/nec/35/ruthless-technomancer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:26:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.jpg?1783923986",
+    "normal": "https://cards.scryfall.io/normal/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.jpg?1783923986",
+    "large": "https://cards.scryfall.io/large/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.jpg?1783923986",
+    "png": "https://cards.scryfall.io/png/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.png?1783923986",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.jpg?1783923986",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.jpg?1783923986",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.webp?1783923986",
+    "grid": "https://cards.scryfall.io/grid/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.webp?1783923986",
+    "display": "https://cards.scryfall.io/display/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.webp?1783923986",
+    "art": "https://cards.scryfall.io/art/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.webp?1783923986",
+    "crop": "https://cards.scryfall.io/crop/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.webp?1783923986",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/d/dddeb5cc-b535-4484-8a0e-ce32c4c09000.jpg?1783923986"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "When this creature enters, you may sacrifice another creature you control. If you do, create a number of Treasure tokens equal to that creature's power.\n{2}{B}, Sacrifice X artifacts: Return target creature card with power X or less from your graveyard to the battlefield. X can't be 0.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6911181d-573b-41eb-96a4-799c96e008fc",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/6911181d-573b-41eb-96a4-799c96e008fc"
+    },
+    {
+      "object": "related_card",
+      "id": "b6f8e7b9-d90b-40a5-88f4-4edfae0d01f7",
+      "component": "combo_piece",
+      "name": "Ruthless Technomancer",
+      "type_line": "Creature — Human Wizard",
+      "uri": "https://api.scryfall.com/cards/b6f8e7b9-d90b-40a5-88f4-4edfae0d01f7"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set": "nec",
+  "set_name": "Neon Dynasty Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anec&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nec?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dddeb5cc-b535-4484-8a0e-ce32c4c09000/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4e58ad76-37c7-4531-b207-6890b39a2679&unique=prints",
+  "collector_number": "35",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "PINDURSKI",
+  "artist_ids": [
+    "f333a7f0-7330-40e9-8c58-667eea2f0f60"
+  ],
+  "illustration_id": "c36319bc-8974-4299-828e-a5fd15c84cee",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2090,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1285955562",
+    "previewed_at": "2022-02-03"
+  },
+  "prices": {
+    "usd": "2.78",
+    "usd_foil": "11.91",
+    "usd_etched": null,
+    "eur": "2.63",
+    "eur_foil": "5.15",
+    "tix": "8.83"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=553584&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRuthless%2BTechnomancer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRuthless%2BTechnomancer",
+    "edhrec": "https://edhrec.com/route/?cc=Ruthless+Technomancer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262837%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=608834&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97750?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

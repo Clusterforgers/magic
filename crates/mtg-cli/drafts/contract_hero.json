@@ -1,0 +1,62 @@
+{
+  "oracle_id": "a5c9b167-5824-4fc8-ba7a-ffa64363c029",
+  "name": "Contract Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contract Hero",
+      "oracle_fingerprint": "4885cfe9862d41d003098b3a98f59668",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                        "paid": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Discard": {} }],
+                        "paid": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

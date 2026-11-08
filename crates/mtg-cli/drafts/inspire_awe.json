@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9ca539cd-9876-4c13-b220-d553c17f2378",
+  "name": "Inspire Awe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspire Awe",
+      "oracle_fingerprint": "6dca2befd5a7184e5e9dc2b2cf546b3f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [
+                        { "Type": "Creature" },
+                        { "Not": { "HasAttached": [{ "Subtype": "Aura" }] } },
+                        { "Not": { "Type": "Enchantment" } }
+                      ],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Scry": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "354a7376-fb4b-424d-8964-93727302dccb",
+  "name": "Immersturm Skullcairn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immersturm Skullcairn",
+      "oracle_fingerprint": "7e4d8d9a1780e4336914707b21462085",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}{R}{R}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "Discard": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

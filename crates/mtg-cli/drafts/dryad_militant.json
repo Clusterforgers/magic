@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b8ca5877-ac9e-4b15-8c23-c70f61b01895",
+  "name": "Dryad Militant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dryad Militant",
+      "oracle_fingerprint": "dc9b75fb322d69b48431c008a145c0c8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

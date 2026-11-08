@@ -1,0 +1,57 @@
+{
+  "oracle_id": "098bbee7-df65-4167-9c65-ffa14fc0c6cc",
+  "name": "Whipgrass Entangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whipgrass Entangler",
+      "oracle_fingerprint": "77c94ed84fdaf819cd0f4e0398f050a0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Rule": {
+                          "rule": {
+                            "AttackTax": {
+                              "who": "EachPlayer",
+                              "attacked": "Both",
+                              "attackers": [{ "Is": "This" }],
+                              "mana": "{1}",
+                              "per": { "Count": [{ "Subtype": "Cleric" }] }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "GrantAbility": {
+                        "Rule": {
+                          "rule": {
+                            "BlockTax": {
+                              "blockers": ["This"],
+                              "mana": "{1}",
+                              "per": { "Count": [{ "Subtype": "Cleric" }] }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

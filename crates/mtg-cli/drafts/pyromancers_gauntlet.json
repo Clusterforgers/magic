@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5cbb70e7-a52c-4b35-bc31-d9a0a7df893c",
+  "name": "Pyromancer's Gauntlet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyromancer's Gauntlet",
+      "oracle_fingerprint": "a2af6fcec5b1734d238b75dba1c5fc37",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Instant" },
+                      { "Type": "Sorcery" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  { "ControlledBy": "You" },
+                  { "Color": "Red" }
+                ]
+              }
+            },
+            "by": { "Add": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

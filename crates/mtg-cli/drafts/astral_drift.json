@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7aa5db50-5057-45fd-bce9-fb4a5e874263",
+  "name": "Astral Drift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astral Drift",
+      "oracle_fingerprint": "d06b9bcf6165a803b537a7a2dbc0cb04",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Cycled": { "what": ["This"] } },
+                { "Cycled": { "what": ["Other"], "by": "You" } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{W}" } }
+      ]
+    }
+  ]
+}

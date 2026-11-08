@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e4f44a37-1e66-4f60-9af2-1e67ba58445b",
+  "name": "Gore Vassal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gore Vassal",
+      "oracle_fingerprint": "3fb3466217d9c4e1093a7e14b2a9724e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Regenerate": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

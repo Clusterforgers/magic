@@ -1,0 +1,84 @@
+{
+  "oracle_id": "1e825298-7c99-40cc-81c9-280cc7ed98d3",
+  "name": "Mu Yanling, Sky Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mu Yanling, Sky Dancer",
+      "oracle_fingerprint": "9d09ad2c411a58ab6720d612155f96b2",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental Bird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental", "Bird"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Activated": { "cost": ["Tap"], "effects": [{ "Draw": {} }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

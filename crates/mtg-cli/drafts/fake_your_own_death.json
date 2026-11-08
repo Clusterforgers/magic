@@ -1,0 +1,57 @@
+{
+  "oracle_id": "ad01df89-29fe-44c7-a133-91425f8ff09c",
+  "name": "Fake Your Own Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fake Your Own Death",
+      "oracle_fingerprint": "c12639906db0c8963bd503f2b5cd5fe3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "This",
+                                "to": { "Battlefield": { "tapped": true } }
+                              }
+                            },
+                            { "CreateToken": { "token": { "Named": "treasure" } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

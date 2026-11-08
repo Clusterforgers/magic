@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cbf0190a-198b-49cc-8c79-4028da07fa77",
+  "name": "Veiled Ascension",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veiled Ascension",
+      "oracle_fingerprint": "e89c10ac6748d5eeb70c7f961374c609",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }] },
+                  "counter": { "Other": "flying" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }] }
+            },
+            "by": { "WithCounters": { "counter": { "Other": "flying" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "May": { "effects": [{ "Cloak": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

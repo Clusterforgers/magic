@@ -1,0 +1,24 @@
+{
+  "oracle_id": "66290104-ac65-4eb5-bf00-89b944249e07",
+  "name": "Neriv, Heart of the Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neriv, Heart of the Storm",
+      "oracle_fingerprint": "732d1d42dd7cc1bed4a0233abe8ebe7e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "EnteredThisTurn"]
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ce7d672a-7cb9-40e5-a8ad-dd3ce0f8ecd3",
+  "name": "Crazed Armodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crazed Armodon",
+      "oracle_fingerprint": "46a5bcf1a40e8f0c5bc65c125313e9de",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Destroy": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

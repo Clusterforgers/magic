@@ -1,0 +1,35 @@
+{
+  "oracle_id": "79af045e-2c73-4003-8f62-b8611a225f08",
+  "name": "Bonds of Faith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonds of Faith",
+      "oracle_fingerprint": "662a483205cfb55ea962444afa668557",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Human" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Is": "Attached" },
+                { "Not": { "Subtype": "Human" } }
+              ]
+            },
+            "mods": ["CantAttack", "CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

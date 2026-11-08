@@ -1,0 +1,36 @@
+{
+  "oracle_id": "139574fd-c61b-4615-9200-59f2c65f5703",
+  "name": "Stunning Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stunning Strike",
+      "oracle_fingerprint": "ff0f89a790af61e6f7e304fda8520f67",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": "Attached" } },
+              { "RemoveFromCombat": { "what": "Attached" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "Supertype": "Legendary" } },
+                { "Is": "Attached" }
+              ]
+            },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

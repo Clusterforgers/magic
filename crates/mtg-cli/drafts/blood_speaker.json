@@ -1,0 +1,48 @@
+{
+  "oracle_id": "2659c0ea-9ae0-4be3-b9f7-5a38230815ad",
+  "name": "Blood Speaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Speaker",
+      "oracle_fingerprint": "df9128f0547fca4001cb8e303c12bb60",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Demon" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

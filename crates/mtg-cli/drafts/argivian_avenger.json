@@ -1,0 +1,79 @@
+{
+  "oracle_id": "d215cd4a-412c-4632-ab2d-de51103e6a7d",
+  "name": "Argivian Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Argivian Avenger",
+      "oracle_fingerprint": "67e763b4fbc9019eefb496fe7621ddb1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Vigilance" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Continuous": {
+                                    "affected": "This",
+                                    "mods": [{ "AddKeyword": "Deathtouch" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "Continuous": {
+                                    "affected": "This",
+                                    "mods": [{ "AddKeyword": "Haste" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

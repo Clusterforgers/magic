@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1f4743ed-4e91-4344-9409-c8ede5c4804d",
+  "name": "Bloodspore Thrinax",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodspore Thrinax",
+      "oracle_fingerprint": "d958afb4fa5395ddf4f57e585cac05c3",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

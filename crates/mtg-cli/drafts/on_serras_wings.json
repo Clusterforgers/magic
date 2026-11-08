@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f43584de-4f60-46e6-9e6b-e704bc3ecd59",
+  "name": "On Serra's Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "On Serra's Wings",
+      "oracle_fingerprint": "1b534b6a7baeab27b06d63147f28a200",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Lifelink" },
+              { "AddSupertype": "Legendary" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

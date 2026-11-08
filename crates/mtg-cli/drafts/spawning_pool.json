@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f3bf22cf-0a6f-4fb6-ba82-63ce290308d6",
+  "name": "Spawning Pool",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spawning Pool",
+      "oracle_fingerprint": "e43169f37424afa816c528e0617d2ae9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "SetColors": ["Black"] },
+                    { "AddSubtype": "Skeleton" },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{B}",
+                          "effects": [{ "Regenerate": { "what": "This" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d2458d63-c627-4e75-8bda-23bca38cae93",
+  "name": "Psychic Possession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Possession",
+      "oracle_fingerprint": "c924b48e8cf15abab64bfba65122a769",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": { "opponent": true } } },
+        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } } } },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "AttachedPlayer" } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

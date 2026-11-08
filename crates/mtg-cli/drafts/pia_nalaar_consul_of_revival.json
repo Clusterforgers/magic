@@ -1,0 +1,54 @@
+{
+  "oracle_id": "65d4ebdb-8757-4e5e-9411-d78597e20d57",
+  "name": "Pia Nalaar, Consul of Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pia Nalaar, Consul of Revival",
+      "oracle_fingerprint": "36d17f4907ea44ba7bff78819aabf145",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Thopter" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }], "by": "You" } },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "ArrivedFrom": "Exile" }
+                    ]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

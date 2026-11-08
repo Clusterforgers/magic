@@ -1,0 +1,79 @@
+{
+  "oracle_id": "9fe77f70-85cf-4a18-9451-2fad4c341f07",
+  "name": "Summon: Kujata",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Kujata",
+      "oracle_fingerprint": "279fb38daef75f7df09a93c729ea8114",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 3 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              { "Draw": { "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": "Opponents",
+                              "amount": {
+                                "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" }
+      ]
+    }
+  ]
+}

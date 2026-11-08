@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fa6d7d68-34e3-4ff6-ae6c-36848974555a",
+  "name": "Wickerfolk Thresher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wickerfolk Thresher",
+      "oracle_fingerprint": "82b223823aa91a791661f623e7d539c1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

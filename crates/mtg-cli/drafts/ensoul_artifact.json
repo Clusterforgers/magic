@@ -1,0 +1,23 @@
+{
+  "oracle_id": "02628058-c9d8-4265-afd1-3fb697ec89f7",
+  "name": "Ensoul Artifact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ensoul Artifact",
+      "oracle_fingerprint": "e34a352d2d689faec70d793c4eb52550",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetPT": { "power": 5, "toughness": 5 } }, { "AddType": "Creature" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Artifact" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

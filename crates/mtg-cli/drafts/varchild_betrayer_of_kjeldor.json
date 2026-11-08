@@ -1,0 +1,68 @@
+{
+  "oracle_id": "26ae37ab-91f8-4113-beb0-1154f9b62d28",
+  "name": "Varchild, Betrayer of Kjeldor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Varchild, Betrayer of Kjeldor",
+      "oracle_fingerprint": "b4a3bd767d7bd484703e611e4bf33920",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Survivor",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Survivor"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Survivor" }, { "ControlledBy": "Opponents" }] },
+            "mods": ["CantBlock"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Survivor" }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Survivor" },
+                { "ControlledBy": "Opponents" }
+              ]
+            },
+            "mods": [{ "CantAttackYou": "Both" }]
+          }
+        }
+      ]
+    }
+  ]
+}

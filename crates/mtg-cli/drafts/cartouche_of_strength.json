@@ -1,0 +1,33 @@
+{
+  "oracle_id": "cba6563e-96e5-4cd3-bddf-0cf1368f9e15",
+  "name": "Cartouche of Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cartouche of Strength",
+      "oracle_fingerprint": "72935190a297fca32502b5ea2571edbf",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "May": { "effects": [{ "Fight": { "what": "Attached", "with": { "Target": 0 } } }] }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

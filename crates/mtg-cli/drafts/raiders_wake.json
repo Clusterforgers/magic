@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d5fd3060-358c-4a5b-aee9-1afcf6c506ba",
+  "name": "Raiders' Wake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raiders' Wake",
+      "oracle_fingerprint": "6a943f87b2fb4156b82f15744903fef3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "effects": [{ "LoseLife": { "who": "TriggeringPlayer", "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

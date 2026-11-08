@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5bbd27b1-0afd-4d98-a73c-c348c8f08625",
+  "name": "Dwarven Armorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Armorer",
+      "oracle_fingerprint": "9f05017f7a10864e157f2a6b0b8c0fbb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "+1/+0" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "+0/+1" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

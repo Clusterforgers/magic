@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9023c530-f329-4301-8b24-4cf676194265",
+  "name": "Ageless Sentinels",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ageless Sentinels",
+      "oracle_fingerprint": "073f49142534f31dc4019a7260358747",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetCreatureTypes": ["Bird", "Giant"] },
+                    { "RemoveKeyword": "Defender" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "292aafef-8945-4827-90b2-1dd9764e517b",
+  "name": "Osgood, Operation Double",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Osgood, Operation Double",
+      "oracle_fingerprint": "14a1a281ba63c27d899f452743827b97",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "except": [{ "RemoveSupertype": "Legendary" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [
+                    { "Spell": { "types": ["Artifact"] } },
+                    { "Ability": { "types": ["Artifact"], "facts": ["OnBattlefield"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "WasCast": { "from": "Hand" } } },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

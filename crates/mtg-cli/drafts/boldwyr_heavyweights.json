@@ -1,0 +1,45 @@
+{
+  "oracle_id": "6fb45c80-0b6a-4283-a8e6-185b8e4bc756",
+  "name": "Boldwyr Heavyweights",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boldwyr Heavyweights",
+      "oracle_fingerprint": "57b9e056145bbdb0df72e4079d43576b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Type": "Creature" }],
+                              "as": "found2"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

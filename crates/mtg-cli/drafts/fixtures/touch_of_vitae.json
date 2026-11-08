@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "48d2cd18-a24d-40e0-a654-777d9e623ae2",
+  "oracle_id": "84f1e596-f56f-48c9-9bff-2c0bb2cea2d3",
+  "multiverse_ids": [
+    2595
+  ],
+  "tcgplayer_id": 4923,
+  "cardmarket_id": 6371,
+  "name": "Touch of Vitae",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/48d2cd18-a24d-40e0-a654-777d9e623ae2",
+  "scryfall_uri": "https://scryfall.com/card/ice/271/touch-of-vitae?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:57:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.jpg?1783947470",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.jpg?1783947470",
+    "large": "https://cards.scryfall.io/large/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.jpg?1783947470",
+    "png": "https://cards.scryfall.io/png/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.png?1783947470",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.jpg?1783947470",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.jpg?1783947470",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.webp?1783947470",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.webp?1783947470",
+    "display": "https://cards.scryfall.io/display/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.webp?1783947470",
+    "art": "https://cards.scryfall.io/art/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.webp?1783947470",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.webp?1783947470",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/48d2cd18-a24d-40e0-a654-777d9e623ae2.jpg?1783947470"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Until end of turn, target creature gains haste and \"{0}: Untap this creature. Activate only once.\"\nDraw a card at the beginning of the next turn's upkeep.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/48d2cd18-a24d-40e0-a654-777d9e623ae2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A84f1e596-f56f-48c9-9bff-2c0bb2cea2d3&unique=prints",
+  "collector_number": "271",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Allen Williams",
+  "artist_ids": [
+    "8a56d854-b424-45ec-9262-e993a382a961"
+  ],
+  "illustration_id": "2e788be3-7873-4025-b9ae-8ca435413d8a",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26500,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2595&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTouch%2Bof%2BVitae",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTouch%2Bof%2BVitae",
+    "edhrec": "https://edhrec.com/route/?cc=Touch+of+Vitae"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4923%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6371&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Touch+of+Vitae&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

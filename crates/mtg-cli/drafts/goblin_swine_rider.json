@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9ebe32fc-3b6e-4cb9-9af0-1a6c3c6ad885",
+  "name": "Goblin Swine-Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Swine-Rider",
+      "oracle_fingerprint": "e44aaf80c111f0789300166fc3bd728c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }] },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

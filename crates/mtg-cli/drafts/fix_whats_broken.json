@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7f8f46c0-889a-4c9a-9bfa-2b43db608d55",
+  "name": "Fix What's Broken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fix What's Broken",
+      "oracle_fingerprint": "d101f4770e0099976cb0e813353ffd4c",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "PayLife": "X" }], "required": true } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

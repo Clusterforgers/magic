@@ -1,0 +1,53 @@
+{
+  "oracle_id": "335b5302-2272-405a-b2b8-3943b3df335f",
+  "name": "Dakkon, Shadow Slayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dakkon, Shadow Slayer",
+      "oracle_fingerprint": "983c43b2ab44b4c79785bebb7eb58a21",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "loyalty",
+                "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        },
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Surveil": { "count": 2 } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

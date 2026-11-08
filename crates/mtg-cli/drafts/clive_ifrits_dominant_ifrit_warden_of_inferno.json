@@ -1,0 +1,105 @@
+{
+  "oracle_id": "ceba3d03-be5a-4dd7-b829-7db216a0f44e",
+  "name": "Clive, Ifrit's Dominant // Ifrit, Warden of Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clive, Ifrit's Dominant",
+      "oracle_fingerprint": "c5895e7a6acd7685678ce2b6a33dc097",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    },
+                    { "Draw": { "count": { "Devotion": ["Red"] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{R}{R}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ifrit, Warden of Inferno",
+      "oracle_fingerprint": "c6879486804318430f7c6164b1408631",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red", "Red"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "lore" } } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Exile": { "what": "This", "as": "exiled" } }]
+                }
+              },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red", "Red"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "lore" } } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Exile": { "what": "This", "as": "exiled" } }]
+                }
+              },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

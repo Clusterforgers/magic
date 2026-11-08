@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a57ad23b-cff3-45e5-98b3-1b20224aaa19",
+  "name": "Chandra's Defeat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Defeat",
+      "oracle_fingerprint": "fc3526b27defa837de2984bb29bda201",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Color": "Red" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Planeswalker" }, { "Subtype": "Chandra" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

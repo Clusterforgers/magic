@@ -1,0 +1,52 @@
+{
+  "oracle_id": "aba7e9e2-8df8-454e-a332-9abae1d95b6f",
+  "name": "Change the Equation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Change the Equation",
+      "oracle_fingerprint": "7cfb48a79155c2a5405a8cb28b22e116",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 6 } },
+                              { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

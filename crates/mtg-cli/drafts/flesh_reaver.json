@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a143fdfe-f1aa-4eab-8c81-8c72a4dc1695",
+  "name": "Flesh Reaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flesh Reaver",
+      "oracle_fingerprint": "6324c69a80dd3a883d15a538e9cffc45",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
+                },
+                { "DealsDamage": { "source": ["This"], "to": "Opponents" } }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": "You", "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
