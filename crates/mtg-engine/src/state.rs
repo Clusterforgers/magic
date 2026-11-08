@@ -252,7 +252,8 @@ pub struct GameState {
     pub(crate) first_player: PlayerId,
     pub(crate) players: Vec<Player>,
     pub(crate) objects: BTreeMap<ObjectId, GameObject>,
-    /// Tokens that left the battlefield and so cease to exist, kept for the abilities of theirs still to come.
+    /// Tokens that left the battlefield and so cease to exist, and objects that left the game with their owner, kept
+    /// for the abilities of theirs still to come.
     pub(crate) ceased: BTreeMap<ObjectId, GameObject>,
     pub(crate) zones: Zones,
     pub(crate) turn: TurnState,
@@ -384,7 +385,8 @@ impl GameState {
         self.objects.values()
     }
 
-    /// Whether `id` was a token that has left the battlefield and so ceased to exist (CR 111.7).
+    /// Whether `id` was a token that has left the battlefield and so ceased to exist (CR 111.7), or an object that left
+    /// the game with its owner (CR 800.4a).
     pub fn has_ceased(&self, id: ObjectId) -> bool {
         self.ceased.contains_key(&id)
     }

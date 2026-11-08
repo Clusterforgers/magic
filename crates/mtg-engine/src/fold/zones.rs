@@ -805,5 +805,11 @@ fn leave_game(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
     }
     state.combat.remove_object(id);
     state.combat.permanent_left(id);
-    player_mut(state, object.owner).map(|_| ())
+    let owner = object.owner;
+    // An ability of it that another player controls stays on the stack and resolves with its last known information
+    // (CR 800.4a, 113.7a), so the object is kept apart from the game like a token that ceased to exist.
+    if object.kind != crate::object::ObjectKind::Ability {
+        state.ceased.insert(id, object);
+    }
+    player_mut(state, owner).map(|_| ())
 }
