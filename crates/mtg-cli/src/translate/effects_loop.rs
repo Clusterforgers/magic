@@ -82,6 +82,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Reveal",
             "RememberChosen",
             "DefinedCards",
+            "Optional",
             "ChooseEach",
         ],
     )?;

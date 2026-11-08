@@ -26,6 +26,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "Phases" => object_verb(ctx, p, api, "PhaseOut"),
         "AddTurn" => add_turn(ctx, p),
         "Radiation" => radiation(ctx, p),
+        "Blight" => return Some(blight(ctx, p)),
         "Manifest" => manifest(ctx, p, "Manifest"),
         "Cloak" => manifest(ctx, p, "Cloak"),
         "MultiplyCounter" => multiply_counter(ctx, p),
@@ -101,6 +102,20 @@ pub fn skip_turn(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     let rule = json!({"Rule": {"rule": {"Cant": {"who": who, "action": "SkipTurn"}}, "duration": "UntilTurnSkipped"}});
     Ok(vec![rule; turns])
+}
+
+/// `Blight`: the player puts that many -1/-1 counters on a creature they control and pick.
+fn blight(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Blight", &["Num", "Defined"])?;
+    if p.get("Defined").is_some_and(|who| who != "You") {
+        return unmapped("key:Blight.Defined");
+    }
+    let count = amount(ctx, p.get("Num").unwrap_or("1"))?;
+    let bind = ctx.fresh("blighted");
+    Ok(vec![
+        json!({"Choose": {"from": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}]}, "count": {"min": 1, "max": 1}, "as": bind}}),
+        json!({"PutCounters": {"on": {"Bound": bind}, "counter": "-1/-1", "count": count}}),
+    ])
 }
 
 /// `Radiation`: the players get rad counters (CR 725), counters of the kind `rad` on a player.
