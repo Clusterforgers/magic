@@ -87,6 +87,17 @@ function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prom
   }
 }
 
+/** Shows the Deck pane with Stats and the cards played by hand open; from 1440 px they sit in the rail, which has no disclosure to click. */
+async function openStats(page: Page): Promise<void> {
+  await showPane(page, 'Stats')
+  for (const name of [/^Stats/, /^Played by hand/]) {
+    const heading = page.getByRole('region', { name: 'Deck', exact: true }).getByRole('button', { name })
+    if ((await heading.count()) > 0 && (await heading.getAttribute('aria-expanded')) !== 'true') {
+      await heading.click()
+    }
+  }
+}
+
 const STOPS: readonly Stop[] = [
   {
     name: 'Play, with open games',
@@ -256,14 +267,10 @@ const STOPS: readonly Stop[] = [
     name: 'The deck builder (dev), the stats and the cards played by hand opened',
     fitsFrom: 640,
     actions: { Save: 'text:Save' },
-    afterResize: (page) => showPane(page, 'Stats'),
+    afterResize: openStats,
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/builder`)
-      await showPane(page, 'Stats')
-      for (const name of [/^Stats/, /^Played by hand/]) {
-        const heading = page.getByRole('region', { name: 'Deck', exact: true }).getByRole('button', { name })
-        if ((await heading.getAttribute('aria-expanded')) !== 'true') await heading.click()
-      }
+      await openStats(page)
       await expect(page.getByRole('list', { name: 'Cards played by hand' })).toBeVisible()
     },
   },
