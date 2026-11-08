@@ -212,8 +212,9 @@ pub fn same_text(left: &str, right: &str) -> bool {
 }
 
 /// Whether the oracle text and a wording the renderers wrote back are the same text: [`same_text`] once the wordings of
-/// one meaning that the writers say another way are normalized (w15). Only the proposal checker compares this way; the
-/// readers keep the stricter [`same_text`], so no clause is read into data that lacks what the text says.
+/// one meaning that the writers say another way are normalized (w15). The proposal checker, the drafts test and the
+/// corpus tests compare this way; the readers keep the stricter [`same_text`], so no clause is read into data that lacks
+/// what the text says.
 pub fn same_written_text(left: &str, right: &str) -> bool {
     // The card's names are `~` and "enters" has its one wording before the wordings are normalized: "this Equipment"
     // in a printed text is the "~" of a written one, and no step reads it as another object.
