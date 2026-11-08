@@ -239,7 +239,10 @@ pub(crate) async fn list(
                 .ok_or_else(ApiError::not_found)?;
             let lines = lines_of(&deck);
             let loaded = Loaded::load(s.cards, &lines).await?;
-            (deck.name.clone(), loaded.report(&deck.format, &lines))
+            (
+                deck.name.clone(),
+                loaded.report_off(&deck.format, &lines).await?,
+            )
         }
         Target::Precon(code) => {
             let (deck, judged) = judged_precon(s.cards, &code)
