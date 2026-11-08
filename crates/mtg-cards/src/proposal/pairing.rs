@@ -141,7 +141,10 @@ fn is_block(text: &str) -> bool {
     let station = head.split_once("+ | ").is_some_and(|(threshold, _)| {
         !threshold.is_empty() && threshold.chars().all(|c| c.is_ascii_digit())
     });
-    head.starts_with("LEVEL ") || head.contains(": Level ") || station
+    head.starts_with("LEVEL ")
+        || head.contains(": Level ")
+        || station
+        || crate::compile::word_block(text).is_some()
 }
 
 /// Whether a clause is a row of the table of a die roll: a range of totals, then `|` ("1—9 | ...", "15+ | ...", "20 | ...").

@@ -1218,6 +1218,7 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "ChosenWord");
                 self.chosen_as(name);
             }
+            Condition::EnteredAs(_) => self.uses("Condition", "EnteredAs"),
             Condition::Performed => self.performed(),
             Condition::CompletedDungeon(who) => self.player_condition("CompletedDungeon", who),
             Condition::Monarch(who) => self.player_condition("Monarch", who),
@@ -4710,6 +4711,13 @@ impl Walker<'_> {
         self.at("cost", |w| w.cost(cost));
     }
 
+    /// A choice of words as a permanent enters offers two or more words.
+    fn e15f_choose_word(&mut self, words: &[String]) {
+        if words.len() < 2 || words.iter().any(String::is_empty) {
+            self.problem("a choice of words offers two or more words");
+        }
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
@@ -4772,10 +4780,12 @@ impl Walker<'_> {
             | ReplaceBy::DayIfNeither
             | ReplaceBy::WithCounterOf(_)
             | ReplaceBy::EntersPrepared
+            | ReplaceBy::ChooseWord(_)
                 if !enters =>
             {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
             }
+            ReplaceBy::ChooseWord(words) => self.e15f_choose_word(words),
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");

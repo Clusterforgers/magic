@@ -666,6 +666,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
+        | ReplaceBy::ChooseWord(_)
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
@@ -695,6 +696,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::DayIfNeither
                 | ReplaceBy::WithCounterOf(_)
                 | ReplaceBy::EntersPrepared
+                | ReplaceBy::ChooseWord(_)
         )
     )
 }
@@ -2633,8 +2635,8 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
-            ReplaceBy::Choose(kind) => {
-                let chosen = match self.chooses(source, controller, *kind)? {
+            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) => {
+                let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,
                 };
@@ -3271,6 +3273,7 @@ mod reveal;
 mod amplify;
 mod changes;
 mod e15b_counter_of;
+mod e15f_word;
 mod riot;
 mod tribute;
 

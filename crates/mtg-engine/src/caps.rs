@@ -311,6 +311,7 @@ const RUNS: &[&str] = &[
     "Trigger.DayNightChanges",
     "ReplaceBy.DayIfNeither",
     "ReplaceBy.EntersPrepared",
+    "ReplaceBy.ChooseWord",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
@@ -569,6 +570,7 @@ const RUNS: &[&str] = &[
     "Condition.KickedWith",
     "Condition.Performed",
     "Condition.ChosenWord",
+    "Condition.EnteredAs",
     "Amount.Kicks",
     "Amount.Mutations",
     "Amount.Promised",
@@ -1246,6 +1248,8 @@ mod tests {
     #[case::event_amounts("Amount.Triggering", true)]
     #[case::if_you_do("Condition.Performed", true)]
     #[case::a_chosen_word("Condition.ChosenWord", true)]
+    #[case::e15f_entered_as_a_word("Condition.EnteredAs", true)]
+    #[case::e15f_a_word_chosen_as_it_enters("ReplaceBy.ChooseWord", true)]
     #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]

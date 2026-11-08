@@ -20,6 +20,7 @@ pub mod ctx;
 mod damaged_way;
 mod e14f_turn_up;
 mod e15b_entering;
+mod e15f_words;
 pub mod effects;
 pub mod effects_ambient;
 pub mod effects_animate;

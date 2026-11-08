@@ -84,6 +84,7 @@ mod e14b_entering;
 mod e14d_sparing;
 mod e15a_max_speed;
 mod e15b_entering;
+mod e15f_words;
 mod effects;
 mod either_way_pairs;
 mod equip_options;
@@ -238,6 +239,7 @@ pub use chance::{add_row as add_die_row, die_row, ends_in_roll, row_texts as die
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use costs::text as render_cost;
+pub use e15f_words::block as word_block;
 pub use either_way_pairs::texts as either_way_pair_texts;
 pub use equip_options::equip_line;
 pub use group_phrases::{all_groups, subject_group};

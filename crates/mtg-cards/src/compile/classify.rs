@@ -73,6 +73,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     if text.starts_with("LEVEL ")
         || super::clauses::is_station_block(text)
         || super::clauses::is_class_block(text)
+        || super::clauses::word_block(text).is_some()
     {
         return ClauseKind::Static;
     }

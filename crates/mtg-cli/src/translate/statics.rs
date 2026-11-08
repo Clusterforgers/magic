@@ -63,6 +63,9 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(found) = super::statics_exert::exert(ctx, &all) {
         return found;
     }
+    if let Some(found) = super::e15f_words::entered_as_line(ctx, &all) {
+        return found;
+    }
     let condition = condition(ctx, &all)?;
     let condition = match (condition, all.get("Affected")) {
         (Some(earlier), Some(word)) if is_pair(word) => Some(json!({"All": [earlier, paired()]})),

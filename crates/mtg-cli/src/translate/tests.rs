@@ -765,6 +765,7 @@ mod e15b;
 mod e15c;
 mod e15c_readback;
 mod e15d;
+mod e15f;
 mod en4_counter;
 mod en4_cumulative;
 mod en4_look;

@@ -34,6 +34,7 @@ pub(super) fn plan(text: &str) -> Option<Plan> {
         },
         head: vec![(header.to_owned(), up)],
         lines: lines.map(str::to_owned).collect(),
+        conditions: Vec::new(),
     })
 }
 

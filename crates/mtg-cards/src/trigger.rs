@@ -975,6 +975,9 @@ pub enum ReplaceBy {
     WithCounterOf(Vec<CounterKind>),
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
+    /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which
+    /// `Condition::EnteredAs` reads for as long as it stays.
+    ChooseWord(Vec<String>),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.

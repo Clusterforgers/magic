@@ -2510,6 +2510,11 @@ impl<'a> Scope<'a> {
             .any(|(player, place)| players.contains(player) && zone_kind(*place) == zone))
     }
 
+    /// Whether the permanent entered as the given word (a Siege's "Khans" or "Dragons").
+    fn e15f_entered_as(&self, word: &str) -> bool {
+        matches!(self.entered_choice(), Some(Chosen::Word(chosen)) if chosen == word)
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -2562,6 +2567,7 @@ impl<'a> Scope<'a> {
             Condition::ChosenWord { name, word } => {
                 matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)
             }
+            Condition::EnteredAs(word) => self.e15f_entered_as(word),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
             Condition::CompletedDungeon(who)
