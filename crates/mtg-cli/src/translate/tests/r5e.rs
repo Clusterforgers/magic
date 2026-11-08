@@ -24,7 +24,7 @@ fn has(value: &Value, part: &Value) -> bool {
 #[case::triggers_once("OptionalDecider$ You | ActivationLimit$ 1", "\"OncePerTurn\"")]
 fn a_limit_on_a_choice_counts_the_choices_done(#[case] keys: &str, #[case] limit: &str) {
     let text = card(&format!(
-        "T:Mode$ LifeGained | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ Draw | {keys} | TriggerDescription$ x\nSVar:Draw:DB$ Draw | NumCards$ 1\n"
+        "T:Mode$ LifeGained | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ Draw | {keys} | TriggerDescription$ Whenever you gain life, you may draw a card.\nSVar:Draw:DB$ Draw | NumCards$ 1\n"
     ));
     let found = first(&text);
     assert_eq!(found["Triggered"]["limit"].to_string(), limit, "{found}");
