@@ -1,4 +1,4 @@
-//! Goal: `coverage` reads the stored drafts and verdicts: an approved draft counts as `Read`, a pending or stale one as waiting for a read, a wrong one changes nothing, in the precon table and with `--all`; `--deck` ends in the list of the deck's cards that are neither verified nor read, most played first with the first blocker.
+//! Goal: `coverage` reads the stored drafts and verdicts: an approved draft counts as `Read`, a pending or stale one that runs as `Unverified`, a wrong one changes nothing, in the precon table and with `--all`; `--deck` ends in the list of the deck's cards that are neither verified nor read, most played first with the first blocker.
 #![allow(clippy::unwrap_used)]
 
 use crate::common;
@@ -80,7 +80,7 @@ fn args(deck: Option<&str>, all: bool) -> CoverageArgs {
 }
 
 /// The cards of each state row of a report: verified, read, waiting, partial, manual, other.
-fn states(text: &str) -> [u32; 6] {
+fn states(text: &str) -> [u32; 7] {
     let row = |name: &str| {
         let line = text.lines().find(|l| l.starts_with(&format!("{name} ")));
         let fields: Vec<&str> = line.unwrap_or_default().split_whitespace().collect();
@@ -89,7 +89,16 @@ fn states(text: &str) -> [u32; 6] {
             .and_then(|n| n.parse().ok())
             .unwrap_or(u32::MAX)
     };
-    ["verified", "read", "waiting", "partial", "manual", "other"].map(row)
+    [
+        "verified",
+        "read",
+        "unverified",
+        "waiting",
+        "partial",
+        "manual",
+        "other",
+    ]
+    .map(row)
 }
 
 async fn judge(db: &Database, key: &DraftKey, verdict: Verdict) {
@@ -113,8 +122,8 @@ async fn an_approved_draft_is_read_and_a_pending_one_waits_for_a_read(pool: PgPo
     let text = coverage(&db, &args(None, false)).await.unwrap();
 
     let after = states(&text);
-    assert_eq!(before[1..3], [0, 0], "{before:?}");
-    assert_eq!(after[1..3], [1, 1], "{text}");
+    assert_eq!(before[1..4], [0, 0, 0], "{before:?}");
+    assert_eq!(after[1..4], [1, 1, 0], "{text}");
     // Nothing else moves: the two cards leave partial, manual or other, and the total stays.
     assert_eq!(after[0], before[0], "{text}");
     assert_eq!(
@@ -123,8 +132,8 @@ async fn an_approved_draft_is_read_and_a_pending_one_waits_for_a_read(pool: PgPo
         "{text}"
     );
     assert_eq!(
-        after[3..].iter().sum::<u32>() + 2,
-        before[3..].iter().sum::<u32>()
+        after[4..].iter().sum::<u32>() + 2,
+        before[4..].iter().sum::<u32>()
     );
 }
 
@@ -166,8 +175,8 @@ async fn a_wrong_draft_changes_nothing_and_a_draft_read_on_an_old_hash_waits_aga
     let text = coverage(&db, &args(None, false)).await.unwrap();
 
     let after = states(&text);
-    // The wrong draft is by hand as before; the stale approval is a draft to read again.
-    assert_eq!(after[1..3], [0, 1], "{text}");
+    // The wrong draft is by hand as before; the stale approval is a draft to read again, which runs unverified.
+    assert_eq!(after[1..4], [0, 1, 0], "{text}");
     assert_eq!(after[0], before[0], "{text}");
     assert_eq!(
         after.iter().sum::<u32>(),
@@ -201,7 +210,7 @@ async fn the_all_report_counts_read_and_waiting_cards_too(pool: PgPool) {
     let text = coverage_all(&db, &cache, &args(None, true)).await.unwrap();
 
     let after = states(&text);
-    assert_eq!(after[1..3], [1, 1], "{text}");
+    assert_eq!(after[1..4], [1, 1, 0], "{text}");
     assert_eq!(
         after.iter().sum::<u32>(),
         before.iter().sum::<u32>(),
@@ -238,11 +247,10 @@ async fn the_deck_list_has_the_cards_to_draft_most_played_first(pool: PgPool) {
     // The read Vault, the verified Forest and the commander are not listed; the other two come in the order of their ranks, each
     // with its first blocker.
     assert_eq!(rows.len(), 2, "{text}");
-    assert_eq!(rows[0][..3], ["10", "waiting", "Pyroblast"], "{text}");
-    assert_eq!(rows[0][3], "spell:", "{text}");
+    assert_eq!(rows[0][..3], ["10", "unverified", "Pyroblast"], "{text}");
     assert_eq!((rows[1][0], rows[1][2]), ("30", "Jace,"), "{text}");
     assert!(
-        !["waiting", "verified", "read"].contains(&rows[1][1]),
+        !["unverified", "waiting", "verified", "read"].contains(&rows[1][1]),
         "{text}"
     );
     assert!(rows[1].contains(&"loyalty:"), "{text}");
