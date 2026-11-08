@@ -127,7 +127,13 @@ pub(super) fn e16c_group_at_text(pattern: &TriggerPattern) -> Option<String> {
         return None;
     };
     let at_least = *at_least;
-    let player = attacked(at)?;
+    // The creatures you control attack only your opponents: "attack a player" (CR 508.1b).
+    let yours = what.0.contains(&Pred::ControlledBy(Ref::You));
+    let player = if yours && *at == Ref::Opponents {
+        "a player"
+    } else {
+        attacked(at)?
+    };
     let creature = Pred::Type(CardType::Creature);
     if at_least == 1 {
         match what.0.as_slice() {
