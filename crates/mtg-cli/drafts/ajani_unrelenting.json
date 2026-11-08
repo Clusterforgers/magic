@@ -9,9 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Did": { "action": "Activated", "who": "You", "what": [{ "Type": "Planeswalker" }] }
-            },
+            "when": { "Did": { "action": "ActivatedLoyalty", "who": "You" } },
             "effects": [
               {
                 "CreateToken": {

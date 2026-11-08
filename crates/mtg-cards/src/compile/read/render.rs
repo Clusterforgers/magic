@@ -3170,7 +3170,7 @@ impl Writer<'_> {
             {
                 "its controller".to_owned()
             }
-            Ref::Triggering => "that player".to_owned(),
+            Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()
             }
@@ -3452,7 +3452,7 @@ impl Writer<'_> {
             Ref::Opponents => Some("each opponent".to_owned()),
             Ref::EachPlayer => Some("each player".to_owned()),
             Ref::You => Some("you".to_owned()),
-            Ref::Triggering => Some("that player".to_owned()),
+            Ref::Triggering | Ref::TriggeringPlayer => Some("that player".to_owned()),
             Ref::Each(selector) => Some(format!("each {}", phrase_text(selector, Form::Each)?)),
             // The opponents but the one the trigger is about.
             Ref::PlayersWhere { who, test }

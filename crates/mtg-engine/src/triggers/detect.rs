@@ -1763,8 +1763,9 @@ fn matching_permanents(
             },
         ) => {
             let tapped = object(*tapped)?;
+            // The event holds the permanent ("that land doesn't untap") and the player who tapped it ("that player").
             (by(who, player) && picks(what, tapped)?)
-                .then(|| cause(state, vec![Target::Player(*player)]))
+                .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
         }
         (
             TriggerPattern::CountersPut { what, counter }

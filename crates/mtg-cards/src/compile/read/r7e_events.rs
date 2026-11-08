@@ -224,6 +224,18 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
     if *action == Action::PlayedLand && *who == Ref::EachPlayer {
         return Some(format!("Whenever {}", land_played(what)?));
     }
+    // "Whenever you activate a loyalty ability of a Chandra planeswalker".
+    if *action == Action::ActivatedLoyalty {
+        let of = if what.is_empty() {
+            String::new()
+        } else {
+            format!(" of {}", subject_text(what)?)
+        };
+        return Some(format!(
+            "Whenever {} a loyalty ability{of}",
+            player_verb(who, "activate")?
+        ));
+    }
     if what.is_empty() {
         return Some(format!("Whenever {}", player_action(*action, who)?));
     }

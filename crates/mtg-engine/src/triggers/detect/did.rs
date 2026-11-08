@@ -1,6 +1,7 @@
 //! The events behind `TriggerPattern::Did`: each action of `mtg_cards::did::Action` is one arm of [`did_happened`], read off
 //! the event itself or off what the batch already found about it.
 
+use mtg_cards::ability::Ability;
 use mtg_cards::did::Action;
 use mtg_cards::refs::{Ref, Selector};
 use mtg_cards::trigger::TriggerPattern;
@@ -98,13 +99,23 @@ pub(super) fn did_happened(
                 ability: *ability,
                 source: *origin,
             };
-            if !ability_reader::ability(pre, address).is_some_and(|rules| rules.is_mana_ability()) {
+            let rules = ability_reader::ability(pre, address);
+            if !rules.as_ref().is_some_and(|rules| rules.is_mana_ability()) {
+                let on_stack = activated_on_stack(post, source.id, *ability, *origin);
                 found.push(Happened::Did {
                     action: Action::Activated,
                     player: Some(*player),
                     object: Some(source.id),
-                    ability: activated_on_stack(post, source.id, *ability, *origin),
+                    ability: on_stack,
                 });
+                if rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. })) {
+                    found.push(Happened::Did {
+                        action: Action::ActivatedLoyalty,
+                        player: Some(*player),
+                        object: Some(source.id),
+                        ability: on_stack,
+                    });
+                }
             }
         }
         Event::AbilityTriggered(triggered) => found.push(did(

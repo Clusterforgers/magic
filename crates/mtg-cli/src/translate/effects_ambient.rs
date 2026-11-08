@@ -80,7 +80,7 @@ fn spell_cost(cost: &Value) -> Tr<Value> {
 pub fn delayed_triggers(ctx: &mut Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Vec<Value>> {
     let (this_turn, until) = match p.get("Duration") {
         None | Some("EOT") => (true, None),
-        Some("Permanent") => (false, None),
+        Some("Permanent") => (false, Some("Forever")),
         Some("UntilYourNextTurn") => (false, Some("UntilYourNextTurn")),
         Some(other) => return unmapped(format!("duration:{other}")),
     };

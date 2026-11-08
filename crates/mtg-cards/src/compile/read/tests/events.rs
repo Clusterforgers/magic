@@ -29,7 +29,7 @@ fn trigger(text: &str) -> Option<Ability> {
 )]
 #[case::a_player_taps_a_land_for_mana(
     "Whenever a player taps a land for mana, ~ deals 1 damage to that player.",
-    r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}]}},"effects":[{"DealDamage":{"to":"Triggering","amount":1}}]}}"#
+    r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}]}},"effects":[{"DealDamage":{"to":"TriggeringPlayer","amount":1}}]}}"#
 )]
 #[case::a_permanent_becomes_untapped(
     "Whenever a permanent becomes untapped, that permanent's controller mills a card.",

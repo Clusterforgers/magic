@@ -49,7 +49,7 @@ fn ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let Some(word) = p.get("ValidSA") else {
         return unmapped("key:Trigger.AbilityCast.ValidSA-missing");
     };
-    // A loyalty ability is an activated ability of a planeswalker (CR 606.1): the source is a planeswalker, and no mana
+    // A loyalty ability is its own action (CR 606.4): another activated ability of a planeswalker is none, and no mana
     // ability is one. `+OppCtrl` is an ability an opponent activates.
     let loyalty = match word {
         "Activated.Loyalty" => Some(false),
@@ -62,12 +62,7 @@ fn ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
     };
     let mut found = activation(ctx, p)?;
     let node = &mut found["Did"];
-    let walker = json!({"Type": "Planeswalker"});
-    match node.get_mut("what").and_then(Value::as_array_mut) {
-        Some(what) if !what.contains(&walker) => what.push(walker),
-        Some(_) => {}
-        None => node["what"] = json!([walker]),
-    }
+    node["action"] = json!("ActivatedLoyalty");
     if opponent {
         if node.get("who").is_some() {
             return unmapped(

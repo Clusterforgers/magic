@@ -16,8 +16,10 @@ fn games() -> u64 {
 /// Answers per squared seat a bot game may take: the games of 8 to 24 seats take about 180.
 const ANSWERS_PER_SQUARE: usize = 400;
 
-/// The same for Commander, whose 100-card decks and 40 life make longer games: about 420.
-const COMMANDER_ANSWERS_PER_SQUARE: usize = 1_000;
+/// The same for Commander, whose 100-card decks and 40 life make longer games: about 360 at eight seats, and up to
+/// 1,150 at four, where a 268-turn game with Vorinclex, Voice of Hunger puts a trigger on the stack for every land an
+/// opponent taps.
+const COMMANDER_ANSWERS_PER_SQUARE: usize = 1_250;
 
 #[rstest]
 #[case(8)]
