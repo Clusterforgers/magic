@@ -82,7 +82,14 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
         "IsCommander" => return one(json!("Commander")),
         // The creature whose attack triggered the ability.
-        "TriggeredAttacker" | "TriggeredAttackerLKICopy" if ctx.trigger.is_some() => {
+        "TriggeredAttacker"
+        | "TriggeredAttackerLKICopy"
+        | "TriggeredCard"
+        | "TriggeredCardLKICopy"
+        | "TriggeredSource"
+        | "TriggeredSourceLKICopy"
+            if ctx.trigger.is_some() =>
+        {
             let attacker = super::triggered::resolve(ctx.trigger.as_ref(), prop)?;
             return one(json!({"Is": attacker}));
         }
