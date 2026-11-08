@@ -62,7 +62,7 @@ export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks }: U
             ))}
           </p>
         ) : null}
-        <DiffersList differs={card.differs} />
+        <DiffersList differs={card.differs ?? []} />
         <ClauseList lines={clauseLines(card, faces)} support={card.support} pending={pending} />
         <DraftNote draft={card.draft} />
       </div>

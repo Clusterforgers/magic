@@ -44,7 +44,7 @@ export interface FlaggedCard {
   /** The read state of the draft that decides the card, once it has one. */
   draft?: ReadState
   /** The clauses its draft words differently from the card, each beside the engine's words; none for most drafts. */
-  differs: readonly ReadDiffers[]
+  differs?: readonly ReadDiffers[]
   decks: readonly DeckRef[]
 }
 
