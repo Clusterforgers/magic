@@ -41,6 +41,14 @@ describe('what a control row sends', () => {
       { RemoveSickness: { object: 7 } },
     ],
     [
+      'a token copy',
+      SICK,
+      'copy',
+      'Fresh Elf: a token copy of it enters under your control',
+      'Copy Fresh Elf',
+      { CopyToken: { object: 7, count: 1 } },
+    ],
+    [
       'a sacrifice',
       SICK,
       'sacrifice',

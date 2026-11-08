@@ -8,6 +8,7 @@
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::{Decision, DecisionKind, GameState};
+use mtg_protocol::rest::MAX_AUTO_YIELDS;
 use mtg_protocol::{AutoYield, ErrorCode, FullControlMode};
 
 use crate::actor::{Fatal, GameActor, Phase};
@@ -69,6 +70,28 @@ impl<S: EventStore> GameActor<S> {
                 Ok(())
             }
         }
+    }
+
+    /// Adds the yields an account kept to `seat`'s own; more than [`MAX_AUTO_YIELDS`] are refused with `Error{BadMessage}`.
+    pub(crate) async fn load_auto_yields(
+        &mut self,
+        seat: PlayerId,
+        yields: Vec<AutoYield>,
+    ) -> Result<(), Fatal> {
+        if let Some(rejection) = self.out_of_game(seat) {
+            self.refuse(seat, rejection);
+            return Ok(());
+        }
+        if yields.len() > MAX_AUTO_YIELDS {
+            let reason = format!("at most {MAX_AUTO_YIELDS} yields can be loaded at once");
+            self.refuse(seat, Rejection::new(ErrorCode::BadMessage, reason));
+            return Ok(());
+        }
+        let mut stops = self.stops.clone();
+        for ability in yields {
+            stops.set_auto_yield(seat, ability, true);
+        }
+        self.take_stops(seat, stops).await
     }
 
     /// Takes back `seat`'s yield to `ability`; one it does not hold changes nothing and is answered with silence.

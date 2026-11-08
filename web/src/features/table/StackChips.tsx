@@ -142,7 +142,7 @@ function useFitCount(list: RefObject<HTMLOListElement | null>, items: number): n
  * opens the Stack tab, so the row never scrolls or runs out of the strip. One tab stop, moved with the arrow keys;
  * hover or focus previews the card. Nothing is drawn while the stack is empty. The top chip names what it aims at
  * ("→ Hill Giant") beside a dot in its controller's colour and is where the arrows to the targets start; a chip that
- * is hovered or focused draws its own arrows (`combat/stackArrows.ts`).
+ * is hovered or focused draws its own arrows, and a folded chip those of every item in its run (`combat/stackArrows.ts`).
  */
 export function StackChips() {
   const ids = usePlay(useShallow(stackTopFirst))
