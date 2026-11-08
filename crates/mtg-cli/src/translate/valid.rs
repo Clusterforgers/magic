@@ -131,7 +131,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "equipped" => return one(json!({"HasAttached": [{"Subtype": "Equipment"}]})),
         "Historic" => {
             return one(json!({"AnyOf": [
-                {"Supertype": "Legendary"}, {"Type": "Artifact"}, {"Subtype": "Saga"}]}));
+                {"Type": "Artifact"}, {"Supertype": "Legendary"}, {"Subtype": "Saga"}]}));
         }
         _ => {}
     }

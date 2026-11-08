@@ -18,66 +18,8 @@
                     "Each": [
                       {
                         "AnyOf": [
-                          { "Supertype": "Legendary" },
                           { "Type": "Artifact" },
-                          { "Subtype": "Saga" }
-                        ]
-                      },
-                      { "OwnedBy": "You" },
-                      { "Is": { "Bound": "milled" } },
-                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
-                    ]
-                  },
-                  "count": { "min": 0, "max": 1 },
-                  "as": "picked2"
-                }
-              },
-              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
-            ]
-          }
-        },
-        {
-          "Triggered": {
-            "when": { "Chapter": { "number": 2 } },
-            "effects": [
-              { "Mill": { "count": 3, "as": "milled" } },
-              {
-                "Choose": {
-                  "from": {
-                    "Each": [
-                      {
-                        "AnyOf": [
                           { "Supertype": "Legendary" },
-                          { "Type": "Artifact" },
-                          { "Subtype": "Saga" }
-                        ]
-                      },
-                      { "OwnedBy": "You" },
-                      { "Is": { "Bound": "milled" } },
-                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
-                    ]
-                  },
-                  "count": { "min": 0, "max": 1 },
-                  "as": "picked2"
-                }
-              },
-              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
-            ]
-          }
-        },
-        {
-          "Triggered": {
-            "when": { "Chapter": { "number": 3 } },
-            "effects": [
-              { "Mill": { "count": 3, "as": "milled" } },
-              {
-                "Choose": {
-                  "from": {
-                    "Each": [
-                      {
-                        "AnyOf": [
-                          { "Supertype": "Legendary" },
-                          { "Type": "Artifact" },
                           { "Subtype": "Saga" }
                         ]
                       },
@@ -106,8 +48,8 @@
                         "Spell",
                         {
                           "AnyOf": [
-                            { "Supertype": "Legendary" },
                             { "Type": "Artifact" },
+                            { "Supertype": "Legendary" },
                             { "Subtype": "Saga" }
                           ]
                         },
@@ -120,6 +62,64 @@
                   "duration": "UntilEndOfTurn"
                 }
               }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Supertype": "Legendary" },
+                          { "Subtype": "Saga" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Supertype": "Legendary" },
+                          { "Subtype": "Saga" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
             ]
           }
         }
