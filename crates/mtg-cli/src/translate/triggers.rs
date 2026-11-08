@@ -64,6 +64,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let (p, intervening) = defender_poisoned(p, intervening);
     let (p, intervening) = kicked_with(ctx, p, intervening)?;
     let (p, intervening) = super::triggers_g9a::g9a_block_filter(p, intervening)?;
+    let (p, intervening) = ep22_had_counters(p, intervening);
     let (when, intervening) = if p.get("Mode") == Some("Always") {
         state_when(ctx, &p, &all)?
     } else {
@@ -331,6 +332,37 @@ fn event_amount(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Val
         Some(other) => json!({"All": [other, size]}),
     };
     Ok((p.without(&[key]), Some(both)))
+}
+
+/// "Whenever a creature you control leaves the battlefield, if it had counters on it" (`ValidCard$ Creature.YouCtrl+HasCounters`
+/// of a move off the battlefield, printed as an "if"): the counters are the intervening condition on the object of the
+/// event as it last existed, and the pattern keeps the rest of the filter. A line printed "with a counter on it" keeps the
+/// filter.
+fn ep22_had_counters(p: Params, intervening: Option<Value>) -> (Params, Option<Value>) {
+    let printed_if = p
+        .get("TriggerDescription")
+        .is_some_and(|text| text.contains(", if it had counters on it,"));
+    let Some(valid) = p
+        .get("ValidCard")
+        .and_then(|valid| valid.strip_suffix("+HasCounters"))
+        .filter(|valid| !valid.contains(','))
+        .map(str::to_owned)
+    else {
+        return (p, intervening);
+    };
+    if p.get("Mode") != Some("ChangesZone") || p.get("Origin") != Some("Battlefield") || !printed_if
+    {
+        return (p, intervening);
+    }
+    let had = json!({"Matches": {"subject": "Triggering", "selector": ["HasAnyCounter"]}});
+    let both = match intervening {
+        None => had,
+        Some(other) => json!({"All": [other, had]}),
+    };
+    (
+        p.without(&["ValidCard"]).with("ValidCard", &valid),
+        Some(both),
+    )
 }
 
 /// `DefendingPlayerPoisoned$ True` ("if defending player is poisoned") of an attack: the player attacked has a poison counter.

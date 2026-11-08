@@ -536,6 +536,35 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         .map(|text| text.replacen(" onto a second target ", " onto another target ", 1))
         .collect();
     texts.extend(another);
+    // "Give that permanent another counter of that kind" is also printed "Put an additional counter of that kind on that
+    // permanent".
+    let additional: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let (head, rest) = text.split_once(". Give that ")?;
+            let (noun, tail) = rest.split_once(" another counter of that kind")?;
+            Some(format!(
+                "{head}. Put an additional counter of that kind on that {noun}{tail}"
+            ))
+        })
+        .collect();
+    texts.extend(additional);
+    // "S for each coin that comes up heads" is also printed "For each flip you win, S".
+    let won: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let (before, tail) = text.split_once(" for each coin that comes up heads")?;
+            let (head, steps) = before.rsplit_once(". ")?;
+            let mut chars = steps.chars();
+            let steps = chars
+                .next()?
+                .to_lowercase()
+                .chain(chars)
+                .collect::<String>();
+            Some(format!("{head}. For each flip you win, {steps}{tail}"))
+        })
+        .collect();
+    texts.extend(won);
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
     if let Some(plain) = r11w_batch::flat_ability(ability) {
         for text in written_variants(&plain) {
@@ -2277,9 +2306,25 @@ impl Writer<'_> {
                     }
                 }
             }
-            Effect::PutCountersOf { on, of, each } => {
-                self.g12b_counters_of(on, of, each.as_ref())?
+            Effect::PutCountersOf {
+                on,
+                of,
+                each,
+                one_kind: false,
+            } => self.g12b_counters_of(on, of, each.as_ref())?,
+            Effect::PutCountersOf {
+                on: Ref::Target(0),
+                of: Ref::Target(0),
+                each: Some(Amount::Fixed(1)),
+                one_kind: true,
+            } if self.single(&Ref::Target(0)) => {
+                let target = self.name_target()?;
+                let noun = target.strip_prefix("target ")?.to_owned();
+                format!(
+                    "choose a counter on {target}. Give that {noun} another counter of that kind"
+                )
             }
+            Effect::PutCountersOf { .. } => return None,
             Effect::MoveCounters {
                 from,
                 to,

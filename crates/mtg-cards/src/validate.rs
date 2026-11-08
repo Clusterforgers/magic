@@ -2011,7 +2011,9 @@ impl<'a> Walker<'a> {
     /// the layers give it.
     fn granted(&mut self, granted: &Ability) {
         match granted {
+            // A loyalty ability is an activated ability (CR 606.3): "Planeswalkers you control have '[0]: Proliferate.'"
             Ability::Activated { .. }
+            | Ability::Loyalty { .. }
             | Ability::Triggered { .. }
             | Ability::Static { .. }
             | Ability::CostModifier { .. } => {}
@@ -3571,7 +3573,7 @@ impl Walker<'_> {
                     w.problem("a factor below two multiplies the counters by nothing");
                 }
             }
-            Effect::PutCountersOf { on, of, each } => {
+            Effect::PutCountersOf { on, of, each, .. } => {
                 w.at("on", |w| w.reference(on, Kind::Either));
                 w.at("of", |w| w.reference(of, Kind::Either));
                 if let Some(each) = each {
@@ -5942,6 +5944,18 @@ mod tests {
             found.iter().any(|problem| problem.contains(message)),
             "{message:?} is not among {found:#?}"
         );
+    }
+
+    #[rstest]
+    #[case::a_loyalty_ability(
+        r#"{"Static":{"affected":{"Each":[{"Type":"Planeswalker"}]},"mods":[{"GrantAbility":{"Loyalty":{"cost":"Zero","effects":[{"Proliferate":{}}]}}}]}}"#
+    )]
+    #[case::an_activated_ability(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}"#
+    )]
+    fn ep22_an_activated_or_loyalty_ability_is_granted(#[case] json: &str) {
+        let found = problems(json);
+        assert!(found.is_empty(), "{found:#?}");
     }
 
     #[rstest]

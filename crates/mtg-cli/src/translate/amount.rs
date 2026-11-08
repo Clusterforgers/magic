@@ -120,7 +120,9 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return Ok(json!({ "Bound": bound }));
     }
-    if text == "Wins" && ctx.flip_win {
+    // A won flip's part runs once per win, so the wins it reads are one; a heads part reads the heads as an `X` the script
+    // leaves undefined.
+    if ctx.flip_win && (text == "Wins" || (text == "X" && ctx.svar(text).is_none())) {
         return Ok(json!(1));
     }
     if ctx.die_result.as_deref() == Some(text) {

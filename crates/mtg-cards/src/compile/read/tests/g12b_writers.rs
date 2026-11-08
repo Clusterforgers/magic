@@ -53,6 +53,28 @@ fn g12b_counters_of_write_as_printed(
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
 
+fn one_kind(each: u32, one_kind: bool, what: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":[{{"Mana":"{{3}}"}},"Tap"],"effects":[{{"PutCountersOf":{{"on":{{"Target":0}},"of":{{"Target":0}},"each":{each},"one_kind":{one_kind}}}}}],"targets":[{{"what":{what}}}]}}}}"#
+    )
+}
+
+const EITHER: &str = r#"{"Either":[{"Object":[]},"Player"]}"#;
+const PERMANENT: &str = r#"{"Object":[]}"#;
+const MODULE: &str = "{3}, {T}: Choose a counter on target permanent or player. Give that permanent or player another counter of that kind.";
+const GAUNTLET: &str = "{3}, {T}: Choose a counter on target permanent. Put an additional counter of that kind on that permanent.";
+
+#[rstest]
+#[case::give_another(one_kind(1, true, EITHER), MODULE, true)]
+#[case::an_additional(one_kind(1, true, PERMANENT), GAUNTLET, true)]
+#[case::each_kind_is_not_one(one_kind(1, false, EITHER), MODULE, false)]
+#[case::two_is_not_another(one_kind(2, true, EITHER), MODULE, false)]
+#[case::a_permanent_is_not_a_player_too(one_kind(1, true, PERMANENT), MODULE, false)]
+fn ep22_one_kind_writes_as_printed(#[case] json: String, #[case] text: &str, #[case] reads: bool) {
+    let found = written_variants(&ability(&json));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
 #[rstest]
 #[case::its(PUPIL)]
 #[case::another_creature_s(COLONY)]

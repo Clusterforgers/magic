@@ -229,6 +229,7 @@ mod encore_fuzz;
 mod energy_payments;
 mod entered_this_turn;
 mod enters;
+mod ep22_granted_loyalty;
 mod equip_to;
 mod equipment;
 mod equipment_creature;

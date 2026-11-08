@@ -277,6 +277,8 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "ValidTgts",
             "Amount",
             "RememberNumber",
+            "HeadsSubAbility",
+            "TailsSubAbility",
         ],
     )?;
     // `RememberNumber$ Wins` keeps the wins for a part that reads `Wins`; the win part runs once per win, where it is one.
@@ -298,10 +300,24 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some("True") => node["FlipCoin"]["until"] = json!(true),
         Some(_) => return unmapped("key:FlipCoin.FlipUntilYouLose"),
     }
-    for (key, field) in [("WinSubAbility", "win"), ("LoseSubAbility", "lose")] {
+    // A flip with no call comes up heads or tails with the even odds of a win or a loss ("for each coin that comes up
+    // heads"); a call and heads together stay a gap.
+    let no_call = p.get("NoCall") == Some("True");
+    if !no_call && (p.has("HeadsSubAbility") || p.has("TailsSubAbility")) {
+        return unmapped("key:FlipCoin.HeadsSubAbility");
+    }
+    if no_call && (p.has("WinSubAbility") || p.has("LoseSubAbility")) {
+        return unmapped("key:FlipCoin.NoCall-with-win");
+    }
+    for (key, field) in [
+        ("WinSubAbility", "win"),
+        ("LoseSubAbility", "lose"),
+        ("HeadsSubAbility", "win"),
+        ("TailsSubAbility", "lose"),
+    ] {
         if let Some(name) = p.get(key) {
             let part = ctx.sub(name)?;
-            ctx.flip_win = key == "WinSubAbility";
+            ctx.flip_win = matches!(key, "WinSubAbility" | "HeadsSubAbility");
             let chain = chain_at(ctx, &part, false);
             ctx.flip_win = false;
             node["FlipCoin"][field] = Value::Array(chain?);
@@ -320,7 +336,11 @@ fn flip_coins(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             _ => return unmapped("key:FlipCoin.Amount"),
         },
     };
-    if times > 1 && (p.has("LoseSubAbility") || p.get("FlipUntilYouLose").is_some()) {
+    if times > 1
+        && (p.has("LoseSubAbility")
+            || p.has("TailsSubAbility")
+            || p.get("FlipUntilYouLose").is_some())
+    {
         return unmapped("key:FlipCoin.Amount-with-more");
     }
     let node = flip_coin(ctx, p)?;
