@@ -90,7 +90,7 @@ describe('the cards played by hand', () => {
     expect(within(bolt).getByRole('button', { name: /^Lightning Bolt/ })).toBeInTheDocument()
     expect(within(bolt).getByText('×4')).toBeInTheDocument()
     expect(within(bolt).getByText('Partial')).toBeInTheDocument()
-    expect(within(bolt).getByText('The engine does not run X yet.')).toBeInTheDocument()
+    expect(within(bolt).getByText('The engine does not run X yet')).toBeInTheDocument()
     const blocked = pane().getByRole('list', { name: 'Cards the game cannot play' })
     expect(within(blocked).getByRole('button', { name: /^Llanowar Elves/ })).toBeInTheDocument()
     expect(within(blocked).getByText('Unplayable')).toBeInTheDocument()

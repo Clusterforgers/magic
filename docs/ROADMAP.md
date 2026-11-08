@@ -69,7 +69,6 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (i2c1) A stack item in the stack panel offers "Always yield to" on its own menu, also while the seat is not asked, and per-ability yields are kept with the account like the auto choices (i2d)
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
-- [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
 - [ ] (ts6a) Compact faces (under 76 px) cut long names mid-word ("Bonesplitte r") and clip the foot marks at 1280x720 and 1024x768 on `/dev/table?states=1`: the face needs one-line names and a mark row that fits (`CardFace.tsx`)
@@ -89,8 +88,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (pn1c) The seat field builds a row per seat as it is typed: guard a count that would freeze the page (the server's ceiling is the 256 KiB create body, about 2,500 seats)
 - [ ] (fx1c) `FixMarkButton` is mounted in the lobby deck view (the large card of the shared deck preview) and in the table card menu, for a card that is not Verified
 - [ ] (db1a) A deck entry can be marked "play by hand" by its owner (also for a Verified card), so a card that misbehaves is fixed at the table: a flag on `DeckLineBody` and the stored line, the engine hosting the card as manual, the check counting it as played by hand
-- [ ] (db1b) The builder's cards played by hand quote the words of the card each reason covers (the spans of `useCardTexts`), as the not-validated page does
-- [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries, and a token can copy a card on the table
 
