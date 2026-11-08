@@ -806,6 +806,18 @@ fn written_from(when: &TriggerPattern, effects: &[Effect]) -> ZoneKind {
     }
 }
 
+/// The spell a cast trigger is about gains a keyword as "that spell" ("Whenever you cast an instant spell, that spell
+/// gains rebound"): the same words with "it" named, for a cast trigger only.
+fn e15g_that_spell(when: &TriggerPattern, text: &str) -> Option<String> {
+    if !matches!(when, TriggerPattern::SpellCast { .. }) {
+        return None;
+    }
+    let named = text
+        .replacen(", it gains ", ", that spell gains ", 1)
+        .replacen("\n• It gains ", "\n• That spell gains ", 1);
+    (named != text).then_some(named)
+}
+
 fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
@@ -853,6 +865,10 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                         text.replace("copy of enchanted creature", "copy of equipped creature");
                     let others = (equipped != text).then_some(equipped);
                     std::iter::once(text).chain(others)
+                })
+                .flat_map(|text| {
+                    let spell = e15g_that_spell(when, &text);
+                    std::iter::once(text).chain(spell)
                 })
                 .collect()
         }

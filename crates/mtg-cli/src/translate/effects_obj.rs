@@ -738,6 +738,25 @@ const DOESNT_UNTAP: &str = "HIDDEN This card doesn't untap during your next unta
 
 /// The duration of a pump line. "Doesn't untap during your next untap step" lasts through that step, whatever
 /// `Duration$ Permanent` says; it stands alone and with that duration only.
+/// "That spell gains rebound": keywords for the spell that triggered the line, on the stack. A spell changes like a
+/// permanent and keeps the change as the permanent it becomes (CR 400.7a), and the Oracle text gives no end, so the
+/// effect lasts for ever whatever Forge's default is. Only keywords: the stats of a spell are not read.
+fn e15g_spell_gains(p: &Params) -> Tr<bool> {
+    if p.get("PumpZone") != Some("Stack")
+        || p.get("Defined") != Some("TriggeredCard")
+        || !(p.has("KW") || p.has("KWChoice"))
+    {
+        return Ok(false);
+    }
+    if p.has("NumAtt") || p.has("NumDef") || p.has("ValidTgts") || p.has("AtEOT") {
+        return unmapped("key:Pump.PumpZone=Stack-stats");
+    }
+    if !matches!(p.get("Duration"), None | Some("Permanent")) {
+        return unmapped("key:Pump.PumpZone=Stack-duration");
+    }
+    Ok(true)
+}
+
 fn pump_duration(p: &Params) -> Tr<&'static str> {
     let Some(keywords) = p.get("KW") else {
         return duration(p.get("Duration"));
@@ -887,7 +906,12 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.has("ValidCard") && (p.get("ValidCard") != Some("Card.Self") || p.has("Defined")) {
         return unmapped("key:Pump.ValidCard");
     }
-    let duration = pump_duration(p)?;
+    let spell_gains = e15g_spell_gains(p)?;
+    let duration = if spell_gains {
+        "Forever"
+    } else {
+        pump_duration(p)?
+    };
     let subject = subject(ctx, p, "Self", None)?;
     if let Some(found) = player_keywords(p, &subject, duration) {
         return found;
@@ -910,7 +934,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     // The pumped object is on the battlefield; a pump of a card in another zone, or of a spell, is only a target choice.
     match p.get("PumpZone") {
         None | Some("Battlefield") => {}
-        Some("Stack") if selects_only => {}
+        Some("Stack") if selects_only || spell_gains => {}
         Some(zone) => return unmapped(format!("key:Pump.PumpZone={zone}")),
     }
     if selects_only {
