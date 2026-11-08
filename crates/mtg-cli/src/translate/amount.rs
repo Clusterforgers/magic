@@ -284,8 +284,12 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         }
         "TriggerObjectsAttackers" | "TriggeredDefendingPlayer" => return attacks(ctx, head, what),
         "DungeonsCompleted" => return super::amount_more::dungeons(what).map(Some),
-        "PlayerCountOpponents" | "PlayerCountRegisteredOpponents" | "PlayerCountPlayers" => {
-            let who = if head == "PlayerCountPlayers" {
+        "PlayerCountOpponents"
+        | "PlayerCountRegisteredOpponents"
+        | "PlayerCountPlayers"
+        // The players registered in the game: every player.
+        | "PlayerCountDefinedRegistered" => {
+            let who = if matches!(head, "PlayerCountPlayers" | "PlayerCountDefinedRegistered") {
                 "EachPlayer"
             } else {
                 "Opponents"
@@ -308,7 +312,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                 return Ok(Some(json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})));
             }
             let tally = match what {
-                "HighestLifeLostThisTurn" => Some("LifeLost"),
+                "HighestLifeLostThisTurn" => Some("LifeLostMost"),
                 "HighestCardsDrawn" => Some("Drawn"),
                 "LifeGainedThisTurn" => Some("LifeGainedTotal"),
                 "CardsDiscardedThisTurn" if who == "EachPlayer" => Some("Discarded"),
