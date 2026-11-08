@@ -1,6 +1,7 @@
 //! Goal: round 16 pack e16b bounds a target only a paid optional cost declares by that payment, reads "if you revealed a
 //! Dragon card or controlled a Dragon as you cast this spell" into the reveal paid or a Dragon held as the spell was cast,
-//! and leaves a presence the Oracle does not word and an opponent target where the card says "target player" a gap.
+//! and leaves a presence the Oracle does not word and an opponent target where the card says "target player" but names
+//! an opponent elsewhere a gap (a card that names no opponent widens the target to a player).
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -29,15 +30,22 @@ fn a_target_only_the_paid_spell_declares_is_chosen_only_when_it_was_paid() {
 }
 
 #[rstest]
-#[case::target_player("Target player discards a card.", true)]
-#[case::target_opponent("Target opponent discards a card.", false)]
-#[case::no_words("", false)]
+#[case::target_player("Target player discards a card.", false, Some("Player"))]
+#[case::target_player_and_opponent(
+    "Target player discards a card. Each opponent loses 1 life.",
+    true,
+    None
+)]
+#[case::target_opponent("Target opponent discards a card.", false, Some("Opponent"))]
+#[case::no_words("", false, Some("Opponent"))]
 fn an_opponent_target_where_the_card_says_target_player_is_a_gap(
     #[case] oracle: &str,
     #[case] gapped: bool,
+    #[case] what: Option<&str>,
 ) {
     let spell = "A:SP$ Discard | ValidTgts$ Opponent | NumCards$ 1 | Mode$ TgtChoose";
-    let found = gaps(&card(OPTIONAL, spell, oracle));
+    let text = card(OPTIONAL, spell, oracle);
+    let found = gaps(&text);
     assert_eq!(
         found
             .iter()
@@ -45,6 +53,13 @@ fn an_opponent_target_where_the_card_says_target_player_is_a_gap(
         gapped,
         "{found:?}"
     );
+    if let Some(what) = what {
+        let read = serde_json::to_string(&abilities(&text)).unwrap();
+        assert!(
+            read.contains(&format!(r#""targets":[{{"what":"{what}"}}]"#)),
+            "{read}"
+        );
+    }
 }
 
 const REVEAL: &str = "Mode$ OptionalCost | EffectZone$ All | ValidCard$ Card.Self | ValidSA$ Spell | Cost$ Reveal<1/Goblin>";
