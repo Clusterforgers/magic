@@ -474,6 +474,7 @@ mod w19a_flash;
 mod w19b_move_counters;
 mod w19c_counter_conditions;
 mod w19d_suffixes;
+mod w19e_controller_sacrifices;
 mod w19z_scratch;
 mod w20a_look_pick;
 mod w20b_reflexive;

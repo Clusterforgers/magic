@@ -1773,7 +1773,7 @@ const SACRIFICE: Verb = Verb {
     actor: "Defined",
     pool: "SacValid",
     count: "Amount",
-    own: &["RememberSacrificed", "SacMessage"],
+    own: &["RememberSacrificed", "SacMessage", "ChangeNum"],
 };
 
 fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
@@ -1793,6 +1793,10 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         None | Some("Self") => return unmapped("key:Sacrifice.SacValid"),
         Some(valid) => selector_any(ctx, valid)?,
     };
+    // An older script word for the number: one permanent.
+    if p.get("ChangeNum").is_some_and(|number| number != "1") || p.has("ChangeNum") && p.has("Amount") {
+        return unmapped("key:Sacrifice.ChangeNum");
+    }
     let count = frame::count(ctx, p, &SACRIFICE)?.max;
     let verb = if up_to { "SacrificeUpTo" } else { "Sacrifice" };
     let mut effect = json!({verb: {"who": who.clone(), "filter": filter, "count": count}});

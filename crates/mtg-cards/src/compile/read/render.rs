@@ -3232,6 +3232,11 @@ impl Writer<'_> {
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()
             }
+            // The spell or ability that targeted the card ("Whenever ~ becomes the target of a spell or ability, that
+            // spell or ability's controller sacrifices a land").
+            Ref::ControllerOf(inner) if **inner == Ref::Dealer => {
+                "that spell or ability's controller".to_owned()
+            }
             _ => return None,
         })
     }
