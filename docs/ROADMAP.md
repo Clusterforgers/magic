@@ -35,7 +35,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), smart stops, per-ability yields and leak tests (`docs/ui-design.md`).
 - Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
-- Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
+- Web table: lanes and card sizes, the seat corner, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list and the precon browser (`docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps and side-by-side test binaries, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
@@ -47,7 +47,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 - [ ] (pf21) A spell or ability can be backed out of at every step before it is on the stack (targets, modes, X, costs, payment): an Undo in each prompt returns the card or ability and any mana spent, as Arena does
 - [ ] (pf23) An optional payment the seat cannot make is declined without asking (Dawn of Hope "Pay {2}?" with less than 2 mana available), counting every source the rules allow, so the table never waits on a question with one real answer
-- [ ] (pf25) A crowded stack and a big combat stay readable: many stack items (a board of triggers) fold into groups with a count and a list, and many attackers or blockers keep their lines and labels legible, at every size
+- [ ] (pf25a) Hovering or focusing a folded stack chip draws the target arrows of every item in its run, not only its top one's (`combat/stackArrows.ts`, `stackGroups.ts`)
 
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
