@@ -1,0 +1,37 @@
+{
+  "oracle_id": "7fcc8aab-6f7b-4474-b4e4-58cf4a119b22",
+  "name": "Scarwood Bandits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scarwood Bandits",
+      "oracle_fingerprint": "d875849a63ea550cf0fd2f60d604d191",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "WhileSourceOnBattlefield"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

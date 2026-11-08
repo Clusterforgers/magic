@@ -1,0 +1,50 @@
+{
+  "oracle_id": "6f2ba142-5e7c-4709-ae03-e028cb2a9872",
+  "name": "Super-Soldier Serum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Super-Soldier Serum",
+      "oracle_fingerprint": "9862220f1f4eed133253acf01c9efec5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "FirstStrike" },
+              { "AddKeyword": "Vigilance" },
+              { "AddSupertype": "Legendary" },
+              { "AddSubtype": "Soldier" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Subtype": "Equipment" }] } }
+              }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": [{ "Is": "Attached" }] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Subtype": "Equipment" }] } }
+              }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "Dealer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

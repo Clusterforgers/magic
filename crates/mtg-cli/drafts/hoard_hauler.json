@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2578e8e4-a93c-4904-9037-92a1529c2c67",
+  "name": "Hoard Hauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hoard Hauler",
+      "oracle_fingerprint": "4d8be0fc7e9240acc538f6c1aeab1ff7",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

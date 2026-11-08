@@ -1,0 +1,135 @@
+{
+  "oracle_id": "4a0cc2a2-3711-473a-b2c5-b1e52b34e4fb",
+  "name": "Dion, Bahamut's Dominant // Bahamut, Warden of Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dion, Bahamut's Dominant",
+      "oracle_fingerprint": "c8f832043c81fe527dbd5f2702d3216d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    "This",
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Subtype": "Knight" } },
+                          { "Not": "Other" },
+                          { "Not": { "ControlledBy": "You" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{W}{W}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bahamut, Warden of Light",
+      "oracle_fingerprint": "54b0431d05396580afaf9f2c8fbb1006",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

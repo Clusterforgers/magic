@@ -1,0 +1,44 @@
+{
+  "oracle_id": "40832734-fa83-4c02-9fbf-4614ce2919b7",
+  "name": "Flaring Flame-Kin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flaring Flame-Kin",
+      "oracle_fingerprint": "4a4f24a9b62b159b098828cfa16bd06c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Trample" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{R}",
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Aura" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-//! Goal: every draft under `drafts/` is a whole rules file the checker marks `Unchecked` (`Mismatch` too for a trusted Forge draft), in canonical form, named after
+//! Goal: every draft under `drafts/` is a whole rules file the checker marks `Unchecked` (`Mismatch` too for a matched Forge draft, through a clause that reads back as other text only when it is marked `differs`), in canonical form, named after
 //! its card, with one record of the card's Scryfall data (equal to the cached Oracle Cards file where there is one),
 //! written for the text of that record, so its read hash is the one `compile` stores, and no rules file or `Verified`
 //! compiled row outranks it; the embedded set is the directory.
@@ -15,7 +15,7 @@ use mtg_cards::builtin;
 use mtg_cards::card::Card;
 use mtg_cards::load::{Library, canonical, slug, unwhole};
 use mtg_cards::proposal::partial::PartialProof;
-use mtg_cards::proposal::{Verdict, check, check_exact};
+use mtg_cards::proposal::{ClauseState, Verdict, check, check_exact};
 use mtg_cards::support::read_hash;
 use mtg_cards::validate::named_cards;
 use mtg_cards::{Caps, PrintedCard};
@@ -327,6 +327,20 @@ fn judge_draft(
         check
     };
     let report = judge(&item.text, &item.printed, library, names, caps);
+    let differs = report
+        .clauses
+        .iter()
+        .any(|clause| matches!(clause.state, ClauseState::Differs { .. }));
+    if differs && !(trusted && meta.differs) {
+        problems.push(format!(
+            "{slug}: a clause reads back as other text, and the draft is not a matched Forge draft marked `differs`"
+        ));
+    }
+    if meta.differs && !differs {
+        problems.push(format!(
+            "{slug}: marked `differs`, but every clause reads back: drop the mark"
+        ));
+    }
     match report.verdict() {
         // A proved partial draft is accepted as `Partial`; the proof carries it.
         Verdict::Accepted if proof.is_some() => {}

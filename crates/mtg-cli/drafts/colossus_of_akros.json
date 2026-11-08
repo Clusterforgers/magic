@@ -1,0 +1,33 @@
+{
+  "oracle_id": "96d508a6-ecd2-4a97-8802-df099a372084",
+  "name": "Colossus of Akros",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossus of Akros",
+      "oracle_fingerprint": "581d1d08854d4be2d6990b84139d4939",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Indestructible" },
+        { "Activated": { "cost": "{10}", "effects": [{ "Monstrosity": { "count": 10 } }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Monstrous"] } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": ["This", "Monstrous"] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

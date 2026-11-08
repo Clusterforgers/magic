@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "cba9260d-ef07-4429-99f9-6004cc1fea0f",
+  "oracle_id": "ad643992-eb9f-4a4a-9b74-a5aee2337f30",
+  "multiverse_ids": [],
+  "resource_id": "C01B07F8D8BFFF0F53446CBFF5A3FB5D15CFA51A1169C828C2F7844F6568BD04",
+  "mtgo_id": 144696,
+  "arena_id": 97383,
+  "tcgplayer_id": 662751,
+  "cardmarket_id": 858226,
+  "name": "Lo and Li, Twin Tutors",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/cba9260d-ef07-4429-99f9-6004cc1fea0f",
+  "scryfall_uri": "https://scryfall.com/card/tla/108/lo-and-li-twin-tutors?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:09:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.jpg?1783904969",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.jpg?1783904969",
+    "large": "https://cards.scryfall.io/large/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.jpg?1783904969",
+    "png": "https://cards.scryfall.io/png/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.png?1783904969",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.jpg?1783904969",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.jpg?1783904969",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.webp?1783904969",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.webp?1783904969",
+    "display": "https://cards.scryfall.io/display/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.webp?1783904969",
+    "art": "https://cards.scryfall.io/art/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.webp?1783904969",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.webp?1783904969",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cba9260d-ef07-4429-99f9-6004cc1fea0f.jpg?1783904969"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Advisor",
+  "oracle_text": "When Lo and Li enter, search your library for a Lesson or Noble card, reveal it, put it into your hand, then shuffle.\nNoble creatures you control and Lesson spells you control have lifelink.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cba9260d-ef07-4429-99f9-6004cc1fea0f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aad643992-eb9f-4a4a-9b74-a5aee2337f30&unique=prints",
+  "collector_number": "108",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Almost perfect,\" Lo began. Li finished, \"One hair out of place.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "AKAGI",
+  "artist_ids": [
+    "84c7086f-5e33-40cc-90bc-620e07d1ed17"
+  ],
+  "illustration_id": "d1d23e0b-b9a7-4987-959e-1b3e30538779",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 15242,
+  "preview": {
+    "source": "Good Time Society",
+    "source_uri": "https://www.youtube.com/watch?v=QpUUpSpoZ0k",
+    "previewed_at": "2025-11-06"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.19",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLo%2Band%2BLi%252C%2BTwin%2BTutors",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLo%2Band%2BLi%252C%2BTwin%2BTutors",
+    "edhrec": "https://edhrec.com/route/?cc=Lo+and+Li%2C+Twin+Tutors"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662751%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=858226&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144696?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

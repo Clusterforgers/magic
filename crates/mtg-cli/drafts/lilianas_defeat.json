@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7c8b38b3-b808-4ad8-b4e5-39e216063ff6",
+  "name": "Liliana's Defeat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Defeat",
+      "oracle_fingerprint": "be5a6f27a3dc42a3168b9844b623ef0b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Color": "Black" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Planeswalker" }, { "Subtype": "Liliana" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bbe41a21-f8ad-4e5c-88d8-2a41dfd32d13",
+  "name": "Quakebringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quakebringer",
+      "oracle_fingerprint": "4fa474ee859129f65a1a69e5eb096228",
+      "abilities": [
+        { "Rule": { "rule": { "CantGainLife": "Opponents" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        },
+        { "Keyword": { "Foretell": "{2}{R}{R}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "ControlledBy": "You" }, { "Subtype": "Giant" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

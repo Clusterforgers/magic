@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f255492e-4e12-48b4-9c19-8a2a2780a1b7",
+  "name": "Sneaky Snacker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sneaky Snacker",
+      "oracle_fingerprint": "9a89c0a5e186d875826451efd5f46d61",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 3 } },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

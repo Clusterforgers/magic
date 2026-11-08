@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ec9475f8-235a-4c85-9b96-9c2085a9b732",
+  "name": "Induce Paranoia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Induce Paranoia",
+      "oracle_fingerprint": "36095c7a691ee71970f741ea2e259578",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "RememberValue": {
+                  "value": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Black" },
+                  "then": [
+                    {
+                      "Mill": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "count": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

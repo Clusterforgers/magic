@@ -1,0 +1,47 @@
+{
+  "oracle_id": "8cd45064-2ad9-4247-902e-aefaf3bc1a43",
+  "name": "Their Number Is Legion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Their Number Is Legion",
+      "oracle_fingerprint": "ff4f45af3cc7adbd8da962a025f85f55",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Necron Warrior",
+                      "colors": ["Black"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Necron", "Warrior"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": "X",
+                  "tapped": true
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

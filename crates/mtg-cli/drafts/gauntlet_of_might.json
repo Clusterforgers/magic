@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d38ad188-515e-4865-a0ed-5d0fd4c7b453",
+  "name": "Gauntlet of Might",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gauntlet of Might",
+      "oracle_fingerprint": "3d4ac50ec93a26290beae9da49c4bdac",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "Red" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Subtype": "Mountain" }] } },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

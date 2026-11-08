@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1d55a1c5-fd0b-44d2-9e7c-550052fef262",
+  "name": "Tzaangor Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tzaangor Shaman",
+      "oracle_fingerprint": "e9839592392c76d483f195368838e4b0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

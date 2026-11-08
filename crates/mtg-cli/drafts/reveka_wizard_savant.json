@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7085d5c6-da96-465e-90cf-8469fcacb474",
+  "name": "Reveka, Wizard Savant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reveka, Wizard Savant",
+      "oracle_fingerprint": "47b5e2c94a6d3c79aaceaa605f931252",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

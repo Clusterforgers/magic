@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d44f3724-17b7-48f0-885d-75292669f971",
+  "name": "Fiery Annihilation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Annihilation",
+      "oracle_fingerprint": "c6195ea7721b27dbea3ab747503d57b2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Equipment" }, { "AttachedTo": { "Target": 0 } }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Exile": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

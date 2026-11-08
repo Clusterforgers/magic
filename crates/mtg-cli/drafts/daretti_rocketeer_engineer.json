@@ -1,0 +1,57 @@
+{
+  "oracle_id": "0eb1d539-6301-46b0-903e-487eda34253f",
+  "name": "Daretti, Rocketeer Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daretti, Rocketeer Engineer",
+      "oracle_fingerprint": "6daf7de6ba40a20db231f6b43e0b1a59",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Greatest": {
+                      "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "toughness": 5
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                  "paid": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b6f61b77-d571-4508-a5e8-435b4e097f3a",
+  "name": "Spectacular Showdown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectacular Showdown",
+      "oracle_fingerprint": "f9c68bd755623486a5c71904f8161044",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "double strike" } } },
+              { "Goad": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{4}{R}{R}{R}" } }
+      ]
+    }
+  ]
+}

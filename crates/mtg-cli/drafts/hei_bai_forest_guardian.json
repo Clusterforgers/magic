@@ -1,0 +1,84 @@
+{
+  "oracle_id": "11e70692-2057-49c8-90e6-953362f4817f",
+  "name": "Hei Bai, Forest Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hei Bai, Forest Guardian",
+      "oracle_fingerprint": "aa4abaae88886e841a775932ebee95ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Subtype": "Shrine" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{U}{B}{R}{G}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              { "CanBlockOnly": [{ "Type": "Creature" }, { "Subtype": "Spirit" }] },
+                              {
+                                "CantBeBlockedBy": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "Subtype": "Spirit" } }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Type": "Enchantment" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

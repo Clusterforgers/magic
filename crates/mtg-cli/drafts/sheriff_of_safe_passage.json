@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ec16008f-18d6-4461-b99c-0a504f211618",
+  "name": "Sheriff of Safe Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sheriff of Safe Passage",
+      "oracle_fingerprint": "4b9c5331e74a88c4200fbcecf16bbd94",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Sum": [
+                    { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                    1
+                  ]
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": { "Plot": "{1}{W}" } }
+      ]
+    }
+  ]
+}

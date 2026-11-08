@@ -105,6 +105,7 @@ async fn promote(
         no_smoke: false,
         drafts: None,
         source: None,
+        differs: false,
         files,
     };
     w2a_promote_against(db, cache, &args, &Library::default())
@@ -242,6 +243,7 @@ async fn a_folder_that_is_not_the_cards_crate_is_refused(pool: PgPool) {
         no_smoke: false,
         drafts: None,
         source: None,
+        differs: false,
         files: vec![proposal(dir.path(), "a", "lightning_bolt", BOLT)],
     };
     let error = w2a_promote_against(&db, &cache, &args, &Library::default())

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "caa69b51-1efd-4d0e-803b-914a83ccb836",
+  "name": "Lifecraft Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifecraft Engine",
+      "oracle_fingerprint": "c08fe439654902d6981e29bdb219bb4a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }, { "ControlledBy": "You" }]
+            },
+            "mods": ["AddChosenSubtype"]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "ChosenSubtype", "Other", { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

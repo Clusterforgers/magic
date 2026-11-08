@@ -1,0 +1,45 @@
+{
+  "oracle_id": "40eacdae-fae5-46b9-a9e5-9211469f74fc",
+  "name": "Ezuri, Claw of Progress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ezuri, Claw of Progress",
+      "oracle_fingerprint": "b035b630ec9fe5d67404ea37a7b80be8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

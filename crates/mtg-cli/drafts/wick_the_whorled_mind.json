@@ -1,0 +1,93 @@
+{
+  "oracle_id": "5af729e8-8a40-4991-8270-612e377451de",
+  "name": "Wick, the Whorled Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wick, the Whorled Mind",
+      "oracle_fingerprint": "fab7ab46725f750f76a81d8e212166f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Rat" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Snail" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Snail",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Snail"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Subtype": "Snail" }, { "ControlledBy": "You" }] },
+                        "as": "card"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "card" }, "counter": "+1/+1" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{U}{B}{R}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Snail" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              },
+              { "Draw": { "count": { "Stat": { "of": "Paid", "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

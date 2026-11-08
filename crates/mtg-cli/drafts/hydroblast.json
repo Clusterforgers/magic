@@ -1,0 +1,61 @@
+{
+  "oracle_id": "b94c0336-2ca8-4bb1-bb1f-e9babd1826ad",
+  "name": "Hydroblast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hydroblast",
+      "oracle_fingerprint": "1afccd4291a7bf0249cfb5afd99ae662",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Target": 0 },
+                                "selector": ["Spell", { "Color": "Red" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Target": 0 },
+                                "selector": [{ "Color": "Red" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

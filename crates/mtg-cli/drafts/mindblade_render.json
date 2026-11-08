@@ -1,0 +1,27 @@
+{
+  "oracle_id": "028dcef2-3de9-4dde-ba17-f9e077b3190d",
+  "name": "Mindblade Render",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindblade Render",
+      "oracle_fingerprint": "cb49597255af9d0eb0c65145e4376556",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Warrior" }],
+                  "to": "Opponents",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

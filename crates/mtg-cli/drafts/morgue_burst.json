@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ee3b72ac-35b6-45d0-bb50-5a5899b291b1",
+  "name": "Morgue Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morgue Burst",
+      "oracle_fingerprint": "6c23ad01df55cb9928ef19549710eebd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              },
+              { "what": "AnyTarget" }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Bound": "moved" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

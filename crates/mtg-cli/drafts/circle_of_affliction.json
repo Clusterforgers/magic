@@ -1,0 +1,33 @@
+{
+  "oracle_id": "69658c2c-2c46-4d62-945e-1a5176869b05",
+  "name": "Circle of Affliction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Affliction",
+      "oracle_fingerprint": "5ee7901f63c7d256c411ff85a5aef98d",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["ChosenColor"], "to": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

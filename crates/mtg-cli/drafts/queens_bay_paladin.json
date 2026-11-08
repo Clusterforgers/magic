@@ -1,0 +1,45 @@
+{
+  "oracle_id": "60b18d94-8ae5-4508-b4db-18f92c2d39fd",
+  "name": "Queen's Bay Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Queen's Bay Paladin",
+      "oracle_fingerprint": "68bd0635ac134b1bc33488ff279636aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Vampire" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } },
+                  "as": "moved"
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Stat": { "of": { "Bound": "moved" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

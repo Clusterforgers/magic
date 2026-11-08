@@ -1,0 +1,49 @@
+{
+  "oracle_id": "28ffddca-a3c4-467d-a2dc-2c5e62393e11",
+  "name": "Woodland Weavemaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodland Weavemaster",
+      "oracle_fingerprint": "74e6d576e1ec055e82ad6dff2039c6b1",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Elf" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": { "Stat": { "of": "This", "stat": "Power" } } },
+                  "only": [
+                    { "Spell": { "subtypes": ["Elf"] } },
+                    { "Ability": { "subtypes": ["Elf"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

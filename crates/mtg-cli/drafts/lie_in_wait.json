@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4dc0831a-0eb1-4f7d-9591-6e670e180116",
+  "name": "Lie in Wait",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lie in Wait",
+      "oracle_fingerprint": "947c498a984bd7d48de1b415786f6027",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Bound": "moved" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

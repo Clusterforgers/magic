@@ -1,0 +1,25 @@
+{
+  "oracle_id": "baa85b14-1c9f-4a19-9f07-93e3192c597d",
+  "name": "Volcanic Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volcanic Wind",
+      "oracle_fingerprint": "2d21ab671e0c312d8278ab485fc187e1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } },
+                "divide": { "Count": [{ "Type": "Creature" }] }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

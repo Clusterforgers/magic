@@ -1,0 +1,68 @@
+{
+  "oracle_id": "991fd651-0cba-41ee-855a-d01a1a7c8f60",
+  "name": "Anikthea, Hand of Erebos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anikthea, Hand of Erebos",
+      "oracle_fingerprint": "a5a4610172e14b6b879c1a4a97442b5e",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                "Other",
+                { "Type": "Enchantment" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Enchantment" },
+                    { "Not": { "Subtype": "Aura" } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [
+                        { "SetPT": { "power": 3, "toughness": 3 } },
+                        { "SetColors": ["Black"] },
+                        { "AddType": "Creature" },
+                        { "AddSubtype": "Zombie" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

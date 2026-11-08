@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1b8c4cbe-b2fc-4d52-9382-1e03c40003be",
+  "name": "Nissa's Zendikon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa's Zendikon",
+      "oracle_fingerprint": "7adf9e8b0967a07b818ed36166d04142",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Reach" },
+              { "AddKeyword": "Haste" },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Elemental" }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

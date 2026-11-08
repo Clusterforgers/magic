@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c916b81f-700e-4a1a-8c8e-c4685ceaecd2",
+  "name": "Tithe Taker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tithe Taker",
+      "oracle_fingerprint": "d27774ff8bc786c56d34e86361b97aa1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }],
+            "change": "Increase",
+            "mana": "{1}",
+            "condition": "YourTurn"
+          }
+        },
+        { "Keyword": { "Afterlife": 1 } },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "Opponents" }],
+            "change": "Increase",
+            "mana": "{1}",
+            "condition": "YourTurn",
+            "activating": "Any"
+          }
+        }
+      ]
+    }
+  ]
+}

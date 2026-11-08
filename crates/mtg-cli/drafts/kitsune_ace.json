@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1dbadf75-28cd-4525-8f51-9c53049b9b54",
+  "name": "Kitsune Ace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitsune Ace",
+      "oracle_fingerprint": "f67d7fe2b4b79389b2c9795bb4745a64",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Triggering",
+                            "mods": [{ "AddKeyword": "FirstStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Untap": { "what": "This" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3b9bc41a-a43f-4be7-9452-f61f5ad5b482",
+  "name": "Sita Varma, Masked Racer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sita Varma, Masked Racer",
+      "oracle_fingerprint": "fe5f41dbe33aed6a86fbcd7043d710a3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}{U}{G}{G}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "X" } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                        },
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": { "Stat": { "of": "This", "stat": "Power" } },
+                              "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

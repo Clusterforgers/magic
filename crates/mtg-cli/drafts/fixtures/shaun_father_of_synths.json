@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "68af449f-3c30-43ea-be60-d85061d7adbd",
+  "oracle_id": "0bd11d6c-b707-4b37-b49c-a3274b2a5a81",
+  "multiverse_ids": [
+    652206
+  ],
+  "mtgo_id": 132487,
+  "tcgplayer_id": 541478,
+  "cardmarket_id": 758334,
+  "name": "Shaun, Father of Synths",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/68af449f-3c30-43ea-be60-d85061d7adbd",
+  "scryfall_uri": "https://scryfall.com/card/pip/119/shaun-father-of-synths?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.jpg?1783912382",
+    "normal": "https://cards.scryfall.io/normal/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.jpg?1783912382",
+    "large": "https://cards.scryfall.io/large/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.jpg?1783912382",
+    "png": "https://cards.scryfall.io/png/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.png?1783912382",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.jpg?1783912382",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.jpg?1783912382",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.webp?1783912382",
+    "grid": "https://cards.scryfall.io/grid/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.webp?1783912382",
+    "display": "https://cards.scryfall.io/display/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.webp?1783912382",
+    "art": "https://cards.scryfall.io/art/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.webp?1783912382",
+    "crop": "https://cards.scryfall.io/crop/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.webp?1783912382",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/8/68af449f-3c30-43ea-be60-d85061d7adbd.jpg?1783912382"
+  },
+  "mana_cost": "{3}{U}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Scientist",
+  "oracle_text": "Whenever you attack, you may create a tapped and attacking token that's a copy of target attacking legendary creature you control other than Shaun, except it's not legendary and it's a Synth artifact creature in addition to its other types.\nWhen Shaun leaves the battlefield, exile all Synth tokens you control.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "bead06c9-4175-42a3-be4c-0b685c6cf8b7",
+      "component": "combo_piece",
+      "name": "Shaun, Father of Synths",
+      "type_line": "Legendary Creature — Human Scientist",
+      "uri": "https://api.scryfall.com/cards/bead06c9-4175-42a3-be4c-0b685c6cf8b7"
+    },
+    {
+      "object": "related_card",
+      "id": "78c43047-87f6-4382-874e-02e9628647bd",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/78c43047-87f6-4382-874e-02e9628647bd"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/68af449f-3c30-43ea-be60-d85061d7adbd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0bd11d6c-b707-4b37-b49c-a3274b2a5a81&unique=prints",
+  "collector_number": "119",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zuzanna Wużyk",
+  "artist_ids": [
+    "d8d1993d-8800-442c-b697-c515477a1ac4"
+  ],
+  "illustration_id": "24de3f7d-ebc3-4574-91df-f32fe8845e4f",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6841,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "1.68",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "0.41",
+    "tix": "0.44"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652206&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShaun%252C%2BFather%2Bof%2BSynths",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShaun%252C%2BFather%2Bof%2BSynths",
+    "edhrec": "https://edhrec.com/route/?cc=Shaun%2C+Father+of+Synths"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F541478%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758334&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132487?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3ec1b309-8c26-4dc4-b4c3-f97c2c3f8a68",
+  "name": "Torrent of Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torrent of Souls",
+      "oracle_fingerprint": "00edf3dda17736738eebcc06f4338d9b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              { "what": "Player" }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Black" },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Red" },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }]
+                        },
+                        "mods": [
+                          { "ModifyPT": { "power": 2, "toughness": 0 } },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

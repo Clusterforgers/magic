@@ -1,0 +1,24 @@
+{
+  "oracle_id": "42b17f78-d290-40ed-afac-f9362e526999",
+  "name": "Undergrowth Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undergrowth Scavenger",
+      "oracle_fingerprint": "45958e5724da48aec02b3c2838be3d9b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

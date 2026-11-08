@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "77dcd29e-d0d5-474f-a05b-768ccf6b6293",
+  "oracle_id": "c000d5c3-5b0c-4c5c-9919-76640da0a1e4",
+  "multiverse_ids": [],
+  "tcgplayer_id": 658480,
+  "cardmarket_id": 857521,
+  "name": "Kratos, Stoic Father",
+  "lang": "en",
+  "released_at": "2025-10-27",
+  "uri": "https://api.scryfall.com/cards/77dcd29e-d0d5-474f-a05b-768ccf6b6293",
+  "scryfall_uri": "https://scryfall.com/card/sld/2213/kratos-stoic-father?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:12:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.jpg?1783905130",
+    "normal": "https://cards.scryfall.io/normal/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.jpg?1783905130",
+    "large": "https://cards.scryfall.io/large/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.jpg?1783905130",
+    "png": "https://cards.scryfall.io/png/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.png?1783905130",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.jpg?1783905130",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.jpg?1783905130",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.webp?1783905130",
+    "grid": "https://cards.scryfall.io/grid/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.webp?1783905130",
+    "display": "https://cards.scryfall.io/display/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.webp?1783905130",
+    "art": "https://cards.scryfall.io/art/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.webp?1783905130",
+    "crop": "https://cards.scryfall.io/crop/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.webp?1783905130",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/7/77dcd29e-d0d5-474f-a05b-768ccf6b6293.jpg?1783905130"
+  },
+  "mana_cost": "{2}{R}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — God Warrior",
+  "oracle_text": "Whenever you attack with one or more Gods and whenever a God dies, you get an experience counter.\nAt the beginning of your end step, put a number of +1/+1 counters on target creature equal to the number of experience counters you have.\nPartner—Father & son (You can have two commanders if both have this ability.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "edf99449-b176-460b-afb3-14a35e3ae35a",
+      "component": "combo_piece",
+      "name": "Experience",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/edf99449-b176-460b-afb3-14a35e3ae35a"
+    },
+    {
+      "object": "related_card",
+      "id": "77dcd29e-d0d5-474f-a05b-768ccf6b6293",
+      "component": "combo_piece",
+      "name": "Kratos, Stoic Father",
+      "type_line": "Legendary Creature — God Warrior",
+      "uri": "https://api.scryfall.com/cards/77dcd29e-d0d5-474f-a05b-768ccf6b6293"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set": "sld",
+  "set_name": "Secret Lair Drop",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/77dcd29e-d0d5-474f-a05b-768ccf6b6293/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac000d5c3-5b0c-4c5c-9919-76640da0a1e4&unique=prints",
+  "collector_number": "2213",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nathaniel Himawan",
+  "artist_ids": [
+    "ae1e4729-d4ec-4d0f-8c71-883fc7358005"
+  ],
+  "illustration_id": "5accb4e3-caa0-44b5-a428-021ef7d376db",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 16010,
+  "prices": {
+    "usd": "8.51",
+    "usd_foil": "11.53",
+    "usd_etched": null,
+    "eur": "7.26",
+    "eur_foil": "15.26",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKratos%252C%2BStoic%2BFather",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKratos%252C%2BStoic%2BFather",
+    "edhrec": "https://edhrec.com/route/?cc=Kratos%2C+Stoic+Father"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F658480%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857521&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Kratos%2C+Stoic+Father&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

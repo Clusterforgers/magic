@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0ff3afba-7a90-4f62-a1b0-b553ad81c32b",
+  "name": "Zealous Display",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zealous Display",
+      "oracle_fingerprint": "e4825c751767cfc9b5181fb8068afacf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "YourTurn" },
+                  "then": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

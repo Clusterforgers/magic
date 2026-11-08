@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ba7f1b09-5727-484d-a502-3dcf4d618c56",
+  "name": "Slash the Ranks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slash the Ranks",
+      "oracle_fingerprint": "c1f0af80787318326170178c058fc6ce",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "Not": "Commander" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

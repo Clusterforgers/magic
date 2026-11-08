@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ece77a64-8d99-430e-8407-bdb321828d63",
+  "name": "Selfless Police Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selfless Police Captain",
+      "oracle_fingerprint": "2fbaa6e5a3f6e5fa6ad95fcafeecdd01",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

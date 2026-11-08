@@ -1,0 +1,54 @@
+{
+  "oracle_id": "8af33199-d3ad-44fe-8ee0-abbe36a2278b",
+  "name": "Delif's Cone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delif's Cone",
+      "oracle_fingerprint": "cf943d9b41bb776b4e401b4178b00f5b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "Unblocked": { "what": [{ "Is": { "Target": 0 } }] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "GainLife": {
+                              "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                            }
+                          },
+                          {
+                            "Rule": {
+                              "rule": {
+                                "Combat": {
+                                  "who": { "Target": 0 },
+                                  "quirk": "AssignsNoCombatDamage"
+                                }
+                              },
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

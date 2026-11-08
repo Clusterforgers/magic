@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9d09697f-8c5c-4bf9-811f-2f847ee374f0",
+  "name": "Swarmborn Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swarmborn Giant",
+      "oracle_fingerprint": "bd59a125e0da890a365411d8c233b6e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "You", "combat": true } } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        { "Activated": { "cost": "{4}{G}{G}", "effects": [{ "Monstrosity": { "count": 2 } }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Reach" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Monstrous"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

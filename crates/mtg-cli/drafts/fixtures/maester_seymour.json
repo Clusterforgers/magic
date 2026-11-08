@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "f6a4267b-aa76-4dec-bc72-252236c44968",
+  "oracle_id": "e7e41303-69a8-4617-b418-142cf41edb9b",
+  "multiverse_ids": [],
+  "resource_id": "C6F7125BA6314F3ECB5D7F5B809D40C4C8895F726ED04153A964431E43AB6BDB",
+  "mtgo_id": 140127,
+  "tcgplayer_id": 631517,
+  "cardmarket_id": 824647,
+  "name": "Maester Seymour",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/f6a4267b-aa76-4dec-bc72-252236c44968",
+  "scryfall_uri": "https://scryfall.com/card/fic/68/maester-seymour?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.jpg?1783906351",
+    "normal": "https://cards.scryfall.io/normal/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.jpg?1783906351",
+    "large": "https://cards.scryfall.io/large/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.jpg?1783906351",
+    "png": "https://cards.scryfall.io/png/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.png?1783906351",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.jpg?1783906351",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.jpg?1783906351",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.webp?1783906351",
+    "grid": "https://cards.scryfall.io/grid/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.webp?1783906351",
+    "display": "https://cards.scryfall.io/display/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.webp?1783906351",
+    "art": "https://cards.scryfall.io/art/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.webp?1783906351",
+    "crop": "https://cards.scryfall.io/crop/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.webp?1783906351",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/6/f6a4267b-aa76-4dec-bc72-252236c44968.jpg?1783906351"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Elf Cleric",
+  "oracle_text": "At the beginning of combat on your turn, put a number of +1/+1 counters equal to Maester Seymour's power on another target creature you control.\n{3}{G}{G}: Monstrosity X, where X is the number of counters among creatures you control. (If this creature isn't monstrous, put X +1/+1 counters on it and it becomes monstrous.)",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Monstrosity"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f6a4267b-aa76-4dec-bc72-252236c44968/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae7e41303-69a8-4617-b418-142cf41edb9b&unique=prints",
+  "collector_number": "68",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Norikatsu Miyoshi",
+  "artist_ids": [
+    "44c57324-1e37-4e91-831a-eba4b29f87ee"
+  ],
+  "illustration_id": "480893f2-bf1e-4125-a276-a759f66f8875",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "ffx",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3602,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": null,
+    "tix": "2.85"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMaester%2BSeymour",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMaester%2BSeymour",
+    "edhrec": "https://edhrec.com/route/?cc=Maester+Seymour"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631517%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824647&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140127?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

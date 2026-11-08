@@ -1,0 +1,32 @@
+{
+  "oracle_id": "18aee20d-ab73-4fdb-a65c-101beae5fcf5",
+  "name": "Tormented Thoughts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tormented Thoughts",
+      "oracle_fingerprint": "98418c66c126f119615c021ba77e5d22",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

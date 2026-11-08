@@ -1,0 +1,49 @@
+{
+  "oracle_id": "685a7f67-6809-4386-990f-c52d1846a584",
+  "name": "Rude Awakening",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rude Awakening",
+      "oracle_fingerprint": "6f3cef49e06b68f2954cc360f32fd62f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Untap": {
+                            "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                            "mods": [
+                              { "SetPT": { "power": 2, "toughness": 2 } },
+                              { "AddType": "Creature" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{2}{G}" } }
+      ]
+    }
+  ]
+}

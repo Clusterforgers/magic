@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a1c6bd47-19ef-44f9-921a-e4ffa80b25e1",
+  "name": "Cinderslash Ravager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinderslash Ravager",
+      "oracle_fingerprint": "2c078d6c3acbd89ec38a555956eb8685",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "ControlledBy": "You" }, { "HasCounter": { "Other": "oil" } }] }
+          }
+        },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ca5711d1-8cc9-4540-a567-778b56d51f50",
+  "name": "Cyclops Gladiator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclops Gladiator",
+      "oracle_fingerprint": "9b57595f3158b97c7b53955401ac2d3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": "This",
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

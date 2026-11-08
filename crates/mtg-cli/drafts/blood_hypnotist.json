@@ -1,0 +1,32 @@
+{
+  "oracle_id": "32845ed6-2328-462e-be3a-579589748588",
+  "name": "Blood Hypnotist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Hypnotist",
+      "oracle_fingerprint": "dab15fa305d963e8b9d0e0e9786c3080",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": { "what": [{ "Subtype": "Blood" }, "Token", { "ControlledBy": "You" }] }
+            },
+            "limit": "OncePerTurn",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fbf6f677-d96b-406a-bc6f-4b244df72c7b",
+  "name": "Gibbering Descent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gibbering Descent",
+      "oracle_fingerprint": "eede6350cdce3725971bd0e27b5a387e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              { "LoseLife": { "who": "Triggering", "amount": 1 } },
+              { "Discard": { "who": "Triggering" } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Upkeep" } } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        { "Keyword": { "Madness": "{2}{B}{B}" } }
+      ]
+    }
+  ]
+}

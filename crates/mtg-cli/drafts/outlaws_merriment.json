@@ -1,0 +1,97 @@
+{
+  "oracle_id": "78826624-8784-4003-8813-230f299a588f",
+  "name": "Outlaws' Merriment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outlaws' Merriment",
+      "oracle_fingerprint": "9503bcb1edfd0b3fd1ee888d98206a26",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "at_random": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Human Warrior",
+                                "colors": ["Red", "White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Human", "Warrior"],
+                                "power": 3,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Human Cleric",
+                                "colors": ["Red", "White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Human", "Cleric"],
+                                "power": 2,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Lifelink" }, { "Keyword": "Haste" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Human Rogue",
+                                "colors": ["Red", "White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Human", "Rogue"],
+                                "power": 1,
+                                "toughness": 2,
+                                "abilities": [
+                                  { "Keyword": "Haste" },
+                                  {
+                                    "Triggered": {
+                                      "when": {
+                                        "ZoneChange": { "what": ["This"], "to": "Battlefield" }
+                                      },
+                                      "targets": [{ "what": "AnyTarget" }],
+                                      "effects": [
+                                        { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

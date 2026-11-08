@@ -1,0 +1,23 @@
+{
+  "oracle_id": "8fb7ad08-9bb2-49f1-8ed0-8cc8abca4fe0",
+  "name": "Peer Past the Veil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peer Past the Veil",
+      "oracle_fingerprint": "b57891dfc350e129b4d03cbf5c0a6f0f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              {
+                "Draw": { "count": { "CardTypes": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

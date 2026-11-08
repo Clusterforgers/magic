@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ea5ef11d-635f-4f62-908d-6d14465eb921",
+  "name": "Invert the Skies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invert the Skies",
+      "oracle_fingerprint": "96eb25124d916fde2690e11ebea74476",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Green" },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                        },
+                        "mods": [{ "RemoveKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Blue" },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

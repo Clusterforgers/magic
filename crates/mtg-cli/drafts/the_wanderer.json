@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4c2196e5-6ed7-4cd2-b8e7-f01aff236569",
+  "name": "The Wanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Wanderer",
+      "oracle_fingerprint": "42ce7bcf54101dfb0b4215b01cefacf0",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Damage": { "to": "You", "combat": false } }, "by": "Prevent" }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": { "Each": ["Other", { "ControlledBy": "You" }] }, "combat": false }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

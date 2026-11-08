@@ -1,0 +1,57 @@
+{
+  "oracle_id": "b012cec9-2aff-4dfb-8db1-61e830c33926",
+  "name": "Two-Handed Axe // Sweeping Cleave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Two-Handed Axe",
+      "oracle_fingerprint": "d943586f2b56f0cd8b015afc5c614c52",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}{R}" } }
+      ]
+    },
+    {
+      "name": "Sweeping Cleave",
+      "oracle_fingerprint": "75598c6d925af8ff59a9a848d0e09fda",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

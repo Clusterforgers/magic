@@ -1,0 +1,98 @@
+{
+  "oracle_id": "8255b408-cc8c-453f-982c-f361b5559cec",
+  "name": "Atraxa's Skitterfang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atraxa's Skitterfang",
+      "oracle_fingerprint": "50ec770cb9eeebb405fcc03bfdc09edd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": { "Other": "oil" } } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Continuous": {
+                                    "affected": { "Target": 0 },
+                                    "mods": [{ "AddKeyword": "Flying" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "Either": {
+                                    "first": [
+                                      {
+                                        "Continuous": {
+                                          "affected": { "Target": 0 },
+                                          "mods": [{ "AddKeyword": "Vigilance" }],
+                                          "duration": "UntilEndOfTurn"
+                                        }
+                                      }
+                                    ],
+                                    "second": [
+                                      {
+                                        "Either": {
+                                          "first": [
+                                            {
+                                              "Continuous": {
+                                                "affected": { "Target": 0 },
+                                                "mods": [{ "AddKeyword": "Deathtouch" }],
+                                                "duration": "UntilEndOfTurn"
+                                              }
+                                            }
+                                          ],
+                                          "second": [
+                                            {
+                                              "Continuous": {
+                                                "affected": { "Target": 0 },
+                                                "mods": [{ "AddKeyword": "Lifelink" }],
+                                                "duration": "UntilEndOfTurn"
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

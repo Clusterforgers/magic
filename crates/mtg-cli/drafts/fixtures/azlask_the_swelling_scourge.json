@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "ced9db11-ba95-4b09-89b6-0b49ffb1fa82",
+  "oracle_id": "55bc7f55-f73b-40b5-8912-9bf76c129ccc",
+  "multiverse_ids": [
+    665326
+  ],
+  "mtgo_id": 127471,
+  "arena_id": 92602,
+  "tcgplayer_id": 552435,
+  "cardmarket_id": 771320,
+  "name": "Azlask, the Swelling Scourge",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/ced9db11-ba95-4b09-89b6-0b49ffb1fa82",
+  "scryfall_uri": "https://scryfall.com/card/m3c/5/azlask-the-swelling-scourge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:57:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.jpg?1783911437",
+    "normal": "https://cards.scryfall.io/normal/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.jpg?1783911437",
+    "large": "https://cards.scryfall.io/large/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.jpg?1783911437",
+    "png": "https://cards.scryfall.io/png/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.png?1783911437",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.jpg?1783911437",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.jpg?1783911437",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.webp?1783911437",
+    "grid": "https://cards.scryfall.io/grid/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.webp?1783911437",
+    "display": "https://cards.scryfall.io/display/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.webp?1783911437",
+    "art": "https://cards.scryfall.io/art/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.webp?1783911437",
+    "crop": "https://cards.scryfall.io/crop/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.webp?1783911437",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/e/ced9db11-ba95-4b09-89b6-0b49ffb1fa82.jpg?1783911437"
+  },
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Eldrazi",
+  "oracle_text": "Whenever Azlask or another colorless creature you control dies, you get an experience counter.\n{W}{U}{B}{R}{G}: Creatures you control get +X/+X until end of turn, where X is the number of experience counters you have. Scions and Spawns you control gain indestructible and annihilator 1 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1374bfa2-9714-486d-90aa-7a9b8d8ef3a8",
+      "component": "combo_piece",
+      "name": "Experience",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/1374bfa2-9714-486d-90aa-7a9b8d8ef3a8"
+    },
+    {
+      "object": "related_card",
+      "id": "cbe191c5-c019-4ee2-b3a4-dad4116d2bbb",
+      "component": "combo_piece",
+      "name": "Azlask, the Swelling Scourge",
+      "type_line": "Legendary Creature — Eldrazi",
+      "uri": "https://api.scryfall.com/cards/cbe191c5-c019-4ee2-b3a4-dad4116d2bbb"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set": "m3c",
+  "set_name": "Modern Horizons 3 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am3c&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m3c?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ced9db11-ba95-4b09-89b6-0b49ffb1fa82/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A55bc7f55-f73b-40b5-8912-9bf76c129ccc&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alexander Mokhov",
+  "artist_ids": [
+    "3a6a9d37-e62c-44bd-90f2-f5126324e3f0"
+  ],
+  "illustration_id": "fd78d186-f642-4576-8276-cc8ff066c64e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6635,
+  "penny_rank": 10625,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/modern-horizons-3/card-image-gallery",
+    "previewed_at": "2024-05-21"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": "0.33",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=665326&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAzlask%252C%2Bthe%2BSwelling%2BScourge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAzlask%252C%2Bthe%2BSwelling%2BScourge",
+    "edhrec": "https://edhrec.com/route/?cc=Azlask%2C+the+Swelling+Scourge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F552435%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=771320&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/127471?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

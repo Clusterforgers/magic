@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e8e2f273-5e74-4f16-8d49-2e86e9c9f2dc",
+  "name": "Solar Array",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solar Array",
+      "oracle_fingerprint": "1233858f7199764f43b1b0a72a31b3b7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "AddKeyword": "Sunburst" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

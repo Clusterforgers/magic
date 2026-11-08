@@ -1,0 +1,63 @@
+{
+  "oracle_id": "b6cebf8d-37e1-42de-b3f1-1c174ab17ac8",
+  "name": "Jecht, Reluctant Guardian // Braska's Final Aeon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jecht, Reluctant Guardian",
+      "oracle_fingerprint": "8dcdbb2d6f1f5af8ef9ca8b3e100e147",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "This", "as": "exiled" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "transformed": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Braska's Final Aeon",
+      "oracle_fingerprint": "ac461539316719047c77ed515d38f7ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Discard": { "who": "Opponents" } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Discard": { "who": "Opponents" } }, { "Draw": {} }]
+          }
+        },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }], "count": 2 }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

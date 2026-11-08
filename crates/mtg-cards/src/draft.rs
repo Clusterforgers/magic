@@ -40,6 +40,8 @@ pub struct DraftRules {
     pub forge: bool,
     /// For a draft with lines left by hand: the proof that every one of them is safe to leave (Partial translations).
     pub proof: Option<PartialProof>,
+    /// The draft reads back as other text in some clause: it runs on a player's read alone, never on trust.
+    pub differs: bool,
 }
 
 /// A card's current draft in a library: parsed and checked rules with their read state.
@@ -55,6 +57,8 @@ pub struct Draft {
     pub forge: bool,
     /// The proof behind a draft with lines left by hand; `None` for a whole draft.
     pub proof: Option<PartialProof>,
+    /// The draft is marked as reading back as other text: a player's read covers those clauses.
+    pub differs: bool,
 }
 
 impl Draft {
@@ -78,19 +82,21 @@ impl Draft {
     }
 
     /// The record the draft gives the card when the engine can run it, whatever its read state: `Partial` for a proved
-    /// partial draft, else `Read` or `Forge`. `None` also when a clause reads back as other text than the card.
+    /// partial draft, else `Read` or `Forge`. `None` also when a clause reads back as other text than the card, unless
+    /// the draft is whole and marked as such: then it is `Read`, never `Forge`.
     pub fn runs(&self, printed: &PrintedCard, caps: &Caps) -> Option<SupportRecord> {
         let record = if self.proof.is_some() {
             partial_support(&self.card, printed, caps)
         } else {
-            let tier = if self.forge {
+            let tier = if self.forge && !self.differs {
                 Support::Forge
             } else {
                 Support::Read
             };
             read_support(&self.card, printed, caps, tier)
         }?;
-        self.differs(printed).is_empty().then_some(record)
+        let marked = self.differs && self.proof.is_none();
+        (marked || self.differs(printed).is_empty()).then_some(record)
     }
 
     /// The clauses of `printed` the draft reads back as other text: any one keeps it from playing automatically.

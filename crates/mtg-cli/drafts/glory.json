@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3853ef6a-6771-4708-8ed5-d667f646de5a",
+  "name": "Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glory",
+      "oracle_fingerprint": "30566236af5bb2988f9dceba84959c57",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

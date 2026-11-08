@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c19f79bb-a608-4455-98ef-aac129cea8c5",
+  "name": "Otarian Juggernaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otarian Juggernaut",
+      "oracle_fingerprint": "01ec9ab176a3624ad8a5c2cb0ad6d722",
+      "abilities": [
+        {
+          "Static": { "affected": "This", "mods": [{ "CantBeBlockedBy": [{ "Subtype": "Wall" }] }] }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "MustAttack": "This" },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

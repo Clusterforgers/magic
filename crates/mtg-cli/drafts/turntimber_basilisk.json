@@ -1,0 +1,41 @@
+{
+  "oracle_id": "661a99ef-8d5b-4aac-98f6-52b17a8ecf52",
+  "name": "Turntimber Basilisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turntimber Basilisk",
+      "oracle_fingerprint": "94df0ed6e650cae9ec9751d9e7c7fe08",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

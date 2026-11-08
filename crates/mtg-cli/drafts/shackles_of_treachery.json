@@ -1,0 +1,58 @@
+{
+  "oracle_id": "3466e0be-3e59-4f5e-812e-3250c8bf19aa",
+  "name": "Shackles of Treachery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shackles of Treachery",
+      "oracle_fingerprint": "cc12d8027830bb96c404843e8fb1fb86",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+                          "targets": [
+                            {
+                              "what": {
+                                "Object": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }]
+                              }
+                            }
+                          ],
+                          "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

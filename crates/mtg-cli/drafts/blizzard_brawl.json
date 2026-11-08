@@ -1,0 +1,49 @@
+{
+  "oracle_id": "25a0fe3b-59c8-496a-a8d6-fca966ca6602",
+  "name": "Blizzard Brawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blizzard Brawl",
+      "oracle_fingerprint": "346c3ffee83f57927d15cd2a85acef86",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 1, "toughness": 0 } },
+                          { "AddKeyword": "Indestructible" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8420f73d-fdcf-4425-b9a7-c9d359fc028d",
+  "name": "Unruly Krasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unruly Krasis",
+      "oracle_fingerprint": "4bed3b875c797e1cfde930c10ffb4027",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": { "Stat": { "of": "This", "stat": "Power" } },
+                              "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{3}{U}{G}", "effects": [{ "Adapt": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

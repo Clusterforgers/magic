@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2e6be9ad-d726-4598-92a7-1ba7eda317a5",
+  "name": "Wildfire Cerberus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildfire Cerberus",
+      "oracle_fingerprint": "fc249ee4bf281cc269db38983df78385",
+      "abilities": [
+        { "Activated": { "cost": "{5}{R}{R}", "effects": [{ "Monstrosity": { "count": 1 } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 2
+                }
+              },
+              { "DealDamage": { "to": "Opponents", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

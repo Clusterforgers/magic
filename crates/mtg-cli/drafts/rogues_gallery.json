@@ -1,0 +1,81 @@
+{
+  "oracle_id": "7ea1b0e8-a577-47e2-b4cb-a6ca973742d0",
+  "name": "Rogues' Gallery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rogues' Gallery",
+      "oracle_fingerprint": "9847838f7e6265ac8e15ccd2b1985cdc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Color": "White" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Color": "Blue" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Color": "Black" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Color": "Red" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Color": "Green" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 2 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 3 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 4 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

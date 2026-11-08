@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5c820811-1775-4ea4-b003-721750a4d90f",
+  "name": "Brothers Yamazaki",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brothers Yamazaki",
+      "oracle_fingerprint": "c9535b7d14eddc42a58f0ceb36e8b8b4",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
+        {
+          "Rule": {
+            "rule": { "NoLegendRuleFor": [{ "Named": "Brothers Yamazaki" }] },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Named": "Brothers Yamazaki" }] },
+                "op": "Eq",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Other", { "Named": "Brothers Yamazaki" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

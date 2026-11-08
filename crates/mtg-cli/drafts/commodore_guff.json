@@ -1,0 +1,81 @@
+{
+  "oracle_id": "7e5a7a1d-dcfb-4ab8-b773-f521cb4d3fa6",
+  "name": "Commodore Guff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commodore Guff",
+      "oracle_fingerprint": "5e57cef1adad5df51a498b7b52b85aca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Planeswalker" }, "Other", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "loyalty" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wizard",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [
+                              {
+                                "AddMana": {
+                                  "mana": { "Fixed": ["Red"] },
+                                  "only": [{ "Spell": { "types": ["Planeswalker"] } }]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d512d4ae-5db3-4fe5-8017-6a942004712d",
+  "name": "Frenzy Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frenzy Sliver",
+      "oracle_fingerprint": "4e865e7f2766441394f222d439a5f3e5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Unblocked": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

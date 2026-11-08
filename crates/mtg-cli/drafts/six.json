@@ -1,0 +1,60 @@
+{
+  "oracle_id": "dbcbdf37-c40f-4068-b4a7-a849cab1056c",
+  "name": "Six",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Six",
+      "oracle_fingerprint": "2bbd4ed7eea7afe4830f83c130911d24",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Not": { "Type": "Land" } },
+                {
+                  "AnyOf": [
+                    { "Type": "Artifact" },
+                    { "Type": "Battle" },
+                    { "Type": "Creature" },
+                    { "Type": "Enchantment" },
+                    { "Type": "Land" },
+                    { "Type": "Planeswalker" }
+                  ]
+                },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Retrace" }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

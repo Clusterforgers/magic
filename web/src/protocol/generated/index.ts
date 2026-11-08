@@ -218,6 +218,7 @@ export type { PriorityAction } from "./PriorityAction";
 export type { PriorityOptions } from "./PriorityOptions";
 export type { PriorityView } from "./PriorityView";
 export type { PutOnStack } from "./PutOnStack";
+export type { ReadDiffers } from "./ReadDiffers";
 export type { ReadState } from "./ReadState";
 export type { Reason } from "./Reason";
 export type { Remembered } from "./Remembered";

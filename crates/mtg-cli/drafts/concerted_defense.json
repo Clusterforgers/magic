@@ -1,0 +1,28 @@
+{
+  "oracle_id": "77f02ae6-2411-4378-b5e0-cc1cf5964458",
+  "name": "Concerted Defense",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Concerted Defense",
+      "oracle_fingerprint": "d4fe2d10e23e162a89d86c819dc35d84",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Sum": [{ "Party": "You" }, 1] },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

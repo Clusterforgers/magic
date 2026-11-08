@@ -1,0 +1,50 @@
+{
+  "oracle_id": "57bbd80b-290f-461e-8dc6-26ba4d673fa9",
+  "name": "Dawnhand Eulogist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnhand Eulogist",
+      "oracle_fingerprint": "f7ab0ec4bd0a33e5976c8a373bbbde0d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Elf" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Elf" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

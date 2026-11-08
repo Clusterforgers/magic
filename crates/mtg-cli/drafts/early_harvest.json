@@ -1,0 +1,31 @@
+{
+  "oracle_id": "32001382-3079-4bbe-8d86-05da654c0d1a",
+  "name": "Early Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Early Harvest",
+      "oracle_fingerprint": "e3e28c52f1390d91b1a6be6ced8d251f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "Supertype": "Basic" },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

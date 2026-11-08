@@ -1,0 +1,45 @@
+{
+  "oracle_id": "91e3f057-c24f-42b5-8525-74b44bdefc83",
+  "name": "Felhide Spiritbinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felhide Spiritbinder",
+      "oracle_fingerprint": "a8f93c16bc17dea9d513ccc5455640dd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{R}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Target": 0 },
+                            "except": [{ "AddType": "Enchantment" }, { "AddKeyword": "Haste" }]
+                          }
+                        },
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

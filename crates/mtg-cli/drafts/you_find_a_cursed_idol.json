@@ -1,0 +1,42 @@
+{
+  "oracle_id": "aa7b41ba-08eb-40b8-a8d5-e67dc09c88ba",
+  "name": "You Find a Cursed Idol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "You Find a Cursed Idol",
+      "oracle_fingerprint": "8d6ec9e0abe17ea5c021e8c0ea11fc8b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Smash It",
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "label": "Lift the Curse",
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "label": "Steal Its Eyes",
+                      "effects": [
+                        { "CreateToken": { "token": { "Named": "treasure" } } },
+                        { "Venture": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

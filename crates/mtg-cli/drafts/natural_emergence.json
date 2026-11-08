@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ce19d2dd-4b2c-493e-8963-ad97649248e2",
+  "name": "Natural Emergence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Natural Emergence",
+      "oracle_fingerprint": "02336d4943c7ba96cf0b523df43963b9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Enchantment" },
+                      { "ControlledBy": "You" },
+                      { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "SetPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "FirstStrike" },
+              { "AddType": "Creature" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

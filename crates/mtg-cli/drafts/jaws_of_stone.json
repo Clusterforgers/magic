@@ -1,0 +1,28 @@
+{
+  "oracle_id": "af6a8149-a849-4e6a-bf9d-e6b4bb9b1a04",
+  "name": "Jaws of Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaws of Stone",
+      "oracle_fingerprint": "d96dcb41f4f0b024cb1509acf1bcbd31",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                },
+                "divide": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

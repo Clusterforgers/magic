@@ -80,6 +80,7 @@ fn report() -> DeckReport {
             count: 4,
             support: Support::Verified,
             draft: None,
+            differs: Vec::new(),
             reasons: vec![],
         }],
         summary: summary(),

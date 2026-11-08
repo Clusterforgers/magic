@@ -1,0 +1,24 @@
+{
+  "oracle_id": "180919a5-67b2-473a-9b90-a828bdc2477c",
+  "name": "Shadowheart, Dark Justiciar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadowheart, Dark Justiciar",
+      "oracle_fingerprint": "dc64139313ce93d4b661745ff23af428",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [{ "Draw": { "count": { "Stat": { "of": "Paid", "stat": "Power" } } } }]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

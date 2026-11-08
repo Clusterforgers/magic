@@ -1,0 +1,44 @@
+{
+  "oracle_id": "654d84bb-f801-4d03-898c-78952f1c5a73",
+  "name": "Desmond Miles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desmond Miles",
+      "oracle_fingerprint": "2d27cf7c0e5f685c1e1459ce4bcd6442",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Sum": [
+                      { "Count": [{ "Subtype": "Assassin" }, { "ControlledBy": "You" }, "Other"] },
+                      {
+                        "Count": [
+                          { "Subtype": "Assassin" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    ]
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Surveil": { "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

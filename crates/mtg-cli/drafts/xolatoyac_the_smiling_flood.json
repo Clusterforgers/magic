@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2c0fc559-857f-4239-97fa-379ced3dfc1f",
+  "name": "Xolatoyac, the Smiling Flood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xolatoyac, the Smiling Flood",
+      "oracle_fingerprint": "5c675decddce1409ed9ffd0914962ff4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flood" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Island" }],
+                  "duration": { "WhileHasCounter": { "Other": "flood" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "ControlledBy": "You" }, "HasAnyCounter"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

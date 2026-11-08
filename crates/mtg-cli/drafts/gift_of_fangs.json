@@ -1,0 +1,35 @@
+{
+  "oracle_id": "901f0a8f-7462-4970-8d21-265c8c0188e6",
+  "name": "Gift of Fangs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gift of Fangs",
+      "oracle_fingerprint": "d62c2de06007e4d58d9de44445cb7dfb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Vampire" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Not": { "Subtype": "Vampire" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

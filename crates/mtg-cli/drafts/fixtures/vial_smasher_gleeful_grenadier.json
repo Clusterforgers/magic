@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "3afce4e6-ac59-4fba-b63a-8fed96bbdc4a",
+  "oracle_id": "a66d8dc6-ced4-4b24-b0c2-3557b2a851be",
+  "multiverse_ids": [
+    655176
+  ],
+  "mtgo_id": 124381,
+  "arena_id": 90581,
+  "tcgplayer_id": 544200,
+  "cardmarket_id": 763596,
+  "name": "Vial Smasher, Gleeful Grenadier",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a",
+  "scryfall_uri": "https://scryfall.com/card/otj/235/vial-smasher-gleeful-grenadier?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:03:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.jpg?1783911783",
+    "normal": "https://cards.scryfall.io/normal/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.jpg?1783911783",
+    "large": "https://cards.scryfall.io/large/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.jpg?1783911783",
+    "png": "https://cards.scryfall.io/png/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.png?1783911783",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.jpg?1783911783",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.jpg?1783911783",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.webp?1783911783",
+    "grid": "https://cards.scryfall.io/grid/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.webp?1783911783",
+    "display": "https://cards.scryfall.io/display/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.webp?1783911783",
+    "art": "https://cards.scryfall.io/art/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.webp?1783911783",
+    "crop": "https://cards.scryfall.io/crop/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.webp?1783911783",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/a/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a.jpg?1783911783"
+  },
+  "mana_cost": "{B}{R}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Goblin Mercenary",
+  "oracle_text": "Whenever another outlaw you control enters, Vial Smasher deals 1 damage to target opponent. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "otj",
+  "set_name": "Outlaws of Thunder Junction",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3afce4e6-ac59-4fba-b63a-8fed96bbdc4a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa66d8dc6-ced4-4b24-b0c2-3557b2a851be&unique=prints",
+  "collector_number": "235",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "It wasn't quite home, but the fire still burned bright and the bombs still went boom.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Borja Pindado",
+  "artist_ids": [
+    "1624a1a8-3492-4c0b-9abc-83dcf2653111"
+  ],
+  "illustration_id": "f14d8b5e-18c4-4b6a-abfa-6738d4128311",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10468,
+  "penny_rank": 4258,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.14",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=655176&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVial%2BSmasher%252C%2BGleeful%2BGrenadier",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVial%2BSmasher%252C%2BGleeful%2BGrenadier",
+    "edhrec": "https://edhrec.com/route/?cc=Vial+Smasher%2C+Gleeful+Grenadier"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F544200%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=763596&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124381?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

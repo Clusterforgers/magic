@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a03a9ddb-595a-4dff-b7cb-7ad60655f1ee",
+  "name": "Skyblade's Boon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyblade's Boon",
+      "oracle_fingerprint": "c272f9f5b6f6a44485cbc84e8f6ab761",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

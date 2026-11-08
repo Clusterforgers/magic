@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "e0cf9142-be8e-48d8-a1b4-9a7fb71718d0",
+  "oracle_id": "5cd35d18-115b-4d7c-8d05-3d4c8303f46e",
+  "multiverse_ids": [
+    74087
+  ],
+  "mtgo_id": 21653,
+  "mtgo_foil_id": 21654,
+  "tcgplayer_id": 12265,
+  "cardmarket_id": 12823,
+  "name": "Genju of the Fields",
+  "lang": "en",
+  "released_at": "2005-02-04",
+  "uri": "https://api.scryfall.com/cards/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0",
+  "scryfall_uri": "https://scryfall.com/card/bok/5/genju-of-the-fields?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:03:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.jpg?1783944215",
+    "normal": "https://cards.scryfall.io/normal/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.jpg?1783944215",
+    "large": "https://cards.scryfall.io/large/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.jpg?1783944215",
+    "png": "https://cards.scryfall.io/png/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.png?1783944215",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.jpg?1783944215",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.jpg?1783944215",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.webp?1783944215",
+    "grid": "https://cards.scryfall.io/grid/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.webp?1783944215",
+    "display": "https://cards.scryfall.io/display/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.webp?1783944215",
+    "art": "https://cards.scryfall.io/art/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.webp?1783944215",
+    "crop": "https://cards.scryfall.io/crop/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.webp?1783944215",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/0/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0.jpg?1783944215"
+  },
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant Plains\n{2}: Until end of turn, enchanted Plains becomes a 2/5 white Spirit creature with \"Whenever this creature deals damage, its controller gains that much life.\" It's still a land.\nWhen enchanted Plains is put into a graveyard, you may return this card from your graveyard to your hand.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d4b88587-a1f5-4b47-9e24-78ec9e57bd0e",
+  "set": "bok",
+  "set_name": "Betrayers of Kamigawa",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d4b88587-a1f5-4b47-9e24-78ec9e57bd0e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abok&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bok?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e0cf9142-be8e-48d8-a1b4-9a7fb71718d0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5cd35d18-115b-4d7c-8d05-3d4c8303f46e&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Greg Staples",
+  "artist_ids": [
+    "93d65564-bf00-447b-8406-e2031f03b6b1"
+  ],
+  "illustration_id": "a2e224c4-3f75-4bd1-be3f-81c6160f0fa0",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25787,
+  "penny_rank": 8434,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "2.42",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "1.18",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=74087&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGenju%2Bof%2Bthe%2BFields",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGenju%2Bof%2Bthe%2BFields",
+    "edhrec": "https://edhrec.com/route/?cc=Genju+of+the+Fields"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F12265%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=12823&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/21653?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b00171b4-d1be-47e9-9293-ea57092f196b",
+  "name": "Flame-Kin War Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame-Kin War Scout",
+      "oracle_fingerprint": "8ed6823939f68baf86e9e72f01f78e9d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

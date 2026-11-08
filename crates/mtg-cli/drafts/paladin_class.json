@@ -1,0 +1,72 @@
+{
+  "oracle_id": "ac9d52b2-78a5-4b17-8aaf-1c1cb936a508",
+  "name": "Paladin Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paladin Class",
+      "oracle_fingerprint": "602a49ac7542451bac5549c2577bc658",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }],
+            "change": "Increase",
+            "mana": "{1}",
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{W}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Sum": [{ "Count": [{ "Type": "Creature" }, "Attacking"] }, -1] },
+                        "toughness": {
+                          "Sum": [{ "Count": [{ "Type": "Creature" }, "Attacking"] }, -1]
+                        }
+                      }
+                    },
+                    { "AddKeyword": "DoubleStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

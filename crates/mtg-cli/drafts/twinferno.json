@@ -1,0 +1,61 @@
+{
+  "oracle_id": "93989dd7-2d3e-46e2-8e92-8d0479796087",
+  "name": "Twinferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinferno",
+      "oracle_fingerprint": "982f9615c5c323a0f8cd5c5b598da691",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "SpellCast": {
+                                "what": [
+                                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                                ],
+                                "by": "You"
+                              }
+                            },
+                            "this_turn": true,
+                            "effects": [
+                              { "CopySpell": { "what": "Triggering", "new_targets": true } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "DoubleStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

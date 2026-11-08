@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4b1c5278-76a9-4c96-b13a-0737aefb79d9",
+  "name": "Cyclone Sire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclone Sire",
+      "oracle_fingerprint": "c804a9d1eec0772f25d5e2e5ab5a5bfa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 0, "toughness": 0 } },
+                          { "AddSubtype": "Elemental" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ec7d550b-9e13-4249-89c7-6ad43f71ea11",
+  "name": "Analyze the Pollen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Analyze the Pollen",
+      "oracle_fingerprint": "45b891584ac16d2fbb952d2cd01571ea",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "CollectEvidence": 8 }] } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Not": "AdditionalCostPaid" },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "AnyOf": [{ "Type": "Land" }, { "Type": "Creature" }] }],
+                        "reveal": true,
+                        "as": "found2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

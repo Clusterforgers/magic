@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1e381361-7404-4654-bfb4-5ea65f6e4dce",
+  "name": "Elkin Bottle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elkin Bottle",
+      "oracle_fingerprint": "46acd97d04f41d2006e6421f63def20e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

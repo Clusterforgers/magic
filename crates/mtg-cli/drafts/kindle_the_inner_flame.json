@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c7ca6371-73bb-4717-a148-0804b8f4c1e6",
+  "name": "Kindle the Inner Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindle the Inner Flame",
+      "oracle_fingerprint": "d13022853be798344016761aba136092",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        {
+                          "GrantAbility": {
+                            "Triggered": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                            }
+                          }
+                        },
+                        { "AddKeyword": "Haste" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Flashback": [
+              { "Mana": "{1}{R}" },
+              { "Behold": { "filter": [{ "Subtype": "Elemental" }], "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

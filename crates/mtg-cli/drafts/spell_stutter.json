@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f9bf996e-ae14-40a3-a8d8-f5725ddaa270",
+  "name": "Spell Stutter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spell Stutter",
+      "oracle_fingerprint": "d4764d0c6437b5902a1d5b4f389d9f5b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": {
+                    "Sum": [{ "Count": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] }, 2]
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

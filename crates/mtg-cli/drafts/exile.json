@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8c91d50b-bf58-4d06-b3b7-4b6db867bfce",
+  "name": "Exile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exile",
+      "oracle_fingerprint": "9f51a8ccccf1f6448982b66a57c80509",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "Not": { "Color": "White" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

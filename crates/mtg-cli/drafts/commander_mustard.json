@@ -1,0 +1,47 @@
+{
+  "oracle_id": "3fdbe867-63cd-42c5-9843-46b0992b9628",
+  "name": "Commander Mustard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commander Mustard",
+      "oracle_fingerprint": "d997db641961347805dd6c77e490737a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Soldier" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Soldier" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Attacks": { "what": ["This"] } },
+                          "effects": [{ "LoseLife": { "who": "Defending", "amount": 1 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

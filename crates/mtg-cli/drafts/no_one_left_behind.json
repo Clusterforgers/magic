@@ -1,0 +1,40 @@
+{
+  "oracle_id": "afe8fd01-f0c7-46a5-9e9c-e8b9599cd19a",
+  "name": "No One Left Behind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "No One Left Behind",
+      "oracle_fingerprint": "66666b47ae727f0ff07ee9e330f352fc",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              {
+                "Targeting": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                ]
+              }
+            ],
+            "change": "Reduce",
+            "mana": "{3}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

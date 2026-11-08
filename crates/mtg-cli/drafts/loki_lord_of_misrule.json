@@ -1,0 +1,38 @@
+{
+  "oracle_id": "20ec130f-05b4-4fbf-a54f-5874ae7ef90f",
+  "name": "Loki, Lord of Misrule",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loki, Lord of Misrule",
+      "oracle_fingerprint": "c9c3c46156ea9303252dc51525620953",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "of": { "Target": 0 },
+                  "except": [{ "RemoveSupertype": "Legendary" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

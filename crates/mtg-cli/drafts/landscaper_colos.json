@@ -1,0 +1,32 @@
+{
+  "oracle_id": "144bef8b-3583-4e98-9285-a1965e7e17f8",
+  "name": "Landscaper Colos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Landscaper Colos",
+      "oracle_fingerprint": "c6f598dc1b519bd448c604a49a6b925a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": {
+              "find": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+              "cost": "{1}{W}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

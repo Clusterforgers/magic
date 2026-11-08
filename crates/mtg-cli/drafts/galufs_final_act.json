@@ -1,0 +1,63 @@
+{
+  "oracle_id": "9268d369-173e-4325-98f6-348beeb8ba62",
+  "name": "Galuf's Final Act",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galuf's Final Act",
+      "oracle_fingerprint": "ba6bdcb5d28bd6167c303882cb76e70d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "targets": [
+                            {
+                              "what": { "Object": [{ "Type": "Creature" }] },
+                              "bounds": { "min": 0, "max": 1 }
+                            }
+                          ],
+                          "effects": [
+                            {
+                              "PutCounters": {
+                                "on": { "Target": 0 },
+                                "counter": "+1/+1",
+                                "count": { "Stat": { "of": "This", "stat": "Power" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

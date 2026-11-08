@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a5f7967e-d357-4ab6-96ac-77262864f280",
+  "name": "Celestial Kirin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Kirin",
+      "oracle_fingerprint": "d608f2ba544f3efb20f7c4d7d8a16665",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "oracle_id": "8d4ef98d-228e-41ff-9133-53f0987e58d8",
+  "name": "Nissa's Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa's Triumph",
+      "oracle_fingerprint": "3a95bbe7a43a3de47c1d6f88650147a1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Planeswalker" },
+                          { "Subtype": "Nissa" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Land" },
+                          { "Supertype": "Basic" },
+                          { "Subtype": "Forest" }
+                        ],
+                        "count": { "min": 0, "max": 2 },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Planeswalker" },
+                          { "Subtype": "Nissa" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }],
+                        "count": { "min": 0, "max": 3 },
+                        "reveal": true,
+                        "as": "found2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

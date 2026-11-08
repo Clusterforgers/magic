@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6292edfc-d75b-465e-9e10-9d259551b1a5",
+  "name": "Revenge of the Hunted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revenge of the Hunted",
+      "oracle_fingerprint": "f08822b21d053cbcdfd189fdddf2d4b8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 6, "toughness": 6 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "Every" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Miracle": "{G}" } }
+      ]
+    }
+  ]
+}

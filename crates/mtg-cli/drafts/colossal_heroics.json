@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5b01acaf-bcf4-4ac1-ac62-2f25a45c2589",
+  "name": "Colossal Heroics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossal Heroics",
+      "oracle_fingerprint": "484df55e4ebcb3671115f2fe720e87ed",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{1}{G}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

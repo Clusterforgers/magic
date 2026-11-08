@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0618a217-2a6e-4fa1-bfe6-89c6612a594d",
+  "name": "K'un-Lun Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "K'un-Lun Warrior",
+      "oracle_fingerprint": "4c4cbeb1e15293872d9a5a82784a0d5d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                        "paid": [{ "Draw": {} }]
+                      }
+                    }
+                  ],
+                  "second": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

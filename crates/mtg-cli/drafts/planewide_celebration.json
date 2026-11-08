@@ -1,0 +1,70 @@
+{
+  "oracle_id": "af23d348-adc9-451e-af08-bf9b1986c591",
+  "name": "Planewide Celebration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planewide Celebration",
+      "oracle_fingerprint": "8c5c0c6f6fc08945a8e037f4deea4d82",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 4, "max": 4 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Citizen",
+                                "colors": ["White", "Blue", "Black", "Red", "Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Citizen"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "OwnedBy": "You" },
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    { "effects": [{ "Proliferate": {} }] },
+                    { "effects": [{ "GainLife": { "amount": 4 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

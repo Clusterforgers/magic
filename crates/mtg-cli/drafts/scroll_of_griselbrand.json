@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c961373a-be0e-467c-92e0-33a0c953736a",
+  "name": "Scroll of Griselbrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scroll of Griselbrand",
+      "oracle_fingerprint": "768591ad3902bbcfa551a05acefe230e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

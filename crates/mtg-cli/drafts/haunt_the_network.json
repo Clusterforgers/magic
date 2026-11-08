@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7e074b14-0ec8-439b-9b83-5f7c1a904384",
+  "name": "Haunt the Network",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunt the Network",
+      "oracle_fingerprint": "647ceebc14779fdf0f976d00003749b9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

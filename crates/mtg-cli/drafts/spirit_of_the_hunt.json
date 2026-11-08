@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3a81a3a6-4940-4d69-94c1-d431023b275c",
+  "name": "Spirit of the Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit of the Hunt",
+      "oracle_fingerprint": "60606c5f1884ea3f4b5b75e21c41176a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

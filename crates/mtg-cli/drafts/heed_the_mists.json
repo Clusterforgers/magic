@@ -1,0 +1,25 @@
+{
+  "oracle_id": "49330aaf-c005-4e07-ae3a-2579bea3c326",
+  "name": "Heed the Mists",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heed the Mists",
+      "oracle_fingerprint": "9cd3a82f44092fa7cb6915ce1344620a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "as": "milled" } },
+              {
+                "Draw": {
+                  "count": { "Stat": { "of": { "Bound": "milled" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

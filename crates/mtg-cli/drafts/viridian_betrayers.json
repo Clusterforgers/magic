@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1d5ebb4b-0248-4255-8e1a-bcba4d5eaf7f",
+  "name": "Viridian Betrayers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viridian Betrayers",
+      "oracle_fingerprint": "098ac03e54c49a9c7d17f4eb34d599fa",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Infect" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

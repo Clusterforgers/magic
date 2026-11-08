@@ -1,0 +1,45 @@
+{
+  "oracle_id": "bc781549-7b2b-440b-93ae-69677acdfdad",
+  "name": "King Harald's Revenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "King Harald's Revenge",
+      "oracle_fingerprint": "619e7197620f91298afc34eab546701b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

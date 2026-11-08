@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bb77b63f-e679-463c-b983-4f2a4ef7bafe",
+  "name": "Stronghold Overseer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stronghold Overseer",
+      "oracle_fingerprint": "59b58b97eca0a82070edaf1cd5941955",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Shadow" },
+        {
+          "Activated": {
+            "cost": "{B}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Shadow" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Shadow" } }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

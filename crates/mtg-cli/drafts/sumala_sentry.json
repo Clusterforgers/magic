@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6b869c33-a77c-4eb7-9df9-9815d70f7444",
+  "name": "Sumala Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sumala Sentry",
+      "oracle_fingerprint": "13213c7be3e2e04331838fe6b070714c",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": [{ "ControlledBy": "You" }] } },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

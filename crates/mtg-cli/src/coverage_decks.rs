@@ -194,6 +194,7 @@ async fn deck_check_library(db: &Database) -> Result<Library, CliError> {
                 ReadState::Wrong => CardsReadState::Wrong,
             };
             DraftRules {
+                differs: draft.differs,
                 forge: read.is_some_and(|read| read.forge),
                 proof: draft
                     .proof

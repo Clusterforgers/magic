@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f0cbf361-d7dc-4556-a654-71c08785095a",
+  "name": "Crypt Lurker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crypt Lurker",
+      "oracle_fingerprint": "25bda71c23848ea4447d09d4fdefed02",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Pay": {
+                              "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                              "paid": [{ "Draw": {} }]
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Pay": {
+                              "cost": [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+                              "paid": [{ "Draw": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

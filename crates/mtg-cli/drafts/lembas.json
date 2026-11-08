@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f71fcdc3-5e96-416e-a49d-37019806e2e2",
+  "name": "Lembas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lembas",
+      "oracle_fingerprint": "716372792a01bbc61544fd07bf4fcdc2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": {} }, { "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

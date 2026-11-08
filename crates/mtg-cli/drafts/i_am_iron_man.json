@@ -1,0 +1,39 @@
+{
+  "oracle_id": "deb16a9a-2fa9-4ad3-bb20-7c16066e3d14",
+  "name": "I Am Iron Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "I Am Iron Man",
+      "oracle_fingerprint": "455f706809144d2fc48bbc4c95d19ed4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

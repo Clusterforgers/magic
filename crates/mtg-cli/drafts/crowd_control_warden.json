@@ -1,0 +1,36 @@
+{
+  "oracle_id": "439e59ab-0350-4729-9352-60e697eaa78d",
+  "name": "Crowd-Control Warden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crowd-Control Warden",
+      "oracle_fingerprint": "376bf038a9cc90d554880085e5e7a9c7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] }
+              }
+            }
+          }
+        },
+        { "Keyword": { "Disguise": "{3}{G/W}{G/W}" } },
+        {
+          "Replacement": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

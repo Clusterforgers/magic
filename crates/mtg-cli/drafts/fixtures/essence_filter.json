@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9",
+  "oracle_id": "b9f63388-d1ac-4895-84c5-e5b1db187463",
+  "multiverse_ids": [
+    184718
+  ],
+  "mtgo_id": 30432,
+  "mtgo_foil_id": 30433,
+  "name": "Essence Filter",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9",
+  "scryfall_uri": "https://scryfall.com/card/me2/160/essence-filter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:36:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.jpg?1783942606",
+    "normal": "https://cards.scryfall.io/normal/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.jpg?1783942606",
+    "large": "https://cards.scryfall.io/large/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.jpg?1783942606",
+    "png": "https://cards.scryfall.io/png/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.png?1783942606",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.jpg?1783942606",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.jpg?1783942606",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.webp?1783942606",
+    "grid": "https://cards.scryfall.io/grid/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.webp?1783942606",
+    "display": "https://cards.scryfall.io/display/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.webp?1783942606",
+    "art": "https://cards.scryfall.io/art/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.webp?1783942606",
+    "crop": "https://cards.scryfall.io/crop/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.webp?1783942606",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/c/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9.jpg?1783942606"
+  },
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy all enchantments or all nonwhite enchantments.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dcd5fdd0-8f33-4e98-8c21-f62c5f4c89c9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab9f63388-d1ac-4895-84c5-e5b1db187463&unique=prints",
+  "collector_number": "160",
+  "digital": true,
+  "rarity": "uncommon",
+  "flavor_text": "\"Freyalise has cleansed our bodies and minds of the plagues of Kjeldor; all she asks in return is that we keep pure our newly given home in Fyndhorn.\"\n—Kolbjörn, elder druid of the Juniper Order",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Rick Emond",
+  "artist_ids": [
+    "f1aaa54b-6b6f-426b-8283-044387d9fa15"
+  ],
+  "illustration_id": "f1d74b7e-2bf1-4d4b-b743-c402d71fbb9e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28017,
+  "penny_rank": 14189,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184718&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEssence%2BFilter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEssence%2BFilter",
+    "edhrec": "https://edhrec.com/route/?cc=Essence+Filter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DEssence%2BFilter%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Essence+Filter&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30432?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

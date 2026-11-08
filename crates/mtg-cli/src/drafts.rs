@@ -66,6 +66,10 @@ pub struct DraftMeta {
     /// The proof that lets the by-hand lines of a partial draft stand; none for a whole draft.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proof: Option<PartialProof>,
+    /// A clause of the whole draft reads back as other text than the card (`readback:Differs`): it runs on a player's
+    /// read alone, never on the Forge trust.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub differs: bool,
 }
 
 impl DraftMeta {
@@ -107,7 +111,7 @@ impl Misfit {
 }
 
 /// The row a library takes for a draft, with the read state it should have; a draft with a proof is a trusted Forge
-/// translation.
+/// translation, and a whole draft whose clauses read back as other text is marked so (it runs on a read alone).
 fn row(
     printed: &PrintedCard,
     card: &Card,
@@ -121,6 +125,7 @@ fn row(
         read,
         forge: proof.is_some(),
         proof: proof.cloned(),
+        differs: proof.is_none() && !mtg_cards::proposal::differing(card, printed).is_empty(),
     }
 }
 
@@ -392,6 +397,7 @@ pub fn fitting(
                     rules: serde_json::to_value(card).unwrap_or_default(),
                     source: meta.source_or(None),
                     oracle_matches: meta.oracle_matches,
+                    differs: meta.differs,
                     proof: proof.and_then(|proof| serde_json::to_value(proof).ok()),
                 };
                 put.insert(draft.oracle_id.clone(), draft);
@@ -519,6 +525,7 @@ mod tests {
             rules: json!({}),
             source: "sweep".into(),
             oracle_matches: false,
+            differs: false,
             proof: None,
         }
     }

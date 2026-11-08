@@ -160,6 +160,7 @@ fn library_of(entries: &[Entry]) -> Library {
         }
         rows.push(DraftRules {
             forge: false,
+            differs: false,
             proof: None,
             oracle_id: card.oracle_id.clone(),
             read_hash: hash,

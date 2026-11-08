@@ -1,0 +1,52 @@
+{
+  "oracle_id": "7b238254-51b4-4e68-a8c6-93ab1180012e",
+  "name": "Answered Prayers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Answered Prayers",
+      "oracle_fingerprint": "a10f3bf2db4e1b4b5c42367761d79677",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "Type": "Creature" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddSubtype": "Angel" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Flying" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

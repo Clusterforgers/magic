@@ -1,0 +1,29 @@
+{
+  "oracle_id": "827b3ed0-09b3-4d89-8b81-dd89cc002782",
+  "name": "Gruul Spellbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruul Spellbreaker",
+      "oracle_fingerprint": "2928947e8f1f3e483c39674f2be24803",
+      "abilities": [
+        { "Keyword": "Riot" },
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "You",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

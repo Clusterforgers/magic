@@ -1,0 +1,59 @@
+{
+  "oracle_id": "363b2213-4c70-4cb0-b895-81393c1082a7",
+  "name": "Elder Spawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elder Spawn",
+      "oracle_fingerprint": "c4a7c9d818a150ac8db787053f7ff0f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Subtype": "Island" }], "as": "sacrificed" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Subtype": "Island" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Subtype": "Island" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "You", "amount": 6 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "Red" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

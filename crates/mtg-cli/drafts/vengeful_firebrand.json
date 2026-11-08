@@ -1,0 +1,42 @@
+{
+  "oracle_id": "920e21c4-0116-416e-a375-bb887cb7b44a",
+  "name": "Vengeful Firebrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Firebrand",
+      "oracle_fingerprint": "2a63521ed06b6ec8b211dc43542193b3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Subtype": "Warrior" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

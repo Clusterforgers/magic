@@ -1,0 +1,73 @@
+{
+  "oracle_id": "8a825e4c-4a87-4b8d-84f7-3e50b896d7cb",
+  "name": "Lightfoot Rogue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightfoot Rogue",
+      "oracle_fingerprint": "576cfce33cefd1ff66fc66d9af666b53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Deathtouch" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 0 } },
+                              { "AddKeyword": "Deathtouch" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [
+                              { "ModifyPT": { "power": 3, "toughness": 0 } },
+                              { "AddKeyword": "FirstStrike" },
+                              { "AddKeyword": "Deathtouch" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

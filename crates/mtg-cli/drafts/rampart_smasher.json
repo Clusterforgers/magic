@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5ece1778-fb19-40d5-8bcc-f23033e1d5c0",
+  "name": "Rampart Smasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampart Smasher",
+      "oracle_fingerprint": "cd49b8e607e128ac22aae78bb3902918",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "CantBeBlockedBy": [{ "AnyOf": [{ "Subtype": "Knight" }, { "Subtype": "Wall" }] }] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

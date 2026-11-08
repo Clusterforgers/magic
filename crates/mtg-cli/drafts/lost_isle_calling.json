@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0efbf29c-09a0-4472-83ad-8d692c0232a5",
+  "name": "Lost Isle Calling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost Isle Calling",
+      "oracle_fingerprint": "f97ec7ca7a62820ba581a4a3a9513fc8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "verse" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{U}{U}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "verse" } } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "verse" } } },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "ExtraTurn": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

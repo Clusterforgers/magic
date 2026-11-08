@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fbe61f74-1b3c-4e12-8758-7029872c9ff1",
+  "name": "Exhume",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exhume",
+      "oracle_fingerprint": "8927194c5cac43bfacadfd251bc27c59",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

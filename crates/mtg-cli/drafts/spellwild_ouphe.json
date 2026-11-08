@@ -1,0 +1,20 @@
+{
+  "oracle_id": "13979fb6-91ba-4dd2-9bb9-8dbc7307d433",
+  "name": "Spellwild Ouphe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellwild Ouphe",
+      "oracle_fingerprint": "4398c13c1ba5d57a4b0d516344393c0b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Targeting": ["This"] }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

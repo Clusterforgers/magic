@@ -1,0 +1,68 @@
+{
+  "oracle_id": "5843bf12-27db-4e7d-81ee-98874bea72c7",
+  "name": "Gideon, Champion of Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon, Champion of Justice",
+      "oracle_fingerprint": "04fdd89c75933bed04bb13e85e3c788f",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "loyalty",
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Counters": { "on": "This", "counter": "loyalty" } },
+                        "toughness": { "Counters": { "on": "This", "counter": "loyalty" } }
+                      }
+                    },
+                    { "AddSubtype": "Human" },
+                    { "AddSubtype": "Soldier" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 15 },
+            "effects": [{ "Exile": { "what": { "Each": ["Other"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

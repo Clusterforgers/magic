@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5f08f79e-bbbe-4af0-ade6-9ad006a5a0d3",
+  "name": "Fencer's Magemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fencer's Magemark",
+      "oracle_fingerprint": "cacf7e6f5618477193043a620485b6c2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "HasAttached": [{ "Subtype": "Aura" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
