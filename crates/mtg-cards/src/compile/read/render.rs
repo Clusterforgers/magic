@@ -71,6 +71,8 @@ mod w15c_clash;
 mod w20c_counter;
 mod w20c_owners;
 mod w20c_taken;
+mod w22_moves;
+mod w22_shields;
 mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
@@ -687,6 +689,10 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::r6a_wordings::add(ability, &mut texts);
     super::r6c_wordings::add(ability, &mut texts);
     g8e_prevent::g8e_wordings(&mut texts);
+    w22_shields::w22_wordings(&mut texts);
+    w22_shields::w22_goad_wordings(&mut texts);
+    w22_moves::w22_graved_wordings(&mut texts);
+    w22_moves::w22_library_wordings(ability, &mut texts);
     super::w19d_suffixes::add(&mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7a_wordings::add(ability, &mut texts);
@@ -3057,10 +3063,20 @@ impl Writer<'_> {
                         counters,
                     },
                 ..
-            } if counters.is_empty() => Some(format!(
-                "return ~ from your graveyard to the battlefield{}",
-                if *tapped { " tapped" } else { "" }
-            )),
+            } => {
+                let entering = match counters.as_slice() {
+                    [] => String::new(),
+                    [(counter, number)] => format!(
+                        " with {} on it",
+                        counters::text(counter, &Amount::Fixed(i32::try_from(*number).ok()?))?
+                    ),
+                    _ => return None,
+                };
+                Some(format!(
+                    "return ~ from your graveyard to the battlefield{}{entering}",
+                    if *tapped { " tapped" } else { "" }
+                ))
+            }
             Effect::Move {
                 what,
                 to:
@@ -3112,6 +3128,7 @@ impl Writer<'_> {
     fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         self.explore_twice(effects)
             .or_else(|| self.g8e_shield_pair(effects))
+            .or_else(|| self.w22_shields(effects))
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
@@ -3216,6 +3233,14 @@ impl Writer<'_> {
             return Some(super::w9c_replaced::w9c_shield_text(lead));
         }
         if let Some(text) = self
+            .w22_shields(std::slice::from_ref(effect))
+            .map(|(text, _)| text)
+            .or_else(|| self.w22_source_shield(effect))
+            .or_else(|| self.w22_next(effect))
+        {
+            return Some(text);
+        }
+        if let Some(text) = self
             .g8e_shield(effect)
             .or_else(|| self.g8e_next_shield(effect))
         {
@@ -3226,6 +3251,7 @@ impl Writer<'_> {
             return Some(format!("prevent all damage {source} would deal this turn"));
         }
         prevention::effect_text(effect)
+            .or_else(|| Self::w22_move(effect))
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
             .or_else(|| super::g12f_taxes::g12f_x_tax_text(effect))
