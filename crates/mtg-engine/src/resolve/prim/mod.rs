@@ -58,6 +58,7 @@ mod end_turn;
 #[cfg(test)]
 mod ep21_move_any;
 mod ep22_one_kind;
+mod ep22_two_coins;
 mod exile;
 mod exile_hidden;
 mod exile_top;

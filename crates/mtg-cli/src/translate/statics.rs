@@ -174,6 +174,14 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             None => super::statics_alt::alternative_cost(ctx, p)?,
         },
         "OptionalCost" => super::statics_alt::optional_cost(ctx, p)?,
+        // "If you would flip a coin, instead flip two coins and ignore one."
+        "FlipCoinDoubler" => {
+            super::ctx::only(p, "FlipCoinDoubler", &["Mode", "ValidPlayer"])?;
+            if p.get("ValidPlayer") != Some("You") {
+                return unmapped("key:Static.FlipCoinDoubler.ValidPlayer");
+            }
+            json!({"Rule": {"rule": {"FlipTwoCoins": "You"}}})
+        }
         other => return unmapped(format!("static:{other}")),
     })
 }

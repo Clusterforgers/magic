@@ -46,6 +46,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !otherwise.is_empty() {
         return otherwise;
     }
+    let paid_less = super::ep22_pairs::texts(first, second);
+    if !paid_less.is_empty() {
+        return paid_less;
+    }
     let taxes = super::g11c_taxes::g11c_pair_texts(first, second);
     if !taxes.is_empty() {
         return taxes;

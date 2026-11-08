@@ -279,6 +279,7 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "RememberNumber",
             "HeadsSubAbility",
             "TailsSubAbility",
+            "Flipper",
         ],
     )?;
     // `RememberNumber$ Wins` keeps the wins for a part that reads `Wins`; the win part runs once per win, where it is one.
@@ -288,6 +289,12 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if !matches!(p.get("Defined"), None | Some("You")) {
         return unmapped("key:FlipCoin.Defined");
     }
+    // "That player flips a coin": the player of the event (`Flipper$ TriggeredActivator`).
+    let flipper = match p.get("Flipper") {
+        None | Some("You") => None,
+        Some(word @ ("TriggeredActivator" | "TriggeredPlayer")) => Some(defined(ctx, word)?),
+        Some(other) => return unmapped(format!("key:FlipCoin.Flipper={other}")),
+    };
     // The flip names a target that the win and lose parts read as `Targeted`.
     if p.has("ValidTgts") {
         subject(ctx, p, "You", None)?;
@@ -295,6 +302,9 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     // With or without a call the flip is won with even odds, as the node says.
     let _ = p.get("NoCall");
     let mut node = json!({"FlipCoin": {}});
+    if let Some(who) = flipper {
+        node["FlipCoin"]["who"] = who;
+    }
     match p.get("FlipUntilYouLose") {
         None => {}
         Some("True") => node["FlipCoin"]["until"] = json!(true),
@@ -305,9 +315,6 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let no_call = p.get("NoCall") == Some("True");
     if !no_call && (p.has("HeadsSubAbility") || p.has("TailsSubAbility")) {
         return unmapped("key:FlipCoin.HeadsSubAbility");
-    }
-    if no_call && (p.has("WinSubAbility") || p.has("LoseSubAbility")) {
-        return unmapped("key:FlipCoin.NoCall-with-win");
     }
     for (key, field) in [
         ("WinSubAbility", "win"),

@@ -4174,7 +4174,13 @@ impl Walker<'_> {
         let specs = self.spell_targets.clone();
         self.scope = Scope::new(&specs, false);
         self.at("applies_to", |w| w.selector(applies_to));
+        // A spell's modifier of its own cost reads the X it announces ("costs {2} less for each counter removed this
+        // way"), since the total cost is worked out after X (CR 601.2f).
+        let own = self.nested == 0 && applies_to.0.as_slice() == [Pred::This];
+        let now = self.x_now || own;
+        let saved = std::mem::replace(&mut self.x_now, now);
         self.at("per", |w| w.amount(per));
+        self.x_now = saved;
         if let Some(condition) = condition {
             self.at("condition", |w| w.condition(condition));
         }
@@ -4424,6 +4430,7 @@ impl Walker<'_> {
             | GameRule::CantSearch(who)
             | GameRule::VoteAgain(who)
             | GameRule::SkipExtraTurns(who)
+            | GameRule::FlipTwoCoins(who)
             | GameRule::RevealTop(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
@@ -5791,6 +5798,8 @@ mod tests {
     #[case::an_x_in_what_a_spell_targets(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#, &["Ability.Spell", "Effect.Destroy"])]
     #[case::an_x_in_what_an_enters_trigger_targets(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#, &["Ability.Triggered", "Effect.Destroy", "Trigger.ZoneChange"])]
     #[case::an_x_in_what_another_trigger_targets(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Destroy", "Trigger.StepBegins"])]
+    #[case::ep22_an_x_in_the_spell_s_own_cost_modifier(r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{1}","per":"X"}}"#, &["Ability.CostModifier"])]
+    #[case::ep22_an_x_in_a_modifier_of_other_spells(r#"{"CostModifier":{"applies_to":[{"Type":"Creature"}],"change":"Reduce","mana":"{1}","per":"X"}}"#, &["Ability.CostModifier", "Amount.X.Elsewhere"])]
     #[case::an_x_in_a_loyalty_ability_that_removes_no_x(r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Amount.X.Elsewhere", "Effect.Draw"])]
     #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]

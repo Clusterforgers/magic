@@ -1673,9 +1673,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
                 .collect()
         }
         (GameRule::CantGainLife(who), ZoneKind::Battlefield) => life_gain::rule_sentences(who),
-        (GameRule::CantSearch(_) | GameRule::SkipExtraTurns(_), ZoneKind::Battlefield) => {
-            super::c4_rules::texts(rule)
-        }
+        (
+            GameRule::CantSearch(_) | GameRule::SkipExtraTurns(_) | GameRule::FlipTwoCoins(_),
+            ZoneKind::Battlefield,
+        ) => super::c4_rules::texts(rule),
         (GameRule::VoteAgain(Ref::You), ZoneKind::Battlefield) => {
             vec!["While voting, you may vote an additional time".to_owned()]
         }

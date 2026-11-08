@@ -1,8 +1,87 @@
-//! Goal: the pieces of ep22 translate as the card prints them: a leave trigger printed "if it had counters on it" reads its counters as the intervening condition on the object of the event and keeps the rest of the filter, while one printed "with a counter on it" keeps the filter; other filters, a move into the battlefield and a list of alternatives stay as they were.
+//! Goal: the pieces of ep22 translate as the card prints them: a leave trigger printed "if it had counters on it" reads its counters as the intervening condition on the object of the event and keeps the rest of the filter, while one printed "with a counter on it" keeps the filter; other filters, a move into the battlefield and a list of alternatives stay as they were; a flip with no call reads heads as a win and tails as a loss, the caster flips for their spell, and the coin doubler of your flips is a rule; heads with a call, tails of several flips and other flippers stay gaps.
 use rstest::rstest;
 use serde_json::{Value, json};
 
-use super::abilities;
+use super::{abilities, gaps};
+
+fn spell(line: &str) -> String {
+    format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ {line}\nSVar:Turn:DB$ AddTurn | Defined$ You | NumTurns$ X\nSVar:Draw:DB$ Draw\n"
+    )
+}
+
+fn effects(script: &str) -> Value {
+    abilities(script)
+        .first()
+        .and_then(|found| found.get("Spell"))
+        .and_then(|body| body.get("effects"))
+        .cloned()
+        .unwrap_or_default()
+}
+
+fn heads() -> Value {
+    json!({"FlipCoin": {"win": [{"ExtraTurn": {}}]}})
+}
+
+#[rstest]
+#[case::heads_three_times(
+    "FlipCoin | Amount$ 3 | NoCall$ True | HeadsSubAbility$ Turn",
+    json!([heads(), heads(), heads()])
+)]
+#[case::heads_and_tails_once(
+    "FlipCoin | NoCall$ True | HeadsSubAbility$ Turn | TailsSubAbility$ Draw",
+    json!([{"FlipCoin": {"win": [{"ExtraTurn": {}}], "lose": [{"Draw": {}}]}}])
+)]
+fn ep22_flips_with_no_call_translate(#[case] line: &str, #[case] expected: Value) {
+    let script = spell(line);
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{line}");
+    assert_eq!(effects(&script), expected, "{line}");
+}
+
+#[rstest]
+#[case::heads_with_a_call("FlipCoin | HeadsSubAbility$ Turn", "key:FlipCoin.HeadsSubAbility")]
+#[case::tails_of_several_flips(
+    "FlipCoin | Amount$ 2 | NoCall$ True | HeadsSubAbility$ Turn | TailsSubAbility$ Draw",
+    "key:FlipCoin.Amount-with-more"
+)]
+#[case::another_flipper(
+    "FlipCoin | Flipper$ Player | WinSubAbility$ Draw",
+    "key:FlipCoin.Flipper=Player"
+)]
+fn ep22_other_flips_stay_gaps(#[case] line: &str, #[case] gap: &str) {
+    let found = gaps(&spell(line));
+    assert!(found.iter().any(|found| found == gap), "{found:?}");
+}
+
+#[test]
+fn ep22_the_caster_flips_for_their_spell() {
+    let script = "Name:T\nTypes:Enchantment\nT:Mode$ SpellCast | ValidCard$ Card | TriggerZones$ Battlefield | Execute$ Flip | TriggerDescription$ Whenever a player casts a spell, that player flips a coin. If they lose the flip, counter that spell.\nSVar:Flip:DB$ FlipCoin | LoseSubAbility$ Counter | Flipper$ TriggeredActivator\nSVar:Counter:DB$ Counter | Defined$ TriggeredSpellAbility\n";
+    let found = triggered(script);
+    assert_eq!(
+        found["effects"][0]["FlipCoin"]["who"],
+        json!("Triggering"),
+        "{found}"
+    );
+}
+
+#[rstest]
+#[case::yours("Mode$ FlipCoinDoubler | ValidPlayer$ You", None)]
+#[case::an_opponent_s(
+    "Mode$ FlipCoinDoubler | ValidPlayer$ Opponent",
+    Some("key:Static.FlipCoinDoubler.ValidPlayer")
+)]
+fn ep22_the_coin_doubler_translates(#[case] line: &str, #[case] gap: Option<&str>) {
+    let script = format!(
+        "Name:T\nTypes:Artifact\nS:{line} | Description$ If you would flip a coin, instead flip two coins and ignore one.\n"
+    );
+    match gap {
+        None => assert_eq!(
+            abilities(&script),
+            vec![json!({"Rule": {"rule": {"FlipTwoCoins": "You"}}})]
+        ),
+        Some(gap) => assert!(gaps(&script).iter().any(|found| found == gap)),
+    }
+}
 
 fn trigger(line: &str, printed: &str) -> String {
     format!(

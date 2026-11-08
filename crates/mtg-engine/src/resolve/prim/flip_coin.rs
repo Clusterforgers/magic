@@ -5,7 +5,6 @@ use mtg_cards::effect::Effect;
 use super::wrong_effect;
 use crate::events::Event;
 use crate::resolve::{Cx, Next, ResolveError, Run};
-use crate::rng::GameRng;
 
 /// The first player the effect names who is still in the game flips: even odds from the next substream of the game's
 /// random stream, logged as `CoinFlipped`, and the step goes on into `win` or `lose`. Nobody in the game to flip is no flip.
@@ -26,7 +25,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
-    let won = GameRng::substream(state.seed(), state.rng_index()).below(2) == 0;
+    let won = match super::ep22_two_coins::ep22_result(cx, player)? {
+        Ok(won) => won,
+        Err(asked) => return Ok(asked),
+    };
     Ok(Run::Done {
         events: vec![Event::CoinFlipped { player, won }],
         bound: Vec::new(),
