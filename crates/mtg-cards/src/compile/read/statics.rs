@@ -315,6 +315,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     if r.words("choose a land type") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::LandType), None));
     }
+    if let Some(kind) = super::e15b_entering::read_choose_type(r) {
+        return Some(replacement(ReplaceBy::Choose(kind), None));
+    }
     if r.words("choose a player") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
@@ -1158,6 +1161,7 @@ fn cost_modifier_texts(
     let mut subjects = Vec::new();
     subjects.extend(cost_conditions::shared_subject_text(applies_to));
     subjects.extend(cost_conditions::cast_before_number(&subject));
+    subjects.extend(super::e15b_entering::cast_before_chosen(&subject));
     subjects.push(subject);
     subjects
         .into_iter()
@@ -1381,15 +1385,22 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             },
             None,
         ) => {
-            let tapped = if *tapped { " tapped" } else { "" };
+            // "enters tapped with two charge counters" and "enters tapped and with three coin counters".
+            let ways: &[&str] = if *tapped {
+                &[" tapped", " tapped and"]
+            } else {
+                &[""]
+            };
             // A counted number is X, named at the end of the sentence.
             let (shown, tail) = match defining::value_text(count) {
                 Some(said) => (Amount::X, format!(", where X is {said}")),
                 None => (count.clone(), String::new()),
             };
-            counters::entering_text(counter, &shown)
-                .map(|counters| format!("~ enters{tapped} with {counters} on it{tail}"))
-                .into_iter()
+            let Some(counters) = counters::entering_text(counter, &shown) else {
+                return Vec::new();
+            };
+            ways.iter()
+                .map(|way| format!("~ enters{way} with {counters} on it{tail}"))
                 .collect()
         }
         (
@@ -1421,6 +1432,14 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::Choose(EntersChoice::Opponent), None) => {
             vec!["As ~ enters, choose an opponent".to_owned()]
         }
+        (
+            ReplaceBy::Choose(
+                kind @ (EntersChoice::CardType
+                | EntersChoice::BasicLandType
+                | EntersChoice::CardTypeOf(_)),
+            ),
+            None,
+        ) => super::e15b_entering::choose_type_texts(*kind),
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
@@ -1434,6 +1453,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::TappedForCounters { counter, count }, None) => {
             super::w13b_mill_rad::w13b_tapped_texts(counter, *count)
         }
+        (ReplaceBy::WithCounterOf(kinds), None) => super::e15b_entering::counter_of_texts(kinds),
         (ReplaceBy::DayIfNeither, None) => {
             vec!["If it's neither day nor night, it becomes day as ~ enters".to_owned()]
         }

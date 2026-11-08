@@ -311,6 +311,7 @@ const RUNS: &[&str] = &[
     "Trigger.DayNightChanges",
     "ReplaceBy.DayIfNeither",
     "ReplaceBy.EntersPrepared",
+    "ReplaceBy.ChooseWord",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
@@ -324,6 +325,7 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
     "Duration.WhileHasCounter",
+    "Duration.UntilPaid",
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
@@ -428,6 +430,7 @@ const RUNS: &[&str] = &[
     "Mod.GrantAbility",
     "Mod.GainAbilitiesOf",
     "Mod.LoseAbilities",
+    "Mod.LoseThisAbility",
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantAttackYou",
@@ -570,6 +573,7 @@ const RUNS: &[&str] = &[
     "Condition.KickedWith",
     "Condition.Performed",
     "Condition.ChosenWord",
+    "Condition.EnteredAs",
     "Amount.Kicks",
     "Amount.Mutations",
     "Amount.Promised",
@@ -578,6 +582,7 @@ const RUNS: &[&str] = &[
     "Amount.ColorsSpent",
     "Amount.PermanentsGraved",
     "Amount.CommanderCasts",
+    "Amount.Speed",
     "Amount.Tallied",
     "Amount.Largest",
     "Amount.HighestCounters",
@@ -697,12 +702,15 @@ const RUNS: &[&str] = &[
     "Keyword.Riot",
     "Keyword.Decayed",
     "ReplaceBy.Riot",
+    "ReplaceBy.WithCounterOf",
     "Keyword.Fabricate",
     "Keyword.Ascend",
     "Keyword.ForMirrodin",
+    "Keyword.StartYourEngines",
     "Keyword.JobSelect",
     "Keyword.EquipTo",
     "Condition.CitysBlessing",
+    "Condition.MaxSpeed",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
     "Keyword.Retrace",
@@ -740,6 +748,9 @@ const RUNS: &[&str] = &[
     "Keyword.Emerge",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
+    "Keyword.Recover",
+    "Keyword.Ripple",
+    "Keyword.Epic",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -1031,6 +1042,7 @@ mod tests {
     #[case::distinct_values("Amount.Distinct", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]
     #[case::commander_casts("Amount.CommanderCasts", true)]
+    #[case::speed("Amount.Speed", true)]
     #[case::may("Effect.May", true)]
     #[case::together("Effect.Together", true)]
     #[case::choosing("Effect.Choose", true)]
@@ -1239,10 +1251,13 @@ mod tests {
     #[case::event_amounts("Amount.Triggering", true)]
     #[case::if_you_do("Condition.Performed", true)]
     #[case::a_chosen_word("Condition.ChosenWord", true)]
+    #[case::e15f_entered_as_a_word("Condition.EnteredAs", true)]
+    #[case::e15f_a_word_chosen_as_it_enters("ReplaceBy.ChooseWord", true)]
     #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
+    #[case::max_speed("Condition.MaxSpeed", true)]
     #[case::becoming_day_or_night("Effect.BecomeDayNight", true)]
     #[case::it_is_day("Condition.IsDay", true)]
     #[case::it_is_night("Condition.IsNight", true)]
@@ -1321,6 +1336,7 @@ mod tests {
     #[case::riot("Keyword.Riot", true)]
     #[case::decayed("Keyword.Decayed", true)]
     #[case::choosing_a_counter_or_haste_as_it_enters("ReplaceBy.Riot", true)]
+    #[case::choosing_the_kind_of_a_counter_as_it_enters("ReplaceBy.WithCounterOf", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]
     #[case::retrace("Keyword.Retrace", true)]
@@ -1330,6 +1346,7 @@ mod tests {
     #[case::affinity("Keyword.Affinity", true)]
     #[case::typecycling("Keyword.Typecycling", true)]
     #[case::for_mirrodin("Keyword.ForMirrodin", true)]
+    #[case::start_your_engines("Keyword.StartYourEngines", true)]
     #[case::job_select("Keyword.JobSelect", true)]
     #[case::equip_to("Keyword.EquipTo", true)]
     #[case::split_second("Keyword.SplitSecond", true)]
@@ -1384,6 +1401,9 @@ mod tests {
     #[case::emerge("Keyword.Emerge", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
     #[case::read_ahead("Keyword.ReadAhead", true)]
+    #[case::recover("Keyword.Recover", true)]
+    #[case::ripple("Keyword.Ripple", true)]
+    #[case::epic("Keyword.Epic", true)]
     #[case::becoming_renowned_triggers("Trigger.BecomesRenowned", true)]
     #[case::exploiting_triggers("Trigger.Exploits", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]

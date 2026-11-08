@@ -1874,6 +1874,11 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(|player| i64::from(self.state.commander_casts_by(player)))
                 .sum(),
+            Amount::Speed(who) => self
+                .players(who)?
+                .into_iter()
+                .map(|player| i64::from(self.state.speed(player)))
+                .sum(),
             Amount::Counters { on, counter } => self.counters_on(on, counter)?,
             Amount::AnyCounters(on) => self.c10_any_counters(on)?,
             Amount::Sum(parts) => {
@@ -2058,10 +2063,12 @@ impl<'a> Scope<'a> {
                 matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
             }
             Pred::ChosenSubtype => {
-                matches!(self.entered_choice(), Some(Chosen::CreatureType(_)))
-                    && self
-                        .entered_choice()
-                        .is_some_and(|chosen| Self::is_chosen(seen, chosen))
+                matches!(
+                    self.entered_choice(),
+                    Some(Chosen::CreatureType(_) | Chosen::LandType(_) | Chosen::CardType(_))
+                ) && self
+                    .entered_choice()
+                    .is_some_and(|chosen| Self::is_chosen(seen, chosen))
             }
             Pred::ChosenName => {
                 matches!(self.entered_choice(), Some(Chosen::Name(_)))
@@ -2486,7 +2493,7 @@ impl<'a> Scope<'a> {
     }
 
     /// Whether a player `who` names holds the designation of the condition: has completed a dungeon, is the monarch,
-    /// was it as the turn began, has the initiative, or has the city's blessing.
+    /// was it as the turn began, has the initiative, has the city's blessing, or has max speed.
     fn w11d_designation(&self, condition: &Condition, who: &Ref) -> Result<bool, ResolveError> {
         let began = self.state.monarch_at_turn_start();
         Ok(self.players(who)?.iter().any(|player| match condition {
@@ -2495,6 +2502,7 @@ impl<'a> Scope<'a> {
             // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.
             Condition::Monarch(_) => self.state.monarch() == Some(*player),
             Condition::MonarchAtTurnStart(_) => began == Some(*player),
+            Condition::MaxSpeed(_) => self.state.has_max_speed(*player),
             _ => self.state.has_citys_blessing(*player),
         }))
     }
@@ -2509,6 +2517,11 @@ impl<'a> Scope<'a> {
             .searched
             .iter()
             .any(|(player, place)| players.contains(player) && zone_kind(*place) == zone))
+    }
+
+    /// Whether the permanent entered as the given word (a Siege's "Khans" or "Dragons").
+    fn e15f_entered_as(&self, word: &str) -> bool {
+        matches!(self.entered_choice(), Some(Chosen::Word(chosen)) if chosen == word)
     }
 
     /// Whether a condition is true now.
@@ -2564,13 +2577,15 @@ impl<'a> Scope<'a> {
             Condition::ChosenWord { name, word } => {
                 matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)
             }
+            Condition::EnteredAs(word) => self.e15f_entered_as(word),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
             | Condition::Monarch(who)
             | Condition::MonarchAtTurnStart(who)
-            | Condition::CitysBlessing(who) => self.w11d_designation(condition, who)?,
+            | Condition::CitysBlessing(who)
+            | Condition::MaxSpeed(who) => self.w11d_designation(condition, who)?,
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),

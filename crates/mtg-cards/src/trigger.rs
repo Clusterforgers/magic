@@ -797,6 +797,10 @@ pub enum EntersChoice {
     NonlandCardName,
     /// A card type.
     CardType,
+    /// One of these card types ("choose artifact, creature, enchantment, instant, or sorcery").
+    CardTypeOf(mtg_core::card::CardTypes),
+    /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
+    BasicLandType,
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.
@@ -966,8 +970,14 @@ pub enum ReplaceBy {
     Riot,
     /// As the permanent enters, it becomes day if it is neither day nor night (CR 726.2).
     DayIfNeither,
+    /// The permanent enters with one counter of the kind its controller chooses among these, as it enters ("enters
+    /// with your choice of a deathtouch counter or a lifelink counter on it").
+    WithCounterOf(Vec<CounterKind>),
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
+    /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which
+    /// `Condition::EnteredAs` reads for as long as it stays.
+    ChooseWord(Vec<String>),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.

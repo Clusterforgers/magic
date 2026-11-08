@@ -414,6 +414,8 @@ pub enum Amount {
     /// How many times the player has cast their commanders from the command zone this game, all of them together
     /// (CR 903.8): the count behind the commander tax.
     CommanderCasts(Ref),
+    /// A player's speed (CR 702.179): 0 until start your engines! gives them one, at most 4.
+    Speed(Ref),
     /// How many counters of a kind are on the object or player.
     Counters {
         /// The object or player.
@@ -693,6 +695,7 @@ enum Tagged {
     },
     Life(Ref),
     CommanderCasts(Ref),
+    Speed(Ref),
     Counters {
         on: Ref,
         counter: CounterKind,
@@ -818,6 +821,7 @@ enum TaggedRef<'a> {
     },
     Life(&'a Ref),
     CommanderCasts(&'a Ref),
+    Speed(&'a Ref),
     Counters {
         on: &'a Ref,
         counter: &'a CounterKind,
@@ -940,6 +944,7 @@ impl From<Tagged> for Amount {
             Tagged::Stat { of, stat } => Amount::Stat { of, stat },
             Tagged::Life(who) => Amount::Life(who),
             Tagged::CommanderCasts(who) => Amount::CommanderCasts(who),
+            Tagged::Speed(who) => Amount::Speed(who),
             Tagged::Counters { on, counter } => Amount::Counters { on, counter },
             Tagged::AnyCounters(on) => Amount::AnyCounters(on),
             Tagged::Sum(parts) => Amount::Sum(parts),
@@ -1020,6 +1025,7 @@ impl Serialize for Amount {
             Amount::Stat { of, stat } => TaggedRef::Stat { of, stat: *stat }.serialize(serializer),
             Amount::Life(who) => TaggedRef::Life(who).serialize(serializer),
             Amount::CommanderCasts(who) => TaggedRef::CommanderCasts(who).serialize(serializer),
+            Amount::Speed(who) => TaggedRef::Speed(who).serialize(serializer),
             Amount::Counters { on, counter } => {
                 TaggedRef::Counters { on, counter }.serialize(serializer)
             }
@@ -1244,6 +1250,9 @@ pub enum Condition {
         /// The word asked about.
         word: String,
     },
+    /// The source's controller chose this word as the source entered the battlefield (`ReplaceBy::ChooseWord`, a
+    /// Siege's "Khans"): false for a permanent that entered without the choice.
+    EnteredAs(String),
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
     /// accepted, a cost that was paid, cards that were moved.
     Performed,
@@ -1259,6 +1268,8 @@ pub enum Condition {
     MonarchAtTurnStart(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
+    /// A player the reference names has max speed, a speed of 4 (CR 702.179): "Max speed — ...".
+    MaxSpeed(Ref),
     /// It is day (CR 726): "if it's day".
     IsDay,
     /// It is night (CR 726): "if it's night".

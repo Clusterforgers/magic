@@ -529,6 +529,9 @@ impl CardDefinition {
             Modification::AddKeyword(keyword) => {
                 self.rules.push(Arc::new(Ability::Keyword(keyword.clone())));
             }
+            Modification::RemoveKeyword(keyword) => self
+                .rules
+                .retain(|rule| !matches!(&**rule, Ability::Keyword(had) if had == keyword)),
             Modification::GrantAbility(ability) => self.rules.push(Arc::clone(ability)),
             Modification::SetColors(colors) => {
                 self.color_indicator = Some(

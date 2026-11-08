@@ -27,6 +27,7 @@ mod copy_view;
 mod counter_view;
 mod crew_hidden;
 mod e10b_sealed_view;
+mod e15a_speed_view;
 mod effect_view;
 mod exerted_view;
 mod exile_open;

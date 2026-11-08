@@ -12,7 +12,8 @@ pub fn trigger_words(_ctx: &Ctx, _p: &Params, _mode: &str) -> Option<Tr<Value>> 
 }
 
 /// The keys of [`gate_conditions`].
-pub const GATE_KEYS: [&str; 6] = [
+pub const GATE_KEYS: [&str; 7] = [
+    "ConditionPhases",
     "ConditionPlayerTurn",
     "ConditionManaSpent",
     "ConditionManaNotSpent",
@@ -34,10 +35,13 @@ fn mana_type(letter: &str) -> Option<&'static str> {
     })
 }
 
-/// The conditions the gate keys of a chain line state: whose turn it is, which mana was spent on the spell, and how the life
+/// The conditions the gate keys of a chain line state: the phases it applies in, whose turn it is, which mana was spent on the spell, and how the life
 /// totals compare (`ConditionNotPresent$` is read by [`super::condition::prefixed`]).
 pub fn gate_conditions(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     let mut all = Vec::new();
+    if let Some(text) = p.get("ConditionPhases") {
+        all.push(in_phases(text)?);
+    }
     match p.get("ConditionPlayerTurn") {
         None => {}
         Some("True") => all.push(json!("YourTurn")),

@@ -1,6 +1,6 @@
 //! The lists a choice of a value (a type, a card name) offers, read from the cards of the game.
 
-use mtg_core::card::{CardType, LAND_TYPES};
+use mtg_core::card::{CardType, CardTypes, LAND_TYPES};
 
 use super::ChoiceOption;
 
@@ -25,7 +25,24 @@ pub(crate) fn card_types() -> Vec<ChoiceOption> {
         .collect()
 }
 
-/// The basic land types, by name.
+/// The card types of the set, by name, in the order of [`CARD_TYPES`].
+pub(crate) fn card_types_of(set: CardTypes) -> Vec<ChoiceOption> {
+    CARD_TYPES
+        .iter()
+        .filter(|kind| set.contains(**kind))
+        .map(|kind| ChoiceOption::Label(format!("{kind:?}")))
+        .collect()
+}
+
+/// The five basic land types (CR 205.3i), by name.
+pub(crate) fn basic_land_types() -> Vec<ChoiceOption> {
+    ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+        .into_iter()
+        .map(|name| ChoiceOption::Label(name.to_owned()))
+        .collect()
+}
+
+/// The land types, by name.
 pub(crate) fn land_types() -> Vec<ChoiceOption> {
     LAND_TYPES
         .iter()

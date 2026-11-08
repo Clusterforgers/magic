@@ -59,7 +59,9 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::AddKeyword(_)
         | Modification::RemoveKeyword(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
-        Modification::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
+        Modification::LoseAbilities | Modification::LoseAbility(_) => {
+            Traits::KEYWORDS.or(Traits::RULES)
+        }
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
         | Modification::SetPower(_)
@@ -106,7 +108,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
         | Wanted::LockKeyword(_) => Traits::KEYWORDS,
-        Wanted::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
+        Wanted::LoseAbilities | Wanted::LoseThisAbility => Traits::KEYWORDS.or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
         | Wanted::SetPower(_)
@@ -169,6 +171,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
         | Wanted::LockKeyword(_)
+        | Wanted::LoseThisAbility
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
         | Wanted::CantAttack
@@ -316,7 +319,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
-        Pred::Subtype(_) | Pred::ChosenSubtype => Traits::SUBTYPES,
+        Pred::Subtype(_) => Traits::SUBTYPES,
+        Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
         Pred::Color(_) | Pred::Colorless | Pred::ChosenColor => Traits::COLORS,
@@ -379,6 +383,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
         | Amount::CommanderCasts(who)
+        | Amount::Speed(who)
         | Amount::Counters { on: who, .. }
         | Amount::AnyCounters(who)
         | Amount::Mutations(who)
@@ -460,12 +465,14 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::FirstCombat
         | Condition::NeitherDayNorNight
         | Condition::ChosenWord { .. }
+        | Condition::EnteredAs(_)
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
+        | Condition::MaxSpeed(who)
         | Condition::Among(who)
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. } => reads_of_ref(who),

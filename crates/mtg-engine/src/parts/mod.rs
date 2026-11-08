@@ -74,8 +74,8 @@ pub(crate) enum Kind {
     Evidence,
     /// A creature the payer controls gets that many -1/-1 counters.
     Blight(u32),
-    /// A permanent the payer controls is chosen, or a card in their hand is revealed.
-    Behold,
+    /// A permanent the payer controls is chosen, or a card in their hand is revealed; then exiled when the flag is set.
+    Behold(bool),
     /// Cards of a zone of the payer go on top of their library, or at the bottom of it when the flag is set.
     ToLibrary(ZoneKind, bool),
     /// One Food the payer controls is sacrificed, or three cards of their graveyard are exiled.
@@ -188,6 +188,19 @@ fn amount(amount: &Amount, item: &CostItem) -> Result<(u32, bool), &'static str>
     }
 }
 
+/// A behold, exiling what it beholds when the cost says so.
+fn behold_pick(item: &CostItem) -> Result<(Part, bool), &'static str> {
+    let CostItem::Behold {
+        filter,
+        count,
+        exile,
+    } = item
+    else {
+        return Err("Cost.Behold");
+    };
+    pick(Kind::Behold(*exile), filter, count, item)
+}
+
 fn pick(
     kind: Kind,
     filter: &Selector,
@@ -269,7 +282,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 false,
             )
         }
-        CostItem::Behold { filter, count } => pick(Kind::Behold, filter, count, item)?,
+        CostItem::Behold { .. } => behold_pick(item)?,
         CostItem::ExiledToGraveyard { filter, count } => {
             pick(Kind::ExiledToGraveyard, filter, count, item)?
         }
@@ -506,7 +519,7 @@ impl Part {
                 Kind::Exile | Kind::ExileAny => "Cost.ExileFromGraveyard",
                 Kind::Evidence => "Cost.CollectEvidence",
                 Kind::Blight(_) => "Cost.Blight",
-                Kind::Behold => "Cost.Behold",
+                Kind::Behold(_) => "Cost.Behold",
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
                 Kind::Forage => "Cost.Forage",
                 Kind::Craft => "Cost.Craft",
@@ -698,6 +711,7 @@ pub(crate) fn photographed(
                 | Kind::ExiledToGraveyard
                 | Kind::ExileHand
                 | Kind::Reveal
+                | Kind::Behold(true)
         ) {
             shots.extend(picked.iter().filter_map(|id| snapshot(state, *id)));
         }
@@ -788,7 +802,7 @@ impl Pick {
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
             Kind::ExileAny => exile::candidates_any(payer, &self.filter),
-            Kind::Behold => behold::candidates(payer, &self.filter),
+            Kind::Behold(_) => behold::candidates(payer, &self.filter),
             Kind::ToLibrary(from, _) => to_library::candidates(payer, from, &self.filter),
             Kind::Forage => forage::candidates(payer),
             Kind::Craft => exile::craft_candidates(payer, &self.filter),
@@ -798,7 +812,7 @@ impl Pick {
         found.retain(|id| match self.kind {
             Kind::Sacrifice => crate::prohibit::may_sacrifice(payer.state, payer.player, *id),
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
-            Kind::Exile | Kind::ExileHand | Kind::ExileAny | Kind::Craft => {
+            Kind::Exile | Kind::ExileHand | Kind::ExileAny | Kind::Craft | Kind::Behold(true) => {
                 crate::prohibit::may_exile(payer.state, *id)
             }
             _ => true,
@@ -892,7 +906,7 @@ impl Pick {
             Kind::ExileAny => exile::text_any(&self.filter, self.count),
             Kind::Evidence => evidence::text(self.count),
             Kind::Blight(count) => blight::text(count),
-            Kind::Behold => behold::text(&self.filter, self.count),
+            Kind::Behold(exile) => behold::text(&self.filter, self.count, exile),
             Kind::ToLibrary(from, bottom) => {
                 to_library::text(from, &self.filter, self.count, bottom)
             }
@@ -913,6 +927,7 @@ impl Pick {
         match self.kind {
             Kind::ToLibrary(from, bottom) => to_library::events(state, from, bottom, object),
             Kind::Blight(count) => blight::events(state, object, count),
+            Kind::Behold(true) => behold::exile_events(state, player, object),
             _ => self
                 .event(state, player, object, kinds)
                 .into_iter()
@@ -938,7 +953,7 @@ impl Pick {
             Kind::Untap => Some(untap::event(object)),
             Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object, kinds),
             Kind::ExileAny | Kind::Evidence => exile::event(state, object),
-            Kind::Behold => behold::event(state, player, object),
+            Kind::Behold(_) => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
             Kind::ExiledToGraveyard => exiled::event(state, object),
             Kind::Blight(_) | Kind::ToLibrary(..) => None,

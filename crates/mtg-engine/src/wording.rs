@@ -1219,6 +1219,19 @@ pub(crate) fn may(effects: &[Effect]) -> String {
     if let Some(question) = pairing(effects) {
         return question.to_owned();
     }
+    // Ripple: the cards looked at are revealed at once.
+    if let [
+        Effect::LookAtTop {
+            who: Ref::You,
+            count: Amount::Fixed(count),
+            ..
+        },
+        Effect::Reveal { .. },
+        ..,
+    ] = effects
+    {
+        return format!("Reveal the top {count} cards of your library?");
+    }
     let phrases: Option<Vec<String>> = effects.iter().map(verb_phrase).collect();
     let Some(mut phrases) = phrases.filter(|phrases| !phrases.is_empty()) else {
         return String::new();

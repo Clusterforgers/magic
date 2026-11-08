@@ -211,6 +211,18 @@ pub fn same_text(left: &str, right: &str) -> bool {
     sorted(left) == sorted(right)
 }
 
+/// Whether the oracle text and a wording the renderers wrote back are the same text: [`same_text`] once the wordings of
+/// one meaning that the writers say another way are normalized (w15). Only the proposal checker compares this way; the
+/// readers keep the stricter [`same_text`], so no clause is read into data that lacks what the text says.
+pub fn same_written_text(left: &str, right: &str) -> bool {
+    let normal = |text: &str| {
+        symbols_sorted(without_period(&canonical(&super::w16_wordings::normal(
+            &super::w15_wordings::normal(text),
+        ))))
+    };
+    normal(left) == normal(right)
+}
+
 /// The text with the symbols of each run of adjacent mana symbols in one fixed order: a cost has no order, and the
 /// renderer writes the one the data keeps.
 pub fn symbols_sorted(text: &str) -> String {

@@ -73,7 +73,13 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     if text.starts_with("LEVEL ")
         || super::clauses::is_station_block(text)
         || super::clauses::is_class_block(text)
+        || super::clauses::word_block(text).is_some()
     {
+        return ClauseKind::Static;
+    }
+    let head = text.lines().next().unwrap_or_default();
+    // "Max speed — A" grants A to its object while you have max speed (CR 702.179): a static ability.
+    if head.starts_with("Max speed \u{2014} ") {
         return ClauseKind::Static;
     }
     let head = text.lines().next().unwrap_or_default();

@@ -21,9 +21,10 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "Kicked" => json!("Kicked"),
         // The gift was promised: one when its caster promised it, else none.
         "PromisedGift" => json!({"Compare": {"left": "Promised", "op": "Ge", "right": 1}}),
-        // The optional cost of the spell itself (`Mode$ OptionalCost`) was paid.
+        // `OptionalGenericCostPaid`: the optional additional cost of the spell's own `OptionalCost` line was paid.
         "Bargained" | "Teamwork" | "OptionalGenericCostPaid" => json!("AdditionalCostPaid"),
         "Monarch" => json!({"Monarch": "You"}),
+        "MaxSpeed" => json!({"MaxSpeed": "You"}),
         // "If you revealed a Dragon card or controlled a Dragon as you cast this spell": the optional reveal was paid, or a
         // permanent of the type was yours as the spell was cast.
         _ if word.starts_with("Presence_") => match presence(ctx, word) {

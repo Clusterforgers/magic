@@ -272,6 +272,13 @@ impl Held {
         self.suspect_cant_block &= land;
     }
 
+    /// Takes away the one ability at `address` ("~ loses this ability"); the others stay.
+    fn e15g_lose(&mut self, address: crate::abilities::AbilityRef) {
+        self.abilities.retain(|held| {
+            !(held.address.ability == address.ability && held.address.source == address.source)
+        });
+    }
+
     /// Makes the change `modification` says, as the effect `origin` with the timestamp `stamp` gives it.
     fn change(&mut self, modification: &Modification, origin: Grant, stamp: u64) {
         // An ability that is a keyword gives the keyword, whichever way the effect words it.
@@ -325,6 +332,7 @@ impl Held {
                 self.lose_abilities(matches!(modification, Modification::SetLandTypes(_)));
                 self.keep_newer_counter_keywords(stamp, |_| true);
             }
+            Modification::LoseAbility(address) => self.e15g_lose(*address),
             Modification::GrantAbility(granted) => self.abilities.push(HeldAbility {
                 address: AbilityRef::granted(self.id, origin),
                 body: Arc::clone(granted),
@@ -656,6 +664,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::RemoveKeyword(_)
         | Wanted::LockKeyword(_)
         | Wanted::GrantAbility(_)
+        | Wanted::LoseThisAbility
         | Wanted::GainAbilitiesOf(_)
         | Wanted::LoseAbilities => Layer::Ability,
         Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,

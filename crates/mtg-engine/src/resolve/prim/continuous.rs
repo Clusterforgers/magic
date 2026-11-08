@@ -116,6 +116,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     card_type,
                 )])))
             }
+            // The ability that is resolving, at the address it was activated from; one that names no ability takes none away.
+            Wanted::LoseThisAbility => match this_ability(cx) {
+                Some(address) => Modification::LoseAbility(address),
+                None => continue,
+            },
             other => lower(&cx.scope, other)?,
         };
         events.push(Event::EffectCreated {
@@ -142,7 +147,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 /// sets. A source that chose nothing of the kind gives no modification.
 fn entered(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     match (wanted, scope.entered_choice()) {
-        (Wanted::AddChosenSubtype, Some(Chosen::CreatureType(kind))) => {
+        (Wanted::AddChosenSubtype, Some(Chosen::CreatureType(kind) | Chosen::LandType(kind))) => {
             Ok(Modification::AddSubtype(kind.clone()))
         }
         (Wanted::SetChosenColor, Some(Chosen::Color(color))) => {
@@ -163,7 +168,10 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
     };
     let fixed = |pred: &Pred| match (pred, chosen) {
         (Pred::ChosenColor, Chosen::Color(color)) => Pred::Color(*color),
-        (Pred::ChosenSubtype, Chosen::CreatureType(subtype)) => Pred::Subtype(subtype.clone()),
+        (Pred::ChosenSubtype, Chosen::CreatureType(subtype) | Chosen::LandType(subtype)) => {
+            Pred::Subtype(subtype.clone())
+        }
+        (Pred::ChosenSubtype, Chosen::CardType(kind)) => Pred::Type(*kind),
         _ => pred.clone(),
     };
     match (keyword, chosen) {
@@ -266,6 +274,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,
+        Wanted::LoseThisAbility => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
@@ -308,6 +317,21 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::MinBlockers(count) => Modification::MinBlockers(*count),
         Wanted::MaxBlockers(count) => Modification::MaxBlockers(*count),
         Wanted::BlocksAdditional(count) => Modification::BlocksAdditional(*count),
+    })
+}
+
+/// Only the resolution of an activated ability knows which ability it is (`run`).
+fn not_resolving() -> ResolveError {
+    ResolveError::Invalid("only a resolving ability loses this ability".into())
+}
+
+/// The address of the activated ability that is resolving, on the object it was activated from.
+fn this_ability(cx: &Cx<'_>) -> Option<crate::abilities::AbilityRef> {
+    let ability = cx.state().object(cx.resolving.object)?.ability()?;
+    Some(crate::abilities::AbilityRef {
+        object: ability.source().id,
+        ability: ability.index(),
+        source: ability.origin(),
     })
 }
 

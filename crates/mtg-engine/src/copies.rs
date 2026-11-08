@@ -205,6 +205,23 @@ pub struct SpellCopy {
     #[serde(default, skip_serializing_if = "Choices::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Choices>", optional))]
     pub choices: Choices,
+    /// The spell had left the stack: the copy is made from what a delayed trigger kept of it (epic, CR 702.50a).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub left: bool,
+}
+
+/// A spell as it resolved, which the delayed trigger it set up keeps so that the trigger can copy it after it has left
+/// the stack (epic, CR 702.50a).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct KeptSpell {
+    /// The spell, as it was.
+    pub of: ObjectRef,
+    /// Its copiable values: the face it was in use as.
+    pub definition: Arc<CardDefinition>,
+    /// What it announced: the modes, X, optional costs and targets.
+    #[serde(default, skip_serializing_if = "Choices::is_empty")]
+    pub choices: Choices,
 }
 
 /// A card in exile was copied (CR 707.12): the copy is a token card in exile, owned by the player who made it, who may
@@ -285,7 +302,7 @@ pub(crate) fn fold_spell(state: &mut GameState, copy: &SpellCopy) -> Result<(), 
             copy.controller
         )));
     }
-    if !on_the_stack(state, copy.of, false) {
+    if !copy.left && !on_the_stack(state, copy.of, false) {
         return Err(invalid(format!(
             "{:?} is not a spell on the stack",
             copy.of

@@ -666,7 +666,9 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
+        | ReplaceBy::ChooseWord(_)
         | ReplaceBy::Riot
+        | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
@@ -692,7 +694,9 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::Devour { .. }
                 | ReplaceBy::Riot
                 | ReplaceBy::DayIfNeither
+                | ReplaceBy::WithCounterOf(_)
                 | ReplaceBy::EntersPrepared
+                | ReplaceBy::ChooseWord(_)
         )
     )
 }
@@ -2030,6 +2034,9 @@ impl Pass<'_> {
         match by {
             ReplaceBy::Devour { .. } => self.devour(at, candidate, by, object, controller, applied),
             ReplaceBy::Riot => self.riot(at, object, controller, applied),
+            ReplaceBy::WithCounterOf(kinds) => {
+                self.e15b_counter_of(at, (object, controller), kinds, applied)
+            }
             ReplaceBy::Amplify(per) => {
                 self.amplify(at, candidate, (object, controller), *per, applied)
             }
@@ -2411,6 +2418,7 @@ impl Pass<'_> {
                 }],
                 targets: Vec::new(),
                 bindings: Vec::new(),
+                kept: None,
             },
         )))
     }
@@ -2627,8 +2635,8 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
-            ReplaceBy::Choose(kind) => {
-                let chosen = match self.chooses(source, controller, *kind)? {
+            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) => {
+                let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,
                 };
@@ -3127,12 +3135,14 @@ impl Pass<'_> {
                         }
                         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
                         EntersChoice::LandType => "Choose a land type.".to_owned(),
+                        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
                         EntersChoice::Player => "Choose a player.".to_owned(),
                         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
                         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
                         EntersChoice::CardName
                         | EntersChoice::NonlandCardName
-                        | EntersChoice::CardType => "Choose a card type.".to_owned(),
+                        | EntersChoice::CardType
+                        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
                         EntersChoice::Number { .. } => String::new(),
                     };
                     return Ok(Asked::Ask(Decision {
@@ -3163,13 +3173,19 @@ impl Pass<'_> {
         Ok(Asked::Got(picked.and_then(|index| {
             match options[index].clone() {
                 ChoiceOption::Color(color) => Some(Chosen::Color(color)),
-                ChoiceOption::Label(name) if kind == EntersChoice::LandType => {
+                ChoiceOption::Label(name)
+                    if matches!(kind, EntersChoice::LandType | EntersChoice::BasicLandType) =>
+                {
                     Some(Chosen::LandType(Subtype(name)))
                 }
-                ChoiceOption::Label(name) if kind == EntersChoice::CardType => values::CARD_TYPES
-                    .into_iter()
-                    .find(|card_type| format!("{card_type:?}") == name)
-                    .map(Chosen::CardType),
+                ChoiceOption::Label(name)
+                    if matches!(kind, EntersChoice::CardType | EntersChoice::CardTypeOf(_)) =>
+                {
+                    values::CARD_TYPES
+                        .into_iter()
+                        .find(|card_type| format!("{card_type:?}") == name)
+                        .map(Chosen::CardType)
+                }
                 ChoiceOption::Label(name)
                     if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) =>
                 {
@@ -3208,6 +3224,8 @@ impl Pass<'_> {
             EntersChoice::CreatureType => values::creature_types(),
             EntersChoice::LandType => values::land_types(),
             EntersChoice::CardType => values::card_types(),
+            EntersChoice::CardTypeOf(set) => values::card_types_of(set),
+            EntersChoice::BasicLandType => values::basic_land_types(),
             EntersChoice::CardName
             | EntersChoice::NonlandCardName
             | EntersChoice::Number { .. } => Vec::new(),
@@ -3254,6 +3272,8 @@ mod reveal;
 
 mod amplify;
 mod changes;
+mod e15b_counter_of;
+mod e15f_word;
 mod riot;
 mod tribute;
 

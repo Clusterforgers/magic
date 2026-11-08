@@ -34,6 +34,7 @@ fn copied(state: &GameState, controller: PlayerId) -> Event {
         controller,
         definition: Arc::new(CardDefinition::new("Spell").with_type(CardType::Instant)),
         choices: Choices::default(),
+        left: false,
     }))
 }
 

@@ -1178,6 +1178,9 @@ fn zone_owner(ctx: &Ctx, word: &str) -> Tr<Value> {
         | "TriggeredDefendingPlayer"
         | "TriggeredPlayer"
         | "TargetedController"
+        | "RememberedController"
+        | "RememberedOwner"
+        | "TriggeredTarget"
         | "TargetedOwner" => defined(ctx, word),
         _ => unmapped("key:ChangeZoneAll.Defined"),
     }

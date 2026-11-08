@@ -56,6 +56,7 @@ pub fn count(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         "TotalCommanderCastFromCommandZone" if rest.is_empty() => {
             Ok(json!({"CommanderCasts": "You"}))
         }
+        "YourSpeed" if rest.is_empty() => Ok(json!({"Speed": "You"})),
         // All the mana in your pool; the mana of one color is a different count and stays a gap.
         "ManaPool:All" if rest.is_empty() => Ok(json!({"ManaInPool": "You"})),
         "YouDescendedThisTurn" if rest.is_empty() => {
@@ -238,6 +239,10 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
             tallied("Sacrificed")
         }
         // The opponents the player's creatures attacked in this combat, directly or through a planeswalker.
+        // One when the player has max speed, else none.
+        ("PlayerCountPropertyYou", "HasPropertyMaxSpeed") => {
+            Ok(json!({"Players": {"PlayersWhere": {"who": who, "test": {"MaxSpeed": "You"}}}}))
+        }
         ("PlayerCountPropertyYou", "OpponentsAttackedThisCombat") => {
             Ok(json!({"Players": "Attacked"}))
         }

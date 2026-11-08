@@ -41,6 +41,10 @@ fn world() -> World {
             "Name:Zombie Token\nColors:blue,black\nTypes:Creature Zombie\nPT:*/*\nK:Menace\n",
         ),
         (
+            "c_3_2_a_vehicle_crew_1",
+            "Name:Vehicle Token\nTypes:Artifact Vehicle\nPT:3/2\nK:Crew:1\n",
+        ),
+        (
             "c_a_treasure_sac",
             "Name:Treasure Token\nTypes:Artifact Treasure\n",
         ),
@@ -676,6 +680,7 @@ mod audit;
 mod bv1_counts;
 mod e14d;
 mod e14f;
+mod e15e;
 mod en2;
 mod en3_discard;
 mod en3_reveal;
@@ -755,6 +760,13 @@ mod e14b;
 mod e14c;
 mod e14e;
 mod e14g;
+mod e15a;
+mod e15b;
+mod e15c;
+mod e15c_readback;
+mod e15d;
+mod e15f;
+mod e15g;
 mod e16b;
 mod en4_counter;
 mod en4_cumulative;
@@ -776,6 +788,7 @@ mod fix20;
 mod fix21;
 mod fix23;
 mod fix24;
+mod fix25;
 mod fix3;
 mod fix5;
 mod fix6;
@@ -806,6 +819,7 @@ mod g13h;
 mod g13i;
 mod g14s;
 mod g14t;
+mod g15s;
 mod g8a;
 mod g8c;
 mod g8d;

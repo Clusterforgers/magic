@@ -63,6 +63,9 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(found) = super::statics_exert::exert(ctx, &all) {
         return found;
     }
+    if let Some(found) = super::e15f_words::entered_as_line(ctx, &all) {
+        return found;
+    }
     let condition = condition(ctx, &all)?;
     let condition = match (condition, all.get("Affected")) {
         (Some(earlier), Some(word)) if is_pair(word) => Some(json!({"All": [earlier, paired()]})),
@@ -165,7 +168,7 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
         "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
         "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
-        "OptionalCost" => super::statics_optional::optional_cost(ctx, p)?,
+        "OptionalCost" => super::statics_alt::optional_cost(ctx, p)?,
         other => return unmapped(format!("static:{other}")),
     })
 }
@@ -299,8 +302,9 @@ fn paired() -> Value {
 }
 
 /// The keys a continuous static line reads.
-const CONTINUOUS: [&str; 33] = [
+const CONTINUOUS: [&str; 34] = [
     "Goad",
+    "RemoveType",
     "AddReplacementEffect",
     "CantHaveKeyword",
     "RemoveCardTypes",
@@ -479,6 +483,15 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         p.get("RemoveCardTypes") == Some("True"),
         p.get("RemoveLandTypes") == Some("True"),
     );
+    // "Isn't a creature" (the Theros gods): only a card type goes; a supertype or subtype taken away has no modification.
+    if let Some(removed) = p.get("RemoveType") {
+        for word in removed.split(',').map(str::trim) {
+            if !super::ctx::CARD_TYPES.contains(&word) {
+                return unmapped("key:Static.Continuous.RemoveType");
+            }
+            mods.push(json!({ "RemoveType": word }));
+        }
+    }
     match p.get("AddType") {
         Some(types) => mods.extend(added_types(ctx, types, remove)?),
         None if remove => mods.push(json!({"SetCreatureTypes": []})),
@@ -509,7 +522,12 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             .filter_map(|m| m.get("AddSubtype").cloned())
             .collect();
         mods.retain(|m| !land(m));
-        mods.push(json!({ "SetLandTypes": kept }));
+        // "Enchanted land is the chosen type": the land types go first, then the chosen one is added (the changes
+        // apply in order).
+        match mods.iter().position(|m| m == "AddChosenSubtype") {
+            Some(at) if kept.is_empty() => mods.insert(at, json!({ "SetLandTypes": [] })),
+            _ => mods.push(json!({ "SetLandTypes": kept })),
+        }
     }
     if p.get("AddAllCreatureTypes") == Some("True") {
         mods.push(json!("AddAllCreatureTypes"));
@@ -673,7 +691,10 @@ fn added_types(ctx: &Ctx, text: &str, replacing: bool) -> Tr<Vec<Value>> {
                 .iter()
                 .filter(|name| !BASIC_LAND_TYPES.contains(name));
             mods.extend(others.map(|name| json!({ "AddSubtype": name })));
-        } else if word == "ChosenType" && !replacing && ctx.memory.entered.subtype {
+        } else if word == "ChosenType"
+            && !replacing
+            && (ctx.memory.entered.subtype || ctx.memory.entered.land_type)
+        {
             // The creature type the card's controller chose as it entered.
             mods.push(json!("AddChosenSubtype"));
         } else if super::ctx::CARD_TYPES.contains(&word) {
@@ -1135,6 +1156,10 @@ fn modifier(
     };
     // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.
     if ctx.svar(amount).is_some() || amount.starts_with("Count$") {
+        // `Relative$ True` marks the amount as a count of times, which is what `per` says.
+        if p.get("Relative").is_some_and(|word| word != "True") {
+            return unmapped("key:Static.CostModifier.Relative");
+        }
         let per = super::amount::amount(ctx, amount)?;
         return Ok(
             json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol, "per": per}}),

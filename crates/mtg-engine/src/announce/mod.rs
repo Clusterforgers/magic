@@ -14,6 +14,7 @@ mod c9_emerge_reduce;
 pub(crate) mod companion;
 mod division;
 mod dk1c5_unlock;
+mod e15g_paid_end;
 mod face;
 pub(crate) mod foretell;
 mod legality;
@@ -311,6 +312,8 @@ pub(crate) enum Special {
     Companion,
     /// Unlocking this door of a Room (CR 709.5e).
     Unlock(u8),
+    /// Ending this effect by paying its price (CR 116.2c): the card is the object it changes.
+    EndEffect(mtg_core::ids::EffectId),
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -695,6 +698,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             Special::TurnFaceUp => turn_up::next(state, *player, *card, choices, done),
             Special::Companion => companion::next(state, *player, *card),
             Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),
+            Special::EndEffect(effect) => e15g_paid_end::next(state, *player, *effect),
         };
     }
     let what: &What = what;

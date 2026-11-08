@@ -292,6 +292,9 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Foretell),
         cost().prop_map(Keyword::Echo),
         cost().prop_map(Keyword::CumulativeUpkeep),
+        cost().prop_map(Keyword::Recover),
+        (1u32..9).prop_map(Keyword::Ripple),
+        Just(Keyword::Epic),
         cost().prop_map(Keyword::Ward),
         cost().prop_map(Keyword::Equip),
         (leaf_selector(), cost()).prop_map(|(to, cost)| Keyword::EquipTo {

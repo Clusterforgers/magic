@@ -172,6 +172,9 @@ pub enum CostItem {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// "Behold an Elemental and exile it": what is beheld is then exiled, and a permanent spell remembers it.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        exile: bool,
     },
     /// Put cards that match from exile into their owners' graveyards ("Put two cards your opponents own from exile into
     /// their owners' graveyards"): exiled cards of any owner.
@@ -387,8 +390,12 @@ mod tests {
         r#"[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"Opponents"}],"count":2}}]"#
     )]
     #[case::behold(
-        Cost(vec![CostItem::Behold { filter: Selector(vec![Pred::Type(CardType::Creature)]), count: Amount::one() }]),
+        Cost(vec![CostItem::Behold { filter: Selector(vec![Pred::Type(CardType::Creature)]), count: Amount::one(), exile: false }]),
         r#"[{"Behold":{"filter":[{"Type":"Creature"}]}}]"#
+    )]
+    #[case::behold_exile(
+        Cost(vec![CostItem::Behold { filter: Selector(vec![Pred::Type(CardType::Creature)]), count: Amount::one(), exile: true }]),
+        r#"[{"Behold":{"filter":[{"Type":"Creature"}],"exile":true}}]"#
     )]
     #[case::to_library(
         Cost(vec![CostItem::ToLibrary { from: ZoneKind::Hand, filter: Selector(vec![]), count: Amount::one(), bottom: true }]),

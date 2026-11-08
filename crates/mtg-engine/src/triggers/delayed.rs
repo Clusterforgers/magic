@@ -12,6 +12,7 @@ use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
 use crate::choose::Target;
+use crate::copies::KeptSpell;
 use crate::error::EngineError;
 use crate::fold::invalid;
 use crate::object::ObjectRef;
@@ -60,6 +61,10 @@ pub struct DelayedCreated {
     pub effects: Vec<Effect>,
     /// The names the resolution had bound when it set the trigger up, which the delayed ability reads as they were.
     pub bindings: Vec<(String, Vec<Target>)>,
+    /// The spell that set it up, as it resolved, when the ability copies it after it has left the stack (epic).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub kept: Option<Box<KeptSpell>>,
 }
 
 /// A delayed triggered ability waiting for its event.
@@ -75,6 +80,7 @@ pub struct Delayed {
     pub(crate) once: bool,
     pub(crate) duration: Duration,
     pub(crate) turn: u32,
+    pub(crate) kept: Option<Arc<KeptSpell>>,
 }
 
 // The rules follow from the log (the creating event), so they are hashed with the other fields once, here.
@@ -90,6 +96,10 @@ impl Hash for Delayed {
         self.once.hash(state);
         self.duration.hash(state);
         self.turn.hash(state);
+        // Left out while there is none, so the hash of a game without epic is the one it always had.
+        if let Some(kept) = &self.kept {
+            kept.hash(state);
+        }
     }
 }
 
@@ -115,6 +125,11 @@ impl Delayed {
             Ability::Triggered { when, .. } => Some(when),
             _ => None,
         }
+    }
+
+    /// The spell that set it up, as it resolved, when the ability copies it (epic).
+    pub fn kept(&self) -> Option<&KeptSpell> {
+        self.kept.as_deref()
     }
 
     /// How long it lasts: until it triggers (`Forever`, for one that triggers once) or the end of the turn.
@@ -156,6 +171,7 @@ impl Delayed {
             | Duration::WhileSourceTapped
             | Duration::WhileHasCounter(_)
             | Duration::NextUntapStep
+            | Duration::UntilPaid(_)
             | Duration::UntilTurnSkipped => true,
         }
     }
@@ -198,6 +214,7 @@ pub(crate) fn fold_created(
             Duration::UntilEndOfTurn
         },
         turn: state.turn.number,
+        kept: created.kept.as_deref().cloned().map(Arc::new),
     });
     Ok(())
 }
@@ -257,6 +274,7 @@ mod tests {
             }],
             targets: Vec::new(),
             bindings,
+            kept: None,
         }
     }
 

@@ -91,8 +91,12 @@ impl Gives {
                 self.set = Some((*power, *toughness));
                 return;
             }
-            // A base power or toughness set alone shows no mark of its own.
-            Modification::SetPower(_) | Modification::SetToughness(_) => return,
+            // A base power or toughness set alone shows no mark of its own, nor one ability taken away.
+            Modification::SetPower(_)
+            | Modification::SetToughness(_)
+            | Modification::LoseAbility(_) => {
+                return;
+            }
             Modification::AddKeyword(keyword) => {
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());

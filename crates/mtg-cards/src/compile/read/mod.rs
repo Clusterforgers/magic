@@ -82,8 +82,13 @@ mod e10a_targets;
 mod e10c_granted;
 mod e14b_entering;
 mod e14d_sparing;
+mod e15a_max_speed;
+mod e15b_entering;
+mod e15f_words;
+mod e15g_licid;
 mod e16b_presence;
 mod effects;
+mod either_way_pairs;
 mod equip_options;
 mod evasion;
 mod event_wordings;
@@ -198,8 +203,14 @@ mod w14a_wanderer;
 mod w14b_or_spell;
 mod w14c_alt_costs;
 mod w14c_block_capacity;
+mod w15_wordings;
 mod w15b_time;
 mod w15c_clash;
+mod w16_wordings;
+mod w16b_labels;
+mod w16c_lists;
+mod w16d_forms;
+mod w16e_sequence;
 mod w17b_statics;
 mod w17c_cast_only;
 mod w20a_look_pick;
@@ -236,6 +247,8 @@ pub use chance::{add_row as add_die_row, die_row, ends_in_roll, row_texts as die
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use costs::text as render_cost;
+pub use e15f_words::block as word_block;
+pub use either_way_pairs::texts as either_way_pair_texts;
 pub use equip_options::equip_line;
 pub use group_phrases::{all_groups, subject_group};
 pub use levels::block as level_block;
@@ -247,7 +260,7 @@ pub use render::{
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;
-pub use tokens::same_text;
+pub use tokens::{same_text, same_written_text};
 
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
@@ -368,6 +381,19 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if let Some(granted) = text.strip_prefix("Max speed \u{2014} ") {
+        let inner = classify::classify(granted, false);
+        if kind != ClauseKind::Static {
+            return None;
+        }
+        return clause_with(granted, inner, x_free, own)
+            .or_else(|| {
+                e15a_max_speed::e15a_read_body(granted, |body| {
+                    clause_with(body, inner, x_free, own)
+                })
+            })
+            .map(e15a_max_speed::e15a_wrap);
+    }
     let text = match kind {
         // An ability word is flavor: "Landfall — ", "Strive — ".
         ClauseKind::Triggered | ClauseKind::Static => {

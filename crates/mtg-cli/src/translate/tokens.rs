@@ -259,7 +259,8 @@ fn custom(ctx: &Ctx, face: &Face, words: &[&str]) -> Tr<Value> {
     if let Some(colors) = &face.colors {
         spec["colors"] = colors_of(colors)?;
     }
-    if words.contains(&"Creature") != face.pt.is_some() {
+    // A Vehicle has power and toughness without being a creature.
+    if (words.contains(&"Creature") || words.contains(&"Vehicle")) != face.pt.is_some() {
         return unmapped("token:stats-shape");
     }
     // The lines of a token script are read like those of a card: a token with a line left out is not written.
@@ -497,8 +498,20 @@ fn reflected(ctx: &Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "ManaReflected",
-        &["Valid", "ColorOrType", "ReflectProperty", "Amount"],
+        &[
+            "Valid",
+            "ColorOrType",
+            "ReflectProperty",
+            "Amount",
+            "Defined",
+        ],
     )?;
+    if p.get("ReflectProperty") == Some("Produced") {
+        return reflected_tapped(p);
+    }
+    if p.has("Defined") {
+        return unmapped("key:ManaReflected.Defined");
+    }
     if p.get("ReflectProperty") != Some("Produce") {
         return unmapped("effect:ManaReflected-property");
     }
@@ -514,6 +527,21 @@ fn reflected(ctx: &Ctx, p: &Params) -> Tr<Value> {
     Ok(
         json!({"AddMana": {"mana": {"ProducedBy": {"among": among, "count": count, "colorless": colorless}}}}),
     )
+}
+
+/// `ReflectProperty$ Produced`: one mana of a type the permanent just tapped for mana produced, added for the player the
+/// trigger names (the engine reads it only inside a triggered mana ability).
+fn reflected_tapped(p: &Params) -> Tr<Value> {
+    if p.get("ColorOrType") != Some("Type") || p.has("Valid") || p.has("Amount") {
+        return unmapped("effect:ManaReflected-Produced-shape");
+    }
+    match p.get("Defined") {
+        Some("You") => Ok(json!({"AddMana": {"mana": "OfTapped"}})),
+        Some("TriggeredActivator") => {
+            Ok(json!({"AddMana": {"who": "Triggering", "mana": "OfTapped"}}))
+        }
+        _ => unmapped("key:ManaReflected.Defined"),
+    }
 }
 
 /// Fixed mana: the listed types, repeated `times` times (a number repeats the list, anything else is a count).
