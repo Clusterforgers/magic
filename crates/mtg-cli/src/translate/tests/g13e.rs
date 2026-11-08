@@ -336,6 +336,28 @@ fn a_flip_until_the_first_loss_is_a_repeating_flip() {
     assert!(json.contains(r#""FlipCoin":{"until":true}"#), "{json}");
 }
 
+#[rstest::rstest]
+#[case::two_rad("DB$ Radiation | Defined$ You | Num$ 2", true)]
+#[case::each_player("DB$ Radiation | Defined$ Player | Num$ 2", false)]
+#[case::another_gift("DB$ GainLife | LifeAmount$ 2", false)]
+fn a_land_that_may_enter_tapped_for_rad_counters(#[case] gift: &str, #[case] read: bool) {
+    let (json, found) = card(
+        "Land",
+        &format!("K:ETBReplacement:Other:DBTap:Optional\nSVar:DBTap:DB$ Tap | ETB$ True | Defined$ Self | SubAbility$ DBGift\nSVar:DBGift:{gift}\nA:AB$ Draw | Cost$ 5 T | NumCards$ 1 | ReduceCost$ X\nSVar:X:Count$YourCountersRAD"),
+    );
+    assert_eq!(found.is_empty(), read, "{found:?}");
+    if read {
+        assert!(
+            json.contains(r#""TappedForCounters":{"count":2,"counter":{"Other":"rad"}}"#),
+            "{json}"
+        );
+        assert!(
+            json.contains(r#""per":{"Counters":{"counter":{"Other":"rad"},"on":"You"}}"#),
+            "{json}"
+        );
+    }
+}
+
 const THREE_FLIPS: &str = "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ TrigFlip | TriggerDescription$ x\nSVar:TrigFlip:DB$ FlipCoin | Amount$ 3 | WinSubAbility$ Win | RememberNumber$ Wins\nSVar:Win:DB$ GainLife | LifeAmount$ Wins";
 
 #[test]
