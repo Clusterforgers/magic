@@ -34,7 +34,7 @@ Rules data for cards (`mtg-cards`), how it is checked and produced, and the rule
 | D11 | Keywords: one enum, one engine file each | An exhaustive `match` flags a forgotten keyword; parallel work touches separate files | Keywords as strings, a shared registry file |
 | D12 | Validation in three levels; all errors are collected | A file is judged where the information is | Checking when the engine uses a card, stopping at the first error |
 | D13 | The compiler writes the same files; an unreadable clause becomes a `Manual` ability | One reader and one validator; a deck is never blocked | A second format, refusing decks with unimplemented cards |
-| D14 | Read tier: a whole draft the checker cannot prove (`Unchecked`) runs automatically once one signed-in player read it beside the engine's own English and found it correct, and by hand after one "reads wrong"; verdicts are stored per rules hash, the state is still computed (D6) | The checker has no writer for many valid rules; a human read is fast when the engine's reading is shown, and `Verified` keeps its proof | A stored per-card flag, drafts in the corpus (the ratchet and `NOT_VERIFIED` stay about `Verified`) |
+| D14 | Read tier: a whole draft the checker cannot prove (`Unchecked`), or a matched Forge draft marked `differs` whose clauses read back as other text, runs automatically once one signed-in player read it beside the engine's own English and found it correct, and by hand after one "reads wrong"; verdicts are stored per rules hash, the state is still computed (D6) | The checker has no writer for many valid rules; a human read is fast when the engine's reading is shown, and `Verified` keeps its proof | A stored per-card flag, drafts in the corpus (the ratchet and `NOT_VERIFIED` stay about `Verified`) |
 
 ## Files
 
@@ -105,7 +105,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 | `Read` | A whole draft the checker could not prove, read and found correct by a player; runs like `Verified` | A draft with no `Manual` ability, equal fingerprints, `Caps` covering every primitive, and at least one "correct" and no "wrong" verdict on its `read_hash` (Read tier) |
 | `Forge` | A trusted whole translation of a Forge script (Forge source); runs like `Read`, counted and shown apart | As `Read`, with the draft `approved` by its Forge source instead of a player |
 | `Partial` | Rules exist except the listed clauses | `impl_status: Partial`, or `Full` with primitives the engine lacks |
-| `Manual` | No rules, or the engine runs none of them | No file and rules text, `impl_status: Manual`, or no primitive covered; or a compiled row or an approved draft with a clause that reads back as other text (`proposal::differing`), each such clause named `readback:Differs`. The corpus is held to the same read back by `fix21::no_verified_corpus_card_reads_back_as_other_text` |
+| `Manual` | No rules, or the engine runs none of them | No file and rules text, `impl_status: Manual`, or no primitive covered; or a compiled row or an approved draft not marked `differs` with a clause that reads back as other text (`proposal::differing`), each such clause named `readback:Differs`. The corpus is held to the same read back by `fix21::no_verified_corpus_card_reads_back_as_other_text` |
 | `Stale` | The oracle text or the face list changed since the rules were written; counts as `Manual` | `Full` or `Partial` with a different fingerprint |
 | `Unplayable` | The engine cannot host the card | `impl_status: Unplayable` |
 
@@ -129,7 +129,7 @@ A card the checker cannot prove runs automatically once a player has read it (D1
 
 | Item | Rule |
 |---|---|
-| Draft | A whole rules file (no `Manual` ability) whose checker verdict is `Unchecked`: valid, nothing contradicts the text, a construct has no writer. A trusted Forge draft may also be `Mismatch` through an ability without a clause, never through a clause that reads back as other text (`Differs`). Other `Invalid` and `Mismatch` proposals never become drafts; a translator draft is checked without the checker's repairs, so a slip is refused and never rewritten; an `Accepted` one is promoted into the corpus as `Verified`. Drafts live in `crates/mtg-cli/drafts/`, outside the corpus. |
+| Draft | A whole rules file (no `Manual` ability) whose checker verdict is `Unchecked`: valid, nothing contradicts the text, a construct has no writer. A matched Forge draft may also be `Mismatch` through an ability without a clause, and through a clause that reads back as other text (`Differs`) only when its meta marks it `differs`: it then runs on a player's read alone, `Read`, never `Forge`, and the deck check lists each such clause beside the engine's words (`ReportCard.differs`). Other `Invalid` and `Mismatch` proposals never become drafts; a translator draft is checked without the checker's repairs, so a slip is refused and never rewritten; an `Accepted` one is promoted into the corpus as `Verified`. Drafts live in `crates/mtg-cli/drafts/`, outside the corpus. |
 | `read_hash` | SHA-256 (first 16 bytes as 32 hex characters) over the oracle id, each face's current `oracle_fingerprint` and the draft's `implementation_hash`. A changed draft or an erratum gives a new hash; `Caps` do not enter it. |
 | Verdict | `correct`, or `wrong` with a note, by one account on one `read_hash`; the account's newest verdict on that hash counts ([server.md](server.md), Reads). The server's own `wrong` (a resolution that failed in a game) has no account. |
 | Read state | Per `read_hash`: `wrong` when a counting verdict is `wrong`, else `approved` when one is `correct`, else `pending`. A verdict on another hash counts for nothing, so a changed draft or text is read again. |
@@ -142,7 +142,7 @@ A card the checker cannot prove runs automatically once a player has read it (D1
 
 #### Forge source
 
-A draft has a source (`forge` for a Forge translation) and `oracle_matches`: Forge's Oracle text equals the printed text after normalising. A draft with source `forge` and `oracle_matches` is trusted: its read state is `approved` without a human verdict (a `wrong` verdict still wins), and its card has the state `Forge`: it runs like `Read` (fail-soft resolution included) but is counted apart and shown as "from Forge", never as `Verified`. A Forge draft whose text did not match needs a read like any other. Source and match are kept in `drafts/meta/<slug>.json`, embedded with the drafts and stored by `compile` in `card_drafts.source` and `card_drafts.oracle_matches`; `DraftRules.forge` carries the trust into the library.
+A draft has a source (`forge` for a Forge translation) and `oracle_matches`: Forge's Oracle text equals the printed text after normalising. A draft with source `forge`, `oracle_matches` and no `differs` mark is trusted: its read state is `approved` without a human verdict (a `wrong` verdict still wins), and its card has the state `Forge`: it runs like `Read` (fail-soft resolution included) but is counted apart and shown as "from Forge", never as `Verified`. A Forge draft whose text did not match, or one marked `differs`, needs a read like any other. Source, match and mark are kept in `drafts/meta/<slug>.json`, embedded with the drafts and stored by `compile` in `card_drafts.source`, `card_drafts.oracle_matches` and `card_drafts.differs`; `DraftRules.forge` and `DraftRules.differs` carry them into the library, which never trusts a draft marked `differs`.
 
 ## Execution
 
@@ -246,7 +246,7 @@ The verdict is `Invalid` (a problem of the first check), `Mismatch` (a clause di
 - `mtg_cards::proposal::check(json, &PrintedCard, &Library, &names, &Caps) -> Report`; `mtg-cli check-rules [--card NAME] [--bundle] [--verbose] [--write DIR] [--gaps FILE [--marks]] FILE...` runs it over files.
 - A proposal may leave out the oracle id, the names, the status and the fingerprints: they come from the card, and the status is derived from what is modelled.
 - Repairs fix a slip only when the file and the printed card leave one reading; a guess is never repaired (which face of a multi-face card, which token size), the clause goes to the table instead.
-- `mtg-cli promote [--dry-run] [--partial] [--out DIR] FILE...` makes corpus cards of proposals the checker accepts: the rules file in `cards/` and the card's Scryfall record from the cache as its fixture. `promote --draft [--source forge] FILE...` also drafts an `Unchecked` proposal (and a trusted Forge `Mismatch`) behind the smoke gate and the DSL validator.
+- `mtg-cli promote [--dry-run] [--partial] [--out DIR] FILE...` makes corpus cards of proposals the checker accepts: the rules file in `cards/` and the card's Scryfall record from the cache as its fixture. `promote --draft [--source forge] [--differs] FILE...` also drafts an `Unchecked` proposal (and a matched Forge `Mismatch`; with `--differs` also one whose clauses read back as other text, marked `differs`) behind the smoke gate and the DSL validator.
 - `check-rules --gaps FILE` writes the ledger of everything that holds the checked proposals back as TSV (kind, reason, blocked, freed, weight, examples), ranked by the popularity of the cards each gap alone holds back; `--marks` adds the fix marks players made. The ledger ranks the items of [cards-backlog.md](cards-backlog.md).
 - `mtg-cli propose` asks a model through the Anthropic API for the rules of cards and keeps the proposals the checker accepts; it needs `ANTHROPIC_API_KEY` and costs money (`--dry-run` sends nothing, and the key never appears in an error or log).
 
@@ -254,7 +254,7 @@ The verdict is `Invalid` (a problem of the first check), `Mismatch` (a clause di
 
 A whole card the checker cannot prove goes to the players instead of waiting for a writer (Read tier).
 
-- `cargo test -p mtg-cli drafts::` checks every draft against its record: valid, verdict `Unchecked` (or a trusted Forge `Mismatch`), whole, fingerprints current, and the smoke gate.
+- `cargo test -p mtg-cli drafts::` checks every draft against its record: valid, verdict `Unchecked` (or a matched Forge `Mismatch`, through a `Differs` clause exactly when marked `differs`), whole, fingerprints current, and the smoke gate.
 - `mtg-cli` embeds the directory at build time. `compile` makes each draft its card's current draft in `card_drafts` and retires the stored ones it no longer holds.
 - `mtg-cli coverage --deck CODE` lists the cards that are neither `Verified` nor `Read`; `mtg-cli draft-suspects` finds drafts likely to be wrong by setting the engine's English against the Oracle text, read-only.
 - A "reads wrong" verdict adds a fix mark with its note (`mtg-cli fix-marks`, `reads`); the fix is a new draft (a new `read_hash`), which is read again.

@@ -63,6 +63,7 @@ async fn a_draft_reads_back_exactly_as_it_was_written(pool: PgPool) {
         retired: false,
         source: "sweep".into(),
         oracle_matches: false,
+        differs: false,
         proof: None,
     };
     assert_eq!(
@@ -423,6 +424,7 @@ async fn inserting_a_stored_draft_again_takes_its_new_source_and_keeps_its_verdi
         let again = NewDraft {
             source: source.into(),
             oracle_matches: matches,
+            differs: false,
             ..first.clone()
         };
         assert_eq!(repo.insert(&[again]).await.unwrap(), 0, "still current");

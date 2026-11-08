@@ -147,6 +147,18 @@ describe('the drafts that wait for a read', () => {
     expect(names(filterCards(merged, filter))).toEqual(kept)
   })
 
+  it('lists a pending draft whose clauses differ to read, with each differing clause, and none for the others', () => {
+    const row = { face: 0, span: { start: 0, end: 12 }, printed: 'Deal 3 damage.', written: 'Deal 2 damage.' }
+    const differing = deck('x', 'Differs', [
+      reportCard('Odd', { support: 'partial', draft: 'pending', differs: [row] }),
+    ])
+    const cards = mergeDecks([differing, waiting])
+
+    expect(names(filterCards(cards, 'to_read'))).toEqual(['Beta', 'Odd', 'Zed'])
+    expect(cards.find((card) => card.name === 'Odd')?.differs).toEqual([row])
+    expect(cards.find((card) => card.name === 'Zed')?.differs).toEqual([])
+  })
+
   it('counts a draft that was found wrong as played by hand but not as waiting', () => {
     expect(merged.filter(waitsForRead)).toHaveLength(2)
     expect(waitsForRead({ draft: 'wrong' })).toBe(false)

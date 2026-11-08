@@ -107,6 +107,8 @@ pub struct W2aPromotion {
     pub proof: Option<PartialProof>,
     /// For a partial draft, the script lines the proof was made from.
     pub lines: Vec<LedgerLine>,
+    /// A clause of the whole draft reads back as other text: it runs on a player's read alone.
+    pub differs: bool,
 }
 
 /// What becomes of one proposal file.
@@ -143,6 +145,8 @@ pub struct W2aBasis<'a> {
     pub draft: bool,
     /// The source of the drafts when a proposal's meta names none (`--source`).
     pub source: Option<&'a str>,
+    /// Whether a whole Forge proposal whose clauses read back as other text becomes a draft marked `differs` (`--differs`).
+    pub differs: bool,
 }
 
 impl W2aBasis<'_> {
@@ -186,6 +190,7 @@ impl W2aBasis<'_> {
         if self.draft {
             let source = meta.source_or(self.source);
             let trusted = source == SOURCE_FORGE && meta.oracle_matches;
+            let allow_differs = trusted && self.differs;
             let mut direct = None;
             if verdict == Verdict::Unchecked || (trusted && verdict == Verdict::Mismatch) {
                 direct = Some(if meta.gaps.is_empty() {
@@ -195,6 +200,7 @@ impl W2aBasis<'_> {
                         report.clone(),
                         source.clone(),
                         meta.oracle_matches,
+                        allow_differs,
                     )
                 } else {
                     Err(W2aSkip::Gapped)
@@ -211,8 +217,14 @@ impl W2aBasis<'_> {
                     .is_some_and(|rules| unwhole(rules).is_some())
                 && let Some(merged) = self.merged(&report, printed)
                 && merged.verdict() != Verdict::Invalid
-                && let Ok(promotion) =
-                    draft::decide(printed, slug.clone(), merged, source, meta.oracle_matches)
+                && let Ok(promotion) = draft::decide(
+                    printed,
+                    slug.clone(),
+                    merged,
+                    source,
+                    meta.oracle_matches,
+                    false,
+                )
             {
                 return Ok(promotion);
             }
@@ -254,6 +266,7 @@ impl W2aBasis<'_> {
             oracle_matches: false,
             proof: None,
             lines: Vec::new(),
+            differs: false,
         })
     }
 }
@@ -527,6 +540,7 @@ pub async fn w2a_promote_against(
         partial: args.partial,
         draft: args.draft,
         source: args.source.as_deref(),
+        differs: args.differs,
     };
     let mut decisions = w2a_decide(&basis, &files);
     let records = w2a_attach_records(&mut decisions, &w2a_oracle_cards(cache)?)?;

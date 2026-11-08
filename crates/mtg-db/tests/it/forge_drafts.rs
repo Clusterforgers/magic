@@ -66,6 +66,7 @@ async fn the_source_and_the_oracle_match_are_stored_with_the_draft(pool: PgPool)
     let forge = NewDraft {
         source: SOURCE_FORGE.into(),
         oracle_matches: true,
+        differs: false,
         proof: None,
         ..draft(&bolt, 1)
     };
@@ -95,6 +96,7 @@ async fn a_forge_draft_with_a_matching_oracle_text_is_approved_until_a_wrong_cou
         let row = NewDraft {
             source: SOURCE_FORGE.into(),
             oracle_matches: *matches,
+            differs: false,
             ..draft(&bolt, 1)
         };
         database.drafts().insert(&[row]).await.unwrap();

@@ -510,6 +510,11 @@ pub struct PromoteArgs {
     #[arg(long, value_name = "SOURCE", requires = "draft", value_parser = ["sweep", "forge"])]
     pub source: Option<String>,
 
+    /// With `--draft`: a whole Forge proposal whose text matched and whose clauses read back as other text
+    /// (`readback:Differs`) also becomes a draft, marked `differs`: it runs only once a player read it and found it correct.
+    #[arg(long, requires = "draft")]
+    pub differs: bool,
+
     /// The proposal files, each named `<slug>.json` after its card.
     #[arg(value_name = "FILE", required = true)]
     pub files: Vec<PathBuf>,

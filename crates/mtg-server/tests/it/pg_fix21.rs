@@ -70,6 +70,7 @@ async fn draft(db: &Database, draw: Value) {
             rules,
             source: SOURCE_FORGE.to_owned(),
             oracle_matches: true,
+            differs: false,
             proof: None,
         }])
         .await

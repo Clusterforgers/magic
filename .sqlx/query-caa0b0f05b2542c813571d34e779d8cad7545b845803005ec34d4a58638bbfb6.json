@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT oracle_id, read_hash, rules, retired, source, oracle_matches, proof FROM card_drafts\n             WHERE NOT retired ORDER BY oracle_id",
+  "query": "SELECT oracle_id, read_hash, rules, retired, source, oracle_matches, proof, differs FROM card_drafts\n             WHERE NOT retired ORDER BY oracle_id",
   "describe": {
     "columns": [
       {
@@ -79,6 +79,17 @@
             "name": "proof"
           }
         }
+      },
+      {
+        "ordinal": 7,
+        "name": "differs",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "card_drafts",
+            "name": "differs"
+          }
+        }
       }
     ],
     "parameters": {
@@ -91,8 +102,9 @@
       false,
       false,
       false,
-      true
+      true,
+      false
     ]
   },
-  "hash": "4660b9dda90967dd753b205a7c80febf583158471f0065ffcf7f602f44dc8392"
+  "hash": "caa0b0f05b2542c813571d34e779d8cad7545b845803005ec34d4a58638bbfb6"
 }

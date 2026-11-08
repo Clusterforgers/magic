@@ -6,6 +6,7 @@ import type { FixMarksApi } from '@/net/fixMarks'
 import { DraftNote } from '../DraftNote'
 import { SupportMark, supportEdge } from '../SupportMark'
 import { ClauseList } from './ClauseList'
+import { DiffersList } from './DiffersList'
 import { clauseLines } from './model'
 import type { FlaggedCard } from './model'
 
@@ -61,6 +62,7 @@ export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks }: U
             ))}
           </p>
         ) : null}
+        <DiffersList differs={card.differs} />
         <ClauseList lines={clauseLines(card, faces)} support={card.support} pending={pending} />
         <DraftNote draft={card.draft} />
       </div>

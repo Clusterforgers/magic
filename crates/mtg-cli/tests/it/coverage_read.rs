@@ -150,6 +150,7 @@ async fn a_wrong_draft_changes_nothing_and_a_draft_read_on_an_old_hash_waits_aga
         rules,
         source: "sweep".to_owned(),
         oracle_matches: false,
+        differs: false,
         proof: None,
     };
     db.drafts()
