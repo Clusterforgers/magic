@@ -32,14 +32,17 @@ use crate::server::AppState;
 const READ_BODY_LIMIT: usize = 4 * 1024;
 
 /// What every read request has: the card source and the signed-in account, within its budget.
-struct Session<'a> {
-    cards: &'a CardSource,
-    user: Uuid,
+pub(crate) struct Session<'a> {
+    pub(crate) cards: &'a CardSource,
+    pub(crate) user: Uuid,
 }
 
 /// The 503 of a server without a database, the 401 of a request without a session, then the 429 of an account over
 /// its budget.
-async fn session<'a>(app: &'a AppState, headers: &HeaderMap) -> Result<Session<'a>, ApiError> {
+pub(crate) async fn session<'a>(
+    app: &'a AppState,
+    headers: &HeaderMap,
+) -> Result<Session<'a>, ApiError> {
     let cards = app.cards().ok_or_else(|| {
         ApiError::new(
             StatusCode::SERVICE_UNAVAILABLE,

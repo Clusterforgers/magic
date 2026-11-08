@@ -465,6 +465,11 @@ impl Library {
         self.drafts.get(oracle_id)
     }
 
+    /// Every card's current draft, by oracle id.
+    pub fn drafts(&self) -> impl Iterator<Item = &Draft> {
+        self.drafts.values()
+    }
+
     /// Whether the rules a card has already (a rules file, or a `Verified` compiled row) decide it before any draft does.
     fn outranks_drafts(&self, id: &str, rules: Option<&Card>, record: &SupportRecord) -> bool {
         record.support == Support::Verified || (rules.is_some() && !self.generated.contains(id))

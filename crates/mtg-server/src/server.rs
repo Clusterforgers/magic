@@ -28,7 +28,9 @@ use crate::config::ServerConfig;
 use crate::images::{self, Images};
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, reads, ws};
+use crate::{
+    api, bulk_reads, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, reads, ws,
+};
 
 struct Inner {
     config: ServerConfig,
@@ -328,6 +330,10 @@ pub(crate) fn router(state: AppState) -> Router {
             put(fix_marks::put).delete(fix_marks::remove),
         )
         .route("/api/reads", get(reads::list))
+        .route(
+            "/api/reads/bulk",
+            get(bulk_reads::list).put(bulk_reads::approve),
+        )
         .route(
             "/api/reads/{oracle_id}",
             get(reads::get_one).put(reads::put),
