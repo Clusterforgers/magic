@@ -368,6 +368,20 @@ fn differ_only_in_zone(abilities: &[Value]) -> bool {
         })
 }
 
+/// Every `{"of": "This"}` of a stat reference becomes `{"of": "Triggering"}`.
+fn this_to_triggering(value: &mut Value) {
+    match value {
+        Value::Object(map) => {
+            if map.get("of") == Some(&json!("This")) && map.contains_key("stat") {
+                map.insert("of".to_owned(), json!("Triggering"));
+            }
+            map.values_mut().for_each(this_to_triggering);
+        }
+        Value::Array(list) => list.iter_mut().for_each(this_to_triggering),
+        _ => {}
+    }
+}
+
 /// The abilities joined as one whose event is any of theirs.
 fn merge_alternatives(mut abilities: Vec<Value>) -> Tr<Value> {
     let mut merged = abilities.remove(0);
@@ -385,7 +399,21 @@ fn merge_alternatives(mut abilities: Vec<Value>) -> Tr<Value> {
                 .collect::<Vec<_>>()
         };
         if rest(mine) != rest(theirs) {
-            return unmapped("trigger:Secondary-with-different-effects");
+            // The card itself is the triggering object of its own alternative ("this or another artifact"), so a rest
+            // that names it as `This` says the same as the other alternative's `Triggering`.
+            let own_event = mine
+                .get("when")
+                .and_then(|when| when.pointer("/ZoneChange/what"))
+                == Some(&json!(["This"]));
+            let mut as_triggering = Value::Object(mine.clone());
+            this_to_triggering(&mut as_triggering);
+            let as_triggering = as_triggering.as_object().cloned().unwrap_or_default();
+            if !own_event || rest(&as_triggering) != rest(theirs) {
+                return unmapped("trigger:Secondary-with-different-effects");
+            }
+            for (key, value) in rest(&as_triggering) {
+                mine.insert(key, value);
+            }
         }
         let (Some(first), Some(second)) = (mine.get("when").cloned(), theirs.get("when").cloned())
         else {

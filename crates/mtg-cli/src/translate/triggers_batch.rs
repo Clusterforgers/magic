@@ -32,6 +32,12 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "CounterAddedOnce" if p.has("ValidPlayer") && !p.has("ValidCard") => {
             player_counters(p).map(|inner| batch(&inner))
         }
+        "CounterTypeAddedAll" => counters(ctx, &p.without(&["FirstTime"]), "CountersPut")
+            .and_then(|inner| {
+                // The engine counts the first counters put on an object in a turn as the event itself, not a batch.
+                let first = p.get("FirstTime") == Some("True");
+                super::triggers::first_time(p, if first { inner } else { batch(&inner) })
+            }),
         "CounterAddedOnce" | "CounterPlayerAddedAll" => {
             counters(ctx, p, "CountersPut").map(|inner| {
                 let mut found = batch(&inner);
