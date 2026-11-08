@@ -64,7 +64,7 @@ pub(super) fn e15g_licid_texts(
         timing: *timing,
         condition: condition.clone(),
         limit: *limit,
-        by: by.clone(),
+        by: *by,
         from: *from,
         targets: targets.clone(),
         effects: vec![attach.clone()],
