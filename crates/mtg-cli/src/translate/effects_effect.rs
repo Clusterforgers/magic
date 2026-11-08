@@ -179,6 +179,24 @@ fn remembered_statics(
     let Some(names) = p.get("StaticAbilities") else {
         return unmapped("key:Effect.no-StaticAbilities");
     };
+    // "Target creature attacks target opponent this turn if able": the creature and the player are a pair, not one group.
+    if known.is_none()
+        && p.get("RememberObjects") == Some("ParentTarget & Targeted")
+        && names.split(',').count() == 1
+    {
+        let part = ctx.sub(names.trim())?;
+        if part.get("Mode") == Some("MustAttack")
+            && part.get("ValidCreature") == Some("Creature.IsRemembered")
+            && part.get("MustAttack") == Some("Player.IsRemembered")
+        {
+            let keys = ["Mode", "ValidCreature", "MustAttack"];
+            check_keys(&part, "Effect.static", &keys, |_, _| false)?;
+            let creature = ctx.parent()?;
+            let player = subject(ctx, p, "", None)?;
+            return Ok(vec![json!({"Rule": {"rule": {"MustAttackPlayers": {
+                "who": creature, "players": player}}, "duration": lasting(p)?}})]);
+        }
+    }
     let duration = lasting(p)?;
     let who = match known {
         Some(who) => who.clone(),
