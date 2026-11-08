@@ -345,7 +345,8 @@ fn ep22_had_counters(p: Params, intervening: Option<Value>) -> (Params, Option<V
     let Some(valid) = p
         .get("ValidCard")
         .and_then(|valid| valid.strip_suffix("+HasCounters"))
-        .filter(|valid| !valid.contains(','))
+        // The card's own dies trigger keeps the filter it reads back with ("When ~ dies, if it had counters on it").
+        .filter(|valid| !valid.contains(',') && !valid.starts_with("Card.Self"))
         .map(str::to_owned)
     else {
         return (p, intervening);
