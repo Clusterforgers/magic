@@ -65,6 +65,7 @@ pub(super) fn move_object(
     (object.adventure, object.plotted) = (None, None);
     object.exiled_until = None;
     object.encoded_on = None;
+    object.haunting = None;
     object.monarch_wait = None;
     object.forget_cast(from, to);
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
@@ -423,6 +424,29 @@ fn spell_cast(
     Ok(())
 }
 
+/// What a move for `cause` counts: a card milled, and a land played that a replacement put elsewhere than the
+/// battlefield, which still uses its owner's land play (CR 305.2).
+fn tally_moved(state: &mut GameState, cause: ZoneCause, object: ObjectId) {
+    if cause == ZoneCause::Milled {
+        w13b_tally_milled(state, object);
+    }
+    if cause == ZoneCause::LandPlayed
+        && let Some(owner) = state.objects.get(&object).map(GameObject::owner)
+    {
+        state.turn.lands_played += 1;
+        state.tally(owner, Tally::LandsPlayed);
+    }
+}
+
+/// A card exiled haunting a creature keeps the creature it haunts (CR 702.55a).
+fn link_haunting(state: &mut GameState, card: ObjectId, cause: &ZoneCause) {
+    if let ZoneCause::Haunting { of } = cause
+        && let Some(object) = state.objects.get_mut(&card)
+    {
+        object.haunting = Some(*of);
+    }
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
@@ -468,9 +492,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 tally_discard(state, player, *object);
             }
             tally_sacrifice(state, (*cause, *from), before);
-            if *cause == ZoneCause::Milled {
-                w13b_tally_milled(state, *object);
-            }
+            tally_moved(state, *cause, *object);
             if *cause == ZoneCause::Plotted {
                 mark_plotted(state, *object);
             }
@@ -495,6 +517,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             {
                 object.encoded_on = Some(*by);
             }
+            link_haunting(state, *object, cause);
             if let ZoneCause::ExiledUntilMonarch { by } = cause {
                 state.possible.linked_exile = true;
                 if let Some(object) = state.objects.get_mut(object) {

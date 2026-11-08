@@ -547,7 +547,11 @@ pub fn roll_dice(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// `ChooseColor` and `ChooseType`: the chooser picks a value that the later lines of the ability read as the chosen one.
 pub fn choose_value(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
-    only(p, api, &["Defined", "Type", "OrColors"])?;
+    only(
+        p,
+        api,
+        &["Defined", "Type", "OrColors", "InvalidTypes", "ValidTypes"],
+    )?;
     let or_colors = match (api, p.get("OrColors")) {
         (_, None) => false,
         ("ChooseColor", Some("True")) => true,
@@ -562,13 +566,55 @@ pub fn choose_value(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         ("ChooseType", Some("Basic Land" | "Land")) => "LandType",
         (_, other) => return unmapped(format!("key:{api}.Type={}", other.unwrap_or(""))),
     };
+    let value_kind = e14c_type_list(p, kind)?.unwrap_or_else(|| json!(kind));
     let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
     let bind = ctx.fresh("chosen");
     ctx.chosen = Some(bind.clone());
     ctx.chosen_kind = Some(kind);
     Ok(vec![
-        json!({"ChooseValue": {"who": who, "kind": json!(kind), "as": bind}}),
+        json!({"ChooseValue": {"who": who, "kind": value_kind, "as": bind}}),
     ])
+}
+
+/// The card types a `ChooseType` offers.
+const E14C_CARD_TYPES: [&str; 9] = [
+    "Artifact",
+    "Battle",
+    "Creature",
+    "Enchantment",
+    "Instant",
+    "Kindred",
+    "Land",
+    "Planeswalker",
+    "Sorcery",
+];
+
+/// A `ChooseType` limited by `ValidTypes$` (only these card types) or `InvalidTypes$` (every card type but these, or a
+/// creature type other than these); None when neither is given. A word that is no card type stays a gap.
+fn e14c_type_list(p: &Params, kind: &str) -> Tr<Option<Value>> {
+    let words = |key: &str| {
+        p.get(key)
+            .map(|list| list.split(',').map(str::trim).collect::<Vec<_>>())
+    };
+    let known = |list: &[&str]| list.iter().all(|word| E14C_CARD_TYPES.contains(word));
+    match (kind, words("ValidTypes"), words("InvalidTypes")) {
+        (_, None, None) => Ok(None),
+        ("CardType", Some(valid), None) if valid.len() >= 2 && known(&valid) => {
+            Ok(Some(json!({"CardTypeOf": valid})))
+        }
+        ("CardType", None, Some(invalid)) if known(&invalid) => {
+            let left: Vec<&str> = E14C_CARD_TYPES
+                .into_iter()
+                .filter(|kind| !invalid.contains(kind))
+                .collect();
+            Ok(Some(json!({"CardTypeOf": left})))
+        }
+        ("CreatureType", None, Some(invalid)) if !invalid.is_empty() => {
+            Ok(Some(json!({"CreatureTypeExcept": invalid})))
+        }
+        (_, Some(_), _) => unmapped("key:ChooseType.ValidTypes"),
+        (_, _, Some(_)) => unmapped("key:ChooseType.InvalidTypes"),
+    }
 }
 
 /// `ChooseNumber`: one player picks a whole number from `Min$` (0) to `Max$`, read when the choice is made; the later lines

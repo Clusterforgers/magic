@@ -54,6 +54,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana puts 1 card beneath the top 2 cards of their library',
   ],
   ChosenAtRandom: [{ ChosenAtRandom: { cards: [3] } }, 'Forest is picked at random'],
+  PlayersChosenAtRandom: [{ PlayersChosenAtRandom: { players: [1] } }, 'Bo is picked at random'],
   Entered: [
     { Entered: { object: 3, tapped: true, controller: 1 } },
     "Forest enters tapped under Bo's control",
@@ -73,6 +74,9 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Flipped: [{ Flipped: { object: 3 } }, 'Forest flips'],
   Prepared: [{ Prepared: { object: 3 } }, 'Forest becomes prepared'],
   Unprepared: [{ Unprepared: { object: 3 } }, 'Forest is no longer prepared'],
+  Suspected: [{ Suspected: { object: 3 } }, 'Forest becomes suspected'],
+  Unsuspected: [{ Unsuspected: { object: 3 } }, 'Forest is no longer suspected'],
+  Solved: [{ Solved: { object: 3 } }, 'Forest is solved'],
   BecameCopy: [
     { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
     'Forest becomes a copy of Serra Angel',
@@ -393,6 +397,17 @@ const MORE: [Event, string][] = [
   [
     { ZoneChanged: { object: 3, from: { Library: 1 }, to: 'Battlefield', cause: { Cloaked: { by: 0 } } } },
     'Forest is cloaked',
+  ],
+  [
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Graveyard: 0 },
+        to: 'Exile',
+        cause: { Haunting: { of: { id: 9, counter: 1 } } },
+      },
+    },
+    'Forest is exiled haunting a creature',
   ],
   [
     {
@@ -961,6 +976,20 @@ describe('events with more than one shape', () => {
     [
       ruleEffect({ CantBeCountered: [{ id: 4, counter: 0 }] }, 'Forever'),
       "Lightning Bolt can't be countered",
+    ],
+    [
+      ruleEffect(
+        { EntersWith: { spell: { id: 4, counter: 0 }, counters: 1, keyword: null, this_turn: false } },
+        'UntilEndOfTurn',
+      ),
+      'Lightning Bolt enters with 1 additional +1/+1 counter until end of turn',
+    ],
+    [
+      ruleEffect(
+        { EntersWith: { spell: { id: 4, counter: 0 }, counters: 0, keyword: 'Haste', this_turn: true } },
+        'Forever',
+      ),
+      'Lightning Bolt gains haste until end of turn',
     ],
     [
       ruleEffect({ LifeFloor: { players: [0], floor: 1 } }, 'Forever'),

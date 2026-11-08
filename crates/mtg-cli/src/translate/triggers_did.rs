@@ -108,8 +108,12 @@ fn blocked_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(
         p,
         "AttackerBlockedByCreature",
-        &["ValidCard", "ValidBlocker"],
+        &["ValidCard", "ValidBlocker", "ValidBlocked"],
     )?;
+    // A stray `ValidBlocked$ Creature` (Cave Tiger) says "by a creature", which every blocker is.
+    if p.get("ValidBlocked").is_some_and(|word| word != "Creature") {
+        return super::ctx::unmapped("key:Trigger.AttackerBlockedByCreature.ValidBlocked");
+    }
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let mut node = json!({ "what": what });
     if let Some(valid) = p.get("ValidBlocker") {

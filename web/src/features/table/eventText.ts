@@ -261,7 +261,18 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     ).join(', ')
   else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
   else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
-  else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
+  else if ('EntersWith' in rule) {
+    const { spell, counters, keyword, this_turn } = rule.EntersWith
+    const gets = [
+      counters > 0
+        ? `enters with ${counters} additional +1/+1 ${counters === 1 ? 'counter' : 'counters'}`
+        : '',
+      typeof keyword === 'string'
+        ? `gains ${keyword.toLowerCase()}${this_turn ? ' until end of turn' : ''}`
+        : '',
+    ].filter((part) => part !== '')
+    what = `${n.card(spell.id)} ${gets.join(' and ')}`
+  } else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
   else if ('NoLifeLossFromDamage' in rule)
     what = `Damage doesn't cause ${seats(rule.NoLifeLossFromDamage)} to lose life`
   else if ('LifeFloor' in rule)
@@ -555,6 +566,7 @@ const BECAUSE: Record<
     | { ExiledUntil: unknown }
     | { ExiledUntilMonarch: unknown }
     | { Encoded: unknown }
+    | { Haunting: unknown }
     | { Manifested: unknown }
     | { Cloaked: unknown }
   >,
@@ -572,12 +584,14 @@ const BECAUSE: Record<
   Foretold: 'is foretold',
   Plotted: 'is plotted',
   Adventure: 'is exiled on an adventure',
+  LandPlayed: 'is played and put into the graveyard',
 }
 
 /** The words for a cause that carries a player or a permanent. */
 function objectCause(cause: Extract<ZoneCause, object>): string {
   if ('Hideaway' in cause || 'Held' in cause || 'Sealed' in cause) return 'is exiled face down'
   if ('Encoded' in cause) return 'is exiled encoded on a creature'
+  if ('Haunting' in cause) return 'is exiled haunting a creature'
   if ('Manifested' in cause) return 'is manifested'
   if ('Cloaked' in cause) return 'is cloaked'
   return 'is exiled for a while'
@@ -822,6 +836,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('ChosenAtRandom' in event) {
     return line(`${event.ChosenAtRandom.cards.map((id) => n.card(id)).join(', ')} is picked at random`)
   }
+  if ('PlayersChosenAtRandom' in event) {
+    const players = event.PlayersChosenAtRandom.players.map((seat) => n.seat(seat)).join(', ')
+    return line(
+      `${players} ${event.PlayersChosenAtRandom.players.length === 1 ? 'is' : 'are'} picked at random`,
+    )
+  }
   if ('Entered' in event) {
     const { object, tapped, controller, chosen } = event.Entered
     const chose = chosen === undefined ? '' : chosenWords(chosen, n)
@@ -836,6 +856,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Flipped' in event) return line(`${n.card(event.Flipped.object)} flips`)
   if ('Prepared' in event) return line(`${n.card(event.Prepared.object)} becomes prepared`)
   if ('Unprepared' in event) return line(`${n.card(event.Unprepared.object)} is no longer prepared`)
+  if ('Suspected' in event) return line(`${n.card(event.Suspected.object)} becomes suspected`)
+  if ('Unsuspected' in event) return line(`${n.card(event.Unsuspected.object)} is no longer suspected`)
+  if ('Solved' in event) return line(`${n.card(event.Solved.object)} is solved`)
   if ('BecameCopy' in event) {
     const { object, of } = event.BecameCopy
     return line(`${n.card(object)} becomes a copy of ${n.card(of.id)}`)

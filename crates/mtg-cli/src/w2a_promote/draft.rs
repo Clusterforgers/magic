@@ -10,8 +10,8 @@ use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::load::{canonical, unwhole};
 use mtg_cards::proposal::partial::{Mark, Refusal, prove};
-use mtg_cards::proposal::{Report, Verdict};
-use mtg_cards::support::Support;
+use mtg_cards::proposal::{ClauseState, Report, Verdict};
+use mtg_cards::support::{READBACK_DIFFERS, Support};
 use mtg_cards::{CardDefinition, PrintedCard};
 use mtg_db::{SOURCE_FORGE, SOURCE_SWEEP};
 
@@ -28,7 +28,7 @@ const SMOKE_STACK: usize = 8 << 20;
 const SMOKE_THREADS: usize = 4;
 
 /// The draft of an `Unchecked` proposal, or why the card is not one: it must be a whole rules file that the engine
-/// runs without a missing primitive. The smoke gate and the record come later.
+/// runs without a missing primitive, and no clause may read back as other text. The smoke gate and the record come later.
 pub fn decide(
     printed: &PrintedCard,
     slug: String,
@@ -36,6 +36,9 @@ pub fn decide(
     source: String,
     oracle_matches: bool,
 ) -> Result<W2aPromotion, W2aSkip> {
+    if differs(&report) {
+        return Err(W2aSkip::Differs);
+    }
     let (Some(record), Some(rules)) = (report.support, report.rules) else {
         return Err(W2aSkip::Rejected(Verdict::Unchecked));
     };
@@ -56,6 +59,14 @@ pub fn decide(
         proof: None,
         lines: Vec::new(),
     })
+}
+
+/// Whether a clause of the report reads back as other text than the card: such a draft may play wrong.
+fn differs(report: &Report) -> bool {
+    report
+        .clauses
+        .iter()
+        .any(|clause| matches!(clause.state, ClauseState::Differs { .. }))
 }
 
 /// The lines of a card left by hand, as (face, start, end).
@@ -84,6 +95,10 @@ pub fn decide_partial(
     if !meta.oracle_matches {
         named.push("OracleDiffers".into());
         first = Some("OracleDiffers");
+    }
+    if differs(report) {
+        named.push(READBACK_DIFFERS.into());
+        first = first.or(Some(READBACK_DIFFERS));
     }
     let proof = match prove(report, &meta.lines) {
         Ok(proof) => Some(proof),

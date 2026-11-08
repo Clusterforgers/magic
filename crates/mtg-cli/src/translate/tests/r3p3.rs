@@ -115,7 +115,7 @@ fn a_search_to_the_library_without_a_place_or_memory_stays_a_gap() {
 }
 
 #[rstest]
-#[case::brainstorm_two_on_top("Hand", "Library", " | Mandatory$ True | Reorder$ True", json!({"min": 2, "max": 2}), json!({"Library": {"place": "Top"}}))]
+#[case::brainstorm_two_on_top("Hand", "Library", " | Mandatory$ True | Reorder$ True", json!({"min": 2, "max": 2}), json!({"Library": {"place": "Top", "order": "Chosen"}}))]
 #[case::up_to_two_to_graveyard("Hand", "Graveyard", "", json!({"min": 0, "max": 2}), json!("Graveyard"))]
 fn cards_of_a_hand_with_no_named_type_are_picked_by_the_player(
     #[case] origin: &str,

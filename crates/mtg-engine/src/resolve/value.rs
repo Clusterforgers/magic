@@ -151,6 +151,8 @@ pub(super) struct Seen<'a> {
     pub(super) counters: Counted<'a>,
     /// The X it was cast with while it is a spell on the stack, else 0 (CR 202.3e).
     x: u32,
+    /// Whether it is suspected, or was as its snapshot holds it (CR 608.2h).
+    suspected: bool,
     /// Its power and toughness after the layers that set them, where the layers have worked them out: else it is the
     /// printed ones.
     base_pt: Option<(Option<i32>, Option<i32>)>,
@@ -724,6 +726,9 @@ impl<'a> Scope<'a> {
                         keywords: Some(&held.keywords),
                         counters,
                         x: stacked_x(object),
+                        suspected: object
+                            .permanent()
+                            .is_some_and(crate::object::PermanentState::suspected),
                         base_pt: Some(held.base_pt),
                     },
                     None => Seen {
@@ -737,6 +742,9 @@ impl<'a> Scope<'a> {
                         keywords: None,
                         counters,
                         x: stacked_x(object),
+                        suspected: object
+                            .permanent()
+                            .is_some_and(crate::object::PermanentState::suspected),
                         base_pt: None,
                     },
                 });
@@ -757,6 +765,9 @@ impl<'a> Scope<'a> {
                 keywords: None,
                 counters,
                 x: stacked_x(object),
+                suspected: object
+                    .permanent()
+                    .is_some_and(crate::object::PermanentState::suspected),
                 base_pt: self
                     .state
                     .layers()
@@ -784,6 +795,7 @@ impl<'a> Scope<'a> {
             } else {
                 0
             },
+            suspected: shot.suspected,
             base_pt: None,
         })
     }
@@ -811,6 +823,9 @@ impl<'a> Scope<'a> {
                 .permanent()
                 .map_or(Counted::Card(&object.card_counters), Counted::Live),
             x: stacked_x(object),
+            suspected: object
+                .permanent()
+                .is_some_and(crate::object::PermanentState::suspected),
             base_pt: Some(held.base_pt),
         };
         for pred in &selector.0 {
@@ -1610,6 +1625,11 @@ impl<'a> Scope<'a> {
             Pred::Paired | Pred::PairedWith(_) => self.soulbond_pred(pred, reference)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
+            Pred::HauntedBy(named) => self
+                .objects(named)?
+                .into_iter()
+                .filter_map(|card| self.state.object(card.id))
+                .any(|card| card.zone() == Zone::Exile && card.haunting() == Some(reference)),
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
@@ -1639,6 +1659,8 @@ impl<'a> Scope<'a> {
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::Renowned => matches!(seen.counters, Counted::Live(held) if held.renowned()),
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
+            Pred::Suspected => seen.suspected,
+            Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
             Pred::DoubleFaced => double_faced(seen, false),
             Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,

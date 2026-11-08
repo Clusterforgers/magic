@@ -21,7 +21,7 @@ use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
+use crate::trigger::{ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, TurnTally};
 
@@ -343,6 +343,8 @@ struct Walker<'a> {
     pays_objects: bool,
     /// The cost under the walk is that of an activated ability, whose counted amounts the engine counts as it is announced.
     activated_cost: bool,
+    /// The cost under the walk is paid rather than a mana cost, whose counted amounts the engine counts for the card cast.
+    rather_cost: bool,
     /// Whether a required additional cost of the card counts the X the caster announces, which the effects read.
     counts_x: bool,
     x_free: bool,
@@ -382,6 +384,7 @@ impl<'a> Walker<'a> {
             has_additional_cost: false,
             pays_objects: false,
             activated_cost: false,
+            rather_cost: false,
             counts_x: false,
             x_free: false,
             x_now: false,
@@ -463,6 +466,12 @@ impl<'a> Walker<'a> {
             }
             ValueKind::Options(words) if words.len() < 2 => {
                 self.problem("a choice of words needs at least two");
+            }
+            ValueKind::CardTypeOf(kinds) if kinds.len() < 2 => {
+                self.problem("a choice of card types needs at least two");
+            }
+            ValueKind::CreatureTypeExcept(left_out) if left_out.is_empty() => {
+                self.problem("a creature type other than none is any creature type");
             }
             _ => {}
         }
@@ -702,6 +711,7 @@ impl<'a> Walker<'a> {
             | Pred::SharesSubtype(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
+            | Pred::HauntedBy(r)
             | Pred::Crewed(r)
             | Pred::Saddled(r)
             | Pred::DamagedBy(r)
@@ -795,6 +805,8 @@ impl<'a> Walker<'a> {
             | Pred::Monstrous
             | Pred::Renowned
             | Pred::Prepared
+            | Pred::Suspected
+            | Pred::Solved
             | Pred::DoubleFaced
             | Pred::Transformed
             | Pred::Paired
@@ -1302,7 +1314,11 @@ impl<'a> Walker<'a> {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
                 if !is_fixed(item) {
-                    let activated = if w.activated_cost { ".Activated" } else { "" };
+                    let activated = match (w.activated_cost, w.rather_cost) {
+                        (true, _) => ".Activated",
+                        (false, true) => ".Rather",
+                        (false, false) => "",
+                    };
                     w.uses("Cost", &format!("{}.Counted{activated}", tag_of(item)));
                 }
                 match item {
@@ -1366,6 +1382,15 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
                     | CostItem::Forage => {}
+                    CostItem::XAtLeast(least) => {
+                        if *least == 0 {
+                            w.problem("an X of at least 0 is any X");
+                        }
+                        // The least X is announced for an activated ability only.
+                        if !w.activated_cost {
+                            w.uses("Cost", "XAtLeast.Elsewhere");
+                        }
+                    }
                 }
             });
         }
@@ -1515,6 +1540,12 @@ impl<'a> Walker<'a> {
         if let Some(cost) = &permission.additional {
             self.at("additional", |w| w.permission_cost(cost));
         }
+        if let Some(cost) = &permission.rather {
+            if permission.free {
+                self.problem("a cast for another cost is not free");
+            }
+            self.at("rather", |w| w.rather_cost(cost));
+        }
         if let Some(when) = &permission.when {
             self.at("when", |w| w.condition(when));
         }
@@ -1530,8 +1561,40 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// What a cast permission adds to the cost of a cast through it: paid by the caster as the spell is announced, so it
-    /// names a part, holds no X and nothing the spell itself would pay.
+    /// A cost modifier, with the targets an ability cost change waits for: a selector, on the change of activated abilities
+    /// only.
+    fn e14e_cost_modifier(&mut self, modifier: &Ability) {
+        let Ability::CostModifier {
+            applies_to,
+            mana,
+            per,
+            condition,
+            targeting,
+            activating,
+            ..
+        } = modifier
+        else {
+            return;
+        };
+        self.cost_modifier(applies_to, mana, per, condition.as_ref());
+        let Some(targeting) = targeting else {
+            return;
+        };
+        if activating.is_none() {
+            self.problem("a spell's targets are read with Targeting in what it applies to");
+        }
+        self.at("targeting", |w| w.selector(targeting));
+    }
+
+    /// What a cast pays rather than the mana cost: a permission cost whose counted amounts the engine counts for the card.
+    fn rather_cost(&mut self, cost: &Cost) {
+        let was = std::mem::replace(&mut self.rather_cost, true);
+        self.permission_cost(cost);
+        self.rather_cost = was;
+    }
+
+    /// What a cast permission adds to or pays instead of the cost of a cast through it: paid by the caster as the spell is
+    /// announced, so it names a part, holds no X and nothing the spell itself would pay.
     fn permission_cost(&mut self, cost: &Cost) {
         self.cost(cost);
         if cost.0.is_empty() {
@@ -1725,6 +1788,19 @@ impl<'a> Walker<'a> {
         self.keyword(keyword);
     }
 
+    /// What an enchant ability may enchant.
+    fn enchant(&mut self, selector: &Selector) {
+        self.selector(selector);
+        // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
+        if selector
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::In(zone) if !zone.is_battlefield()))
+        {
+            self.uses("Keyword", "Enchant.Elsewhere");
+        }
+    }
+
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -1772,10 +1848,10 @@ impl<'a> Walker<'a> {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
             }
+            Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
+                self.turn_up_cost(cost);
+            }
             Keyword::Multikicker(cost)
-            | Keyword::Morph(cost)
-            | Keyword::Megamorph(cost)
-            | Keyword::Disguise(cost)
             | Keyword::Overload(cost)
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
@@ -1791,22 +1867,16 @@ impl<'a> Walker<'a> {
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
-            Keyword::Enchant(selector) => {
-                self.selector(selector);
-                // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
-                if selector
-                    .0
-                    .iter()
-                    .any(|pred| matches!(pred, Pred::In(zone) if !zone.is_battlefield()))
-                {
-                    self.uses("Keyword", "Enchant.Elsewhere");
-                }
-            }
+            Keyword::Enchant(selector) => self.enchant(selector),
             Keyword::Protection(quality)
             | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);
+            }
+            Keyword::ProtectionSparing { from, spares } => {
+                self.selector(from);
+                self.selector(spares);
             }
             // The cost is paid as the cost of the activated ability the keyword adds.
             Keyword::Typecycling { find, cost } => self.cost_and("find", cost, find),
@@ -2054,6 +2124,7 @@ impl<'a> Walker<'a> {
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
+            | TriggerPattern::ResolvedToGraveyard { what }
             | TriggerPattern::Attacks { what }
             | TriggerPattern::AttacksAlone { what } => {
                 self.at("what", |w| w.selector(what));
@@ -2791,7 +2862,10 @@ impl Walker<'_> {
             Produce::OneOfLists(lists) if lists.len() < 2 => {
                 self.problem("a choice of mana needs at least two lists");
             }
-            Produce::OneOfLists(lists) if lists.len() > MANA_WAYS => {
+            // "Two mana of different colors" is ten lists, which the engine keeps as ten sources (`MANA_COMBINATIONS`).
+            Produce::OneOfLists(lists)
+                if lists.len() > MANA_WAYS && *mana != Produce::two_different_colors() =>
+            {
                 self.problem("a choice of mana has at most six lists");
             }
             Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
@@ -2799,6 +2873,9 @@ impl Walker<'_> {
             }
             Produce::ProducedBy { among, .. } => {
                 self.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
+            }
+            Produce::EachColorAmong(among) => {
+                self.at("EachColorAmong", |w| w.selector(among));
             }
             Produce::Instead {
                 base,
@@ -2817,6 +2894,7 @@ impl Walker<'_> {
             | Produce::ChosenColor(_)
             | Produce::OrChosenColor(_)
             | Produce::CommanderIdentity(_)
+            | Produce::Devotion
             | Produce::OfTapped => {}
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
@@ -3056,6 +3134,9 @@ impl Walker<'_> {
             | Effect::Flip { what }
             | Effect::TurnFaceUp { what }
             | Effect::Prepare { what }
+            | Effect::Suspect { what }
+            | Effect::Unsuspect { what }
+            | Effect::Solve { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
@@ -3075,7 +3156,7 @@ impl Walker<'_> {
             }
             Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
             Effect::RememberValue { value, .. } => w.at("value", |w| w.amount(value)),
-            Effect::Encode { what, on } => {
+            Effect::Encode { what, on } | Effect::Haunt { what, on } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("on", |w| w.reference(on, Kind::Object));
             }
@@ -3159,10 +3240,18 @@ impl Walker<'_> {
                 way,
                 bind,
                 otherwise,
+                rather,
+                free,
                 ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(cost) = rather {
+                    if *free || way.is_some() {
+                        w.problem("a card cast for another cost is not cast free or for a way of its own");
+                    }
+                    w.at("rather", |w| w.rather_cost(cost));
+                }
                 if let Some(way) = way
                     && !matches!(
                         way,
@@ -3217,9 +3306,14 @@ impl Walker<'_> {
                 w.at("as", |w| w.bind(bind, Kind::Value));
             }
             Effect::ChooseAtRandom { from, count, bind } => {
-                w.at("from", |w| w.reference(from, Kind::Object));
+                // A pick among players ("an opponent at random") binds players; any other binds objects.
+                let kind = match w.kind_of(from) {
+                    Kind::Player => Kind::Player,
+                    _ => Kind::Object,
+                };
+                w.at("from", |w| w.reference(from, kind));
                 w.at("count", |w| w.amount(count));
-                w.at("as", |w| w.bind(bind, Kind::Object));
+                w.at("as", |w| w.bind(bind, kind));
             }
             Effect::Attach { what, to, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -3316,11 +3410,20 @@ impl Walker<'_> {
                 when_spent,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                // Mana read from one player's game (their commander, their lands) is added for one player only.
+                if matches!(who, Ref::EachPlayer | Ref::Opponents)
+                    && let Some(tag) = fix19_per_player(mana)
+                {
+                    w.uses("Effect", &format!("AddMana.{tag}.Players"));
+                }
                 if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) | SpendOn::Uncounterable(f) if f.types.iter().any(|t| f.without.contains(t)))) {
                     w.problem("a restriction names a card type it also excludes");
                 }
                 if only.iter().any(SpendOn::restricts) {
                     w.uses("Effect", "AddMana.Restricted");
+                }
+                if SpendOn::enters_bonuses(only).next().is_some() {
+                    w.uses("Effect", "AddMana.Enters");
                 }
                 if SpendOn::uncounterable(only).next().is_some() {
                     w.uses("Effect", "AddMana.Uncounterable");
@@ -3471,11 +3574,18 @@ impl Walker<'_> {
                 what,
                 count,
                 except,
+                each_target,
                 ..
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("count", |w| w.amount(count));
                 w.copy_exceptions_new_object(except);
+                if let Some(selector) = each_target {
+                    if !count.is_one() {
+                        w.problem("a copy for each other target is one copy for each, with no count of its own");
+                    }
+                    w.at("each_target", |w| w.selector(selector));
+                }
             }
             Effect::ChangeTargets { what, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -3603,29 +3713,9 @@ impl Walker<'_> {
                 }
                 w.at("when", |w| w.replace_when(when));
                 w.at("by", |w| w.replace_by(when, by));
-                // The engine makes shields of damage prevention and of a death sent elsewhere; any other waits.
-                match (when, by) {
-                    (
-                        ReplaceWhen::Damage { .. },
-                        ReplaceBy::Prevent
-                        | ReplaceBy::PreventNext
-                        | ReplaceBy::PreventUpTo(_)
-                        | ReplaceBy::PreventCounted(_)
-                        | ReplaceBy::PreventAnd(_)
-                        | ReplaceBy::Multiply(_)
-                        | ReplaceBy::Add(_)
-                        | ReplaceBy::Instead(_)
-                        | ReplaceBy::InsteadNext(_)
-                        | ReplaceBy::RedirectUpTo { .. }
-                        | ReplaceBy::Redirect { .. },
-                    )
-                    // A death or a counter sent elsewhere, and a class of moves judged as each happens (`Rule::Replaces`).
-                    | (
-                        ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. },
-                        ReplaceBy::MoveTo(_) | ReplaceBy::IntoLibrary { .. },
-                    )
-                    | (ReplaceWhen::Enters { .. }, ReplaceBy::Tapped) => {}
-                    _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
+                // The engine plays the shields of `ShieldShape` alone; any other waits.
+                if ShieldShape::of(when, by).is_none() {
+                    w.uses("Effect", &format!("Shield.{}", tag_of(when)));
                 }
             }
             Effect::DelayedTrigger { when, effects, .. } => {
@@ -3681,6 +3771,15 @@ impl Walker<'_> {
                 w.x_free = saved;
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
+                // The source is lost once: the engine refuses a cost that loses it more than one time over.
+                if *times != Amount::one()
+                    && cost
+                        .0
+                        .iter()
+                        .any(|item| matches!(item, CostItem::SacrificeSelf | CostItem::ExileSelf))
+                {
+                    w.uses("Effect", "Pay.Times.SourceLeaves");
+                }
                 w.c11f_paid_x(cost, paid);
                 w.effect_list("unpaid", unpaid, false);
             }
@@ -3690,6 +3789,7 @@ impl Walker<'_> {
                 modes,
                 repeat,
                 at_random,
+                different_players,
                 once_each_turn,
                 once_ever,
                 all_if,
@@ -3697,6 +3797,12 @@ impl Walker<'_> {
                 extra_mode_cost,
             } => {
                 w.modal(choose, modes, *repeat, only_effect);
+                if *different_players {
+                    w.uses("Effect", "Modal.DifferentPlayers");
+                    if *repeat {
+                        w.problem("a mode chosen twice cannot target a different player each time");
+                    }
+                }
                 if !who.is_you() {
                     w.uses("Effect", "Modal.Who");
                     w.at("who", |w| w.reference(who, Kind::Player));
@@ -4024,6 +4130,8 @@ impl Walker<'_> {
         }
     }
 
+    // One arm for each kind of ability.
+    #[allow(clippy::too_many_lines)]
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
@@ -4105,13 +4213,7 @@ impl Walker<'_> {
                     w.at("condition", |w| w.condition(condition));
                 }
             }
-            Ability::CostModifier {
-                applies_to,
-                mana,
-                per,
-                condition,
-                ..
-            } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
+            modifier @ Ability::CostModifier { .. } => w.e14e_cost_modifier(modifier),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());
@@ -4119,6 +4221,7 @@ impl Walker<'_> {
             alt @ Ability::AltCast { .. } => w.alt_cast(alt),
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::OpeningHand => {}
+            Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -4284,6 +4387,7 @@ impl Walker<'_> {
             }),
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
+            | GameRule::NoLegendRuleFor(_)
             | GameRule::MaxHandSize { .. }
             | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
@@ -4310,6 +4414,7 @@ impl Walker<'_> {
                 self.scope = saved;
             }
             GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NoLegendRuleFor(what) => self.at(tag, |w| w.selector(what)),
             GameRule::NextSpell { what, .. } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
             }
@@ -4449,6 +4554,7 @@ impl Walker<'_> {
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
+            | ReplaceWhen::TurnedFaceUp { what }
             | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
@@ -4566,10 +4672,50 @@ impl Walker<'_> {
         }
     }
 
+    /// A morph, megamorph or disguise cost: turning face up pays its parts as a special action
+    /// (`Keyword.TurnUp.Cost.Discard`).
+    /// A card revealed from the opening hand: the pattern and effects of the delayed trigger it sets up, as those of a
+    /// triggered ability.
+    fn opening_reveal(&mut self, when: &TriggerPattern, effects: &[Effect]) {
+        self.at("when", |w| w.trigger_pattern(when));
+        let saved = std::mem::replace(&mut self.scope.in_trigger, true);
+        self.effect_list("effects", effects, false);
+        self.scope.in_trigger = saved;
+    }
+
+    fn turn_up_cost(&mut self, cost: &Cost) {
+        self.at("cost", |w| w.cost(cost));
+        self.parts_that_need_an_announcement("Keyword", "TurnUp.Cost", cost);
+    }
+
+    /// "Pay this as it would enter, or it goes to the graveyard": one sacrifice or one discard as an `Enters` happens, and
+    /// a discard the player may decline, so the pace of a hidden hand shows nothing.
+    fn pay_or_graveyard(&mut self, enters: bool, cost: &Cost, optional: bool) {
+        if !enters {
+            self.problem("only an `Enters` event is paid for or put into a graveyard");
+        }
+        let fixed = |count: &Amount| matches!(count, Amount::Fixed(1..));
+        let one_pick = match &cost.0[..] {
+            [CostItem::Sacrifice { count, .. }] => fixed(count),
+            [CostItem::Discard { count, .. }] => fixed(count) && optional,
+            _ => false,
+        };
+        if !one_pick {
+            self.problem("an entering is paid for with one sacrifice or one optional discard");
+        }
+        self.at("cost", |w| w.cost(cost));
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
         self.g12a_moves(when, by);
+        if let ReplaceWhen::TurnedFaceUp { what } = when
+            && (*what != Selector::this()
+                || !matches!(by, ReplaceBy::WithCounters { tapped: false, .. }))
+        {
+            self.problem("turning face up only puts counters on the permanent itself");
+        }
         let enters = matches!(when, ReplaceWhen::Enters { .. });
         let zone_move = matches!(
             when,
@@ -4601,8 +4747,8 @@ impl Walker<'_> {
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::WithCounters { count, .. } => {
-                if !enters {
-                    self.problem("`WithCounters` replaces an `Enters`");
+                if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
+                    self.problem("`WithCounters` replaces an `Enters` or a `TurnedFaceUp`");
                 }
                 self.at("count", |w| w.amount(count));
             }
@@ -4639,6 +4785,9 @@ impl Walker<'_> {
                 self.problem("entering tapped for no counters is a plain choice");
             }
             ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
+            ReplaceBy::PayOrGraveyard { cost, optional } => {
+                self.pay_or_graveyard(enters, cost, *optional);
+            }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
@@ -4761,6 +4910,20 @@ fn announces_x(cost: &Cost) -> bool {
             .0
             .iter()
             .any(|item| matches!(item, CostItem::PayEnergy(Amount::X)))
+}
+
+/// The tag of mana read from one player's game (`CommanderIdentity`, `ProducedBy`), through `Instead` on either side.
+fn fix19_per_player(mana: &Produce) -> Option<&'static str> {
+    match mana {
+        Produce::CommanderIdentity(_) => Some("CommanderIdentity"),
+        Produce::ProducedBy { .. } => Some("ProducedBy"),
+        Produce::EachColorAmong(_) => Some("EachColorAmong"),
+        Produce::Devotion => Some("Devotion"),
+        Produce::Instead { base, instead, .. } => {
+            fix19_per_player(base).or_else(|| fix19_per_player(instead))
+        }
+        _ => None,
+    }
 }
 
 /// Whether a cost has an `{X}` in its mana.

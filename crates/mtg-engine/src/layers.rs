@@ -164,6 +164,9 @@ pub(crate) struct Held {
     locked: Vec<Keyword>,
     /// The mana cost its card prints, which a keyword given "equal to its mana cost" reads.
     own_cost: Option<mtg_core::mana::ManaCost>,
+    /// Whether it has the ability "This creature can't block" its suspected designation gives (CR 701.60c): an effect
+    /// that takes every ability away takes it too.
+    pub(crate) suspect_cant_block: bool,
     /// The effects that changed it.
     pub(crate) applied: Vec<Applied>,
 }
@@ -194,6 +197,13 @@ impl Held {
                 ));
             }
         }
+        // A suspected permanent has menace and "This creature can't block" as long as it is suspected (CR 701.60c).
+        let suspected = object
+            .permanent()
+            .is_some_and(crate::object::PermanentState::suspected);
+        if suspected && !keywords.contains(&Keyword::Menace) {
+            keywords.push(Keyword::Menace);
+        }
         let chars = base(object);
         Held {
             id,
@@ -205,6 +215,7 @@ impl Held {
             counter_keywords: Vec::new(),
             locked: Vec::new(),
             own_cost: object.mana_cost().cloned(),
+            suspect_cant_block: suspected,
             applied: Vec::new(),
         }
     }
@@ -251,6 +262,14 @@ impl Held {
                 self.keywords.push(keyword.clone());
             }
         }
+    }
+
+    /// Takes every ability and keyword away; a land type that sets the abilities (`land`) takes only those of the rules
+    /// text, so the "can't block" of a suspected land creature stays (CR 305.7, 701.60c).
+    fn lose_abilities(&mut self, land: bool) {
+        self.keywords.clear();
+        self.abilities.clear();
+        self.suspect_cant_block &= land;
     }
 
     /// Makes the change `modification` says, as the effect `origin` with the timestamp `stamp` gives it.
@@ -303,8 +322,7 @@ impl Held {
             }
             // The land has no ability of its rules text any more (CR 305.7); a layer 6 effect can still give one.
             Modification::LoseAbilities | Modification::SetLandTypes(_) => {
-                self.keywords.clear();
-                self.abilities.clear();
+                self.lose_abilities(matches!(modification, Modification::SetLandTypes(_)));
                 self.keep_newer_counter_keywords(stamp, |_| true);
             }
             Modification::GrantAbility(granted) => self.abilities.push(HeldAbility {
@@ -443,7 +461,8 @@ impl GameState {
         let nothing_to_derive = self.effects.is_empty()
             && self.ring.is_empty()
             && !self.statics_possible
-            && !self.possible.counters;
+            && !self.possible.counters
+            && !self.possible.suspected;
         if nothing_to_derive || COMPUTING.with(Cell::get) {
             return &EMPTY;
         }
@@ -780,7 +799,13 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             .any(|permanent| {
                 power_toughness_from_counters(permanent) != (0, 0) || has_keyword_counter(permanent)
             });
-    if registered.is_empty() && !statics_in_play && !counters_in_play {
+    let suspected_in_play = state.possible.suspected
+        && state
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter_map(|id| state.object(*id)?.permanent())
+            .any(crate::object::PermanentState::suspected);
+    if registered.is_empty() && !statics_in_play && !counters_in_play && !suspected_in_play {
         return Layers {
             held: BTreeMap::new(),
             players: BTreeMap::new(),

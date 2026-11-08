@@ -15,6 +15,10 @@ const MOST: u32 = 20;
 
 /// "Earthbend 2." (a land you control is the target) or "~ endures 2.": the effects of the table entry.
 pub fn keyword_action(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    // "Recruit." (draw, discard, and a Human Soldier for a nonland discard) works on its controller.
+    if r.word("recruit") {
+        return recruit().map(<[Effect]>::to_vec);
+    }
     if r.word("earthbend") {
         let amount = r.number().filter(|n| *n > 0)?;
         if !r.targets.is_empty() {
@@ -67,6 +71,14 @@ fn expansions(name: &str, on: &Ref) -> &'static [(u32, Vec<Effect>)] {
     }
 }
 
+/// The steps of recruit, built once.
+fn recruit() -> Option<&'static [Effect]> {
+    static STEPS: OnceLock<Option<Vec<Effect>>> = OnceLock::new();
+    STEPS
+        .get_or_init(|| macros::action_effects("recruit", 0, &Ref::You))
+        .as_deref()
+}
+
 /// The words of the table entry the effects begin with, and how many effects they are; `say` words the object an
 /// endure works on when it is not the card itself.
 pub fn text(
@@ -78,6 +90,11 @@ pub fn text(
             effects.starts_with(steps).then_some((*amount, steps.len()))
         })
     };
+    if let Some(steps) = recruit()
+        && effects.starts_with(steps)
+    {
+        return Some(("recruit".to_owned(), steps.len()));
+    }
     if let Some((amount, len)) = found("earthbend", &Ref::Target(0)) {
         return Some((format!("earthbend {amount}"), len));
     }
@@ -111,6 +128,14 @@ mod tests {
         let (words, len) = text(&steps, |_| Some("target creature".to_owned())).unwrap();
         assert_eq!(len, steps.len());
         assert!(words.ends_with(&amount.to_string()), "{words}");
+    }
+
+    #[test]
+    fn recruit_reads_and_renders_as_one_word() {
+        let steps = macros::action_effects("recruit", 0, &Ref::You).unwrap();
+        let (words, len) = text(&steps, |_| None).unwrap();
+        assert_eq!((words.as_str(), len), ("recruit", steps.len()));
+        assert!(text(&steps[1..], |_| None).is_none());
     }
 
     #[test]

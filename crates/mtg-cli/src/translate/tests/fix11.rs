@@ -106,14 +106,14 @@ fn pick(origin: &str) -> String {
 #[case::another_ability_any_number(
     "Graveyard",
     "{T}: Put a land card from their graveyard onto the battlefield.\\nSearch your library for any number of Praetor cards.",
-    0
+    1
 )]
 fn a_card_picked_from_a_public_zone_is_taken_when_there_is_one(
     #[case] origin: &str,
     #[case] oracle: &str,
     #[case] min: u32,
 ) {
-    // A line without its own description falls back to the whole card, which here says "any number" elsewhere.
+    // A line without its own description reads the sentence of the card that moves the card, not the "any number" elsewhere.
     let (json, found) = card("Artifact", oracle, &pick(origin));
     assert!(found.is_empty(), "{found:?}");
     let optional = json.contains(r#""count":{"max":1,"min":0}"#);

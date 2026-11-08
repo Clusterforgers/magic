@@ -144,6 +144,8 @@ impl FaceDown {
 }
 
 /// The designations of a permanent: marks the rules put on it that it keeps only while it stays on the battlefield.
+// Independent marks of the rules, not the states of one machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Designations {
     /// It has become monstrous (CR 701.37).
@@ -152,6 +154,10 @@ pub struct Designations {
     pub(crate) renowned: bool,
     /// It is prepared: its controller may cast a copy of its spell face.
     pub(crate) prepared: bool,
+    /// It is suspected (CR 701.60): it has menace and can't block.
+    pub(crate) suspected: bool,
+    /// It is a solved Case (CR 719.3): its "Solved" abilities work.
+    pub(crate) solved: bool,
     /// The level a Class has reached (CR 716.2); 0 until a level ability resolves, which reads as level 1.
     pub(crate) level: u32,
     /// How many permanents it devoured as it entered (CR 702.82).
@@ -346,6 +352,17 @@ impl PermanentState {
         self.designations.prepared
     }
 
+    /// Whether the permanent is suspected (CR 701.60); a permanent that leaves the battlefield is a new object and is not.
+    pub const fn suspected(&self) -> bool {
+        self.designations.suspected
+    }
+
+    /// Whether the permanent is a solved Case (CR 719.3); a permanent that leaves the battlefield is a new object and is
+    /// not.
+    pub const fn solved(&self) -> bool {
+        self.designations.solved
+    }
+
     /// The level of a Class (CR 716.2): 1 as it enters, higher once its level abilities resolve; a permanent that
     /// leaves the battlefield is a new object and starts again at 1. Only a Class has abilities that read it.
     pub const fn level(&self) -> u32 {
@@ -438,6 +455,9 @@ pub struct GameObject {
     /// The creature a card in exile is encoded on (cipher, CR 702.99); a zone change of the card clears it, and a creature
     /// that has left the battlefield is another object, so the link ends with it.
     pub(crate) encoded_on: Option<ObjectRef>,
+    /// The creature a card in exile haunts (CR 702.55), as it was when the card was exiled; a zone change of the card
+    /// clears it.
+    pub(crate) haunting: Option<ObjectRef>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
@@ -500,6 +520,7 @@ impl GameObject {
             plotted: None,
             exiled_until: None,
             encoded_on: None,
+            haunting: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -538,6 +559,7 @@ impl GameObject {
             plotted: None,
             exiled_until: None,
             encoded_on: None,
+            haunting: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -803,6 +825,11 @@ impl GameObject {
         self.encoded_on
     }
 
+    /// The creature this card in exile haunts (CR 702.55), as it was when the card was exiled haunting it.
+    pub const fn haunting(&self) -> Option<ObjectRef> {
+        self.haunting
+    }
+
     /// Whether a card in exile waits for an opponent of its exiler to become the monarch and one has.
     pub(crate) const fn monarch_released(&self) -> bool {
         matches!(self.monarch_wait, Some((_, true)))
@@ -890,6 +917,7 @@ impl PartialEq for GameObject {
             && self.plotted == other.plotted
             && self.exiled_until == other.exiled_until
             && self.encoded_on == other.encoded_on
+            && self.haunting == other.haunting
             && self.monarch_wait == other.monarch_wait
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
@@ -923,6 +951,9 @@ impl Hash for GameObject {
         }
         if let Some(carrier) = self.encoded_on {
             carrier.hash(state);
+        }
+        if let Some(haunted) = self.haunting {
+            haunted.hash(state);
         }
         if let Some(wait) = self.monarch_wait {
             wait.hash(state);

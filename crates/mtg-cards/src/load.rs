@@ -12,8 +12,9 @@ use crate::assemble::{Assembled, assemble_record};
 use crate::card::{Card, ImplStatus, TokenFile};
 use crate::draft::{Draft, DraftRules, ReadState};
 use crate::pretty::pretty;
+use crate::proposal::differing;
 use crate::proposal::partial::{Mark, PartialProof};
-use crate::support::{Caps, PrintedCard, Support, SupportRecord, support};
+use crate::support::{Caps, PrintedCard, Support, SupportRecord, held_back, support};
 use crate::validate::{Problem, check_card, check_printed, check_token};
 
 /// A problem in a file: which file, where inside it, and what.
@@ -486,15 +487,37 @@ impl Library {
     /// The rules that decide an imported card and their support record, by the precedence of the Read tier: a rules
     /// file, then a `Verified` compiled row, then a draft in state `Read`, then a compiled row of any other state, then
     /// nothing (a card with no rules text plays as printed).
+    ///
+    /// Rules that read back as other text than the card (a compiled row or a draft) play by hand with the reason
+    /// `readback:Differs`; the hand-written corpus is held to the same read back by its tests.
     fn decide(&self, printed: &PrintedCard, caps: &Caps) -> (Option<&Card>, SupportRecord, bool) {
         let id = printed.oracle_id.as_str();
         let rules = self.card(id);
-        let record = support(rules, printed, caps);
+        let mut record = support(rules, printed, caps);
+        if let Some(card) = rules
+            && self.generated.contains(id)
+            && matches!(record.support, Support::Verified | Support::Partial)
+        {
+            let differs = differing(card, printed);
+            if !differs.is_empty() {
+                record = held_back(printed, Some(card), &differs);
+            }
+        }
         if !self.outranks_drafts(id, rules, &record)
             && let Some(draft) = self.drafts.get(id)
-            && let Some(read) = draft.record(printed, caps)
         {
-            return (Some(&draft.card), read, true);
+            if let Some(read) = draft.record(printed, caps) {
+                return (Some(&draft.card), read, true);
+            }
+            if !record.support.runs_whole()
+                && record.support != Support::Partial
+                && draft.state_for(printed) == ReadState::Approved
+            {
+                let differs = draft.differs(printed);
+                if !differs.is_empty() {
+                    record = held_back(printed, Some(&draft.card), &differs);
+                }
+            }
         }
         (rules, record, false)
     }

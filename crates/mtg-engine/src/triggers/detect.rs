@@ -261,11 +261,12 @@ enum Happened {
     Adapted { object: ObjectId, player: PlayerId },
     /// A player bolstered.
     Bolstered { player: PlayerId },
-    /// A player or object took an action (`TriggerPattern::Did`).
+    /// A player or object took an action (`TriggerPattern::Did`); `ability` is the ability an activation put on the stack.
     Did {
         action: Action,
         player: Option<PlayerId>,
         object: Option<ObjectId>,
+        ability: Option<ObjectId>,
     },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
@@ -1250,6 +1251,22 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             (named(left, *from) && named(entered, *to) && scope.selects(what, reference).ok()?)
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
+        // A resolved spell moves with no cause; a countered one with `Countered`.
+        (
+            TriggerPattern::ResolvedToGraveyard { what },
+            Happened::Moved {
+                object: moved,
+                from: Zone::Stack,
+                to: Zone::Graveyard(_),
+                cause: None,
+            },
+        ) => {
+            let reference = object(*moved)?;
+            scope
+                .selects(what, reference)
+                .ok()?
+                .then(|| cause(state, vec![Target::Object(reference)]))
+        }
         (
             TriggerPattern::ZoneChangeExcept {
                 what,
@@ -1746,8 +1763,9 @@ fn matching_permanents(
             },
         ) => {
             let tapped = object(*tapped)?;
+            // The event holds the permanent ("that land doesn't untap") and the player who tapped it ("that player").
             (by(who, player) && picks(what, tapped)?)
-                .then(|| cause(state, vec![Target::Player(*player)]))
+                .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
         }
         (
             TriggerPattern::CountersPut { what, counter }
@@ -3267,6 +3285,7 @@ mod tests {
             when: pattern(r#"{"StepBegins":{"step":"End"}}"#),
             once,
             this_turn: false,
+            until: None,
             effects: gain(),
             targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],

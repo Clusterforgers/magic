@@ -18,6 +18,7 @@ pub mod cost_more;
 pub mod count;
 pub mod ctx;
 mod damaged_way;
+mod e14f_turn_up;
 pub mod effects;
 pub mod effects_ambient;
 pub mod effects_animate;
@@ -147,7 +148,8 @@ pub async fn translate_forge(
     let mut index = String::from("slug\tname\ttranslated\ttoday\n");
     // Offered cards whose clauses have no read-back writer: the offer trusts their translation.
     let mut trusted = String::from("slug\tunwritten constructs\n");
-    // Offered cards with a clause written back as other text: the reading back finds them wrong or lacks the wording.
+    // Whole translations with a clause written back as other text, never offered: the reading back finds them wrong
+    // or lacks the wording.
     let mut differs = String::from("slug\tclause\twritten\n");
     let mut cards = String::from("slug\tname\ttranslated\ttoday\toracle_matches\tgaps\toffered\n");
     for script in &scripts {
@@ -240,15 +242,14 @@ fn offered_column(
     gaps: &mut Vec<String>,
 ) -> &'static str {
     let text = serde_json::to_string(&card.proposal()).unwrap_or_default();
-    stored
-        .offer(stem, &text)
-        .map_or("", |offer| match offer.refused {
+    stored.offer(stem, &text).map_or("", |offer| {
+        for (clause, written) in &offer.differs {
+            let _ = writeln!(differs, "{stem}\t{clause}\t{written}");
+        }
+        match offer.refused {
             None => {
                 if !offer.unwritten.is_empty() {
                     let _ = writeln!(trusted, "{stem}\t{}", offer.unwritten.join("; "));
-                }
-                for (clause, written) in &offer.differs {
-                    let _ = writeln!(differs, "{stem}\t{clause}\t{written}");
                 }
                 "true"
             }
@@ -256,7 +257,8 @@ fn offered_column(
                 gaps.push(why);
                 "false"
             }
-        })
+        }
+    })
 }
 
 /// Whether a script is one of the named cards (by the card's name or the name of a face).

@@ -84,6 +84,9 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if condition.is_some() && ability.pointer("/Static/defining").is_some() {
         return unmapped("key:Static.Continuous.defining-with-condition");
     }
+    // A permission used once a turn holds only on its controller's own turns: "your turn" adds nothing.
+    let once = ability.pointer("/Rule/rule/MayCast/once") == Some(&json!(true));
+    let condition = condition.filter(|found| !(once && *found == json!("YourTurn")));
     if let Some(condition) = condition {
         let parts = match &mut ability {
             Value::Array(items) => items.iter_mut().collect(),
@@ -929,9 +932,11 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         (None | Some("Battlefield"), _) | (Some(_), Some("Card.Self")) => {}
         _ => return unmapped("key:Static.CostModifier.EffectZone"),
     }
-    if activating.is_some() && p.has("ValidTarget") {
-        return unmapped("key:Static.CostModifier.ValidTarget-of-an-ability");
-    }
+    // "Equip abilities you activate that target this creature": the ability's targets, not its source's.
+    let ability_targets = match p.get("ValidTarget") {
+        Some(target) if activating.is_some() => Some(selector_any(ctx, target)?),
+        _ => None,
+    };
     let kind = spell_kinds(p);
     let mut applies = match p.get("ValidCard").or(kind.as_deref()).unwrap_or("Card") {
         "Card.Self" => {
@@ -968,7 +973,7 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
             selector
         }
     };
-    if let Some(target) = p.get("ValidTarget") {
+    if let Some(target) = p.get("ValidTarget").filter(|_| activating.is_none()) {
         // "Spells that target a tapped creature": the cost is judged with the targets the spell has announced.
         applies.push(json!({"Targeting": selector_any(ctx, target)?}));
     }
@@ -976,6 +981,9 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     let mut built = modifier(ctx, p, change, &applies, mana_cost)?;
     if let Some(kind) = activating {
         built["CostModifier"]["activating"] = json!(kind);
+    }
+    if let Some(targets) = ability_targets {
+        built["CostModifier"]["targeting"] = json!(targets);
     }
     match conditions.len() {
         0 => {}

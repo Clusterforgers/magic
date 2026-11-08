@@ -177,7 +177,9 @@ fn given_keyword_names(keywords: &[Keyword]) -> Vec<String> {
     let mut protecting = false;
     for keyword in keywords {
         let word = match keyword {
-            Keyword::Protection(quality) => protection_quality_word(quality),
+            Keyword::Protection(quality) | Keyword::ProtectionSparing { from: quality, .. } => {
+                protection_quality_word(quality)
+            }
             _ => None,
         };
         match (word, names.last_mut()) {
@@ -346,6 +348,8 @@ impl ObjectView {
             // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
             summoning_sick: summoning_sick(state, id),
             prepared: p.prepared(),
+            suspected: p.suspected(),
+            solved: p.solved(),
             phased_out: object.zone() == Zone::PhasedOut,
             exerted: !p.exerted().is_empty(),
             level: subtypes

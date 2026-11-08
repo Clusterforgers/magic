@@ -38,6 +38,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         when: TriggerPattern::AnyOf(Vec::new()),
         once: true,
         this_turn: true,
+        until: None,
         effects: effects.clone(),
         targets: targets.clone(),
         bindings,

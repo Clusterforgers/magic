@@ -239,6 +239,9 @@ pub enum Pred {
     ExiledWith(Ref),
     /// Is a creature on the battlefield that one of the cards the reference names is encoded on, which has not left since (cipher, CR 702.99).
     EncodedWith(Ref),
+    /// Is the creature one of the cards the reference names haunts (CR 702.55b): the card lies in exile, exiled haunting
+    /// this creature as it then was; a creature that has died is judged as it last was on the battlefield.
+    HauntedBy(Ref),
     /// Is a creature tapped this turn to crew one of the Vehicles the reference names ("creature that crewed it this turn").
     Crewed(Ref),
     /// Is a creature tapped this turn to saddle one of the Mounts the reference names ("creature that saddled it this turn").
@@ -279,6 +282,10 @@ pub enum Pred {
     Renowned,
     /// Is prepared: a permanent on the battlefield whose controller may cast a copy of the spell face of its card.
     Prepared,
+    /// Is suspected (CR 701.60): a permanent on the battlefield that has been suspected and is not yet no longer suspected.
+    Suspected,
+    /// Is solved (CR 719.3): a Case on the battlefield that has been solved.
+    Solved,
     /// Is a double-faced card (CR 712.1): a transforming or a modal double-faced card in any zone; a permanent that is a copy of one is not.
     DoubleFaced,
     /// Is transformed (CR 701.28): a transforming double-faced permanent with its back face up; a copy of one is not.

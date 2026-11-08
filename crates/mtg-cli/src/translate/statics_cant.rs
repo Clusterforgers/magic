@@ -65,6 +65,8 @@ fn who(word: Option<&str>, remembered: Option<&Value>) -> Tr<Value> {
         None | Some("Player") => Ok(json!("EachPlayer")),
         Some("You") => Ok(json!("You")),
         Some("Opponent") => Ok(json!("Opponents")),
+        Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
+        Some("Player.EnchantedController") => Ok(json!({"ControllerOf": "Attached"})),
         Some(other) => super::players_where::word(other)
             .map_or_else(|| unmapped(format!("static-affected:{other}")), Ok),
     }

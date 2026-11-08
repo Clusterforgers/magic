@@ -202,7 +202,8 @@ pub fn activation_words(p: &Params) -> Tr<Activation> {
 }
 
 /// The gating words of a trigger line (`PlayerTurn$ True`, `Delirium$ True`).
-const TRIGGER_GATES: [&str; 10] = [
+const TRIGGER_GATES: [&str; 11] = [
+    "Blessing",
     "PlayerTurn",
     "OpponentTurn",
     "Delirium",
@@ -281,6 +282,9 @@ pub fn trigger_state(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
         all.push(match word {
             "You.isMonarch" => json!({"Monarch": "You"}),
             "You.hasInitiative" => json!({"Initiative": "You"}),
+            "Opponent.isMonarch" => json!({"Monarch": "Opponents"}),
+            "You.committedCrimeThisTurn" => json!({"Compare": {
+                "left": {"Tallied": {"who": "You", "what": "Crimes"}}, "op": "Ge", "right": 1}}),
             other => return unmapped(format!("key:Trigger.CheckDefinedPlayer={other}")),
         });
     }

@@ -9,7 +9,7 @@
 use std::sync::Arc;
 
 use mtg_cards::AbilityDef;
-use mtg_cards::ability::{Ability, Limit};
+use mtg_cards::ability::Ability;
 use mtg_cards::assemble::{ManaProduced, mana_shape};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -23,7 +23,10 @@ use crate::events::{Event, ZoneCause};
 use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, Take};
 use crate::mana_bonus;
-use crate::mana_kinds::{COLORS, combinations_of, identity_types, mana_of, producible_types};
+use crate::mana_kinds::{
+    COLORS, colors_among, combinations_of, devotion_lists, identity_types, mana_of,
+    producible_types,
+};
 use crate::object::{Chosen, PermanentState};
 use crate::parts::{Kind, Part, Payer, energy};
 use crate::resolve::{Scope, run_inline};
@@ -42,7 +45,7 @@ struct RuleMana {
     tap: bool,
     /// Its address among the abilities of the object, which records a use once each turn.
     address: AbilityRef,
-    /// It can be used once each turn.
+    /// Its uses are limited (once each turn, a number of times each turn, once each game), so each one is logged.
     once: bool,
     /// One option for each type of mana it can make: one for a fixed type, one for each colour for "any color".
     options: Vec<ManaOption>,
@@ -182,13 +185,8 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         {
             continue;
         }
-        if shape.once
-            && state.limit_spent(
-                Limit::OncePerTurn,
-                object.reference(),
-                address.source,
-                address.ability,
-            )
+        if let Some(limit) = shape.limit
+            && state.limit_spent(limit, object.reference(), address.source, address.ability)
         {
             continue;
         }
@@ -325,6 +323,16 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 }
                 types.into_iter().map(|t| vec![t]).collect()
             }
+            // "For each color among permanents you control, add one mana of that color": one way, all the colours.
+            ManaProduced::EachColorAmong(among) => {
+                let colors = colors_among(counting, among);
+                if colors.is_empty() {
+                    Vec::new()
+                } else {
+                    vec![colors]
+                }
+            }
+            ManaProduced::Devotion => devotion_lists(counting),
             ManaProduced::CommanderIdentity(count) => identity_types(state, player)
                 .into_iter()
                 .map(|t| vec![t; count as usize])
@@ -344,7 +352,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             !shape.then.is_empty()
                 || !shape.before.is_empty()
                 || !pays.is_empty()
-                || shape.once
+                || shape.limit.is_some()
                 || !takes.is_empty(),
         );
         // "of the chosen type" is the type the source chose; without one the mana could pay for nothing.
@@ -363,7 +371,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 .and_then(|rider| rider.entry(chosen, Some(id))),
         );
         only.extend(crate::spend::snow_rider(state, id));
-        let once = shape.once;
+        let once = shape.limit.is_some();
         let cost = crate::activation_kind::mana_modified(state, id, shape.mana.clone());
         // Every use takes others, so what limits the uses is what the cost takes.
         let repeat = !tap

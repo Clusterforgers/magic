@@ -93,6 +93,15 @@ impl Printed {
     }
 }
 
+/// The objects an activation targets once its targets are announced (CR 601.2c comes before the total cost, 601.2f); `None`
+/// before.
+fn announced<'a>(
+    choices: &Choices,
+    targeted: &'a [crate::object::ObjectRef],
+) -> Option<&'a [crate::object::ObjectRef]> {
+    (!choices.targets.is_empty()).then_some(targeted)
+}
+
 /// The cost as the card prints it and the sources that may pay its mana: the mana cost of a spell, the cost of an
 /// activated ability (never paid from its own source when that is tapped or lost for it), nothing for a loyalty cost
 /// (counters, paid with the events) or a triggered ability.
@@ -140,11 +149,13 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                     choices.cost_picks().iter().flatten().copied().collect();
                 crate::mana_takes::leave(&mut sources, &picked);
                 let life = price.life();
+                let targeted = choices.targeted_objects();
                 let mana = crate::c11a_less::c11a_mana(
                     ctx.state,
                     ctx.player,
                     (ability.object, *ability, rules),
                     &price,
+                    announced(choices, &targeted),
                 );
                 let mut printed = Printed::new(mana, sources, life);
                 if price.waterbend > 0 {
@@ -158,10 +169,12 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
             }
             // A loyalty cost is counters; only what a cost modifier adds is mana.
             rules @ Ability::Loyalty { .. } => {
+                let targeted = choices.targeted_objects();
                 let Some((mana, price)) = crate::c11a_less::loyalty_mana(
                     ctx.state,
                     ctx.player,
                     (ability.object, *ability, rules),
+                    announced(choices, &targeted),
                 ) else {
                     return Some(Printed::new(None, Vec::new(), 0));
                 };

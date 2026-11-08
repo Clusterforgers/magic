@@ -557,7 +557,11 @@ amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated":
 /**
  * The cards picked.
  */
-cards: Array<ObjectId>, } } | { "CardConjured": CardConjured } | { "Sought": { 
+cards: Array<ObjectId>, } } | { "PlayersChosenAtRandom": { 
+/**
+ * The players picked.
+ */
+players: Array<PlayerId>, } } | { "CardConjured": CardConjured } | { "Sought": { 
 /**
  * Who seeks.
  */
@@ -666,6 +670,18 @@ object: ObjectId, } } | { "Prepared": {
  * The permanent.
  */
 object: ObjectId, } } | { "Unprepared": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "Suspected": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "Unsuspected": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "Solved": { 
 /**
  * The permanent.
  */

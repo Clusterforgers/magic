@@ -377,6 +377,7 @@ fn check_legends(engine: &Engine) -> Result<(), Violation> {
         if object.card().supertypes.contains(&Supertype::Legendary)
             && state.is_alive(controller)
             && !mtg_engine::rules::no_legend_rule(state, controller)
+            && !mtg_engine::rules::no_legend_rule_for(state, id)
         {
             groups
                 .entry((controller, object.card().name.clone()))

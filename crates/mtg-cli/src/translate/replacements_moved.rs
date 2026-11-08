@@ -181,7 +181,10 @@ fn exiled_instead(p: &Params, part: &Params, what: &[Value]) -> Tr<Value> {
 /// Where in the library a part puts the card: shuffled in, on top (`LibraryPosition$ 0`, the default) or on the bottom
 /// (`-1`).
 fn library_place(part: &Params) -> Tr<Value> {
-    match (part.get("Shuffle"), part.get("LibraryPosition")) {
+    match (
+        part.get("Shuffle").filter(|word| *word != "False"),
+        part.get("LibraryPosition"),
+    ) {
         (Some("True"), None) => Ok(json!("Shuffled")),
         (None, None | Some("0")) => Ok(json!("Top")),
         (None, Some("-1")) => Ok(json!("Bottom")),
@@ -307,4 +310,35 @@ pub fn self_to_graveyard(ctx: &mut Ctx, p: &Params, line_condition: Option<&Valu
         return unmapped("key:Replacement.Moved.condition");
     }
     exiled_instead(p, &part, &[json!("This")])
+}
+
+/// An `Event$ Destroy` line of a permanent that watches others ("If enchanted land would be destroyed, instead sacrifice
+/// this Aura and that land gains indestructible"): the effects of the part happen instead of the destruction. A regeneration
+/// stays a gap.
+pub fn destroyed(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    check_keys(
+        p,
+        "Replacement.Destroy",
+        &[
+            "Event",
+            "ActiveZones",
+            "ValidCard",
+            "ReplaceWith",
+            "Description",
+        ],
+        |_, _| false,
+    )?;
+    if !matches!(p.get("ActiveZones"), None | Some("Battlefield")) {
+        return unmapped("replacement:Destroy-zone");
+    }
+    let Some(valid) = p.get("ValidCard").filter(|word| !word.contains("Self")) else {
+        return unmapped("replacement:Destroy");
+    };
+    let what = selector_any(ctx, valid)?;
+    let Some(name) = p.get("ReplaceWith") else {
+        return unmapped("replacement:Destroy");
+    };
+    let part = ctx.sub(name)?;
+    let effects = chain_at(ctx, &part, false)?;
+    Ok(json!({"Replacement": {"when": {"Destroyed": {"what": what}}, "by": {"Instead": effects}}}))
 }

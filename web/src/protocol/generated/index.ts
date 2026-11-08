@@ -106,6 +106,7 @@ export type { Duration } from "./Duration";
 export type { EffectId } from "./EffectId";
 export type { EmblemCreated } from "./EmblemCreated";
 export type { EmptyLibrary } from "./EmptyLibrary";
+export type { EntersBonus } from "./EntersBonus";
 export type { ErrorCode } from "./ErrorCode";
 export type { Event } from "./Event";
 export type { EventBatch } from "./EventBatch";

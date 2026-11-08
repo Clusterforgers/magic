@@ -55,6 +55,7 @@ impl KeywordRules for Encore {
                     duration: Duration::UntilEndOfTurn,
                 },
                 Effect::DelayedTrigger {
+                    until: None,
                     when: TriggerPattern::StepBegins {
                         step: Step::End,
                         whose: Ref::EachPlayer,

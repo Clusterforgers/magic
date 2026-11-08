@@ -184,7 +184,7 @@ pub(super) fn reduced(word: &str, of: &[Value], reduce: &str) -> Tr<Value> {
 
 /// `ThisTurnEntered_Battlefield_Creature.YouCtrl` and `ThisTurnEntered_Graveyard_from_Battlefield_Creature`: the
 /// permanents that entered the battlefield, or went from it to a graveyard, this turn, as they were then.
-fn entered_this_turn(ctx: &Ctx, word: &str) -> Tr<Value> {
+pub(super) fn entered_this_turn(ctx: &Ctx, word: &str) -> Tr<Value> {
     let spec = word.strip_prefix("ThisTurnEntered_").unwrap_or_default();
     // The cards put into a player's graveyard from anywhere, tokens excepted, counted for the owner.
     let graved = match spec {
@@ -230,7 +230,7 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         ("TargetedPlayer", "CardsInLibrary") => cards("Library"),
         ("TargetedPlayer", "CardsInGraveyard") => cards("Graveyard"),
         ("TargetedPlayer", "LifeTotal") => Ok(json!({"Life": who})),
-        ("TargetedPlayer", "DamageThisTurn") => tallied("DamageTaken"),
+        ("TargetedPlayer" | "PlayerCountPropertyYou", "DamageThisTurn") => tallied("DamageTaken"),
         ("PlayerCountPropertyYou", "CardsDiscardedThisTurn") => tallied("Discarded"),
         ("PlayerCountPropertyYou", "LifeLostThisTurn") => tallied("LifeLost"),
         ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),

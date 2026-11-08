@@ -220,7 +220,7 @@ fn can_activate(
         return false;
     }
     if let Some(mana) =
-        crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price)
+        crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price, None)
     {
         let mana = &mana;
         let Some(seat) = state.player(player) else {
@@ -238,13 +238,17 @@ fn can_activate(
             return false;
         }
     }
-    announceable(state, player, object.id(), rules)
-        && some_x_has_targets(state, player, object.id(), rules, |x| {
-            x == 0
-                || ((price.x > 0 || price.counted())
-                    && price.at(x).claimed(state, player, object.id()).is_some()
-                    && can_pay_x(state, player, object, &price, &claimed, x))
-        })
+    let affords = |x: u32| {
+        x == 0
+            || ((price.x > 0 || price.counted())
+                && price.at(x).claimed(state, player, object.id()).is_some()
+                && can_pay_x(state, player, object, &price, &claimed, x))
+    };
+    // "X can't be 0": the least X must be paid for.
+    let least = crate::announce::least_of(cost);
+    (least == 0 || affords(least))
+        && announceable(state, player, object.id(), rules)
+        && some_x_has_targets(state, player, object.id(), rules, affords)
 }
 
 /// Whether the source can be tapped (`{T}`) or untapped (`{Q}`) as the price asks: a permanent in the other state, and a
@@ -294,7 +298,7 @@ fn loyalty_mana_affordable(
     rules: &Ability,
 ) -> bool {
     let Some((mana, price)) =
-        crate::c11a_less::loyalty_mana(state, player, (object.id(), address, rules))
+        crate::c11a_less::loyalty_mana(state, player, (object.id(), address, rules), None)
     else {
         return true;
     };

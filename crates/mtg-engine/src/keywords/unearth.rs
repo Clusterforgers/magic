@@ -83,6 +83,7 @@ fn activation(cost: &Cost) -> Ability {
                         duration: Duration::Forever,
                     },
                     Effect::DelayedTrigger {
+                        until: None,
                         when: TriggerPattern::StepBegins {
                             step: Step::End,
                             whose: Ref::EachPlayer,

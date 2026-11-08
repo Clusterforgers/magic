@@ -3,7 +3,7 @@
 use super::super::repeat::bound_name;
 use super::super::vote::{VOTER, more_votes};
 use super::{Effect, Writer};
-use crate::effect::VoteFor;
+use crate::effect::{DieRow, VoteFor};
 use crate::refs::Ref;
 use crate::value::Condition;
 
@@ -42,6 +42,30 @@ impl Writer<'_> {
                     }
                 }
                 Some((sentences, 1))
+            }
+            // One row of the lowest results, printed inline after the roll.
+            Effect::RollDice {
+                who: Ref::You,
+                sides,
+                dice: 1,
+                choose: false,
+                plus,
+                results,
+            } if plus.is_zero()
+                && matches!(results.as_slice(), [DieRow { from: 1, to: Some(highest), .. }] if highest < sides) =>
+            {
+                let [row] = results.as_slice() else {
+                    return None;
+                };
+                let steps = self.consequence(&Condition::All(Vec::new()), &row.effects)?;
+                let highest = row.to?;
+                Some((
+                    vec![
+                        format!("roll a d{sides}"),
+                        super::super::fix23_dice::fix23_low_row(highest, &steps),
+                    ],
+                    1,
+                ))
             }
             Effect::RollDice {
                 who: Ref::You,

@@ -72,6 +72,20 @@ fn payable_targets(ctx: &Ctx<'_>, choices: &Choices, specs: usize, legal: &mut V
     });
 }
 
+/// Leaves out of `legal` the players the earlier specifications took when the ability's modes must each target a
+/// different player ("Each mode must target a different player."). Each mode of such an ability has one target.
+fn e14c_other_players(ctx: &Ctx<'_>, earlier: &[Vec<Target>], legal: &mut Vec<Target>) {
+    let different = ctx
+        .ability
+        .and_then(crate::choose::modal_of)
+        .is_some_and(|modal| modal.different_players);
+    if different {
+        legal.retain(|target| {
+            target.player().is_none() || !earlier.iter().flatten().any(|taken| taken == target)
+        });
+    }
+}
+
 /// For each of the `count` specifications, how many come before the first of its mode; all 0 for specifications that
 /// do not come from the ability's modes.
 pub(super) fn bases(ctx: &Ctx<'_>, choices: &Choices, count: usize) -> Vec<usize> {
@@ -105,6 +119,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         };
         // "Another target" cannot name what an earlier specification took: the minimum may no longer be met.
         without_earlier(&specs[index], &work.choices.targets, &mut options.legal);
+        e14c_other_players(ctx, &work.choices.targets[..index], &mut options.legal);
         payable_targets(ctx, work.choices, specs.len(), &mut options.legal);
         let left = u32::try_from(options.legal.len()).unwrap_or(u32::MAX);
         if left < options.min {

@@ -78,6 +78,12 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// A spell matching the selector resolved and its card was put into a graveyard ("when this spell card is put into a
+    /// graveyard after resolving", haunt CR 702.55a); a countered spell is not.
+    ResolvedToGraveyard {
+        /// The spell.
+        what: Selector,
+    },
     /// A creature matching the selector attacks.
     Attacks {
         /// The attacker.
@@ -728,6 +734,13 @@ pub enum ReplaceWhen {
         /// The spell that would be countered.
         what: Selector,
     },
+    /// A face-down permanent matching the selector is turned face up ("As ~ is turned face up, put five +1/+1 counters
+    /// on it", CR 708.8): the counters are put on it as it turns, before any player can respond. Only `WithCounters`
+    /// on the permanent itself.
+    TurnedFaceUp {
+        /// The permanent turned face up.
+        what: Selector,
+    },
     /// Counters would be put on a permanent or a player, by an effect or as a permanent enters.
     CountersPut {
         /// What receives them; any permanent or player when absent.
@@ -914,6 +927,16 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
+    /// As the permanent would enter, its controller pays the cost (a sacrifice or a discard); if they don't (or can't),
+    /// it is put into its owner's graveyard instead ("If ~ would enter, sacrifice two untapped lands instead. If you do,
+    /// put ~ onto the battlefield. If you don't, put it into its owner's graveyard").
+    PayOrGraveyard {
+        /// What is paid.
+        cost: crate::cost::Cost,
+        /// The controller may decline ("you may discard a land card instead").
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
+    },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
     /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield or a card
@@ -945,6 +968,74 @@ pub enum ReplaceBy {
     DayIfNeither,
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
+}
+
+/// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ShieldShape {
+    /// Objects named now that would go from the battlefield or the stack to a graveyard, or leave the battlefield, go
+    /// elsewhere (CR 614.1a, 611.2c).
+    Named {
+        /// It covers any move from the battlefield, not only one to a graveyard.
+        leaves: bool,
+    },
+    /// A spell named now that would be countered goes elsewhere.
+    Countered,
+    /// A class of moves or entries, judged as each happens.
+    Class,
+    /// Damage prevented, changed or redirected.
+    Damage,
+}
+
+impl ShieldShape {
+    /// The shape of a shield, or none when the engine plays no shield of this replacement.
+    #[must_use]
+    pub fn of(when: &ReplaceWhen, by: &ReplaceBy) -> Option<Self> {
+        match (when, by) {
+            (ReplaceWhen::ZoneChange { what, from, to }, ReplaceBy::MoveTo(_))
+                if names_objects(what) =>
+            {
+                match (from, to) {
+                    (Some(ZoneKind::Battlefield | ZoneKind::Stack), Some(ZoneKind::Graveyard)) => {
+                        Some(Self::Named { leaves: false })
+                    }
+                    (Some(ZoneKind::Battlefield), None) => Some(Self::Named { leaves: true }),
+                    _ => None,
+                }
+            }
+            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => Some(Self::Countered),
+            (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
+            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped)
+                if !names_objects(what) =>
+            {
+                Some(Self::Class)
+            }
+            (
+                ReplaceWhen::Damage { .. },
+                ReplaceBy::Prevent
+                | ReplaceBy::PreventNext
+                | ReplaceBy::PreventUpTo(_)
+                | ReplaceBy::PreventCounted(_)
+                | ReplaceBy::PreventAnd(_)
+                | ReplaceBy::Multiply(_)
+                | ReplaceBy::Add(_)
+                | ReplaceBy::Instead(_)
+                | ReplaceBy::InsteadNext(_)
+                | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::Redirect { .. },
+            ) => Some(Self::Damage),
+            _ => None,
+        }
+    }
+}
+
+/// Whether the selector names particular objects now (a target, what a spell damaged) rather than a kind of object.
+#[must_use]
+pub fn names_objects(what: &Selector) -> bool {
+    use crate::refs::Pred;
+    what.0
+        .iter()
+        .any(|pred| matches!(pred, Pred::Is(_) | Pred::SameCard(_) | Pred::DamagedBy(_)))
 }
 
 #[cfg(test)]

@@ -174,11 +174,16 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
     };
     let mode = shape.mode.as_str();
     let did = holds(mode);
-    // A mana ability's event names the player who tapped the permanent, who controls it.
-    if mode == "TapsForMana"
-        && (matches!(what, Word::Card) && controller || matches!(what, Word::Activator))
-    {
-        return Ok(json!("Triggering"));
+    // A tap for mana holds the permanent and the player who tapped it, who controls it: "that player" is the player
+    // alone, so damage to them spares a land creature. The mana of "its controller adds" is the shape a triggered mana
+    // ability folds into the tap, which names the player `Triggering`.
+    if mode == "TapsForMana" {
+        if matches!(what, Word::Activator) {
+            return Ok(json!("TriggeringPlayer"));
+        }
+        if matches!(what, Word::Card) && controller {
+            return Ok(json!("Triggering"));
+        }
     }
     // Who controls the card is the player of the event: a drawn or discarded card is in its owner's hand, a cycled card
     // too, and a player sacrifices and plays only what they control.
@@ -202,7 +207,7 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         Word::Attacker
             if matches!(
                 mode,
-                "Attacks" | "AttackerBlocked" | "AttackerBlockedByCreature"
+                "Attacks" | "AttackerBlocked" | "AttackerBlockedByCreature" | "AttackerUnblocked"
             ) =>
         {
             "Triggering"
@@ -212,6 +217,8 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         Word::Blocker if shape.pattern == "Blocks" && !shape.itself => "Dealer",
         Word::Attacker if shape.pattern == "Blocks" => "Against",
         Word::Defender if shape.pattern == "Attacks" => "Against",
+        // The player an attacker went at: the attacked player is its defending player.
+        Word::Defender if shape.pattern == "AttacksPlayer" => return Ok(json!("Defending")),
         Word::AttackedTarget if shape.pattern == "GroupAttacksAt" => "Against",
         Word::Attackers if matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt") => {
             "Triggering"

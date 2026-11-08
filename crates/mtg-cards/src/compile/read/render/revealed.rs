@@ -51,6 +51,7 @@ fn steps(effects: &[Effect], held: &Ref) -> Option<String> {
         },
         [
             Effect::CastFromZone {
+                rather: None,
                 who: Ref::You,
                 what,
                 free: true,

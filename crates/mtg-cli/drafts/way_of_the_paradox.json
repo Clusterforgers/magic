@@ -59,9 +59,7 @@
         },
         {
           "Triggered": {
-            "when": {
-              "Did": { "action": "Activated", "who": "You", "what": [{ "Type": "Planeswalker" }] }
-            },
+            "when": { "Did": { "action": "ActivatedLoyalty", "who": "You" } },
             "effects": [
               { "GainLife": { "amount": 1 } },
               { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } }

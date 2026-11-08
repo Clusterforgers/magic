@@ -121,7 +121,7 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         return cards(r).map(CostItem::Mill);
     }
     if r.word("put") {
-        return blight(r);
+        return r.attempt(blight).or_else(|| put_on_source(r));
     }
     r.need("sacrifice")?;
     if r.source() {
@@ -212,10 +212,14 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     })
 }
 
-/// "Reveal a creature card from your hand", "Reveal a Giant card from your hand": the card stays in the hand.
+/// "Reveal a creature card from your hand", "Reveal a Giant card from your hand", the morph cost "Reveal a white card in
+/// your hand": the card stays in the hand.
 fn reveal(r: &mut Reader<'_>) -> Option<CostItem> {
     let (form, count) = how_many(r)?;
-    let mut filter = phrase(r, form)?;
+    // A count reads "in your hand" where a subject reads "from your hand".
+    let mut filter = r
+        .attempt(|r| phrase(r, form))
+        .or_else(|| phrase(r, Form::Count))?;
     without(&mut filter, &Pred::In(ZoneKind::Hand))?;
     without(&mut filter, &Pred::OwnedBy(Ref::You))?;
     Some(CostItem::RevealFromHand {
@@ -224,15 +228,21 @@ fn reveal(r: &mut Reader<'_>) -> Option<CostItem> {
     })
 }
 
-/// "Return a land you control to its owner's hand".
+/// "Return a land you control to its owner's hand", "Return two Islands you control to their owner's hand".
 fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
-    (r.word("a") || r.word("an")).then_some(())?;
-    let mut filter = phrase(r, Form::Subject)?;
+    let (form, count) = how_many(r)?;
+    (count != Amount::X).then_some(())?;
+    let mut filter = phrase(r, form)?;
     without(&mut filter, &Pred::ControlledBy(Ref::You))?;
-    r.words("to its owner's hand").then_some(())?;
+    let owner = if count == Amount::one() {
+        "to its owner's hand"
+    } else {
+        "to their owner's hand"
+    };
+    r.words(owner).then_some(())?;
     Some(CostItem::ReturnToHand {
         filter: kinds_only(filter)?,
-        count: Amount::one(),
+        count,
     })
 }
 
@@ -243,6 +253,22 @@ fn blight(r: &mut Reader<'_>) -> Option<CostItem> {
     (counter == Some(CounterKind::MinusOneMinusOne) && count == Amount::one()).then_some(())?;
     r.need("on a creature you control")?;
     Some(CostItem::Blight(count))
+}
+
+/// "Put a -0/-1 counter on this creature": counters of a kind put on the source.
+fn put_on_source(r: &mut Reader<'_>) -> Option<CostItem> {
+    let number = super::amounts::number_word(r.take_word()?)?;
+    let counter = r
+        .attempt(super::counters::sized)
+        .or_else(|| r.attempt(super::counters::kind))?;
+    r.word(if number == 1 { "counter" } else { "counters" })
+        .then_some(())?;
+    r.need("on")?;
+    r.source().then_some(())?;
+    Some(CostItem::PutCounters {
+        counter,
+        count: Amount::Fixed(i32::try_from(number).ok()?),
+    })
 }
 
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
@@ -399,6 +425,10 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
+        CostItem::Exert => "Exert ~".to_owned(),
+        CostItem::PutCounters { counter, count } => {
+            format!("Put {} on ~", w2f_text(Some(counter), count)?)
+        }
         CostItem::Blight(Amount::Fixed(1)) => {
             "Put a -1/-1 counter on a creature you control".to_owned()
         }

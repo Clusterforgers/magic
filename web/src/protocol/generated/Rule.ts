@@ -60,7 +60,23 @@ most: number,
 /**
  * The players whose blocks it limits.
  */
-who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "CantBeRegenerated": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "LifeFloor": { 
+who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "EntersWith": { 
+/**
+ * The spell, on the stack.
+ */
+spell: ObjectRef, 
+/**
+ * The additional +1/+1 counters it enters with.
+ */
+counters: number, 
+/**
+ * The keyword the permanent gains.
+ */
+keyword: unknown, 
+/**
+ * The keyword lasts until end of turn; otherwise while the permanent stays.
+ */
+this_turn: boolean, } } | { "CantBeRegenerated": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "LifeFloor": { 
 /**
  * The players.
  */
@@ -88,7 +104,7 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "UntapDuring": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */
@@ -145,6 +161,10 @@ once?: boolean,
  * What the caster pays in addition to the other costs of a cast through it.
  */
 additional?: unknown, 
+/**
+ * What a cast through it pays rather than the mana cost; an amount in it counts the card cast.
+ */
+rather?: unknown, 
 /**
  * How the mana of a cast through it may be spent.
  */
@@ -212,7 +232,11 @@ countered?: boolean,
 /**
  * A card named in another zone is covered as the spell it becomes when cast, one zone change on (CR 400.7).
  */
-cast?: boolean, } } | { "Replaces": { 
+cast?: boolean, 
+/**
+ * It covers any move from the battlefield ("if it would leave the battlefield"), not only one to a graveyard.
+ */
+leaves?: boolean, } } | { "Replaces": { 
 /**
  * The event it replaces.
  */

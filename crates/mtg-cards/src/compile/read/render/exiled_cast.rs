@@ -30,6 +30,7 @@ impl Writer<'_> {
             return None;
         };
         let allowed = CastPermission {
+            rather: None,
             who: Ref::You,
             what: Selector::default(),
             from: Some(ZoneKind::Exile),

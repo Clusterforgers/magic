@@ -9,7 +9,7 @@ use mtg_core::mana::ManaType;
 use super::{unsupported, wrong_effect};
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::events::Event;
-use crate::mana_kinds::{identity_types, producible_types};
+use crate::mana_kinds::{colors_among, devotion_lists, identity_types, producible_types};
 use crate::object::{Chosen, GameObject, PermanentState};
 use crate::resolve::{Cx, ResolveError, Run};
 
@@ -175,6 +175,39 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 lasts: *lasts,
             };
             return choose_list(cx, &added, lists);
+        }
+        Produce::EachColorAmong(among) => {
+            let [player] = players.as_slice() else {
+                return unsupported("Effect.AddMana.EachColorAmong.Players");
+            };
+            let colors = colors_among(&cx.scope, among);
+            for _ in 0..times {
+                events.extend(colors.iter().map(|&mana| Event::ManaAdded {
+                    player: *player,
+                    mana,
+                    source,
+                    only: only.clone(),
+                    lasts: *lasts,
+                }));
+            }
+            return Ok(Run::events(events));
+        }
+        Produce::Devotion => {
+            let [player] = players.as_slice() else {
+                return unsupported("Effect.AddMana.Devotion.Players");
+            };
+            let lists = devotion_lists(&cx.scope);
+            if lists.is_empty() {
+                return Ok(Run::events(events));
+            }
+            let added = Added {
+                players: std::slice::from_ref(player),
+                times,
+                source,
+                only,
+                lasts: *lasts,
+            };
+            return choose_list(cx, &added, &lists);
         }
         // What depends on the game is read for the one player who adds it; none is added when the list is empty.
         Produce::CommanderIdentity(each) => match players.as_slice() {

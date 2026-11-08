@@ -582,6 +582,12 @@ pub enum Event {
         /// The cards picked.
         cards: Vec<ObjectId>,
     },
+    /// Players were picked at random with the next substream of the generator ("choose an opponent at random"): the
+    /// players picked, in the order they were drawn.
+    PlayersChosenAtRandom {
+        /// The players picked.
+        players: Vec<PlayerId>,
+    },
     /// A card was conjured into a zone (Alchemy).
     CardConjured(crate::conjure::CardConjured),
     /// A player seeks (Alchemy): `count` random cards of their library that match go to their hand, chosen with the
@@ -687,6 +693,21 @@ pub enum Event {
     },
     /// A permanent stopped being prepared as its controller cast a copy of its spell face.
     Unprepared {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A creature on the battlefield became suspected (CR 701.60): while it is, it has menace and can't block.
+    Suspected {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A permanent stopped being suspected (CR 701.60d).
+    Unsuspected {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A Case on the battlefield became solved (CR 719.3): it stays solved until it leaves.
+    Solved {
         /// The permanent.
         object: ObjectId,
     },
@@ -1066,6 +1087,11 @@ pub enum ZoneCause {
         /// The creature it is encoded on.
         by: ObjectRef,
     },
+    /// It was exiled haunting the creature `of` (haunt, CR 702.55a): it lies face up in exile linked to the creature.
+    Haunting {
+        /// The creature it haunts.
+        of: ObjectRef,
+    },
     /// It resolved as an Adventure (CR 715.4) and was exiled instead of going to its owner's graveyard: its controller may cast the card from exile.
     Adventure,
     /// It was countered (CR 701.6).
@@ -1076,6 +1102,9 @@ pub enum ZoneCause {
     StateBased,
     /// It was discarded and a replacement effect sent it somewhere other than the graveyard (CR 701.9).
     Discarded,
+    /// It was played as its owner's land and a replacement effect put it here instead of onto the battlefield: the land
+    /// play is used (CR 305.2).
+    LandPlayed,
 }
 
 impl ZoneCause {
@@ -1173,6 +1202,7 @@ impl Event {
             | Event::HandLooked(_)
             | Event::CardsFound(_)
             | Event::ChosenAtRandom { .. }
+            | Event::PlayersChosenAtRandom { .. }
             | Event::Sought { .. }
             | Event::Revealed(_) => Vec::new(),
             Event::CountersChanged(changed) => changed
@@ -1218,6 +1248,9 @@ impl Event {
             | Event::Flipped { object }
             | Event::Prepared { object }
             | Event::Unprepared { object }
+            | Event::Suspected { object }
+            | Event::Unsuspected { object }
+            | Event::Solved { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::PermanentPhasedOut { object, .. }

@@ -53,6 +53,7 @@ impl KeywordRules for Cipher {
                     bind: COPY.to_owned(),
                 },
                 Effect::CastFromZone {
+                    rather: None,
                     who: Ref::You,
                     what: Ref::Bound(COPY.to_owned()),
                     free: true,

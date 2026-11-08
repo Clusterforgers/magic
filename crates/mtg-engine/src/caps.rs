@@ -88,11 +88,13 @@ const RUNS: &[&str] = &[
     "Trigger.W11cCrime",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
+    "Trigger.ResolvedToGraveyard",
     "Trigger.Batch",
     "Trigger.Nth",
     "Trigger.Caused",
     "Trigger.Did",
     "Ability.OpeningHand",
+    "Ability.OpeningReveal",
     "Amount.Triggering",
     "Amount.Players",
     "Amount.Greatest",
@@ -136,6 +138,8 @@ const RUNS: &[&str] = &[
     "Cost.RemoveCountersAmong",
     "Cost.PayLife.Counted.Activated",
     "Cost.PayEnergy.Counted.Activated",
+    "Cost.PayLife.Counted.Rather",
+    "Cost.PayEnergy.Counted.Rather",
     "Cost.Mill.Counted.Activated",
     "Cost.RemoveCounters.Counted.Activated",
     "Cost.Sacrifice.Counted.Activated",
@@ -166,6 +170,7 @@ const RUNS: &[&str] = &[
     "Cost.ToLibrary",
     "Cost.Forage",
     "Cost.Waterbend",
+    "Cost.XAtLeast",
     "Cost.ExiledToGraveyard",
     "Cost.DamageToYou.Counted.Activated",
     "Cost.ExileTop.Counted.Activated",
@@ -225,6 +230,9 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.WhenSpent",
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
+    "Effect.AddMana.EachColorAmong",
+    "Effect.AddMana.Devotion",
+    "Effect.AddMana.Enters",
     "Effect.AddMana.OfTapped",
     "Effect.AddMana.AnyCombination",
     "Effect.AddMana.AnyColor",
@@ -248,6 +256,9 @@ const RUNS: &[&str] = &[
     "Effect.Flip",
     "Effect.TurnFaceUp",
     "Effect.Prepare",
+    "Effect.Suspect",
+    "Effect.Unsuspect",
+    "Effect.Solve",
     "Effect.WinGame",
     "Effect.LoseGame",
     "Effect.DrawGame",
@@ -352,6 +363,7 @@ const RUNS: &[&str] = &[
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
     "Rule.NoLegendRule",
+    "Rule.NoLegendRuleFor",
     "Rule.UntapDuring",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
@@ -463,6 +475,7 @@ const RUNS: &[&str] = &[
     "Effect.Modal.Who",
     "Effect.Modal.ModeCosts",
     "Effect.Modal.ExtraModeCost",
+    "Effect.Modal.DifferentPlayers",
     "Effect.Planechase",
     "Effect.VillainousChoice",
     "Effect.Either",
@@ -483,6 +496,7 @@ const RUNS: &[&str] = &[
     "Keyword.Hexproof",
     "Keyword.Shroud",
     "Keyword.Protection",
+    "Keyword.ProtectionSparing",
     "Keyword.HexproofFrom",
     "Keyword.Prowess",
     "Keyword.BattleCry",
@@ -519,6 +533,20 @@ const RUNS: &[&str] = &[
     "Keyword.Morph",
     "Keyword.Megamorph",
     "Keyword.Disguise",
+    "Keyword.TurnUp.Cost.PayLife",
+    "Keyword.TurnUp.Cost.Mill",
+    "Keyword.TurnUp.Cost.Draw",
+    "Keyword.TurnUp.Cost.DiscardRandom",
+    "Keyword.TurnUp.Cost.RemoveCounters",
+    "Keyword.TurnUp.Cost.Sacrifice",
+    "Keyword.TurnUp.Cost.Discard",
+    "Keyword.TurnUp.Cost.ExileFromGraveyard",
+    "Keyword.TurnUp.Cost.ExileFromHand",
+    "Keyword.TurnUp.Cost.RevealFromHand",
+    "Keyword.TurnUp.Cost.TapPermanents",
+    "Keyword.TurnUp.Cost.ReturnToHand",
+    "Keyword.TurnUp.Cost.DamageToYou",
+    "Keyword.TurnUp.Cost.ExileTop",
     "Keyword.Daybound",
     "Keyword.Nightbound",
     "Keyword.Fuse",
@@ -577,6 +605,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
     "ReplaceWhen.Countered",
+    "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
     "ReplaceWhen.Draw",
@@ -609,6 +638,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
     "ReplaceBy.RevealOrTapped",
+    "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
     "Keyword.Partner",
     "Keyword.PartnerWith",
@@ -699,6 +729,7 @@ const RUNS: &[&str] = &[
     "Keyword.Freerunning",
     "Keyword.UmbraArmor",
     "Keyword.Cipher",
+    "Keyword.Haunt",
     "Keyword.Graft",
     "Keyword.Afflict",
     "Keyword.Replicate",
@@ -956,6 +987,7 @@ mod tests {
     #[case::a_set_maximum_hand_size("Rule.MaxHandSize", true)]
     #[case::a_changed_maximum_hand_size("Rule.HandSizeChange", true)]
     #[case::no_legend_rule("Rule.NoLegendRule", true)]
+    #[case::no_legend_rule_for_some("Rule.NoLegendRuleFor", true)]
     #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
@@ -1012,6 +1044,7 @@ mod tests {
     #[case::flipping_coins("Effect.FlipCoin", true)]
     #[case::modes_at_random("Effect.Modal.AtRandom", true)]
     #[case::modes_not_chosen_twice_in_a_turn("Effect.Modal.OnceEachTurn", true)]
+    #[case::e14c_modes_target_different_players("Effect.Modal.DifferentPlayers", true)]
     #[case::modes_not_chosen_twice_ever("Effect.Modal.OnceEver", true)]
     #[case::modes_with_costs("Effect.Modal.ModeCosts", true)]
     #[case::modes_with_an_extra_cost("Effect.Modal.ExtraModeCost", true)]
@@ -1193,11 +1226,13 @@ mod tests {
     #[case::w11c_crime_triggers("Trigger.W11cCrime", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
+    #[case::resolved_to_graveyard("Trigger.ResolvedToGraveyard", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::caused_triggers("Trigger.Caused", true)]
     #[case::r3p1_actions_taken_by_a_player("Trigger.Did", true)]
     #[case::r3p1_beginning_the_game_on_the_battlefield("Ability.OpeningHand", true)]
+    #[case::revealed_from_the_opening_hand("Ability.OpeningReveal", true)]
     #[case::r3p1_untapping_the_source_as_a_cost("Cost.Untap", true)]
     #[case::r5g_sacrificing_any_number("Effect.SacrificeUpTo", true)]
     #[case::event_amounts("Amount.Triggering", true)]
@@ -1335,6 +1370,7 @@ mod tests {
     #[case::freerunning("Keyword.Freerunning", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::cipher("Keyword.Cipher", true)]
+    #[case::haunt("Keyword.Haunt", true)]
     #[case::flash_sacrifice("Keyword.FlashSacrifice", true)]
     #[case::cast_off_sorcery_timing("Condition.CastOffSorceryTiming", true)]
     #[case::graft("Keyword.Graft", true)]

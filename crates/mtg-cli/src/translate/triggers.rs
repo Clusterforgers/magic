@@ -129,6 +129,9 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         // is cast in response; the engine has no first-of-the-turn event across all players.
         return unmapped("trigger:SpellCast-exact-count-recheck");
     }
+    if p.has("ResolvedLimit") {
+        effects = fix19_cast_asked(&effects).unwrap_or(effects);
+    }
     let mut ability = json!({"when": when, "effects": effects});
     if let Some(zone) = from {
         ability["from"] = json!(zone);
@@ -186,6 +189,17 @@ fn printed_more(p: &Params, effects: &[Value]) -> Tr<()> {
         return unmapped("trigger:spell-you-control-printed-any-player");
     }
     Ok(())
+}
+
+/// "Do this only once each turn" counts the choices a `May` records, so effects that begin with a cast from a zone are
+/// wrapped in the caster's `May` again; none when they begin otherwise.
+fn fix19_cast_asked(effects: &[Value]) -> Option<Vec<Value>> {
+    let cast = effects.first()?.get("CastFromZone")?;
+    let mut may = json!({"May": {"effects": effects}});
+    if let Some(who) = cast.get("who").filter(|who| **who != json!("You")) {
+        may["May"]["who"] = who.clone();
+    }
+    Some(vec![may])
 }
 
 fn limit(p: &Params, effects: &[Value]) -> Tr<Option<Value>> {
@@ -544,6 +558,11 @@ fn prints_every_end_step(p: &Params) -> bool {
         .is_some_and(|text| text.to_lowercase().contains("beginning of the end step"))
 }
 
+/// The pattern of a `Mode$ Phase` line once its other keys are gone: "at the beginning of <step>".
+pub(super) fn step_pattern(p: &Params) -> Tr<Value> {
+    phase(p)
+}
+
 fn phase(p: &Params) -> Tr<Value> {
     keys(p, "Phase", &["Phase", "ValidPlayer", "PhaseCount"])?;
     // `Phase$ Main` with a count names the first or the second (postcombat) main phase.
@@ -606,7 +625,11 @@ fn attacks_at(word: &str, what: &[Value]) -> Tr<Value> {
     let Some(player) = parts.next() else {
         return gap();
     };
-    let Ok(at) = player_ref(Some(player)) else {
+    let Ok(at) = (if player == "Player.withMostLife" {
+        Ok(json!("MostLife"))
+    } else {
+        player_ref(Some(player))
+    }) else {
         return gap();
     };
     let variant = match (parts.next(), parts.next(), &at) {
@@ -651,7 +674,7 @@ fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
     let read: &[&str] = if variant == "Discarded" {
         &["ValidCard", "ValidPlayer"]
     } else {
-        &["ValidCard"]
+        &["ValidCard", "ValidPlayer", "FirstTime"]
     };
     keys(p, variant, read)?;
     let (what, by) = card_and_player(ctx, p.get("ValidCard").unwrap_or("Card"))?;
@@ -668,7 +691,7 @@ fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
         }
         pattern["by"] = player_ref(Some(word))?;
     }
-    Ok(json!({ variant: pattern }))
+    first_time(p, json!({ variant: pattern }))
 }
 
 /// "Whenever you attack" and "whenever you attack with two or more creatures".
@@ -736,6 +759,7 @@ pub(super) fn player_ref(word: Option<&str>) -> Tr<Value> {
         // Teams do not exist at our tables: the other players are the opponents.
         Some("Opponent" | "Player.Opponent" | "Player.Other") => Ok(json!("Opponents")),
         Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
+        Some("Player.isMonarch") => Ok(json!("Monarch")),
         Some("Player.EnchantedController") => Ok(json!({"ControllerOf": "Attached"})),
         Some("Player.Chosen") => Ok(json!("Chosen")),
         Some("Player.TriggeredDefendingPlayer" | "TriggeredDefendingPlayer") => {
@@ -855,7 +879,8 @@ fn drawn(p: &Params) -> Tr<Value> {
     // `ValidPlayer$` names who draws, `ValidCard$` names the card drawn and so who owns it; the two are not given together.
     let who = match (p.get("ValidCard"), p.get("ValidPlayer")) {
         (Some("Card.YouOwn" | "Card.YouCtrl"), None) => "You",
-        (Some("Card.OppOwn"), None) => "Opponents",
+        (Some("Card.OppOwn" | "Card.OppCtrl"), None) => "Opponents",
+        (Some("Card.OwnedBy Player.EnchantedBy"), None) => "AttachedPlayer",
         (None | Some("Card"), None) => "EachPlayer",
         (None, Some(word)) => match player_ref(Some(word)) {
             Ok(found) if found == "You" => "You",

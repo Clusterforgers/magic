@@ -47,6 +47,10 @@ pub struct DelayedCreated {
     /// Whether it waits only until the end of the turn it was set up in, also when it triggers once.
     #[serde(default)]
     pub this_turn: bool,
+    /// How long it waits instead ("until your next turn"), also when it triggers once.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub until: Option<Duration>,
     /// The targets it chooses as it goes on the stack (a reflexive trigger).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
@@ -186,7 +190,9 @@ pub(crate) fn fold_created(
         }),
         bindings,
         once: created.once,
-        duration: if created.once && !created.this_turn {
+        duration: if let Some(until) = &created.until {
+            until.clone()
+        } else if created.once && !created.this_turn {
             Duration::Forever
         } else {
             Duration::UntilEndOfTurn
@@ -244,6 +250,7 @@ mod tests {
             },
             once: false,
             this_turn: false,
+            until: None,
             effects: vec![mtg_cards::effect::Effect::GainLife {
                 who: Ref::You,
                 amount: mtg_cards::value::Amount::Fixed(1),

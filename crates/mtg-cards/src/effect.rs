@@ -161,6 +161,12 @@ pub enum Produce {
     },
     /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
     OfTapped,
+    /// One mana of each color among the objects the selector picks ("For each color among permanents you control, add
+    /// one mana of that color"); none while they have no color.
+    EachColorAmong(Selector),
+    /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
+    /// color. Add an amount of mana of that color equal to your devotion to that color."
+    Devotion,
     /// The first mana, or the second when the condition holds as the mana is added ("Add {G}. If you control four or more
     /// creatures, add {G}{G} instead."); neither is itself a replacement.
     Instead {
@@ -181,6 +187,26 @@ pub enum Produce {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         among: Vec<ManaType>,
     },
+}
+
+impl Produce {
+    /// "Two mana of different colors": one list for each pair of distinct colors, in WUBRG order.
+    pub fn two_different_colors() -> Self {
+        let colors = [
+            ManaType::White,
+            ManaType::Blue,
+            ManaType::Black,
+            ManaType::Red,
+            ManaType::Green,
+        ];
+        let mut lists = Vec::new();
+        for (at, first) in colors.iter().enumerate() {
+            for second in &colors[at + 1..] {
+                lists.push(vec![*first, *second]);
+            }
+        }
+        Produce::OneOfLists(lists)
+    }
 }
 
 /// What a created token is.
@@ -293,6 +319,10 @@ pub enum ValueKind {
     Number(Amount, Amount),
     /// One of these words ("choose odd or even").
     Options(Vec<String>),
+    /// One of these card types ("choose a permanent type", "choose creature or land").
+    CardTypeOf(Vec<CardType>),
+    /// A creature type other than these ("choose a creature type other than Wall").
+    CreatureTypeExcept(Vec<String>),
 }
 
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
@@ -443,8 +473,8 @@ pub enum Effect {
         #[serde(rename = "as")]
         bind: String,
     },
-    /// Cards of a public zone are picked at random, with the game's random source, and the pick is bound; fewer are
-    /// picked when the set holds fewer.
+    /// Cards of a public zone, or players ("choose an opponent at random"), are picked at random, with the game's
+    /// random source, and the pick is bound; fewer are picked when the set holds fewer.
     ChooseAtRandom {
         /// The objects picked from.
         from: Ref,
@@ -561,6 +591,14 @@ pub enum Effect {
         /// The spell card exiled.
         what: Ref,
         /// The creature it is encoded on.
+        on: Ref,
+    },
+    /// Exiles a card from a graveyard haunting a creature (haunt, CR 702.55a): it lies in exile linked to that creature
+    /// as it is now. Nothing happens when `what` is no card in a graveyard or `on` names no creature on the battlefield.
+    Haunt {
+        /// The card exiled.
+        what: Ref,
+        /// The creature it haunts.
         on: Ref,
     },
     /// The source remembers the objects `what` names in `slot` (Forge: Remember), added to what the slot holds. The memory
@@ -824,6 +862,23 @@ pub enum Effect {
         /// What becomes prepared.
         what: Ref,
     },
+    /// Suspects creatures on the battlefield (CR 701.60): while one is suspected, it has menace and can't block. One that
+    /// is suspected already, is no creature or is not on the battlefield is passed over.
+    Suspect {
+        /// What becomes suspected.
+        what: Ref,
+    },
+    /// Makes suspected permanents no longer suspected (CR 701.60d).
+    Unsuspect {
+        /// What stops being suspected.
+        what: Ref,
+    },
+    /// Solves Cases on the battlefield (CR 719.3): a solved Case stays solved until it leaves. One that is solved
+    /// already, is no Case or is not on the battlefield is passed over.
+    Solve {
+        /// What becomes solved.
+        what: Ref,
+    },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
     Surveil {
         /// Who surveils.
@@ -1077,6 +1132,10 @@ pub enum Effect {
         /// The alternative cost it is cast for (CR 118.9): `Madness` pays the madness cost of the card, `Suspend` pays nothing; the spell remembers it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         way: Option<CastWay>,
+        /// What it is cast for rather than its mana cost (CR 118.9): "by paying life equal to its mana value"; an amount in
+        /// it counts the card cast as `This`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rather: Option<Cost>,
         /// The card is cast transformed: the spell is its back face (CR 712.4, 310.11b "cast it transformed").
         #[serde(default, skip_serializing_if = "is_false")]
         transformed: bool,
@@ -1360,6 +1419,11 @@ pub enum Effect {
         /// Changes the copy has ("except that the copy is red").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
+        /// In place of `count`, one copy of a spell with a single target for each other object this selects that the spell
+        /// could target, each copy targeting a different one ("copy that spell for each other Golem that spell could
+        /// target").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each_target: Option<Selector>,
     },
     /// Copies activated and triggered abilities on the stack (CR 707.10): each copy is put on the stack above the ability,
     /// not activated and not triggered, with the choices of the original.
@@ -1439,6 +1503,9 @@ pub enum Effect {
         /// It waits only until the end of the turn it was set up in ("when you next cast a spell this turn").
         #[serde(default, skip_serializing_if = "is_false")]
         this_turn: bool,
+        /// It waits until this runs out instead ("until your next turn, whenever ..."), also when it triggers once.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        until: Option<Duration>,
         /// What it does.
         effects: Vec<Effect>,
     },
@@ -1531,6 +1598,10 @@ pub enum Effect {
         /// pick is public. Needs a fixed number of modes and no repeats.
         #[serde(default, skip_serializing_if = "is_false")]
         at_random: bool,
+        /// Each mode must target a different player ("Each mode must target a different player."): a player that a
+        /// mode chosen earlier targets is not offered to the later ones.
+        #[serde(default, skip_serializing_if = "is_false")]
+        different_players: bool,
         /// A mode this ability chose earlier in the turn is not offered ('choose one that hasn't been chosen this
         /// turn'); a spell has no earlier choice to keep.
         #[serde(default, skip_serializing_if = "is_false")]
@@ -1648,6 +1719,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             exiled_as: EXILED.to_owned(),
         },
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
@@ -1723,6 +1795,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {
+                rather: None,
                 who: Ref::You,
                 what: Selector::default(),
                 from: Some(ZoneKind::Exile),

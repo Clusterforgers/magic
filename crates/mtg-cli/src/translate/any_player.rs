@@ -99,27 +99,33 @@ pub fn widens_target(oracle: &str, valid: &str) -> bool {
     {
         return false;
     }
-    // One plain type ("Creature", "Permanent"), as the target phrases name it.
-    let noun = valid.to_lowercase();
-    if !noun.chars().all(char::is_alphabetic) {
+    // One plain type ("Creature", "Permanent"), as the target phrases name it; with properties (`Creature.blocking`) one
+    // word may stand before it ("target blocking creature").
+    let (head, props) = valid.split_once('.').unwrap_or((valid, ""));
+    let noun = head.to_lowercase();
+    if !noun.chars().all(char::is_alphabetic) || props.contains(',') {
         return false;
     }
+    let lead = usize::from(!props.is_empty());
     let text = without_reminders(&oracle.replace("\\n", "\n").to_lowercase());
     let phrases: Vec<Vec<&str>> = text
         .split("target ")
         .skip(1)
-        .map(|phrase| phrase.split_whitespace().take(3).collect())
-        .filter(|words: &Vec<&str>| {
-            words
-                .first()
-                .is_some_and(|first| first.trim_end_matches([',', '.', ':', ';']) == noun)
+        .filter_map(|phrase| {
+            let words: Vec<&str> = phrase.split_whitespace().take(lead + 3).collect();
+            let at = words.iter().take(lead + 1).position(|word| {
+                let word = word.trim_end_matches([',', '.', ':', ';']);
+                // "two other target creatures" is a phrase of the type too.
+                word == noun || word.strip_suffix('s') == Some(noun.as_str())
+            })?;
+            Some(words[at..].to_vec())
         })
         .collect();
     // Each phrase of that type is "target <type> you control": the controller belongs to the target, not to a later
     // clause ("for as long as you control ~", "where X is the number of Gates you control").
     !phrases.is_empty()
         && phrases.iter().all(|words| {
-            matches!(words.as_slice(), [_, "you", control] if control.trim_end_matches([',', '.']) == "control")
+            matches!(words.as_slice(), [_, "you", control, ..] if control.trim_end_matches([',', '.']) == "control")
         })
 }
 

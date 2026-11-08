@@ -20,6 +20,9 @@ fn damage_amount(ctx: &Ctx, word: Option<&str>) -> Tr<Value> {
     if expression == "ReplaceCount$DamageAmount" {
         return Ok(json!("Triggering"));
     }
+    if expression == "ReplaceCount$DamageAmount/Twice" {
+        return Ok(json!({"Times": {"by": 2, "of": "Triggering"}}));
+    }
     unmapped("replacement:DamageDone-amount")
 }
 
@@ -68,6 +71,27 @@ fn effect(ctx: &Ctx, part: &Params, recipient_is_you: bool, shield: bool) -> Tr<
                 "count": damage_amount(ctx, part.get("CounterNum"))?,
             }}))
         }
+        "Mill" => {
+            keys(part, &["Defined", "NumCards"])?;
+            Ok(json!({"Mill": {
+                "who": defined(part.get("Defined"), shield)?,
+                "count": damage_amount(ctx, part.get("NumCards"))?,
+            }}))
+        }
+        "Draw" => {
+            keys(part, &["Defined", "NumCards"])?;
+            let who = match part.get("Defined") {
+                Some("ReplacedSourceController") => json!({"ControllerOf": "Dealer"}),
+                Some("ReplacedTarget") => json!("Triggering"),
+                _ => return unmapped("replacement:DamageDone-Defined"),
+            };
+            Ok(json!({"Draw": {"who": who, "count": damage_amount(ctx, part.get("NumCards"))?}}))
+        }
+        // A shield made by a spell: its controller gains the life, whoever the damage was meant for.
+        "GainLife" if shield && part.get("Defined") == Some("You") => {
+            keys(part, &["Defined", "LifeAmount"])?;
+            Ok(json!({"GainLife": {"amount": damage_amount(ctx, part.get("LifeAmount"))?}}))
+        }
         "GainLife" if recipient_is_you => {
             keys(part, &["Defined", "LifeAmount"])?;
             if part.get("Defined") != Some("ReplacedTarget") {
@@ -89,7 +113,7 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: boo
     if p.has("DamageTarget") && part.get("VarName") != Some("Affected") {
         return unmapped("key:Replacement.DamageDone.DamageTarget");
     }
-    let prevents = p.get("PreventionEffect") == Some("True");
+    let prevents = p.get("PreventionEffect") == Some("True") || p.get("Prevent") == Some("True");
     match (part.get("DB").unwrap_or_default(), prevents) {
         // The effect object exiles itself: the shield serves one damage event.
         ("ChangeZone", true) if shield && exiles_the_effect(&part) => {
@@ -102,6 +126,15 @@ pub fn by(ctx: &Ctx, p: &Params, name: &str, recipient_is_you: bool, shield: boo
             let half = part.get("Amount").and_then(|var| ctx.svar(var));
             if !shield && half == Some("ReplaceCount$DamageAmount/HalfUp") {
                 return Ok(json!("PreventHalf"));
+            }
+            // "Prevent all but N of that damage" (static: a shield keeps a fixed total).
+            if !shield
+                && let Some(left) = half
+                    .and_then(|text| text.strip_prefix("ReplaceCount$DamageAmount/Minus."))
+                    .and_then(|n| n.parse::<u32>().ok())
+                    .filter(|n| *n > 0)
+            {
+                return Ok(json!({"PreventAllBut": left}));
             }
             match part.get("Amount").map(str::parse::<u32>) {
                 Some(Ok(most)) if most > 0 => Ok(json!({"PreventUpTo": most})),

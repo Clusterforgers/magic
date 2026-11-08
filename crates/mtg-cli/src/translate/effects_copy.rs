@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::keyword::keyword_list;
-use super::valid::{defined, selector_any, subject};
+use super::valid::{defined, selector_any, spell_selector, subject};
 use crate::forge::script::Params;
 
 /// The effects of the copy verbs this module reads; `None` for any other API.
@@ -387,7 +387,7 @@ fn change_targets(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         .filter(|word| *word != "Emblem")
         .collect();
     if valid != ["Card"] {
-        selector.extend(selector_any(ctx, &valid.join(","))?);
+        selector.extend(spell_selector(ctx, &valid.join(","))?);
     }
     let what = ctx.target(json!({"what": {"Object": selector}}))?;
     Ok(json!({"ChangeTargets": {"what": what, "to": to}}))

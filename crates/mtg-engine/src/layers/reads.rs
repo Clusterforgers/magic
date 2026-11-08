@@ -246,6 +246,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Monstrous
         | Pred::Renowned
         | Pred::Prepared
+        | Pred::Suspected
+        | Pred::Solved
         | Pred::DoubleFaced
         | Pred::Transformed
         | Pred::Paired
@@ -303,6 +305,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AttackingPlayerOrPlaneswalker(who)
         | Pred::ExiledWith(who)
         | Pred::EncodedWith(who)
+        | Pred::HauntedBy(who)
         | Pred::Crewed(who)
         | Pred::Saddled(who)
         | Pred::SharesName(who)

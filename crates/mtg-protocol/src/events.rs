@@ -408,6 +408,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Flipped { .. }
         | Event::Prepared { .. }
         | Event::Unprepared { .. }
+        | Event::Suspected { .. }
+        | Event::Unsuspected { .. }
+        | Event::Solved { .. }
         | Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. }
@@ -444,6 +447,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         // A pick at random is of the cards of a public zone, which every seat sees, or of the cards a discard at
         // random then reveals.
         | Event::ChosenAtRandom { .. }
+        // Players are public.
+        | Event::PlayersChosenAtRandom { .. }
         | Event::Revealed(_) => None,
     }
 }
@@ -1492,6 +1497,7 @@ mod tests {
                 when: TriggerPattern::AnyOf(Vec::new()),
                 once: true,
                 this_turn: false,
+                until: None,
                 targets: Vec::new(),
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],

@@ -49,16 +49,30 @@ export function filterHolds(filter: SpendFilter, traits: SpendTraits): boolean {
           return traits.not_owned === true
         case 'FromGraveyard':
           return traits.from_graveyard === true
+        case 'FromYourGraveyard':
+          return traits.from_graveyard === true && traits.not_owned !== true
         case 'SharesCommanderType':
           return traits.shares_commander_type === true
         case 'OnBattlefield':
           return traits.on_battlefield === true
+        case 'Colorless':
+          return traits.colors === 0
+        case 'FromExile':
+          return traits.from_exile === true
+        case 'NotFromHand':
+          return traits.not_from_hand === true
+        case 'Devoid':
+          return traits.devoid === true
+        case 'Flashback':
+          return traits.flashback === true
       }
     })
   )
 }
 
-const restricts = (on: SpendOn): boolean => on !== 'Snow' && (typeof on === 'string' || !('When' in on))
+// A rider ("When", "Uncounterable", "Enters") marks the mana and limits nothing.
+const restricts = (on: SpendOn): boolean =>
+  on !== 'Snow' && (typeof on === 'string' || !('When' in on || 'Uncounterable' in on || 'Enters' in on))
 
 /**
  * True when mana restricted to `only` may be spent on `spend` (a payment for neither a spell nor an ability when
@@ -72,6 +86,7 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
   return uses.some((on) => {
     if (on === 'Snow') return false
     if (on === 'CostWithX') return kind !== 'Other' && spend?.has_x === true
+    if (on === 'OtherCosts') return kind === 'Other'
     if ('Spell' in on) return kind === 'Spell' && traits !== undefined && filterHolds(on.Spell, traits)
     if ('Ability' in on) return kind === 'Ability' && traits !== undefined && filterHolds(on.Ability, traits)
     return false
@@ -82,6 +97,7 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
 export function useWords(on: SpendOn): string {
   if (on === 'Snow') return 'anything'
   if (on === 'CostWithX') return 'costs with {X}'
+  if (on === 'OtherCosts') return 'other costs'
   if ('Ability' in on) return 'abilities'
   if ('Spell' in on) {
     const { types = [], subtypes = [], colors = [] } = on.Spell

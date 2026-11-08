@@ -101,8 +101,8 @@ fn ward(protection: &str) -> String {
 }
 
 #[rstest]
-#[case::the_aura_excepted("Protection:Card.White:white:Card.CardUID_HostCardUID", true)]
-#[case::auras_excepted("Protection:Card.nonColorless:each color:Aura", true)]
+#[case::equipment_excepted("Protection:Card.White:white:Equipment", true)]
+#[case::a_creature_excepted("Protection:Card.nonColorless:each color:Card.Creature", true)]
 #[case::no_exception("Protection:Card.White:white", false)]
 fn protection_that_does_not_remove_its_aura_is_a_gap(#[case] protection: &str, #[case] gap: bool) {
     let found = gaps(&ward(protection));

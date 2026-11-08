@@ -72,6 +72,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::AltCast { .. }
         | Ability::CastOnly { .. }
         | Ability::OpeningHand
+        | Ability::OpeningReveal { .. }
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
@@ -233,6 +234,7 @@ impl<'a> Pairer<'a> {
         self.champions();
         self.r5g_hand_keywords();
         self.static_pairs();
+        self.haunt_pairs();
         self.exact();
         self.blocks();
         self.leftovers();
@@ -458,6 +460,27 @@ impl<'a> Pairer<'a> {
                     Some(Ability::Keyword(found)) if bare(found) == bare(keyword)
                 ) && (offset == 0 || !self.taken[at + offset])
             })
+    }
+
+    /// A haunt creature's "When ~ enters or the creature it haunts dies, ..." is one sentence of two abilities: the
+    /// enters trigger and the same trigger from exile when the haunted creature dies (CR 702.55).
+    fn haunt_pairs(&mut self) {
+        let abilities = self.abilities;
+        for at in 1..abilities.len() {
+            if self.taken[at - 1] || self.taken[at] {
+                continue;
+            }
+            let written = haunt_pair_texts(&abilities[at - 1], &abilities[at]);
+            if written.is_empty() {
+                continue;
+            }
+            if let Some(slot) = self.find_text(&[ClauseKind::Triggered], &written, false) {
+                self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
+                self.taken[at] = true;
+                self.slot_of[at] = Some(slot);
+                self.places[at] = self.places[at - 1];
+            }
+        }
     }
 
     /// Two statics under one condition are one sentence of the card.
@@ -739,6 +762,46 @@ pub(super) fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str
     }
 }
 
+/// The sentence of a haunt creature's two abilities: `enters` is "When ~ enters, X" and `haunted` the same trigger from
+/// exile on "the creature it haunts dies"; none for any other pair.
+pub(crate) fn haunt_pair_texts(enters: &Ability, haunted: &Ability) -> Vec<String> {
+    let (
+        Ability::Triggered {
+            when: first,
+            intervening_if: None,
+            limit: None,
+            from: crate::refs::ZoneKind::Battlefield,
+            targets,
+            effects,
+        },
+        Ability::Triggered {
+            when: second,
+            intervening_if: None,
+            limit: None,
+            from: crate::refs::ZoneKind::Exile,
+            targets: other_targets,
+            effects: other_effects,
+        },
+    ) = (enters, haunted)
+    else {
+        return Vec::new();
+    };
+    let this = crate::refs::Selector::this();
+    let haunts = crate::refs::Selector(vec![crate::refs::Pred::HauntedBy(crate::refs::Ref::This)]);
+    let entering = matches!(first, TriggerPattern::ZoneChange { what, from: None, to: Some(crate::refs::ZoneKind::Battlefield) } if *what == this);
+    let dying = matches!(second, TriggerPattern::ZoneChange { what, from: Some(crate::refs::ZoneKind::Battlefield), to: Some(crate::refs::ZoneKind::Graveyard) } if *what == haunts);
+    if !entering || !dying || targets != other_targets || effects != other_effects {
+        return Vec::new();
+    }
+    written_variants(enters)
+        .into_iter()
+        .filter_map(|text| {
+            text.strip_prefix("When ~ enters, ")
+                .map(|rest| format!("When ~ enters or the creature it haunts dies, {rest}"))
+        })
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause; a spell ability reads a line the compiler takes for a static only when its wording names every line.
@@ -863,6 +926,55 @@ mod c11g_stripped_tests {
         assert_eq!(
             crate::proposal::pairing::r7c_unworded(text).as_deref(),
             unworded
+        );
+    }
+}
+
+#[cfg(test)]
+mod e14f_tests {
+    //! Goal: a haunt creature's enters trigger and its trigger from exile on the haunted creature's death read as the one sentence "When ~ enters or the creature it haunts dies, ..." only when both do the same, and the trigger from exile alone reads as "When the creature ~ haunts dies".
+    use rstest::rstest;
+
+    use super::haunt_pair_texts;
+    use crate::ability::Ability;
+    use crate::compile::{same_text, written_variants};
+
+    const DESTROY: &str = r#""targets":[{"what":{"Object":[{"Type":"Enchantment"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]"#;
+    const ENTERS: &str = r#"{"ZoneChange":{"what":["This"],"to":"Battlefield"}}"#;
+    const HAUNTED: &str =
+        r#"{"ZoneChange":{"what":[{"HauntedBy":"This"}],"from":"Battlefield","to":"Graveyard"}}"#;
+
+    fn triggered(when: &str, from: &str, body: &str) -> Ability {
+        serde_json::from_str(&format!(
+            r#"{{"Triggered":{{"when":{when},{from}{body}}}}}"#
+        ))
+        .unwrap_or_else(|error| panic!("{error}"))
+    }
+
+    #[rstest]
+    #[case::the_same(DESTROY, r#""from":"Exile","#, true)]
+    #[case::another_effect(r#""effects":[{"Draw":{}}]"#, r#""from":"Exile","#, false)]
+    #[case::not_from_exile(DESTROY, "", false)]
+    fn the_pair_is_one_sentence(#[case] second: &str, #[case] from: &str, #[case] same: bool) {
+        let enters = triggered(ENTERS, "", DESTROY);
+        let haunted = triggered(HAUNTED, from, second);
+        let found = haunt_pair_texts(&enters, &haunted);
+        let clause = "When ~ enters or the creature it haunts dies, destroy target enchantment.";
+        assert_eq!(
+            found.iter().any(|text| same_text(text, clause)),
+            same,
+            "{found:?}"
+        );
+    }
+
+    #[test]
+    fn the_trigger_from_exile_alone_names_the_haunted_creature() {
+        let haunted = triggered(HAUNTED, r#""from":"Exile","#, DESTROY);
+        let found = written_variants(&haunted);
+        let clause = "When the creature ~ haunts dies, destroy target enchantment.";
+        assert!(
+            found.iter().any(|text| same_text(text, clause)),
+            "{found:?}"
         );
     }
 }

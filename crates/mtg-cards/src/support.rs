@@ -410,6 +410,45 @@ pub fn support(card: Option<&Card>, printed: &PrintedCard, caps: &Caps) -> Suppo
     }
 }
 
+/// The name of the reason a card plays by hand when its rules read back as other text than the card.
+pub const READBACK_DIFFERS: &str = "readback:Differs";
+
+/// The `Manual` record of rules that read back as other text than the card (`differs`, the clauses
+/// [`crate::proposal::differing`] finds): rules that may play wrong never play automatically, and each such clause
+/// names the reason.
+pub fn held_back(
+    printed: &PrintedCard,
+    card: Option<&Card>,
+    differs: &[crate::proposal::ClauseReport],
+) -> SupportRecord {
+    let clauses: Vec<Clause> = differs
+        .iter()
+        .map(|clause| Clause {
+            face: clause.face,
+            span: clause.span,
+            reason: match &clause.state {
+                crate::proposal::ClauseState::Differs { written, .. } => format!(
+                    "{READBACK_DIFFERS}: the rules read back as \u{201c}{written}\u{201d}, not as the card's text"
+                ),
+                _ => format!("{READBACK_DIFFERS}: the rules read back as other text than the card"),
+            },
+        })
+        .collect();
+    let current = current_fingerprints(printed);
+    SupportRecord {
+        oracle_id: printed.oracle_id.clone(),
+        fingerprint: fingerprint(
+            &printed.oracle_id,
+            Support::Manual,
+            &clauses,
+            card,
+            &current,
+        ),
+        support: Support::Manual,
+        clauses,
+    }
+}
+
 /// The `Read` record of a draft the engine can run whole: what `Verified` would be for it, as `Read`. `None` while the
 /// draft is not whole, its text drifted, or the engine lacks a primitive it uses; whether a player approved it is the
 /// caller's question.

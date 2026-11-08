@@ -51,13 +51,14 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "IgnoreLandWalk" => ignore_landwalk(ctx, p),
         "CanBlockIfShadow" => block_shadow(ctx, p),
         "TapPowerValue" => tap_power_value(ctx, p),
-        "IgnoreLegendRule" => ignore_legend_rule(p, mode),
+        "IgnoreLegendRule" => ignore_legend_rule(ctx, p, mode),
         "CountersRemain" => counters_remain(p),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
         "Continuous" if p.has("RaiseMaxHandSize") => hand_size_change(ctx, p),
         "Continuous" if p.has("AdjustLandPlays") => land_plays(ctx, p),
         "Continuous" if p.get("AddKeyword") == Some("CantSearchLibrary") => cant_search(p),
+        "Continuous" if p.has("AdditionalOptionalVote") => e14c_vote_again(p),
         "Continuous" if p.has("MayLookAt") && !p.has("MayPlay") => super::statics_look::look(p),
         _ => return None,
     };
@@ -103,6 +104,7 @@ fn player_word(word: Option<&str>) -> Tr<Value> {
         None | Some("Player") => Ok(json!("EachPlayer")),
         Some("You") => Ok(json!("You")),
         Some("Opponent" | "Player.Opponent") => Ok(json!("Opponents")),
+        Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
         Some(other) => super::players_where::word(other)
             .map_or_else(|| unmapped(format!("static-affected:{other}")), Ok),
     }
@@ -399,6 +401,16 @@ fn cant_search(p: &Params) -> Tr<Value> {
     }
 }
 
+/// `Affected$ You` with `AdditionalOptionalVote$ 1`: while voting, you may vote an additional time (CR 701.38d). A
+/// vote the player must cast (`AdditionalVote$`) or more than one stays a gap.
+fn e14c_vote_again(p: &Params) -> Tr<Value> {
+    keys(p, "Continuous", &["Affected", "AdditionalOptionalVote"])?;
+    match (p.get("Affected"), p.get("AdditionalOptionalVote")) {
+        (Some("You"), Some("1")) => Ok(json!({"VoteAgain": "You"})),
+        _ => unmapped("key:Static.Continuous.AdditionalOptionalVote"),
+    }
+}
+
 /// `BeginTurn` replacement of extra turns: "if a player would begin an extra turn, that player skips that turn instead".
 pub fn skip_extra_turns(p: &Params) -> Tr<Value> {
     check_keys(
@@ -422,13 +434,13 @@ pub fn skip_extra_turns(p: &Params) -> Tr<Value> {
 }
 
 /// `IgnoreLegendRule`: the legend rule stops for every player, or for the controller when `ValidCard$` is "permanents you
-/// control". A narrower set of permanents (creatures, tokens, a name) is not a rule the engine has.
-fn ignore_legend_rule(p: &Params, mode: &str) -> Tr<Value> {
+/// control", or for a narrower set of permanents ("Slivers you control", "tokens you control") judged for the controller.
+fn ignore_legend_rule(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
     keys(p, mode, &["ValidCard"])?;
     let who = match p.get("ValidCard") {
         None => "EachPlayer",
         Some("Permanent.YouCtrl" | "Card.YouCtrl") => "You",
-        Some(_) => return unmapped("key:Static.IgnoreLegendRule.ValidCard"),
+        Some(valid) => return Ok(json!({"NoLegendRuleFor": selector_any(ctx, valid)?})),
     };
     Ok(json!({"NoLegendRule": who}))
 }

@@ -339,6 +339,7 @@ mod t20a_greatest;
 mod t20c_pay;
 mod t20c_rule;
 // r5b
+mod fix20_each_then;
 mod fix8_tap_or_untap;
 mod fix9_wordings;
 mod r5b_flow;
@@ -458,10 +459,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_latest(ability, texts);
 }
 
-/// Adds the wordings of fix pass 9 and of round 7 (r7c): a search of your library and/or graveyard.
+/// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's
+/// "each player ..., then ..." join.
 fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     fix9_wordings::add(ability, texts);
     r7c_searches::add(ability, texts);
+    fix20_each_then::add(texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of

@@ -92,6 +92,11 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(found) = super::replacements_moved::self_moved(ctx, &p, line_condition.as_ref()) {
         return found;
     }
+    if let Some(found) =
+        super::replacements_enter::e14b_pay_or_graveyard(ctx, &p, line_condition.as_ref())
+    {
+        return found;
+    }
     if p.has("ActiveZones") {
         return unmapped("key:Replacement.Moved.ActiveZones");
     }
@@ -135,6 +140,7 @@ fn not_moved(ctx: &mut Ctx, p: &Params, event: &str, condition: Option<&Value>) 
         "Counter" | "Draw" | "GainLife" | "AddCounter" | "CreateToken" if condition.is_some() => {
             unmapped(format!("key:Replacement.{event}.condition"))
         }
+        "Destroy" if condition.is_none() => super::replacements_moved::destroyed(ctx, p),
         "Counter" => super::replacements_counter::counter(ctx, p),
         "Draw" => super::replacements_counter::draw(ctx, p),
         "GainLife" => super::replacements_counter::gain_life(ctx, p),
@@ -145,6 +151,7 @@ fn not_moved(ctx: &mut Ctx, p: &Params, event: &str, condition: Option<&Value>) 
         "GameLoss" => super::replacements_loss::game_loss(ctx, p, condition),
         "BeginTurn" => super::statics_rules::skip_extra_turns(p),
         "CreateToken" => super::replacements_token::create_token(ctx, p),
+        "TurnFaceUp" => super::e14f_turn_up::turn_up(ctx, p, condition),
         _ => unmapped(format!("replacement:{event}")),
     }
 }
@@ -200,8 +207,11 @@ fn doesnt_untap(ctx: &Ctx, p: &Params) -> Tr<Value> {
             "ValidStepTurnToController",
             "Layer",
             "ActiveZones",
+            // Only a hint to the computer player (`SVar:DestroyWhenDamaged`); the script rule is in the trigger.
+            "AddSVar",
         ],
     )?;
+    let _ = p.get("AddSVar");
     if p.get("Layer") != Some("CantHappen") || p.get("ValidStepTurnToController") != Some("You") {
         return unmapped("replacement:Untap-shape");
     }

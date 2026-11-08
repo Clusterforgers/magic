@@ -7,12 +7,16 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use super::selectors::{card_type, plural_subtype, subtype, type_name};
 use super::subtypes::plural_subtype as plural_name;
 use super::tokens::Reader;
-use crate::spend::{ManaLasts, SpendFact, SpendFilter, SpendOn};
+use crate::keyword::Keyword;
+use crate::spend::{EntersBonus, ManaLasts, SpendFact, SpendFilter, SpendOn};
 
 const LEAD: &str = "spend this mana only";
 
 /// The words that name the creature type the source chose.
 const CHOSEN_TYPE: &str = " of the chosen type";
+
+/// The creature types "outlaw" names (CR 205.3m), in the order the subtypes of a filter list them.
+const OUTLAWS: [&str; 5] = ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"];
 
 /// Things joined by commas, "or" and "and/or": "Vampire, Cleric, and/or Demon", "instant or sorcery".
 fn joined<T>(r: &mut Reader<'_>, one: impl Fn(&mut Reader<'_>) -> Option<T>) -> Option<Vec<T>> {
@@ -51,6 +55,22 @@ fn plural_type(r: &mut Reader<'_>) -> Option<CardType> {
 
 /// The words that stand for a spell of a kind: card types or subtypes (alone or with a card type), or an adjective.
 fn kind(r: &mut Reader<'_>) -> Option<SpendFilter> {
+    // "colorless spells", "colorless Eldrazi spells".
+    if r.word("colorless") {
+        let mut filter = r.attempt(kind).unwrap_or_default();
+        filter.facts.insert(0, SpendFact::Colorless);
+        return Some(filter);
+    }
+    // "outlaw spells" (CR 205.3m).
+    if r.word("outlaw") {
+        return Some(SpendFilter {
+            subtypes: OUTLAWS
+                .iter()
+                .map(|name| Subtype((*name).to_owned()))
+                .collect(),
+            ..SpendFilter::default()
+        });
+    }
     // "Dragon spells", "Vampire, Cleric, and/or Demon spells", "Dragon creature spells".
     if let Some(names) = r.attempt(|r| joined(r, subtype)) {
         let types = r.attempt(|r| joined(r, singular_type)).unwrap_or_default();
@@ -119,6 +139,16 @@ fn qualifiers(r: &mut Reader<'_>, filter: &mut SpendFilter) {
             filter.facts.push(SpendFact::NotOwned);
         } else if r.words("from your graveyard") {
             filter.facts.push(SpendFact::FromYourGraveyard);
+        } else if r.words("from a graveyard") {
+            filter.facts.push(SpendFact::FromGraveyard);
+        } else if r.words("from exile") {
+            filter.facts.push(SpendFact::FromExile);
+        } else if r.words("from anywhere other than your hand") {
+            filter.facts.push(SpendFact::NotFromHand);
+        } else if r.words("with devoid") {
+            filter.facts.push(SpendFact::Devoid);
+        } else if r.words("with flashback") {
+            filter.facts.push(SpendFact::Flashback);
         } else {
             return;
         }
@@ -167,6 +197,9 @@ fn source_kind(r: &mut Reader<'_>) -> Option<(Vec<Subtype>, Vec<CardType>)> {
         return Some(found);
     }
     r.need("abilities of")?;
+    if r.words("outlaw sources") {
+        return Some((subtypes(OUTLAWS.map(str::to_owned).to_vec()), Vec::new()));
+    }
     if let Some(names) = r.attempt(|r| joined(r, plural_subtype)) {
         return Some((subtypes(names), Vec::new()));
     }
@@ -203,10 +236,38 @@ fn abilities_like(r: &mut Reader<'_>, spell: &SpendFilter) -> Option<SpendFilter
     })
 }
 
+/// "This mana can't be spent to cast spells from your hand.": the spells cast from anywhere else and the abilities.
+const NOT_FROM_HAND: &str = "This mana can't be spent to cast spells from your hand";
+
+/// The spells `NOT_FROM_HAND` allows.
+fn not_from_hand() -> SpendFilter {
+    SpendFilter {
+        facts: vec![SpendFact::NotFromHand],
+        ..SpendFilter::default()
+    }
+}
+
+/// "or to activate an ability" after the spells: the abilities of any source.
+fn any_ability(r: &mut Reader<'_>) -> Option<SpendOn> {
+    r.attempt(|r| {
+        r.word("to");
+        r.need("activate an ability")?;
+        // "an ability of an Elf" is the abilities of a kind, which `abilities_like` reads.
+        (r.peek_word() != Some("of")).then(SpendOn::abilities)
+    })
+}
+
 /// The sentence "Spend this mana only to ..." read after the period that ends the sentence adding the mana.
 pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
     r.attempt(|r| {
         r.punct('.').then_some(())?;
+        if r.words("this mana can't be spent to cast spells from your hand") {
+            return Some(vec![
+                SpendOn::Spell(not_from_hand()),
+                SpendOn::abilities(),
+                SpendOn::OtherCosts,
+            ]);
+        }
         r.need(LEAD)?;
         if r.words("on costs that contain") {
             return (r.symbol()? == "X").then(|| vec![SpendOn::CostWithX]);
@@ -224,6 +285,7 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
             spells(r)
                 .map(SpendOn::Spell)
                 .or_else(|| abilities_like(r, &first).map(SpendOn::Ability))
+                .or_else(|| any_ability(r))
         }) {
             uses.push(next);
         }
@@ -265,6 +327,17 @@ fn list_words(names: &[&str], last: &str) -> String {
 
 /// The kind of spell as the plural noun phrase reads, up to "spells": `None` when no wording of the kind exists.
 fn kind_text(filter: &SpendFilter) -> Option<String> {
+    let kind = plain_kind_text(filter)?;
+    // "colorless spells", "colorless Eldrazi spells".
+    Some(if filter.facts.contains(&SpendFact::Colorless) {
+        format!("colorless {kind}")
+    } else {
+        kind
+    })
+}
+
+/// The kind of spell as `kind_text` reads it, without the colour words.
+fn plain_kind_text(filter: &SpendFilter) -> Option<String> {
     let SpendFilter {
         types,
         without,
@@ -280,7 +353,12 @@ fn kind_text(filter: &SpendFilter) -> Option<String> {
         }
         // "Elf spells", "Ninja or Turtle spells", "Dragon creature spells".
         let names: Vec<&str> = subtypes.iter().map(|one| one.0.as_str()).collect();
-        let parts = [list_words(&names, "or"), kinds.join(" or ")];
+        let names = if names == OUTLAWS {
+            "outlaw".to_owned()
+        } else {
+            list_words(&names, "or")
+        };
+        let parts = [names, kinds.join(" or ")];
         let parts: Vec<&str> = parts
             .iter()
             .map(String::as_str)
@@ -300,6 +378,10 @@ fn kind_text(filter: &SpendFilter) -> Option<String> {
             Some(format!("legendary {}", kind_words(types)))
         }
         ([], [], [], true) => Some("multicolored ".into()),
+        // "a multicolored creature spell".
+        (types, [], [], true) if !types.is_empty() => {
+            Some(format!("multicolored {}", kind_words(types)))
+        }
         (types, [], [], false) if !types.is_empty() => Some(kind_words(types)),
         _ => None,
     }
@@ -324,15 +406,31 @@ fn qualifier_text(filter: &SpendFilter) -> String {
     if filter.min_value > 0 {
         let _ = write!(text, " with mana value {} or greater", filter.min_value);
     }
-    for fact in &filter.facts {
-        text.push_str(match fact {
-            SpendFact::XInCost => " with {X} in their mana costs",
-            SpendFact::NotOwned => " you don't own",
-            SpendFact::FromGraveyard => " from a graveyard",
-            SpendFact::FromYourGraveyard => " from your graveyard",
-            SpendFact::SharesCommanderType => " that shares a creature type with your commander",
-            SpendFact::OnBattlefield => " on the battlefield",
-        });
+    // "spells with flashback from a graveyard": what a spell has comes before where it is cast from.
+    let mut facts: Vec<&SpendFact> = filter.facts.iter().collect();
+    facts.sort_by_key(|fact| {
+        matches!(
+            fact,
+            SpendFact::FromGraveyard | SpendFact::FromYourGraveyard | SpendFact::FromExile
+        )
+    });
+    for fact in facts {
+        match fact {
+            SpendFact::XInCost => text.push_str(" with {X} in their mana costs"),
+            SpendFact::NotOwned => text.push_str(" you don't own"),
+            SpendFact::FromGraveyard => text.push_str(" from a graveyard"),
+            SpendFact::FromYourGraveyard => text.push_str(" from your graveyard"),
+            SpendFact::SharesCommanderType => {
+                text.push_str(" that shares a creature type with your commander");
+            }
+            SpendFact::OnBattlefield => text.push_str(" on the battlefield"),
+            // Written before the noun (`kind_text`).
+            SpendFact::Colorless => {}
+            SpendFact::FromExile => text.push_str(" from exile"),
+            SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
+            SpendFact::Devoid => text.push_str(" with devoid"),
+            SpendFact::Flashback => text.push_str(" with flashback"),
+        }
     }
     text
 }
@@ -359,12 +457,29 @@ fn one_spell_text(filter: &SpendFilter) -> Option<String> {
 /// The sentence the uses are written as, with its capital and no period; `None` for uses the readers do not write.
 pub(super) fn text(only: &[SpendOn]) -> Option<String> {
     Some(match only {
+        [SpendOn::Enters(bonus)] => enters_text(bonus)?,
         [SpendOn::CostWithX] => "Spend this mana only on costs that contain {X}".to_owned(),
         [SpendOn::Ability(filter)] if *filter == SpendFilter::default() => {
             "Spend this mana only to activate abilities".to_owned()
         }
         [SpendOn::Spell(filter)] => {
             format!("Spend this mana only to cast {}", spells_text(filter)?)
+        }
+        [
+            SpendOn::Spell(spell),
+            SpendOn::Ability(source),
+            SpendOn::OtherCosts,
+        ] if *source == SpendFilter::default() && *spell == not_from_hand() => {
+            NOT_FROM_HAND.to_owned()
+        }
+        // "Spend this mana only to cast a colorless spell or to activate an ability."
+        [SpendOn::Spell(spell), SpendOn::Ability(source)]
+            if *source == SpendFilter::default() && *spell != SpendFilter::default() =>
+        {
+            format!(
+                "Spend this mana only to cast {} or to activate an ability",
+                one_spell_text(spell)?
+            )
         }
         [SpendOn::Spell(spell), SpendOn::Ability(source)]
             if spell == source && spell.chosen_type =>
@@ -397,6 +512,36 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         ),
         _ => return None,
     })
+}
+
+/// The sentence of a rider that gives the spell's permanent counters or haste: "If that mana is spent on a creature
+/// spell, it gains haste until end of turn"; `None` for more than one counter, both at once, or another keyword.
+fn enters_text(bonus: &EntersBonus) -> Option<String> {
+    let spell = one_spell_text(&bonus.spell)?;
+    let gets = match (bonus.counters, &bonus.keyword) {
+        (1, None) => "that creature enters with an additional +1/+1 counter on it".to_owned(),
+        (0, Some(Keyword::Haste)) if bonus.this_turn => {
+            "it gains haste until end of turn".to_owned()
+        }
+        (0, Some(Keyword::Haste)) => "it gains haste".to_owned(),
+        _ => return None,
+    };
+    Some(format!("If that mana is spent on {spell}, {gets}"))
+}
+
+/// The other wordings of a rider's sentence: "any of that mana" for mana of several, "this mana", and "spent to cast".
+fn enters_forms(text: &str) -> Vec<String> {
+    let Some(rest) = text.strip_prefix("If that mana is spent on ") else {
+        return Vec::new();
+    };
+    let mut found = Vec::new();
+    for subject in ["that mana", "any of that mana", "this mana"] {
+        for verb in ["spent on", "spent to cast"] {
+            found.push(format!("If {subject} is {verb} {rest}"));
+        }
+    }
+    found.remove(0);
+    found
 }
 
 /// The sources whose abilities are paid for, as the plural names them: "Elves", "artifacts"; `None` for a kind that
@@ -440,6 +585,17 @@ pub(super) fn singular(text: &str) -> Option<String> {
 /// ("or activate an ability of a Hero source", "or to activate abilities of Heroes", "or activate abilities of Elemental
 /// sources").
 pub(super) fn more(text: &str) -> Vec<String> {
+    if text.contains("If that mana is spent on ") {
+        return text
+            .split_once("If that mana")
+            .map(|(head, _)| head)
+            .map_or_else(Vec::new, |head| {
+                enters_forms(&text[head.len()..])
+                    .into_iter()
+                    .map(|form| format!("{head}{form}"))
+                    .collect()
+            });
+    }
     let mut forms = vec![text.to_owned()];
     forms.extend(singular(text));
     let mut found: Vec<String> = forms[1..].to_vec();

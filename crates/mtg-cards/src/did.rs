@@ -9,6 +9,8 @@ use serde::{Deserialize, Serialize};
 pub enum Action {
     /// An ability was activated; `what` is its source.
     Activated,
+    /// A loyalty ability was activated (CR 606.4); `what` is its source.
+    ActivatedLoyalty,
     /// A triggered ability triggered; `what` is its source.
     AbilityTriggered,
     /// A land was played (CR 305.1), never one put onto the battlefield by an effect; `what` is the land.
@@ -94,6 +96,9 @@ impl Action {
     pub const fn verbs(self) -> (&'static str, &'static str) {
         match self {
             Action::Activated => ("activate an ability", "activates an ability"),
+            Action::ActivatedLoyalty => {
+                ("activate a loyalty ability", "activates a loyalty ability")
+            }
             Action::AbilityTriggered => ("trigger an ability", "triggers an ability"),
             Action::PlayedLand => ("play a land", "plays a land"),
             Action::Transformed => ("transform a permanent", "transforms a permanent"),
@@ -144,6 +149,7 @@ impl Action {
         matches!(
             self,
             Action::Activated
+                | Action::ActivatedLoyalty
                 | Action::Destroyed
                 | Action::Exiled
                 | Action::Sacrificed

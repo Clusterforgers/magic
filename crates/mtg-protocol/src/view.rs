@@ -52,6 +52,14 @@ pub struct PermanentView {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub prepared: bool,
+    /// Whether the permanent is suspected (CR 701.60): it has menace and can't block. Left out while it is not.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub suspected: bool,
+    /// Whether the permanent is a solved Case (CR 719.3): its "Solved" abilities work. Left out while it is not.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub solved: bool,
     /// Whether a player exerted the permanent and it still holds back its untap (CR 701.43). Left out while it is not.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]

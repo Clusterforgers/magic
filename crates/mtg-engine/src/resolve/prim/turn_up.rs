@@ -27,9 +27,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     .face_down()
                     .is_some_and(FaceDown::shows_characteristics)
         })
-        .map(|object| Event::TurnedFaceUp {
-            object: object.id(),
-            player: controller_of_object(state, object),
+        .flat_map(|object| {
+            let mut events = vec![Event::TurnedFaceUp {
+                object: object.id(),
+                player: controller_of_object(state, object),
+            }];
+            events.extend(crate::announce::turn_up::turned_up_counters(
+                state,
+                object.id(),
+            ));
+            events
         })
         .collect();
     Ok(Run::events(events))

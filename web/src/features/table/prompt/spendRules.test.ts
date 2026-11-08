@@ -24,12 +24,15 @@ const spell = (traits: Partial<PaySpend['traits']> = {}, has_x = false): PaySpen
 const ability: PaySpend = { kind: 'Ability', traits: { types: CREATURE, colors: 0 } }
 const onSpell = (filter: SpendFilter): SpendOn => ({ Spell: filter })
 const RIDER = { When: {} } as unknown as SpendOn
+const ENTERS: SpendOn = { Enters: { spell: { types: ['Creature'] }, keyword: 'Haste', this_turn: true } }
 
 describe('spendAllows', () => {
   it.each<[string, PaySpend | undefined, SpendOn[] | undefined, boolean]>([
     ['no restriction', undefined, undefined, true],
     ['an empty list', spell(), [], true],
     ['a rider alone limits nothing', undefined, [RIDER], true],
+    ['an enters bonus alone limits nothing', undefined, [ENTERS], true],
+    ['an enters bonus with a use keeps the use', ability, [ENTERS, onSpell({})], false],
     ['creature spells pay a creature spell', spell(), [onSpell({ types: ['Creature'] })], true],
     [
       'creature spells do not pay an instant',
@@ -54,6 +57,27 @@ describe('spendAllows', () => {
     ['mana value too low', spell({ value: 4 }), [onSpell({ min_value: 5 })], false],
     ['a fact that holds', spell({ from_graveyard: true }), [onSpell({ facts: ['FromGraveyard'] })], true],
     ['a fact that does not', spell(), [onSpell({ facts: ['FromGraveyard'] })], false],
+    ['a colorless spell', spell({ colors: 0 }), [onSpell({ facts: ['Colorless'] })], true],
+    ['a red spell is not colorless', spell({ colors: 1 }), [onSpell({ facts: ['Colorless'] })], false],
+    ['a spell from exile', spell({ from_exile: true }), [onSpell({ facts: ['FromExile'] })], true],
+    ['a spell from the hand is not from exile', spell(), [onSpell({ facts: ['FromExile'] })], false],
+    ['a spell from elsewhere', spell({ not_from_hand: true }), [onSpell({ facts: ['NotFromHand'] })], true],
+    ['a spell from the hand', spell(), [onSpell({ facts: ['NotFromHand'] })], false],
+    ['a spell with devoid', spell({ devoid: true }), [onSpell({ facts: ['Devoid'] })], true],
+    ['a spell with flashback', spell({ flashback: true }), [onSpell({ facts: ['Flashback'] })], true],
+    ['a spell without flashback', spell(), [onSpell({ facts: ['Flashback'] })], false],
+    [
+      'a spell from your own graveyard',
+      spell({ from_graveyard: true }),
+      [onSpell({ facts: ['FromYourGraveyard'] })],
+      true,
+    ],
+    [
+      'a spell from a graveyard you do not own',
+      spell({ from_graveyard: true, not_owned: true }),
+      [onSpell({ facts: ['FromYourGraveyard'] })],
+      false,
+    ],
     [
       'an ability source on the battlefield',
       { ...ability, traits: { ...ability.traits, on_battlefield: true } },
@@ -65,6 +89,8 @@ describe('spendAllows', () => {
     ['a cost with X pays a spell with X', spell({}, true), ['CostWithX'], true],
     ['a cost with X pays an ability with X', { ...ability, has_x: true }, ['CostWithX'], true],
     ['a cost without X is not paid by it', spell(), ['CostWithX'], false],
+    ['other costs pay neither a spell nor an ability', undefined, ['OtherCosts'], true],
+    ['other costs do not pay a spell', spell(), ['OtherCosts'], false],
   ])('%s', (_name, spend, only, expected) => {
     expect(spendAllows(spend, only)).toBe(expected)
   })
@@ -73,6 +99,7 @@ describe('spendAllows', () => {
     [[onSpell({ types: ['Creature'] })], 'creature spells'],
     [[{ Ability: {} }], 'abilities'],
     [['CostWithX'], 'costs with {X}'],
+    [['OtherCosts'], 'other costs'],
     [[onSpell({ subtypes: ['Elf'] }), { Ability: {} }], 'elf spells or abilities'],
     [[RIDER], 'anything'],
   ])('words %j', (only, words) => {

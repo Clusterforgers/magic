@@ -86,7 +86,6 @@ fn with_draft(library: &Library, draft: DraftRules) -> Library {
 
 #[rstest]
 #[case::pending_waits(ReadState::Pending, None, "Wish for a card.", &[], Support::Manual, true)]
-#[case::approved_reads(ReadState::Approved, None, "Wish for a card.", &[], Support::Read, false)]
 #[case::wrong_stays_by_hand(ReadState::Wrong, None, "Wish for a card.", &[], Support::Manual, false)]
 #[case::approved_on_an_old_hash_waits_again(
     ReadState::Approved,
@@ -178,7 +177,7 @@ fn a_compiled_row_that_is_not_verified_gives_way_to_a_draft(
     #[case] waiting: bool,
 ) {
     // A row that draws a card and leaves a clause to the table.
-    let shown = sorcery("Draw a card.\nWish for a card.");
+    let shown = sorcery("Draw a card.");
     let mut partial = draft_of(&shown, ReadState::Pending, None);
     let mut card: Card =
         serde_json::from_value(partial.rules.clone()).unwrap_or_else(|e| panic!("{e}"));

@@ -50,6 +50,15 @@ pub enum Keyword {
     /// Protection from a quality (CR 702.16): the sources the selector matches can't damage, enchant, equip, block or
     /// target the holder. The empty selector is protection from everything.
     Protection(Selector),
+    /// Protection from `from` that doesn't remove the Auras and Equipment `spares` matches ("This effect doesn't remove
+    /// this Aura"): `spares` is judged for the permanent whose static ability gives the keyword, so `This` is that Aura
+    /// and `You` its controller.
+    ProtectionSparing {
+        /// The quality protected from.
+        from: Selector,
+        /// The attachments it leaves attached.
+        spares: Selector,
+    },
     /// Prowess.
     Prowess,
     /// Convoke.
@@ -341,6 +350,8 @@ pub enum Keyword {
     UmbraArmor,
     /// Cipher (CR 702.99): as the spell resolves, its controller may exile it encoded on a creature they control; whenever that creature deals combat damage to a player, its controller may cast a copy of the encoded card without paying its mana cost, until the card leaves exile or the creature leaves the battlefield.
     Cipher,
+    /// Haunt (CR 702.55): when the creature dies, or the spell card is put into a graveyard after resolving, it is exiled haunting target creature; the card's "the creature it haunts dies" ability works from exile.
+    Haunt,
     /// Graft N (CR 702.58): it enters with N +1/+1 counters; whenever another creature enters, its controller may move a +1/+1 counter from it onto that creature.
     Graft(u32),
     /// Afflict N (CR 702.130): whenever the creature becomes blocked, the defending player loses N life.
@@ -420,6 +431,7 @@ impl Keyword {
         "Shroud",
         "Hexproof from",
         "Protection",
+        "Protection sparing",
         "Prowess",
         "Convoke",
         "Delve",
@@ -543,6 +555,7 @@ impl Keyword {
         "Freerunning",
         "Umbra armor",
         "Cipher",
+        "Haunt",
         "Graft",
         "Afflict",
         "Replicate",
@@ -557,9 +570,11 @@ impl Keyword {
         "Macro",
     ];
 
-    /// The name a player reads: `name`, except that a macro keyword shows its own table name (`Bushido`), never `Macro`.
+    /// The name a player reads: `name`, except that a macro keyword shows its own table name (`Bushido`), never `Macro`,
+    /// and protection with an exception shows as `Protection`.
     pub fn shown_name(&self) -> String {
         match self {
+            Keyword::ProtectionSparing { .. } => "Protection".to_owned(),
             Keyword::Macro { name, .. } => {
                 let mut chars = name.chars();
                 chars
@@ -591,6 +606,7 @@ impl Keyword {
             Keyword::Shroud => "Shroud",
             Keyword::HexproofFrom(_) => "Hexproof from",
             Keyword::Protection(_) => "Protection",
+            Keyword::ProtectionSparing { .. } => "Protection sparing",
             Keyword::Prowess => "Prowess",
             Keyword::Convoke => "Convoke",
             Keyword::Delve => "Delve",
@@ -728,6 +744,7 @@ impl Keyword {
             Keyword::Spectacle(_) => "Spectacle",
             Keyword::Freerunning(_) => "Freerunning",
             Keyword::Cipher => "Cipher",
+            Keyword::Haunt => "Haunt",
             Keyword::Graft(_) => "Graft",
             Keyword::Afflict(_) => "Afflict",
             Keyword::Replicate(_) => "Replicate",
@@ -824,6 +841,10 @@ mod tests {
             Keyword::Shroud,
             Keyword::HexproofFrom(Selector::default()),
             Keyword::Protection(Selector::default()),
+            Keyword::ProtectionSparing {
+                from: Selector::default(),
+                spares: Selector::default(),
+            },
             Keyword::Prowess,
             Keyword::Convoke,
             Keyword::Delve,
@@ -969,6 +990,7 @@ mod tests {
             Keyword::Freerunning(Cost::default()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
+            Keyword::Haunt,
             Keyword::Graft(2),
             Keyword::Afflict(2),
             Keyword::Replicate(Cost::default()),

@@ -25,6 +25,7 @@ impl Writer<'_> {
         };
         let found = Ref::Bound(FOUND.to_owned());
         let cast_it = Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: found,
             free: true,

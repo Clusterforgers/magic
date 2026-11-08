@@ -44,6 +44,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         return;
     };
     let wanted = CastPermission {
+        rather: None,
         who: Ref::You,
         what: Selector::default(),
         from: Some(ZoneKind::Exile),

@@ -81,6 +81,11 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "MultiColor" => return one(json!({"Compare": {"stat": "Colors", "op": "Ge", "to": 2}})),
         "EnchantedBy" | "EquippedBy" | "AttachedBy" => return one(json!({"Is": "Attached"})),
         "IsCommander" => return one(json!("Commander")),
+        // The creature whose attack triggered the ability.
+        "TriggeredAttacker" | "TriggeredAttackerLKICopy" if ctx.trigger.is_some() => {
+            let attacker = super::triggered::resolve(ctx.trigger.as_ref(), prop)?;
+            return one(json!({"Is": attacker}));
+        }
         // Attached to the object the line is about: its source.
         "Attached" => return one(json!({"AttachedTo": "This"})),
         // A permanent card outside the battlefield; on the battlefield every object is one.
@@ -224,6 +229,18 @@ fn numeric_property(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
             json!({"Compare": {"stat": "ManaSpent", "op": op, "to": bound}}),
         ]));
     }
+    // `totalPT_LE5`: its power and toughness added together ("with total power and toughness 5 or less").
+    if let Some(rest) = prop.strip_prefix("totalPT_")
+        && let Some((op, bound)) = rest.get(..2).and_then(cmp).zip(rest.get(2..))
+        && !bound.is_empty()
+        && bound.chars().all(|c| c.is_ascii_alphanumeric())
+    {
+        let stat = |kind: &str| json!({"Stat": {"of": "Candidate", "stat": kind}});
+        let total = json!({"Sum": [stat("Power"), stat("Toughness")]});
+        return Ok(Some(vec![
+            json!({"Test": {"left": total, "op": op, "right": amount(ctx, bound)?}}),
+        ]));
+    }
     let Some((stat, rest)) = [
         ("power", "Power"),
         ("toughness", "Toughness"),
@@ -282,11 +299,16 @@ fn negated(preds: Vec<Value>) -> Tr<Value> {
 
 /// The properties of an alternative, split at `+`. A property with an object argument (`AttachedTo Creature.attacking`)
 /// takes the `+` parts after it: they belong to the object it names (`AttachedTo Creature.attacking+OppCtrl` is an Aura
-/// on an attacking creature an opponent controls).
+/// on an attacking creature an opponent controls). A name ends the argument: it names the object of the alternative
+/// (`Equipment.AttachedTo Creature.YouCtrl+namedGroom's Finery` is an Equipment named Groom's Finery attached to a creature
+/// you control).
 pub(super) fn split_properties(props: &str) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
     let mut greedy = false;
     for part in props.split('+').filter(|part| !part.is_empty()) {
+        if part.starts_with("named") {
+            greedy = false;
+        }
         match out.last_mut() {
             Some(last) if greedy => {
                 last.push('+');
@@ -558,6 +580,16 @@ pub fn permanent_card(spec: &str) -> Tr<Option<Value>> {
     Ok(Some(json!({"AnyOf": any})))
 }
 
+/// The selector of a spell a line targets on the stack: "permanent" is a permanent spell, not any spell
+/// (`Permanent.YouCtrl` is "target permanent spell you control").
+pub fn spell_selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
+    let mut preds = selector_any(ctx, spec)?;
+    if let Some(any) = permanent_card(spec)? {
+        preds.push(any);
+    }
+    Ok(preds)
+}
+
 /// "Creature card of the chosen type" printed where the script says any card of it (`Card.ChosenType`): a Kindred card
 /// of that type is no creature card, so the creature type joins the predicates.
 fn fix9_creature_of_chosen_type(ctx: &Ctx, spec: &str, preds: &mut Vec<Value>) {
@@ -569,6 +601,27 @@ fn fix9_creature_of_chosen_type(ctx: &Ctx, spec: &str, preds: &mut Vec<Value>) {
     .any(|words| ctx.oracle.contains(words));
     let untyped = !preds.iter().any(|pred| pred.get("Type").is_some());
     if printed && untyped && spec.split(',').count() == 1 && spec.starts_with("Card.ChosenType") {
+        preds.insert(0, json!({"Type": "Creature"}));
+    }
+}
+
+/// "Zombie creature spell" or "Zombie creature card" printed where the script names only the creature type (`Zombie`): a
+/// Kindred card of that type is no creature card, so the creature type joins the predicates.
+pub fn fix23_creature_of_subtype(ctx: &Ctx, preds: &mut Vec<Value>) {
+    if preds.iter().any(|pred| pred.get("Type").is_some()) {
+        return;
+    }
+    let subtypes: Vec<&str> = preds
+        .iter()
+        .filter_map(|pred| pred.get("Subtype").and_then(Value::as_str))
+        .collect();
+    let [subtype] = subtypes[..] else {
+        return;
+    };
+    let printed = ["spell", "card"]
+        .iter()
+        .any(|noun| ctx.oracle.contains(&format!("{subtype} creature {noun}")));
+    if printed {
         preds.insert(0, json!({"Type": "Creature"}));
     }
 }
@@ -612,6 +665,9 @@ pub fn selector_in(ctx: &Ctx, spec: &str, zone: Option<&str>) -> Tr<Vec<Value>> 
     let spec = &commas(spec);
     let mut preds = selector_any(ctx, spec)?;
     fix9_creature_of_chosen_type(ctx, spec, &mut preds);
+    if !matches!(zone, None | Some("Battlefield")) && spec.split(',').count() == 1 {
+        fix23_creature_of_subtype(ctx, &mut preds);
+    }
     if !matches!(zone, None | Some("Battlefield"))
         && let Some(any) = permanent_card(spec)?
     {
@@ -657,7 +713,21 @@ pub fn spell_card(preds: &mut Vec<Value>) {
 }
 
 /// The reference a `Defined$` word stands for.
+#[allow(clippy::too_many_lines)]
 pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
+    // "Destroy that creature and this": two objects named side by side are the objects either one stands for.
+    if let Some((first, second)) = word.trim().split_once(" & ")
+        && !second.contains(" & ")
+        && [first, second].iter().all(|part| {
+            super::triggered::is_word(part) || matches!(part.trim(), "Self" | "Targeted")
+        })
+    {
+        let (first, second) = (defined(ctx, first)?, defined(ctx, second)?);
+        if super::valid_atoms::is_player(&first) || super::valid_atoms::is_player(&second) {
+            return unmapped(format!("defined:{word}"));
+        }
+        return Ok(json!({"Each": [{"AnyOf": [{"Is": first}, {"Is": second}]}]}));
+    }
     if let Some(spec) = word.trim().strip_prefix("Valid ") {
         return Ok(json!({"Each": selector_any(ctx, spec)?}));
     }
@@ -752,7 +822,9 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         word if super::triggered::is_word(word) => {
             super::triggered::resolve(ctx.trigger.as_ref(), word)
         }
-        "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
+        "DefendingPlayer" | "TriggeredDefendingPlayer" | "Spawner>TriggeredDefendingPlayer" => {
+            Ok(json!("Defending"))
+        }
         other => super::valid_more::defined_word(ctx, other),
     }
 }

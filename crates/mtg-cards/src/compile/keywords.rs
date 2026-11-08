@@ -412,9 +412,9 @@ pub fn read(item: &str) -> Option<Keyword> {
         "madness" => spell_cost(rest).map(Keyword::Madness),
         "miracle" => spell_cost(rest).map(Keyword::Miracle),
         "dredge" => positive(rest).map(Keyword::Dredge),
-        "morph" => cost(rest).map(Keyword::Morph),
-        "megamorph" => cost(rest).map(Keyword::Megamorph),
-        "disguise" => cost(rest).map(Keyword::Disguise),
+        "morph" => spell_cost(rest).map(Keyword::Morph),
+        "megamorph" => spell_cost(rest).map(Keyword::Megamorph),
+        "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
         "mutate" => cost(rest).map(Keyword::Mutate),
@@ -755,6 +755,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "dethrone" => Keyword::Dethrone,
         "umbra armor" => Keyword::UmbraArmor,
         "cipher" => Keyword::Cipher,
+        "haunt" => Keyword::Haunt,
         "exploit" => Keyword::Exploit,
         "soulbond" => Keyword::Soulbond,
         "extort" => Keyword::Extort,
@@ -1352,6 +1353,7 @@ mod tests {
     #[case::dethrone("dethrone", Keyword::Dethrone)]
     #[case::umbra_armor("Umbra armor", Keyword::UmbraArmor)]
     #[case::cipher("Cipher", Keyword::Cipher)]
+    #[case::haunt("Haunt", Keyword::Haunt)]
     #[case::graft("Graft 2", Keyword::Graft(2))]
     #[case::afflict("Afflict 3", Keyword::Afflict(3))]
     #[case::renown("Renown 2", Keyword::Renown(2))]
@@ -1591,7 +1593,7 @@ mod tests {
     #[case::ward_sacrificing_a_made_up_kind("Ward\u{2014}Sacrifice a frobnicator.")]
     #[case::ward_with_a_cost_that_is_a_sentence("Ward\u{2014}Draw a card.")]
     #[case::enchant_a_card_in_a_graveyard("Enchant creature card in a graveyard")]
-    #[case::enchant_with_a_quality_the_table_keeps("Enchant suspected creature")]
+    #[case::enchant_with_a_quality_the_table_keeps("Enchant bewildered creature")]
     #[case::enchant_with_another_aura("Enchant creature with another Aura attached to it")]
     #[case::enchant_nothing("Enchant")]
     #[case::partner_without_a_text("Partner\u{2014}")]
@@ -1685,11 +1687,12 @@ mod tests {
 
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
     /// attacks.").
-    const W9D_SENTENCES: [&str; 4] = [
+    const W9D_SENTENCES: [&str; 5] = [
         "Exert",
         "Macro",
         "Hexproof from",
         "Flash, sacrificed at cleanup",
+        "Protection sparing",
     ];
 
     #[test]
@@ -1852,6 +1855,7 @@ mod tests {
             "Improvise",
             "Affinity for artifacts",
             "Cipher",
+            "Haunt",
             "Graft 2",
             "Afflict 2",
             "Replicate {1}{R}",

@@ -643,8 +643,13 @@ fn repeated(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool 
             effects,
             once,
             this_turn,
+            until,
         } => {
-            let scope = if *this_turn { " this turn" } else { "" };
+            let scope = match until {
+                Some(until) => format!(" {}", phrase::duration(until)),
+                None if *this_turn => " this turn".to_owned(),
+                None => String::new(),
+            };
             let times = if *once { "the next time" } else { "each time" };
             out.push(Step::new(
                 depth,

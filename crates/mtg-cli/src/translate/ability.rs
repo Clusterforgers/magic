@@ -98,6 +98,20 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if words.once_per_turn || words.from.is_some() {
         return unmapped("key:Spell.Boast-or-Forecast");
     }
+    // "Cast this spell only if you control two or more Vampires": a presence check of the spell line is a casting condition.
+    let present = if p.has("IsPresent") && !p.has("CheckSVar") {
+        condition(ctx, p)?
+    } else {
+        None
+    };
+    let stripped;
+    let p = if present.is_some() {
+        stripped = strip(p);
+        &stripped
+    } else {
+        p
+    };
+    when.extend(present);
     when.extend(words.conditions);
     when.extend(super::condition::check_svar(ctx, p)?);
     let only = match when.len() {
@@ -114,7 +128,8 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "CheckThirdSVar",
         "ThirdSVarCompare",
     ]);
-    let effects = chain(ctx, p)?;
+    let mut effects = chain(ctx, p)?;
+    exile_self_first(p, &mut effects);
     // A spell whose line does nothing (its abilities are all keywords, as on a cascade spell) has no spell ability to resolve.
     if effects.is_empty() && ctx.targets.is_empty() && extra.is_none() && only.is_none() {
         return Ok(Vec::new());
@@ -127,6 +142,38 @@ fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     out.extend(only.map(|condition| json!({"CastOnly": {"condition": condition}})));
     out.push(json!({ "Spell": ability }));
     Ok(out)
+}
+
+/// "Exile ~. Each player discards their hand, ...": a spell whose text opens with exiling itself does that first, where
+/// the script chains the exile after another step (Ill-Gotten Gains). The step reads no earlier step, so moving it keeps
+/// every other step's meaning.
+fn exile_self_first(p: &Params, effects: &mut Vec<Value>) {
+    let opens = p
+        .get("SpellDescription")
+        .is_some_and(|text| text.starts_with("Exile CARDNAME.") || text.starts_with("Exile ~."));
+    let exile_self = json!({"Exile": {"what": "This"}});
+    if opens
+        && let Some(at) = effects.iter().position(|step| *step == exile_self)
+        && at > 0
+    {
+        let step = effects.remove(at);
+        effects.insert(0, step);
+    }
+}
+
+/// "Choose a color. Add an amount of mana of that color equal to your devotion to that color." is one mana ability that
+/// picks the colour as it adds the mana (Nykthos): the choice of a colour before the devotion mana is that pick.
+fn e14g_devotion(effects: Vec<Value>) -> Vec<Value> {
+    match effects.as_slice() {
+        [choose, add]
+            if choose.pointer("/ChooseValue/kind") == Some(&json!("Color"))
+                && choose.pointer("/ChooseValue/who") == Some(&json!("You"))
+                && add.pointer("/AddMana/mana") == Some(&json!("Devotion")) =>
+        {
+            vec![add.clone()]
+        }
+        _ => effects,
+    }
 }
 
 fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
@@ -155,7 +202,7 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(_) => return unmapped("key:AB.PowerUp"),
     };
     let p = &p.without(&["Exhaust", "GameActivationLimit", "PowerUp"]);
-    let effects = chain(ctx, &p.without(&["ReduceCost", "Activator"]))?;
+    let effects = e14g_devotion(chain(ctx, &p.without(&["ReduceCost", "Activator"]))?);
     let targets = ctx.targets.clone();
     // Three scripts write the flag in lower case (Kiora, Behemoth Beckoner); Forge reads it either way.
     if p.get("Planeswalker")

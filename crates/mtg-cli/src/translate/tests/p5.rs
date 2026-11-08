@@ -135,6 +135,10 @@ fn plain(line: &str) -> String {
     "Attach | ValidTgts$ Equipment | Object$ Targeted | Defined$ Self",
     json!({"Attach": {"what": {"Target": 0}, "to": "This"}})
 )]
+#[case::attach_all_equipment(
+    "Attach | Object$ Valid Equipment | Defined$ Self",
+    json!({"Attach": {"what": {"Each": [{"Subtype": "Equipment"}]}, "to": "This"}})
+)]
 #[case::attach_optional(
     "Attach | ValidTgts$ Creature | Optional$ True",
     json!({"May": {"effects": [{"Attach": {"what": "This", "to": {"Target": 0}}}]}})
@@ -145,8 +149,8 @@ fn attach_words(#[case] line: &str, #[case] node: Value) {
 }
 
 #[rstest]
-#[case::all(
-    "Attach | Object$ Valid Equipment | Defined$ Self",
+#[case::all_but_chosen(
+    "Attach | Object$ Valid Equipment | Defined$ Self | Optional$ True",
     "key:Attach.Object-all"
 )]
 #[case::both_hosts(

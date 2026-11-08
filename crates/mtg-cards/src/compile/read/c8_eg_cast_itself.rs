@@ -41,6 +41,7 @@ pub fn c8_eg_cast_itself(r: &mut Reader<'_>) -> Option<Ability> {
 /// The permission the reader gives: the card itself, cast by its owner from the graveyard, for the costs added.
 fn c8_eg_permission(additional: Option<Cost>, zone: ZoneKind) -> CastPermission {
     CastPermission {
+        rather: None,
         who: Ref::You,
         what: Selector(vec![Pred::This]),
         from: Some(zone),
