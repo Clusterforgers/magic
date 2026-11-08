@@ -549,6 +549,41 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // Numbered bookkeeping names read as the plain ones; the twin has none left, so this recurses once.
+    if let Some(plain) = super::t18_binds::t18_unnumbered(ability) {
+        for text in written_variants(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    // The card that died named by the event reads as the card in the graveyard.
+    if let Some(card) = super::t18_dead::t18_dead_card(ability) {
+        for text in written_variants(&card) {
+            let card_text = text
+                .replace(", return it to", ", return that card to")
+                .replace(", return that creature to", ", return that card to");
+            for text in [text, card_text] {
+                if !texts.contains(&text) {
+                    texts.push(text);
+                }
+            }
+        }
+    }
+    // "not (not a or not b)" in a list of conditions reads as "a" and "b".
+    if let Some(flat) = super::t18_demorgan::t18_flattened(ability) {
+        for text in written_variants(&flat) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    let more = super::t18_words::t18_wordings(&texts);
+    for text in more {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
     let six_sided: Vec<String> = texts
         .iter()
         .filter_map(|text| super::fix23_dice::fix23_six_sided(text))

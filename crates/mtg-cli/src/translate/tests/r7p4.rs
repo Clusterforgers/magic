@@ -82,8 +82,8 @@ fn the_size_is_a_condition_of_the_event(#[case] mode: &str, #[case] op: &str, #[
     "key:Trigger.LifeAmount=XX1"
 )]
 #[case::new_total(
-    "CounterRemoved | ValidCard$ Creature | NewCounterAmount$ 0",
-    "key:Trigger.Counter.NewCounterAmount"
+    "CounterRemoved | ValidCard$ Card.Self | CounterType$ TIME | NewCounterAmount$ X",
+    "key:Trigger.NewCounterAmount=X"
 )]
 #[case::first_time_with_source(
     "BecomesTarget | ValidTarget$ Card.Self | ValidSource$ Card.YouCtrl | FirstTime$ True",

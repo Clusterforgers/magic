@@ -402,6 +402,11 @@ fn w17_lists_and_places(#[case] left: &str, #[case] right: &str, #[case] same: b
     "Sacrifice another creature.",
     true
 )]
+#[case::another_by_name_last(
+    "Sacrifice a creature other than ~.",
+    "Sacrifice another creature.",
+    true
+)]
 #[case::another_dropped(
     "Sacrifice a creature other than this creature.",
     "Sacrifice a creature.",

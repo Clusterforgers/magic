@@ -63,22 +63,34 @@ fn a_damaged_player_is_the_one_the_text_names(
 }
 
 #[rstest]
-#[case::printed_player("Target player discards two cards.", "Player")]
-#[case::printed_opponent("Target opponent discards two cards.", "Opponent")]
+#[case::printed_player("Target player discards two cards.", Some("Player"))]
+#[case::printed_opponent("Target opponent discards two cards.", Some("Opponent"))]
 #[case::printed_player_and_opponent(
     "Target player discards two cards. Each opponent loses 1 life.",
-    "Opponent"
+    None
 )]
-fn a_targeted_opponent_is_the_player_the_text_names(#[case] oracle: &str, #[case] kind: &str) {
+fn a_targeted_opponent_is_the_player_the_text_names(
+    #[case] oracle: &str,
+    #[case] kind: Option<&str>,
+) {
     let script = format!(
         "Name:Test Sabotage\nTypes:Sorcery\nA:SP$ Discard | ValidTgts$ Opponent | Mode$ TgtChoose | NumCards$ 2 | SpellDescription$ Target opponent discards two cards.\nOracle:{oracle}\n"
     );
     let found = json!(abilities(&script)).to_string();
-    assert!(
-        found.contains(&format!("\"targets\":[{{\"what\":\"{kind}\"}}]")),
-        "{found} {:?}",
-        gaps(&script)
-    );
+    match kind {
+        Some(kind) => assert!(
+            found.contains(&format!("\"targets\":[{{\"what\":\"{kind}\"}}]")),
+            "{found} {:?}",
+            gaps(&script)
+        ),
+        // A text that also names an opponent does not say which player the script means: the target is a gap.
+        None => assert!(
+            gaps(&script)
+                .iter()
+                .any(|gap| gap == "targets:Opponent-where-the-card-says-target-player"),
+            "{found}"
+        ),
+    }
 }
 
 fn printed(type_line: &str, oracle: &str) -> PrintedCard {

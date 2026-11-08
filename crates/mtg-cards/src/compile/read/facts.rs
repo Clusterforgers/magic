@@ -406,6 +406,13 @@ fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
             .collect(),
         (
             Amount::Tallied {
+                who: Ref::Opponents,
+                what: TurnTally::LifeLost,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec!["an opponent lost life this turn".to_owned()],
+        (
+            Amount::Tallied {
                 who: Ref::You,
                 what: TurnTally::CreaturesLeftUnder,
             },

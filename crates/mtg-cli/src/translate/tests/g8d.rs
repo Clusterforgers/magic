@@ -136,7 +136,7 @@ fn the_graveyard_count_is_of_the_cards_the_player_owns_there() {
 
 #[rstest]
 #[case::more_life("PlayerCountOpponents$HasPropertywithMoreLifeThanYou")]
-#[case::combat_damage("PlayerCountOpponents$HasPropertywasDealtCombatDamageThisTurn")]
+#[case::attacked_you("PlayerCountOpponents$HasPropertyattackedYouThisTurn")]
 #[case::monarch_among_opponents("PlayerCountOpponents$HasPropertyisMonarch")]
 #[case::no_least("PlayerCountPlayers$HasPropertyHasCardsInGraveyard_Card_GE0")]
 fn a_property_the_table_lacks_stays_a_gap_by_name(#[case] svar: &str) {
