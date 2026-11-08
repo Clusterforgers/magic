@@ -78,6 +78,15 @@
   stroke-dasharray: 7 6;
 }
 
+/* A bundle stands for several attacks, so it is drawn heavier than one. */
+.combat-group[data-count] .combat-halo {
+  stroke-width: 7.5;
+}
+
+.combat-group[data-count] .combat-line {
+  stroke-width: 3.5;
+}
+
 /* The arrows of the stack: strong like a block, in the accent for the viewer's item and in the destructive colour for another seat's. */
 .combat-group[data-kind='target'] {
   --line: var(--destructive);

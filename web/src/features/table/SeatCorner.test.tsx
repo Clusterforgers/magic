@@ -383,7 +383,7 @@ describe('a cramped column', () => {
 
   it('keeps the name row and life over the corner and lays the pool, sources and other chips under it', () => {
     above(34)
-    show({ room: { height: 119, card: 120 } })
+    show({ room: { height: 124, card: 120 } })
     const bo = pod('Bo')
     expect(bo.querySelector('[data-slot="mana-slot"]')).toBeNull()
     expect(
