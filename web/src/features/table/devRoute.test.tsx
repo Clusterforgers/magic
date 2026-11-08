@@ -317,7 +317,7 @@ describe('/dev/table with stops', () => {
   it('shows the ladder with nothing lit when the address says nothing', async () => {
     await visit('/dev/table?seats=2')
     await screen.findByRole('group', { name: 'Stops' })
-    expect(document.querySelectorAll('[data-slot="stop"]')).toHaveLength(20)
+    expect(document.querySelectorAll('[data-slot="stop"]')).toHaveLength(10)
     expect(lit()).toEqual([])
     expect(screen.getByRole('button', { name: 'Full Control: off' })).toHaveAttribute('aria-pressed', 'false')
   })
@@ -325,7 +325,10 @@ describe('/dev/table with stops', () => {
   it('lights the stops of ?stops=, a lasting one with its pin', async () => {
     await visit('/dev/table?seats=2&stops=own:main1,opp:end:keep,own:upkeep:keep')
     await screen.findByRole('group', { name: 'Stops' })
-    expect(lit()).toEqual(['Own:Upkeep:lasting', 'Own:Main1:turn', 'Opponent:End:lasting'])
+    // The ladder shows one side at a time: the side of the turn (an opponent's), then the other once picked.
+    expect(lit()).toEqual(['Opponent:End:lasting'])
+    await act(async () => screen.getByRole('button', { name: /^Mine/ }).click())
+    expect(lit()).toEqual(['Own:Upkeep:lasting', 'Own:Main1:turn'])
     expect(stop('Own', 'Upkeep')).toHaveAccessibleName(
       'Your upkeep stop: on every turn. Press to turn it off',
     )
@@ -337,6 +340,7 @@ describe('/dev/table with stops', () => {
   it('lets a stop be set and cleared as the server would: the icon follows the answer', async () => {
     await visit('/dev/table?seats=2&stops=own:main1')
     await screen.findByRole('group', { name: 'Stops' })
+    await act(async () => screen.getByRole('button', { name: /^Mine/ }).click())
     await act(async () => stop('Own', 'Draw').click())
     expect(lit()).toEqual(['Own:Draw:turn', 'Own:Main1:turn'])
     await act(async () => stop('Own', 'Main1').click())

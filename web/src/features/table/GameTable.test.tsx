@@ -156,6 +156,9 @@ describe('choosing the opponent to focus', () => {
     const { container, user } = renderTable({ fixture: buildFixture({ seats: 5, permanents: 2 }) })
     await user.tab()
     expect(screen.getByRole('link', { name: 'Home' })).toHaveFocus()
+    // The step ladder, which sets the stops, is one Tab stop.
+    await user.tab()
+    expect(document.activeElement).toHaveAttribute('data-slot', 'stop')
     await user.tab()
     expect(screen.getByRole('button', { name: 'Keyword glossary' })).toHaveFocus()
     await user.tab()
