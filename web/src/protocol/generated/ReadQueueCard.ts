@@ -24,4 +24,12 @@ state: ReadState,
 /**
  * How many clauses read back as other text than the card (`ReportCard.differs`).
  */
-differs: number, };
+differs: number, 
+/**
+ * The card's EDHREC rank (1 is the most played); none for a card without one. The queue is in this order.
+ */
+rank: number | null, 
+/**
+ * The card is in one of the account's own decks.
+ */
+in_decks: boolean, };

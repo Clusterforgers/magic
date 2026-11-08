@@ -11,6 +11,7 @@ use mtg_db::import::{
     SkipLog, check_cards, check_precons, check_printings, check_rulings,
 };
 use mtg_db::{Database, ImportRuns, ImportSource};
+use mtg_import::ids::OracleId;
 use mtg_import::mtgjson::{MtgjsonError, PreconDeck, parse_deck};
 use mtg_import::scryfall::ScryfallError;
 
@@ -18,6 +19,7 @@ use crate::bulk::{Counted, ReadAhead, open_cards, open_rulings};
 use crate::cache::{Cache, Manifest, PRINTINGS_TYPE};
 use crate::error::CliError;
 use crate::files::{sha256_file, sha256_hex, short};
+use crate::popularity::Popularity;
 use crate::progress::Progress;
 
 /// How many records the reader thread may run ahead of the database.
@@ -259,6 +261,7 @@ pub async fn ingest(
         progress,
     };
     let cards = loader.cards(inputs.cards.as_ref()).await?;
+    loader.ranks(inputs.cards.as_ref(), &cards).await?;
     // Read after the cards went in, so that printings, rulings and decks are tied to the cards just loaded.
     let basis = cards_basis(&loader.runs).await?;
     let printings = loader.printings(inputs.printings.as_ref(), &basis).await?;
@@ -319,6 +322,38 @@ impl Loader<'_> {
         ));
         warn_skipped(self.progress, "cards", &report.skipped);
         Ok(Step::Imported(report))
+    }
+
+    /// Replaces the popularity of cards (`card_ranks`, the read queues' order) with the EDHREC ranks of the Oracle
+    /// Cards file, after the cards went in or while none is stored. A file without ranks leaves them as they are.
+    async fn ranks(
+        &self,
+        input: Option<&Input>,
+        cards: &Step<CardImportReport>,
+    ) -> Result<(), CliError> {
+        let Some(input) = input else {
+            return Ok(());
+        };
+        let ranks = self.db.ranks();
+        if !matches!(cards, Step::Imported(_)) && ranks.count().await? > 0 {
+            return Ok(());
+        }
+        let popularity = match Popularity::read(&input.path) {
+            Ok(popularity) => popularity,
+            Err(error) => {
+                self.progress
+                    .line(format_args!("ranks: left as they are: {error}"));
+                return Ok(());
+            }
+        };
+        let all: Vec<(OracleId, u32)> = popularity
+            .ranks()
+            .map(|(id, rank)| (OracleId(id.to_owned()), rank))
+            .collect();
+        let stored = ranks.replace(&all).await?;
+        self.progress
+            .line(format_args!("ranks: {stored} cards ranked by popularity"));
+        Ok(())
     }
 
     async fn printings(

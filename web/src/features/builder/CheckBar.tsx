@@ -19,8 +19,8 @@ interface CheckBarProps {
   counts: Counts
   /** Distinct cards whose draft waits for a read, from the report's summary. */
   toRead: number
-  /** The saved deck the cards are read for; none while the deck is not saved. */
-  readTarget?: ReadTarget
+  /** The saved deck the cards are read for; null (every card) while the deck is not saved. */
+  readTarget?: ReadTarget | null
   /** The counts are those of the saved deck while the draft's cards differ: no check of the draft has come back. */
   asSaved: boolean
   /** Whether the counts are of the draft on screen, a newer check is on its way, or the check failed. */

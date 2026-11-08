@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT oracle_id, edhrec_rank FROM card_ranks WHERE oracle_id = ANY($1)",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "card_ranks",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "edhrec_rank",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "card_ranks",
+            "name": "edhrec_rank"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "787936bd22367c687da435817aac66437a8d2946e0ef46d8c5830166802f3eb9"
+}

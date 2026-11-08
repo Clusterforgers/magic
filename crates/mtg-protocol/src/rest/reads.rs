@@ -44,14 +44,19 @@ pub struct ReadQueueCard {
     pub state: ReadState,
     /// How many clauses read back as other text than the card (`ReportCard.differs`).
     pub differs: u32,
+    /// The card's EDHREC rank (1 is the most played); none for a card without one. The queue is in this order.
+    pub rank: Option<u32>,
+    /// The card is in one of the account's own decks.
+    pub in_decks: bool,
 }
 
-/// The answer of `GET /api/reads`: what the account has left to read in one deck, pending drafts first.
+/// The answer of `GET /api/reads`: what the account has left to read in one deck, a precon or every card, pending
+/// drafts first, each part most played first.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct ReadQueue {
-    /// The deck's or the precon's name.
+    /// The deck's or the precon's name; empty for every card.
     pub title: String,
-    /// The cards, in deck order within each state.
+    /// The cards, by popularity (`rank`) within each state.
     pub cards: Vec<ReadQueueCard>,
 }
 
