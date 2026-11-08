@@ -433,12 +433,12 @@ fn a_cost_change_of_one_colour_changes_that_colour(#[case] line: &str, #[case] e
 }
 
 #[rstest]
-#[case::two_colours(
-    "Mode$ ReduceCost | ValidCard$ Cleric | Type$ Spell | Activator$ You | Amount$ 1 | Color$ W B | IgnoreGeneric$ True",
+#[case::an_increase_of_two_colours(
+    "Mode$ RaiseCost | ValidCard$ Creature | Type$ Spell | Activator$ You | Amount$ 1 | Color$ W B | IgnoreGeneric$ True",
     "key:Static.CostModifier.IgnoreGeneric"
 )]
-#[case::ignore_generic(
-    "Mode$ ReduceCost | ValidCard$ Goblin | Type$ Spell | Amount$ 1 | Color$ R | IgnoreGeneric$ True",
+#[case::generic_ignored(
+    "Mode$ ReduceCost | ValidCard$ Goblin | Type$ Spell | Amount$ 1 | IgnoreGeneric$ True",
     "key:Static.CostModifier.IgnoreGeneric"
 )]
 fn a_colour_word_that_is_not_known_stays_a_named_gap(#[case] line: &str, #[case] name: &str) {
