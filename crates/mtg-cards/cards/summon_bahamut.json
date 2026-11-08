@@ -1,0 +1,59 @@
+{
+  "oracle_id": "fe9f6825-597b-4d80-ab7c-f4ee4e824b6f",
+  "name": "Summon: Bahamut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Bahamut",
+      "oracle_fingerprint": "80cf6761d223eaf52efafa148834de27",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "Total": { "of": [{ "ControlledBy": "You" }, "Other"], "stat": "ManaValue" }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

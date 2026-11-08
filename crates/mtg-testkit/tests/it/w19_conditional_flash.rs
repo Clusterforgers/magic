@@ -32,7 +32,11 @@ fn wurm() -> Arc<CardDefinition> {
 
 /// A land with the subtype Desert.
 fn desert() -> Arc<CardDefinition> {
-    Arc::new(CardDefinition::new("Dry Flat").with_type(CardType::Land).with_subtype("Desert"))
+    Arc::new(
+        CardDefinition::new("Dry Flat")
+            .with_type(CardType::Land)
+            .with_subtype("Desert"),
+    )
 }
 
 #[rstest]

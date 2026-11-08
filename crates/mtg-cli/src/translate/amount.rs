@@ -153,10 +153,15 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
     ];
     for (word, live) in as_cast {
         if let Some(rest) = expression.trim().strip_prefix(word) {
-            if !ctx.as_cast.get() {
-                return unmapped(format!("amount:{}", word.trim_end()));
+            let live = expression_amount(ctx, &format!("{live}{rest}"));
+            if ctx.as_cast.get() {
+                return live;
             }
-            return expression_amount(ctx, &format!("{live}{rest}"));
+            // Read at resolution, the count the Oracle words "as you cast this spell" is the one the spell kept then.
+            if ctx.oracle.contains("as you cast this spell") {
+                return Ok(json!({ "CountedAsCast": live? }));
+            }
+            return unmapped(format!("amount:{}", word.trim_end()));
         }
     }
     match read_expression(ctx, expression) {

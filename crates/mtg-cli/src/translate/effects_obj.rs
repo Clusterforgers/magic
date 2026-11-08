@@ -1794,7 +1794,9 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(valid) => selector_any(ctx, valid)?,
     };
     // An older script word for the number: one permanent.
-    if p.get("ChangeNum").is_some_and(|number| number != "1") || p.has("ChangeNum") && p.has("Amount") {
+    if p.get("ChangeNum").is_some_and(|number| number != "1")
+        || p.has("ChangeNum") && p.has("Amount")
+    {
         return unmapped("key:Sacrifice.ChangeNum");
     }
     let count = frame::count(ctx, p, &SACRIFICE)?.max;

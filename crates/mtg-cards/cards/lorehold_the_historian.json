@@ -1,0 +1,33 @@
+{
+  "oracle_id": "61a41cf1-60cc-45ba-aa98-493c14e87d9d",
+  "name": "Lorehold, the Historian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lorehold, the Historian",
+      "oracle_fingerprint": "a2e0a74100e07a1dd25cfd579053fd29",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "OwnedBy": "You" },
+                { "In": "Hand" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Miracle": "{2}" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "01c39670-3677-49df-a4f6-e5062e0909d5",
+  "name": "Embermaw Hellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embermaw Hellion",
+      "oracle_fingerprint": "44e288093ff3ace3751d97c3e67f45a1",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": [{ "Color": "Red" }, "Other", { "ControlledBy": "You" }] }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

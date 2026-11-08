@@ -817,7 +817,10 @@ fn kind_quality(words: &str) -> Option<Selector> {
         }
         "snow" => return Some(Selector(vec![Pred::Supertype(Supertype::Snow)])),
         "legendary creatures" => {
-            return Some(Selector(vec![creature, Pred::Supertype(Supertype::Legendary)]));
+            return Some(Selector(vec![
+                creature,
+                Pred::Supertype(Supertype::Legendary),
+            ]));
         }
         _ => {}
     }
@@ -834,7 +837,10 @@ fn kind_quality(words: &str) -> Option<Selector> {
     if let Some(name) = words.strip_suffix(" creatures")
         && super::read::subtypes::is_subtype(name)
     {
-        return Some(Selector(vec![creature, Pred::Subtype(Subtype(name.to_owned()))]));
+        return Some(Selector(vec![
+            creature,
+            Pred::Subtype(Subtype(name.to_owned())),
+        ]));
     }
     subtype(words).map(|name| Selector(vec![Pred::Subtype(name)]))
 }
@@ -843,11 +849,13 @@ fn kind_quality(words: &str) -> Option<Selector> {
 pub fn kind_quality_word(quality: &Selector) -> Option<String> {
     let creature = Pred::Type(CardType::Creature);
     Some(match quality.0.as_slice() {
-        [Pred::Compare {
-            stat: StatKind::Colors,
-            op: Cmp::Eq,
-            to: Amount::Fixed(1),
-        }] => "monocolored".to_owned(),
+        [
+            Pred::Compare {
+                stat: StatKind::Colors,
+                op: Cmp::Eq,
+                to: Amount::Fixed(1),
+            },
+        ] => "monocolored".to_owned(),
         [Pred::Supertype(Supertype::Snow)] => "snow".to_owned(),
         [kind, Pred::Supertype(Supertype::Legendary)] if *kind == creature => {
             "legendary creatures".to_owned()
@@ -872,9 +880,18 @@ fn protections(rest: &str) -> Option<Vec<Selector>> {
         .map(|part| protection(&format!("from {part}")))
         .collect::<Option<_>>()?;
     // A creature type beside a color is not read.
-    let typed = |quality: &Selector| quality.0.iter().any(|pred| matches!(pred, Pred::Subtype(_)));
-    let colored =
-        |quality: &Selector| quality.0.iter().any(|pred| matches!(pred, Pred::Color(_) | Pred::Colorless));
+    let typed = |quality: &Selector| {
+        quality
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::Subtype(_)))
+    };
+    let colored = |quality: &Selector| {
+        quality
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::Color(_) | Pred::Colorless))
+    };
     (!(qualities.iter().any(typed) && qualities.iter().any(colored))).then_some(qualities)
 }
 

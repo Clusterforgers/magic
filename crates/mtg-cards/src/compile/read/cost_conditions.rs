@@ -9,7 +9,7 @@ use super::selectors::{Form, phrase, phrase_in, phrase_text, subtype, type_name}
 use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::{Amount, Cmp, Condition};
-use mtg_core::card::Subtype;
+use mtg_core::card::{CardType, Subtype};
 
 /// "If ..., " before the spell: "If there are ten or more creature cards total in all graveyards, ".
 pub(super) fn leading(r: &mut Reader<'_>) -> Option<Condition> {
@@ -123,6 +123,16 @@ fn counted_texts(held: &Condition) -> Vec<String> {
             .collect()
     };
     match (op, selector.0.as_slice()) {
+        // Heroic Return: "if a creature is attacking you".
+        (
+            Cmp::Ge,
+            [
+                Pred::Type(CardType::Creature),
+                Pred::AttackingPlayer(Ref::You),
+            ],
+        ) if number == 1 => {
+            vec!["a creature is attacking you".to_owned()]
+        }
         (Cmp::Ge, [Pred::Type(card_type), Pred::In(ZoneKind::Graveyard)]) => kind(
             &format!("{} cards", type_name(*card_type)),
             " total in all graveyards",

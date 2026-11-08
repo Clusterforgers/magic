@@ -16,9 +16,8 @@ fn w19d_itself(r: &mut Reader<'_>) -> bool {
 pub(super) fn w19d_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     if let Some(pred) = r.attempt(|r| {
         r.need("blocking or blocked by")?;
-        w19d_itself(r).then(|| {
-            Pred::AnyOf(vec![Pred::Blocks(Ref::This), Pred::BlockedBy(Ref::This)])
-        })
+        w19d_itself(r)
+            .then(|| Pred::AnyOf(vec![Pred::Blocks(Ref::This), Pred::BlockedBy(Ref::This)]))
     }) {
         return Some(pred);
     }

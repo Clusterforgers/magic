@@ -1,0 +1,22 @@
+{
+  "oracle_id": "4634fd4e-5b38-4cfb-ab73-bf3b14b3bdee",
+  "name": "Shifting Sky",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shifting Sky",
+      "oracle_fingerprint": "79bea9f6009298419decc97bccd38578",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Not": { "Type": "Land" } }] },
+            "mods": ["SetChosenColor"]
+          }
+        }
+      ]
+    }
+  ]
+}

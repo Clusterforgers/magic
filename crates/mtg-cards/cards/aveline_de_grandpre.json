@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5c8c4d53-f364-40da-989b-cfe1e3f79b7d",
+  "name": "Aveline de Grandpré",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aveline de Grandpré",
+      "oracle_fingerprint": "051d61d3a54f261e53e0a6353ea222c9",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Deathtouch" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Dealer", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        },
+        { "Keyword": { "Disguise": "{B}{G}" } }
+      ]
+    }
+  ]
+}

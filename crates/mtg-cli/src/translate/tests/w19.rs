@@ -31,7 +31,9 @@ fn a_sacrifice_names_its_one_permanent_with_the_older_number_word(
         "Name:Subject\nTypes:Creature Wurm\nPT:6/5\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigSac | TriggerDescription$ When CARDNAME enters, sacrifice a land.\nSVar:TrigSac:DB$ Sacrifice | SacValid$ Land | ChangeNum$ {number}\n"
     );
     assert_eq!(
-        !gaps(&text).iter().any(|gap| gap == "key:Sacrifice.ChangeNum"),
+        !gaps(&text)
+            .iter()
+            .any(|gap| gap == "key:Sacrifice.ChangeNum"),
         translated
     );
 }

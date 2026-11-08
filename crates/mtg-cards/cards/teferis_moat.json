@@ -1,0 +1,24 @@
+{
+  "oracle_id": "dafd319e-1d4a-4e08-9167-a82ad8670f6f",
+  "name": "Teferi's Moat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Moat",
+      "oracle_fingerprint": "0b17a5b5d8d13aa2f92cb860c51f8a77",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }, "ChosenColor"]
+            },
+            "mods": [{ "CantAttackYou": "Player" }]
+          }
+        }
+      ]
+    }
+  ]
+}

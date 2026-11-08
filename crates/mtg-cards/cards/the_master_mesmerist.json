@@ -1,0 +1,57 @@
+{
+  "oracle_id": "306b6b9b-f488-4ea8-9f5e-9e8e7354df64",
+  "name": "The Master, Mesmerist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Master, Mesmerist",
+      "oracle_fingerprint": "b7d49e0d8eb574edf31006ef1e14be1c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Skulk" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Goad": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "HasKeyword": "Skulk" }],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

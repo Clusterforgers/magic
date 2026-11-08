@@ -17,9 +17,18 @@ fn w19d_a_target_phrase_reads_and_is_written_back(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::blocking_it("~ deals 1 damage to target creature blocking this creature.", "~ deals 1 damage to target creature blocking it.")]
-#[case::blocked_by("~ deals 1 damage to target creature blocked by this creature.", "~ deals 1 damage to target creature it's blocking.")]
-#[case::either_way("~ deals 1 damage to target creature blocking or blocked by this creature.", "~ deals 1 damage to target creature blocking or blocked by it.")]
+#[case::blocking_it(
+    "~ deals 1 damage to target creature blocking this creature.",
+    "~ deals 1 damage to target creature blocking it."
+)]
+#[case::blocked_by(
+    "~ deals 1 damage to target creature blocked by this creature.",
+    "~ deals 1 damage to target creature it's blocking."
+)]
+#[case::either_way(
+    "~ deals 1 damage to target creature blocking or blocked by this creature.",
+    "~ deals 1 damage to target creature blocking or blocked by it."
+)]
 fn w19d_the_card_is_it_after_its_own_name(#[case] read: &str, #[case] oracle: &str) {
     let rule = spell(read).unwrap_or_else(|| panic!("not read: {read}"));
     let wordings = crate::compile::read::render::written_variants(&rule);

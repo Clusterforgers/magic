@@ -189,9 +189,14 @@ fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let two = p.get("TargetMin") == Some("2") && p.get("TargetMax") == Some("2");
     if two && p.has("ValidTgts") && !p.has("Source") && !p.has("Defined") {
         let one = p.without(&["TargetMin", "TargetMax"]);
-        let (from, to) = (subject(ctx, &one, "Self", None)?, subject(ctx, &one, "Self", None)?);
+        let (from, to) = (
+            subject(ctx, &one, "Self", None)?,
+            subject(ctx, &one, "Self", None)?,
+        );
         let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
-        return Ok(json!({"MoveCounters": {"from": from, "to": to, "counter": kind, "count": count}}));
+        return Ok(
+            json!({"MoveCounters": {"from": from, "to": to, "counter": kind, "count": count}}),
+        );
     }
     // Without `Source$` the target is the source and `Defined$` the object that receives them.
     let (from, to) = match (p.get("Source"), p.get("Defined"), p.has("ValidTgts")) {

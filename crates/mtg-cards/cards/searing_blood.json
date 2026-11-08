@@ -1,0 +1,36 @@
+{
+  "oracle_id": "902b82fd-bb18-4833-b427-af8c9751f870",
+  "name": "Searing Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Searing Blood",
+      "oracle_fingerprint": "5542ccd6a374ef15f08eb41830dd11fd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

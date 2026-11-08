@@ -285,7 +285,12 @@ pub(super) fn r7e_did_happening(pattern: &TriggerPattern) -> Option<(Selector, S
 }
 
 /// The spells a cast trigger of you names by one row: the selector as data and the words after "Whenever you cast".
-const YOUR_SPELLS: [(&str, &str); 8] = [
+const YOUR_SPELLS: [(&str, &str); 9] = [
+    // Jodah, the Unifier: cast by you from a hand you own.
+    (
+        r#"[{"Supertype":"Legendary"},{"WasCast":{"by":"You","from":"Hand"}},{"OwnedBy":"You"}]"#,
+        "a legendary spell from your hand",
+    ),
     (
         r#"[{"AnyOf":[{"Supertype":"Legendary"},{"Type":"Artifact"},{"Subtype":"Saga"}]}]"#,
         "a historic spell",

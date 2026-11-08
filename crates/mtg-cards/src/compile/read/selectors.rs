@@ -1898,9 +1898,10 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 {
                     "target opponent or planeswalker".to_owned()
                 }
-                [head @ (Targetable::Player | Targetable::Opponent), objects @ ..]
-                    if !objects.is_empty() =>
-                {
+                [
+                    head @ (Targetable::Player | Targetable::Opponent),
+                    objects @ ..,
+                ] if !objects.is_empty() => {
                     format!("target {}", player_or_objects(head, objects)?)
                 }
                 // Objects of different kinds: "target artifact, enchantment, or creature with power 4 or greater".

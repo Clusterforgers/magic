@@ -1,0 +1,35 @@
+{
+  "oracle_id": "24310f49-2156-4c0d-b3b1-40ca3182474f",
+  "name": "Sahagin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sahagin",
+      "oracle_fingerprint": "2b3c8820f54dcab92b22838c9968147c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

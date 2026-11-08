@@ -89,6 +89,8 @@ mod e15g_licid;
 mod e16a_history;
 mod e16b_presence;
 mod e16c_attacks;
+mod e17b_exile_until;
+mod e17b_returned;
 mod effects;
 mod either_way_pairs;
 mod equip_options;
