@@ -40,14 +40,17 @@ fn grant(modification: &Value) -> Option<(Value, String, String)> {
             "protection from each of your opponents".to_owned(),
         ));
     }
-    if let Some(name) = modification.pointer("/AddKeyword").and_then(Value::as_str) {
-        let keyword: Keyword = serde_json::from_value(json!(name)).ok()?;
+    if let Some(given) = modification.pointer("/AddKeyword") {
+        let keyword: Keyword = serde_json::from_value(given.clone()).ok()?;
         keyword_text(&keyword).is_none().then_some(())?;
-        return Some((
-            json!({"AddKeyword": "Flying"}),
-            "flying".to_owned(),
-            keyword.name().to_lowercase(),
-        ));
+        let said = super::w21_words::words(&keyword, given.is_string())?;
+        // A quoted ability has its period inside the quotes.
+        let (from, to) = if said.quoted {
+            ("flying.".to_owned(), said.text)
+        } else {
+            ("flying".to_owned(), said.text)
+        };
+        return Some((json!({"AddKeyword": "Flying"}), from, to));
     }
     let blockers = modification.pointer("/CantBeBlockedBy")?;
     let [only] = blockers.as_array()?.as_slice() else {
