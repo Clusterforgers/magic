@@ -1,6 +1,6 @@
 // Goal: the form model starts from sensible defaults, stays between 2 and 12 seats, judges names exactly as the server does, and always builds a request body of the documented shape.
 import { describe, expect, it } from 'vitest'
-import { MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
+import { MAX_FORM_SEATS, MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
 import { DECKS } from '@/test-utils/decks'
 import {
   addSeat,
@@ -92,7 +92,7 @@ describe('adding and removing seats', () => {
     ])
   })
 
-  it.each(seatCounts)('grows past %i seats: no count is the most', (count) => {
+  it.each(seatCounts)('grows past %i seats', (count) => {
     expect(addSeat(grown(count), DECKS).seats).toHaveLength(count + 1)
   })
 
@@ -208,8 +208,12 @@ describe('resizeSeats', () => {
     },
   )
 
-  it.each([99, 400])('makes %i seats: there is no most', (count) => {
+  it.each([99, MAX_FORM_SEATS])('makes %i seats', (count) => {
     expect(resizeSeats(defaultDraft(DECKS), DECKS, count).seats).toHaveLength(count)
+  })
+
+  it.each([MAX_FORM_SEATS + 1, 2500, 1e9])('clamps %i seats to the most the form builds', (count) => {
+    expect(resizeSeats(defaultDraft(DECKS), DECKS, count).seats).toHaveLength(MAX_FORM_SEATS)
   })
 
   it.each([
@@ -222,6 +226,9 @@ describe('resizeSeats', () => {
     ['2.5', null],
     ['-4', null],
     ['abc', null],
+    ['256', 256],
+    ['257', null],
+    ['2500', null],
   ])('reads the seat field text %j as %s', (text, count) => {
     expect(seatsTyped(text)).toBe(count)
   })

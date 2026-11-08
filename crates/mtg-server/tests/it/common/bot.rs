@@ -136,6 +136,7 @@ impl Bot {
                 state,
                 log,
                 names,
+                ..
             } => {
                 assert_eq!(state.table.viewer, self.seat);
                 self.snapshot_logs.push((seq, log));

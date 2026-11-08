@@ -82,11 +82,11 @@ describe('loading the decks', () => {
 })
 
 describe('the form as first shown', () => {
-  it('asks for the number of seats in a number field with no most, defaulting to 2, and the creator’s own name and deck', async () => {
+  it('asks for the number of seats in a number field up to 256, defaulting to 2, and the creator’s own name and deck', async () => {
     await openCreateForm()
     expect(seatCount()).toHaveValue(2)
     expect(seatCount()).toHaveAttribute('type', 'number')
-    expect(seatCount()).not.toHaveAttribute('max')
+    expect(seatCount()).toHaveAttribute('max', '256')
     expect(nameField()).toHaveValue('Player 1')
     expect(deckField()).toHaveValue('mono-green')
   })
@@ -172,7 +172,7 @@ describe('the number of seats', () => {
     await user.clear(seatCount())
     await user.type(seatCount(), '1')
     expect(seatCount()).toBeInvalid()
-    expect(screen.getByText('A game needs at least 2 seats.')).toBeInTheDocument()
+    expect(screen.getByText('Enter a whole number of seats from 2 to 256.')).toBeInTheDocument()
     await user.type(seatCount(), '5')
     expect(seatCount()).toHaveValue(15)
     expect(seatCount()).toBeValid()

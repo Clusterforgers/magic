@@ -12,6 +12,7 @@ import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
+import { StackYieldMenu, yieldKeyOf } from './StackYieldMenu'
 import { objectWords } from './prompt/targetText'
 import { stackTopFirst } from './selectors'
 import { shownObject } from './stackPreview'
@@ -90,7 +91,13 @@ const StackItem = memo(function StackItem({
       aria-label={`${top ? 'Top of the stack: ' : ''}${cardLabel(object, null)}, cast by ${controller}${entry === undefined ? '' : targetsAria(entry, targetNames)}`}
       tabIndex={tabbable ? 0 : -1}
       {...handlers}
-      className={cn(ROW, top && 'border-primary', empty && 'border-dashed', top && 'bg-card')}
+      className={cn(
+        ROW,
+        top && 'border-primary',
+        empty && 'border-dashed',
+        top && 'bg-card',
+        yieldKeyOf(object) !== null && 'pr-9',
+      )}
     >
       <span className="flex flex-wrap items-center justify-between gap-x-2">
         <span className={cn('flex items-center gap-1.5 font-semibold', top && 'text-base')}>
@@ -127,7 +134,13 @@ const StackItem = memo(function StackItem({
       )}
     </button>
   )
-  if (!top) return <li>{button}</li>
+  const row = (
+    <div className="relative">
+      {button}
+      <StackYieldMenu object={object} />
+    </div>
+  )
+  if (!top) return <li>{row}</li>
   return (
     <li
       data-slot="stack-top"
@@ -140,7 +153,7 @@ const StackItem = memo(function StackItem({
         <CardFace object={shownObject(object, source)} role={null} size="large" fit />
       </span>
       <div className="grid min-w-0 content-start gap-2">
-        {button}
+        {row}
         {entry === undefined ? null : <TargetList entry={entry} />}
         {empty ? (
           <p data-slot="no-target" className="text-xs text-destructive">

@@ -5,7 +5,7 @@ import { FixMarksApiContext } from '@/features/fixmarks/apiContext'
 import { fixMarksClient } from '@/features/fixmarks/client'
 import { DeckError } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
-import type { FixMarkView } from '@/protocol/generated'
+import type { FixMarkView, ObjectView } from '@/protocol/generated'
 import { indexById } from '@/play/view'
 import { card } from '@/test-utils/cards'
 import { clone, must } from '@/test-utils/batches'
@@ -29,7 +29,7 @@ function fakeApi(marks: FixMarkView[], over: Partial<FixMarksApi> = {}): FixMark
   }
 }
 
-function open(api: FixMarksApi, identity: boolean = true): void {
+function open(api: FixMarksApi, identity: boolean = true, more: Partial<ObjectView> = {}): void {
   const object = card({ name: 'Sol Ring', types: ['Artifact'], subtypes: [] })
   renderTable({
     fixture: buildFixture({ seats: 2, permanents: 4, hand: 2 }),
@@ -44,7 +44,7 @@ function open(api: FixMarksApi, identity: boolean = true): void {
       const next = clone(must(first.view))
       next.objects = [
         ...next.objects,
-        { ...object, id: ID, ...(identity ? { identity: { oracle_id: SOL } } : {}) },
+        { ...object, ...more, id: ID, ...(identity ? { identity: { oracle_id: SOL } } : {}) },
       ]
       return { ...first, view: next, objectsById: indexById(next.objects) }
     },
@@ -109,6 +109,28 @@ describe('the fix mark entry of the card menu', () => {
     await waitFor(() => expect(screen.getByRole('menu')).toBeInTheDocument())
     await new Promise((done) => setTimeout(done, 20))
     expect(within(screen.getByRole('menu')).queryByRole('menuitem', { name: /broken/ })).toBeNull()
+  })
+})
+
+describe('the fix mark button of the card menu', () => {
+  it.each<[string, Partial<ObjectView>]>([
+    ['a partly automatic card', { partial: true, manual: [{ text: 'Draw a card.', reason: 'x' }] }],
+    ['a card with clauses left to the table', { manual: [{ text: 'Draw a card.', reason: 'x' }] }],
+    ['a card that runs on a read', { read: true }],
+  ])('replaces the entry for %s and marks the card', async (_name, more) => {
+    const api = fakeApi([])
+    open(api, true, more)
+    const button = await screen.findByRole('button', { name: /Mark important to fix/ })
+    expect(within(screen.getByRole('menu')).queryByRole('menuitem', { name: /broken/ })).toBeNull()
+    await waitFor(() => expect(button).not.toHaveAttribute('aria-disabled', 'true'))
+    act(() => button.click())
+    await waitFor(() => expect(api.mark).toHaveBeenCalledWith(SOL, null))
+  })
+
+  it('is not shown for a verified card, which keeps the entry', async () => {
+    open(fakeApi([]))
+    await ready(/Mark as broken/)
+    expect(screen.queryByRole('button', { name: /Mark important to fix/ })).toBeNull()
   })
 })
 

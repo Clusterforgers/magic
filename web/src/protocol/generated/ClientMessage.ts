@@ -93,4 +93,8 @@ object: ObjectId, } | { "type": "ClearAutoYield",
 /**
  * The key of the yield.
  */
-ability: AutoYield, };
+ability: AutoYield, } | { "type": "LoadAutoYields", 
+/**
+ * The keys to add.
+ */
+yields: Array<AutoYield>, };

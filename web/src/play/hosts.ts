@@ -1,5 +1,5 @@
 /** What an Aura, Equipment or Fortification hangs on, read from a view, and where it hung before an attach event. Pure. */
-import type { EventView, ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
+import type { EventView, LogHost, ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
 
 /** A permanent (`card`) or a player (`player`) an attachment hangs on. */
 export type HostRef = { readonly card: ObjectId } | { readonly player: PlayerId }
@@ -8,6 +8,13 @@ export type HostRef = { readonly card: ObjectId } | { readonly player: PlayerId 
 export function hostOf(object: ObjectView | undefined): HostRef | null {
   if (object?.attached_to !== undefined) return { card: object.attached_to }
   if (object?.attached_player !== undefined) return { player: object.attached_player }
+  return null
+}
+
+/** The host a snapshot's `LogHost` names: a permanent, a player, or null for none. */
+export function hostFromWire(host: LogHost): HostRef | null {
+  if (host.card !== undefined) return { card: host.card }
+  if (host.player !== undefined) return { player: host.player }
   return null
 }
 

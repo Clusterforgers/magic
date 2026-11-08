@@ -158,9 +158,20 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const permanents = useMemo(() => idsOfRows(stacks.plain), [stacks])
   const marked = useMarkedIds(permanents)
   const [opened, setOpened] = useState<ReadonlySet<string>>(NONE)
+  const creatureGhosts = useGhosts(seat, 'creatures').length
+  const otherGhosts = useGhosts(seat, 'other').length
+  const landGhosts = useGhosts(seat, 'lands').length
   const layout = useMemo(
-    () => layoutSeat({ box, stacks, facing, opened, marked }),
-    [box, stacks, facing, opened, marked],
+    () =>
+      layoutSeat({
+        box,
+        stacks,
+        facing,
+        opened,
+        marked,
+        held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
+      }),
+    [box, stacks, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
   )
   // The toggle names a stack by a member, so a lane that keeps its ids keeps the callback while keys change.
   const keys = useRef(layout.stacks)

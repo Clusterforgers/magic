@@ -861,7 +861,7 @@ fn exhaustive(
                 if spent(self.cost, &self.payment, self.sources).is_ok() {
                     let used = taps_of(&self.payment, self.sources);
                     let weight = (
-                        used.iter().filter(|o| o.sacrifice).count(),
+                        used.iter().filter(|o| o.gives_up()).count(),
                         used.iter().filter(|o| o.extra).count(),
                         used.len(),
                         used.iter().filter(|o| o.only.is_empty()).count(),
