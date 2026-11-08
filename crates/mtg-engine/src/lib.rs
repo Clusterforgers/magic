@@ -19,6 +19,7 @@ mod cant_named;
 mod cast;
 mod combat_quirks;
 mod commanders;
+mod costly_mana;
 mod damage;
 #[cfg(test)]
 mod e14a_spend_facts;

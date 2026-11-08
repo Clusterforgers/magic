@@ -153,6 +153,7 @@ mod cost_reductions_alisaie;
 mod cost_reductions_fuzz;
 mod cost_reductions_more;
 mod cost_reductions_more_fuzz;
+mod costly_mana;
 mod countdown_keywords;
 mod counted_amounts;
 mod counted_costs;
