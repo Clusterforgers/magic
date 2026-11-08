@@ -332,6 +332,9 @@ mod t19c_put_many;
 // t20b
 mod t20b;
 // t20a
+mod e17a_as_cast;
+mod e17a_next_turn;
+mod e17a_until_cast;
 mod t20a_either;
 mod t20a_fold;
 mod t20a_greatest;
@@ -453,6 +456,10 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     t20a_either::add(ability, texts);
     t20a_fold::add(ability, texts);
     t20a_greatest::add(ability, texts);
+    // e17a
+    e17a_until_cast::add(ability, texts);
+    e17a_as_cast::add(ability, texts);
+    e17a_next_turn::add(ability, texts);
     // t20c
     t20c_pay::add(ability, texts);
     t20c_rule::add(ability, texts);

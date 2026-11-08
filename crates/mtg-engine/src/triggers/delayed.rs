@@ -172,7 +172,8 @@ impl Delayed {
             | Duration::WhileHasCounter(_)
             | Duration::NextUntapStep
             | Duration::UntilPaid(_)
-            | Duration::UntilTurnSkipped => true,
+            | Duration::UntilTurnSkipped
+            | Duration::UntilCastFromExile => true,
         }
     }
 }

@@ -335,24 +335,35 @@ fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
 
 /// A spell with aftermath that is cast from a graveyard is exiled by a replacement effect when it leaves the stack
 /// (CR 702.127a), so the game has replacement effects to look for.
-/// The conditions the card of `spell` asks "as you cast this spell" that hold for `player` as it is cast.
-fn held_as_cast(
-    state: &GameState,
-    player: PlayerId,
-    spell: ObjectId,
-) -> Vec<mtg_cards::value::Condition> {
+/// What held and what was counted as a spell was cast.
+type AsCast = (
+    Vec<mtg_cards::value::Condition>,
+    Vec<(mtg_cards::value::Amount, i64)>,
+);
+
+/// The conditions the card of `spell` asks "as you cast this spell" that hold for `player` as it is cast, and the amounts
+/// it counts then with what each counts; an amount that cannot be worked out counts none.
+fn held_as_cast(state: &GameState, player: PlayerId, spell: ObjectId) -> AsCast {
     let Some(object) = state.objects.get(&spell) else {
-        return Vec::new();
+        return (Vec::new(), Vec::new());
     };
-    let asked = object.card().as_cast_conditions();
-    if asked.is_empty() {
-        return asked;
+    let (asked, counted) = object.card().as_cast_asks();
+    if asked.is_empty() && counted.is_empty() {
+        return (asked, Vec::new());
     }
     let scope = crate::resolve::Scope::announcing(state, player, object.reference());
-    asked
+    let held = asked
         .into_iter()
         .filter(|condition| scope.holds(condition).unwrap_or(false))
-        .collect()
+        .collect();
+    let counted = counted
+        .into_iter()
+        .map(|amount| {
+            let number = scope.amount(&amount).unwrap_or(0);
+            (amount, number)
+        })
+        .collect();
+    (held, counted)
 }
 
 fn note_aftermath(state: &mut GameState, spell: ObjectId, from: Zone) {
@@ -426,9 +437,10 @@ fn spell_cast(
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
         }
     }
-    let held_as_cast = held_as_cast(state, player, object);
+    let (held_as_cast, counted_as_cast) = held_as_cast(state, player, object);
     if let Some(spell) = state.objects.get_mut(&object) {
         spell.held_as_cast = held_as_cast;
+        spell.counted_as_cast = counted_as_cast;
     }
     note_rebound(state, object, from);
     note_aftermath(state, object, from);

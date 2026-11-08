@@ -13,6 +13,9 @@ use crate::forge::script::Params;
 /// The effects of an `Effect` line.
 #[allow(clippy::too_many_lines)]
 pub fn effects(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if let Some(out) = super::e17a_until_cast::effects(ctx, p) {
+        return out;
+    }
     only(
         p,
         "Effect",
