@@ -1,0 +1,171 @@
+{
+  "object": "card",
+  "id": "47f0e0b9-d137-46ac-a6e4-13a529e30bb5",
+  "oracle_id": "44ba2aa5-2bf5-4267-ae82-f0daf8f5e3e8",
+  "multiverse_ids": [
+    671153
+  ],
+  "mtgo_id": 128973,
+  "tcgplayer_id": 559993,
+  "cardmarket_id": 778959,
+  "name": "Fisher's Talent",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/47f0e0b9-d137-46ac-a6e4-13a529e30bb5",
+  "scryfall_uri": "https://scryfall.com/card/blc/36/fishers-talent?utm_source=api",
+  "layout": "class",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:45:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.jpg?1783910727",
+    "normal": "https://cards.scryfall.io/normal/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.jpg?1783910727",
+    "large": "https://cards.scryfall.io/large/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.jpg?1783910727",
+    "png": "https://cards.scryfall.io/png/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.png?1783910727",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.jpg?1783910727",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.jpg?1783910727",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.webp?1783910727",
+    "grid": "https://cards.scryfall.io/grid/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.webp?1783910727",
+    "display": "https://cards.scryfall.io/display/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.webp?1783910727",
+    "art": "https://cards.scryfall.io/art/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.webp?1783910727",
+    "crop": "https://cards.scryfall.io/crop/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.webp?1783910727",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/7/47f0e0b9-d137-46ac-a6e4-13a529e30bb5.jpg?1783910727"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Class",
+  "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nAt the beginning of your upkeep, look at the top card of your library. You may reveal it if it's a land card. Create a 1/1 blue Fish creature token if you revealed it this way. Then draw a card.\n{G}{U}: Level 2\nIf you would create a Fish token, create a 3/3 blue Shark creature token instead.\n{2}{G}{U}: Level 3\nIf you would create a Shark token, create an 8/8 blue Octopus creature token instead.",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "9fc10475-5eaf-47ea-a45c-3948a632f365",
+      "component": "token",
+      "name": "Octopus",
+      "type_line": "Token Creature — Octopus",
+      "uri": "https://api.scryfall.com/cards/9fc10475-5eaf-47ea-a45c-3948a632f365"
+    },
+    {
+      "object": "related_card",
+      "id": "47f0e0b9-d137-46ac-a6e4-13a529e30bb5",
+      "component": "combo_piece",
+      "name": "Fisher's Talent",
+      "type_line": "Enchantment — Class",
+      "uri": "https://api.scryfall.com/cards/47f0e0b9-d137-46ac-a6e4-13a529e30bb5"
+    },
+    {
+      "object": "related_card",
+      "id": "f9424ef2-d271-4929-83e0-12775420bac3",
+      "component": "token",
+      "name": "Shark",
+      "type_line": "Token Creature — Shark",
+      "uri": "https://api.scryfall.com/cards/f9424ef2-d271-4929-83e0-12775420bac3"
+    },
+    {
+      "object": "related_card",
+      "id": "de0d6700-49f0-4233-97ba-cef7821c30ed",
+      "component": "token",
+      "name": "Fish",
+      "type_line": "Token Creature — Fish",
+      "uri": "https://api.scryfall.com/cards/de0d6700-49f0-4233-97ba-cef7821c30ed"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set": "blc",
+  "set_name": "Bloomburrow Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/47f0e0b9-d137-46ac-a6e4-13a529e30bb5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A44ba2aa5-2bf5-4267-ae82-f0daf8f5e3e8&unique=prints",
+  "collector_number": "36",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Allen Douglas",
+  "artist_ids": [
+    "e17f248e-6a47-4889-b048-a646739923b0"
+  ],
+  "illustration_id": "a30bc18c-7101-4239-9cd2-0c515ac0c3b4",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8822,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://www.youtube.com/watch?v=mW9zwQC9sUg",
+    "previewed_at": "2024-07-18"
+  },
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": null,
+    "tix": "4.90"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=671153&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFisher%2527s%2BTalent",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFisher%2527s%2BTalent",
+    "edhrec": "https://edhrec.com/route/?cc=Fisher%27s+Talent"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F559993%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=778959&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128973?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

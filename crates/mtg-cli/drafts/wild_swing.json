@@ -1,0 +1,27 @@
+{
+  "oracle_id": "92d07c7c-be30-4bcc-a632-99986fc5315c",
+  "name": "Wild Swing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Swing",
+      "oracle_fingerprint": "0b3c59e625fad154642a4ce3794665f0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Enchantment" } }] },
+                "bounds": { "min": 3, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "ChooseAtRandom": { "from": { "Target": 0 }, "as": "card" } },
+              { "Destroy": { "what": { "Bound": "card" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

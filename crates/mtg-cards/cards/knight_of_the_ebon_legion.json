@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3b4eaa50-dff6-4825-97da-42b2f5554218",
+  "name": "Knight of the Ebon Legion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of the Ebon Legion",
+      "oracle_fingerprint": "a395d736e153fcb1d226fb6164df68d5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "LifeLostMost" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

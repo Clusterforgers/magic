@@ -1,0 +1,49 @@
+{
+  "oracle_id": "86bd332f-ba61-49a4-ad31-de4d7e3638c6",
+  "name": "Shadow Urchin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow Urchin",
+      "oracle_fingerprint": "681e387a84bfe6b30b01e0bc8fc17f6d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "blighted"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "blighted" }, "counter": "-1/-1" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "ExileTop": { "count": { "AnyCounters": "Triggering" }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
