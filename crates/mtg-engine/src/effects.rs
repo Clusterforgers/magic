@@ -452,7 +452,20 @@ pub(crate) fn lasts(
         // effect does.
         // Only a continuous effect that names its objects follows a counter on them (`ContinuousEffect::holds_counter`).
         Duration::UntilOpponentBecomesMonarch | Duration::WhileHasCounter(_) => false,
+        Duration::UntilCastFromExile => !source.is_some_and(|source| cast_from_exile(state, source)),
     }
+}
+
+/// Whether the card `source` named became a card in exile with its next zone change and a spell cast from there with the
+/// one after (CR 400.7): a card that left exile another way is another object, so a later cast does not count. The
+/// housekeeping before the next priority removes the effect while the spell is still on the stack.
+fn cast_from_exile(state: &GameState, source: ObjectRef) -> bool {
+    state.object(source.id).is_some_and(|card| {
+        card.counter() == source.counter.wrapping_add(2)
+            && card
+                .cast_record()
+                .is_some_and(|(from, _)| from == mtg_cards::refs::ZoneKind::Exile)
+    })
 }
 
 /// Whether an effect of the given duration ends with the cleanup step of the turn that is ending (CR 514.2): "until end

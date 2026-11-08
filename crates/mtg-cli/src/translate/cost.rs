@@ -176,6 +176,8 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
             )?;
             Ok(json!({"ExileFromGraveyard": {"filter": [{"Is": card}], "any_player": true}}))
         }
+        // "Exile this card from your hand" of an ability activated from the hand: the source from the zone it is in.
+        "ExileFromHand" if on_self && number == "1" => Ok(json!("ExileSelf")),
         "ExileFromHand" => zone_cost(ctx, "ExileFromHand", number, what),
         "ExileCtrlOrGrave" => zone_cost(ctx, "Craft", number, what),
         "Return" if on_self => Ok(json!({"ReturnToHand": {"filter": ["This"]}})),

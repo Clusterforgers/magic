@@ -770,6 +770,7 @@ mod e15f;
 mod e15g;
 mod e16b;
 mod e16c;
+mod e17a;
 mod en4_counter;
 mod en4_cumulative;
 mod en4_look;

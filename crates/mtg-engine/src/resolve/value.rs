@@ -1906,6 +1906,10 @@ impl<'a> Scope<'a> {
             Amount::Difference(left, right) => {
                 (self.amount_of(left, share)? - self.amount_of(right, share)?).abs()
             }
+            Amount::CountedAsCast(inner) => match self.counted_as_cast(inner) {
+                Some(counted) => counted,
+                None => self.amount_of(inner, share)?,
+            },
             Amount::Divided => {
                 let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
                 self.divided_share(share.recipient)
@@ -2400,6 +2404,15 @@ impl<'a> Scope<'a> {
             .object(self.source.id)
             .filter(|source| source.counter() == self.source.counter)
             .is_some_and(|source| source.held_as_cast(inner))
+    }
+
+    /// What `inner` counted as the spell the source is, or the permanent it became, was cast; `None` for a copy that was
+    /// not cast or a source that moved on.
+    fn counted_as_cast(&self, inner: &Amount) -> Option<i64> {
+        self.state
+            .object(self.source.id)
+            .filter(|source| source.counter() == self.source.counter)
+            .and_then(|source| source.counted_as_cast(inner))
     }
 
     /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is

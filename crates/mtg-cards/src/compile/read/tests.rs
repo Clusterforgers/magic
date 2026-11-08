@@ -1188,6 +1188,7 @@ mod r9w;
 mod r11w;
 // e10c
 mod e10c_writers;
+mod e17a_writers;
 mod fix20_writers;
 mod fix23_writers;
 mod fix25_writers;

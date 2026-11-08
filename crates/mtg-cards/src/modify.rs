@@ -241,6 +241,9 @@ pub enum Duration {
     /// Until the turn it makes a player skip has been skipped ("skip your next turn", CR 614.10): only the rule that a
     /// player skips a turn lasts this long.
     UntilTurnSkipped,
+    /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
+    /// exile"); it lasts for good once that card leaves exile another way.
+    UntilCastFromExile,
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay

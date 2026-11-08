@@ -918,6 +918,10 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller while Jace Beleren stays tapped',
     ],
     [
+      effect(objects(2), { SetController: 1 }, 'UntilCastFromExile', { id: 6, counter: 0 }),
+      'Hill Giant changes controller until Jace Beleren is cast from exile',
+    ],
+    [
       effect(
         objects(2),
         { CantAttackYou: { you: 0, attacked: 'Both' } },

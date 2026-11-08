@@ -22,6 +22,7 @@ mod e14f_turn_up;
 mod e15b_entering;
 mod e15f_words;
 mod e16a_history;
+mod e17a_until_cast;
 pub mod effects;
 pub mod effects_ambient;
 pub mod effects_animate;
