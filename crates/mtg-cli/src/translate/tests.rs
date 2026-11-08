@@ -754,6 +754,7 @@ fn the_end_step_without_your_is_every_players() {
 }
 mod af1;
 mod allgaps;
+mod d20c;
 mod e10a;
 mod e10b;
 mod e10c;
@@ -935,7 +936,6 @@ mod r9p3;
 mod shapes1;
 mod shapes2;
 mod shapes3;
-mod d20c;
 mod slots;
 mod t19a;
 mod vp20;
