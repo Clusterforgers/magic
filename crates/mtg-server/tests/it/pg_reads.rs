@@ -375,4 +375,12 @@ async fn every_card_lists_the_pending_drafts_with_rank_and_whether_a_deck_holds_
     assert_eq!(reply.status, 200);
     assert_eq!(every_card(&server, &ann).await, Vec::<Value>::new());
     assert_eq!(queue(&server, &ann, &deck).await[0]["state"], "approved");
+
+    // The list held from the verdict is not served once the verdict is gone: the draft waits again.
+    let body = json!({"password": PASSWORD}).to_string();
+    let gone = bob
+        .send(server.addr, "DELETE", "/api/auth/account", &body, &[])
+        .await;
+    assert_eq!(gone.status, 204, "{}", gone.text());
+    assert_eq!(every_card(&server, &ann).await[0]["state"], "pending");
 }
