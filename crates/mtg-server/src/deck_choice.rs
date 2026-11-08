@@ -600,6 +600,7 @@ mod tests {
             count,
             support,
             draft: None,
+            differs: Vec::new(),
             reasons: Vec::new(),
         }
     }

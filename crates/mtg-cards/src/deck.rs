@@ -219,6 +219,20 @@ pub struct Summary {
     pub to_read: u32,
 }
 
+/// A printed clause that a draft reads back as other text.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct ReadDiffers {
+    /// Which face the clause is in.
+    pub face: usize,
+    /// Where in that face's oracle text.
+    pub span: crate::card::Span,
+    /// The clause as printed.
+    pub printed: String,
+    /// The engine's own English for the ability that stands for it.
+    pub written: String,
+}
+
 /// One card of a deck as the report shows it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -238,6 +252,11 @@ pub struct ReportCard {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub draft: Option<ReadState>,
+    /// The clauses the card's draft reads back as other text, each beside the engine's words: what a reader compares
+    /// before marking a draft correct. Empty for a card whose draft is not marked as differing.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ReadDiffers>>", optional))]
+    pub differs: Vec<ReadDiffers>,
     /// The clauses left to the table, each with the span of oracle text it covers.
     pub reasons: Vec<Reason>,
 }
@@ -297,7 +316,7 @@ fn name_of<'a>(facts: Option<&'a CardFacts>, oracle_id: &'a str) -> &'a str {
 /// no record.
 type Judged = (
     BTreeMap<String, Option<SupportRecord>>,
-    BTreeMap<String, ReadState>,
+    BTreeMap<String, (ReadState, Vec<ReadDiffers>)>,
 );
 
 /// Decides every distinct card of `deck`: its support, and the state of its draft while it has one that matters.
@@ -318,11 +337,36 @@ fn judge(
             id.clone(),
             facts.map(|facts| library.support(&facts.printed, caps)),
         );
-        if let Some(read) = facts.and_then(|facts| library.draft_state(&facts.printed, caps)) {
-            drafts.insert(id.clone(), read);
+        if let Some(facts) = facts
+            && let Some(read) = library.draft_state(&facts.printed, caps)
+        {
+            drafts.insert(id.clone(), (read, differs_of(library, &facts.printed)));
         }
     }
     (supports, drafts)
+}
+
+/// The clauses a card's draft marked as differing reads back as other text, from its read sheet.
+fn differs_of(library: &Library, printed: &PrintedCard) -> Vec<ReadDiffers> {
+    let Some(draft) = library
+        .draft(&printed.oracle_id)
+        .filter(|draft| draft.differs)
+    else {
+        return Vec::new();
+    };
+    crate::read::sheet(&draft.card, printed)
+        .rows
+        .into_iter()
+        .filter_map(|row| match row.state {
+            crate::read::RowState::Differs { written } => Some(ReadDiffers {
+                face: row.face,
+                span: row.span,
+                printed: row.printed,
+                written,
+            }),
+            _ => None,
+        })
+        .collect()
 }
 
 /// The cards of a deck as the report lists them: by zone, each zone by name.
@@ -358,7 +402,11 @@ fn report_cards(
                     zone,
                     count: *count,
                     support,
-                    draft: drafts.get(id).copied(),
+                    draft: drafts.get(id).map(|(read, _)| *read),
+                    differs: drafts
+                        .get(id)
+                        .map(|(_, differs)| differs.clone())
+                        .unwrap_or_default(),
                     reasons,
                 }
             })
@@ -419,7 +467,7 @@ pub fn deck_report(
     let to_read = judged
         .1
         .values()
-        .filter(|read| **read == ReadState::Pending)
+        .filter(|(read, _)| *read == ReadState::Pending)
         .count();
 
     let mut legality = legality::check(format, &deck, cards);
