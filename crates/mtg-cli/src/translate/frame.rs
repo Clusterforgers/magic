@@ -307,7 +307,9 @@ pub fn all_matching(ctx: &mut Ctx, p: &Params, label: &str, valid: &str) -> Tr<V
     let spec = super::valid::target_spec(ctx, p, None)?;
     let player = matches!(spec["what"].as_str(), Some("Player" | "Opponent"));
     let target = ctx.target(spec)?;
-    let named = valid.contains("Targeted");
+    // `Creature.powerGTX` with `X:Targeted$CardPower` names the target through the number.
+    let named = valid.contains("Targeted")
+        || (valid.contains("X") && ctx.svar("X").is_some_and(|text| text.starts_with("Targeted$")));
     let mut preds = super::valid::selector_any(ctx, valid)?;
     if player && !named {
         preds.push(json!({ "ControlledBy": target }));
