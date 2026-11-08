@@ -80,6 +80,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Exploit" => "Exploit",
         "Soulbond" => "Soulbond",
         "Gravestorm" => "Gravestorm",
+        "Epic" => "Epic",
         "Assist" => "Assist",
         "Sunburst" => "Sunburst",
         "Demonstrate" => "Demonstrate",
@@ -96,7 +97,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
 }
 
 /// Keywords with one cost: the Forge word and the DSL variant.
-const COSTED: [(&str, &str); 44] = [
+const COSTED: [(&str, &str); 45] = [
     ("Mayhem", "Mayhem"),
     ("Disturb", "Disturb"),
     ("Harmonize", "Harmonize"),
@@ -141,10 +142,11 @@ const COSTED: [(&str, &str); 44] = [
     ("Freerunning", "Freerunning"),
     ("Replicate", "Replicate"),
     ("Emerge", "Emerge"),
+    ("Recover", "Recover"),
 ];
 
 /// Keywords with one number.
-const NUMBERED: [(&str, &str); 14] = [
+const NUMBERED: [(&str, &str); 15] = [
     ("Crew", "Crew"),
     ("Saddle", "Saddle"),
     ("Dredge", "Dredge"),
@@ -159,6 +161,7 @@ const NUMBERED: [(&str, &str); 14] = [
     ("Renown", "Renown"),
     ("Casualty", "Casualty"),
     ("Hideaway", "Hideaway"),
+    ("Ripple", "Ripple"),
 ];
 
 /// The DSL keyword a `K:` line or a `KW$` word stands for.

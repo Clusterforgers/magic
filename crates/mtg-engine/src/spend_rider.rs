@@ -149,6 +149,7 @@ fn delayed(
         effects: rider.effects.clone(),
         targets: Vec::new(),
         bindings: vec![(SPELL.to_owned(), vec![Target::Object(spell)])],
+        kept: None,
     })
 }
 

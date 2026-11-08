@@ -739,6 +739,9 @@ const RUNS: &[&str] = &[
     "Keyword.Emerge",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
+    "Keyword.Recover",
+    "Keyword.Ripple",
+    "Keyword.Epic",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -1383,6 +1386,9 @@ mod tests {
     #[case::emerge("Keyword.Emerge", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
     #[case::read_ahead("Keyword.ReadAhead", true)]
+    #[case::recover("Keyword.Recover", true)]
+    #[case::ripple("Keyword.Ripple", true)]
+    #[case::epic("Keyword.Epic", true)]
     #[case::becoming_renowned_triggers("Trigger.BecomesRenowned", true)]
     #[case::exploiting_triggers("Trigger.Exploits", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]

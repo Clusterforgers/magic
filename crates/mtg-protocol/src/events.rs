@@ -1501,6 +1501,7 @@ mod tests {
                 targets: Vec::new(),
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
+                kept: None,
             }))
         };
         assert_eq!(told(&t.state, &created(t.hand), OWNER), Ok(()));

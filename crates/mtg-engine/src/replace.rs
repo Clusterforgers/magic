@@ -2411,6 +2411,7 @@ impl Pass<'_> {
                 }],
                 targets: Vec::new(),
                 bindings: Vec::new(),
+                kept: None,
             },
         )))
     }

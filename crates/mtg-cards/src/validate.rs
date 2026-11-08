@@ -1804,9 +1804,12 @@ impl<'a> Walker<'a> {
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
-            Keyword::Ward(cost) | Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
+            Keyword::Ward(cost)
+            | Keyword::Echo(cost)
+            | Keyword::CumulativeUpkeep(cost)
+            | Keyword::Recover(cost) => {
                 self.at("cost", |w| w.cost(cost));
-                // Ward, echo and cumulative upkeep ask the player for their cost through a payment.
+                // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
             }
             // The cost of these is paid as the cost of an activated ability the keyword adds.
@@ -1884,6 +1887,7 @@ impl<'a> Walker<'a> {
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Casualty(0) => self.problem("casualty needs a power of at least 1"),
             Keyword::Hideaway(0) => self.problem("hideaway needs a number of at least 1"),
+            Keyword::Ripple(0) => self.problem("ripple needs a number of at least 1"),
             Keyword::Devour { counters, of } => {
                 if *counters == 0 {
                     self.problem("devour needs a number of at least 1");
