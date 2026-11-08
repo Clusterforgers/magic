@@ -257,6 +257,7 @@ fn the_end_of_a_spell_copy_that_a_replacement_effect_sent_to_exile_finds_it_ceas
             targets: vec![vec![at]],
             ..Choices::default()
         },
+        left: false,
     }));
     fold(&mut game, &[copied]);
     if resolving {

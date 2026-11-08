@@ -31,10 +31,10 @@ pub use keywords::read_all as read_keywords;
 pub(crate) use keywords::split_items;
 pub use read::subtypes::creature_types;
 pub use read::{
-    BlockPlan, all_groups, block_plan, champion_line, die_row, die_row_texts, equip_line,
-    escalate_cost, escalate_reads, forecast_lines, keyword_grant, reinforce_line, render_ability,
-    render_cost, render_mode, render_variants, same_text, static_pair_texts, subject_group,
-    target_phrases, without_header, written_variants,
+    BlockPlan, all_groups, block_plan, champion_line, die_row, die_row_texts,
+    either_way_pair_texts, equip_line, escalate_cost, escalate_reads, forecast_lines,
+    keyword_grant, reinforce_line, render_ability, render_cost, render_mode, render_variants,
+    same_text, static_pair_texts, subject_group, target_phrases, without_header, written_variants,
 };
 
 /// Reads a dungeon room's text as a clause of this kind, with no face of its own.
@@ -884,7 +884,7 @@ mod tests {
     #[rstest]
     #[case::with_a_cost("Cleave {1}{B}")]
     #[case::with_a_number("Squad 2")]
-    #[case::with_a_word("Epic")]
+    #[case::with_a_word("Banding")]
     #[case::with_a_dash("Impending 4\u{2014}{2}{U}")]
     #[case::alone("Surge")]
     fn an_unknown_keyword_line_does_not_block_the_effect_lines_of_its_spell(#[case] line: &str) {

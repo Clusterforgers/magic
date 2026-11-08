@@ -382,6 +382,12 @@ pub enum Keyword {
     /// "You may cast this as though it had flash. If you cast it any time a sorcery couldn't have been cast, the
     /// controller of the permanent it becomes sacrifices it at the beginning of the next cleanup step."
     FlashSacrifice,
+    /// Recover with its cost (CR 702.59): when a creature its owner owns dies, the card in the graveyard returns to hand if paid, else is exiled.
+    Recover(Cost),
+    /// Ripple N (CR 702.60): on cast, reveal the top N cards and cast those of the same name free.
+    Ripple(u32),
+    /// Epic (CR 702.50): no more spells for the game; the spell is copied each upkeep.
+    Epic,
     /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
     Macro {
         /// The name in the table.
@@ -570,6 +576,9 @@ impl Keyword {
         "Read ahead",
         "Exert",
         "Flash, sacrificed at cleanup",
+        "Recover",
+        "Ripple",
+        "Epic",
         "Macro",
     ];
 
@@ -760,6 +769,9 @@ impl Keyword {
             Keyword::ReadAhead => "Read ahead",
             Keyword::Exert { .. } => "Exert",
             Keyword::FlashSacrifice => "Flash, sacrificed at cleanup",
+            Keyword::Recover(_) => "Recover",
+            Keyword::Ripple(_) => "Ripple",
+            Keyword::Epic => "Epic",
             Keyword::Macro { .. } => "Macro",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
@@ -1009,6 +1021,9 @@ mod tests {
                 once_per_turn: true,
             },
             Keyword::FlashSacrifice,
+            Keyword::Recover(Cost::default()),
+            Keyword::Ripple(4),
+            Keyword::Epic,
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,
