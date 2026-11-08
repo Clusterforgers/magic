@@ -293,6 +293,13 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                     json!({"Tally": {"event": "Attacked", "who": who, "filter": []}}),
                 ));
             }
+            // "The total number of rad counters among players": the counters of the kind on the players added up.
+            if let Some(kind) = what.strip_prefix("Counters.") {
+                let Some(counter) = counter_kind(kind) else {
+                    return unmapped(format!("amount:{head}$Counters.{kind}"));
+                };
+                return Ok(Some(json!({"Counters": {"on": who, "counter": counter}})));
+            }
             // The cards in all their hands together.
             if what == "CardsInHand" {
                 return Ok(Some(json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})));
@@ -603,6 +610,8 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
         },
         "CardPower" => Ok(stat_of_this("Power")),
         "CardToughness" => Ok(stat_of_this("Toughness")),
+        "CardBasePower" => Ok(stat_of_this("BasePower")),
+        "CardBaseToughness" => Ok(stat_of_this("BaseToughness")),
         "CardManaCost" => Ok(stat_of_this("ManaValue")),
         "YourLifeTotal" => Ok(json!({"Life": "You"})),
         "LifeYouGainedThisTurn" => Ok(tallied("You", "LifeGainedTotal")),
