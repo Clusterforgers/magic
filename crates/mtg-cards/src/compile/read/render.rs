@@ -3189,7 +3189,7 @@ impl Writer<'_> {
             let lead = self.name_target();
             return Some(super::w9c_replaced::w9c_shield_text(lead));
         }
-        if let Some(text) = self.g8e_shield(effect) {
+        if let Some(text) = self.g8e_shield(effect).or_else(|| self.g8e_next_shield(effect)) {
             return Some(text);
         }
         if let Some(named) = prevention::c9_fight_named_source(effect) {

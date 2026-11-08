@@ -82,6 +82,28 @@ impl Writer<'_> {
         ))
     }
 
+    /// "prevent the next 1 damage that would be dealt to ~ this turn": a shield of a number of damage to one object.
+    pub(super) fn g8e_next_shield(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::Shield {
+            when:
+                ReplaceWhen::Damage {
+                    to: Some(named),
+                    source,
+                    combat: None,
+                },
+            by: ReplaceBy::PreventUpTo(most),
+            duration: Duration::UntilEndOfTurn,
+        } = effect
+        else {
+            return None;
+        };
+        (source.0.is_empty() && *most > 0).then_some(())?;
+        let object = self.g8e_object(named)?;
+        Some(format!(
+            "prevent the next {most} damage that would be dealt to {object} this turn"
+        ))
+    }
+
     /// The shields of the damage dealt to an object and by it, of the same kind, as one sentence: "prevent all combat
     /// damage that would be dealt to and dealt by ~ this turn".
     pub(super) fn g8e_shield_pair(&mut self, effects: &[Effect]) -> Option<(String, usize)> {

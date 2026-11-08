@@ -483,8 +483,7 @@ fn protection_word(quality: &Selector) -> Option<String> {
     }
     match quality.0.as_slice() {
         [Pred::ChosenColor] => Some("the chosen color".to_owned()),
-        [Pred::Subtype(Subtype(name))] => Some(plural_subtype_word(name)),
-        _ => None,
+        _ => keywords::kind_quality_word(quality),
     }
 }
 
