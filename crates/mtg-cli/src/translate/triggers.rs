@@ -991,6 +991,13 @@ fn decided(
 ) -> Tr<Vec<Value>> {
     let you = json!("You");
     Ok(match p.get("OptionalDecider") {
+        // The printed "you may return target ..." that the script makes mandatory (Spellpyre Phoenix): no decider to ask.
+        None if p
+            .get("TriggerDescription")
+            .is_some_and(|text| text.contains(", you may return target ")) =>
+        {
+            return unmapped("trigger:printed-may-without-OptionalDecider");
+        }
         None => effects,
         Some("You" | "TriggeredCardController") if pays => effects,
         Some("You") if !super::fix26_printed::asks(p) => effects,

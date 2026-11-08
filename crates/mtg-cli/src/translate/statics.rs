@@ -80,7 +80,9 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(found) = super::statics_castonly::cast_only(&p, condition.as_ref()) {
         return found;
     }
-    let mut ability = match super::statics_rules::rule(ctx, &p) {
+    let mut ability = match super::e18a_first::instant_activation(&p)
+        .or_else(|| super::statics_rules::rule(ctx, &p))
+    {
         Some(found) => found?,
         None => by_mode(ctx, &p)?,
     };
@@ -167,7 +169,10 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "MustBlock" => must_act(ctx, p, "MustBlock")?,
         "ReduceCost" => cost_modifier(ctx, p, "Reduce")?,
         "RaiseCost" => cost_modifier(ctx, p, "Increase")?,
-        "AlternativeCost" => super::statics_alt::alternative_cost(ctx, p)?,
+        "AlternativeCost" => match super::e18a_first::free_activation(p) {
+            Some(found) => found?,
+            None => super::statics_alt::alternative_cost(ctx, p)?,
+        },
         "OptionalCost" => super::statics_alt::optional_cost(ctx, p)?,
         other => return unmapped(format!("static:{other}")),
     })

@@ -120,6 +120,8 @@ pub enum ActivationKind {
     Equip,
     /// The cycling ability (CR 702.29).
     Cycling,
+    /// The unearth ability (CR 702.84).
+    Unearth,
     /// A mana ability (CR 605).
     Mana,
     /// Every activated ability, mana abilities included (CR 605.1a).
@@ -291,6 +293,25 @@ pub enum Ability {
         /// CR 118.9); nothing when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         cost: Option<Cost>,
+    },
+    /// "You may pay {0} rather than pay the equip cost of the first equip ability you activate each turn." (CR 118.9): the
+    /// controller activates the abilities of the kind with the cost the keyword prints replaced by {0} while the condition
+    /// holds for them; the rest of the cost (the discard of cycling) and the cost modifiers still apply.
+    FreeActivation {
+        /// The kind of ability: equip, cycling or unearth.
+        kind: ActivationKind,
+        /// The cost is replaced only while this holds for the controller; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
+    },
+    /// "You may activate equip abilities any time you could cast an instant." (CR 602.5d): the controller activates the
+    /// abilities of the kind that are activated only as a sorcery at instant speed while the condition holds for them.
+    InstantActivation {
+        /// The kind of ability.
+        kind: ActivationKind,
+        /// The permission holds only while this holds for the controller; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
     },
     /// An alternative cost to cast this card for (CR 118.9) with the zone it is cast from, the condition that opens it and
     /// the timing: one row of the table of alternative costs (warp, surge, web-slinging, impending). The spell remembers the

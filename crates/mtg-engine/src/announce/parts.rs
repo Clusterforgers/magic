@@ -28,16 +28,18 @@ pub(super) fn read(
     rules: Option<&Ability>,
 ) -> Option<Box<Price>> {
     match (what, rules?) {
-        (What::Ability(ability), Ability::Activated { cost, .. }) => Price::announced_in(
-            cost,
-            state,
-            player,
-            ability.object,
-            ability.source.granter(),
-        )
-        .ok()
-        .filter(|price| !price.parts.is_empty())
-        .map(Box::new),
+        (What::Ability(ability), activated @ Ability::Activated { cost, .. }) => {
+            Price::announced_in(
+                &crate::free_activation::cost(state, player, (*ability, activated), cost),
+                state,
+                player,
+                ability.object,
+                ability.source.granter(),
+            )
+            .ok()
+            .filter(|price| !price.parts.is_empty())
+            .map(Box::new)
+        }
         _ => None,
     }
 }
