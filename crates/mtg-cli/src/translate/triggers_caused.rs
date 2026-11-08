@@ -43,6 +43,8 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         Ok(inner) => inner,
         Err(gap) => return Some(Err(gap)),
     };
+    let mut inner = inner;
+    super::triggers_batch::e19_each_by_wording(&mut inner, p.get("TriggerDescription"));
     let mut caused = json!({ "inner": inner });
     if let Some(by) = by {
         caused["by"] = json!(by);

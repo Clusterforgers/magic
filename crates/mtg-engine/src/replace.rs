@@ -607,6 +607,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
             matches!(to, Some(Ref::This))
         }
         ReplaceWhen::TokenCreation { .. }
+        | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
@@ -1687,6 +1688,9 @@ impl Pass<'_> {
                 return Err(Self::invalid(
                     "replacement effects went on without end".into(),
                 ));
+            }
+            if let Some(decision) = self.e19_mill(at)? {
+                return Ok(Run::Ask(decision));
             }
             self.w9c_split_tokens(at);
             let candidates = self.candidates(at)?;
@@ -3262,6 +3266,7 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 mod day;
+mod e19_mill;
 mod g12a_library;
 
 mod e14b_pay_or_graveyard;

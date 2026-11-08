@@ -1,4 +1,4 @@
-//! Goal: a subject that follows an attachment ("equipped creature") triggers for the host alone, as it was when it left; the events of one batch ("one or more") trigger once for each player they are about and count themselves; the nth card, spell or life gain of a turn triggers once for its player, together or apart, and starts again with each turn; the cause carries the amount of the event.
+//! Goal: a subject that follows an attachment ("equipped creature") triggers for the host alone, as it was when it left; the events of one batch ("one or more") trigger once for each player they are about (counters of a singular subject once for each object) and count themselves; the nth card, spell or life gain of a turn triggers once for its player, together or apart, and starts again with each turn; the cause carries the amount of the event.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -215,19 +215,27 @@ fn cards_put_into_your_graveyard_from_your_library_together_trigger_once_and_cou
     }
 }
 
+/// "On one or more creatures you control": the batch is one event.
 const COUNTER_BATCH: &str = r#"{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"counter":"+1/+1"}}}"#;
+/// "On a creature you control": the counters put on each creature are an event of their own.
+const EACH_BATCH: &str = r#"{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"counter":"+1/+1","each":true}}}"#;
 
 #[rstest]
-#[case::two_creatures_are_one_batch(&[("Bear", 1), ("Watcher", 2)], 1, 3)]
-#[case::one_counter_is_enough(&[("Bear", 1)], 1, 1)]
-#[case::an_opponents_creature(&[("Ogre", 1)], 0, 0)]
-#[case::mine_among_theirs(&[("Ogre", 1), ("Bear", 1)], 1, 1)]
-fn counters_put_together_trigger_once(
+#[case::plural_two_creatures_are_one_batch(COUNTER_BATCH, &[("Bear", 1), ("Watcher", 2)], 1, 3)]
+#[case::singular_each_creature_is_its_own_event(EACH_BATCH, &[("Bear", 1), ("Watcher", 2)], 2, 3)]
+#[case::singular_two_puts_on_one_creature(EACH_BATCH, &[("Bear", 1), ("Bear", 2)], 1, 3)]
+#[case::one_counter_is_enough(COUNTER_BATCH, &[("Bear", 1)], 1, 1)]
+#[case::singular_one_counter(EACH_BATCH, &[("Bear", 1)], 1, 1)]
+#[case::an_opponents_creature(COUNTER_BATCH, &[("Ogre", 1)], 0, 0)]
+#[case::mine_among_theirs(COUNTER_BATCH, &[("Ogre", 1), ("Bear", 1)], 1, 1)]
+#[case::singular_mine_among_theirs(EACH_BATCH, &[("Ogre", 1), ("Bear", 1)], 1, 1)]
+fn counters_put_together_trigger_once_or_once_for_each_creature(
+    #[case] when: &str,
     #[case] puts: &[(&str, i32)],
     #[case] expected: usize,
     #[case] that_many: u32,
 ) {
-    let pre = board(COUNTER_BATCH);
+    let pre = board(when);
     let events: Vec<Event> = puts
         .iter()
         .map(|(name, delta)| {

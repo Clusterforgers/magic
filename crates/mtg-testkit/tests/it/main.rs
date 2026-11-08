@@ -218,6 +218,8 @@ mod e16c_token_attacking;
 mod e17a_until_cast;
 mod e17b_memories;
 mod e18a_first_free;
+mod e19_return_changed;
+mod e19_ward_costs;
 mod elimination;
 mod embalm;
 mod en3_source;
