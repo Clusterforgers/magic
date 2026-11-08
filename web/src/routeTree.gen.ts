@@ -25,10 +25,12 @@ import { Route as DevBuilderRouteImport } from './routes/dev.builder'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
 import { Route as DevPreconsRouteImport } from './routes/dev.precons'
 import { Route as DevReadRouteImport } from './routes/dev.read'
+import { Route as DevReadBulkRouteImport } from './routes/dev.read-bulk'
 import { Route as DevTableRouteImport } from './routes/dev.table'
 import { Route as DevUnvalidatedRouteImport } from './routes/dev.unvalidated'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
+import { Route as ReadBulkRouteImport } from './routes/read_.bulk'
 import { Route as DecksDeckIdUnvalidatedRouteImport } from './routes/decks_.$deckId_.unvalidated'
 
 const IndexRoute = IndexRouteImport.update({
@@ -111,6 +113,11 @@ const DevReadRoute = DevReadRouteImport.update({
   path: '/dev/read',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevReadBulkRoute = DevReadBulkRouteImport.update({
+  id: '/dev/read-bulk',
+  path: '/dev/read-bulk',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevTableRoute = DevTableRouteImport.update({
   id: '/dev/table',
   path: '/dev/table',
@@ -129,6 +136,11 @@ const GameGameIdRoute = GameGameIdRouteImport.update({
 const JoinCodeRoute = JoinCodeRouteImport.update({
   id: '/join/$code',
   path: '/join/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadBulkRoute = ReadBulkRouteImport.update({
+  id: '/read_/bulk',
+  path: '/read/bulk',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DecksDeckIdUnvalidatedRoute = DecksDeckIdUnvalidatedRouteImport.update({
@@ -154,10 +166,12 @@ export interface FileRoutesByFullPath {
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
+  '/dev/read-bulk': typeof DevReadBulkRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
+  '/read/bulk': typeof ReadBulkRoute
   '/decks/$deckId/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRoutesByTo {
@@ -177,10 +191,12 @@ export interface FileRoutesByTo {
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
+  '/dev/read-bulk': typeof DevReadBulkRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
+  '/read/bulk': typeof ReadBulkRoute
   '/decks/$deckId/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRoutesById {
@@ -201,10 +217,12 @@ export interface FileRoutesById {
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
+  '/dev/read-bulk': typeof DevReadBulkRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
+  '/read_/bulk': typeof ReadBulkRoute
   '/decks_/$deckId_/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRouteTypes {
@@ -226,10 +244,12 @@ export interface FileRouteTypes {
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/read'
+    | '/dev/read-bulk'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
     | '/join/$code'
+    | '/read/bulk'
     | '/decks/$deckId/unvalidated'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -249,10 +269,12 @@ export interface FileRouteTypes {
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/read'
+    | '/dev/read-bulk'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
     | '/join/$code'
+    | '/read/bulk'
     | '/decks/$deckId/unvalidated'
   id:
     | '__root__'
@@ -272,10 +294,12 @@ export interface FileRouteTypes {
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/read'
+    | '/dev/read-bulk'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
     | '/join/$code'
+    | '/read_/bulk'
     | '/decks_/$deckId_/unvalidated'
   fileRoutesById: FileRoutesById
 }
@@ -296,10 +320,12 @@ export interface RootRouteChildren {
   DevLobbyRoute: typeof DevLobbyRoute
   DevPreconsRoute: typeof DevPreconsRoute
   DevReadRoute: typeof DevReadRoute
+  DevReadBulkRoute: typeof DevReadBulkRoute
   DevTableRoute: typeof DevTableRoute
   DevUnvalidatedRoute: typeof DevUnvalidatedRoute
   GameGameIdRoute: typeof GameGameIdRoute
   JoinCodeRoute: typeof JoinCodeRoute
+  ReadBulkRoute: typeof ReadBulkRoute
   DecksDeckIdUnvalidatedRoute: typeof DecksDeckIdUnvalidatedRoute
 }
 
@@ -417,6 +443,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevReadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev/read-bulk': {
+      id: '/dev/read-bulk'
+      path: '/dev/read-bulk'
+      fullPath: '/dev/read-bulk'
+      preLoaderRoute: typeof DevReadBulkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/table': {
       id: '/dev/table'
       path: '/dev/table'
@@ -443,6 +476,13 @@ declare module '@tanstack/react-router' {
       path: '/join/$code'
       fullPath: '/join/$code'
       preLoaderRoute: typeof JoinCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/read_/bulk': {
+      id: '/read_/bulk'
+      path: '/read/bulk'
+      fullPath: '/read/bulk'
+      preLoaderRoute: typeof ReadBulkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/decks_/$deckId_/unvalidated': {
@@ -472,10 +512,12 @@ const rootRouteChildren: RootRouteChildren = {
   DevLobbyRoute: DevLobbyRoute,
   DevPreconsRoute: DevPreconsRoute,
   DevReadRoute: DevReadRoute,
+  DevReadBulkRoute: DevReadBulkRoute,
   DevTableRoute: DevTableRoute,
   DevUnvalidatedRoute: DevUnvalidatedRoute,
   GameGameIdRoute: GameGameIdRoute,
   JoinCodeRoute: JoinCodeRoute,
+  ReadBulkRoute: ReadBulkRoute,
   DecksDeckIdUnvalidatedRoute: DecksDeckIdUnvalidatedRoute,
 }
 export const routeTree = rootRouteImport

@@ -144,6 +144,14 @@ A card the checker cannot prove runs automatically once a player has read it (D1
 
 A draft has a source (`forge` for a Forge translation) and `oracle_matches`: Forge's Oracle text equals the printed text after normalising. A draft with source `forge`, `oracle_matches` and no `differs` mark is trusted: its read state is `approved` without a human verdict (a `wrong` verdict still wins), and its card has the state `Forge`: it runs like `Read` (fail-soft resolution included) but is counted apart and shown as "from Forge", never as `Verified`. A Forge draft whose text did not match, or one marked `differs`, needs a read like any other. Source, match and mark are kept in `drafts/meta/<slug>.json`, embedded with the drafts and stored by `compile` in `card_drafts.source`, `card_drafts.oracle_matches` and `card_drafts.differs`; `DraftRules.forge` and `DraftRules.differs` carry them into the library, which never trusts a draft marked `differs`.
 
+#### Bulk reads
+
+Many `differs` drafts differ from the card only in wording. `mtg_cards::wording` decides, per `Differs` clause and with no model, whether the printed words and the engine's say the same thing under a fixed list of named equivalences (`Rule`); a card whose every such clause matches is a bulk candidate.
+
+- Each rule rewrites both wordings to one canonical form; a clause matches when the forms are equal, and lists the fewest rules it needs. The rules: `self_name` ("this creature" as ~), `contraction`, `pronoun` (she, her as it), `back_reference` ("that creature" as it, "those creatures" as they), `elision` ("and it gains" as "and gains"), `and_or`, `duration_order` ("until end of turn" in front), `dies` (rule 700.4), `discard_hand`, `counted_as_x` ("a number of N equal to E" as "X N, where X is E"), `mana_count` ("three {R}"), `any_order` (rule 401.4) and `punctuation` (case, commas, periods, "also", "an", a doubled "then"). None drops a number, a target, a controller, a duration, a "may" or a condition; each has near-miss tests that must not match.
+- A match is a likely equivalence, not a proof: the card stays `Differs` and still needs one human read, given in bulk (`GET` and `PUT /api/reads/bulk`, [server.md](server.md), Reads). An equivalence that is plainly exact belongs in the checker or the renderer instead, so the card reads `Accepted`.
+- `mtg-cli read-candidates [--out FILE] [--misses FILE]` judges the embedded drafts marked `differs` against the local database's cards, read-only: counts per rule, a TSV of slug, name, printed clause, engine clause and rule, and optionally the clauses that matched nothing.
+
 ## Execution
 
 State is the fold of events; the engine is a pure function from state to `Progress` (events or a decision).

@@ -338,10 +338,11 @@ A player reads a card's draft beside its printed text and says whether the game 
 - `ReadCardView` (`useReadCard`) draws the card's name, state (`STATE_WORDS`), counts and the account's own verdict over `ReadSheet`: one row per printed clause, the clause beside the engine's words (`engineWords`) and its steps indented by depth, stacked under `sm`. A row's tone (`toneOf`) marks it with an icon and words; `differs` rows carry the `support-partial` edge and tint, by-hand rows the `support-manual` edge.
 - The verdict: Correct and Wrong stay `aria-disabled` for `READ_DELAY_MS` (2 s) after each draft appears, so nobody judges a card unread. C gives Correct and W opens the note outside a text field (`verdictKey`); a `wrong` needs a note of at most 280 characters (`noteProblem`). A 409 `stale_read` shows "The rules changed" with "Load the new version".
 - `ReadDialog` is the same card view in a dialog. The table's pinned preview offers "Read its rules" to a signed-in player for a card that runs on a read or leaves clauses by hand (`readableOf`); the dialog lives in `CardPreview`, outside the preview it closes, and reads its client from `ReadsApiContext`.
+- `/read/bulk` (`features/bulk-reads/BulkReadPage`, route `read_.bulk.tsx`, client `net/bulkReads.ts`): the wording-only candidates of `GET /api/reads/bulk` in one section per rule (title, summary, count, "Check all"), a row per card with a checkbox, the name, and each clause on the card beside the game's words with the differing words marked (`wordDiff`, a longest common run of words); every card starts checked, and a sticky bar holds the checked count and "Approve N", which sends one `PUT` and reloads the list. The read page shows "N wording-only, approve in bulk" (`BulkLink`) while some wait.
 
 ## Dev routes
 
-All six exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fixture marker or card name reaches the production bundle, and each route has a test that it answers "not found" with no fixture when DEV is off. By hand: `pnpm build && ! grep -r dev-table-fixture dist`. The parameters are read in the route and fixture files; this is what each stands for.
+All seven exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fixture marker or card name reaches the production bundle, and each route has a test that it answers "not found" with no fixture when DEV is off. By hand: `pnpm build && ! grep -r dev-table-fixture dist`. The parameters are read in the route and fixture files; this is what each stands for.
 
 | Route | Stands for |
 |---|---|
@@ -351,6 +352,7 @@ All six exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fix
 | `/dev/precons` | the real precon page over `precons/dev/fixture.ts`; `view` (`list`, `empty`, `loading`, `error`, `unavailable`), `account=1`, `play=refused` |
 | `/dev/unvalidated` | the real not-validated page over `decks/unvalidated/fixture.ts`, signed in; `view` (`all`, `deck`, `clean`, `none`, `loading`, `error`, `unavailable`, `failed`, `texts`) |
 | `/dev/read` | the real review screen over `reads/dev/fixture.ts`, signed in; `view` (`deck`, `precon`, `all`, `done`, `loading`, `error`, `stale`, `dialog`) |
+| `/dev/read-bulk` | the real bulk read screen over `bulk-reads/dev/fixture.ts`, signed in |
 
 ## Testing
 

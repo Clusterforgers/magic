@@ -13,6 +13,7 @@ import { Loading } from '@/components/Loading'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { BulkLink } from '@/features/bulk-reads/BulkLink'
 import { describeDeckError } from '@/features/decks/errors'
 import { cn } from '@/lib/utils'
 import { BY_HAND } from '@/lib/byHand'
@@ -210,17 +211,20 @@ export function ReadView({ api, target }: ReadViewProps) {
             )}
           </p>
         </div>
-        {cards.length === 0 || finished ? null : (
-          <div className="flex flex-wrap gap-2">
-            {target === null ? null : (
-              <Link to="/read" className={buttonVariants({ variant: 'ghost' })}>
-                <LibraryIcon aria-hidden="true" />
-                Every card
-              </Link>
-            )}
-            <BackLink target={target} />
-          </div>
-        )}
+        <div className="flex flex-wrap gap-2">
+          <BulkLink />
+          {cards.length === 0 || finished ? null : (
+            <>
+              {target === null ? null : (
+                <Link to="/read" className={buttonVariants({ variant: 'ghost' })}>
+                  <LibraryIcon aria-hidden="true" />
+                  Every card
+                </Link>
+              )}
+              <BackLink target={target} />
+            </>
+          )}
+        </div>
       </header>
       <p aria-live="polite" className="sr-only">
         {said}
