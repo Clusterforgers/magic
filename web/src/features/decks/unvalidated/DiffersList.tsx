@@ -15,7 +15,7 @@ export function DiffersList({ differs }: DiffersListProps) {
   return (
     <section data-slot="differs" aria-label={DIFFERS_TITLE} className="grid gap-2">
       <p className="flex items-start gap-1 text-sm font-medium text-foreground">
-        <TriangleAlertIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-support-partial" />
+        <TriangleAlertIcon aria-hidden="true" className="mt-px size-4 shrink-0 text-support-partial" />
         {DIFFERS_TITLE}
       </p>
       <ul className="grid gap-2">
