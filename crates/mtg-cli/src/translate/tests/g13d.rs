@@ -257,3 +257,27 @@ fn attackers_declared_at_another_player_word_stay_a_gap() {
         vec!["key:Trigger.AttackersDeclared.AttackedTarget=Player.IsPoisoned".to_owned()]
     );
 }
+
+#[test]
+fn the_greatest_power_among_the_attackers_is_read_from_the_group() {
+    let script = creature(
+        "T:Mode$ AttackersDeclared | ValidAttackers$ Creature.YouCtrl | TriggerZones$ Battlefield | Execute$ Untap\nSVar:Untap:DB$ Untap | UntapUpTo$ True | UntapType$ Land | Amount$ X\nSVar:X:TriggerObjectsAttackers$GreatestCardPower",
+    );
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let effects = abilities(&script)[0]["Triggered"]["effects"].to_string();
+    assert!(
+        effects.contains(r#"{"Greatest":{"of":[{"Is":"Triggering"}],"stat":"Power"}}"#),
+        "{effects}"
+    );
+}
+
+#[test]
+fn the_greatest_power_of_one_attacker_outside_a_group_stays_a_gap() {
+    let script = creature(
+        "T:Mode$ Attacks | ValidCard$ Card.Self | Execute$ Untap\nSVar:Untap:DB$ Untap | UntapUpTo$ True | UntapType$ Land | Amount$ X\nSVar:X:TriggerObjectsAttackers$GreatestCardPower",
+    );
+    assert_eq!(
+        gaps(&script),
+        vec!["amount:TriggerObjectsAttackers-outside-a-group".to_owned()]
+    );
+}

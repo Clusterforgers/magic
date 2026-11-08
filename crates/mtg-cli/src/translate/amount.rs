@@ -450,6 +450,10 @@ fn attacks(ctx: &Ctx, head: &str, what: &str) -> Tr<Option<Value>> {
         .is_some_and(|shape| matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt"));
     match (group, what) {
         (true, "Amount") => Ok(Some(json!("Triggering"))),
+        // The attackers are the subjects of the group event.
+        (true, "GreatestCardPower") => Ok(Some(
+            json!({"Greatest": {"of": [{"Is": "Triggering"}], "stat": "Power"}}),
+        )),
         (true, _) => unmapped(format!("amount:{head}${what}")),
         (false, _) => unmapped(format!("amount:{head}-outside-a-group")),
     }
