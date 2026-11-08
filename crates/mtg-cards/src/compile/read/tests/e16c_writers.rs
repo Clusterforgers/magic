@@ -138,3 +138,40 @@ fn e16c_an_attack_at_the_most_life_reads_back(
         written_variants(&ability(&json))
     );
 }
+
+/// A trigger on counters one player gets together, or on one such event when `batch` is false.
+fn gets(who: &str, counter: &str, batch: bool) -> String {
+    let event = format!(r#"{{"PlayerCountersPut":{{"who":"{who}","counter":{counter}}}}}"#);
+    let when = if batch {
+        format!(r#"{{"Batch":{event}}}"#)
+    } else {
+        event
+    };
+    format!(r#"{{"Triggered":{{"when":{when},"effects":[{DRAW}]}}}}"#)
+}
+
+const ENERGY: &str = r#"{"Other":"energy"}"#;
+const GET_ENERGY: &str = "Whenever you get one or more {E}, draw a card.";
+
+#[rstest]
+#[case::you_get_energy(gets("You", ENERGY, true), GET_ENERGY, true)]
+#[case::an_opponent_gets_poison(
+    gets("Opponents", r#""poison""#, true),
+    "Whenever an opponent gets one or more poison counters, draw a card.",
+    true
+)]
+#[case::another_player(gets("Opponents", ENERGY, true), GET_ENERGY, false)]
+#[case::another_kind(gets("You", r#""poison""#, true), GET_ENERGY, false)]
+#[case::one_event(gets("You", ENERGY, false), GET_ENERGY, false)]
+fn e16c_counters_a_player_gets_read_back(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] same: bool,
+) {
+    assert_eq!(
+        written(&json, clause),
+        same,
+        "{:?}",
+        written_variants(&ability(&json))
+    );
+}

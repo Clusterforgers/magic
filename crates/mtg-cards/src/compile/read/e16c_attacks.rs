@@ -1,6 +1,7 @@
 //! e16c: declarations of attackers at one player, written back: "Whenever you attack a player", "Whenever one or more
 //! creatures attack you", "Whenever an opponent attacks you" and "Whenever two or more Warriors you control attack a
-//! player". No template reads them: only the proposal checker writes them.
+//! player", and counters a player gets together ("Whenever you get one or more {E}"). No template reads them: only the
+//! proposal checker writes them.
 
 use mtg_core::card::CardType;
 
@@ -9,6 +10,7 @@ use crate::effect::Effect;
 use crate::modify::Duration;
 use crate::refs::{Pred, Ref, Selector};
 use crate::trigger::TriggerPattern;
+use crate::value::CounterKind;
 
 use super::selectors::{Form, phrase_text};
 
@@ -74,6 +76,27 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .filter(|text| !texts.contains(text))
         .collect();
     texts.extend(found);
+}
+
+/// "Whenever you get one or more {E}", "Whenever an opponent gets one or more poison counters": counters put on a player
+/// together.
+pub(super) fn e16c_player_counters_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::PlayerCountersPut {
+        who,
+        counter: Some(counter),
+    } = pattern
+    else {
+        return None;
+    };
+    let some = if *counter == CounterKind::Other("energy".to_owned()) {
+        "{E}".to_owned()
+    } else {
+        format!("{} counters", super::counters::kind_text(counter)?)
+    };
+    Some(format!(
+        "Whenever {} one or more {some}",
+        super::triggers::player_verb(who, "get")?
+    ))
 }
 
 /// The player attacked, as the trigger words it.

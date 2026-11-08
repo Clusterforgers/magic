@@ -287,11 +287,19 @@ fn event_amount(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Val
     let key = match p.get("Mode") {
         Some("DamageDone" | "DamageDoneOnce") => "DamageAmount",
         Some("CounterAdded") => "CounterAmount",
+        // "When the last time counter is removed from ~": the counters left once they are removed (e16c).
+        Some("CounterRemoved") => "NewCounterAmount",
         Some("LifeGained" | "LifeLost") => "LifeAmount",
         _ => return Ok((p, intervening)),
     };
     let Some(word) = p.get(key) else {
         return Ok((p, intervening));
+    };
+    // `NewCounterAmount$` gives the number left alone: exactly that many.
+    let word = if key == "NewCounterAmount" && word.parse::<u32>().is_ok() {
+        format!("EQ{word}")
+    } else {
+        word.to_owned()
     };
     let (op, number) = word.split_at_checked(2).unwrap_or_default();
     let op = match op {
@@ -307,7 +315,7 @@ fn event_amount(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Val
         return unmapped(format!("key:Trigger.{key}={word}"));
     };
     // The amount Forge compares for a counter put is the total on the object, not the number this event added.
-    let left = if key == "CounterAmount" {
+    let left = if matches!(key, "CounterAmount" | "NewCounterAmount") {
         let on_itself = p.get("ValidCard") == Some("Card.Self");
         let kind = p.get("CounterType").and_then(super::amount::counter_kind);
         match (on_itself, kind) {

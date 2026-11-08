@@ -334,6 +334,14 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
     },
+    /// Counters are put on a player ("whenever you get one or more {E}"); `Triggering` is that player.
+    PlayerCountersPut {
+        /// Who gets them.
+        who: Ref,
+        /// Only counters of this kind; any kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+    },
     /// Counters are removed from a permanent.
     CountersRemoved {
         /// What loses them; any permanent when empty.

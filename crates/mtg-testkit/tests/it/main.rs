@@ -211,6 +211,7 @@ mod e15c_statics;
 mod e15e_keywords;
 mod e15f_words;
 mod e15g_licids;
+mod e16c_player_counters;
 mod e16c_token_attacking;
 mod elimination;
 mod embalm;

@@ -138,6 +138,12 @@ enum Happened {
         before: u32,
         nth: u32,
     },
+    /// A player got counters of a kind (`delta` above 0) or lost them.
+    PlayerCounters {
+        player: PlayerId,
+        counter: CounterKind,
+        delta: i32,
+    },
     /// A creature was declared as a blocker of an attacker.
     Blocked {
         blocker: ObjectId,
@@ -293,7 +299,9 @@ impl Happened {
             Happened::Damaged { amount, .. }
             | Happened::LifeGained { amount, .. }
             | Happened::LifeLost { amount, .. } => *amount,
-            Happened::Counters { delta, .. } => delta.unsigned_abs(),
+            Happened::Counters { delta, .. } | Happened::PlayerCounters { delta, .. } => {
+                delta.unsigned_abs()
+            }
             Happened::Monstrous { x, .. } | Happened::Cycled { x, .. } => *x,
             Happened::Cast { before, .. } => *before,
             _ => 0,
@@ -1040,21 +1048,24 @@ fn about_players_and_permanents(
                 });
             }
         }
-        Event::CountersChanged(changed) => {
-            if let Target::Object(on) = changed.on {
-                found.push(Happened::Counters {
-                    on: on.id,
-                    counter: changed.counter.clone(),
-                    delta: changed.delta,
-                    before: counters_before(look, changed, on),
-                    nth: if changed.delta > 0 {
-                        object_ordinal(look, on, None, Tally::Countered)
-                    } else {
-                        0
-                    },
-                });
-            }
-        }
+        Event::CountersChanged(changed) => match changed.on {
+            Target::Object(on) => found.push(Happened::Counters {
+                on: on.id,
+                counter: changed.counter.clone(),
+                delta: changed.delta,
+                before: counters_before(look, changed, on),
+                nth: if changed.delta > 0 {
+                    object_ordinal(look, on, None, Tally::Countered)
+                } else {
+                    0
+                },
+            }),
+            Target::Player(player) => found.push(Happened::PlayerCounters {
+                player,
+                counter: changed.counter.clone(),
+                delta: changed.delta,
+            }),
+        },
         Event::Attached { object, to } => found.push(Happened::Attached {
             attachment: *object,
             to: *to,
@@ -1585,6 +1596,17 @@ fn matching_event(
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
         (
+            TriggerPattern::PlayerCountersPut { who, counter },
+            Happened::PlayerCounters {
+                player,
+                counter: kind,
+                delta,
+            },
+        ) => {
+            (*delta > 0 && counter.as_ref().is_none_or(|wanted| wanted == kind) && by(who, player))
+                .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
+        }
+        (
             TriggerPattern::Drew {
                 who,
                 what,
@@ -2056,7 +2078,9 @@ fn batch_causes<'a>(
     };
     let counters = matches!(
         inner,
-        TriggerPattern::CountersPut { .. } | TriggerPattern::CountersRemoved { .. }
+        TriggerPattern::CountersPut { .. }
+            | TriggerPattern::CountersRemoved { .. }
+            | TriggerPattern::PlayerCountersPut { .. }
     );
     let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
     for member in members {

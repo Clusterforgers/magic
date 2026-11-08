@@ -2180,7 +2180,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Surveilled { who }
             | TriggerPattern::Bolstered { who }
             | TriggerPattern::Expend { who, .. }
-            | TriggerPattern::W11cCrime { who } => {
+            | TriggerPattern::W11cCrime { who }
+            | TriggerPattern::PlayerCountersPut { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             TriggerPattern::Drew { who, what, .. } | TriggerPattern::Did { who, what, .. } => {
