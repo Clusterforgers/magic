@@ -1,6 +1,7 @@
 //! Goal: round 16 pack e16b reads "As an additional cost to cast this spell, you may ..." (`Mode$ OptionalCost` of the
 //! spell itself) into an optional `AdditionalCost`, "if this spell's additional cost was paid" into `AdditionalCostPaid`,
-//! and leaves an optional cost of other spells a gap.
+//! a target only the paid spell declares into a bound on it, "if you revealed a Dragon card or controlled a Dragon as you
+//! cast this spell" into the reveal paid or a Dragon held as it was cast, and leaves an optional cost of other spells a gap.
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -85,6 +86,19 @@ fn another_paid_word_is_a_gap() {
         gaps(&card(OPTIONAL, spell))
             .iter()
             .any(|gap| gap.contains("ConditionOptionalPaid")),
+    );
+}
+
+#[test]
+fn a_target_only_the_paid_spell_declares_is_chosen_only_when_it_was_paid() {
+    let spell = "A:SP$ DealDamage | ValidTgts$ Any | NumDmg$ 2 | SubAbility$ DBDestroy\nSVar:DBDestroy:DB$ Destroy | ValidTgts$ Artifact | Condition$ OptionalCost | ConditionOptionalPaid$ True";
+    let text = card(OPTIONAL, spell);
+    assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
+    let found = serde_json::to_string(&abilities(&text)).unwrap();
+    let bound = r#"{"When":{"condition":"AdditionalCostPaid","otherwise":0,"then":1}}"#;
+    assert!(
+        found.contains(&format!(r#""bounds":{{"max":{bound},"min":{bound}}}"#)),
+        "{found}"
     );
 }
 

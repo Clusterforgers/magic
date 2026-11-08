@@ -1,5 +1,6 @@
-//! Goal: an optional blight cost of a spell reads back as "you may blight N" and its payment as "if this spell's additional
-//! cost was paid"; another count, a required cost or the condition turned around never reads back.
+//! Goal: an optional blight cost of a spell reads back as "you may blight N" (a required one as the counter it puts) and
+//! its payment as "if this spell's additional cost was paid", and a revealed-or-controlled Dragon reads back; another
+//! count, subtype, a required cost or the condition turned around never reads back.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -22,9 +23,9 @@ const GAIN_IF_NOT_PAID: &str = r#"{"Spell":{"effects":[{"If":{"condition":{"Not"
     r#"{"AdditionalCost":{"cost":[{"Blight":2}]}}"#,
     "As an additional cost to cast this spell, you may blight 2."
 )]
-#[case::required_blight(
+#[case::required_blight_as_the_older_cards_print_it(
     r#"{"AdditionalCost":{"cost":[{"Blight":1}],"required":true}}"#,
-    "As an additional cost to cast this spell, blight 1."
+    "As an additional cost to cast this spell, put a -1/-1 counter on a creature you control."
 )]
 #[case::paid(
     GAIN_IF_PAID,

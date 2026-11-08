@@ -470,7 +470,8 @@ fn fix14_kicked_target(ctx: &mut Ctx, coming: Option<u8>, condition: Option<&Val
     let (Some(index), Some(condition)) = (coming, condition) else {
         return;
     };
-    if *condition != json!("Kicked") {
+    // An optional additional cost works the same way ("If this spell's additional cost was paid, destroy target ...").
+    if *condition != json!("Kicked") && *condition != json!("AdditionalCostPaid") {
         return;
     }
     let Some(spec) = ctx.targets.get_mut(usize::from(index)) else {
@@ -479,7 +480,7 @@ fn fix14_kicked_target(ctx: &mut Ctx, coming: Option<u8>, condition: Option<&Val
     if spec.get("bounds").is_some() {
         return;
     }
-    let kicked = json!({"When": {"condition": "Kicked", "then": 1, "otherwise": 0}});
+    let kicked = json!({"When": {"condition": condition, "then": 1, "otherwise": 0}});
     spec["bounds"] = json!({"min": kicked, "max": kicked});
 }
 
