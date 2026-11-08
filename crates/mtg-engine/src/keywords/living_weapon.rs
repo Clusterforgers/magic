@@ -43,6 +43,7 @@ pub(super) fn enters_attached_to(token: TokenSpec) -> Ability {
                 count: Amount::Fixed(1),
                 tapped: false,
                 attacking: false,
+                against: None,
                 bind: Some("germ".into()),
             },
             Effect::Attach {

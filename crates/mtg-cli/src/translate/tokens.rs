@@ -206,8 +206,8 @@ fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
         "token": token,
         "count": count,
         "tapped": flag(p, "TokenTapped")?,
-        "attacking": flag(p, "TokenAttacking")?,
     });
+    entering_attacking(ctx, p, &mut create)?;
     if flag(p, "RememberTokens")? {
         let name = match create.get("as") {
             Some(name) => name.clone(),
@@ -222,6 +222,26 @@ fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
     effects.extend(after);
     effects.extend(attach);
     Ok(effects)
+}
+
+/// `TokenAttacking`: the tokens enter attacking (`True`), or attacking the player, planeswalker or battle the trigger's
+/// attack went at (CR 508.4a); any other defender stays a gap.
+pub(super) fn entering_attacking(ctx: &Ctx, p: &Params, create: &mut Value) -> Tr<()> {
+    let word = match p.get("TokenAttacking") {
+        None | Some("False") => return Ok(()),
+        Some("True") => None,
+        Some(word @ ("TriggeredAttackedTarget" | "TriggeredDefender")) => Some(word),
+        Some(other) => return unmapped(format!("key:TokenAttacking={other}")),
+    };
+    create["attacking"] = json!(true);
+    if let Some(word) = word {
+        let against = defined(ctx, word)?;
+        if !matches!(against.as_str(), Some("Against" | "Defending")) {
+            return unmapped(format!("key:TokenAttacking={word}"));
+        }
+        create["against"] = against;
+    }
+    Ok(())
 }
 
 /// What a token script describes: a predefined token of the corpus, or a custom one.

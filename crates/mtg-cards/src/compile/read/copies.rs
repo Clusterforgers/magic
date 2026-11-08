@@ -154,6 +154,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         count,
         tapped,
         attacking,
+        against: None,
         bind: (gains.is_some() || delay.is_some()).then(|| COPY.to_owned()),
     };
     let copy = Ref::Bound(COPY.to_owned());
@@ -349,6 +350,7 @@ fn each_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         count: Amount::one(),
         tapped: false,
         attacking: false,
+        against: None,
         bind: None,
     }])
 }
@@ -366,6 +368,7 @@ pub(super) fn each_text(effect: &Effect, from: &Selector) -> Option<String> {
         count,
         tapped: false,
         attacking: false,
+        against: None,
         bind: None,
     } = effect
     else {
@@ -1022,6 +1025,7 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
         count,
         tapped,
         attacking,
+        against: None,
         bind,
     } = effect
     else {

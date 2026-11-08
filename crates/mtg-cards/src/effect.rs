@@ -1398,6 +1398,10 @@ pub enum Effect {
         /// They enter attacking.
         #[serde(default, skip_serializing_if = "is_false")]
         attacking: bool,
+        /// What they attack when the effect names it (CR 508.4a): the first player, planeswalker or battle this names;
+        /// one that can no longer be attacked leaves them attacking nothing.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        against: Option<Ref>,
         /// Names the tokens for the effects that follow ("then attach this to it").
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,

@@ -3565,12 +3565,16 @@ impl Walker<'_> {
                 who,
                 token,
                 count,
+                against,
                 bind,
                 ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
                 w.at("count", |w| w.amount(count));
+                if let Some(against) = against {
+                    w.at("against", |w| w.reference(against, Kind::Either));
+                }
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }

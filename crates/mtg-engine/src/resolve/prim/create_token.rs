@@ -18,7 +18,7 @@ use crate::choose::{ChoiceOption, OptionChooser, Optioned, Target, pick_options}
 use crate::combat::{AttackTarget, defenders_for};
 use crate::copies::copiable_values;
 use crate::events::Event;
-use crate::object::ObjectRef;
+use crate::object::{GameObject, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::state::GameState;
 use crate::tokens::TokenCreated;
@@ -109,6 +109,30 @@ pub(super) fn attackable(state: &GameState, player: PlayerId) -> Vec<(AttackTarg
         .collect()
 }
 
+/// What a player's tokens attack when the effect names it (CR 508.4a): the first player, planeswalker or battle
+/// `against` names, while that player may still attack it; otherwise nothing.
+fn named_defender(
+    cx: &Cx<'_>,
+    against: &Ref,
+    player: PlayerId,
+) -> Result<Option<AttackTarget>, ResolveError> {
+    let state = cx.state();
+    let aim = match cx.scope.refs(against)?.first() {
+        Some(Target::Player(seat)) => AttackTarget::Player(*seat),
+        // A permanent that left and came back is a new object and is no longer the one attacked (CR 400.7).
+        Some(Target::Object(named))
+            if state.object(named.id).map(GameObject::reference) == Some(*named) =>
+        {
+            AttackTarget::Planeswalker(named.id)
+        }
+        _ => return Ok(None),
+    };
+    Ok(attackable(state, player)
+        .iter()
+        .any(|(target, _)| *target == aim)
+        .then_some(aim))
+}
+
 /// What each token the effect makes is made from: a predefined or described token, a token sized by an amount counted
 /// now (never below zero), or the copies of the objects a reference names.
 fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveError> {
@@ -153,6 +177,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         count,
         tapped,
         attacking,
+        against,
         bind,
     } = effect
     else {
@@ -180,7 +205,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     // Where each player's tokens attack: chosen by their controller, once for all of them.
     let mut aims: Vec<(PlayerId, Option<AttackTarget>)> =
         players.iter().map(|player| (*player, None)).collect();
-    if *attacking {
+    if let (true, Some(against)) = (*attacking, against) {
+        for aim in &mut aims {
+            aim.1 = named_defender(cx, against, aim.0)?;
+        }
+    } else if *attacking {
         let options: Vec<(PlayerId, Vec<(AttackTarget, ChoiceOption)>)> = players
             .iter()
             .map(|player| (*player, attackable(state, *player)))
@@ -252,7 +281,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a token maker creates the number asked for each player it names, under that player's control, with the characteristics and the abilities of the description it names (inline or predefined), tapped when it says so; a token enters attacking only on its controller's own attack after attackers are declared, and the controller is asked which defender only when there is more than one; an unknown token is refused and a copy has the values of what it copies.
+    //! Goal: a token maker creates the number asked for each player it names, under that player's control, with the characteristics and the abilities of the description it names (inline or predefined), tapped when it says so; a token enters attacking only on its controller's own attack after attackers are declared, and the controller is asked which defender only when there is more than one and the effect names none; an unknown token is refused and a copy has the values of what it copies.
     use rstest::rstest;
 
     use super::*;
@@ -616,6 +645,38 @@ mod tests {
                     .all(|t| t.attacking == Some(AttackTarget::Player(defender)))
             );
         }
+    }
+
+    /// A named defender is attacked without a question while the controller may attack it (CR 508.4a); one the
+    /// controller cannot attack leaves the tokens attacking nothing.
+    #[rstest]
+    #[case::an_opponent_named(3, r#""Opponents""#, Some(AttackTarget::Player(FOE)))]
+    #[case::the_controller_itself(3, r#""You""#, None)]
+    #[case::two_seats(2, r#""Opponents""#, Some(AttackTarget::Player(FOE)))]
+    #[case::four_seats(4, r#""Opponents""#, Some(AttackTarget::Player(FOE)))]
+    fn e16c_a_named_defender_is_attacked_without_a_question(
+        #[case] seats: usize,
+        #[case] against: &str,
+        #[case] aim: Option<AttackTarget>,
+    ) {
+        let extra = format!(r#","count":2,"tapped":true,"attacking":true,"against":{against}"#);
+        let made =
+            tokens(run_with(&attacking_game(seats), Vec::new(), &effect(SOLDIER, &extra)).unwrap());
+        assert_eq!(made.len(), 2);
+        assert!(made.iter().all(|t| t.tapped && t.attacking == aim));
+    }
+
+    #[test]
+    fn e16c_a_named_defender_outside_the_attack_is_not_attacked() {
+        let made = tokens(
+            run_with(
+                &game(3),
+                Vec::new(),
+                &effect(SOLDIER, r#","attacking":true,"against":"Opponents""#),
+            )
+            .unwrap(),
+        );
+        assert_eq!(made[0].attacking, None);
     }
 
     #[test]
