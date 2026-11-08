@@ -935,6 +935,7 @@ mod r9p3;
 mod shapes1;
 mod shapes2;
 mod shapes3;
+mod d20c;
 mod slots;
 mod t19a;
 mod vp20;

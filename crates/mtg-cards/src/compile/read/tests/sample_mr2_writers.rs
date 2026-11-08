@@ -70,6 +70,11 @@ const NEMESIS_OF_REASON: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["Thi
     "Whenever a nontoken creature you control dies, this creature deals 1 damage to you and you draw a card."
 )]
 #[case::proliferate_again(ROALESK_DIES, "When ~ dies, proliferate, then proliferate again.")]
+#[case::proliferate_twice(ROALESK_DIES, "When ~ dies, proliferate twice.")]
+#[case::proliferate_twice_activated(
+    r#"{"Activated":{"cost":[{"Mana":"{4}"},"Tap"],"effects":[{"Proliferate":{}},{"Proliferate":{}}]}}"#,
+    "{4}, {T}: Proliferate twice."
+)]
 #[case::draws_then_discards(
     PRISMARI_COMMAND,
     "Choose two \u{2014}\n\u{2022} ~ deals 2 damage to any target.\n\u{2022} Target player draws two cards, then discards two cards.\n\u{2022} Target player creates a Treasure token.\n\u{2022} Destroy target artifact."
