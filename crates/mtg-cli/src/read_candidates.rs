@@ -158,8 +158,66 @@ pub async fn read_candidates(db: &Database, args: &ReadCandidatesArgs) -> Result
             }
         }
         write(path, &misses)?;
-        let _ = write!(text, "misses written {}\n", path.display());
+        let _ = writeln!(text, "misses written {}", path.display());
     }
     let _ = write!(text, "written {}", args.out.display());
     Ok(text)
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a draft marked `differs` whose clause differs only in wording is a candidate with its rule, one that drops
+    //! a clause is a miss, an unmarked draft is not judged, and the TSV and the counts say so.
+    use mtg_import::scryfall::cards_jsonl;
+    use mtg_testkit::corpus::printed_card;
+
+    use super::*;
+
+    const SLATE: &str = include_str!("../drafts/slate_of_ancestry.json");
+    const AETHER: &str = include_str!("../drafts/aether_web.json");
+    const MARKED: &str = r#"{"source": "forge", "oracle_matches": true, "differs": true}"#;
+
+    fn printed(record: &str) -> PrintedCard {
+        let value: serde_json::Value = serde_json::from_str(record).unwrap();
+        let line = value.to_string();
+        printed_card(&cards_jsonl(line.as_bytes()).next().unwrap().unwrap())
+    }
+
+    #[test]
+    fn a_wording_only_draft_is_a_candidate_and_a_dropped_clause_a_miss() {
+        let cards = [
+            printed(include_str!("../drafts/fixtures/slate_of_ancestry.json")),
+            printed(include_str!("../drafts/fixtures/aether_web.json")),
+        ];
+        let files = [("aether_web", AETHER), ("slate_of_ancestry", SLATE)];
+        let meta = [("aether_web", MARKED), ("slate_of_ancestry", MARKED)];
+        let judged = judge(&files, &meta, &mtg_engine::caps(), &cards).unwrap();
+        assert_eq!(judged.len(), 2);
+        let (aether, slate) = (&judged[0], &judged[1]);
+        assert_eq!(aether.candidate, None);
+        assert_eq!(aether.misses.len(), 1);
+        let clauses = slate.candidate.as_ref().unwrap();
+        assert_eq!(clauses[0].rules, [Rule::DiscardHand]);
+        assert_eq!(slate.misses, Vec::<(String, String)>::new());
+
+        let table = tsv(&judged);
+        assert_eq!(table.lines().count(), 2);
+        assert!(
+            table
+                .lines()
+                .nth(1)
+                .unwrap()
+                .starts_with("slate_of_ancestry\tSlate of Ancestry\t")
+        );
+        assert!(table.trim_end().ends_with("\tdiscard_hand"));
+        let counts = summary(&judged);
+        assert!(
+            counts.starts_with("2 drafts marked differs, 1 bulk candidates"),
+            "{counts}"
+        );
+        assert!(counts.contains("discard_hand"), "{counts}");
+
+        let unmarked = judge(&files, &[], &mtg_engine::caps(), &cards).unwrap();
+        assert_eq!(unmarked.len(), 0);
+    }
 }

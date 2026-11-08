@@ -131,7 +131,7 @@ async fn the_list_holds_a_wording_only_draft_and_not_one_that_drops_a_clause(poo
     );
     assert_eq!(clause["rules"], json!(["discard_hand"]));
     assert_eq!(list["rules"][0]["name"], "discard_hand");
-    assert!(!list["rules"][0]["summary"].as_str().unwrap().is_empty());
+    assert_ne!(list["rules"][0]["summary"].as_str().unwrap(), "");
 }
 
 #[sqlx::test(migrations = false)]

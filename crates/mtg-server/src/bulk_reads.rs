@@ -34,6 +34,25 @@ fn matches() -> &'static Matches {
     MATCHES.get_or_init(Matches::default)
 }
 
+/// The match of the draft with `read_hash`, from the cache or worked out once.
+fn matched(
+    read_hash: &str,
+    work: impl FnOnce() -> Option<Vec<ClauseMatch>>,
+) -> Option<Arc<Vec<ClauseMatch>>> {
+    let known = matches()
+        .lock()
+        .ok()
+        .and_then(|map| map.get(read_hash).cloned());
+    if let Some(found) = known {
+        return found;
+    }
+    let found = work().map(Arc::new);
+    if let Ok(mut map) = matches().lock() {
+        map.insert(read_hash.to_owned(), found.clone());
+    }
+    found
+}
+
 /// The wire form of one candidate.
 fn wire_card(id: &str, name: &str, read_hash: &str, clauses: &[ClauseMatch]) -> BulkCard {
     let rule = clauses
@@ -97,20 +116,9 @@ impl Session<'_> {
             let Some(draft) = rules.library().draft(card.oracle_id.as_str()) else {
                 continue;
             };
-            let known = matches()
-                .lock()
-                .ok()
-                .and_then(|map| map.get(&current.read_hash).cloned());
-            let found = match known {
-                Some(found) => found,
-                None => {
-                    let found = bulk_candidate(&draft.differs(&printed_card(card))).map(Arc::new);
-                    if let Ok(mut map) = matches().lock() {
-                        map.insert(current.read_hash.clone(), found.clone());
-                    }
-                    found
-                }
-            };
+            let found = matched(&current.read_hash, || {
+                bulk_candidate(&draft.differs(&printed_card(card)))
+            });
             if let Some(clauses) = found {
                 cards.push(wire_card(
                     card.oracle_id.as_str(),

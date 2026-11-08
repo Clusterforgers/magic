@@ -459,15 +459,12 @@ fn mana_count(words: &mut Vec<String>) {
         let symbol = words
             .get(i + 1)
             .filter(|w| w.starts_with('{') && w.ends_with('}') && w.len() == 3);
-        match (count, symbol) {
-            (Some(count), Some(symbol)) => {
-                out.extend(std::iter::repeat_n(symbol.clone(), count));
-                i += 2;
-            }
-            _ => {
-                out.push(words[i].clone());
-                i += 1;
-            }
+        if let (Some(count), Some(symbol)) = (count, symbol) {
+            out.extend(std::iter::repeat_n(symbol.clone(), count));
+            i += 2;
+        } else {
+            out.push(words[i].clone());
+            i += 1;
         }
     }
     *words = out;
