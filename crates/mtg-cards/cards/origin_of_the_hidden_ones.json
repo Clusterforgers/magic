@@ -1,0 +1,84 @@
+{
+  "oracle_id": "9c8f1abb-bd08-41e0-91ed-56ff25d7f9f2",
+  "name": "Origin of the Hidden Ones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Origin of the Hidden Ones",
+      "oracle_fingerprint": "df35264fe68ad6e9b3f823daabadb47c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Assassin",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Assassin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Attacks": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "Subtype": "Assassin" },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Assassin",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Assassin"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Menace" }]
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

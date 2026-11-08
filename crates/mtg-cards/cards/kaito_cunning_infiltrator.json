@@ -1,0 +1,102 @@
+{
+  "oracle_id": "f6d3f145-00e0-47cd-91d8-0381c19a000d",
+  "name": "Kaito, Cunning Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaito, Cunning Infiltrator",
+      "oracle_fingerprint": "8f87c29e859f064d85b3c1f67353a078",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} },
+              { "Discard": {} }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ninja",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ninja"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "SpellCast": {} },
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Ninja",
+                                  "colors": ["Blue"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Ninja"],
+                                  "power": 2,
+                                  "toughness": 1
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

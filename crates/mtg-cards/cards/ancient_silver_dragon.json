@@ -1,0 +1,35 @@
+{
+  "oracle_id": "939556c8-e363-4453-a624-ca52b151467e",
+  "name": "Ancient Silver Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Silver Dragon",
+      "oracle_fingerprint": "5036330fbe09389172d3982084453107",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        { "Draw": { "count": { "DieResult": "Only" } } },
+                        { "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "Forever" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

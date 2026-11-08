@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a78f981a-bf8a-42a4-b171-d655cc2cc1a2",
+  "name": "Razorkin Needlehead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razorkin Needlehead",
+      "oracle_fingerprint": "abe55a1590cace5b764a9d30617511cd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "Opponents" } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

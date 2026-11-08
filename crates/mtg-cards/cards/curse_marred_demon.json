@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f30a084c-5705-40f5-8e0d-2083d33973c7",
+  "name": "Curse-Marred Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse-Marred Demon",
+      "oracle_fingerprint": "4c2d75bd8dc5ce1eb7ff3892898a63f6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "Discard": { "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

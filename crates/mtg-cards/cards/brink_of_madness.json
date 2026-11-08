@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3209ad08-5482-4dd4-a02e-1dbe99ce6b54",
+  "name": "Brink of Madness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brink of Madness",
+      "oracle_fingerprint": "36705b4d2c17a3bed8c37426ee921e5d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

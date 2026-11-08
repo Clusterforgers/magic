@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4ffa7cc8-4774-430d-b898-5bd26366e124",
+  "name": "Shoulder to Shoulder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shoulder to Shoulder",
+      "oracle_fingerprint": "5367059fae0a9a5a5cae3571a2b391db",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2e5b8973-4f6e-4abe-bbbe-81fdca784997",
+  "name": "Blooming Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blooming Blast",
+      "oracle_fingerprint": "63db7bfba25285acf87e3dc0090648f7",
+      "abilities": [
+        { "Keyword": { "Gift": "Treasure" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 1 } },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fd077d1a-f395-41c2-b1df-dd5e2f723abf",
+  "name": "Cursed Wombat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Wombat",
+      "oracle_fingerprint": "79a542dcc6f45b5f0e993c7d63bdf88b",
+      "abilities": [
+        { "Activated": { "cost": "{2}{B}{G}", "effects": [{ "Adapt": { "count": 2 } }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+                    "limit": "OncePerTurn",
+                    "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

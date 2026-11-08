@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a2845761-7e43-4a88-8fc2-2d95d471b00c",
+  "name": "Override",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Override",
+      "oracle_fingerprint": "ebd7ff6fa1afc62529a9778f240bad83",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
