@@ -210,7 +210,7 @@ fn a_gating_word_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
 #[case::two_colors_not_spent("ConditionManaNotSpent$ R G")]
 #[case::other_player_life("ConditionLifeTotal$ TargetedOrController | ConditionLifeAmount$ GT3")]
 #[case::life_without_amount("ConditionLifeTotal$ You")]
-#[case::unknown_word("Condition$ MaxSpeed")]
+#[case::unknown_word("Condition$ HighestSpeed")]
 #[case::not_present_beside_present("ConditionNotPresent$ Card | ConditionPresent$ Land")]
 fn a_condition_value_the_table_does_not_know_stays_a_gap(#[case] keys: &str) {
     assert!(gaps(&chain(keys)).into_iter().next().is_some());
