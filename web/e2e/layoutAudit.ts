@@ -17,6 +17,17 @@ export const SIZES: readonly Size[] = [
   { width: 390, height: 844 },
 ]
 
+/** Sizes between and beyond the design sizes that the layout gate sweeps too: a wide window, a laptop, a tablet and a small phone. */
+export const EXTRA_SIZES: readonly Size[] = [
+  { width: 1600, height: 1000 },
+  { width: 1400, height: 900 },
+  { width: 768, height: 1024 },
+  { width: 360, height: 740 },
+]
+
+/** The sizes of the layout gate: the six design sizes, then the extra ones. */
+export const GATE_SIZES: readonly Size[] = [...SIZES, ...EXTRA_SIZES]
+
 /** The two colour schemes of the app. */
 export const THEMES = ['light', 'dark'] as const
 
