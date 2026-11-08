@@ -67,6 +67,11 @@ fn w18_what_a_permanent_becomes(#[case] left: &str, #[case] right: &str, #[case]
     "Destroy up to X target creatures, where X is the number of creatures you control.",
     false
 )]
+#[case::another_x_in_the_targets(
+    "Destroy any number of target artifacts with total mana value X or less.",
+    "Destroy up to X target artifacts with total mana value X or less, where X is the number of artifacts on the battlefield.",
+    false
+)]
 #[case::a_fixed_bound(
     "Destroy up to two target artifacts.",
     "Destroy any number of target artifacts.",

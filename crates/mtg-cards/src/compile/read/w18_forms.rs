@@ -29,10 +29,7 @@ fn lower_starts(text: &str) -> Option<String> {
     let mut start = true;
     let mut chars = text.chars().peekable();
     while let Some(c) = chars.next() {
-        if start
-            && c.is_ascii_uppercase()
-            && chars.peek().is_some_and(|next| next.is_ascii_lowercase())
-        {
+        if start && c.is_ascii_uppercase() && chars.peek().is_some_and(char::is_ascii_lowercase) {
             out.push(c.to_ascii_lowercase());
         } else {
             out.push(c);
@@ -236,7 +233,9 @@ fn any_number(text: &str) -> Option<String> {
     let same = |text: &str| text.replace("and/or", "and");
     let (kind_same, pool_same) = (same(kind), same(pool));
     let named = kind_same.strip_prefix(pool_same.as_str())?;
-    if pool.is_empty() || !(named.is_empty() || named.starts_with(' ')) {
+    // Another "X" in the targets ("with total mana value X or less") is not the number the bound counts.
+    let other_x = kind.split(' ').any(|word| word == "X");
+    if pool.is_empty() || other_x || !(named.is_empty() || named.starts_with(' ')) {
         return None;
     }
     Some(format!(
