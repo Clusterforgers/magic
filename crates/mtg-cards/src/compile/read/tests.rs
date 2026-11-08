@@ -415,6 +415,7 @@ mod t15a_rewordings_writers;
 mod t16a_named_abilities;
 mod t17b_attached;
 mod t18_binds;
+mod t18_demorgan;
 mod t17b_writers;
 mod tail_alone;
 mod tail_pairs;

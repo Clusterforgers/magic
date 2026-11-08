@@ -218,6 +218,7 @@ mod w20c_counter;
 mod w20c_owners;
 mod w20c_taken;
 mod t18_binds;
+mod t18_demorgan;
 mod w21a_atoms;
 mod w2b_you_and;
 mod w2c_counts;

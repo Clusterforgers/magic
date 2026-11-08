@@ -557,6 +557,14 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // "not (not a or not b)" in a list of conditions reads as "a" and "b".
+    if let Some(flat) = super::t18_demorgan::t18_flattened(ability) {
+        for text in written_variants(&flat) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
     let six_sided: Vec<String> = texts
         .iter()
         .filter_map(|text| super::fix23_dice::fix23_six_sided(text))
