@@ -94,7 +94,7 @@ pub(crate) fn assemble_record(
 ) -> Assembled {
     let attach = matches!(
         record.support,
-        Support::Verified | Support::Read | Support::Forge | Support::Partial
+        Support::Verified | Support::Read | Support::Forge | Support::Unverified | Support::Partial
     );
     let face_of = |index: usize| -> CardDefinition {
         let mut definition = printed_side(&printed.faces[index]);
@@ -114,7 +114,11 @@ pub(crate) fn assemble_record(
             }
         }
         definition.manual = manual_clauses(&record, attach, index, printed);
-        definition.read = from_draft || matches!(record.support, Support::Read | Support::Forge);
+        definition.read = from_draft
+            || matches!(
+                record.support,
+                Support::Read | Support::Forge | Support::Unverified
+            );
         definition.partial = attach && !definition.manual.is_empty();
         definition
     };
