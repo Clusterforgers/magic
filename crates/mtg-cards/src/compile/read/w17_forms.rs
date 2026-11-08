@@ -316,10 +316,11 @@ fn qualifier_run(text: &str) -> (Vec<&'static str>, &str, &str) {
 fn other_than(text: &str) -> Option<String> {
     let mut words: Vec<String> = text.split(' ').map(str::to_owned).collect();
     let mut from = 0;
-    while let Some(k) = (from..words.len().saturating_sub(3)).find(|k| {
+    while let Some(k) = (from..words.len().saturating_sub(2)).find(|k| {
         words[*k] == "other"
             && words[k + 1] == "than"
-            && (words[k + 2].starts_with('~') || words[k + 2] == "this")
+            // "~" may be the last word once the card's name is canonical; "this" needs its noun after it.
+            && (words[k + 2].starts_with('~') || (words[k + 2] == "this" && k + 3 < words.len()))
     }) {
         from = k + 1;
         // The card is "~" or "this creature"; what ends the phrase stays.
