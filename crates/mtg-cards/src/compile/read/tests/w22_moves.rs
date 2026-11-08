@@ -114,6 +114,16 @@ fn w22_a_chosen_card_put_there_this_turn(
     "{2}{G}: Put this card from your graveyard into your library third from the top.",
     true
 )]
+#[case::top_from_the_graveyard(
+    r#"{"Activated":{"cost":"{5}{B}{B}","effects":[{"Move":{"to":{"Library":{"place":"Top"}},"what":"This"}}],"from":"Graveyard"}}"#,
+    "{5}{B}{B}: Put this creature on top of your library from your graveyard.",
+    true
+)]
+#[case::top_from_the_battlefield_for_the_graveyard(
+    r#"{"Activated":{"cost":"{5}{B}{B}","effects":[{"Move":{"to":{"Library":{"place":"Top"}},"what":"This"}}]}}"#,
+    "{5}{B}{B}: Put this creature on top of your library from your graveyard.",
+    false
+)]
 #[case::from_the_battlefield_not_the_graveyard(
     r#"{"Activated":{"cost":"{2}{G}","effects":[{"Move":{"to":{"Library":{"place":{"Below":2}}},"what":"This"}}]}}"#,
     "{2}{G}: Put this card from your graveyard into your library third from the top.",

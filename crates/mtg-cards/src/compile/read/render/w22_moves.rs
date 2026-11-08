@@ -130,15 +130,24 @@ pub fn w22_library_wordings(ability: &Ability, texts: &mut Vec<String>) {
     ) {
         return;
     }
+    let battlefield = |text: &String| {
+        let lower = text.to_lowercase();
+        lower.contains("put ~ ") && lower.contains("owner's library")
+    };
     let moved: Vec<String> = texts
         .iter()
-        .filter(|text| text.to_lowercase().contains("put ~ into "))
+        .filter(|text| battlefield(text))
         .map(|text| {
             let mut text = text
                 .replace("put ~ into", "put ~ from your graveyard into")
                 .replace("Put ~ into", "Put ~ from your graveyard into");
             for owner in ["its", "her", "his"] {
-                text = text.replace(&format!(" {owner} owner's library"), " your library");
+                let place = format!(" {owner} owner's library");
+                text = if text.contains("from your graveyard into") {
+                    text.replace(&place, " your library")
+                } else {
+                    text.replace(&place, " your library from your graveyard")
+                };
             }
             text
         })
@@ -146,12 +155,12 @@ pub fn w22_library_wordings(ability: &Ability, texts: &mut Vec<String>) {
             // The zone says it: the clause does not add that the ability works only there.
             let plain = text.replace(", then activate only if it is in your graveyard", "");
             let card = plain
-                .replace("put ~ from", "put this card from")
-                .replace("Put ~ from", "Put this card from");
+                .replace("put ~ ", "put this card ")
+                .replace("Put ~ ", "Put this card ");
             [text, plain, card]
         })
         .collect();
-    texts.retain(|text| !text.to_lowercase().contains("put ~ "));
+    texts.retain(|text| !battlefield(text));
     for text in moved {
         if !texts.contains(&text) {
             texts.push(text);
