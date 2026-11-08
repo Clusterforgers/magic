@@ -387,10 +387,11 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
                 loose.unwrap_or_default()
             }
             // A target an earlier step moved is another object now (CR 400.7), so `Targeted` stays a gap.
-            "Remembered" | "RememberedCard" | "RememberedLKI" | "ChosenCard" | "ChosenPlayer"
-            | "Sacrificed" => defined(ctx, word)?,
+            "ChosenCard" | "ChosenPlayer" | "Sacrificed" => defined(ctx, word)?,
             w if super::triggered::is_word(w) => defined(ctx, w)?,
-            other => return unmapped(format!("key:ImmediateTrigger.RememberObjects={other}")),
+            w => super::refs::read_or(ctx, w, super::refs::Scope::Reflexive, || {
+                format!("key:ImmediateTrigger.RememberObjects={w}")
+            })?,
         };
         let bind = ctx.fresh("when");
         out.push(json!({"Bind": {"what": what, "as": bind}}));
