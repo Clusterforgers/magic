@@ -202,12 +202,9 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
     }
 }
 
-/// The reference of a `Defined$` word the table does not know: what the source imprinted or its controller, else a gap.
-pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
+/// The reference of a `Defined$` phrase the reader table (`refs.rs`) does not know, else a gap.
+pub fn defined_word(word: &str) -> Tr<Value> {
     match word {
-        "Imprinted" | "Player.IsImprinted" => memory::imprinted(ctx),
-        // The controller of the card the ability belongs to, who need not be the player who activated it.
-        "SourceController" => Ok(json!({"ControllerOf": "This"})),
         // The Onslaught Crowns: "enchanted creature and other creatures that share a creature type with it", read
         // once the Crown is sacrificed (the engine names its host by last known information).
         "AttachedBy Sacrificed & Valid Creature.sharesCreatureTypeWith AttachedBy Sacrificed" => {

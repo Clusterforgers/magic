@@ -803,6 +803,7 @@ mod fix6;
 mod fix7;
 mod fix8;
 mod fix9;
+mod fp20;
 mod frame;
 mod g10a;
 mod g10b;

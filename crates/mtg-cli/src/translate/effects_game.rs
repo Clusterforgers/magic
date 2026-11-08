@@ -117,7 +117,7 @@ fn amass(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let count = amount(ctx, p.get("Num").unwrap_or("1"))?;
     let mut node = json!({"Amass": {"subtype": kind, "count": count}});
     // "The amassed Army": the Army that got the counters.
-    if super::remember::wanted(p, &["RememberAmass"]) {
+    if super::remember::wanted(p, "Amass") {
         super::remember::bind_moved(ctx, &mut node, "Amass", "amassed");
     }
     Ok(node)

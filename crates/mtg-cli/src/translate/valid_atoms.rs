@@ -171,6 +171,14 @@ fn objects_of(ctx: &Ctx, word: &str) -> Tr<Value> {
 /// names (`Self`, `Enchanted`, `Valid ...`); `None` for a word that is neither.
 fn controller_of(ctx: &Ctx, word: &str) -> Option<Value> {
     let word = word.trim();
+    // The owner of the enchanted or equipped permanent is a `Defined$` word only: the one script that filters by it (Become
+    // the Pilot) says less than its card, so the filter waits for a probe that reads it as printed.
+    if matches!(
+        word,
+        "EnchantedOwner" | "EquippedOwner" | "ThisTargetedOwner"
+    ) {
+        return None;
+    }
     let found = defined(ctx, word).ok()?;
     if is_player(&found) {
         return Some(found);
