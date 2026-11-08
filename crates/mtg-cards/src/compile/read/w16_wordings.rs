@@ -9,6 +9,7 @@ pub(super) fn normal(text: &str) -> String {
     // Lines of a clause join as one text: a line break is a space.
     let mut text = text.split_whitespace().collect::<Vec<_>>().join(" ");
     for step in [
+        super::w19r_stutter::once,
         super::w18_forms::early,
         pronouns,
         dies,
