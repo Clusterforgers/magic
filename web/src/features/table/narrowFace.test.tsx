@@ -2,7 +2,8 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { permanent } from '@/test-utils/cards'
-import { TextFace, NARROW_PX } from './CardFace'
+import { TextFace } from './CardFace'
+import { NARROW_PX } from './cardSize'
 import { CardWidthContext } from './ImageFace'
 
 function draw(width: number) {

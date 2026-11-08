@@ -17,7 +17,7 @@ import {
   typeLine,
 } from './cardModel'
 import type { CombatRole, Frame, Links } from './cardModel'
-import { FRAME, SIZE } from './cardSize'
+import { FRAME, NARROW_PX, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { isUnattached } from '@/play/hosts'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
@@ -62,9 +62,6 @@ function nameLinesOf(turned: boolean, full: boolean, size: CardSize, narrow: boo
   if (turned) return size === 'compact' ? 'line-clamp-1' : 'line-clamp-2'
   return full ? 'line-clamp-2' : 'line-clamp-3'
 }
-
-/** A compact face narrower than this (px) has no room for a second line of name nor a wrapped row of marks. */
-export const NARROW_PX = 76
 
 // A name breaks between words, never inside one: a word wider than the face ends in an ellipsis.
 function Words({ text, single }: { text: string; single: boolean }) {
