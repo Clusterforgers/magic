@@ -1096,6 +1096,9 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         );
         let effects = chain_at(ctx, &part.without(&["ModeCost"]), true)?;
         let mut mode = json!({ "effects": effects });
+        if let Some(label) = e15f_mode_name(&part) {
+            mode["label"] = json!(label);
+        }
         if !ctx.targets.is_empty() {
             mode["targets"] = Value::Array(std::mem::take(&mut ctx.targets));
         }
@@ -1140,6 +1143,32 @@ fn charm(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         modal["different_players"] = json!(true);
     }
     Ok(json!({ "Modal": modal }))
+}
+
+/// The name a card prints before a mode ("Charge Them — Creatures you control get +2/+0"): the words before the dash of
+/// the part's description, or the `PrecostDesc$` of a Tiered mode. The read-back compares it with the printed line, so a
+/// name the card does not print reads as another text.
+pub(super) fn e15f_mode_name(part: &Params) -> Option<String> {
+    if let Some(name) = part.get("PrecostDesc") {
+        return e15f_name_words(name.trim()).then(|| name.trim().to_owned());
+    }
+    let (name, rest) = part.get("SpellDescription")?.split_once(" \u{2014} ")?;
+    let name = name.trim();
+    (e15f_name_words(name) && !rest.trim().is_empty()).then(|| name.to_owned())
+}
+
+/// Whether the text can be the name of a mode: up to six words that start with a capital letter, a digit or a quote,
+/// with no sentence mark, cost or card name in them.
+fn e15f_name_words(name: &str) -> bool {
+    let opens = name
+        .chars()
+        .next()
+        .is_some_and(|c| c.is_uppercase() || c.is_ascii_digit() || c == '"' || c == '\u{201c}');
+    opens
+        && name.len() <= 40
+        && name.split(' ').count() <= 6
+        && !name.contains(['.', ':', '{', '}', '~', '+', '\u{2014}', '|'])
+        && !name.contains("CARDNAME")
 }
 
 /// Whether the mode has one target specification, of one player or one opponent.

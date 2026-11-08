@@ -53,6 +53,7 @@ mod embalm;
 mod enchant;
 mod encore;
 mod entwine;
+pub(crate) mod epic;
 mod equip;
 mod escape;
 mod eternalize;
@@ -120,9 +121,11 @@ mod ravenous;
 mod reach;
 mod rebound;
 mod reconfigure;
+mod recover;
 mod replicate;
 mod retrace;
 mod riot;
+mod ripple;
 mod saddle;
 mod scavenge;
 mod shadow;
@@ -132,6 +135,7 @@ mod soulbond;
 mod spectacle;
 mod split_second;
 mod squad;
+mod start_your_engines;
 mod station;
 mod storm;
 mod sunburst;
@@ -560,9 +564,13 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
+        Keyword::StartYourEngines => &start_your_engines::StartYourEngines,
         Keyword::JobSelect => &job_select::JobSelect,
         Keyword::EquipTo { .. } => &equip::EquipTo,
         Keyword::FlashSacrifice => &r6f_flash_sacrifice::FlashSacrifice,
+        Keyword::Recover(_) => &recover::Recover,
+        Keyword::Ripple(_) => &ripple::Ripple,
+        Keyword::Epic => &epic::Epic,
         Keyword::Macro { .. } => &macro_keyword::MacroKeyword,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
@@ -925,6 +933,7 @@ mod tests {
             Keyword::Hideaway(4),
             Keyword::Gift(GiftKind::Card),
             Keyword::ForMirrodin,
+            Keyword::StartYourEngines,
             Keyword::JobSelect,
             Keyword::EquipTo {
                 to: Box::default(),
@@ -966,6 +975,9 @@ mod tests {
                 once_per_turn: false,
             },
             Keyword::FlashSacrifice,
+            Keyword::Recover(cost()),
+            Keyword::Ripple(4),
+            Keyword::Epic,
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,
@@ -1082,6 +1094,9 @@ mod tests {
         "Keyword.Saddled",
         "Keyword.Exert",
         "Keyword.FlashSacrifice",
+        "Keyword.Recover",
+        "Keyword.Ripple",
+        "Keyword.Epic",
         "Keyword.Macro",
         "Keyword.Station",
         "Keyword.Myriad",
@@ -1099,6 +1114,7 @@ mod tests {
         "Keyword.Fabricate",
         "Keyword.Ascend",
         "Keyword.ForMirrodin",
+        "Keyword.StartYourEngines",
         "Keyword.JobSelect",
         "Keyword.EquipTo",
         "Keyword.Encore",
@@ -1270,6 +1286,9 @@ mod tests {
     #[case::cipher(Keyword::Cipher, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::haunt(Keyword::Haunt, Hooks { abilities: 2, ..Hooks::none() })]
     #[case::flash_sacrifice(Keyword::FlashSacrifice, Hooks { timing: true, abilities: 1, ..Hooks::none() })]
+    #[case::recover(Keyword::Recover(Cost::mana("{R}{R}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::ripple(Keyword::Ripple(4), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::epic(Keyword::Epic, Hooks::none())]
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
@@ -1301,6 +1320,7 @@ mod tests {
     #[case::decayed(Keyword::Decayed, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ascend(Keyword::Ascend, Hooks::none())]
+    #[case::start_your_engines(Keyword::StartYourEngines, Hooks::none())]
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::equip_to(Keyword::EquipTo { to: Box::default(), cost: Cost::mana("{1}".parse().unwrap()) }, Hooks { abilities: 1, ..Hooks::none() })]

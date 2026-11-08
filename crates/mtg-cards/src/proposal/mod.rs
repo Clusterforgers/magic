@@ -8,6 +8,7 @@
 mod blame;
 mod blocks;
 mod complete;
+mod e15c_beheld;
 mod merge;
 mod pairing;
 pub mod partial;

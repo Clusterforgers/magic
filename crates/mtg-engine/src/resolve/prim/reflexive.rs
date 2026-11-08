@@ -42,6 +42,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         effects: effects.clone(),
         targets: targets.clone(),
         bindings,
+        kept: None,
     };
     Ok(Run::events(vec![
         Event::DelayedTriggerCreated(Box::new(created)),

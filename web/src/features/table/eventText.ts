@@ -174,6 +174,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     const { power, toughness } = modification.SetPowerToughness
     return `${becomes} ${power}/${toughness}`
   }
+  if ('LoseAbility' in modification) return `${loses} one of its abilities`
   if ('Goaded' in modification) return `${group ? 'are' : 'is'} goaded`
   if ('CantAttackYou' in modification) {
     const { you, attacked } = modification.CantAttackYou
@@ -213,6 +214,7 @@ function durationWords(
   several = false,
 ): string {
   if (typeof duration === 'object') {
+    if ('UntilPaid' in duration) return ` until its controller pays ${duration.UntilPaid} to end it`
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -915,6 +917,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('DungeonCompleted' in event) {
     return line(`${n.seat(event.DungeonCompleted.player)} completes a dungeon`)
+  }
+  if ('SpeedChanged' in event) {
+    const { player, speed } = event.SpeedChanged
+    return line(`${n.seat(player)}'s speed becomes ${speed}${speed >= 4 ? ' (max speed)' : ''}`)
   }
   if ('CitysBlessingGained' in event) {
     return line(`${n.seat(event.CitysBlessingGained.player)} gets the city's blessing`)

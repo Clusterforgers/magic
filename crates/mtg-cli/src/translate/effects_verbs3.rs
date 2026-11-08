@@ -27,6 +27,10 @@ fn reveal_hand(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "RevealHand",
         &["Defined", "ValidTgts", "RememberRevealed", "Look"],
     )?;
+    // With a target, `Defined$ Targeted` only repeats the target.
+    if p.has("ValidTgts") && !matches!(p.get("Defined"), None | Some("Targeted")) {
+        return unmapped("key:RevealHand.Defined");
+    }
     let who = subject(ctx, p, "You", None)?;
     // Looking is private to the controller; revealing is public, so the two never mix.
     match p.get("Look") {
@@ -124,7 +128,11 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.has("Amount") {
         copy["count"] = amount(ctx, p.get("Amount").unwrap_or("1"))?;
     }
-    if p.get("MayChooseTarget") == Some("True") {
+    // A copy of this very spell when its text names no target has none to change, and the card says nothing of them.
+    let untargeted_self = what == json!("Triggering")
+        && ctx.trigger.as_ref().is_some_and(|shape| shape.itself)
+        && !ctx.oracle.to_lowercase().contains("target");
+    if p.get("MayChooseTarget") == Some("True") && !untargeted_self {
         copy["new_targets"] = json!(true);
     }
     if p.get("NonLegendary") == Some("True") {

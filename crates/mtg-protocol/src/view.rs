@@ -437,6 +437,10 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub citys_blessing: bool,
+    /// The player's speed (CR 702.179), 1 to 4 with 4 max speed; public, and left out while they have none.
+    #[serde(default, skip_serializing_if = "is_zero_level")]
+    #[ts(as = "Option<u8>", optional)]
+    pub speed: u8,
     /// The level of the player.s Ring (CR 701.54); public, and left out while the Ring has not tempted them.
     #[serde(default, skip_serializing_if = "is_zero_level")]
     #[ts(as = "Option<u8>", optional)]

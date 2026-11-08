@@ -5,8 +5,11 @@ use mtg_cards::refs::Ref;
 use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::Amount;
 
+use std::sync::Arc;
+
 use super::wrong_effect;
 use crate::choose::Target;
+use crate::copies::KeptSpell;
 use crate::events::Event;
 use crate::object::ObjectRef;
 use crate::resolve::{Cx, ResolveError, Run, spell_ability};
@@ -104,8 +107,36 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             effects: fixed_target_stats(cx, effects)?,
             targets: Vec::new(),
             bindings,
+            kept: kept(cx, effects),
         },
     ))]))
+}
+
+/// The spell whose resolution this is, as it is now, when the delayed ability copies it ("copy this spell", epic CR
+/// 702.50a): the spell will have left the stack when the ability resolves. Nothing for an ability, or for effects that
+/// do not copy it.
+fn kept(cx: &Cx<'_>, effects: &[Effect]) -> Option<Box<KeptSpell>> {
+    let copies_this = effects.iter().any(|effect| {
+        matches!(
+            effect,
+            Effect::CopySpell {
+                what: Ref::This,
+                ..
+            }
+        )
+    });
+    let spell = cx.state().object(cx.resolving.object())?;
+    if !copies_this || spell.ability().is_some() {
+        return None;
+    }
+    let mut choices = spell.choices().clone();
+    choices.forget_cost_picks();
+    choices.face = None;
+    Some(Box::new(KeptSpell {
+        of: spell.reference(),
+        definition: Arc::new(spell.card().copiable()),
+        choices,
+    }))
 }
 
 /// The event pattern with each `Target` it names replaced by a bound name that holds the targets as chosen now: the delayed

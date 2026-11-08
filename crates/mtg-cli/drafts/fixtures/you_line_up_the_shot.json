@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "7d6fc254-dfdc-425c-9795-ef4e10459b70",
+  "oracle_id": "cb892a6b-4c5d-49bc-95f9-8c36f7e344fe",
+  "multiverse_ids": [
+    574284
+  ],
+  "arena_id": 81282,
+  "name": "You Line Up the Shot",
+  "lang": "en",
+  "released_at": "2022-07-07",
+  "uri": "https://api.scryfall.com/cards/7d6fc254-dfdc-425c-9795-ef4e10459b70",
+  "scryfall_uri": "https://scryfall.com/card/hbg/70/you-line-up-the-shot?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T05:54:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.jpg?1783922096",
+    "normal": "https://cards.scryfall.io/normal/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.jpg?1783922096",
+    "large": "https://cards.scryfall.io/large/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.jpg?1783922096",
+    "png": "https://cards.scryfall.io/png/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.png?1783922096",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.jpg?1783922096",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.jpg?1783922096",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.webp?1783922096",
+    "grid": "https://cards.scryfall.io/grid/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.webp?1783922096",
+    "display": "https://cards.scryfall.io/display/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.webp?1783922096",
+    "art": "https://cards.scryfall.io/art/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.webp?1783922096",
+    "crop": "https://cards.scryfall.io/crop/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.webp?1783922096",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/d/7d6fc254-dfdc-425c-9795-ef4e10459b70.jpg?1783922096"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Aim for the Wyvern — Conjure a card named Plummet into your hand.\n• Aim for the Cursed Amulet — Conjure a card named Naturalize into your hand.\n• Fire a Warning Shot — Draw a card.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Aim for the Cursed Amulet",
+    "Fire a Warning Shot",
+    "Aim for the Wyvern",
+    "Conjure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1ee1edd3-99a1-4e76-8b84-3b83e7088236",
+      "component": "combo_piece",
+      "name": "Plummet",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/1ee1edd3-99a1-4e76-8b84-3b83e7088236"
+    },
+    {
+      "object": "related_card",
+      "id": "f1d8db28-58e9-4556-a649-5294137a1361",
+      "component": "combo_piece",
+      "name": "Naturalize",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/f1d8db28-58e9-4556-a649-5294137a1361"
+    },
+    {
+      "object": "related_card",
+      "id": "7d6fc254-dfdc-425c-9795-ef4e10459b70",
+      "component": "combo_piece",
+      "name": "You Line Up the Shot",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/7d6fc254-dfdc-425c-9795-ef4e10459b70"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "35528ede-7870-4598-a2ee-7f3d6464a74b",
+  "set": "hbg",
+  "set_name": "Alchemy Horizons: Baldur's Gate",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/35528ede-7870-4598-a2ee-7f3d6464a74b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahbg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hbg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7d6fc254-dfdc-425c-9795-ef4e10459b70/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acb892a6b-4c5d-49bc-95f9-8c36f7e344fe&unique=prints",
+  "collector_number": "70",
+  "digital": true,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Joe Slucher",
+  "artist_ids": [
+    "13b6c9ee-f7a8-46a4-934f-ea6b4a1b14b2"
+  ],
+  "illustration_id": "c15a208f-8eab-4f47-9435-7f2b075f4113",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=574284&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DYou%2BLine%2BUp%2Bthe%2BShot",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DYou%2BLine%2BUp%2Bthe%2BShot",
+    "edhrec": "https://edhrec.com/route/?cc=You+Line+Up+the+Shot"
+  }
+}

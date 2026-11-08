@@ -320,7 +320,8 @@ pub fn enters_as_copy(ctx: &mut Ctx, name: &str) -> Tr<Value> {
     let Some(choices) = p.get("Choices") else {
         return unmapped("key:Clone.no-Choices");
     };
-    let mut of = selector_any(ctx, choices)?;
+    let of = selector_any(ctx, choices)?;
+    let mut of = super::fix26_printed::copy_of(of, p.get("SpellDescription"));
     match p.get("ChoiceZone") {
         None | Some("Battlefield") => {}
         Some("Graveyard") => of.push(json!({"In": "Graveyard"})),

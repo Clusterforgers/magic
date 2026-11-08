@@ -211,6 +211,10 @@ pub fn defined_word(ctx: &Ctx, word: &str) -> Tr<Value> {
             let test = json!({"Compare": {"left": attackers, "op": "Ge", "right": 1}});
             Ok(super::players_where::players(&json!("Opponents"), &test))
         }
+        // "Each player who doesn't have max speed" (CR 702.179).
+        _ if word.ends_with(".MaxSpeed") || word.ends_with(".!MaxSpeed") => {
+            super::players_where::word(word).map_or_else(|| unmapped(format!("defined:{word}")), Ok)
+        }
         _ => unmapped(format!("defined:{word}")),
     }
 }

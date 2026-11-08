@@ -738,6 +738,25 @@ const DOESNT_UNTAP: &str = "HIDDEN This card doesn't untap during your next unta
 
 /// The duration of a pump line. "Doesn't untap during your next untap step" lasts through that step, whatever
 /// `Duration$ Permanent` says; it stands alone and with that duration only.
+/// "That spell gains rebound": keywords for the spell that triggered the line, on the stack. A spell changes like a
+/// permanent and keeps the change as the permanent it becomes (CR 400.7a), and the Oracle text gives no end, so the
+/// effect lasts for ever whatever Forge's default is. Only keywords: the stats of a spell are not read.
+fn e15g_spell_gains(p: &Params) -> Tr<bool> {
+    if p.get("PumpZone") != Some("Stack")
+        || p.get("Defined") != Some("TriggeredCard")
+        || !(p.has("KW") || p.has("KWChoice"))
+    {
+        return Ok(false);
+    }
+    if p.has("NumAtt") || p.has("NumDef") || p.has("ValidTgts") || p.has("AtEOT") {
+        return unmapped("key:Pump.PumpZone=Stack-stats");
+    }
+    if !matches!(p.get("Duration"), None | Some("Permanent")) {
+        return unmapped("key:Pump.PumpZone=Stack-duration");
+    }
+    Ok(true)
+}
+
 fn pump_duration(p: &Params) -> Tr<&'static str> {
     let Some(keywords) = p.get("KW") else {
         return duration(p.get("Duration"));
@@ -887,7 +906,12 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if p.has("ValidCard") && (p.get("ValidCard") != Some("Card.Self") || p.has("Defined")) {
         return unmapped("key:Pump.ValidCard");
     }
-    let duration = pump_duration(p)?;
+    let spell_gains = e15g_spell_gains(p)?;
+    let duration = if spell_gains {
+        "Forever"
+    } else {
+        pump_duration(p)?
+    };
     let subject = subject(ctx, p, "Self", None)?;
     if let Some(found) = player_keywords(p, &subject, duration) {
         return found;
@@ -910,7 +934,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     // The pumped object is on the battlefield; a pump of a card in another zone, or of a spell, is only a target choice.
     match p.get("PumpZone") {
         None | Some("Battlefield") => {}
-        Some("Stack") if selects_only => {}
+        Some("Stack") if selects_only || spell_gains => {}
         Some(zone) => return unmapped(format!("key:Pump.PumpZone={zone}")),
     }
     if selects_only {
@@ -1166,7 +1190,10 @@ fn of_target_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Value> {
     Ok(json!({ "Each": selector }))
 }
 
-const ANIMATE_KEYS: [&str; 27] = [
+const ANIMATE_KEYS: [&str; 30] = [
+    "RemoveEnchantmentTypes",
+    "RemoveThisAbility",
+    "RevertCost",
     "Defined",
     "ValidTgts",
     "Types",
@@ -1268,6 +1295,11 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     mods.extend(super::effects_animate::restrictions(p)?);
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
+    }
+    if let Some(paid) = e15g_licid(ctx, p, &mut mods)? {
+        return Ok(vec![
+            json!({"Continuous": {"affected": affected, "mods": mods, "duration": paid}}),
+        ]);
     }
     let rules = super::effects_animate::rule_effects(p, &affected, duration)?;
     let mut effects =
@@ -1886,11 +1918,20 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             single => single,
         },
     };
-    let mut effects = vec![json!({"Continuous": {
+    let mut effects = Vec::new();
+    // "Untap them" names the group taken, which a group read by its controller no longer is once control changed.
+    let follows = p.get("Untap") == Some("True") || p.has("AddKWs");
+    let affected = if follows && affected.get("Each").is_some() && reads_control(&affected) {
+        effects.push(json!({"Bind": {"what": affected, "as": "taken"}}));
+        json!({"Bound": "taken"})
+    } else {
+        affected
+    };
+    effects.push(json!({"Continuous": {
         "affected": affected,
         "mods": [{"SetController": controller}],
         "duration": duration,
-    }})];
+    }}));
     if p.get("Untap") == Some("True") {
         effects.push(json!({"Untap": {"what": affected}}));
     }
@@ -1904,6 +1945,12 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }}));
     }
     Ok(effects)
+}
+
+/// Whether a group is read by who controls its objects.
+fn reads_control(group: &Value) -> bool {
+    let text = group.to_string();
+    text.contains("\"ControlledBy\"") || text.contains("\"Controller")
 }
 
 /// `Attach`: the attachment (`Object$`, the card itself by default) goes onto the host (the target, or `Defined$`). An
@@ -2197,4 +2244,41 @@ fn dies_shield(ctx: &mut Ctx, p: &Params) -> Tr<Option<Value>> {
         "by": {"MoveTo": "Exile"},
         "duration": "UntilEndOfTurn"}});
     Ok(Some(shield))
+}
+
+/// The Licids: "~ loses this ability and becomes an Aura enchantment with enchant creature. Attach it to target creature.
+/// You may pay {W} to end this effect." `RemoveThisAbility$` takes the resolving ability away, `RevertCost$` makes the
+/// effect last until its controller pays that mana (CR 116.2c), and `RemoveEnchantmentTypes$` drops the enchantment
+/// subtypes the object had: the duration of the effect, or `None` for a line without these keys. Only the shape of the
+/// Licids, a permanent that changes itself for ever until paid, and only one that is no enchantment yet.
+fn e15g_licid(ctx: &Ctx, p: &Params, mods: &mut Vec<Value>) -> Tr<Option<Value>> {
+    let keys = ["RemoveEnchantmentTypes", "RemoveThisAbility", "RevertCost"];
+    if !keys.iter().any(|key| p.has(key)) {
+        return Ok(None);
+    }
+    let licid = p.get("RemoveThisAbility") == Some("True")
+        && p.get("RemoveEnchantmentTypes") == Some("True")
+        && p.get("RemoveCardTypes") == Some("True")
+        && p.get("Defined") == Some("Self")
+        && p.get("Duration") == Some("Permanent")
+        && !ctx.types.contains("Enchantment")
+        && [
+            "ValidCards",
+            "ValidTgts",
+            "HiddenKeywords",
+            "AtEOT",
+            "LeaveBattlefield",
+        ]
+        .iter()
+        .all(|key| !p.has(key));
+    let (true, Some(revert)) = (licid, p.get("RevertCost")) else {
+        return unmapped("key:Animate.RevertCost-shape");
+    };
+    // A cost of mana alone is its text.
+    let cost = super::cost::cost(ctx, revert)?;
+    let Some(mana) = cost.as_str() else {
+        return unmapped("key:Animate.RevertCost-not-mana");
+    };
+    mods.push(json!("LoseThisAbility"));
+    Ok(Some(json!({ "UntilPaid": mana })))
 }

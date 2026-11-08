@@ -607,7 +607,13 @@ fn written_ordered(ability: &Ability) -> Vec<String> {
 
 /// Every wording of an ability, its selectors in the order given.
 fn written_as_given(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::e15a_max_speed::e15a_variants(ability, written_variants) {
+        return texts;
+    }
     if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants) {
+        return texts;
+    }
+    if let Some(texts) = super::e15g_licid::e15g_licid_texts(ability, written_variants) {
         return texts;
     }
     let mut texts = variants(ability);
@@ -823,6 +829,22 @@ fn written_from(when: &TriggerPattern, effects: &[Effect]) -> ZoneKind {
     }
 }
 
+/// The spell a cast trigger is about gains a keyword as "that spell" ("Whenever you cast an instant spell, that spell
+/// gains rebound"): the same words with "it" named, for a cast trigger only.
+fn e15g_that_spell(when: &TriggerPattern, texts: impl Iterator<Item = String>) -> Vec<String> {
+    let cast = matches!(when, TriggerPattern::SpellCast { .. });
+    let mut out = Vec::new();
+    for text in texts {
+        let named = text
+            .replacen(", it gains ", ", that spell gains ", 1)
+            .replacen("\n• It gains ", "\n• That spell gains ", 1);
+        let more = (cast && named != text).then_some(named);
+        out.push(text);
+        out.extend(more);
+    }
+    out
+}
+
 fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
@@ -869,7 +891,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                     let equipped =
                         text.replace("copy of enchanted creature", "copy of equipped creature");
                     let others = (equipped != text).then_some(equipped);
-                    std::iter::once(text).chain(others)
+                    e15g_that_spell(when, std::iter::once(text).chain(others))
                 })
                 .collect()
         }
@@ -921,9 +943,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => loyalty::texts(*cost, targets, effects),
-        Ability::AdditionalCost { cost, required } => costs::additional_text(cost, *required)
-            .into_iter()
-            .collect(),
+        Ability::AdditionalCost { cost, required } => costs::additional_texts(cost, *required),
         _ => statics::texts(ability),
     }
 }

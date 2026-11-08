@@ -146,11 +146,7 @@ fn a_choice_of_a_land_type_is_not_a_creature_type_choice() {
         "K:ETBReplacement:Other:ChooseCT\nSVar:ChooseCT:DB$ ChooseType | Defined$ You | Type$ Basic Land\n\
          S:Mode$ Continuous | Affected$ Creature.ChosenType | AddKeyword$ Flying | Description$ x\n",
     );
-    assert_eq!(
-        gaps(&text),
-        [
-            "keyword:ETBReplacement-ChooseType",
-            "valid:ChosenType-without-a-choice"
-        ]
-    );
+    // e15b reads a basic land type chosen as the permanent enters (`EntersChoice::BasicLandType`), and
+    // `ChosenType` then names that land type, not a creature type.
+    assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
 }

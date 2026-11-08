@@ -20,6 +20,9 @@ pub struct Plan {
     pub head: Vec<(String, Ability)>,
     /// The lines under the header: each is one ability that works while the condition holds.
     pub lines: Vec<String>,
+    /// The condition of each line when the lines work under conditions of their own (the word chosen as a Siege
+    /// enters); empty when every line works under `condition`.
+    pub conditions: Vec<Condition>,
 }
 
 impl Plan {
@@ -27,10 +30,15 @@ impl Plan {
     /// line is not read.
     pub fn read(&self, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
         let mut abilities: Vec<Ability> = self.head.iter().map(|(_, a)| a.clone()).collect();
-        for line in &self.lines {
-            abilities.push(under_the_header(line, &self.condition, x_free, own)?);
+        for (at, line) in self.lines.iter().enumerate() {
+            abilities.push(under_the_header(line, self.condition_at(at), x_free, own)?);
         }
         Some(abilities)
+    }
+
+    /// The condition the line at `at` works under.
+    pub fn condition_at(&self, at: usize) -> &Condition {
+        self.conditions.get(at).unwrap_or(&self.condition)
     }
 }
 
@@ -40,6 +48,8 @@ pub fn plan(text: &str, creature_at: Option<i32>) -> Option<Plan> {
     let head = text.lines().next()?;
     if head.starts_with("LEVEL ") {
         level_plan(text)
+    } else if clauses::word_block(text).is_some() {
+        super::e15f_words::plan(text)
     } else if clauses::class_header(head).is_some() {
         super::class::plan(text)
     } else {
@@ -73,6 +83,7 @@ fn level_plan(text: &str) -> Option<Plan> {
         condition: range,
         head: vec![(sized.to_owned(), set)],
         lines: lines.map(str::to_owned).collect(),
+        conditions: Vec::new(),
     })
 }
 

@@ -414,6 +414,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. }
+        | Event::SpeedChanged { .. }
         | Event::RingTempted { .. }
         | Event::RingBearerLost { .. }
         | Event::Learned { .. }
@@ -1501,6 +1502,7 @@ mod tests {
                 targets: Vec::new(),
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
+                kept: None,
             }))
         };
         assert_eq!(told(&t.state, &created(t.hand), OWNER), Ok(()));

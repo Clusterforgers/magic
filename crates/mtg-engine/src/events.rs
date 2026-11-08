@@ -759,6 +759,14 @@ pub enum Event {
         /// The player whose creature it was.
         player: PlayerId,
     },
+    /// A player's speed became `speed` (CR 702.179): start your engines! started it, or an opponent's life loss on their
+    /// turn raised it.
+    SpeedChanged {
+        /// Whose speed.
+        player: PlayerId,
+        /// The new speed, 1 to 4.
+        speed: u8,
+    },
     /// A player got the city's blessing (CR 702.131): a designation they keep for the rest of the game.
     CitysBlessingGained {
         /// Who got it.
@@ -1160,6 +1168,7 @@ impl Event {
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
+            | Event::SpeedChanged { .. }
             | Event::RingTempted { .. }
             | Event::RingBearerLost { .. }
             | Event::DungeonCompleted { .. }

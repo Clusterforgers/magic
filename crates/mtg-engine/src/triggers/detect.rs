@@ -3289,6 +3289,7 @@ mod tests {
             effects: gain(),
             targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],
+            kept: None,
         }))
     }
 

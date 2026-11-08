@@ -41,6 +41,9 @@ const MOST_NESTED: u32 = 4;
 const COUNTER_DURATION_ONLY: &str =
     "only a continuous effect lasts for as long as the permanents it names have a counter";
 
+/// Only a continuous effect ends when its controller pays to end it.
+const E15G_PAID_ONLY: &str = "only a continuous effect lasts until its controller pays to end it";
+
 /// An exchange of control names its two permanents with one reference or two.
 const W6E_EXCHANGE_PAIR: &str =
     "an exchange of control names its two permanents with one reference or two";
@@ -858,6 +861,20 @@ impl<'a> Walker<'a> {
         self.at(name, |w| w.reference(who, Kind::Player));
     }
 
+    /// The targets of the triggering spell or ability, which only a triggered ability has.
+    fn triggering_targets(&mut self) {
+        self.uses("Amount", "TriggeringTargets");
+        if !self.scope.in_trigger {
+            self.problem("`TriggeringTargets` is only valid in a triggered ability");
+        }
+    }
+
+    /// A condition about the players a reference names: a designation they hold or their speed.
+    fn player_condition(&mut self, name: &str, who: &Ref) {
+        self.uses("Condition", name);
+        self.at(name, |w| w.reference(who, Kind::Player));
+    }
+
     /// The fewest cards in a hand of the players a reference names, and the life lost or the dice rolled by the resolving
     /// ability.
     fn hand_or_life_lost(&mut self, amount: &Amount) {
@@ -1022,12 +1039,8 @@ impl<'a> Walker<'a> {
                 self.at("on", |w| w.reference(on, Kind::Object));
             }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
-            Amount::TriggeringTargets => {
-                self.uses("Amount", "TriggeringTargets");
-                if !self.scope.in_trigger {
-                    self.problem("`TriggeringTargets` is only valid in a triggered ability");
-                }
-            }
+            Amount::Speed(who) => self.player_amount("Speed", who),
+            Amount::TriggeringTargets => self.triggering_targets(),
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
             Amount::When {
                 condition,
@@ -1208,27 +1221,14 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "ChosenWord");
                 self.chosen_as(name);
             }
+            Condition::EnteredAs(_) => self.uses("Condition", "EnteredAs"),
             Condition::Performed => self.performed(),
-            Condition::CompletedDungeon(who) => {
-                self.uses("Condition", "CompletedDungeon");
-                self.at("CompletedDungeon", |w| w.reference(who, Kind::Player));
-            }
-            Condition::Monarch(who) => {
-                self.uses("Condition", "Monarch");
-                self.at("Monarch", |w| w.reference(who, Kind::Player));
-            }
-            Condition::Initiative(who) => {
-                self.uses("Condition", "Initiative");
-                self.at("Initiative", |w| w.reference(who, Kind::Player));
-            }
-            Condition::MonarchAtTurnStart(who) => {
-                self.uses("Condition", "MonarchAtTurnStart");
-                self.at("MonarchAtTurnStart", |w| w.reference(who, Kind::Player));
-            }
-            Condition::CitysBlessing(who) => {
-                self.uses("Condition", "CitysBlessing");
-                self.at("CitysBlessing", |w| w.reference(who, Kind::Player));
-            }
+            Condition::CompletedDungeon(who) => self.player_condition("CompletedDungeon", who),
+            Condition::Monarch(who) => self.player_condition("Monarch", who),
+            Condition::Initiative(who) => self.player_condition("Initiative", who),
+            Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
+            Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
+            Condition::MaxSpeed(who) => self.player_condition("MaxSpeed", who),
             Condition::IsDay => self.uses("Condition", "IsDay"),
             Condition::IsNight => self.uses("Condition", "IsNight"),
             Condition::Step(_) => self.uses("Condition", "Step"),
@@ -1347,7 +1347,7 @@ impl<'a> Walker<'a> {
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count }
-                    | CostItem::Behold { filter, count }
+                    | CostItem::Behold { filter, count, .. }
                     | CostItem::ExiledToGraveyard { filter, count }
                     | CostItem::ToLibrary { filter, count, .. }
                     | CostItem::Craft { filter, count, .. } => {
@@ -1804,9 +1804,12 @@ impl<'a> Walker<'a> {
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
-            Keyword::Ward(cost) | Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
+            Keyword::Ward(cost)
+            | Keyword::Echo(cost)
+            | Keyword::CumulativeUpkeep(cost)
+            | Keyword::Recover(cost) => {
                 self.at("cost", |w| w.cost(cost));
-                // Ward, echo and cumulative upkeep ask the player for their cost through a payment.
+                // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
             }
             // The cost of these is paid as the cost of an activated ability the keyword adds.
@@ -1884,6 +1887,7 @@ impl<'a> Walker<'a> {
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Casualty(0) => self.problem("casualty needs a power of at least 1"),
             Keyword::Hideaway(0) => self.problem("hideaway needs a number of at least 1"),
+            Keyword::Ripple(0) => self.problem("ripple needs a number of at least 1"),
             Keyword::Devour { counters, of } => {
                 if *counters == 0 {
                     self.problem("devour needs a number of at least 1");
@@ -1971,6 +1975,7 @@ impl<'a> Walker<'a> {
             | Modification::AddColors(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
+            | Modification::LoseThisAbility
             | Modification::LoseAbilities
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
@@ -2564,8 +2569,12 @@ impl Walker<'_> {
             if !creature || spec.power.is_some() || spec.toughness.is_some() {
                 self.problem("a token sized by an amount is a creature with no power and toughness of its own");
             }
-        } else if creature != (spec.power.is_some() && spec.toughness.is_some()) {
-            self.problem("a creature token needs power and toughness, any other token none");
+        } else if (creature || spec.subtypes.iter().any(|subtype| subtype.0 == "Vehicle"))
+            != (spec.power.is_some() && spec.toughness.is_some())
+        {
+            self.problem(
+                "a creature token needs power and toughness (a Vehicle token too), any other token none",
+            );
         }
         let saved = std::mem::take(&mut self.scope);
         self.nested += 1;
@@ -3624,6 +3633,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
+                if matches!(duration, Duration::UntilPaid(_)) {
+                    w.uses("Duration", "UntilPaid");
+                }
                 if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
                     w.problem(C7_UNTAP_ONLY);
                 }
@@ -3631,6 +3643,9 @@ impl Walker<'_> {
             Effect::ExchangeControl { what, duration } => {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
+                }
+                if matches!(duration, Duration::UntilPaid(_)) {
+                    w.problem(E15G_PAID_ONLY);
                 }
                 w.at("what", |w| {
                     for (at, one) in what.iter().enumerate() {
@@ -3653,6 +3668,9 @@ impl Walker<'_> {
             Effect::Rule { rule, duration } => w.at("rule", |w| {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
+                }
+                if matches!(duration, Duration::UntilPaid(_)) {
+                    w.problem(E15G_PAID_ONLY);
                 }
                 w.rule(rule);
                 // Only the layers end an effect when the source changes controller.
@@ -3698,6 +3716,9 @@ impl Walker<'_> {
             } => {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
+                }
+                if matches!(duration, Duration::UntilPaid(_)) {
+                    w.problem(E15G_PAID_ONLY);
                 }
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Shield", "Duration.WhileYouControlSource");
@@ -4706,6 +4727,13 @@ impl Walker<'_> {
         self.at("cost", |w| w.cost(cost));
     }
 
+    /// A choice of words as a permanent enters offers two or more words.
+    fn e15f_choose_word(&mut self, words: &[String]) {
+        if words.len() < 2 || words.iter().any(String::is_empty) {
+            self.problem("a choice of words offers two or more words");
+        }
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
@@ -4766,11 +4794,14 @@ impl Walker<'_> {
             | ReplaceBy::MayWithCounters { .. }
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
+            | ReplaceBy::WithCounterOf(_)
             | ReplaceBy::EntersPrepared
+            | ReplaceBy::ChooseWord(_)
                 if !enters =>
             {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
             }
+            ReplaceBy::ChooseWord(words) => self.e15f_choose_word(words),
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");
@@ -4787,6 +4818,9 @@ impl Walker<'_> {
             ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 self.pay_or_graveyard(enters, cost, *optional);
+            }
+            ReplaceBy::WithCounterOf(kinds) if kinds.len() < 2 => {
+                self.problem("a choice of a counter offers two kinds or more");
             }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
@@ -5421,6 +5455,10 @@ mod tests {
     #[case::a_shield_with_a_counter_duration(
         format!(r#"{{"Spell":{{"effects":[{{"Shield":{{"when":{{"Damage":{{"to":"You"}}}},"by":"Prevent","duration":{FOLLOWS_A_COUNTER}}}}}]}}}}"#),
         &["faces[0].abilities[0].Spell.effects[0].Shield: only a continuous effect lasts for as long as the permanents it names have a counter"]
+    )]
+    #[case::e15g_a_rule_until_paid(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"CantDraw":"You"},"duration":{"UntilPaid":"{W}"}}}]}}"#.to_owned(),
+        &["faces[0].abilities[0].Spell.effects[0].Rule.rule: only a continuous effect lasts until its controller pays to end it"]
     )]
     #[case::a_permanent_that_prevents_only_the_next_damage(
         r#"{"Replacement":{"when":{"Damage":{"to":"You"}},"by":"PreventNext"}}"#.to_owned(),

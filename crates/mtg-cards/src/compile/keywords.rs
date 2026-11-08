@@ -108,6 +108,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("extort", Params::None),
     ("living weapon", Params::None),
     ("for mirrodin!", Params::None),
+    ("start your engines!", Params::None),
     ("job select", Params::None),
     ("totem armor", Params::None),
     ("umbra armor", Params::None),
@@ -129,6 +130,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("conspire", Params::None),
     ("dethrone", Params::None),
     ("gravestorm", Params::None),
+    ("epic", Params::None),
     ("assist", Params::None),
     ("provoke", Params::None),
     ("double team", Params::None),
@@ -145,6 +147,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("buyback", Params::Cost),
     ("dash", Params::Cost),
     ("echo", Params::Cost),
+    ("recover", Params::Cost),
     ("emerge", Params::Cost),
     ("entwine", Params::Cost),
     ("escape", Params::Cost),
@@ -202,6 +205,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("fading", Params::Number),
     ("graft", Params::Number),
     ("hideaway", Params::Number),
+    ("ripple", Params::Number),
     ("gift", Params::Text),
     ("modular", Params::Number),
     ("poisonous", Params::Number),
@@ -449,6 +453,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "afterlife" => positive(rest).map(Keyword::Afterlife),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
+        "recover" => spell_cost(rest).map(Keyword::Recover),
+        "ripple" => positive(rest).map(Keyword::Ripple),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
         "vanishing" if rest.is_empty() => Some(Keyword::Vanishing(0)),
         "vanishing" => positive(rest).map(Keyword::Vanishing),
@@ -457,10 +463,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "afflict" => positive(rest).map(Keyword::Afflict),
         "renown" => positive(rest).map(Keyword::Renown),
         "replicate" => spell_cost(rest).map(Keyword::Replicate),
-        "backup" => positive(rest).map(|count| Keyword::Backup {
-            count,
-            abilities: Vec::new(),
-        }),
+        "backup" => positive(rest).map(backup),
         "crew" => positive(rest).map(Keyword::Crew),
         "saddle" => positive(rest).map(Keyword::Saddle),
         "fabricate" => positive(rest).map(Keyword::Fabricate),
@@ -493,6 +496,14 @@ pub fn read(item: &str) -> Option<Keyword> {
         name if crate::macros::is_keyword(name) => macro_keyword(name, rest),
         name if rest.is_empty() => plain(name),
         _ => None,
+    }
+}
+
+/// Backup N as its keyword line reads: the abilities it gives are not part of the line.
+fn backup(count: u32) -> Keyword {
+    Keyword::Backup {
+        count,
+        abilities: Vec::new(),
     }
 }
 
@@ -716,6 +727,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
         "gravestorm" => Keyword::Gravestorm,
+        "epic" => Keyword::Epic,
         "assist" => Keyword::Assist,
         "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
@@ -726,6 +738,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
         "for mirrodin!" => Keyword::ForMirrodin,
+        "start your engines!" => Keyword::StartYourEngines,
         "job select" => Keyword::JobSelect,
         "fuse" => Keyword::Fuse,
         "changeling" => Keyword::Changeling,
@@ -1304,6 +1317,10 @@ mod tests {
     #[case::gift_a_tapped_fish("Gift a tapped Fish", Keyword::Gift(GiftKind::TappedFish))]
     #[case::gift_an_extra_turn("Gift an extra turn", Keyword::Gift(GiftKind::ExtraTurn))]
     #[case::hideaway_five("hideaway 5", Keyword::Hideaway(5))]
+    #[case::recover("Recover {R}{R}", Keyword::Recover(mana("{R}{R}")))]
+    #[case::recover_generic("Recover {1}{B}", Keyword::Recover(mana("{1}{B}")))]
+    #[case::ripple("Ripple 4", Keyword::Ripple(4))]
+    #[case::epic("Epic", Keyword::Epic)]
     #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
     #[case::bargain("Bargain", Keyword::Bargain)]
     #[case::conspire("Conspire", Keyword::Conspire)]
@@ -1434,6 +1451,7 @@ mod tests {
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]
     #[case::station("Station", Keyword::Station)]
     #[case::for_mirrodin("For Mirrodin!", Keyword::ForMirrodin)]
+    #[case::start_your_engines("Start your engines!", Keyword::StartYourEngines)]
     #[case::job_select("Job select", Keyword::JobSelect)]
     #[case::a_named_equip("Murasame \u{2014} Equip {5}", Keyword::Equip(mana("{5}")))]
     #[case::a_named_equip_of_two_words(
@@ -1849,6 +1867,7 @@ mod tests {
             "Hideaway 4",
             "Gift a card",
             "For Mirrodin!",
+            "Start your engines!",
             "Job select",
             "Equip legendary creature {1}",
             "Ninjutsu {1}{U}",
@@ -1863,6 +1882,9 @@ mod tests {
             "Exploit",
             "Soulbond",
             "Read ahead",
+            "Recover {1}",
+            "Ripple 4",
+            "Epic",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

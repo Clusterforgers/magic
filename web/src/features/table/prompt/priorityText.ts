@@ -48,6 +48,7 @@ export function priorityText(
     options.castable.length > 0 ? 'cast a spell' : null,
     (options.abilities?.length ?? 0) > 0 ? 'use an ability' : null,
     (options.unlockable?.length ?? 0) > 0 ? 'unlock a door' : null,
+    (options.endable?.length ?? 0) > 0 ? 'pay to end an effect' : null,
     options.companion === true ? 'bring your companion to hand' : null,
     options.mana_abilities.length > 0 ? 'tap for mana' : null,
   ].filter((what) => what !== null)

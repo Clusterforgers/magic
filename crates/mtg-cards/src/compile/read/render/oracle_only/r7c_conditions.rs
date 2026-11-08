@@ -25,7 +25,10 @@ fn color_word(mana: ManaType) -> Option<&'static str> {
 /// The wordings of a condition the other writers do not word.
 pub(super) fn r7c_condition_texts(condition: &Condition) -> Vec<String> {
     match condition {
-        Condition::AdditionalCostPaid => vec!["this spell was bargained".to_owned()],
+        Condition::AdditionalCostPaid => vec![
+            "this spell was bargained".to_owned(),
+            "this spell's additional cost was paid".to_owned(),
+        ],
         Condition::Compare {
             left: Amount::Promised,
             op: Cmp::Eq,

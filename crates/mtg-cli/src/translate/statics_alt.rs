@@ -1,5 +1,6 @@
 //! `Mode$ AlternativeCost` on the spell itself: "you may pay X rather than pay this spell's mana cost" as a `FreeCast` with
-//! a cost, or an `AltCast` when the card is cast from its graveyard.
+//! a cost, or an `AltCast` when the card is cast from its graveyard; and `Mode$ OptionalCost`, the spell's own optional
+//! additional cost.
 
 use serde_json::{Value, json};
 
@@ -46,5 +47,28 @@ pub fn alternative_cost(ctx: &Ctx, p: &Params) -> Tr<Value> {
             Ok(json!({ "AltCast": ability }))
         }
         Some(other) => unmapped(format!("key:Static.AlternativeCost.EffectZone={other}")),
+    }
+}
+
+/// "As an additional cost to cast this spell, you may ...": the spell's own `OptionalCost` line as an `AdditionalCost` the
+/// caster may skip. A line about other spells (the Defilers) is a gap.
+pub fn optional_cost(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    let read = ["Mode", "ValidSA", "ValidCard", "Cost", "EffectZone"];
+    check_keys(p, "Static.OptionalCost", &read, |key, _| key == "Mode")?;
+    if p.get("ValidCard") != Some("Card.Self")
+        || p.get("ValidSA") != Some("Spell")
+        || !matches!(p.get("EffectZone"), None | Some("All"))
+    {
+        return unmapped("static:OptionalCost-of-other-spells");
+    }
+    match cost(ctx, p.get("Cost").unwrap_or_default())? {
+        Value::Array(items) if !items.is_empty() => {
+            Ok(json!({"AdditionalCost": {"cost": items, "required": false}}))
+        }
+        // Mana alone ("you may pay {2}{R}").
+        Value::String(mana) if !mana.is_empty() => {
+            Ok(json!({"AdditionalCost": {"cost": [{"Mana": mana}], "required": false}}))
+        }
+        _ => unmapped("static:OptionalCost-without-a-cost"),
     }
 }

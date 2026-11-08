@@ -80,6 +80,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Exploit" => "Exploit",
         "Soulbond" => "Soulbond",
         "Gravestorm" => "Gravestorm",
+        "Epic" => "Epic",
         "Assist" => "Assist",
         "Sunburst" => "Sunburst",
         "Demonstrate" => "Demonstrate",
@@ -90,13 +91,14 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Choose a Background" => "ChooseABackground",
         "Doctor's companion" => "DoctorsCompanion",
         "For Mirrodin" | "For Mirrodin!" => "ForMirrodin",
+        "Start your engines" | "Start your engines!" => "StartYourEngines",
         "Job select" => "JobSelect",
         _ => return None,
     })
 }
 
 /// Keywords with one cost: the Forge word and the DSL variant.
-const COSTED: [(&str, &str); 44] = [
+const COSTED: [(&str, &str); 45] = [
     ("Mayhem", "Mayhem"),
     ("Disturb", "Disturb"),
     ("Harmonize", "Harmonize"),
@@ -141,10 +143,11 @@ const COSTED: [(&str, &str); 44] = [
     ("Freerunning", "Freerunning"),
     ("Replicate", "Replicate"),
     ("Emerge", "Emerge"),
+    ("Recover", "Recover"),
 ];
 
 /// Keywords with one number.
-const NUMBERED: [(&str, &str); 14] = [
+const NUMBERED: [(&str, &str); 15] = [
     ("Crew", "Crew"),
     ("Saddle", "Saddle"),
     ("Dredge", "Dredge"),
@@ -159,6 +162,7 @@ const NUMBERED: [(&str, &str); 14] = [
     ("Renown", "Renown"),
     ("Casualty", "Casualty"),
     ("Hideaway", "Hideaway"),
+    ("Ripple", "Ripple"),
 ];
 
 /// The DSL keyword a `K:` line or a `KW$` word stands for.
@@ -291,6 +295,10 @@ fn other_keyword(ctx: &Ctx, name: &str, first: Option<&str>, second: Option<&str
         },
         ("Partner", Some(group)) => Ok(json!({"PartnerGroup": group})),
         ("Partner with", Some(with)) => Ok(json!({"PartnerWith": with})),
+        // "Landwalk of the chosen type": the land type the card's controller chose as it entered.
+        ("Landwalk", Some("ChosenType")) if ctx.memory.entered.land_type => {
+            Ok(json!({"Landwalk": ["ChosenSubtype"]}))
+        }
         ("Landwalk", Some(land)) => Ok(json!({"Landwalk": selector_any(ctx, land)?})),
         (word, None) if word.ends_with("walk") => landwalk(word),
         _ => unmapped(format!("keyword:{name}")),
@@ -562,6 +570,9 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
         return unmapped("svar:missing");
     };
     let part = Params::parse(text);
+    if let Some(found) = super::e15f_words::choose_word(ctx, &part) {
+        return found;
+    }
     // The chooser is the controller as the permanent enters.
     if part.get("Defined").is_some_and(|who| who != "You") {
         return unmapped("key:ETBReplacement.Defined");
@@ -584,6 +595,8 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
             hints_only(&["DB", "Defined", "Type"])?;
             Ok(json!({"Choose": "CreatureType"}))
         }
+        (Some("ChooseType"), _, None) => super::e15b_entering::type_choice(&part),
+        (Some("PutCounter"), None, None) => super::e15b_entering::counter_of(&part),
         (Some("ChoosePlayer"), None, Some(choices)) => {
             hints_only(&["DB", "Defined", "Choices"])?;
             match choices {

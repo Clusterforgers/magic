@@ -82,6 +82,8 @@ pub(crate) struct Possible {
     pub(crate) day_night: bool,
     /// Some card has ascend, so the city's blessing is watched.
     pub(crate) ascend: bool,
+    /// Some card has start your engines!, so the speed it starts is watched.
+    pub(crate) engines: bool,
     /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
     pub(crate) protection: bool,
     /// A card has been exiled until a permanent leaves the battlefield, so the cards waiting in exile are watched.
@@ -250,7 +252,8 @@ pub struct GameState {
     pub(crate) first_player: PlayerId,
     pub(crate) players: Vec<Player>,
     pub(crate) objects: BTreeMap<ObjectId, GameObject>,
-    /// Tokens that left the battlefield and so cease to exist, kept for the abilities of theirs still to come.
+    /// Tokens that left the battlefield and so cease to exist, and objects that left the game with their owner, kept
+    /// for the abilities of theirs still to come.
     pub(crate) ceased: BTreeMap<ObjectId, GameObject>,
     pub(crate) zones: Zones,
     pub(crate) turn: TurnState,
@@ -302,6 +305,8 @@ pub struct GameState {
     pub(crate) monarch: Option<PlayerId>,
     /// The players who have the city's blessing (CR 702.131), for the rest of the game.
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
+    /// Each player's speed (CR 702.179) and the rise the turn owes.
+    pub(crate) speeds: crate::speed::Speeds,
     /// Each tempted player's Ring (CR 701.54).
     pub(crate) ring: crate::ring::Rings,
     /// The dungeons (CR 309): each player's venture marker and the dungeons they completed.
@@ -380,7 +385,8 @@ impl GameState {
         self.objects.values()
     }
 
-    /// Whether `id` was a token that has left the battlefield and so ceased to exist (CR 111.7).
+    /// Whether `id` was a token that has left the battlefield and so ceased to exist (CR 111.7), or an object that left
+    /// the game with its owner (CR 800.4a).
     pub fn has_ceased(&self, id: ObjectId) -> bool {
         self.ceased.contains_key(&id)
     }
@@ -600,6 +606,7 @@ impl GameState {
     pub(crate) fn tally_loss(&mut self, player: PlayerId, amount: u32) {
         self.tally_by(player, Tally::Lost, amount);
         self.tally(player, Tally::Losses);
+        crate::speed::on_life_lost(self, player, amount);
     }
 
     /// How many permanents were put into a graveyard from the battlefield this turn, whoever owned them.
@@ -910,6 +917,10 @@ impl Hash for GameState {
         // Likewise a game where nobody has the city's blessing.
         if !self.citys_blessing.is_empty() {
             self.citys_blessing.hash(state);
+        }
+        // Likewise a game where nobody has speed.
+        if !self.speeds.is_empty() {
+            self.speeds.hash(state);
         }
         // Likewise a game where nobody ventured.
         if !self.w11d.is_empty() {

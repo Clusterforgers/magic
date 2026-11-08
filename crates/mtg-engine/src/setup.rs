@@ -515,6 +515,7 @@ impl GameState {
             last_turn_of: None,
             monarch: None,
             citys_blessing: std::collections::BTreeSet::new(),
+            speeds: crate::speed::Speeds::default(),
             ring: crate::ring::Rings::new(),
             w11d: crate::w11d_dungeon::W11dDungeons::default(),
             w15a_initiative: None,
@@ -658,6 +659,7 @@ impl GameState {
         self.possible.protection = protection;
         self.possible.day_night = self.any_face(crate::ability_reader::definition_has_day_night);
         self.possible.ascend = self.any_face(crate::ability_reader::definition_has_ascend);
+        self.possible.engines = self.any_face(crate::ability_reader::definition_has_engines);
     }
 
     /// Whether some face of a card of the game satisfies `test`.

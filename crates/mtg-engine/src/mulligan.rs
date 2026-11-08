@@ -213,6 +213,7 @@ fn revealed_trigger(
         effects: effects.clone(),
         targets: Vec::new(),
         bindings: Vec::new(),
+        kept: None,
     })
 }
 

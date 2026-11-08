@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0cc38d20-5ae8-413a-9f26-ff13cd92f24c",
+  "name": "Bone Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bone Harvest",
+      "oracle_fingerprint": "c39afd0fd79e35bec4fc2ea330518523",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
