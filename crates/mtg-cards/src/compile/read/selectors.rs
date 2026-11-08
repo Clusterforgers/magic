@@ -494,8 +494,7 @@ fn protection_word(quality: &Selector) -> Option<String> {
     }
     match quality.0.as_slice() {
         [Pred::ChosenColor] => Some("the chosen color".to_owned()),
-        [Pred::Subtype(Subtype(name))] => Some(plural_subtype_word(name)),
-        _ => None,
+        _ => keywords::kind_quality_word(quality),
     }
 }
 
@@ -685,6 +684,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         Some(Pred::Compare { stat, op, to })
     })
     .or_else(|| super::w21a_atoms::w21a_suffix(r))
+    .or_else(|| super::w19d_suffixes::w19d_suffix(r))
 }
 
 /// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
@@ -715,8 +715,13 @@ fn like_this(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
-#[allow(clippy::too_many_lines)]
+/// The words after the noun for one predicate: the older writers first, then the combat and damage suffixes of a target.
 pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
+    suffix_text_main(pred, form).or_else(|| super::w19d_suffixes::w19d_suffix_text(pred, form))
+}
+
+#[allow(clippy::too_many_lines)]
+fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
     if let Some(text) = super::t17b_attached::suffix_text(pred, form) {
         return Some(text);
     }
@@ -1425,6 +1430,7 @@ fn names_own_commander(preds: &[Pred]) -> bool {
 }
 
 /// A selector as a phrase, the way `phrase` reads it.
+#[allow(clippy::too_many_lines)]
 pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     let (spell, preds) = match selector.0.split_first() {
         Some((Pred::Spell, rest)) => (true, rest),
@@ -1530,7 +1536,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         [token, spell, card, commander_noun, bare],
         plural,
     ));
-    let (suffixes, zone) = super::w21a_atoms::w21a_place(suffixes, zone, plural)?;
+    let (suffixes, zone) =
+        super::w21a_atoms::w21a_place(super::w19d_suffixes::last(suffixes), zone, plural)?;
     words.extend(without_list(suffixes));
     words.extend(zone);
     Some(words.join(" "))
@@ -1634,12 +1641,59 @@ fn plain(what: Targetable) -> TargetSpec {
 
 /// "player" or "opponent", and "or planeswalker" after it.
 fn player_kind(r: &mut Reader<'_>, player: Targetable) -> Targetable {
+    let object = |kind| Targetable::Object(Selector(vec![Pred::Type(kind)]));
     if r.words("or planeswalker") {
-        let planeswalker = Selector(vec![Pred::Type(CardType::Planeswalker)]);
-        Targetable::Either(vec![player, Targetable::Object(planeswalker)])
+        Targetable::Either(vec![player, object(CardType::Planeswalker)])
+    } else if r.words("or battle") {
+        Targetable::Either(vec![player, object(CardType::Battle)])
+    } else if r
+        .attempt(|r| {
+            (r.punct(',') && r.words("battle") && r.punct(',') && r.words("or planeswalker"))
+                .then_some(())
+        })
+        .is_some()
+    {
+        Targetable::Either(vec![
+            player,
+            object(CardType::Battle),
+            object(CardType::Planeswalker),
+        ])
     } else {
         player
     }
+}
+
+/// "player or battle", "opponent, battle, or planeswalker": a player and the battles and planeswalkers, in the order the
+/// cards list them (the order of the kinds in the rule does not matter).
+fn player_or_objects(head: &Targetable, objects: &[Targetable]) -> Option<String> {
+    let head = match head {
+        Targetable::Player => "player",
+        Targetable::Opponent => "opponent",
+        _ => return None,
+    };
+    let mut kinds = Vec::new();
+    for object in objects {
+        let Targetable::Object(Selector(preds)) = object else {
+            return None;
+        };
+        let [Pred::Type(kind @ (CardType::Battle | CardType::Planeswalker))] = preds.as_slice()
+        else {
+            return None;
+        };
+        kinds.push(*kind);
+    }
+    kinds.sort_by_key(|kind| *kind == CardType::Planeswalker);
+    kinds.dedup();
+    (kinds.len() == objects.len() && kinds.len() <= 2).then_some(())?;
+    let mut words = vec![head];
+    words.extend(kinds.iter().map(|kind| {
+        if *kind == CardType::Battle {
+            "battle"
+        } else {
+            "planeswalker"
+        }
+    }));
+    Some(join_or(&words))
 }
 
 /// "another target artifact card from your graveyard": the phrase with "other" after its adjectives, before the zone and
@@ -1819,6 +1873,7 @@ fn either_objects(kinds: &[Targetable]) -> Option<String> {
 }
 
 /// A target as the card words it.
+#[allow(clippy::too_many_lines)]
 pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     if spec.divide.is_some() {
         return None;
@@ -1854,6 +1909,12 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                     if planeswalker.0 == [Pred::Type(CardType::Planeswalker)] =>
                 {
                     "target opponent or planeswalker".to_owned()
+                }
+                [
+                    head @ (Targetable::Player | Targetable::Opponent),
+                    objects @ ..,
+                ] if !objects.is_empty() => {
+                    format!("target {}", player_or_objects(head, objects)?)
                 }
                 // Objects of different kinds: "target artifact, enchantment, or creature with power 4 or greater".
                 [_, _, ..] => either_objects(kinds)?,

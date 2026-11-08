@@ -630,6 +630,16 @@ fn continuous(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
                 .any(|key| modification.get(key).is_some())
                 || modification == "AddAllCreatureTypes"
         };
+        // "~ has flash as long as ...": Forge marks the line defining so it works in the hand; the rule is a static from the hand
+        // whose condition the caller adds.
+        let flash =
+            |modification: &Value| modification.get("AddKeyword").is_some_and(|k| k == "Flash");
+        if ability.get("from").is_none() && mods.iter().all(flash) {
+            ability["from"] = json!("Hand");
+            ability["affected"] = json!({"Each": [{"In": "Hand"}, "This"]});
+            let ability = json!({ "Static": ability });
+            return Ok(ability);
+        }
         if !mods.iter().all(defines) || ability.get("condition").is_some() {
             return unmapped("key:Static.Continuous.defining-other-than-stats");
         }

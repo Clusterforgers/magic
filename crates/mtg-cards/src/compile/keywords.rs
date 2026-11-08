@@ -789,23 +789,110 @@ fn plain(name: &str) -> Option<Keyword> {
 /// bound or everything: "from red", "from creatures", "from mana value 3 or less", "from everything". The empty selector
 /// matches every source.
 fn protection(rest: &str) -> Option<Selector> {
-    let word = rest
-        .strip_prefix("from ")?
-        .trim_end_matches('.')
-        .to_ascii_lowercase();
+    let printed = rest.strip_prefix("from ")?.trim_end_matches('.');
+    let word = printed.to_ascii_lowercase();
     if word == "each color" {
         return Some(each_color());
     }
-    quality(&word).or_else(|| mana_value_bound(&word))
+    quality(&word)
+        .or_else(|| mana_value_bound(&word))
+        .or_else(|| kind_quality(printed))
+}
+
+/// The sources a protection names by a creature type or a kind of creature, as the card prints them: "Goblins",
+/// "monocolored", "snow", "legendary creatures", "non-Spirit creatures", "God creatures".
+fn kind_quality(words: &str) -> Option<Selector> {
+    let creature = Pred::Type(CardType::Creature);
+    let subtype = |name: &str| {
+        let known = |one: &str| super::read::subtypes::is_subtype(one);
+        super::read::subtypes::singular_subtype(name, known).map(Subtype)
+    };
+    match words {
+        "monocolored" => {
+            return Some(Selector(vec![Pred::Compare {
+                stat: StatKind::Colors,
+                op: Cmp::Eq,
+                to: Amount::Fixed(1),
+            }]));
+        }
+        "snow" => return Some(Selector(vec![Pred::Supertype(Supertype::Snow)])),
+        "legendary creatures" => {
+            return Some(Selector(vec![
+                creature,
+                Pred::Supertype(Supertype::Legendary),
+            ]));
+        }
+        _ => {}
+    }
+    if let Some(name) = words
+        .strip_prefix("non-")
+        .and_then(|rest| rest.strip_suffix(" creatures"))
+        && super::read::subtypes::is_subtype(name)
+    {
+        return Some(Selector(vec![
+            creature,
+            Pred::Not(Box::new(Pred::Subtype(Subtype(name.to_owned())))),
+        ]));
+    }
+    if let Some(name) = words.strip_suffix(" creatures")
+        && super::read::subtypes::is_subtype(name)
+    {
+        return Some(Selector(vec![
+            creature,
+            Pred::Subtype(Subtype(name.to_owned())),
+        ]));
+    }
+    subtype(words).map(|name| Selector(vec![Pred::Subtype(name)]))
+}
+
+/// The words after "protection from" of a quality `kind_quality` reads.
+pub fn kind_quality_word(quality: &Selector) -> Option<String> {
+    let creature = Pred::Type(CardType::Creature);
+    Some(match quality.0.as_slice() {
+        [
+            Pred::Compare {
+                stat: StatKind::Colors,
+                op: Cmp::Eq,
+                to: Amount::Fixed(1),
+            },
+        ] => "monocolored".to_owned(),
+        [Pred::Supertype(Supertype::Snow)] => "snow".to_owned(),
+        [kind, Pred::Supertype(Supertype::Legendary)] if *kind == creature => {
+            "legendary creatures".to_owned()
+        }
+        [kind, Pred::Not(inner)] if *kind == creature => {
+            let Pred::Subtype(Subtype(name)) = &**inner else {
+                return None;
+            };
+            format!("non-{name} creatures")
+        }
+        [kind, Pred::Subtype(Subtype(name))] if *kind == creature => format!("{name} creatures"),
+        [Pred::Subtype(Subtype(name))] => super::read::subtypes::plural_subtype(name),
+        _ => return None,
+    })
 }
 
 /// The qualities of a protection that names several: "from white and from blue" is one protection for each.
 fn protections(rest: &str) -> Option<Vec<Selector>> {
     let words = rest.strip_prefix("from ")?.trim_end_matches('.');
-    words
+    let qualities: Vec<Selector> = words
         .split(" and from ")
         .map(|part| protection(&format!("from {part}")))
-        .collect()
+        .collect::<Option<_>>()?;
+    // A creature type beside a color is not read.
+    let typed = |quality: &Selector| {
+        quality
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::Subtype(_)))
+    };
+    let colored = |quality: &Selector| {
+        quality
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::Color(_) | Pred::Colorless))
+    };
+    (!(qualities.iter().any(typed) && qualities.iter().any(colored))).then_some(qualities)
 }
 
 /// "mana value 3 or greater" and "mana value 3 or less": the sources whose mana value is at least, or at most, the number.
@@ -1050,6 +1137,23 @@ mod tests {
         &[hexproof_of(CardType::Artifact), hexproof_of(CardType::Creature)]
     )]
     #[case::one_colour("Protection from white", &[protects(Pred::Color(Color::White))])]
+    #[case::a_creature_type(
+        "Protection from Goblins",
+        &[protects(Pred::Subtype(Subtype("Goblin".to_owned())))]
+    )]
+    #[case::two_creature_types(
+        "Protection from Demons and from Dragons",
+        &[protects(Pred::Subtype(Subtype("Demon".to_owned()))), protects(Pred::Subtype(Subtype("Dragon".to_owned())))]
+    )]
+    #[case::a_type_and_a_creature_type(
+        "Protection from planeswalkers and from Wizards",
+        &[protects(Pred::Type(CardType::Planeswalker)), protects(Pred::Subtype(Subtype("Wizard".to_owned())))]
+    )]
+    #[case::monocolored(
+        "Protection from monocolored",
+        &[protects(Pred::Compare { stat: StatKind::Colors, op: Cmp::Eq, to: Amount::Fixed(1) })]
+    )]
+    #[case::snow("Protection from snow", &[protects(Pred::Supertype(Supertype::Snow))])]
     #[case::two_colours(
         "Protection from white and from blue",
         &[protects(Pred::Color(Color::White)), protects(Pred::Color(Color::Blue))]
@@ -1604,7 +1708,7 @@ mod tests {
     #[case::equip_without_a_cost("Equip legendary creature")]
     #[case::hexproof_from_something_else("Hexproof from banana")]
     #[case::protection_from_a_pair("Protection from red and from blue")]
-    #[case::protection_from_a_subtype("Protection from Vampires")]
+    #[case::protection_from_a_word_that_is_no_subtype("Protection from Bananas")]
     #[case::protection_without_a_quality("Protection from")]
     #[case::cycling_by_sacrifice("Cycling\u{2014}Sacrifice a land.")]
     #[case::ward_with_nothing_to_pay("Ward\u{2014}")]
