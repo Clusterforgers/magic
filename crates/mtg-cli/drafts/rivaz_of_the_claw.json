@@ -1,0 +1,76 @@
+{
+  "oracle_id": "ecff46b9-fcc9-4895-8b6f-c697fd15d01a",
+  "name": "Rivaz of the Claw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rivaz of the Claw",
+      "oracle_fingerprint": "cf341d46b14b9ed93eb43453209c0097",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyCombination": { "count": 2 } },
+                  "only": [{ "Spell": { "types": ["Creature"], "subtypes": ["Dragon"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Dragon" }],
+                "from": "Graveyard",
+                "once": true
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Subtype": "Dragon" },
+                  { "WasCast": { "from": "Graveyard" } },
+                  { "OwnedBy": "You" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [{ "Exile": { "what": "This" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
