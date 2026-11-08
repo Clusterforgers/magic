@@ -136,21 +136,7 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
     }
     // The label of one line of a per-type permission (Muldrotha): each line holds its own `Affected$` and limit.
     let label = p.get("MayPlayText").unwrap_or_default().to_lowercase();
-    // A line without a description is worded by the card's text.
-    let text = p
-        .get("Description")
-        .map_or_else(
-            || {
-                let oracle = ctx.oracle.to_lowercase();
-                if oracle.contains("cast") {
-                    String::new()
-                } else {
-                    oracle
-                }
-            },
-            str::to_owned,
-        )
-        .to_lowercase();
+    let text = worded(ctx, p);
     if text.contains("play") || label == "land" {
         permission["play"] = json!(true);
     }
@@ -473,5 +459,18 @@ pub fn effect_zone(p: &Params) -> Tr<Option<&'static str>> {
         Some("Graveyard") => Ok(Some("Graveyard")),
         Some("Exile") => Ok(Some("Exile")),
         Some(_) => unmapped("key:Static.MayPlay.EffectZone"),
+    }
+}
+
+/// The words of a permission line: its description, else the card's text when that never says "cast".
+fn worded(ctx: &Ctx, p: &Params) -> String {
+    if let Some(text) = p.get("Description") {
+        return text.to_lowercase();
+    }
+    let oracle = ctx.oracle.to_lowercase();
+    if oracle.contains("cast") {
+        String::new()
+    } else {
+        oracle
     }
 }
