@@ -17,7 +17,8 @@ fn card(lines: &str) -> (String, Vec<String>) {
 }
 
 const GAIN: &str = "SVar:Trig:DB$ GainLife | LifeAmount$ 1";
-const CANT_LOSE: &str = "Description$ You can't lose the game and your opponents can't win the game.";
+const CANT_LOSE: &str =
+    "Description$ You can't lose the game and your opponents can't win the game.";
 
 #[rstest]
 #[case::one_card(

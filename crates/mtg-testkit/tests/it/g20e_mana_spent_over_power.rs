@@ -47,7 +47,9 @@ fn counts_the_mana_paid(
         .find(|id| name_of(state, **id) == "Grower")
         .and_then(|id| state.object(*id))
         .and_then(|object| object.permanent())
-        .map_or(0, |permanent| permanent.counters_of(&CounterKind::PlusOnePlusOne));
+        .map_or(0, |permanent| {
+            permanent.counters_of(&CounterKind::PlusOnePlusOne)
+        });
     assert_eq!(held, counters);
     Ok(())
 }

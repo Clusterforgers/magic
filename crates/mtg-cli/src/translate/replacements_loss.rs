@@ -9,7 +9,14 @@ use crate::forge::script::Params;
 /// The secondary `GameWin` line of "you can't lose the game and your opponents can't win the game": the `GameLoss` line
 /// of the same text already states it (`opponents_cant_win`), so this line gives no ability of its own.
 pub fn opponents_cant_win(p: &Params) -> Tr<()> {
-    let read = ["Event", "ActiveZones", "ValidPlayer", "Layer", "Secondary", "Description"];
+    let read = [
+        "Event",
+        "ActiveZones",
+        "ValidPlayer",
+        "Layer",
+        "Secondary",
+        "Description",
+    ];
     check_keys(p, "Replacement.GameWin", &read, |_, _| false)?;
     let same_text = p.get("Description").map(str::trim)
         == Some("You can't lose the game and your opponents can't win the game.");

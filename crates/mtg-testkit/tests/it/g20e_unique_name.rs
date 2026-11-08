@@ -17,7 +17,8 @@ use crate::common::{names, pid};
 fn project() -> Arc<CardDefinition> {
     let share = |pool: &str| format!(r#"{{"Not":{{"SharesName":{pool}}}}}"#);
     let graveyard = r#"{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"}]}"#;
-    let other = r#"{"Each":[{"In":"Battlefield"},{"ControlledBy":"You"},{"Not":{"Is":"Candidate"}}]}"#;
+    let other =
+        r#"{"Each":[{"In":"Battlefield"},{"ControlledBy":"You"},{"Not":{"Is":"Candidate"}}]}"#;
     let rules = format!(
         r#"{{"Triggered":{{"when":{{"ZoneChange":{{"to":"Battlefield","what":[{{"Type":"Creature"}},{{"Not":"Token"}},{{"ControlledBy":"You"}},{},{}]}}}},"effects":[{{"Draw":{{}}}}]}}}}"#,
         share(graveyard),
@@ -47,7 +48,14 @@ fn a_new_name_draws(
         .battlefield(0, field)
         .hand(0, [bear()])
         .library(0, [forest(), forest()])
-        .graveyard(0, if in_graveyard { vec![bear()] } else { Vec::new() });
+        .graveyard(
+            0,
+            if in_graveyard {
+                vec![bear()]
+            } else {
+                Vec::new()
+            },
+        );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.cast("Grizzly Bears")?;
     while !driver.state().stack().is_empty() {
