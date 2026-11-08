@@ -41,6 +41,7 @@ async fn applies_to_an_empty_database_and_can_be_rerun(pool: PgPool) {
         [
             "card_drafts",
             "card_fix_marks",
+            "card_ranks",
             "card_reads",
             "card_rules",
             "cards",

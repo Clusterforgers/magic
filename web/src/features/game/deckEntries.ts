@@ -4,6 +4,7 @@
  */
 import { BY_HAND, byHandCopies, cardsByHand } from '@/lib/byHand'
 import { runsBreakdown, WHOLE_DECK_RUNS } from '@/lib/toRead'
+import type { ReadTarget } from '@/lib/toRead'
 import { cardsText } from '@/features/decks/format'
 import type { DeckInfo } from '@/net/api'
 import type { Counts, DeckListItem, DeckPicture, DeckState, PreconListItem } from '@/protocol/generated'
@@ -132,6 +133,13 @@ const COLOUR_LETTER: Record<DeckInfo['color'], string> = {
   Black: 'B',
   Red: 'R',
   Green: 'G',
+}
+
+/** The review screen of a row: a stored deck by id, a precon by code; none for a built-in deck, which has no drafts. */
+export function readTargetOf(entry: Pick<DeckEntry, 'id' | 'kind'>): ReadTarget | undefined {
+  if (entry.kind === 'own') return { deck: entry.id }
+  if (entry.kind === 'precon') return { precon: entry.id.slice('precon:'.length) }
+  return undefined
 }
 
 /** A built-in deck as a row: a Normal deck the whole game runs. */

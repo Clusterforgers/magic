@@ -39,6 +39,7 @@ pub mod validate;
 pub mod value;
 pub mod vanilla;
 pub mod w11d_dungeon;
+pub mod wording;
 
 pub use assemble::{Assembled, assemble};
 pub use definition::{AbilityDef, CardDefinition, CardIdentity, ManaAbility, ManualClause, Shown};

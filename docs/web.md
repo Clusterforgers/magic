@@ -333,14 +333,16 @@ Sign-in uses the server's accounts ([server.md](server.md); bodies in [protocol.
 A player reads a card's draft beside its printed text and says whether the game does what the card says ([cards-dsl.md](cards-dsl.md), Read tier; endpoints in [server.md](server.md), Reads).
 
 - `net/reads.ts` `createReadsApi` is the typed client of `GET /api/reads`, `GET` and `PUT /api/reads/{oracle_id}`; a failure is a `DeckError` (`stale_read` among the codes).
-- `/read?deck=<id>` and `/read?precon=<code>` (`features/reads/ReadPage`, route `read.tsx`): signed out goes to `/login?next=`; a visitor on a server without accounts reads a notice. `ReadView` lists the deck's `ReadQueue` (from `lg` a list beside the card; under it a "Card 2 of 7" bar with Previous and Next) and shows one card; a verdict moves on to the next card not judged and a polite live region says so; the last one shows "Every card is read".
+- `/read` (every card waiting for a first read), `/read?deck=<id>` and `/read?precon=<code>` (`features/reads/ReadPage`, route `read.tsx`): signed out goes to `/login?next=`; a visitor on a server without accounts reads a notice. `ReadView` lists the `ReadQueue`, most played first (from `lg` a scrolling list beside the card with each rank and "in your decks"; under it a "Card 2 of 7" bar with Previous and Next), under a count line ("312 to read, 41 of them in your decks.", `countLine`). A verdict opens the next card not judged at once: that card is loaded ahead (`usePrefetching`), and a polite live region says so; the last one shows "Every card is read". The browser keeps the card the reader is on per queue (`savedPosition`), so a reload opens there. Decks links to `/read` ("Read cards").
+- Every deck check links its "N cards to read" (`ToRead`): the decks list, the deck and precon pages and previews, the precon rows, the builder check bar (to `/read` while the deck is not saved) and the lobby preview (from the list row while its cards load). A list option shows the count without a link.
 - `ReadCardView` (`useReadCard`) draws the card's name, state (`STATE_WORDS`: a pending draft is "Unverified, waiting for a read"), counts and the account's own verdict over `ReadSheet`: one row per printed clause, the clause beside the engine's words (`engineWords`) and its steps indented by depth, stacked under `sm`. A row's tone (`toneOf`) marks it with an icon and words; `differs` rows carry the `support-partial` edge and tint, by-hand rows the `support-manual` edge.
 - The verdict: Correct and Wrong stay `aria-disabled` for `READ_DELAY_MS` (2 s) after each draft appears, so nobody judges a card unread. C gives Correct and W opens the note outside a text field (`verdictKey`); a `wrong` needs a note of at most 280 characters (`noteProblem`). A 409 `stale_read` shows "The rules changed" with "Load the new version".
 - `ReadDialog` is the same card view in a dialog. The table's pinned preview offers "Read its rules" to a signed-in player for a card that runs on a read or leaves clauses by hand (`readableOf`); the dialog lives in `CardPreview`, outside the preview it closes, and reads its client from `ReadsApiContext`.
+- `/read/bulk` (`features/bulk-reads/BulkReadPage`, route `read_.bulk.tsx`, client `net/bulkReads.ts`): the wording-only candidates of `GET /api/reads/bulk` in one section per rule (title, summary, count, "Check all"), a row per card with a checkbox, the name, and each clause on the card beside the game's words with the differing words marked (`wordDiff`, a longest common run of words); every card starts checked, and a sticky bar holds the checked count and "Approve N", which sends one `PUT` and reloads the list. The read page shows "N wording-only, approve in bulk" (`BulkLink`) while some wait.
 
 ## Dev routes
 
-All six exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fixture marker or card name reaches the production bundle, and each route has a test that it answers "not found" with no fixture when DEV is off. By hand: `pnpm build && ! grep -r dev-table-fixture dist`. The parameters are read in the route and fixture files; this is what each stands for.
+All seven exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fixture marker or card name reaches the production bundle, and each route has a test that it answers "not found" with no fixture when DEV is off. By hand: `pnpm build && ! grep -r dev-table-fixture dist`. The parameters are read in the route and fixture files; this is what each stands for.
 
 | Route | Stands for |
 |---|---|
@@ -349,7 +351,8 @@ All six exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fix
 | `/dev/builder` | the real builder over `builder/dev/fixture.ts` and in-memory servers; `deck` picks the case (`mixed`, `manual`, `verified`, `changed`, `unchecked`, `partners`, `refused`); a check endpoint answers after 450 ms; fix marks are kept in memory; `cards=real` searches a running server |
 | `/dev/precons` | the real precon page over `precons/dev/fixture.ts`; `view` (`list`, `empty`, `loading`, `error`, `unavailable`), `account=1`, `play=refused` |
 | `/dev/unvalidated` | the real not-validated page over `decks/unvalidated/fixture.ts`, signed in; `view` (`all`, `deck`, `clean`, `none`, `loading`, `error`, `unavailable`, `failed`, `texts`) |
-| `/dev/read` | the real review screen over `reads/dev/fixture.ts`, signed in; `view` (`deck`, `precon`, `done`, `loading`, `error`, `stale`, `dialog`) |
+| `/dev/read` | the real review screen over `reads/dev/fixture.ts`, signed in; `view` (`deck`, `precon`, `all`, `done`, `loading`, `error`, `stale`, `dialog`) |
+| `/dev/read-bulk` | the real bulk read screen over `bulk-reads/dev/fixture.ts`, signed in |
 
 ## Testing
 

@@ -353,7 +353,7 @@ fn judge(
 }
 
 /// The clauses a card's draft marked as differing reads back as other text, from its read sheet.
-fn differs_of(library: &Library, printed: &PrintedCard) -> Vec<ReadDiffers> {
+pub fn differs_of(library: &Library, printed: &PrintedCard) -> Vec<ReadDiffers> {
     let Some(draft) = library
         .draft(&printed.oracle_id)
         .filter(|draft| draft.differs)

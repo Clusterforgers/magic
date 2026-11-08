@@ -2,6 +2,7 @@
 //! the card database with their art, and the check run over them.
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::sync::Arc;
 
 use axum::http::StatusCode;
 use mtg_cards::deck::{
@@ -17,7 +18,7 @@ use sqlx::types::uuid::Uuid;
 
 use crate::api::{ApiError, is_unsafe_in_names};
 use crate::card_api::{failed, hit};
-use crate::cards::{CardSource, Rules, card_facts};
+use crate::cards::{CardSource, Rules, card_facts, off_runtime};
 
 /// Most copies of a card on one line.
 const MAX_LINE_COUNT: u32 = 999;
@@ -186,11 +187,12 @@ pub(crate) fn check_body(body: &DeckBody) -> Result<Checked, ApiError> {
 }
 
 /// The cards behind a set of deck lines: their rows, the facts the check reads, and the art.
+#[derive(Clone)]
 pub(crate) struct Loaded {
-    cards: BTreeMap<String, Card>,
-    facts: BTreeMap<String, CardFacts>,
-    defaults: HashMap<OracleId, PrintingImages>,
-    printings: HashMap<String, Printing>,
+    cards: Arc<BTreeMap<String, Card>>,
+    facts: Arc<BTreeMap<String, CardFacts>>,
+    defaults: Arc<HashMap<OracleId, PrintingImages>>,
+    printings: Arc<HashMap<String, Printing>>,
     /// The rules every card of the request is judged under.
     rules: Rules,
 }
@@ -242,16 +244,20 @@ impl Loaded {
             .map(|card| (card.oracle_id.to_string(), card_facts(card)))
             .collect();
         Ok(Loaded {
-            cards: found
-                .into_iter()
-                .map(|card| (card.oracle_id.to_string(), card))
-                .collect(),
-            facts,
-            defaults,
-            printings: printings
-                .into_iter()
-                .map(|printing| (printing.printing_id.to_string(), printing))
-                .collect(),
+            cards: Arc::new(
+                found
+                    .into_iter()
+                    .map(|card| (card.oracle_id.to_string(), card))
+                    .collect(),
+            ),
+            facts: Arc::new(facts),
+            defaults: Arc::new(defaults),
+            printings: Arc::new(
+                printings
+                    .into_iter()
+                    .map(|printing| (printing.printing_id.to_string(), printing))
+                    .collect(),
+            ),
             rules,
         })
     }
@@ -323,6 +329,26 @@ impl Loaded {
             self.rules.library(),
             self.rules.caps(),
         )
+    }
+
+    /// What `work` makes of these cards, worked out on the blocking pool: a deck check decides every card it holds,
+    /// so the runtime keeps serving meanwhile.
+    pub(crate) async fn off<T: Send + 'static>(
+        &self,
+        work: impl FnOnce(&Loaded) -> T + Send + 'static,
+    ) -> Result<T, ApiError> {
+        let loaded = self.clone();
+        Ok(off_runtime(move || work(&loaded)).await?)
+    }
+
+    /// [`Loaded::report`] on the blocking pool.
+    pub(crate) async fn report_off(
+        &self,
+        format: &str,
+        lines: &[Line],
+    ) -> Result<DeckReport, ApiError> {
+        let (format, lines) = (format.to_owned(), lines.to_vec());
+        self.off(move |loaded| loaded.report(&format, &lines)).await
     }
 
     /// A line as a list shows it, with the art of the chosen printing or else of the default one;

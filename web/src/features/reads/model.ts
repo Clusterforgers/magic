@@ -1,6 +1,7 @@
 /** The words and rules of the review screen, pure (docs/web.md, Reading cards). */
 import type { ReadCard, ReadQueueCard, ReadRow, ReadState } from '@/protocol/generated'
 import { BY_HAND_TITLE } from '@/lib/byHand'
+import { TO_READ } from '@/lib/toRead'
 import type { ReadTarget } from '@/lib/toRead'
 
 /** How long a card is shown before a verdict can be given, so nobody judges a card without reading it. */
@@ -123,4 +124,52 @@ export function verdictKey(
   if (key === 'c') return 'correct'
   if (key === 'w') return 'wrong'
   return null
+}
+
+/** The name a queue is kept under: `all`, `deck:<id>` or `precon:<code>`. */
+export function queueKey(target: ReadTarget | null): string {
+  if (target === null) return 'all'
+  return 'deck' in target ? `deck:${target.deck}` : `precon:${target.precon}`
+}
+
+/**
+ * "312 to read, 41 of them in your decks.": what is left of a queue, and how many of those the account's decks hold.
+ * The second part is left out for a stored deck (all of it is in a deck) and when none is.
+ */
+export function countLine(
+  cards: readonly ReadQueueCard[],
+  done: ReadonlySet<string>,
+  target: ReadTarget | null,
+): string {
+  const left = cards.filter((card) => !done.has(card.oracle_id))
+  const mine = left.filter((card) => card.in_decks).length
+  const own = target !== null && 'deck' in target
+  return own || mine === 0
+    ? `${left.length} ${TO_READ}.`
+    : `${left.length} ${TO_READ}, ${mine} of them in your decks.`
+}
+
+/** "#1,204": a card's popularity rank, or null for a card without one. */
+export function rankText(rank: number | null): string | null {
+  return rank === null ? null : `#${rank.toLocaleString('en-US')}`
+}
+
+const POSITION_KEY = 'mtg.read-position:'
+
+/** The card the reader was on in this queue, as the browser kept it; null when none is kept or storage is off. */
+export function savedPosition(key: string): string | null {
+  try {
+    return window.localStorage.getItem(POSITION_KEY + key)
+  } catch {
+    return null
+  }
+}
+
+/** Keeps the card the reader is on, so a reload opens the queue there. */
+export function savePosition(key: string, oracleId: string): void {
+  try {
+    window.localStorage.setItem(POSITION_KEY + key, oracleId)
+  } catch {
+    // Without storage a reload starts at the first card left, which is the next one to read anyway.
+  }
 }

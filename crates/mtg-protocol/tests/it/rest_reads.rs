@@ -98,10 +98,13 @@ fn a_queue_lists_cards_with_their_state() {
             read_hash: "ab".into(),
             state: ReadState::Approved,
             differs: 2,
+            rank: Some(12),
+            in_decks: true,
         }],
     };
     let value = serde_json::to_value(&queue).unwrap();
     assert_eq!(value["cards"][0]["state"], json!("approved"));
+    assert_eq!(value["cards"][0]["rank"], json!(12));
     assert_eq!(serde_json::from_value::<ReadQueue>(value).unwrap(), queue);
 }
 
