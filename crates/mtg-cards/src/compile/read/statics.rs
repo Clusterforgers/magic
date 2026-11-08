@@ -1748,6 +1748,11 @@ pub(super) fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
             ("Enchanted creature".to_owned(), false),
         ],
         Ref::Each(selector) => {
+            let mut spells = super::w21_spells::subjects(selector);
+            spells.extend(super::w21_spells::blockers(selector));
+            if !spells.is_empty() {
+                return spells;
+            }
             let (preds, chosen) = match selector.0.split_last() {
                 Some((Pred::ChosenColor, rest)) => (rest, " of the chosen color"),
                 Some((Pred::ChosenSubtype, rest)) => (rest, " of the chosen type"),
@@ -1860,7 +1865,7 @@ fn static_texts(
             .map(|subject| (subject.to_owned(), false)),
         );
     }
-    subjects
+    let mut written: Vec<String> = subjects
         .into_iter()
         .flat_map(|(subject, plural)| {
             let predicates = predicate_variants(
@@ -1914,6 +1919,35 @@ fn static_texts(
                 .chain(during)
                 .collect::<Vec<_>>()
         })
+        .collect();
+    written.extend(first_spell_texts(affected, mods, condition));
+    written
+}
+
+/// A keyword given twice ("Cascade, cascade.") is not worded as one list.
+pub(super) fn repeated_keyword(mods: &[Modification]) -> bool {
+    mods.iter()
+        .enumerate()
+        .any(|(at, m)| matches!(m, Modification::AddKeyword(_)) && mods[..at].contains(m))
+}
+
+/// "The first historic spell you cast each turn has convoke."
+fn first_spell_texts(
+    affected: &Ref,
+    mods: &[Modification],
+    condition: Option<&Condition>,
+) -> Vec<String> {
+    let (Ref::Each(selector), Some(condition)) = (affected, condition) else {
+        return Vec::new();
+    };
+    let predicates = predicate_variants(mods, false, false, false);
+    super::w21_spells::first_subjects(selector, condition)
+        .into_iter()
+        .flat_map(|(subject, _)| {
+            predicates
+                .iter()
+                .map(move |predicate| format!("{subject} {predicate}"))
+        })
         .collect()
 }
 
@@ -1925,6 +1959,9 @@ pub(super) fn predicate_variants(
     itself: bool,
     conditional: bool,
 ) -> Vec<String> {
+    if repeated_keyword(mods) {
+        return Vec::new();
+    }
     let mut written = if itself && !conditional && !chosen_protection(mods) && !entered_choice(mods)
     {
         Vec::new()

@@ -14,7 +14,11 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let value = json(ability);
     let mut mods = Vec::new();
     collect_mods(&value, &mut mods);
-    for found in mods {
+    for found in mods.clone() {
+        // The same keyword twice would be swapped once and read as two words.
+        if mods.iter().filter(|other| **other == found).count() > 1 {
+            continue;
+        }
         if let Some((stand_in, from, to)) = grant(&found) {
             // A stand-in the ability has already would swap the wrong words.
             if replace(&mut value.clone(), &stand_in, &stand_in).is_some() {
@@ -40,14 +44,17 @@ fn grant(modification: &Value) -> Option<(Value, String, String)> {
             "protection from each of your opponents".to_owned(),
         ));
     }
-    if let Some(name) = modification.pointer("/AddKeyword").and_then(Value::as_str) {
-        let keyword: Keyword = serde_json::from_value(json!(name)).ok()?;
+    if let Some(given) = modification.pointer("/AddKeyword") {
+        let keyword: Keyword = serde_json::from_value(given.clone()).ok()?;
         keyword_text(&keyword).is_none().then_some(())?;
-        return Some((
-            json!({"AddKeyword": "Flying"}),
-            "flying".to_owned(),
-            keyword.name().to_lowercase(),
-        ));
+        let said = super::w21_words::words(&keyword, given.is_string())?;
+        // A quoted ability has its period inside the quotes.
+        let (from, to) = if said.quoted {
+            ("flying.".to_owned(), said.text)
+        } else {
+            ("flying".to_owned(), said.text)
+        };
+        return Some((json!({"AddKeyword": "Flying"}), from, to));
     }
     let blockers = modification.pointer("/CantBeBlockedBy")?;
     let [only] = blockers.as_array()?.as_slice() else {
