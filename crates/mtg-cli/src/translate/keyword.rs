@@ -626,7 +626,7 @@ fn etb_condition(ctx: &Ctx, field: Option<&str>) -> Tr<Option<Value>> {
         return Ok(None);
     };
     match field {
-        "no Condition" => return Ok(None),
+        "no Condition" | "" => return Ok(None),
         "CheckSVar$ WasKicked" => return Ok(Some(json!("Kicked"))),
         "ValidCard$ Card.Self+escaped" => return Ok(Some(json!({"CastWith": "Escape"}))),
         "Revolt$ True" => return Ok(Some(super::condition::revolt())),
