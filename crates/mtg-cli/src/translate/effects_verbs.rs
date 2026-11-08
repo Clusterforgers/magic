@@ -187,19 +187,39 @@ fn multiply_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(effect)
 }
 
-/// `MoveCounter` of one named kind from the `Source$` onto the target or `Defined$`.
+/// `MoveCounter` of one named kind, of a kind the controller picks (`CounterType$ Any`, one counter) or of every kind
+/// (`CounterType$ All | CounterNum$ All`) from the `Source$` onto the target or `Defined$`.
 fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut read = TARGETING.to_vec();
     read.extend(["Source", "CounterType", "CounterNum"]);
     only(p, "MoveCounter", &read)?;
-    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
-        return unmapped("key:MoveCounter.Source-or-CounterType");
+    // `None`: any kind; `all`: every counter there is.
+    let (kind, all) = match (p.get("CounterType"), p.get("CounterNum")) {
+        (Some("Any"), None | Some("1")) => (None, false),
+        (Some("All"), Some("All")) => (None, true),
+        (Some(word), number) => {
+            let Some(kind) = counter_kind(word) else {
+                return unmapped("key:MoveCounter.Source-or-CounterType");
+            };
+            if number.is_some_and(|n| n.trim().parse::<u32>().is_err()) {
+                return unmapped("key:MoveCounter.CounterNum");
+            }
+            (Some(kind), false)
+        }
+        (None, _) => return unmapped("key:MoveCounter.Source-or-CounterType"),
     };
-    if p.get("CounterNum")
-        .is_some_and(|n| n.trim().parse::<u32>().is_err())
-    {
-        return unmapped("key:MoveCounter.CounterNum");
-    }
+    let moved = |ctx: &mut Ctx, from: Value, to: Value| -> Tr<Value> {
+        let count = if all {
+            json!({ "AnyCounters": from.clone() })
+        } else {
+            amount(ctx, p.get("CounterNum").unwrap_or("1"))?
+        };
+        let mut effect = json!({"from": from, "to": to, "count": count});
+        if let Some(kind) = &kind {
+            effect["counter"] = json!(kind);
+        }
+        Ok(json!({ "MoveCounters": effect }))
+    };
     // "Move a counter from target creature onto a second target creature": two targets of the same kind.
     let two = p.get("TargetMin") == Some("2") && p.get("TargetMax") == Some("2");
     if two && p.has("ValidTgts") && !p.has("Source") && !p.has("Defined") {
@@ -208,10 +228,7 @@ fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             subject(ctx, &one, "Self", None)?,
             subject(ctx, &one, "Self", None)?,
         );
-        let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
-        return Ok(
-            json!({"MoveCounters": {"from": from, "to": to, "counter": kind, "count": count}}),
-        );
+        return moved(ctx, from, to);
     }
     // Without `Source$` the target is the source and `Defined$` the object that receives them.
     let (from, to) = match (p.get("Source"), p.get("Defined"), p.has("ValidTgts")) {
@@ -222,8 +239,7 @@ fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ),
         _ => return unmapped("key:MoveCounter.Source-or-CounterType"),
     };
-    let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
-    Ok(json!({"MoveCounters": {"from": from, "to": to, "counter": kind, "count": count}}))
+    moved(ctx, from, to)
 }
 
 /// `ExchangeControl` for good between the `Defined$` permanent and the one target.

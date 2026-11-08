@@ -12,7 +12,7 @@
             "when": { "StepBegins": { "step": "End" } },
             "if": {
               "Compare": {
-                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLostMost" } },
                 "op": "Ge",
                 "right": 3
               }

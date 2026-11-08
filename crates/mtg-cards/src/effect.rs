@@ -753,8 +753,10 @@ pub enum Effect {
         from: Ref,
         /// The object they go onto.
         to: Ref,
-        /// The kind.
-        counter: CounterKind,
+        /// The kind; counters of any kinds when absent, which the controller picks one at a time unless the count
+        /// takes every counter there is ("move a counter", "move all counters" with `AnyCounters`).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
@@ -2022,7 +2024,7 @@ mod tests {
     )]
     #[case::unattach_the_source(Effect::Unattach { what: Ref::This }, r#"{"Unattach":{"what":"This"}}"#)]
     #[case::move_two_counters(
-        Effect::MoveCounters { from: Ref::Target(0), to: Ref::Target(1), counter: CounterKind::PlusOnePlusOne, count: Amount::Fixed(2) },
+        Effect::MoveCounters { from: Ref::Target(0), to: Ref::Target(1), counter: Some(CounterKind::PlusOnePlusOne), count: Amount::Fixed(2) },
         r#"{"MoveCounters":{"from":{"Target":0},"to":{"Target":1},"counter":"+1/+1","count":2}}"#
     )]
     fn effects_have_stable_json(#[case] value: Effect, #[case] json: &str) {

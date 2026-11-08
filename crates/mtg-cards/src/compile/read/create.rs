@@ -686,3 +686,15 @@ pub(super) fn w9c_plural_token(r: &mut Reader<'_>) -> Option<TokenRef> {
     }
     Some(found)
 }
+
+/// "Food token", "1/1 white Soldier creature token" or, with `plural`, "1/1 green Squirrel creature tokens": a kind of
+/// token after its count, with its keywords.
+pub(super) fn ep21_token(r: &mut Reader<'_>, plural: bool) -> Option<TokenRef> {
+    let mut found = token(r)?;
+    r.word(if plural { "tokens" } else { "token" })
+        .then_some(())?;
+    if let Some(abilities) = r.attempt(keyword_abilities) {
+        spec_of(&mut found)?.abilities = abilities;
+    }
+    Some(found)
+}
