@@ -136,7 +136,21 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
     }
     // The label of one line of a per-type permission (Muldrotha): each line holds its own `Affected$` and limit.
     let label = p.get("MayPlayText").unwrap_or_default().to_lowercase();
-    let text = p.get("Description").unwrap_or_default().to_lowercase();
+    // A line without a description is worded by the card's text.
+    let text = p
+        .get("Description")
+        .map_or_else(
+            || {
+                let oracle = ctx.oracle.to_lowercase();
+                if oracle.contains("cast") {
+                    String::new()
+                } else {
+                    oracle
+                }
+            },
+            str::to_owned,
+        )
+        .to_lowercase();
     if text.contains("play") || label == "land" {
         permission["play"] = json!(true);
     }
