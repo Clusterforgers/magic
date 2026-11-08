@@ -101,6 +101,11 @@ describe('the sentence of each manual action', () => {
       },
       'Bo creates 1 Knight token (by hand)',
     ],
+    [
+      'a token copy',
+      { CopyToken: { object: 4, count: 2 } },
+      'Bo creates 2 tokens that are copies of Forest (by hand)',
+    ],
     ['a tap', { Tap: { object: 4 } }, 'Bo taps Forest (by hand)'],
     ['an untap', { Untap: { object: 4 } }, 'Bo untaps Forest (by hand)'],
     ['a draw', { Draw: { count: 2 } }, 'Bo draws 2 cards (by hand)'],

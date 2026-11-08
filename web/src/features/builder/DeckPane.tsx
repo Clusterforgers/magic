@@ -19,11 +19,13 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { DeckMarker } from '@/features/decks/DeckMarker'
 import { cardsText, DECK_FORMATS, formatLabel } from '@/features/decks/format'
 import { copiesOf, landCopies } from '@/features/decks/preview/model'
-import { BY_HAND_TITLE, byHandCopies } from '@/lib/byHand'
+import { BY_HAND, BY_HAND_TITLE, byHandCopies } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { DeckState, DeckZone } from '@/protocol/generated'
 import { CheckBar } from './CheckBar'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import type { CardsApi } from '@/net/cards'
 import { CommanderSlot } from './CommanderSlot'
 import type { FindKind } from './CommanderSlot'
 import { hasRoom, linesIn, totalOf } from './deckEdit'
@@ -53,12 +55,17 @@ export interface DeckActions extends LineActions {
 }
 
 /** Which part of the pane an under-`lg` window shows: the cards, or the numbers and the cards played by hand. */
+/** From this window width the stats and the cards played by hand sit in a rail beside the deck. */
+const RAIL_QUERY = '(min-width: 1440px)'
+
 export type DeckPart = 'deck' | 'stats'
 
 interface DeckPaneProps {
   draft: Draft
   /** The saved deck, which its cards to read are read for. */
   deckId?: string
+  /** The card endpoint the words of the cards played by hand are quoted from. */
+  cardsApi: Pick<CardsApi, 'get'>
   /** The check state of the deck as last saved. */
   state: DeckState
   /** The check the pane shows: the saved deck's report, or the live check of the draft (its legality issues and the support of each card). */
@@ -148,6 +155,7 @@ function Disclosure({
 export function DeckPane({
   draft,
   deckId,
+  cardsApi,
   state,
   check,
   dirty,
@@ -216,6 +224,12 @@ export function DeckPane({
     issues: report.legality.length,
     format: formatLabel(draft.format),
   })
+  const railOn = useMediaQuery(RAIL_QUERY, false)
+  const statsSummary = `${lands} ${lands === 1 ? 'land' : 'lands'}, ${played - lands} ${played - lands === 1 ? 'spell' : 'spells'}`
+  const statsNode = <StatsPanel deck={preview} counts={counts} asSaved={asSaved} />
+  const handNode = (
+    <HandList cards={hand} cardsApi={cardsApi} onPreview={actions.preview} fixMarks={fixMarks} />
+  )
   const showHand = (): void => {
     setHandOpen(true)
     setReveal((n) => n + 1)
@@ -337,111 +351,143 @@ export function DeckPane({
             copies.
           </EmptyState>
         ) : (
-          <div className="grid gap-4">
-            {slot ? (
-              <div className="max-lg:group-data-[part=stats]/pane:hidden">
-                <CommanderSlot
-                  lines={commanders}
-                  identity={identityOf(cardsIn(commanders, 'commander'))}
-                  outside={outsideByLine.size}
-                  judging={judging}
-                  checkOf={(line) => checkOf(checks, line)}
-                  onRemove={(card) => actions.remove('commander', card.oracle_id)}
-                  onPreview={actions.preview}
-                  onFind={onFind}
-                />
-              </div>
-            ) : null}
-            {total === 0 ? (
-              <EmptyState icon={LibraryIcon} as="h3" title="This deck has no cards">
-                Search for a card and add it with the row or the Enter key. Each card appears here with its
-                copies.
-              </EmptyState>
-            ) : (
-              <>
+          <div
+            className={
+              railOn && total > 0 ? 'grid grid-cols-[minmax(0,1fr)_21rem] items-start gap-4' : undefined
+            }
+          >
+            <div className="grid gap-4">
+              {slot ? (
                 <div className="max-lg:group-data-[part=stats]/pane:hidden">
-                  <LegalitySection issues={report.legality} format={report.format} stale={asSaved} />
+                  <CommanderSlot
+                    lines={commanders}
+                    identity={identityOf(cardsIn(commanders, 'commander'))}
+                    outside={outsideByLine.size}
+                    judging={judging}
+                    checkOf={(line) => checkOf(checks, line)}
+                    onRemove={(card) => actions.remove('commander', card.oracle_id)}
+                    onPreview={actions.preview}
+                    onFind={onFind}
+                  />
                 </div>
-                <div className="grid gap-4 max-lg:group-data-[part=deck]/pane:hidden">
-                  <Disclosure
-                    id={`${id}-stats`}
-                    title="Stats"
-                    summary={`${lands} ${lands === 1 ? 'land' : 'lands'}, ${played - lands} ${played - lands === 1 ? 'spell' : 'spells'}`}
-                    open={statsOpen}
-                    onToggle={() => setStatsOpen((open) => !open)}
+              ) : null}
+              {total === 0 ? (
+                <EmptyState icon={LibraryIcon} as="h3" title="This deck has no cards">
+                  Search for a card and add it with the row or the Enter key. Each card appears here with its
+                  copies.
+                </EmptyState>
+              ) : (
+                <>
+                  <div className="max-lg:group-data-[part=stats]/pane:hidden">
+                    <LegalitySection issues={report.legality} format={report.format} stale={asSaved} />
+                  </div>
+                  {railOn ? null : (
+                    <div className="grid gap-4 max-lg:group-data-[part=deck]/pane:hidden">
+                      <Disclosure
+                        id={`${id}-stats`}
+                        title="Stats"
+                        summary={statsSummary}
+                        open={statsOpen}
+                        onToggle={() => setStatsOpen((open) => !open)}
+                      >
+                        {statsNode}
+                      </Disclosure>
+                      <Disclosure
+                        id={`${id}-hand`}
+                        title={BY_HAND_TITLE}
+                        count={byHandCount}
+                        open={handOpen}
+                        onToggle={() => setHandOpen((open) => !open)}
+                        sectionRef={handRef}
+                      >
+                        {handNode}
+                      </Disclosure>
+                    </div>
+                  )}
+                  <div className="grid gap-4 max-lg:group-data-[part=stats]/pane:hidden">
+                    {shown.length === 0 ? (
+                      <EmptyState icon={ShieldCheckIcon} as="h3" title="No cards with issues">
+                        Every card in this deck runs whole. Turn off Issues only to see the whole deck.
+                      </EmptyState>
+                    ) : null}
+                    {shown.map(({ zone, lines }) => {
+                      return (
+                        <section key={zone} aria-labelledby={`${id}-${zone}`} className="grid gap-1">
+                          <h3
+                            id={`${id}-${zone}`}
+                            className="flex items-baseline justify-between gap-2 border-b pb-1 text-sm font-semibold"
+                          >
+                            {ZONE_TITLE[zone]}{' '}
+                            <span className="font-normal text-muted-foreground tabular-nums">
+                              {totalOf(draft, zone)}
+                            </span>
+                          </h3>
+                          {lines.length === 0 ? (
+                            <p className="px-1 py-2 text-sm text-muted-foreground">
+                              {zone === 'commander'
+                                ? 'No commander yet. Use the menu beside a card in the search to add one.'
+                                : 'No cards here yet.'}
+                            </p>
+                          ) : look === 'pictures' ? (
+                            <PictureZone
+                              zone={zone}
+                              lines={lines}
+                              sort={sort}
+                              format={draft.format}
+                              room={room}
+                              checks={checks}
+                              outsideByLine={outsideByLine}
+                              actions={actions}
+                              fixMarks={fixMarks}
+                            />
+                          ) : (
+                            <ul aria-label={`${ZONE_TITLE[zone]} cards`} className="grid gap-1">
+                              {lines.map((line) => (
+                                <LineRow
+                                  key={line.card.oracle_id}
+                                  line={line}
+                                  format={draft.format}
+                                  room={room}
+                                  check={checkOf(checks, line)}
+                                  outside={outsideByLine.get(lineKey(line)) ?? null}
+                                  actions={actions}
+                                  fixMarks={fixMarks}
+                                  readTarget={deckId === undefined ? undefined : { deck: deckId }}
+                                />
+                              ))}
+                            </ul>
+                          )}
+                        </section>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+            {railOn && total > 0 ? (
+              <aside aria-label={`Stats and cards ${BY_HAND}`} data-slot="deck-rail" className="grid gap-4">
+                <section aria-labelledby={`${id}-stats-title`} className="grid gap-2">
+                  <h3
+                    id={`${id}-stats-title`}
+                    className="flex items-baseline justify-between gap-2 border-b py-1 text-sm font-semibold"
                   >
-                    <StatsPanel deck={preview} counts={counts} asSaved={asSaved} />
-                  </Disclosure>
-                  <Disclosure
-                    id={`${id}-hand`}
-                    title={BY_HAND_TITLE}
-                    count={byHandCount}
-                    open={handOpen}
-                    onToggle={() => setHandOpen((open) => !open)}
-                    sectionRef={handRef}
+                    Stats
+                    <span className="font-normal text-muted-foreground tabular-nums">{statsSummary}</span>
+                  </h3>
+                  {statsNode}
+                </section>
+                <section ref={handRef} aria-labelledby={`${id}-hand-title`} className="grid gap-2">
+                  <h3
+                    id={`${id}-hand-title`}
+                    className="flex items-baseline justify-between gap-2 border-b py-1 text-sm font-semibold"
                   >
-                    <HandList cards={hand} onPreview={actions.preview} fixMarks={fixMarks} />
-                  </Disclosure>
-                </div>
-                <div className="grid gap-4 max-lg:group-data-[part=stats]/pane:hidden">
-                  {shown.length === 0 ? (
-                    <EmptyState icon={ShieldCheckIcon} as="h3" title="No cards with issues">
-                      Every card in this deck runs whole. Turn off Issues only to see the whole deck.
-                    </EmptyState>
-                  ) : null}
-                  {shown.map(({ zone, lines }) => {
-                    return (
-                      <section key={zone} aria-labelledby={`${id}-${zone}`} className="grid gap-1">
-                        <h3
-                          id={`${id}-${zone}`}
-                          className="flex items-baseline justify-between gap-2 border-b pb-1 text-sm font-semibold"
-                        >
-                          {ZONE_TITLE[zone]}{' '}
-                          <span className="font-normal text-muted-foreground tabular-nums">
-                            {totalOf(draft, zone)}
-                          </span>
-                        </h3>
-                        {lines.length === 0 ? (
-                          <p className="px-1 py-2 text-sm text-muted-foreground">
-                            {zone === 'commander'
-                              ? 'No commander yet. Use the menu beside a card in the search to add one.'
-                              : 'No cards here yet.'}
-                          </p>
-                        ) : look === 'pictures' ? (
-                          <PictureZone
-                            zone={zone}
-                            lines={lines}
-                            sort={sort}
-                            format={draft.format}
-                            room={room}
-                            checks={checks}
-                            outsideByLine={outsideByLine}
-                            actions={actions}
-                            fixMarks={fixMarks}
-                          />
-                        ) : (
-                          <ul aria-label={`${ZONE_TITLE[zone]} cards`} className="grid gap-1">
-                            {lines.map((line) => (
-                              <LineRow
-                                key={line.card.oracle_id}
-                                line={line}
-                                format={draft.format}
-                                room={room}
-                                check={checkOf(checks, line)}
-                                outside={outsideByLine.get(lineKey(line)) ?? null}
-                                actions={actions}
-                                fixMarks={fixMarks}
-                                readTarget={deckId === undefined ? undefined : { deck: deckId }}
-                              />
-                            ))}
-                          </ul>
-                        )}
-                      </section>
-                    )
-                  })}
-                </div>
-              </>
-            )}
+                    {BY_HAND_TITLE}
+                    <span className="font-normal text-muted-foreground tabular-nums">{byHandCount}</span>
+                  </h3>
+                  {handNode}
+                </section>
+              </aside>
+            ) : null}
           </div>
         )}
       </div>

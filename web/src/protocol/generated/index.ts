@@ -160,6 +160,7 @@ export type { LobbyErrorCode } from "./LobbyErrorCode";
 export type { LobbyGame } from "./LobbyGame";
 export type { LobbyList } from "./LobbyList";
 export type { LobbySeat } from "./LobbySeat";
+export type { LogHost } from "./LogHost";
 export type { LogName } from "./LogName";
 export type { LossReason } from "./LossReason";
 export type { LoyaltyAbilityView } from "./LoyaltyAbilityView";

@@ -241,6 +241,8 @@ export interface SeatLayoutInput {
   opened: ReadonlySet<string>
   /** The permanents a prompt marks as legal or selected: a stack holding one is held open. */
   marked: ReadonlySet<ObjectId>
+  /** The ghosts in each lane (`useGhosts`); a lane left empty holds its place while they play. */
+  held?: Held
 }
 
 /** The rows of a seat to draw and the fit of its zone. */
@@ -263,12 +265,15 @@ function entriesOfRows(
   return { creatures: entries(rows.creatures), other: entries(rows.other), lands: entries(rows.lands) }
 }
 
+/** The ghosts standing in each lane: an empty lane keeps its place in the fit while its ghosts play. */
+export type Held = Partial<Record<RowKind, number>>
+
 /** The boxes of each lane (one for each stack and one for each member of an open one) and its deepest tuck. */
-export function laneCounts(rows: Record<RowKind, readonly RowEntry[]>): LaneCounts {
+export function laneCounts(rows: Record<RowKind, readonly RowEntry[]>, held: Held = {}): LaneCounts {
   const counts: LaneCounts = {
-    creatures: boxesOf(rows.creatures),
-    other: boxesOf(rows.other),
-    lands: boxesOf(rows.lands),
+    creatures: boxesOf(rows.creatures) || (held.creatures ?? 0),
+    other: boxesOf(rows.other) || (held.other ?? 0),
+    lands: boxesOf(rows.lands) || (held.lands ?? 0),
   }
   const tucked = {
     creatures: depthOf(rows.creatures),
@@ -283,13 +288,18 @@ export function laneCounts(rows: Record<RowKind, readonly RowEntry[]>): LaneCoun
  * `GROUP_OTHERS_BELOW` merges identical cards too and fits again. Every permanent takes one box, tapped or not, and
  * the boxes of the fit are exactly the ones the lanes draw.
  */
-export function layoutSeat({ box, stacks, facing, opened, marked }: SeatLayoutInput): SeatLayout {
+export function layoutSeat({ box, stacks, facing, opened, marked, held }: SeatLayoutInput): SeatLayout {
   const plain = entriesOfRows(stacks.plain, opened, marked)
   if (box === null) return { rows: plain, stacks: stacks.plain, merged: false, fit: null }
-  const plainFit = fitLanes(box, laneCounts(plain), facing)
+  const plainFit = fitLanes(box, laneCounts(plain, held), facing)
   if (plainFit.cardWidth >= GROUP_OTHERS_BELOW) {
     return { rows: plain, stacks: stacks.plain, merged: false, fit: plainFit }
   }
   const merged = entriesOfRows(stacks.merged, opened, marked)
-  return { rows: merged, stacks: stacks.merged, merged: true, fit: fitLanes(box, laneCounts(merged), facing) }
+  return {
+    rows: merged,
+    stacks: stacks.merged,
+    merged: true,
+    fit: fitLanes(box, laneCounts(merged, held), facing),
+  }
 }
