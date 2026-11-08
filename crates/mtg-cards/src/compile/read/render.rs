@@ -557,6 +557,19 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // The card that died named by the event reads as the card in the graveyard.
+    if let Some(card) = super::t18_dead::t18_dead_card(ability) {
+        for text in written_variants(&card) {
+            let card_text = text
+                .replace(", return it to", ", return that card to")
+                .replace(", return that creature to", ", return that card to");
+            for text in [text, card_text] {
+                if !texts.contains(&text) {
+                    texts.push(text);
+                }
+            }
+        }
+    }
     // "not (not a or not b)" in a list of conditions reads as "a" and "b".
     if let Some(flat) = super::t18_demorgan::t18_flattened(ability) {
         for text in written_variants(&flat) {
