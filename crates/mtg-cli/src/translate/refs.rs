@@ -106,7 +106,7 @@ const ROWS: &[Row] = &[
     ),
     row(&["Player"], Reads::EachPlayer, RESOLVES, "Howling Mine"),
     row(
-        &["Self", "Card.Self", "CorrectedSelf"],
+        &["Self", "Card.Self"],
         Reads::This,
         NOW | FIXED | LASTING | IMPRINT,
         "Giant Growth",

@@ -60,11 +60,15 @@ fn every_object_a_valid_string_selects_is_fixed_as_the_statics_begin() {
     );
 }
 
-#[test]
-fn a_counter_duration_over_a_group_stays_a_gap() {
-    let script = instant(
-        "A:SP$ Effect | StaticAbilities$ Stay | RememberObjects$ Valid Creature.OppCtrl | Duration$ Permanent | ForgetOnMoved$ Battlefield | ForgetCounter$ STUN\nSVar:Stay:Mode$ Continuous | Affected$ Card.IsRemembered | AddHiddenKeyword$ This card doesn't untap during your untap step.",
-    );
+#[rstest]
+#[case::a_static(
+    "A:SP$ Effect | StaticAbilities$ Stay | RememberObjects$ Valid Creature.OppCtrl | Duration$ Permanent | ForgetOnMoved$ Battlefield | ForgetCounter$ STUN\nSVar:Stay:Mode$ Continuous | Affected$ Card.IsRemembered | AddHiddenKeyword$ This card doesn't untap during your untap step."
+)]
+#[case::an_untap_replacement(
+    "A:SP$ Effect | RememberObjects$ Valid Creature.OppCtrl | ReplacementEffects$ DontUntap | Duration$ Permanent | ForgetOnMoved$ Battlefield | ForgetCounter$ STUN\nSVar:DontUntap:Event$ Untap | ValidCard$ Card.IsRemembered | ValidStepTurnToController$ You | Layer$ CantHappen"
+)]
+fn a_counter_duration_over_a_group_stays_a_gap(#[case] body: &str) {
+    let script = instant(body);
     assert!(
         gaps(&script).contains(&"key:Effect.ForgetCounter-on-a-group".to_owned()),
         "{:?}",
@@ -77,7 +81,8 @@ fn a_counter_duration_over_a_group_stays_a_gap() {
 #[case::this_targeted_owner("ThisTargetedOwner", Scope::Now, true)]
 #[case::enchanted_owner("EnchantedOwner", Scope::Now, true)]
 #[case::active_player("ActivePlayer", Scope::Now, true)]
-#[case::corrected_self("CorrectedSelf", Scope::Now, true)]
+// The card behind a copy's granted ability (Estrid's Invocation returns it under its owner's control): no row yet.
+#[case::corrected_self("CorrectedSelf", Scope::Now, false)]
 // A word read again while an effect's trigger or shield lasts must name the same objects throughout.
 #[case::lasting_controller("TargetedController", Scope::Lasting, false)]
 #[case::lasting_attached("Enchanted", Scope::Lasting, false)]
@@ -108,6 +113,18 @@ fn a_writer_key_binds_only_on_the_apis_of_its_rows(
 ) {
     let p = Params::parse(&format!("{key}$ True"));
     assert_eq!(remember::wanted(&p, api), wanted);
+}
+
+#[test]
+fn the_owner_of_the_enchanted_creature_stays_a_gap_in_a_filter() {
+    let script = "Name:Alpha\nTypes:Enchantment Aura\nK:Enchant:Creature\nA:SP$ Attach | ValidTgts$ Creature\nS:Mode$ CantBlockBy | ValidAttacker$ Creature.EnchantedBy | ValidBlocker$ Creature.!ControlledBy EnchantedOwner\n";
+    assert!(
+        gaps(script)
+            .iter()
+            .any(|gap| gap.contains("EnchantedOwner")),
+        "{:?}",
+        gaps(script)
+    );
 }
 
 #[test]

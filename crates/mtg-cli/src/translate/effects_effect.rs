@@ -184,11 +184,6 @@ fn remembered_statics(
         Some(who) => who.clone(),
         None => remembered(ctx, p)?,
     };
-    // "Each of those creatures ... for as long as it has a counter" ends per object; the engine's duration ends for all
-    // of them at once, so it holds only for objects named by a reference, not a group.
-    if duration.get("WhileHasCounter").is_some() && who.get("Each").is_some() {
-        return unmapped("key:Effect.ForgetCounter-on-a-group");
-    }
     let mut out = Vec::new();
     for name in names.split(',').map(str::trim) {
         out.extend(remembered_static(ctx, name, &who, &duration, owner)?);
@@ -421,7 +416,13 @@ pub(super) fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?
         }
         // Two references side by side, or every object a valid-string selects: the objects as the effect begins.
-        word if word.contains(" & ") || word.starts_with("Valid") => defined(ctx, word)?,
+        word if word.contains(" & ") || word.starts_with("Valid") => {
+            // "Each of those creatures ... for as long as it has a counter" ends per object, the engine's duration for all.
+            if p.has("ForgetCounter") {
+                return unmapped("key:Effect.ForgetCounter-on-a-group");
+            }
+            defined(ctx, word)?
+        }
         word => super::refs::read_or(ctx, word, super::refs::Scope::Fixed, || {
             format!("key:Effect.RememberObjects={word}")
         })?,
