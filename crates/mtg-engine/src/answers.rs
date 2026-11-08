@@ -40,6 +40,8 @@ pub(crate) enum Outcome {
     BeginTurnUp(ObjectId),
     /// Start unlocking this door of this Room: the payment of its mana cost is decided next.
     BeginUnlock(ObjectId, u8),
+    /// Start ending this effect by paying for it: the payment of its price is decided next; the object is the one it changes.
+    BeginEndEffect(ObjectId, mtg_core::ids::EffectId),
     /// Start casting a copy of the spell face of this prepared permanent: the copy is made and its announcement and payment are decided next.
     BeginPrepared(ObjectId),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.

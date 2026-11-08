@@ -171,6 +171,7 @@ impl Delayed {
             | Duration::WhileSourceTapped
             | Duration::WhileHasCounter(_)
             | Duration::NextUntapStep
+            | Duration::UntilPaid(_)
             | Duration::UntilTurnSkipped => true,
         }
     }

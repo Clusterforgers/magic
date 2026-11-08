@@ -532,6 +532,10 @@ fn announcement(
             ..
         }) => crate::dk1c5_rooms::dk1c5_events(state, player, *card, *door).ok_or_else(unexpected),
         Some(Pending {
+            special: Some(Special::EndEffect(effect)),
+            ..
+        }) => crate::e15g_paid::events(state, player, *effect).ok_or_else(unexpected),
+        Some(Pending {
             what: What::Spell(card),
             special: Some(Special::TurnFaceUp),
             choices,

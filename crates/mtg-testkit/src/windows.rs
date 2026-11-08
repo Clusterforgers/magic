@@ -197,6 +197,7 @@ mod tests {
                 companion: false,
                 turnable: Vec::new(),
                 unlockable: Vec::new(),
+                endable: Vec::new(),
                 faces: Vec::new(),
                 unplayable: Vec::new(),
                 can_act,

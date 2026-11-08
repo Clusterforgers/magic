@@ -556,6 +556,13 @@ fn create_effect(
     ) {
         state.possible.protection = true;
     }
+    // A spell that gains rebound on the stack is exiled by a replacement effect as it resolves (CR 702.88a).
+    if matches!(
+        &effect.modification,
+        Modification::AddKeyword(mtg_cards::keyword::Keyword::Rebound)
+    ) {
+        state.possible.replacements = true;
+    }
     if let Modification::GrantAbility(granted) = &effect.modification {
         if matches!(**granted, mtg_cards::ability::Ability::Replacement { .. }) {
             state.possible.replacements = true;

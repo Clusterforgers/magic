@@ -137,6 +137,9 @@ pub enum Modification {
     /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
     /// those granted earlier. What is granted after it still counts.
     LoseAbilities,
+    /// Takes away the one ability at this address (layer 6): "~ loses this ability". The object of the address is the one
+    /// the ability was activated from; the others of its abilities stay.
+    LoseAbility(crate::abilities::AbilityRef),
     /// Changes the controller (layer 2).
     SetController(PlayerId),
     /// Sets power and toughness (layer 7b).
@@ -235,6 +238,7 @@ impl Modification {
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
+            | Modification::LoseAbility(_)
             | Modification::GainAbilities(_)
             | Modification::LoseAbilities => Layer::Ability,
             Modification::SetPowerToughness { .. }
@@ -330,6 +334,7 @@ impl Modification {
             | Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::LockKeyword(_)
+            | Modification::LoseAbility(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilities(_)
             | Modification::CantAttack
@@ -399,6 +404,8 @@ pub(crate) fn lasts(
         // `UntilTurnSkipped` ends with the turn it skips (`prohibit::skipped_turn_rules`).
         Duration::UntilEndOfTurn
         | Duration::Forever
+        // A payment ends it (`e15g_paid.rs`).
+        | Duration::UntilPaid(_)
         | Duration::NextUntapStep
         | Duration::UntilTurnSkipped => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),

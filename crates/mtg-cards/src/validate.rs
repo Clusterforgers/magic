@@ -41,6 +41,9 @@ const MOST_NESTED: u32 = 4;
 const COUNTER_DURATION_ONLY: &str =
     "only a continuous effect lasts for as long as the permanents it names have a counter";
 
+/// Only a continuous effect ends when its controller pays to end it.
+const E15G_PAID_ONLY: &str = "only a continuous effect lasts until its controller pays to end it";
+
 /// An exchange of control names its two permanents with one reference or two.
 const W6E_EXCHANGE_PAIR: &str =
     "an exchange of control names its two permanents with one reference or two";
@@ -1972,6 +1975,7 @@ impl<'a> Walker<'a> {
             | Modification::AddColors(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
+            | Modification::LoseThisAbility
             | Modification::LoseAbilities
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
@@ -3629,6 +3633,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
+                if matches!(duration, Duration::UntilPaid(_)) {
+                    w.uses("Duration", "UntilPaid");
+                }
                 if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
                     w.problem(C7_UNTAP_ONLY);
                 }
@@ -3636,6 +3643,9 @@ impl Walker<'_> {
             Effect::ExchangeControl { what, duration } => {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
+                }
+                if matches!(duration, Duration::UntilPaid(_)) {
+                    w.problem(E15G_PAID_ONLY);
                 }
                 w.at("what", |w| {
                     for (at, one) in what.iter().enumerate() {
@@ -3658,6 +3668,9 @@ impl Walker<'_> {
             Effect::Rule { rule, duration } => w.at("rule", |w| {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
+                }
+                if matches!(duration, Duration::UntilPaid(_)) {
+                    w.problem(E15G_PAID_ONLY);
                 }
                 w.rule(rule);
                 // Only the layers end an effect when the source changes controller.
@@ -3703,6 +3716,9 @@ impl Walker<'_> {
             } => {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
                     w.problem(COUNTER_DURATION_ONLY);
+                }
+                if matches!(duration, Duration::UntilPaid(_)) {
+                    w.problem(E15G_PAID_ONLY);
                 }
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Shield", "Duration.WhileYouControlSource");
@@ -5439,6 +5455,10 @@ mod tests {
     #[case::a_shield_with_a_counter_duration(
         format!(r#"{{"Spell":{{"effects":[{{"Shield":{{"when":{{"Damage":{{"to":"You"}}}},"by":"Prevent","duration":{FOLLOWS_A_COUNTER}}}}}]}}}}"#),
         &["faces[0].abilities[0].Spell.effects[0].Shield: only a continuous effect lasts for as long as the permanents it names have a counter"]
+    )]
+    #[case::e15g_a_rule_until_paid(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"CantDraw":"You"},"duration":{"UntilPaid":"{W}"}}}]}}"#.to_owned(),
+        &["faces[0].abilities[0].Spell.effects[0].Rule.rule: only a continuous effect lasts until its controller pays to end it"]
     )]
     #[case::a_permanent_that_prevents_only_the_next_damage(
         r#"{"Replacement":{"when":{"Damage":{"to":"You"}},"by":"PreventNext"}}"#.to_owned(),

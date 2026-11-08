@@ -196,6 +196,7 @@ export type { OptionOptions } from "./OptionOptions";
 export type { OptionalCost } from "./OptionalCost";
 export type { OrderChoice } from "./OrderChoice";
 export type { OrderOptions } from "./OrderOptions";
+export type { PaidEnd } from "./PaidEnd";
 export type { PasswordChange } from "./PasswordChange";
 export type { PasswordReset } from "./PasswordReset";
 export type { PayChoice } from "./PayChoice";
