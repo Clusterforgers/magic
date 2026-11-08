@@ -45,9 +45,6 @@ pub(super) fn w19d_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     {
         return Some(Pred::BlockedBy(Ref::This));
     }
-    if r.words("that was dealt damage this turn") || r.words("that were dealt damage this turn") {
-        return Some(Pred::DamagedThisTurn);
-    }
     if r.words("that's attacking you") || r.words("that are attacking you") {
         return Some(Pred::AttackingPlayer(Ref::You));
     }

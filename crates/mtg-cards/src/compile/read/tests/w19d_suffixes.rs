@@ -1,11 +1,10 @@
-//! Goal: targets named by combat or damage ("creature blocking this creature", "creature that was dealt damage this turn", "creature that's attacking you") and by a player with battles and planeswalkers ("player or battle", "opponent, battle, or planeswalker") read as the rules and are written back as the same text; "it" names the card where an earlier word does; other words after them stay with the table.
+//! Goal: targets named by combat or damage ("creature blocking this creature", "creature that's attacking you") and by a player with battles and planeswalkers ("player or battle", "opponent, battle, or planeswalker") read as the rules and are written back as the same text (a creature dealt damage this turn is written only); "it" names the card where an earlier word does; other words after them stay with the table.
 use super::*;
 
 #[rstest]
 #[case::blocking_it("~ deals 1 damage to target creature blocking this creature.")]
 #[case::blocked_by("~ deals 1 damage to target creature blocked by this creature.")]
 #[case::either_way("~ deals 1 damage to target creature blocking or blocked by this creature.")]
-#[case::dealt_damage("~ deals 1 damage to target creature that was dealt damage this turn.")]
 #[case::attacking_you("~ deals 1 damage to target creature without flying that's attacking you.")]
 #[case::player_or_battle("~ deals 2 damage to target player or battle.")]
 #[case::player_or_planeswalker("~ deals 2 damage to target player or planeswalker.")]
@@ -45,6 +44,20 @@ fn w19d_the_card_is_it_after_its_own_name(#[case] read: &str, #[case] oracle: &s
 #[case::battle_alone_with_a_comma("~ deals 2 damage to target player, battle.")]
 fn w19d_near_misses_stay_with_the_table(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");
+}
+
+#[test]
+fn w19d_a_creature_dealt_damage_this_turn_is_written_but_not_read() {
+    let rule = ability(
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},"DamagedThisTurn"]}}],"effects":[{"DealDamage":{"amount":1,"to":{"Target":0}}}]}}"#,
+    );
+    let text = "~ deals 1 damage to target creature that was dealt damage this turn.";
+    assert!(
+        render_variants(&rule)
+            .iter()
+            .any(|written| same_text(written, text))
+    );
+    assert_eq!(spell(text), None);
 }
 
 #[test]
