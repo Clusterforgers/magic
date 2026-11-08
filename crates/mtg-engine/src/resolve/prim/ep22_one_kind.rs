@@ -75,6 +75,9 @@ mod tests {
 
     const ME: PlayerId = PlayerId(0);
 
+    /// Each (holder, kind, delta) proposed.
+    type Changes = Vec<(String, String, i32)>;
+
     /// Seat 0 controls the Source, a Wolf with two +1/+1 counters and one charge counter, and a Cat with one shield
     /// counter; seat 1 controls a Bear with none.
     fn game() -> GameState {
@@ -102,10 +105,7 @@ mod tests {
     }
 
     /// `Ok(None)` when a question is asked, else each (holder, kind, delta) proposed.
-    fn run_with(
-        json: &str,
-        answers: &[usize],
-    ) -> Result<Option<Vec<(String, String, i32)>>, ResolveError> {
+    fn run_with(json: &str, answers: &[usize]) -> Result<Option<Changes>, ResolveError> {
         let game = game();
         let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
         let resolving = Resolving {
@@ -141,20 +141,20 @@ mod tests {
         })
     }
 
-    fn put(holder: &str, kind: &str) -> Option<Vec<(String, String, i32)>> {
-        Some(vec![(holder.to_owned(), kind.to_owned(), 1)])
+    fn put(holder: &str, kind: &str) -> Changes {
+        vec![(holder.to_owned(), kind.to_owned(), 1)]
     }
 
     #[rstest]
     #[case::two_kinds_ask("Wolf", &[], None)]
-    #[case::the_first_kind("Wolf", &[0], put("Wolf", "+1/+1"))]
-    #[case::the_second_kind("Wolf", &[1], put("Wolf", "charge"))]
-    #[case::one_kind_held("Cat", &[], put("Cat", "shield"))]
+    #[case::the_first_kind("Wolf", &[0], Some(put("Wolf", "+1/+1")))]
+    #[case::the_second_kind("Wolf", &[1], Some(put("Wolf", "charge")))]
+    #[case::one_kind_held("Cat", &[], Some(put("Cat", "shield")))]
     #[case::none_held("Bear", &[], Some(vec![]))]
     fn one_kind_gets_another(
         #[case] holder: &str,
         #[case] answers: &[usize],
-        #[case] expected: Option<Vec<(String, String, i32)>>,
+        #[case] expected: Option<Changes>,
     ) {
         assert_eq!(run_with(&effect(holder), answers).unwrap(), expected);
     }

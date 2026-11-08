@@ -16,6 +16,58 @@ pub const EVERY_ZONE: [ZoneKind; 7] = [
     ZoneKind::Command,
 ];
 
+/// Adds the other printed wordings of ep22's writers to `texts`: "Put an additional counter of that kind on that
+/// permanent" for "Give that permanent another counter of that kind", "For each flip you win, S" for "S for each coin
+/// that comes up heads", a static ability over every zone, and "This effect reduces only the amount of colored mana you
+/// pay." after a reduction of coloured symbols alone.
+pub(super) fn ep22_variants(ability: &Ability, texts: &mut Vec<String>) {
+    let additional: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let (head, rest) = text.split_once(". Give that ")?;
+            let (noun, tail) = rest.split_once(" another counter of that kind")?;
+            Some(format!(
+                "{head}. Put an additional counter of that kind on that {noun}{tail}"
+            ))
+        })
+        .collect();
+    texts.extend(additional);
+    let won: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let (before, tail) = text.split_once(" for each coin that comes up heads")?;
+            let (head, steps) = before.rsplit_once(". ")?;
+            let mut chars = steps.chars();
+            let steps = chars
+                .next()?
+                .to_lowercase()
+                .chain(chars)
+                .collect::<String>();
+            Some(format!("{head}. For each flip you win, {steps}{tail}"))
+        })
+        .collect();
+    texts.extend(won);
+    texts.extend(self::texts(ability));
+    if let Ability::CostModifier {
+        change: crate::ability::CostChange::Reduce,
+        mana,
+        ..
+    } = ability
+        && !mana.has_x()
+        && mana.rest().generic() == 0
+        && !mana.rest().symbols().is_empty()
+    {
+        let colored: Vec<String> = texts
+            .iter()
+            .map(|text| {
+                let text = text.strip_suffix('.').unwrap_or(text);
+                format!("{text}. This effect reduces only the amount of colored mana you pay.")
+            })
+            .collect();
+        texts.extend(colored);
+    }
+}
+
 /// The wordings of a static ability of one card type you control in every zone; empty for any other ability.
 pub(super) fn texts(ability: &Ability) -> Vec<String> {
     let Ability::Static {

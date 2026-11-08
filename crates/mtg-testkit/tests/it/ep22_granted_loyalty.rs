@@ -101,8 +101,8 @@ fn a_granted_loyalty_ability_is_activated(
     assert_eq!(driver.state().player(pid(0)).unwrap().life() - before, 10);
     assert_eq!(loyalty(&driver), after);
     // One loyalty ability a turn: neither the printed nor the granted one is offered again.
-    assert!(granted(&driver).is_empty());
-    assert!(driver.offered_abilities("Walker")?.is_empty());
+    assert_eq!(granted(&driver), Vec::new());
+    assert_eq!(driver.offered_abilities("Walker")?, Vec::<usize>::new());
     Ok(())
 }
 
@@ -111,7 +111,7 @@ fn without_the_giver_nothing_is_granted(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let driver = Driver::from_scenario(Scenario::new(seats).battlefield(0, [ready(walker())]))?;
-    assert!(granted(&driver).is_empty());
+    assert_eq!(granted(&driver), Vec::new());
     assert_eq!(driver.offered_abilities("Walker")?, vec![0]);
     Ok(())
 }

@@ -172,7 +172,7 @@ mod tests {
                     agreed += 1;
                     assert!(result(&game, &[answer]).is_err());
                 }
-                Err(_) => panic!("only a question or a result"),
+                Err(other) => panic!("only a question or a result: {other:?}"),
             }
         }
         assert!(asked > 0 && agreed > 0, "{asked} asked, {agreed} agreed");

@@ -536,56 +536,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         .map(|text| text.replacen(" onto a second target ", " onto another target ", 1))
         .collect();
     texts.extend(another);
-    // "Give that permanent another counter of that kind" is also printed "Put an additional counter of that kind on that
-    // permanent".
-    let additional: Vec<String> = texts
-        .iter()
-        .filter_map(|text| {
-            let (head, rest) = text.split_once(". Give that ")?;
-            let (noun, tail) = rest.split_once(" another counter of that kind")?;
-            Some(format!(
-                "{head}. Put an additional counter of that kind on that {noun}{tail}"
-            ))
-        })
-        .collect();
-    texts.extend(additional);
-    // "S for each coin that comes up heads" is also printed "For each flip you win, S".
-    let won: Vec<String> = texts
-        .iter()
-        .filter_map(|text| {
-            let (before, tail) = text.split_once(" for each coin that comes up heads")?;
-            let (head, steps) = before.rsplit_once(". ")?;
-            let mut chars = steps.chars();
-            let steps = chars
-                .next()?
-                .to_lowercase()
-                .chain(chars)
-                .collect::<String>();
-            Some(format!("{head}. For each flip you win, {steps}{tail}"))
-        })
-        .collect();
-    texts.extend(won);
-    texts.extend(super::ep22_everywhere::texts(ability));
-    // A reduction of coloured symbols never takes generic mana: "This effect reduces only the amount of colored mana you
-    // pay."
-    if let Ability::CostModifier {
-        change: crate::ability::CostChange::Reduce,
-        mana,
-        ..
-    } = ability
-        && !mana.has_x()
-        && mana.rest().generic() == 0
-        && !mana.rest().symbols().is_empty()
-    {
-        let colored: Vec<String> = texts
-            .iter()
-            .map(|text| {
-                let text = text.strip_suffix('.').unwrap_or(text);
-                format!("{text}. This effect reduces only the amount of colored mana you pay.")
-            })
-            .collect();
-        texts.extend(colored);
-    }
+    super::ep22_everywhere::ep22_variants(ability, &mut texts);
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
     if let Some(plain) = r11w_batch::flat_ability(ability) {
         for text in written_variants(&plain) {
@@ -2229,8 +2180,29 @@ impl Writer<'_> {
     }
 
     /// "put its counters on target creature you control"; "for each kind of counter on target permanent or player, give
-    /// that permanent or player another counter of that kind".
-    fn g12b_counters_of(&mut self, on: &Ref, of: &Ref, each: Option<&Amount>) -> Option<String> {
+    /// that permanent or player another counter of that kind"; with `one_kind`, "choose a counter on target permanent.
+    /// Give that permanent another counter of that kind".
+    fn g12b_counters_of(
+        &mut self,
+        on: &Ref,
+        of: &Ref,
+        each: Option<&Amount>,
+        one_kind: bool,
+    ) -> Option<String> {
+        if one_kind {
+            if !(each == Some(&Amount::Fixed(1))
+                && *on == Ref::Target(0)
+                && *of == Ref::Target(0)
+                && self.single(on))
+            {
+                return None;
+            }
+            let target = self.name_target()?;
+            let noun = target.strip_prefix("target ")?.to_owned();
+            return Some(format!(
+                "choose a counter on {target}. Give that {noun} another counter of that kind"
+            ));
+        }
         match (each, on, of) {
             (None, on, of) => {
                 let whose = match of {
@@ -2331,21 +2303,8 @@ impl Writer<'_> {
                 on,
                 of,
                 each,
-                one_kind: false,
-            } => self.g12b_counters_of(on, of, each.as_ref())?,
-            Effect::PutCountersOf {
-                on: Ref::Target(0),
-                of: Ref::Target(0),
-                each: Some(Amount::Fixed(1)),
-                one_kind: true,
-            } if self.single(&Ref::Target(0)) => {
-                let target = self.name_target()?;
-                let noun = target.strip_prefix("target ")?.to_owned();
-                format!(
-                    "choose a counter on {target}. Give that {noun} another counter of that kind"
-                )
-            }
-            Effect::PutCountersOf { .. } => return None,
+                one_kind,
+            } => self.g12b_counters_of(on, of, each.as_ref(), *one_kind)?,
             Effect::MoveCounters {
                 from,
                 to,
