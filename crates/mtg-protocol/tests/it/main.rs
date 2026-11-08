@@ -48,6 +48,7 @@ mod invasion_search_hidden;
 mod keyword_view;
 mod left_to_table_hidden;
 mod lobby_message;
+mod log_hosts;
 mod log_names;
 mod loyalty_view;
 mod mana_cost_hidden;
