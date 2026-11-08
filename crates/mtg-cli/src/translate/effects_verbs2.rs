@@ -54,8 +54,34 @@ fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "GenericChoice",
-        &["Choices", "Defined", "ValidTgts", "FallbackAbility"],
+        &[
+            "Choices",
+            "Defined",
+            "ValidTgts",
+            "FallbackAbility",
+            "TempRemember",
+            "ShowChoice",
+        ],
     )?;
+    // The parts read the chooser as `Remembered`: each player the group names chooses in a pass of their own.
+    let remembers = match p.get("TempRemember") {
+        None => false,
+        Some("Chooser") if matches!(p.get("ShowChoice"), None | Some("True" | "ExceptSelf")) => {
+            true
+        }
+        Some(_) => return unmapped("key:GenericChoice.TempRemember"),
+    };
+    if remembers && !p.has("ValidTgts") {
+        let group = match p.get("Defined") {
+            Some("Opponent") => "Opponents",
+            Some("Player") => "EachPlayer",
+            _ => return unmapped("key:GenericChoice.TempRemember-chooser"),
+        };
+        return choice_each(ctx, p, group);
+    }
+    if remembers || p.has("ShowChoice") {
+        return unmapped("key:GenericChoice.TempRemember-chooser");
+    }
     // A target is declared for the parts to read; without `Defined$` the targeted player chooses ("target opponent may
     // have you draw three cards").
     let mut chooser = None;
@@ -109,6 +135,38 @@ fn generic_choice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         node["who"] = who;
     }
     Ok(json!({"OneOf": node}))
+}
+
+/// `GenericChoice` of each player of a group, who is `Remembered` in the parts: one `OneOf` in a pass for each.
+fn choice_each(ctx: &mut Ctx, p: &Params, group: &str) -> Tr<Value> {
+    let names: Vec<&str> = p.get("Choices").unwrap_or_default().split(',').collect();
+    if !(2..=MOST_OPTIONS).contains(&names.len()) {
+        return unmapped("key:GenericChoice.Choices");
+    }
+    // Only the "unless that player pays" parts: any other part may read what the others chose or stop the passes.
+    let pays = names.iter().all(|name| {
+        ctx.svar(name).is_some_and(|text| {
+            let part = Params::parse(text);
+            part.has("UnlessCost") && part.get("UnlessPayer") == Some("Remembered")
+        })
+    });
+    // The fallback is for a choice no one can make; a part that asks to pay (or lose the life) already covers that.
+    let fallback_missing = p
+        .get("FallbackAbility")
+        .is_some_and(|name| ctx.svar(name).is_none());
+    if !pays || fallback_missing {
+        return unmapped("key:GenericChoice.TempRemember-parts");
+    }
+    let bind = ctx.fresh("each");
+    let held = json!({ "Bound": bind });
+    let outer = ctx.remembered.replace(held.clone());
+    let options: Tr<Vec<Vec<Value>>> = names.into_iter().map(|name| part(ctx, name)).collect();
+    ctx.remembered = outer;
+    Ok(json!({"RepeatEach": {
+        "over": group,
+        "as": bind,
+        "effects": [{"OneOf": {"who": held, "options": options?}}],
+    }}))
 }
 
 /// `Branch` on a named number against a comparison (at least one by default), as `If`.
