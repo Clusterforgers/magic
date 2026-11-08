@@ -4,10 +4,10 @@
  * mana cost, which a permanent no longer needs), a sick permanent as a small icon and a slight dim, and the current
  * power and toughness or loyalty on the stat box. Nothing is drawn over the art or the rules text beyond a mark's size.
  */
-import { Hourglass, Link as LinkIcon, Link2, Unlink } from 'lucide-react'
+import { Hourglass, Link as LinkIcon, Link2, Shield, Unlink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
-import { counterChips, loyaltyOf, statusChips } from './cardModel'
+import { counterChips, statCounterOf, statusChips } from './cardModel'
 import type { ChipTone, CombatRole, CounterChip, Links } from './cardModel'
 import { CARD_CORNER } from '@/features/cards/CardImage'
 import { SIZE } from './cardSize'
@@ -90,7 +90,7 @@ export function Overlay({
 }: OverlayProps) {
   const text = SIZE[size].text
   const printed = usePrinted(object)
-  const badge = statBadge(object, printed, loyaltyOf(object))
+  const badge = statBadge(object, printed, statCounterOf(object))
   const manual = object.manual ?? []
   const granted = object.granted ?? []
   const chips = statusChips(object, role)
@@ -104,10 +104,12 @@ export function Overlay({
   const unattached = isUnattached(object)
   const paired = object.paired_with !== undefined
   const doors = links?.doors
+  const protector = links?.protector
   const hasFoot =
     damage !== undefined ||
     counters.length > 0 ||
     host !== undefined ||
+    protector !== undefined ||
     attaches.length > 0 ||
     unattached ||
     paired ||
@@ -119,6 +121,7 @@ export function Overlay({
     (damage === undefined ? 0 : 1) +
     counters.length +
     (host === undefined ? 0 : 1) +
+    (protector === undefined ? 0 : 1) +
     (unattached ? 1 : 0) +
     (paired ? 1 : 0) +
     (doors === undefined ? 0 : 2) +
@@ -183,6 +186,16 @@ export function Overlay({
             >
               <Link2 aria-hidden="true" className="size-3 shrink-0" />
               {size === 'compact' ? null : <span className="truncate">{host}</span>}
+            </span>
+          )}
+          {protector === undefined ? null : (
+            <span
+              data-slot="card-protector"
+              title={`Protected by ${protector}`}
+              className={cn(MARK, 'border border-foreground bg-background text-foreground', text)}
+            >
+              <Shield aria-hidden="true" className="size-3 shrink-0" />
+              {size === 'compact' ? null : <span className="truncate">{protector}</span>}
             </span>
           )}
           <GrantMarks
@@ -270,7 +283,7 @@ export function Overlay({
       ) : null}
       {badge === null ? null : (
         <span
-          data-slot={badge.kind === 'loyalty' ? 'card-loyalty' : 'card-pt'}
+          data-slot={`card-${badge.kind}`}
           data-modified={badge.modified ?? undefined}
           className={cn(
             'absolute rounded-md border px-1.5 leading-snug font-bold tabular-nums shadow-sm',

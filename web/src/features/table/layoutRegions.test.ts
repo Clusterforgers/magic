@@ -354,6 +354,21 @@ describe('planTable', () => {
     expect(planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 }).stopsRow).toBe(row)
   })
 
+  it.each([
+    [1440, 900, true],
+    [1366, 768, true],
+    [1280, 720, true],
+    [1024, 768, true],
+    [1023, 768, false],
+    [768, 1024, false],
+    [390, 844, false],
+  ])(
+    'puts the step ladder of a %ix%i window in the top bar: %s, else in the stops popover',
+    (width, height, inBar) => {
+      expect(planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 }).ladderInBar).toBe(inBar)
+    },
+  )
+
   it('makes the controls dock wider while it holds the ladder row, and a column on a phone', () => {
     expect(mainColumns({ phone: false }, false)).toBe('minmax(0, 1fr) fit-content(480px)')
     expect(mainColumns({ phone: false }, true)).toBe('minmax(0, 1fr) fit-content(760px)')

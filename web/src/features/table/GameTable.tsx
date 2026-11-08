@@ -27,6 +27,7 @@ import { Opponents, SeatArea } from './Seats'
 import { defaultFocusOf, seatCountOf, turnLeft } from './selectors'
 import { SharedStrip } from './SharedStrip'
 import { SideProvider } from './sideState'
+import { StopControlsProvider } from './stops/stopControls'
 import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
 import { TableGrid } from './TableGrid'
 import { useBoardSplit } from './useBoardSplit'
@@ -74,69 +75,71 @@ const Table = memo(function Table() {
         <PreviewContext value={previews}>
           <MarksContext value={marks}>
             <ManualMenuProvider>
-              <ControlsSlotProvider form={table.dock}>
-                <section
-                  aria-label="Game table"
-                  data-mode={plan.mode}
-                  className="relative h-dvh w-full overflow-hidden bg-table"
-                  style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
-                >
-                  <h1 className="sr-only">Game table</h1>
-                  {!ready || seat === null ? (
-                    <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-                  ) : (
-                    <SideProvider kind={regions.side}>
-                      <TableGrid
-                        regions={regions}
-                        stopsRow={table.stopsRow}
-                        bar={
-                          <TopBar
-                            mode={plan.mode}
-                            onMode={setMode}
-                            pinnedFocus={chosen !== null}
-                            onFollow={() => setChosen(null)}
-                            stopsInMenu={false}
-                            compact={regions.landscape}
-                          />
-                        }
-                        opponents={
-                          <Opponents
-                            plan={plan}
-                            size={size}
-                            pod={table.opponentPod}
-                            onFocusSeat={setChosen}
-                          />
-                        }
-                        shared={
-                          <SharedStrip
-                            sheetMax={regions.sheet}
-                            onOverhang={onOverhang}
-                            inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
-                          />
-                        }
-                        own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
-                        hand={
-                          <HandDock
-                            seat={plan.viewer}
-                            growMost={handGrowMost(regions)}
-                            openingMost={openingGrowMost(regions)}
-                          />
-                        }
-                        controls={<ControlsDock stopsRow={table.stopsRow} />}
-                        side={<SideTabs />}
-                        sidePanel={
-                          <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
-                        }
-                        // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
-                        overlay={<CombatOverlay />}
-                      />
-                      <SideSheet />
-                    </SideProvider>
-                  )}
-                  <FxTravel />
-                  <FxStrikes />
-                </section>
-              </ControlsSlotProvider>
+              <StopControlsProvider inBar={table.ladderInBar}>
+                <ControlsSlotProvider form={table.dock}>
+                  <section
+                    aria-label="Game table"
+                    data-mode={plan.mode}
+                    className="relative h-dvh w-full overflow-hidden bg-table"
+                    style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
+                  >
+                    <h1 className="sr-only">Game table</h1>
+                    {!ready || seat === null ? (
+                      <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+                    ) : (
+                      <SideProvider kind={regions.side}>
+                        <TableGrid
+                          regions={regions}
+                          stopsRow={table.stopsRow}
+                          bar={
+                            <TopBar
+                              mode={plan.mode}
+                              onMode={setMode}
+                              pinnedFocus={chosen !== null}
+                              onFollow={() => setChosen(null)}
+                              stopsInMenu={false}
+                              compact={regions.landscape}
+                            />
+                          }
+                          opponents={
+                            <Opponents
+                              plan={plan}
+                              size={size}
+                              pod={table.opponentPod}
+                              onFocusSeat={setChosen}
+                            />
+                          }
+                          shared={
+                            <SharedStrip
+                              sheetMax={regions.sheet}
+                              onOverhang={onOverhang}
+                              inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
+                            />
+                          }
+                          own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
+                          hand={
+                            <HandDock
+                              seat={plan.viewer}
+                              growMost={handGrowMost(regions)}
+                              openingMost={openingGrowMost(regions)}
+                            />
+                          }
+                          controls={<ControlsDock stopsRow={table.stopsRow} />}
+                          side={<SideTabs />}
+                          sidePanel={
+                            <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
+                          }
+                          // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
+                          overlay={<CombatOverlay />}
+                        />
+                        <SideSheet />
+                      </SideProvider>
+                    )}
+                    <FxTravel />
+                    <FxStrikes />
+                  </section>
+                </ControlsSlotProvider>
+              </StopControlsProvider>
               <CardPreview />
               <TableMoments />
             </ManualMenuProvider>

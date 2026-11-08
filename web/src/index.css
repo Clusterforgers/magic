@@ -57,6 +57,7 @@
   --container-narrow: 28rem;
   --container-page: 48rem;
   --container-wide: 72rem;
+  --container-wider: 90rem;
 
   --color-background: var(--background);
   --color-surface: var(--surface);

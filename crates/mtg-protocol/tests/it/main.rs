@@ -44,6 +44,7 @@ mod house_rules_view;
 mod identity_view;
 mod improvise_hidden;
 mod impulse_hidden;
+mod invasion_search_hidden;
 mod keyword_view;
 mod left_to_table_hidden;
 mod lobby_message;

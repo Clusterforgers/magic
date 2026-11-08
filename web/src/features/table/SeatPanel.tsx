@@ -268,7 +268,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it. */}
       <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
         <header className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5">
-          <div className="grid min-w-24 flex-auto gap-0.5">
+          <div className="grid min-w-24 flex-auto grid-cols-[minmax(0,1fr)] gap-0.5">
             {tight ? (
               <div data-slot="pod-name-row" className="flex min-w-0 flex-wrap items-center gap-1">
                 {name}
