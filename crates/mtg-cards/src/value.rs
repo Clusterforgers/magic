@@ -273,9 +273,9 @@ pub enum TurnTally {
     Attackers,
     /// The damage dealt to the player after prevention, by any source.
     DamageTaken,
-    /// The combat damage dealt to the player after prevention.
+    /// The combat damage the player took.
     CombatDamageTaken,
-    /// The noncombat damage dealt to the player after prevention.
+    /// The noncombat damage the player took.
     NoncombatDamageTaken,
     /// The times the player gained life, once for each gain of any amount.
     LifeGained,
@@ -382,7 +382,7 @@ pub enum TallyEvent {
     /// +1/+1 counters were put on a permanent or a card in exile by a spell or ability, as for `CountersPut`; an amount
     /// counts the +1/+1 counters put.
     PlusOneCountersPut,
-    /// A permanent was sacrificed (the object as it last existed on the battlefield, for the player who controlled it).
+    /// A permanent was sacrificed (as it last was, for its controller).
     Sacrificed,
 }
 

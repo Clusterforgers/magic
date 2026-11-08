@@ -252,8 +252,7 @@ pub enum TriggerPattern {
         /// The permanent.
         what: Selector,
     },
-    /// A permanent matching the selector becomes tapped other than as it is declared as an attacker ("if it isn't being
-    /// declared as an attacker").
+    /// A permanent becomes tapped, not as it attacks.
     TappedNotAttacking {
         /// The permanent.
         what: Selector,
