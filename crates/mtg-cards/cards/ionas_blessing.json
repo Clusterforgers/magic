@@ -1,0 +1,24 @@
+{
+  "oracle_id": "fc5bde87-231e-424a-a8fa-cd9910a09d43",
+  "name": "Iona's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iona's Blessing",
+      "oracle_fingerprint": "5c732f54c201ce32dc848c74c9e49a78",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Vigilance" },
+              { "BlocksAdditional": 1 }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

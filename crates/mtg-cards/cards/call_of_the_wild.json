@@ -1,0 +1,35 @@
+{
+  "oracle_id": "882ee72e-2149-4778-a81c-8bf09beb5d66",
+  "name": "Call of the Wild",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call of the Wild",
+      "oracle_fingerprint": "51518427626ab773ffc5b549bd2f3459",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{G}{G}",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

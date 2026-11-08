@@ -1,0 +1,28 @@
+{
+  "oracle_id": "983a2a50-3634-4783-8576-30916c3d0818",
+  "name": "Oppressive Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oppressive Will",
+      "oracle_fingerprint": "7b4df65760dd1b81100c1e88f8991b0d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

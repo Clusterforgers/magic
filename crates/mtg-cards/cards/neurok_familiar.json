@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8e11d1f7-fa98-4cd2-9912-081e9c9e37ee",
+  "name": "Neurok Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neurok Familiar",
+      "oracle_fingerprint": "3a829a18dfbc1ef9880d3650223393c3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

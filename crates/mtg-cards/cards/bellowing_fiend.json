@@ -1,0 +1,25 @@
+{
+  "oracle_id": "37331d0e-edda-4791-8bcc-fb457f984877",
+  "name": "Bellowing Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bellowing Fiend",
+      "oracle_fingerprint": "b201bcb95e098960b72217ed4341157d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
+            },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 3 } },
+              { "DealDamage": { "to": "You", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

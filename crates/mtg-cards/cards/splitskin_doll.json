@@ -1,0 +1,40 @@
+{
+  "oracle_id": "934e2634-4b1c-4d92-b4d6-9241620f3770",
+  "name": "Splitskin Doll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splitskin Doll",
+      "oracle_fingerprint": "82786608d2dc3e952ed103bf6436f713",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          "Other",
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

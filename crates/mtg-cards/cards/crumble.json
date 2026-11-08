@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8d6e39b0-a190-40a0-a8e1-ee82f477376f",
+  "name": "Crumble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crumble",
+      "oracle_fingerprint": "1da6db114a0f52d9f42efce710f1adad",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

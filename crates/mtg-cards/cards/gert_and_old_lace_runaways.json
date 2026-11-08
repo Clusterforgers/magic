@@ -1,0 +1,37 @@
+{
+  "oracle_id": "aaded61e-32c2-4e02-8557-3f8cd927a64e",
+  "name": "Gert and Old Lace, Runaways",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gert and Old Lace, Runaways",
+      "oracle_fingerprint": "3ff0315650cf182a82b3c42f0a9f137c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

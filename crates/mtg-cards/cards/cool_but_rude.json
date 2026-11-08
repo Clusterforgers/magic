@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1f076303-d160-4e02-aa1e-9ed6040c3735",
+  "name": "Cool but Rude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cool but Rude",
+      "oracle_fingerprint": "d32bb75394b9d6dc4ccb5dfcc3e3e8f1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesLevel": { "what": ["This"], "level": 3 } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "Discard": { "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

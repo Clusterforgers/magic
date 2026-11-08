@@ -1,0 +1,45 @@
+{
+  "oracle_id": "24b44a35-496a-48e9-91ee-98b327d867e4",
+  "name": "Thundercloud Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thundercloud Elemental",
+      "oracle_fingerprint": "5ed831f65742718c42605e65cd5d3872",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "effects": [
+              {
+                "Tap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Toughness", "op": "Le", "to": 2 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

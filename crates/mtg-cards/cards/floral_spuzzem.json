@@ -1,0 +1,36 @@
+{
+  "oracle_id": "994de451-14f9-466f-a56e-da052b4666e5",
+  "name": "Floral Spuzzem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Floral Spuzzem",
+      "oracle_fingerprint": "039968c1100fa4c3cfaf0b828c3b9512",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

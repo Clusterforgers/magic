@@ -1,0 +1,50 @@
+{
+  "oracle_id": "df7a3868-4f03-452c-8307-1493977d42ef",
+  "name": "The First Eruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The First Eruption",
+      "oracle_fingerprint": "f254ee4e7e7f7eeed4b04dfc33e7072f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Subtype": "Mountain" }], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "sacrificed~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

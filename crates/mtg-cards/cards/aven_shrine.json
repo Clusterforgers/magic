@@ -1,0 +1,26 @@
+{
+  "oracle_id": "09c450cf-5f22-45c2-86ed-21b85552a96f",
+  "name": "Aven Shrine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Shrine",
+      "oracle_fingerprint": "f01103c6b680c1d514a127b4f77c7f90",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "GainLife": {
+                  "who": "Triggering",
+                  "amount": { "Count": [{ "SharesName": "Triggering" }, { "In": "Graveyard" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
