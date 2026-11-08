@@ -121,7 +121,9 @@ fn taken_group(effects: &[Effect]) -> Option<String> {
         let [keyword] = keywords.as_slice() else {
             return None;
         };
-        sentence.push_str(&format!(". They gain {keyword} until end of turn"));
+        sentence.push_str(". They gain ");
+        sentence.push_str(keyword);
+        sentence.push_str(" until end of turn");
     }
     Some(sentence)
 }

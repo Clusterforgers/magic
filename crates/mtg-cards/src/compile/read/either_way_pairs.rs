@@ -54,10 +54,10 @@ fn fight_texts(named: &Ability, dealt: &Ability) -> Vec<String> {
             },
             TriggerPattern::BecomesBlocked {
                 what: this_again,
-                by: blocker,
+                by: kind,
                 once: false,
             },
-        ) if *this == Selector::this() && *this_again == Selector::this() && blocked == blocker => {
+        ) if *this == Selector::this() && *this_again == Selector::this() && blocked == kind => {
             blocks_either(named, blocked)
         }
         // The attacker is the event's subject; the blocker of a block is its dealer.
@@ -177,7 +177,7 @@ fn same_but_dealer(named: &Ability, dealt: &Ability) -> bool {
 /// Names the dealer of the event wherever the value names its subject.
 fn rename(value: &mut Value) {
     match value {
-        Value::String(word) if word == "Triggering" => *word = "Dealer".to_owned(),
+        Value::String(word) if word == "Triggering" => "Dealer".clone_into(word),
         Value::Array(items) => items.iter_mut().for_each(rename),
         Value::Object(map) => map.values_mut().for_each(rename),
         _ => {}
