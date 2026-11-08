@@ -1,6 +1,6 @@
 //! Conditions of a conditional step as the oracle words them (r7c): the mana of one color spent to cast the spell
 //! ("Adamant — If at least three white mana was spent to cast this spell"), the mana spent to cast the spell that
-//! triggered ("If five or more mana was spent to cast that spell"), the gift and the bargain, and "unless" with the
+//! triggered ("If five or more mana was spent to cast that spell"), the gift, the bargain and teamwork, and "unless" with the
 //! condition that does not hold ("Then discard a card unless you attacked this turn").
 
 use super::super::super::amounts::count_word;
@@ -27,6 +27,7 @@ pub(super) fn r7c_condition_texts(condition: &Condition) -> Vec<String> {
     match condition {
         Condition::AdditionalCostPaid => vec![
             "this spell was bargained".to_owned(),
+            "this spell was cast using teamwork".to_owned(),
             "this spell's additional cost was paid".to_owned(),
         ],
         Condition::Compare {

@@ -89,11 +89,18 @@ fn printed_may_step(description: Option<&str>, effects: &[Value]) -> bool {
         && one_sentence
         && !head.contains("may")
         && !head.contains(". ")
-        && OPTIONAL_VERBS.contains(&verb)
+        && (OPTIONAL_VERBS.contains(&verb) || has_deal(step, effects))
         && !step.starts_with("tap or untap")
         && !serde_json::to_string(effects)
             .unwrap_or_default()
             .contains("\"May\":")
+}
+
+/// "you may have that creature deal 1 damage": the one step is damage the printed text lets you choose.
+fn has_deal(step: &str, effects: &[Value]) -> bool {
+    step.starts_with("have ")
+        && step.split_whitespace().take(4).any(|word| word == "deal")
+        && matches!(effects, [only] if only.get("DealDamage").is_some())
 }
 
 /// Whether the printed effect opens with "you may search": the words before it are the trigger alone (one clause, no
