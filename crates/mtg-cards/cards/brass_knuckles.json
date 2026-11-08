@@ -9,8 +9,9 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "SpellCast": { "what": ["This"] } },
-            "effects": [{ "CopySpell": { "what": "Triggering" } }]
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This" } }]
           }
         },
         {

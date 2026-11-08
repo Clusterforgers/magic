@@ -34,13 +34,7 @@
           "Static": {
             "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
             "mods": [{ "AddKeyword": "Haste" }],
-            "condition": {
-              "Compare": {
-                "left": { "Count": ["This", "EnteredThisTurn"] },
-                "op": "Ge",
-                "right": 1
-              }
-            }
+            "condition": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
           }
         }
       ]

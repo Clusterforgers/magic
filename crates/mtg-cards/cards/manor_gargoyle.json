@@ -24,14 +24,7 @@
               {
                 "Continuous": {
                   "affected": "This",
-                  "mods": [{ "RemoveKeyword": "Defender" }],
-                  "duration": "UntilEndOfTurn"
-                }
-              },
-              {
-                "Continuous": {
-                  "affected": "This",
-                  "mods": [{ "AddKeyword": "Flying" }],
+                  "mods": [{ "RemoveKeyword": "Defender" }, { "AddKeyword": "Flying" }],
                   "duration": "UntilEndOfTurn"
                 }
               }

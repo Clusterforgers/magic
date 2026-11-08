@@ -16,7 +16,7 @@
         {
           "Static": {
             "affected": {
-              "Each": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+              "Each": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
             },
             "mods": [{ "AddKeyword": { "Unearth": "{1}{B}{R}" } }]
           }

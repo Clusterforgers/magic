@@ -21,9 +21,9 @@
                 "left": {
                   "Count": [
                     { "Type": "Creature" },
-                    { "ControlledBy": "You" },
                     { "HasCounter": "+1/+1" },
-                    "AttackedThisTurn"
+                    "AttackedThisTurn",
+                    { "ControlledBy": "You" }
                   ]
                 },
                 "op": "Ge",

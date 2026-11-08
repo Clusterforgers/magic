@@ -11,9 +11,7 @@
         { "Keyword": "Lifelink" },
         {
           "Static": {
-            "affected": {
-              "Each": [{ "ControlledBy": "You" }, { "WasCast": {} }, { "In": "Stack" }]
-            },
+            "affected": { "Each": ["Spell", { "ControlledBy": "You" }] },
             "mods": [{ "AddKeyword": "Delve" }]
           }
         },

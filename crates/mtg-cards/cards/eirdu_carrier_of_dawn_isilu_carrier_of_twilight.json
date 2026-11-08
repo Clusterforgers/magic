@@ -11,14 +11,7 @@
         { "Keyword": "Lifelink" },
         {
           "Static": {
-            "affected": {
-              "Each": [
-                { "Type": "Creature" },
-                { "ControlledBy": "You" },
-                { "WasCast": {} },
-                { "In": "Stack" }
-              ]
-            },
+            "affected": { "Each": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }] },
             "mods": [{ "AddKeyword": "Convoke" }]
           }
         },

@@ -13,8 +13,8 @@
               "Each": [
                 {
                   "AnyOf": [
-                    { "Supertype": "Legendary" },
                     { "Type": "Artifact" },
+                    { "Supertype": "Legendary" },
                     { "Subtype": "Saga" }
                   ]
                 },
@@ -32,8 +32,8 @@
                     "filter": [
                       {
                         "AnyOf": [
-                          { "Supertype": "Legendary" },
                           { "Type": "Artifact" },
+                          { "Supertype": "Legendary" },
                           { "Subtype": "Saga" }
                         ]
                       },
