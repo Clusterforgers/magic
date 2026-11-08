@@ -1884,11 +1884,20 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             single => single,
         },
     };
-    let mut effects = vec![json!({"Continuous": {
+    let mut effects = Vec::new();
+    // "Untap them" names the group taken, which a group read by its controller no longer is once control changed.
+    let follows = p.get("Untap") == Some("True") || p.has("AddKWs");
+    let affected = if follows && affected.get("Each").is_some() && reads_control(&affected) {
+        effects.push(json!({"Bind": {"what": affected, "as": "taken"}}));
+        json!({"Bound": "taken"})
+    } else {
+        affected
+    };
+    effects.push(json!({"Continuous": {
         "affected": affected,
         "mods": [{"SetController": controller}],
         "duration": duration,
-    }})];
+    }}));
     if p.get("Untap") == Some("True") {
         effects.push(json!({"Untap": {"what": affected}}));
     }
@@ -1902,6 +1911,12 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }}));
     }
     Ok(effects)
+}
+
+/// Whether a group is read by who controls its objects.
+fn reads_control(group: &Value) -> bool {
+    let text = group.to_string();
+    text.contains("\"ControlledBy\"") || text.contains("\"Controller")
 }
 
 /// `Attach`: the attachment (`Object$`, the card itself by default) goes onto the host (the target, or `Defined$`). An

@@ -207,6 +207,7 @@ mod e14f_mechanics;
 mod e14g_counted_mana;
 mod e14g_mana_riders;
 mod e15e_keywords;
+mod f25_ripple;
 mod elimination;
 mod embalm;
 mod en3_source;

@@ -124,7 +124,11 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.has("Amount") {
         copy["count"] = amount(ctx, p.get("Amount").unwrap_or("1"))?;
     }
-    if p.get("MayChooseTarget") == Some("True") {
+    // A copy of this very spell when its text names no target has none to change, and the card says nothing of them.
+    let untargeted_self = what == json!("Triggering")
+        && ctx.trigger.as_ref().is_some_and(|shape| shape.itself)
+        && !ctx.oracle.to_lowercase().contains("target");
+    if p.get("MayChooseTarget") == Some("True") && !untargeted_self {
         copy["new_targets"] = json!(true);
     }
     if p.get("NonLegendary") == Some("True") {

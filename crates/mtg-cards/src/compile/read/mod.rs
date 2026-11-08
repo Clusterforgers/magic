@@ -24,6 +24,7 @@ mod amounts;
 mod as_long_as;
 mod attack_pairs;
 mod attack_tax;
+mod either_way_pairs;
 mod attackers;
 mod aura_additive;
 mod aura_forms;
@@ -242,6 +243,7 @@ pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_lin
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
+pub use either_way_pairs::texts as either_way_pair_texts;
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;

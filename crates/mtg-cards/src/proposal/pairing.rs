@@ -6,7 +6,8 @@ use super::{ClauseReport, ClauseState, Stray};
 use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
-    Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, own_names, read_keyword,
+    Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, either_way_pair_texts,
+    own_names, read_keyword,
     read_keywords, same_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
@@ -234,6 +235,7 @@ impl<'a> Pairer<'a> {
         self.champions();
         self.r5g_hand_keywords();
         self.static_pairs();
+        self.either_way_pairs();
         self.haunt_pairs();
         self.exact();
         self.blocks();
@@ -475,6 +477,27 @@ impl<'a> Pairer<'a> {
                 continue;
             }
             if let Some(slot) = self.find_text(&[ClauseKind::Triggered], &written, false) {
+                self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
+                self.taken[at] = true;
+                self.slot_of[at] = Some(slot);
+                self.places[at] = self.places[at - 1];
+            }
+        }
+    }
+
+    /// Two triggers or two shields for either side of a fight are one sentence of the card ("blocks or becomes blocked
+    /// by a creature", "dealt to and dealt by enchanted creature").
+    fn either_way_pairs(&mut self) {
+        let abilities = self.abilities;
+        for at in 1..abilities.len() {
+            if self.taken[at - 1] || self.taken[at] {
+                continue;
+            }
+            let written = either_way_pair_texts(&abilities[at - 1], &abilities[at]);
+            if written.is_empty() {
+                continue;
+            }
+            if let Some(slot) = self.find_text(kinds_of(&abilities[at - 1]), &written, false) {
                 self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
                 self.taken[at] = true;
                 self.slot_of[at] = Some(slot);
