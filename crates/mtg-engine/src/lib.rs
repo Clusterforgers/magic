@@ -58,6 +58,8 @@ mod mana_takes;
 mod mulligan;
 mod parts;
 mod permit_costs;
+#[cfg(test)]
+mod pf23_hand_mana_tests;
 mod prepared;
 mod preview;
 mod price;

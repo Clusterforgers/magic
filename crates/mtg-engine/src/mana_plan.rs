@@ -37,7 +37,7 @@ impl Weight {
     /// The weight with `option` used too, among `all` sources of which `plenty` make the type it produces.
     pub(crate) fn with(self, option: &ManaOption, all: u32, plenty: u32) -> Weight {
         Weight {
-            sacrifices: self.sacrifices + u32::from(option.sacrifice),
+            sacrifices: self.sacrifices + u32::from(option.gives_up()),
             extras: self.extras + u32::from(option.extra),
             taps: self.taps + 1,
             unrestricted: self.unrestricted + u32::from(option.only.is_empty()),
@@ -238,7 +238,7 @@ pub(crate) fn complete_with(
             if covers_cost(self.cost, &self.parts) {
                 if spent_of(self.cost, &self.parts).is_ok() {
                     let sacrifices =
-                        u32::try_from(self.taps.iter().filter(|o| o.sacrifice).count())
+                        u32::try_from(self.taps.iter().filter(|o| o.gives_up()).count())
                             .unwrap_or(u32::MAX);
                     let extras = u32::try_from(self.taps.iter().filter(|o| o.extra).count())
                         .unwrap_or(u32::MAX);

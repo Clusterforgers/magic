@@ -46,12 +46,10 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (pf23a) A mana source in the hand (Simian Spirit Guide, Elvish Spirit Guide) is offered for payments and counted when an unpayable optional payment is declined without asking
+- [ ] (pf23b) An affordability check can count one hand card twice, as a Spirit Guide and as the card a Cadaverous Bloom-style cost exiles (the payment itself is right)
 
-- [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
-- [ ] (v92l) Keyboard-only walk of a whole turn: focus order, the focus return after H and Escape across a resize, contrast of the by-hand and unplayable marks in both themes
 - [ ] (v92o) Show the timer bank: `PlayerView.bank` reaches the store (`withBank`) but no component reads it, so neither seat sees an earned or spent extension; show it at the seat and walk it with two seats (needs a server with `MTG_ACTIVE_SECS` set)
 - [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
 - [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
@@ -67,8 +65,7 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
-- [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
+- [ ] (k1h) Table states of `layout.spec.ts` fail the layout gate: "life is covered" at 1366x768 and 1024x768, "hand is covered" at 1024x768 and 1600x1000 (4 seats priority, 2 seats opening hand, duel board, Commands panel and other states); the failures at the six design sizes predate the extra sizes
 - [ ] (ts6b) Narrow compact faces (under 76 px) cut their marks to stubs ("Si", "+1/+…"): marks as icons or short glyphs that read whole at 1024 (`CardFace.tsx`)
 - [ ] (ui1i2) The effect moments attack, block, damage, life, enter, rival, activate, resolve, counter, land, draw and equip are still to be read by screenshot at the six design sizes (death, enter and draw read at 1024 and 390)
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
@@ -79,12 +76,9 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
-- [ ] (pn1b) `fit.spec.ts` and `/dev/table` screenshots at 16, 24 and 40 seats in both themes, and the e2e create flow typing a count above 12
-- [ ] (pn1c) The seat field builds a row per seat as it is typed: guard a count that would freeze the page (the server's ceiling is the 256 KiB create body, about 2,500 seats)
 - [ ] (db1a) A deck entry can be marked "play by hand" by its owner (also for a Verified card), so a card that misbehaves is fixed at the table: a flag on `DeckLineBody` and the stored line, the engine hosting the card as manual, the check counting it as played by hand
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 
-- [ ] (ma6b) Playwright: the by-hand mark opens the clause list by a press and the `h` key opens it on the focused card, for a Partial card on a two-seat table at desktop and phone size, and the cast and entering lines are in both logs
 - [ ] Playwright games with corpus decks that ask every decision kind
 
 ## Cards
