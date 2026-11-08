@@ -112,6 +112,13 @@ pub fn damage(ctx: &Ctx, p: &Params, mode: &str) -> Tr<Value> {
         return Ok(json!({ "DealsDamage": pattern }));
     }
     if mode != "DamageDone" {
+        // Every player and every permanent is every recipient damage can have.
+        if recipients.len() == 2
+            && recipients.contains(&"Player")
+            && recipients.contains(&"Permanent")
+        {
+            return Ok(json!({ "DealsDamage": pattern }));
+        }
         // Several kinds of permanent are one selector of alternatives; a player among them has no such selector.
         let players =
             |word: &&str| matches!(word.split('.').next(), Some("You" | "Player" | "Opponent"));

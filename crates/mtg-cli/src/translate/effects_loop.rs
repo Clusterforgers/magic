@@ -65,6 +65,7 @@ fn chosen_zones() -> Value {
 }
 
 /// `ChooseCard`: the chooser picks cards that match, optionally or at random; the later lines read them as `ChosenCard`.
+#[allow(clippy::too_many_lines)]
 pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -81,6 +82,9 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "ControlledByPlayer",
             "Reveal",
             "RememberChosen",
+            "DefinedCards",
+            "TargetControls",
+            "Optional",
             "ChooseEach",
         ],
     )?;
@@ -117,10 +121,24 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(other) => return unmapped(format!("key:ChooseCard.ControlledByPlayer={other}")),
         None => {}
     }
+    // "That player chooses up to two creatures they control": the pool is the chooser's own.
+    if p.get("TargetControls") == Some("True") && p.get("AtRandom") != Some("True") {
+        let player = match &chooser {
+            Some(target) => target.clone(),
+            None => defined(ctx, p.get("Defined").unwrap_or("You"))?,
+        };
+        filter.push(json!({"ControlledBy": player}));
+    }
     if let Some(each) = p.get("ChooseEach") {
         return choose_each(ctx, p, each, &filter, chooser);
     }
-    let from = json!({"Each": filter});
+    // "Choose three target permanents ... one of them at random": the pool is the targets themselves.
+    let named = match p.get("DefinedCards") {
+        None => None,
+        Some("Targeted") if p.get("AtRandom") == Some("True") => Some(ctx.last_target()?),
+        Some(_) => return unmapped("key:ChooseCard.DefinedCards"),
+    };
+    let from = named.unwrap_or_else(|| json!({"Each": filter}));
     let bind = ctx.fresh("card");
     let count = amount(ctx, p.get("Amount").unwrap_or("1"))?;
     let effect = if p.get("AtRandom") == Some("True") {

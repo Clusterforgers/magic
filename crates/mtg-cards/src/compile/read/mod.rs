@@ -94,6 +94,7 @@ mod e17b_returned;
 mod e18a_first;
 mod effects;
 mod either_way_pairs;
+mod ep21_plus;
 mod equip_options;
 mod evasion;
 mod event_wordings;

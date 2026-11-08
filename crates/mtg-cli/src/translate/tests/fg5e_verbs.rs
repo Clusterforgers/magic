@@ -31,6 +31,14 @@ fn spell(line: &str) -> String {
     "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ P1P1 | CounterNum$ 1",
     json!({"MoveCounters": {"from": "This", "to": {"Target": 0}, "counter": "+1/+1"}})
 )]
+#[case::move_a_counter_of_any_kind(
+    "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ Any | CounterNum$ 1",
+    json!({"MoveCounters": {"from": "This", "to": {"Target": 0}}})
+)]
+#[case::move_all_counters(
+    "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ All | CounterNum$ All",
+    json!({"MoveCounters": {"from": "This", "to": {"Target": 0}, "count": {"AnyCounters": "This"}}})
+)]
 #[case::exchange_control(
     "ExchangeControl | Defined$ Self | ValidTgts$ Creature",
     json!({"ExchangeControl": {"what": ["This", {"Target": 0}], "duration": "Forever"}})
@@ -60,8 +68,12 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 )]
 #[case::phase_set("Phases | AllValid$ Creature", "key:Phases.AllValid")]
 #[case::manifest_named("Manifest | Defined$ Remembered", "key:Manifest.Defined")]
-#[case::move_any(
-    "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ Any",
+#[case::move_any_number(
+    "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ Any | CounterNum$ Any",
+    "key:MoveCounter.Source-or-CounterType"
+)]
+#[case::move_all_of_any_count(
+    "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ All | CounterNum$ 2",
     "key:MoveCounter.Source-or-CounterType"
 )]
 #[case::move_all(

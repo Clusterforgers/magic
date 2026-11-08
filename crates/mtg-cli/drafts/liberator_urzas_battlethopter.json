@@ -1,7 +1,7 @@
 {
   "oracle_id": "798a4a6f-7443-4e8e-afcb-0a694fdfcbb3",
   "name": "Liberator, Urza's Battlethopter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Liberator, Urza's Battlethopter",
@@ -20,9 +20,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 89, "end": 231 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "Spell",
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "ManaSpent" } },
+                      "op": "Gt",
+                      "right": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }
       ]

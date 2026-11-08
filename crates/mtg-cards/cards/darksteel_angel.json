@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d0259f7d-9bd7-4722-8fb9-439768308516",
+  "name": "Darksteel Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darksteel Angel",
+      "oracle_fingerprint": "5aabc100a11fc635b6a3317de5a17999",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Indestructible" },
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "opponents_cant_win": true } } } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "action": { "PutCounterOf": "-1/-1" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

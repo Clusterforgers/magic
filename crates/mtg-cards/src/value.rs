@@ -303,6 +303,9 @@ pub enum TurnTally {
     /// The life the players lost, added up over the players read ("for each 1 life your opponents have lost this turn"):
     /// a loss, a payment or damage that takes life; infect damage does not.
     LifeLost,
+    /// The most life any one of the players read lost this turn, never their sum ("an opponent lost 3 or more life this
+    /// turn": `Opponents`; "a player lost 4 or more life this turn": `EachPlayer`).
+    LifeLostMost,
     /// The creatures put into a graveyard from the battlefield, tokens included, added up over the owners read ("the number
     /// of creatures that died this turn": `EachPlayer`; "for each creature put into your graveyard from the battlefield
     /// this turn": `You`).

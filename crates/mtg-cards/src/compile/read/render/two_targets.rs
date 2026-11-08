@@ -67,7 +67,11 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
             },
         ] => Some(format!(
             "move {} from {} onto a second {}",
-            crate::compile::read::counters::text(counter, count)?,
+            crate::compile::read::counters::ep21_move_text(
+                counter.as_ref(),
+                count,
+                &Ref::Target(0)
+            )?,
             spec_text(first)?,
             spec_text(second)?
         )),

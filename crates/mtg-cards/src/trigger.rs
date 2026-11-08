@@ -857,6 +857,9 @@ pub enum ReplaceBy {
     PreventHalf,
     /// These effects happen instead.
     Instead(Vec<Effect>),
+    /// The tokens are created and the tokens these effects make with them, as one event, read as `Instead` reads it
+    /// ("those tokens plus that many 1/1 green Squirrel creature tokens are created instead"); only a token creation uses it.
+    Plus(Vec<Effect>),
     /// The next damage event a shield covers is replaced by these effects, as `Instead` reads it, and the shield ends
     /// ("the next time a source of your choice would deal damage to you this turn, that damage is dealt to X instead").
     InsteadNext(Vec<Effect>),

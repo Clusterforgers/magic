@@ -1,0 +1,58 @@
+{
+  "oracle_id": "087b2490-e415-44e2-a674-3b5619a0fad5",
+  "name": "Sovereign Okinec Ahau",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sovereign Okinec Ahau",
+      "oracle_fingerprint": "7a3c54bc6ab042d15ab1f4aedead4884",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                          "op": "Gt",
+                          "right": { "Stat": { "of": "Candidate", "stat": "BasePower" } }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "each" },
+                        "counter": "+1/+1",
+                        "count": {
+                          "Sum": [
+                            { "Stat": { "of": { "Bound": "each" }, "stat": "Power" } },
+                            {
+                              "Times": {
+                                "by": -1,
+                                "of": { "Stat": { "of": { "Bound": "each" }, "stat": "BasePower" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

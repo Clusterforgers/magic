@@ -1,0 +1,62 @@
+{
+  "oracle_id": "fab8c985-d7a9-41eb-9884-01128b97af5c",
+  "name": "Flaming Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flaming Gambit",
+      "oracle_fingerprint": "f19c4b87f7a7b835785528dbeacfa787",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "OrController": { "Target": 0 } },
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": { "OrController": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Bound": "card" }, "amount": "X" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{X}{R}{R}" } }
+      ]
+    }
+  ]
+}

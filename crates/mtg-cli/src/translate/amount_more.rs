@@ -125,8 +125,8 @@ fn attacked_this_turn(ctx: &Ctx, valid: &str) -> Tr<Value> {
 /// `YourCountersEnergy`: the counters of that kind on you; a kind that is not one plain word stays a gap.
 fn your_counters(word: &str) -> Tr<Value> {
     let kind = word.strip_prefix("YourCounters").unwrap_or_default();
-    let known = ["Energy", "Experience", "Poison", "Rad", "Charge"];
-    if !known.contains(&kind) {
+    let known = ["energy", "experience", "poison", "rad", "charge"];
+    if !known.contains(&kind.to_lowercase().as_str()) {
         return unmapped(format!("amount:Count${word}"));
     }
     let Some(counter) = super::amount::counter_kind(&kind.to_uppercase()) else {

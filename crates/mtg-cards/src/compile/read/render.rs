@@ -527,6 +527,15 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
 /// [`written_variants`] without the table of abilities written already.
 fn written_anew(ability: &Ability) -> Vec<String> {
     let mut texts = written_ordered(ability);
+    // Counters moved "onto a second target creature" are also printed "onto another target creature".
+    let another: Vec<String> = texts
+        .iter()
+        .filter(|text| {
+            text.contains("counters from target") && text.contains(" onto a second target ")
+        })
+        .map(|text| text.replacen(" onto a second target ", " onto another target ", 1))
+        .collect();
+    texts.extend(another);
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
     if let Some(plain) = r11w_batch::flat_ability(ability) {
         for text in written_variants(&plain) {
@@ -2277,7 +2286,7 @@ impl Writer<'_> {
                 counter,
                 count,
             } => {
-                let counters = counters::text(counter, count)?;
+                let counters = counters::ep21_move_text(counter.as_ref(), count, from)?;
                 let from = self.counter_place(from, false)?;
                 format!(
                     "move {counters} from {from} onto {}",
