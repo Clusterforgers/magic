@@ -145,11 +145,11 @@ fn a_name_that_is_not_shared_is_the_negation_of_sharing_it(
 }
 
 #[test]
-fn another_permanent_of_the_same_name_stays_a_gap() {
+fn another_permanent_of_the_same_name_is_read_since_d20e() {
     let (_, found) = sorcery(
         "A:SP$ ChangeZone | Origin$ Library | Destination$ Hand | ChangeType$ Creature.doesNotShareNameWith OtherYourBattlefield | ChangeNum$ 1",
     );
-    assert_eq!(found, ["valid:doesNotShareNameWith OtherYourBattlefield"]);
+    assert!(found.is_empty(), "{found:?}");
 }
 
 #[rstest]
