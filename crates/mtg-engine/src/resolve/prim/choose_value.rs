@@ -180,6 +180,7 @@ fn colors(cx: &Cx<'_>, player: PlayerId) -> Result<Result<Option<Chosen>, Decisi
             return Ok(Err(Decision {
                 player,
                 kind: DecisionKind::ChooseOption(crate::choose::OptionOptions {
+                    can_cancel: false,
                     source: cx.scope.source.id,
                     options,
                     text: if chosen.is_empty() {

@@ -98,7 +98,7 @@ describe('the default split', () => {
     expect(
       failing(power, (split, line) => {
         const answer = toAnswer(line, split)
-        const sent = 'AssignDamage' in answer ? answer.AssignDamage : []
+        const sent = typeof answer === 'object' && 'AssignDamage' in answer ? answer.AssignDamage : []
         return totalOf(sent.map(([, amount]) => amount)) === power && sent.every(([, amount]) => amount > 0)
       }),
     ).toEqual([])

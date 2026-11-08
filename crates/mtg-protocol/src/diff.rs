@@ -101,6 +101,7 @@ mod tests {
             read: false,
             partial: false,
             note: None,
+            granted: Vec::new(),
             identity: None,
             activated: Vec::new(),
         }

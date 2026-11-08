@@ -199,7 +199,7 @@ describe('answers', () => {
     [undefined, 0],
   ])('offers Cancel only when the options allow it (%s)', async (canCancel, buttons) => {
     const { user, answer } = mount(canCancel === undefined ? {} : { can_cancel: canCancel })
-    const cancel = screen.queryAllByRole('button', { name: /^Cancel the / })
+    const cancel = screen.queryAllByRole('button', { name: /^Undo the (spell|ability)$/ })
     expect(cancel).toHaveLength(buttons)
     if (canCancel === true) {
       await user.click(must(cancel[0]))
@@ -241,6 +241,6 @@ describe('a total too small for the targets', () => {
 
   it('still offers Cancel when the options allow it', () => {
     mount({ total: 1, among: [FOE, ME], can_cancel: true })
-    expect(screen.getByRole('button', { name: /^Cancel the / })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /^Undo the (spell|ability)$/ })).toBeEnabled()
   })
 })

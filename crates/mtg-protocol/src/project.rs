@@ -21,6 +21,7 @@ use mtg_engine::sight::offered_to;
 use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
 
+use crate::message::AutoYield;
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
     GivesView, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
@@ -326,6 +327,22 @@ fn shown_name(state: &GameState, viewer: PlayerId, object: &GameObject, card_nam
     }
 }
 
+impl AutoYield {
+    /// The key of the ability `id` is on the stack, read as a spectator reads it so that it holds only what every player
+    /// sees; `None` for a spell, an object off the stack or an ability whose source is hidden from a spectator.
+    pub fn of(state: &GameState, id: ObjectId) -> Option<AutoYield> {
+        let object = state.object(id)?;
+        if object.kind() != ObjectKind::Ability || object.zone() != Zone::Stack {
+            return None;
+        }
+        let view = ObjectView::of(state, spectator_viewer(state), id)?;
+        (!view.name.is_empty()).then(|| AutoYield {
+            name: view.name,
+            text: view.rules_text.unwrap_or_default(),
+        })
+    }
+}
+
 impl ObjectView {
     /// The view of `id` for `viewer`, or `None` when the object is unknown or hidden from them.
     pub fn of(state: &GameState, viewer: PlayerId, id: ObjectId) -> Option<ObjectView> {
@@ -466,6 +483,7 @@ impl ObjectView {
             read: printed && card.read,
             partial: printed && card.partial,
             note: mtg_engine::sight::note_of(state, id).map(str::to_owned),
+            granted: mtg_engine::manual_grant::granted_by_hand(state, id),
             identity: identity_of(state, object, card).filter(|_| printed),
             activated,
         })
@@ -514,6 +532,7 @@ impl ObjectView {
             read: false,
             partial: false,
             note: None,
+            granted: Vec::new(),
             identity: None,
             activated: Vec::new(),
         }

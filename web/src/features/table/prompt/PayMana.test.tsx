@@ -729,7 +729,7 @@ describe('a land with several kinds of mana', () => {
 
 describe('the tax of an attack', () => {
   it.each([
-    [false, 'Pay 2 generic for Selesnya Evangel.', 'Cancel casting'],
+    [false, 'Pay 2 generic for Selesnya Evangel.', /^Undo the (spell|ability)$/],
     [true, 'Pay 2 generic for the attack.', 'Back to attackers'],
   ])('with attack %s the prompt says %s and offers %s', async (attack, words, back) => {
     const { answer, user, text } = renderPay(
@@ -846,7 +846,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
 
   it('has no Cancel when the options do not allow backing out, and says so in the sentence', () => {
     const { text } = renderPay(payOptions('{U}{U}', [[0, 'G']], { auto_available: false, can_cancel: false }))
-    expect(screen.queryByRole('button', { name: 'Cancel casting' })).toBeNull()
+    expect(screen.queryByRole('button', { name: /^Undo the (spell|ability)$/ })).toBeNull()
     expect(text()).toBe('You cannot pay 2 blue for Selesnya Evangel with the mana you have.')
   })
 
@@ -856,7 +856,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
     ['for a free spell', payOptions('', [])],
   ])('Cancel answers Cancel %s', async (_what, given) => {
     const { answer, user } = renderPay(given)
-    await user.click(screen.getByRole('button', { name: 'Cancel casting' }))
+    await user.click(screen.getByRole('button', { name: /^Undo the (spell|ability)$/ }))
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Cancel' }]])
   })
 
@@ -868,7 +868,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
       ]),
     )
     await steps(['0'])
-    await user.click(screen.getByRole('button', { name: 'Cancel casting' }))
+    await user.click(screen.getByRole('button', { name: /^Undo the (spell|ability)$/ }))
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Cancel' }]])
   })
 
@@ -888,7 +888,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
   it.each([
     ['Pay automatically', [], { PayMana: 'Auto' }],
     ['Pay the rest for me', ['0'], { PayMana: { Complete: payment([], [[0, 0]]) } }],
-    ['Cancel casting', [], { PayMana: 'Cancel' }],
+    [/^Undo the (spell|ability)$/, [], { PayMana: 'Cancel' }],
     [
       'Confirm payment',
       ['0', '1'],
@@ -1112,9 +1112,7 @@ describe('what the player is told', () => {
     expect(land(0)).toHaveAttribute('data-highlight', 'dimmed')
     await user.click(land(0))
     expect(chips()).toEqual([])
-    expect(text()).toBe(
-      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Cancel to go back.',
-    )
+    expect(text()).toBe('You cannot pay 2 blue for Selesnya Evangel with the mana you have. Undo to go back.')
   })
 
   it('says what is still owed when floating mana starts a payment the sources finish', async () => {
@@ -1128,9 +1126,7 @@ describe('what the player is told', () => {
       payOptions('{U}{U}', [[0, 'G']], { auto_available: false, pool: poolOf('') }),
     )
     expect(confirm()).toBeDisabled()
-    expect(text()).toBe(
-      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Cancel to go back.',
-    )
+    expect(text()).toBe('You cannot pay 2 blue for Selesnya Evangel with the mana you have. Undo to go back.')
   })
 
   it('names the spell and says a free one costs nothing', () => {

@@ -1,10 +1,18 @@
 import { Button } from '@/components/ui/button'
 import type { GenericOffer } from './genericChoices'
 import { usePrompt } from './PromptContext'
+import { useUndoKey } from './undo'
 
-/** A button for each answer on offer, the one that backs out of the cast last. Draws nothing when there is none. */
+/**
+ * A button for each answer on offer, the one that backs out of the cast last, which Escape also presses. Draws nothing
+ * when there is none.
+ */
 export function GenericAnswers({ offer }: { offer: GenericOffer }) {
   const { answer } = usePrompt()
+  const back = offer.choices.find((choice) => choice.cancel === true)
+  useUndoKey(() => {
+    if (back !== undefined) void answer(back.answer)
+  }, back !== undefined)
   if (offer.choices.length === 0) return null
   return (
     <div

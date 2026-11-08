@@ -1,11 +1,11 @@
-//! Goal: the table cannot tell a player who can pay what an effect asks from one who cannot, by what it is sent or when. In two games with the same seed that differ in what a spell asks the opponent to pay ({1} against {2}, so the seat that holds one untapped Forest can pay in one and not in the other), the other seat is sent the same messages at the same moments, the payer is asked the same question with the same clock and its own No (or the No the clock gives it when it sits on the question) leaves the same log; a Yes from the player who cannot pay is refused to that seat alone with an error, leaves the question standing and nothing for anyone else to see, and the clock then answers No as before; the same comparison finds a player who could pay and says Yes, so the test can see a difference when there is one.
+//! Goal: the table does not ask a seat a payment it cannot make from what is in sight, and what that shows is what the battlefield already shows. In two games with the same seed that differ in what a spell asks the opponent to pay ({1} against {2}, so the seat that holds one untapped Forest can pay in one and not in the other), the seat that cannot pay is sent no question, is refused nothing and leaves a No in the log at once, at any pace; the seat that can pay is asked in the words of the card with its response clock; the same comparison finds a player who could pay and says Yes, so the test can see a difference when there is one.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
 
 use std::time::Duration;
 
-use common::{Tape, Taped, game_id, ms, passive, roomy, seat};
+use common::{Tape, Taped, game_id, passive, roomy, seat};
 use mtg_core::ids::PlayerId;
 use mtg_engine::choose::{Choice, YesNoChoice};
 use mtg_engine::decision::{PayChoice, PriorityAction};
@@ -182,39 +182,6 @@ fn told(heard: &[Taped]) -> Vec<ServerMessage> {
     heard.iter().map(|(_, message)| message.clone()).collect()
 }
 
-/// When each message of `heard` arrived, in milliseconds.
-fn moments(heard: &[Taped]) -> Vec<u64> {
-    heard.iter().map(|(at, _)| ms(*at)).collect()
-}
-
-/// What the payer is sent with the words of the question and the one flag only it is told made the same: the cost the
-/// spell names is the one thing the two games differ in.
-fn alike(heard: &[Taped]) -> Vec<ServerMessage> {
-    told(heard)
-        .into_iter()
-        .map(|message| match message {
-            ServerMessage::Decision {
-                id,
-                mut decision,
-                deadline_ms,
-                show_after_ms,
-            } => {
-                if let DecisionKind::YesNo(options) = &mut decision.kind {
-                    options.only_no = false;
-                    options.text = String::new();
-                }
-                ServerMessage::Decision {
-                    id,
-                    decision,
-                    deadline_ms,
-                    show_after_ms,
-                }
-            }
-            other => other,
-        })
-        .collect()
-}
-
 /// The question the payer was asked, with the time left on its clock: the first yes-or-no decision it was sent.
 fn question(run: &Run) -> (String, bool, Option<u64>) {
     run.payer
@@ -264,78 +231,48 @@ fn errors(heard: &[Taped]) -> Vec<ErrorCode> {
         .collect()
 }
 
-#[rstest]
-#[case::the_payer_answers_promptly(PROMPTLY)]
-#[case::the_payer_sits_on_the_question_until_the_clock_runs_out(TOO_LONG)]
-#[tokio::test(start_paused = true)]
-async fn the_table_cannot_tell_a_player_who_can_pay_from_one_who_cannot(#[case] first: u64) {
-    let can = play(1, declining, first, Dwell::OFF).await;
-    let cannot = play(2, declining, first, Dwell::OFF).await;
-
-    // The watcher is sent the same messages at the same moments...
-    assert_eq!(told(&can.watcher), told(&cannot.watcher));
-    assert_eq!(moments(&can.watcher), moments(&cannot.watcher));
-    // ...though the games differ in what the spell asks and in nothing the log says...
-    assert_eq!(can.log, cannot.log);
-    assert_ne!(can.hash, cannot.hash);
-    // ...the payer is asked in the same words about its own cost, with the same clock, at the same moment, and told
-    // No is the only answer only when it cannot pay...
-    assert_eq!(question(&can), ("Pay {1}?".to_owned(), false, Some(10_000)));
-    assert_eq!(
-        question(&cannot),
-        ("Pay {2}?".to_owned(), true, Some(10_000))
-    );
-    assert_eq!(alike(&can.payer), alike(&cannot.payer));
-    assert_eq!(moments(&can.payer), moments(&cannot.payer));
-    // ...and both said no, by their own answer or the clock's.
-    assert_eq!(said(&can), [false]);
-    assert_eq!(said(&cannot), [false]);
-    // The game went past the question and its answer: the watcher drew for the spell nobody paid.
-    assert!(
-        can.log.iter().any(
-            |event| matches!(event, Event::CardDrawn { player, .. } if *player == seat_id(WATCHER))
-        ),
-        "the unpaid effect happened"
-    );
-    // Whatever the payer is told about a late answer, it is told alike.
-    assert_eq!(errors(&can.payer), errors(&cannot.payer));
-}
-
-#[tokio::test(start_paused = true)]
-async fn the_same_holds_with_the_windows_paced_by_the_default_dwell() {
-    // The dwell draws its own waits, so the moments differ from game to game; what is sent does not.
-    let can = play(1, declining, PROMPTLY, Dwell::DEFAULT).await;
-    let cannot = play(2, declining, PROMPTLY, Dwell::DEFAULT).await;
-    assert_eq!(told(&can.watcher), told(&cannot.watcher));
-    assert_eq!(can.log, cannot.log);
-    assert_eq!(alike(&can.payer), alike(&cannot.payer));
-    assert_eq!(said(&can), [false]);
-    assert_eq!(said(&cannot), [false]);
-}
-
-#[tokio::test(start_paused = true)]
-async fn a_yes_from_a_player_who_cannot_pay_is_refused_to_that_seat_alone_and_the_clock_answers_no()
-{
-    // The payer says yes at once, is refused, and the question stands until the clock gives it a no.
-    let eager_then_late = play(2, eager, PROMPTLY, Dwell::OFF).await;
-    let late = play(2, declining, TOO_LONG, Dwell::OFF).await;
-
-    assert_eq!(errors(&eager_then_late.payer), [ErrorCode::IllegalAnswer]);
-    assert_eq!(errors(&eager_then_late.watcher), Vec::<ErrorCode>::new());
-    // Nobody else is sent anything for it: the watcher hears what it hears when the payer says nothing at all.
-    assert_eq!(told(&eager_then_late.watcher), told(&late.watcher));
-    assert_eq!(moments(&eager_then_late.watcher), moments(&late.watcher));
-    assert_eq!(eager_then_late.log, late.log);
-    assert_eq!(said(&eager_then_late), [false]);
-    // The refused answer left the question on the payer's screen with the clock running.
-    let asked = eager_then_late
-        .payer
+/// The yes-or-no questions the payer was sent.
+fn questions(run: &Run) -> usize {
+    run.payer
         .iter()
         .filter(|(_, message)| {
             matches!(message, ServerMessage::Decision { decision, .. } if matches!(decision.kind, DecisionKind::YesNo(_)))
         })
-        .count();
-    assert_eq!(asked, 1, "the question was not asked again");
+        .count()
+}
+
+#[rstest]
+#[case::the_payer_answers_promptly(PROMPTLY, Dwell::OFF)]
+#[case::the_payer_would_sit_on_the_question(TOO_LONG, Dwell::OFF)]
+#[case::with_the_default_dwell(PROMPTLY, Dwell::DEFAULT)]
+#[tokio::test(start_paused = true)]
+async fn a_payment_the_seat_cannot_make_from_what_is_in_sight_is_declined_without_asking(
+    #[case] first: u64,
+    #[case] dwell: Dwell,
+) {
+    let cannot = play(2, eager, first, dwell).await;
+
+    // The payer is never asked and cannot answer a question it was not sent: nothing is refused.
+    assert_eq!(questions(&cannot), 0);
+    assert_eq!(errors(&cannot.payer), Vec::<ErrorCode>::new());
+    // The table said No for it and the game went on: the watcher drew for the spell nobody paid.
+    assert_eq!(said(&cannot), [false]);
+    assert!(
+        cannot.log.iter().any(
+            |event| matches!(event, Event::CardDrawn { player, .. } if *player == seat_id(WATCHER))
+        ),
+        "the unpaid effect happened"
+    );
+}
+
+#[tokio::test(start_paused = true)]
+async fn a_seat_that_can_pay_is_asked_with_its_clock_and_the_table_does_not_answer_for_it() {
+    let can = play(1, declining, PROMPTLY, Dwell::OFF).await;
+    let cannot = play(2, declining, PROMPTLY, Dwell::OFF).await;
+    assert_eq!(questions(&can), 1);
+    assert_eq!(question(&can), ("Pay {1}?".to_owned(), false, Some(10_000)));
+    assert_eq!(said(&can), [false]);
+    assert_ne!(can.hash, cannot.hash);
 }
 
 #[tokio::test(start_paused = true)]

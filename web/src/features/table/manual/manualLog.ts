@@ -35,6 +35,7 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   Tutor: ['ZoneChanged', 'LibraryShuffled'],
   RemoveSickness: [],
   Sacrifice: ['ZoneChanged'],
+  GrantAbility: ['EffectCreated'],
   GiveControl: ['ZoneChanged', 'Entered', 'EffectCreated', 'CountersChanged'],
 }
 

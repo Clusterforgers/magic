@@ -268,6 +268,9 @@ function mine(first: number, seat: number, rival: number): ObjectView[] {
       permanent: tapped,
       manual: [COIN_FLIP, LONG_CLAUSE, ...STASIS],
     }),
+    // Two 6/6 Soldiers granted vigilance and lifelink in opposite orders look alike, so they share a box.
+    base(id(32), seat, soldier({ power: 6, toughness: 6, keywords: ['Vigilance', 'Lifelink'] })),
+    base(id(33), seat, soldier({ power: 6, toughness: 6, keywords: ['Lifelink', 'Vigilance'] })),
   ]
   return list
 }

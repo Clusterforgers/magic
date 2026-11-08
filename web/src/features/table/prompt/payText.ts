@@ -156,7 +156,7 @@ export function payText({
       const back =
         declaring !== undefined
           ? ` Add the mana by hand in the Commands panel, or go back to choose other ${declaring}ers.`
-          : ' Cancel to go back.'
+          : ' Undo to go back.'
       return `You cannot pay ${costWords(cost)} for ${declaring !== undefined ? `the ${declaring}` : spell} with the mana you have.${cancel ? back : ''}`
     }
     const automatic = auto ? ', or pay automatically' : ''

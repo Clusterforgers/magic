@@ -6,6 +6,7 @@ import { must } from '@/test-utils/batches'
 import { renderForecastTable } from '@/test-utils/forecastTable'
 import { forecastSentences } from '../combat/forecastText'
 import type { ForecastNames } from '../combat/forecastText'
+import { BUNDLE_OVER } from '../combat/rects'
 
 const SEATS = 3
 
@@ -323,10 +324,14 @@ describe('attacks being chosen', () => {
     expect(after.d).not.toBe(before.d)
   })
 
-  it('draws every attacker with "Attack with all", and none after Clear', async () => {
+  it('draws every attacker with "Attack with all", as one bundle for a crowd, and none after Clear', async () => {
     const t = attack()
+    expect(t.attackers.length).toBeGreaterThan(BUNDLE_OVER)
     await t.user.click(screen.getByRole('button', { name: 'Attack with all' }))
-    expect(t.pending().map((line) => line.key)).toEqual(t.attackers.map((id) => `pending-attack:${id}`))
+    expect(t.pending().map((line) => line.key)).toEqual(['pending-bundle:0>seat:1'])
+    expect(t.overlay()?.querySelector('[data-layer="lines"] [data-count]')?.getAttribute('data-count')).toBe(
+      String(t.attackers.length),
+    )
     await t.user.click(screen.getByRole('button', { name: 'Clear' }))
     expect(t.pending()).toEqual([])
     expect(t.overlay()).toBeNull()

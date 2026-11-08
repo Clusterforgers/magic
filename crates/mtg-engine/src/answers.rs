@@ -97,6 +97,15 @@ fn table_answer(
     }
 }
 
+/// Backs out of the announcement under way when the question asked of it allows it (`DecisionKind::can_undo`).
+fn undo(announcing: bool, kind: &DecisionKind) -> Result<Outcome, EngineError> {
+    if announcing && kind.can_undo() {
+        Ok(Outcome::CancelCast)
+    } else {
+        Err(IllegalAnswer::NotOffered("undo").into())
+    }
+}
+
 /// The answer to a choice of cards the game itself asks outside any resolution: which permanents stay tapped in the untap
 /// step, and else the legend rule.
 fn table_cards(
@@ -248,6 +257,7 @@ pub(crate) fn handle(
         (DecisionKind::ChooseReplacement(options), Answer::ChooseReplacement(choice)) => {
             choose::replacement_answer(player, options, choice)
         }
+        (kind, Answer::Undo) => undo(pending.is_some(), kind),
         (kind, answer) => Err(IllegalAnswer::WrongKind {
             expected: kind.name(),
             got: answer.name(),

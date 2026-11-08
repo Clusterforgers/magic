@@ -120,6 +120,8 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
+    /// A line of text the table follows by hand (layer 6): it changes nothing the engine runs and `granted_text` lists it.
+    GrantText(String),
     /// Adds colours to the ones it has (layer 5).
     AddColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
@@ -237,6 +239,7 @@ impl Modification {
             Modification::AddKeyword(_)
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::GrantText(_)
             | Modification::GrantAbility(_)
             | Modification::LoseAbility(_)
             | Modification::GainAbilities(_)
@@ -333,6 +336,7 @@ impl Modification {
             Modification::SetController(_)
             | Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::GrantText(_)
             | Modification::LockKeyword(_)
             | Modification::LoseAbility(_)
             | Modification::GrantAbility(_)

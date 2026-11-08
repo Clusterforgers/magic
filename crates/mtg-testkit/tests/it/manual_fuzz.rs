@@ -58,6 +58,7 @@ pub(crate) fn kind(action: &ManualAction) -> &'static str {
         ManualAction::RemoveSickness { .. } => "remove sickness",
         ManualAction::Sacrifice { .. } => "sacrifice",
         ManualAction::GiveControl { .. } => "give control",
+        ManualAction::GrantAbility { .. } => "grant ability",
     }
 }
 
@@ -102,6 +103,7 @@ fn seeded_games_with_manual_cards_and_manual_actions_finish_and_keep_every_invar
         "remove sickness",
         "sacrifice",
         "give control",
+        "grant ability",
     ] {
         assert!(
             kinds.contains(wanted),

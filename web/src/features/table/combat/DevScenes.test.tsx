@@ -54,7 +54,11 @@ describe.each(COUNTS)('?prompt=block at %i seats', (seats) => {
     const view = must(t.store.getState().view)
     const blocks = view.combat.attackers.flatMap((attacker) => attacker.blockers)
     expect(blocks).toHaveLength(seats === 2 ? 0 : 2)
-    expect(t.lines()).toHaveLength(view.combat.attackers.length + blocks.length)
+    // Six attackers are a crowd: their attacks are bundled by target, every attacker counted once.
+    const attacks = t.lines().filter((line) => line.kind === 'attack')
+    expect(attacks.reduce((sum, line) => sum + line.count, 0)).toBe(view.combat.attackers.length)
+    expect(attacks.some((line) => line.count > 1)).toBe(true)
+    expect(t.lines().filter((line) => line.kind === 'block')).toHaveLength(blocks.length)
     expect(t.lines().filter((line) => line.pending)).toEqual([])
     expect(t.life(0)).toHaveAttribute('data-lethal', 'true')
     const outcome = must(t.container.querySelector<HTMLElement>('[data-slot="block-outcome"]'))

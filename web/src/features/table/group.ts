@@ -71,7 +71,8 @@ function countersOf(counters: Groupable['counters']): [string, number][] {
 const attachmentsOf = (attachments: Groupable['attachments']): ObjectId[] =>
   [...(attachments ?? [])].sort((a, b) => a - b)
 
-// Everything a card face shows. Two permanents are interchangeable exactly when this is equal, so a stack never
+// Everything a card face shows; the keywords as a set, since the order effects granted them in is no part of the face.
+// Two permanents are interchangeable exactly when this is equal, so a stack never
 // hides a pumped, damaged, equipped or tapped member behind the face of another.
 function faceOf(permanent: Groupable): string {
   const state = permanent.permanent
@@ -87,7 +88,7 @@ function faceOf(permanent: Groupable): string {
     permanent.power,
     permanent.toughness,
     permanent.abilities,
-    permanent.keywords ?? [],
+    [...(permanent.keywords ?? [])].sort(byText),
     state?.tapped ?? false,
     state?.summoning_sick ?? false,
     state?.damage ?? 0,

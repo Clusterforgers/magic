@@ -1,6 +1,6 @@
-// Goal: line geometry turns two boxes into a curve and an arrowhead that start and stop a fixed gap outside the boxes, on the side that faces the other box, for every placement of the two (beside, above, diagonal, a card to a wide panel), bows to either side, mirrors when the boxes swap, and draws nothing when there is no room (boxes not laid out, concentric, overlapping or closer than the gap).
+// Goal: line geometry turns two boxes into a curve and an arrowhead that start and stop a fixed gap outside the boxes, on the side that faces the other box, for every placement of the two (beside, above, diagonal, a card to a wide panel), bows to either side, mirrors when the boxes swap, and draws nothing when there is no room (boxes not laid out, concentric, overlapping or closer than the gap); a bundle's label stands near the tip, clear of the arrowhead, and is moved inside the table and off the strip and other labels.
 import { describe, expect, it } from 'vitest'
-import { centreOf, connect, exitPoint, isLaidOut } from './geometry'
+import { centreOf, clearOf, connect, exitPoint, isLaidOut, labelPoint, shiftInto } from './geometry'
 import type { Point, Rect } from './geometry'
 
 const box = (x: number, y: number, width = 100, height = 60): Rect => ({ x, y, width, height })
@@ -204,5 +204,46 @@ describe('connect', () => {
     it('gives null', () => {
       expect(connect(from, to)).toBeNull()
     })
+  })
+})
+
+describe('labelPoint', () => {
+  const shape = (mid: Point, end: Point) => ({ d: '', head: '', start: mid, mid, end })
+
+  it.each<[string, Point, Point, Point]>([
+    ['upright, from above', { x: 0, y: 0 }, { x: 0, y: 200 }, { x: 0, y: 176 }],
+    ['level, from the left', { x: 0, y: 0 }, { x: 200, y: 0 }, { x: 118, y: 0 }],
+    ['a short line stops at the middle', { x: 0, y: 0 }, { x: 0, y: 10 }, { x: 0, y: 0 }],
+  ])('%s', (_case, mid, end, expected) => {
+    const point = labelPoint(shape(mid, end))
+    expect(point.x).toBeCloseTo(expected.x, 6)
+    expect(point.y).toBeCloseTo(expected.y, 6)
+  })
+})
+
+describe('shiftInto', () => {
+  const bounds = box(0, 0, 400, 300)
+
+  it.each<[string, Rect, Point]>([
+    ['inside stays', box(100, 100, 100, 20), { x: 0, y: 0 }],
+    ['past the right edge moves left', box(350, 100, 100, 20), { x: -54, y: 0 }],
+    ['past the left edge moves right', box(-30, 100, 100, 20), { x: 34, y: 0 }],
+    ['past the bottom moves up', box(100, 290, 100, 20), { x: 0, y: -14 }],
+    ['wider than the bounds keeps its left edge in', box(-10, 100, 500, 20), { x: 14, y: 0 }],
+  ])('%s', (_case, label, expected) => {
+    expect(shiftInto(label, bounds)).toEqual(expected)
+  })
+})
+
+describe('clearOf', () => {
+  const strip = box(0, 100, 400, 50)
+
+  it.each<[string, Rect, number, number]>([
+    ['apart stays', box(0, 10, 100, 20), 0, 0],
+    ['over it, tip below, steps below', box(0, 120, 100, 20), 400, 34],
+    ['over it, tip above, steps above', box(0, 120, 100, 20), 0, -44],
+    ['beside it stays', box(500, 120, 100, 20), 400, 0],
+  ])('%s', (_case, label, toward, expected) => {
+    expect(clearOf(label, strip, toward)).toBe(expected)
   })
 })

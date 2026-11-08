@@ -105,10 +105,10 @@ describe('a target decision from the server', () => {
     expect(h.answeredIds()).toEqual([32])
   })
 
-  it('takes the spell back with Cancel the spell, which sends Cancel', async () => {
+  it('takes the spell back with Undo the spell, which sends Cancel', async () => {
     const { h, send, user, prompt } = mount()
     send(targets(33, LEGAL))
-    await user.click(screen.getByRole('button', { name: 'Cancel the spell' }))
+    await user.click(screen.getByRole('button', { name: 'Undo the spell' }))
     expect(h.sentOf('Answer')).toEqual([
       { type: 'Answer', decision: 33, answer: { ChooseTargets: 'Cancel' } },
     ])

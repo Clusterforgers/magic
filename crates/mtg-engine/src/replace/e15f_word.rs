@@ -41,6 +41,7 @@ impl Pass<'_> {
                     return Ok(Asked::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseOption(OptionOptions {
+                            can_cancel: false,
                             source,
                             options: words.iter().cloned().map(ChoiceOption::Label).collect(),
                             text: format!("Choose {}.", words.join(" or ")),

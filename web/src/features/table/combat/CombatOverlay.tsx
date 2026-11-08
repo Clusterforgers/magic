@@ -1,6 +1,10 @@
-import { useContext, useMemo, useRef } from 'react'
+import { useContext, useLayoutEffect, useMemo, useRef } from 'react'
+import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
+import { useSeatNamer } from '../names'
 import { useAttachLines } from './attachLines'
+import { clearOf, labelPoint, shiftInto } from './geometry'
+import type { Rect } from './geometry'
 import { useEffectLines } from './effectLines'
 import { anchorKey, anchorsOf } from './plan'
 import type { LineSpec } from './plan'
@@ -24,7 +28,7 @@ function Layer({ drawn, layer, className }: LayerProps) {
       focusable="false"
       className={cn('absolute inset-0 size-full overflow-visible', className)}
     >
-      {drawn.map(({ line, shape }) => (
+      {drawn.map(({ line, shape, count }) => (
         <g
           key={line.key}
           className="combat-group"
@@ -35,6 +39,7 @@ function Layer({ drawn, layer, className }: LayerProps) {
           data-pending={line.pending || undefined}
           data-outcome={line.outcome}
           data-mine={line.mine || undefined}
+          data-count={count}
         >
           {/* One unit is the whole line, which is what lets the draw-in work on any length; a dashed line keeps its
               pixels, so it is left alone. */}
@@ -44,6 +49,85 @@ function Layer({ drawn, layer, className }: LayerProps) {
         </g>
       ))}
     </svg>
+  )
+}
+
+/**
+ * The count of each bundle of attacks ("4 attackers → Cy"), on a pill near its arrowhead, above the strip so that no
+ * prompt hides it. Bundles come only from a seat that attacks with a crowd (`BUNDLE_OVER`), one per target.
+ */
+function BundleLabels({ drawn }: { drawn: readonly DrawnLine[] }) {
+  const seat = useSeatNamer()
+  const viewer = usePlay((state) => state.seat)
+  const objects = usePlay((state) => state.objectsById)
+  const bundles = drawn.filter((entry) => entry.count !== undefined)
+  const layer = useRef<HTMLDivElement>(null)
+  // A label steps off the shared strip, toward its tip, so it covers no word of the prompt, and in from the edge of the
+  // table and the window until it is whole.
+  useLayoutEffect(() => {
+    const element = layer.current
+    if (element === null) return
+    const outer = element.getBoundingClientRect()
+    const left = Math.max(outer.left, 0)
+    const top = Math.max(outer.top, 0)
+    const bounds = {
+      x: left,
+      y: top,
+      width: Math.min(outer.right, window.innerWidth) - left,
+      height: Math.min(outer.bottom, window.innerHeight) - top,
+    }
+    const strip = element.closest('[data-slot="combat-overlay"]')?.parentElement
+    const sheet = strip?.querySelector('[data-slot="shared-sheet"]')?.getBoundingClientRect()
+    const placed: Rect[] =
+      sheet === undefined ? [] : [{ x: sheet.left, y: sheet.top, width: sheet.width, height: sheet.height }]
+    for (const label of element.children) {
+      if (!(label instanceof HTMLElement)) continue
+      label.style.margin = ''
+      const seen = label.getBoundingClientRect()
+      const tip = outer.top + Number(label.dataset.tipY ?? 0)
+      // In from the sides first, then off the strip and the labels already placed, in the order they were placed.
+      const raw: Rect = { x: seen.left, y: seen.top, width: seen.width, height: seen.height }
+      let box: Rect = { ...raw, x: raw.x + shiftInto(raw, bounds).x }
+      for (const other of placed) {
+        const toward = { ...box, y: box.y + clearOf(box, other, tip) }
+        const inside = toward.y >= bounds.y && toward.y + toward.height <= bounds.y + bounds.height
+        // Where the way to the tip runs out of the table, the label steps off the other way.
+        box = inside ? toward : { ...box, y: box.y + clearOf(box, other, tip < box.y ? Infinity : -Infinity) }
+      }
+      const shift = shiftInto(box, bounds)
+      box = { ...box, x: box.x + shift.x, y: box.y + shift.y }
+      placed.push(box)
+      const x = box.x - seen.left
+      const y = box.y - seen.top
+      if (x !== 0 || y !== 0) label.style.margin = `${y}px 0 0 ${x}px`
+    }
+  })
+  if (bundles.length === 0) return null
+  return (
+    <div ref={layer} data-layer="bundle-labels" className="absolute inset-0 z-30">
+      {bundles.map(({ line, shape, count }) => {
+        const to =
+          line.to.kind === 'seat'
+            ? line.to.seat === viewer
+              ? 'you'
+              : seat(line.to.seat)
+            : line.to.kind === 'card'
+              ? (objects[line.to.id]?.name ?? 'a card')
+              : ''
+        const at = labelPoint(shape)
+        return (
+          <span
+            key={line.key}
+            data-bundle-label={line.key}
+            data-tip-y={Math.round(shape.end.y)}
+            style={{ left: at.x, top: at.y }}
+            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-border-strong bg-card px-2 py-0.5 text-xs font-semibold whitespace-nowrap text-foreground shadow-sm"
+          >
+            {count} attackers → {to}
+          </span>
+        )
+      })}
+    </div>
   )
 }
 
@@ -69,6 +153,7 @@ function Lines({ lines }: { lines: readonly LineSpec[] }) {
       {/* The same lines again, faint, above the centre strip that hides the first set: a line dives under the prompt
           and is still there to follow on the other side, without a stroke across the words. */}
       <Layer drawn={combat} layer="ghost" className="combat-ghost z-30 opacity-30" />
+      <BundleLabels drawn={combat} />
       {/* The arrows of the stack start at a chip in the strip, so they run above it (and under the hand and the controls). */}
       {targets.length === 0 ? null : <Layer drawn={targets} layer="stack" className="combat-stack z-[25]" />}
     </div>

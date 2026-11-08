@@ -28,6 +28,11 @@ pub struct YesNoOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub only_no: bool,
+    /// Whether that No depends on a card in a hidden zone (a discard, a reveal, a card exiled from a hand): the table
+    /// asks such a question anyway, so its pace shows nothing about a hand. Not sent.
+    #[serde(skip)]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub unseen: bool,
 }
 
 impl YesNoOptions {
@@ -37,6 +42,7 @@ impl YesNoOptions {
             source,
             text: text.into(),
             only_no: false,
+            unseen: false,
         }
     }
 }

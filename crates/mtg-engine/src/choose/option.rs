@@ -40,6 +40,10 @@ pub struct OptionOptions {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
     pub text: String,
+    /// Whether the cast or activation being announced may still be backed out of with `Answer::Undo`.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub can_cancel: bool,
 }
 
 /// The option chosen, by index.
@@ -118,6 +122,7 @@ pub(crate) fn pick_options(
                     return Ok(Optioned::Ask(Decision {
                         player: chooser.player,
                         kind: DecisionKind::ChooseOption(OptionOptions {
+                            can_cancel: false,
                             source: cx.scope.source.id,
                             options: chooser.options.clone(),
                             text: chooser.text.clone(),
@@ -186,6 +191,7 @@ mod tests {
 
     fn options(list: Vec<ChoiceOption>) -> OptionOptions {
         OptionOptions {
+            can_cancel: false,
             source: ObjectId(99),
             options: list,
             text: "Choose one.".into(),

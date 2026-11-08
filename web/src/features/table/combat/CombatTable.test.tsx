@@ -185,7 +185,8 @@ describe('the lines over the table', () => {
     })
     expect(table.measure.mock.calls.length).toBe(calls + 1)
     expect(table.lastAnchors().map((anchor) => (anchor.kind === 'card' ? anchor.id : -1))).toContain(spare.id)
-    expect(table.lines().map((line) => line.key)).toContain(`attack:${spare.id}`)
+    // A sixth attacker makes the seat's attack a crowd, drawn as one bundle at the seat it attacks.
+    expect(table.lines().map((line) => line.key)).toContain('bundle:1>seat:0')
   })
 
   it('leaves out a line whose end is not on screen, and draws it when it is', () => {

@@ -1,9 +1,10 @@
 // Goal: the game log names a card that has left the view from the names the page keeps, prefers the view's own name while it holds the object, and says "a card" only for an object nobody named.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import type { EventView } from '@/protocol/generated'
+import type { CardDetail, EventView, ObjectView } from '@/protocol/generated'
 import { renderTable } from '@/test-utils/tableHarness'
 import { LogPanel } from './LogPanel'
+import { setDetailFetcher } from './printed'
 
 const GONE = 987_654
 
@@ -66,5 +67,37 @@ describe('the log lines about an ability the view holds', () => {
     })
     const items = within(screen.getByRole('log', { name: 'Game log' })).getAllByRole('listitem')
     expect(items.map((item) => item.textContent)).toContain(`An ability of ${held.name} begins to resolve`)
+  })
+})
+
+describe('the log line about an unlocked door', () => {
+  it('asks for the Room faces itself and names the door once they arrive', async () => {
+    const probe = renderTable({ seats: 2, ui: <LogPanel /> })
+    const held = Object.values(probe.store.getState().objectsById).find((object) => object.name !== '')
+    probe.unmount()
+    expect(held).toBeDefined()
+    if (held === undefined) return
+    setDetailFetcher(() =>
+      Promise.resolve({
+        faces: [{ name: 'Bottomless Pool' }, { name: 'Locker Room' }],
+      } as unknown as CardDetail),
+    )
+    const room = {
+      ...held,
+      id: GONE,
+      identity: { oracle_id: 'room-oracle' },
+      permanent: { ...held.permanent, doors: [true, false] },
+    } as unknown as ObjectView
+    renderTable({
+      seats: 2,
+      ui: <LogPanel />,
+      state: (first) => ({
+        ...first,
+        objectsById: { ...first.objectsById, [GONE]: room },
+        log: [{ seq: 0, event: { Public: { DoorUnlocked: { player: 0, object: GONE, door: 0 } } } }],
+      }),
+    })
+    const log = screen.getByRole('log', { name: 'Game log' })
+    expect(await within(log).findByText(/unlocks Bottomless Pool/)).toBeInTheDocument()
   })
 })
