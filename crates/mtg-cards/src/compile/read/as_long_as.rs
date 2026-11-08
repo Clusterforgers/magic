@@ -290,13 +290,6 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     } = condition
         && let [Pred::This, state] = counted.as_slice()
     {
-        // The card itself in a zone (t18): "if this card is in your graveyard".
-        if *state == Pred::In(ZoneKind::Graveyard) {
-            return vec![
-                "~ is in your graveyard".to_owned(),
-                "this card is in your graveyard".to_owned(),
-            ];
-        }
         return state_texts(&Condition::Matches {
             subject: Ref::This,
             selector: Selector(vec![state.clone()]),

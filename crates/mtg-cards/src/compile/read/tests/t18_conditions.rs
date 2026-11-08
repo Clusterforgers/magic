@@ -59,7 +59,12 @@ fn control_another(#[case] count: &str, #[case] text: &str) {
     0,
     "When ~ enters, if you control another Human, draw a card."
 )]
-fn not_the_same_rule(#[case] count: &str, #[case] op: &str, #[case] number: u32, #[case] text: &str) {
+fn not_the_same_rule(
+    #[case] count: &str,
+    #[case] op: &str,
+    #[case] number: u32,
+    #[case] text: &str,
+) {
     assert!(!written(&enters_if(count, op, number), text));
 }
 
@@ -85,6 +90,36 @@ fn the_hand_of_the_active_player(#[case] left: &str, #[case] op: &str, #[case] n
 #[case::the_graveyard(r#"{"OwnedBy":"ActivePlayer"},{"In":"Graveyard"}"#, "Le", 2)]
 fn another_hand_count_is_another_rule(#[case] left: &str, #[case] op: &str, #[case] number: u32) {
     assert!(!written(&upkeep_if(left, op, number), THAT_PLAYER_TWO));
+}
+
+#[test]
+fn damage_to_that_player_may_say_them() {
+    let json = upkeep_if(r#"{"OwnedBy":"ActivePlayer"},{"In":"Hand"}"#, "Le", 2);
+    assert!(written(
+        &json,
+        &THAT_PLAYER_TWO.replace("that player.", "them.")
+    ));
+    assert!(!written(
+        &json,
+        &THAT_PLAYER_TWO.replace("that player.", "you.")
+    ));
+}
+
+const YOMIJI: &str = "Whenever a legendary permanent other than ~ is put into a graveyard from the battlefield, return that card to its owner's hand.";
+
+#[rstest]
+#[case::other_than_this("Other", true)]
+#[case::the_card_counts("Plain", false)]
+fn another_permanent_may_say_other_than_this(#[case] other: &str, #[case] reads: bool) {
+    let preds = if other == "Other" {
+        r#"{"Supertype":"Legendary"},"Other""#
+    } else {
+        r#"{"Supertype":"Legendary"}"#
+    };
+    let json = format!(
+        r#"{{"Triggered":{{"effects":[{{"Move":{{"to":"Hand","what":"Triggering"}}}}],"when":{{"ZoneChange":{{"from":"Battlefield","to":"Graveyard","what":[{preds}]}}}}}}}}"#
+    );
+    assert_eq!(written(&json, YOMIJI), reads);
 }
 
 fn life_lost(who: &str, number: u32) -> String {

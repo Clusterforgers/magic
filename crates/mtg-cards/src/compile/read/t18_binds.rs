@@ -57,7 +57,7 @@ pub(super) fn t18_unnumbered(ability: &Ability) -> Option<Ability> {
     let mut to = BTreeMap::new();
     for name in &numbered {
         let stem = plain(name)?.to_owned();
-        let taken = all.iter().any(|other| *other == stem) || to.values().any(|seen| *seen == stem);
+        let taken = all.contains(&stem) || to.values().any(|seen| *seen == stem);
         if taken {
             return None;
         }

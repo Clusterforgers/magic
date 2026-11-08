@@ -578,6 +578,12 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    let more = super::t18_words::t18_wordings(&texts);
+    for text in more {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
     let six_sided: Vec<String> = texts
         .iter()
         .filter_map(|text| super::fix23_dice::fix23_six_sided(text))

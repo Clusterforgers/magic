@@ -3,15 +3,16 @@
 
 use serde_json::{Value, json};
 
-use crate::ability::Ability;
 use super::effects::other_dead_card;
+use crate::ability::Ability;
 
 /// Whether the trigger pattern is a permanent going from the battlefield to a graveyard.
 fn is_death(when: &Value) -> bool {
     let Some(change) = when.get("ZoneChange") else {
         return false;
     };
-    change.get("from") == Some(&json!("Battlefield")) && change.get("to") == Some(&json!("Graveyard"))
+    change.get("from") == Some(&json!("Battlefield"))
+        && change.get("to") == Some(&json!("Graveyard"))
 }
 
 /// The ability of a death trigger with each move of the triggering object written as a move of the card in the

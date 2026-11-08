@@ -35,7 +35,11 @@ fn the_card_that_died_returns(#[case] who: &str, #[case] to: &str, #[case] text:
 
 #[rstest]
 #[case::to_the_battlefield(r#"{"Is":"Attached"}"#, r#"{"Battlefield":{}}"#, "Battlefield")]
-#[case::to_the_library(r#"{"Is":"Attached"}"#, r#"{"Library":{"place":"Top"}}"#, "Battlefield")]
+#[case::to_the_library(
+    r#"{"Is":"Attached"}"#,
+    r#"{"Library":{"place":"Top"}}"#,
+    "Battlefield"
+)]
 #[case::from_the_hand(r#"{"Is":"Attached"}"#, r#""Hand""#, "Hand")]
 fn another_move_does_not_write_the_hand_text(
     #[case] who: &str,

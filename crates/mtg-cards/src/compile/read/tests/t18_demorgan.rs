@@ -22,12 +22,18 @@ fn pick(filter: &str) -> String {
 )]
 fn a_double_negation_writes_as_both_conditions(#[case] filter: &str) {
     let json = pick(filter);
-    assert!(written(&json, TEXT), "{:?}", written_variants(&ability(&json)));
+    assert!(
+        written(&json, TEXT),
+        "{:?}",
+        written_variants(&ability(&json))
+    );
 }
 
 #[rstest]
 #[case::plain_or(r#"{"AnyOf":[{"Type":"Artifact"},{"Supertype":"Legendary"}]}"#)]
-#[case::one_negation_left(r#"{"Not":{"AnyOf":[{"Not":{"Type":"Artifact"}},{"Supertype":"Legendary"}]}}"#)]
+#[case::one_negation_left(
+    r#"{"Not":{"AnyOf":[{"Not":{"Type":"Artifact"}},{"Supertype":"Legendary"}]}}"#
+)]
 #[case::another_supertype(
     r#"{"Not":{"AnyOf":[{"Not":{"Type":"Artifact"}},{"Not":{"Supertype":"Snow"}}]}}"#
 )]
