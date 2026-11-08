@@ -753,6 +753,9 @@ fn each_turn(r: &mut Reader<'_>, noun: &str, whose: &str) -> Option<u32> {
 /// The ordinals a count of a turn names.
 const ORDINALS: [&str; 5] = ["first", "second", "third", "fourth", "fifth"];
 
+/// A tap other than to attack (`TriggerPattern::TappedNotAttacking`).
+const NOT_ATTACKING: &str = "becomes tapped, if it isn't being declared as an attacker";
+
 /// The card itself, or an object with its article: "a creature you control", "another creature".
 pub(super) fn subject(r: &mut Reader<'_>) -> Option<Selector> {
     if r.source() {
@@ -1390,10 +1393,7 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         }
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
-        TriggerPattern::TappedNotAttacking { what } => said(
-            what,
-            "becomes tapped, if it isn't being declared as an attacker",
-        ),
+        TriggerPattern::TappedNotAttacking { what } => said(what, NOT_ATTACKING),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::PhasedOut { what } => said(what, "phases out"),
         TriggerPattern::PhasedIn { what } => said(what, "phases in"),

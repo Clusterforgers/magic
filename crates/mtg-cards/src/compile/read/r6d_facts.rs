@@ -53,6 +53,9 @@ pub(super) fn texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
                     .collect()
             }
         }
-        _ => super::g10c_facts::texts(left, op, number),
+        _ => super::g10c_facts::texts(left, op, number)
+            .into_iter()
+            .chain(super::e16a_history::texts(left, op, number))
+            .collect(),
     }
 }
