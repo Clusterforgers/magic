@@ -326,6 +326,7 @@ mod keyword_lines_fuzz;
 mod keywords_attack;
 mod keywords_damage;
 mod keywords_flash;
+mod w19_conditional_flash;
 mod keywords_forecast;
 mod keywords_fuzz;
 mod keywords_hexproof;
