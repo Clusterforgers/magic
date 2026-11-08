@@ -20,6 +20,7 @@ use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
 use crate::events::{DeathCause, Event, ZoneCause};
 use crate::fixtures::{creature, state};
+use crate::library::Scried;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -336,6 +337,7 @@ fn life_gained_is_counted_for_each_event(
 #[case::counters_put(r#"{"CountersPut":{"what":[]}}"#, "put", 2)]
 #[case::counters_removed(r#"{"CountersRemoved":{"what":[]}}"#, "removed", 2)]
 #[case::attackers(r#"{"GroupAttacks":{"what":[]}}"#, "attack", 2)]
+#[case::scried(r#"{"Did":{"action":"Scried","who":"You"}}"#, "scry", 3)]
 fn the_cause_carries_the_amount_of_the_event(
     #[case] when: &str,
     #[case] what: &str,
@@ -361,6 +363,11 @@ fn the_cause_carries_the_amount_of_the_event(
         },
         "put" => counters(2),
         "removed" => counters(-2),
+        "scry" => Event::Scried(Scried {
+            player: ME,
+            top: vec![id(&pre, "Bear")],
+            bottom: vec![id(&pre, "Watcher"), id(&pre, "Bear")],
+        }),
         _ => Event::AttackersDeclared {
             player: ME,
             attackers: vec![

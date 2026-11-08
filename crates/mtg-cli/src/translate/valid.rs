@@ -783,6 +783,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Self" | "Card.Self" => Ok(json!("This")),
         "EffectSource" | "Card.EffectSource" if ctx.effect_source => Ok(json!("This")),
         "Sacrificed" | "Discarded" => Ok(json!("Paid")),
+        "Tapped" if tapped_alone(ctx.oracle) => Ok(json!("Paid")),
         "Convoked" => Ok(json!("Convoked")),
         "Exiled" => super::cost::exiled_paid(ctx, "defined"),
         // The cards this permanent exiled and that are still in exile.
@@ -1218,4 +1219,16 @@ pub(super) fn chosen_player(ctx: &Ctx, gap: &str) -> Tr<Value> {
         return Ok(json!("Chosen"));
     }
     unmapped(gap)
+}
+
+/// Whether the card's only cost that picks permanents is tapping one ("Tap an untapped creature you control"), so the
+/// permanent paid is the one tapped.
+pub(super) fn tapped_alone(oracle: &str) -> bool {
+    let lower = oracle.to_lowercase();
+    lower.matches("tap an untapped ").count() + lower.matches("tap another untapped ").count() == 1
+        && !lower.contains("sacrifice")
+        && !lower.contains("discard")
+        && !lower.contains("exile a")
+        && !lower.contains("reveal")
+        && !lower.contains("return")
 }

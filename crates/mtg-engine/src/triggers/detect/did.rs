@@ -24,6 +24,7 @@ const fn did(action: Action, player: Option<PlayerId>, object: Option<ObjectId>)
         player,
         object,
         ability: None,
+        amount: 0,
     }
 }
 
@@ -107,6 +108,7 @@ pub(super) fn did_happened(
                     player: Some(*player),
                     object: Some(source.id),
                     ability: on_stack,
+                    amount: 0,
                 });
                 if rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. })) {
                     found.push(Happened::Did {
@@ -114,6 +116,7 @@ pub(super) fn did_happened(
                         player: Some(*player),
                         object: Some(source.id),
                         ability: on_stack,
+                        amount: 0,
                     });
                 }
             }
@@ -131,7 +134,13 @@ pub(super) fn did_happened(
         Event::Unattached { object } => found.push(of(Action::Unattached, *object)),
         Event::Paired { object, .. } => found.push(of(Action::Paired, *object)),
         Event::Regenerated { object } => found.push(of(Action::Regenerated, *object)),
-        Event::Scried(scried) => found.push(did(Action::Scried, Some(scried.player), None)),
+        Event::Scried(scried) => found.push(Happened::Did {
+            action: Action::Scried,
+            player: Some(scried.player),
+            object: None,
+            ability: None,
+            amount: u32::try_from(scried.top.len() + scried.bottom.len()).unwrap_or(u32::MAX),
+        }),
         Event::Surveilled(surveilled) => {
             found.push(did(Action::Surveilled, Some(surveilled.player), None));
         }
@@ -241,6 +250,7 @@ pub(super) fn matching_did(
             player,
             object,
             ability,
+            amount,
         },
     ) = (pattern, happened)
     else {
@@ -265,7 +275,7 @@ pub(super) fn matching_did(
         .map(|player| Target::Player(*player))
         .collect();
     subjects.extend(reference.map(Target::Object));
-    let mut cause = counted(state, subjects, 0);
+    let mut cause = counted(state, subjects, *amount);
     // "Copy that ability": the ability activated did it (`Ref::Dealer`), as the spell or ability that targets does.
     cause.source = ability.and_then(|id| state.object(id).map(GameObject::reference));
     Some(cause)
