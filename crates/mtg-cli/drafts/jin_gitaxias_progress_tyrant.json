@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f5daadc1-98ff-480a-82bb-fe7bfaa7b60e",
+  "name": "Jin-Gitaxias, Progress Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jin-Gitaxias, Progress Tyrant",
+      "oracle_fingerprint": "e85466a021d9173a417ceaa6d9462bb0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Type": "Artifact" }]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Type": "Artifact" }]
+                  }
+                ],
+                "by": "Opponents"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Counter": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

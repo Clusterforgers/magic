@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d44b7b43-4674-47cd-b346-7db93a14b74c",
+  "name": "New Master of Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "New Master of Arms",
+      "oracle_fingerprint": "de575682667fd9020e9ea3c67cace54c",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": [{ "Type": "Creature" }, "Blocking", "Tapped"], "combat": true }
+            },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Blocks": "This" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

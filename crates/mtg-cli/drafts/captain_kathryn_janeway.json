@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d77d1895-ce02-4302-87c9-649e852fd0ea",
+  "name": "Captain Kathryn Janeway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Kathryn Janeway",
+      "oracle_fingerprint": "20d974871d857d612a8a363cc0415e1d",
+      "abilities": [
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Explore": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

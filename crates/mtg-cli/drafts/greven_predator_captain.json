@@ -1,0 +1,73 @@
+{
+  "oracle_id": "b22f4797-c74f-4d95-9528-c16c2bc4c05b",
+  "name": "Greven, Predator Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greven, Predator Captain",
+      "oracle_fingerprint": "b21da8000853a0cd684ada423c79d298",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Draw": {
+                              "count": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                              }
+                            }
+                          },
+                          {
+                            "LoseLife": {
+                              "amount": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Toughness" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

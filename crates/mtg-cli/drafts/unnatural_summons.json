@@ -1,0 +1,34 @@
+{
+  "oracle_id": "831954c6-a16d-47bc-80f8-831003521095",
+  "name": "Unnatural Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnatural Summons",
+      "oracle_fingerprint": "589ebbd00cd4c03087d0e3af62cd166d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "When": { "condition": { "StartingPlayer": "You" }, "then": 0, "otherwise": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
