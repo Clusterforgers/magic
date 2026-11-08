@@ -414,21 +414,6 @@ const ZONES: [&str; 6] = [
     "Stack",
 ];
 
-/// The key an `Imprint*` key reads as when a verb binds what it moved: the verb remembers, and the line imprints.
-const IMPRINT_AS: [(&str, &str, &str); 11] = [
-    ("Token", "ImprintTokens", "RememberTokens"),
-    ("CopyPermanent", "ImprintTokens", "RememberTokens"),
-    ("ChooseCard", "ImprintChosen", "RememberChosen"),
-    ("ChangeZone", "Imprint", "RememberChanged"),
-    ("ChangeZoneAll", "Imprint", "RememberChanged"),
-    ("Dig", "Imprint", "RememberChanged"),
-    ("DigUntil", "ImprintFound", "RememberFound"),
-    ("DigUntil", "ImprintRevealed", "RememberRevealed"),
-    ("PeekAndReveal", "ImprintRevealed", "RememberRevealed"),
-    ("Reveal", "ImprintRevealed", "RememberRevealed"),
-    ("Mill", "Imprint", "RememberMilled"),
-];
-
 /// The objects a memory holds, as the base of a valid-string reads them (`Remembered.sameName`).
 pub fn held_objects(ctx: &Ctx, slot: Slot) -> Tr<Value> {
     let held = match slot {
@@ -444,19 +429,6 @@ pub fn held_objects(ctx: &Ctx, slot: Slot) -> Tr<Value> {
     held.filter(|held| !player(held))
         .map_or_else(|| unmapped(format!("valid-base:{}", slot.word())), Ok)
 }
-
-/// The keys that remember the objects the line acts on (its target or `Defined$`), for verbs that cannot fail to act.
-const ACTED_ON: [(&str, &str); 9] = [
-    ("DealDamage", "RememberDamaged"),
-    ("PutCounter", "RememberPut"),
-    ("PutCounter", "RememberCards"),
-    ("Tap", "RememberTapped"),
-    ("GainControl", "RememberControlled"),
-    ("Pump", "RememberPumped"),
-    ("Goad", "RememberGoaded"),
-    ("Animate", "RememberAnimated"),
-    ("Phases", "RememberAffected"),
-];
 
 /// One line of an ability. `run` maps the verb. The `Remember*`/`Imprint*` keys bind what the verb acted on to the
 /// slot; a card that reads the slot on another line also gets an `Effect::Remember` for it.
@@ -500,16 +472,13 @@ pub fn line(
     let mut acted: Vec<Slot> = Vec::new();
     let mut moved: Vec<Slot> = Vec::new();
     for (key, slot) in keys.iter().filter(|_| !super::e17b_memory::splits(api, p)) {
-        if let Some(&(_, _, own)) = IMPRINT_AS
-            .iter()
-            .find(|(verb, imprint, _)| *verb == api && imprint == key)
-        {
+        if let Some(own) = super::remember::imprint_as(api, key) {
             if keys.iter().any(|(other, _)| other == own) {
                 return unmapped(format!("key:{api}.{key}-with-{own}"));
             }
             line = rename(&line, key, own);
             moved.push(*slot);
-        } else if ACTED_ON.contains(&(api, key.as_str())) && !p.has("CardChoices") {
+        } else if super::remember::acts_on(api, key) && !p.has("CardChoices") {
             // Damage divided or dealt to several targets names the ones that got some; one object is bound here.
             if p.has("DividedAsYouChoose") || p.has("TargetMax") {
                 return unmapped(format!("key:{api}.{key}-with-several-objects"));
@@ -592,11 +561,12 @@ fn imprint_cards(
         return Ok(effects);
     }
     let what = match word {
-        "Self" | "Remembered" | "Imprinted" | "Targeted" | "ParentTarget" | "Enchanted"
-        | "ChosenCard" | "TriggeredCard" | "TriggeredSource" | "TriggeredAttacker" => {
+        "ChosenCard" | "TriggeredCard" | "TriggeredSource" | "TriggeredAttacker" => {
             defined(ctx, word)?
         }
-        other => return unmapped(format!("key:{api}.ImprintCards={other}")),
+        word => super::refs::read_or(ctx, word, super::refs::Scope::Imprint, || {
+            format!("key:{api}.ImprintCards={word}")
+        })?,
     };
     let before = ctx.imprinted.clone();
     set(ctx, Slot::Imprinted, Some(what.clone()));

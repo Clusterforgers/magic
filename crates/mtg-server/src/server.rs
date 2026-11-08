@@ -28,7 +28,9 @@ use crate::config::ServerConfig;
 use crate::images::{self, Images};
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, reads, ws};
+use crate::{
+    api, bulk_reads, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, reads, ws,
+};
 
 struct Inner {
     config: ServerConfig,
@@ -252,6 +254,20 @@ impl Server {
     }
 }
 
+/// The read routes: a deck's queue, one card's draft and verdict, and the bulk approval of wording-only drafts.
+fn read_routes() -> Router<AppState> {
+    Router::new()
+        .route("/api/reads", get(reads::list))
+        .route(
+            "/api/reads/bulk",
+            get(bulk_reads::list).put(bulk_reads::approve),
+        )
+        .route(
+            "/api/reads/{oracle_id}",
+            get(reads::get_one).put(reads::put),
+        )
+}
+
 /// The account routes: signing in and out, the settings of the signed-in account and the admin's.
 fn account_routes() -> Router<AppState> {
     Router::new()
@@ -327,11 +343,7 @@ pub(crate) fn router(state: AppState) -> Router {
             "/api/fix-marks/{oracle_id}",
             put(fix_marks::put).delete(fix_marks::remove),
         )
-        .route("/api/reads", get(reads::list))
-        .route(
-            "/api/reads/{oracle_id}",
-            get(reads::get_one).put(reads::put),
-        )
+        .merge(read_routes())
         .route("/api/precons", get(precon_api::list))
         .route("/api/precons/{code}", get(precon_api::get_one))
         .route("/api/games", post(api::create_game))

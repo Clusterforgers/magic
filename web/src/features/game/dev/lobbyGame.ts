@@ -75,6 +75,7 @@ const counts = (over: Partial<Counts>): Counts => ({
   verified: 60,
   read: 0,
   forge: 0,
+  unverified: 0,
   partial: 0,
   manual: 0,
   stale: 0,

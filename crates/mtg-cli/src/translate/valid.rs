@@ -71,7 +71,7 @@ fn triggered_object(prop: &str) -> bool {
 }
 
 /// The predicates a property of a valid-string stands for.
-fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
+pub(super) fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     let one = |value: Value| Ok(vec![value]);
     match prop {
         // Teams do not exist at our tables: a player's team is the player.
@@ -174,8 +174,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     if prop.chars().next().is_some_and(char::is_uppercase) && ctx.world.subtypes.contains(prop) {
         return one(json!({"Subtype": prop}));
     }
-    super::filter::atom(ctx, ctx.scope.get(), prop)
-        .unwrap_or_else(|| unmapped(format!("valid:{prop}")))
+    super::valid_grammar::rest(ctx, prop)
 }
 
 /// A keyword with a parameter (`withToxic`, `withoutForetell`): has it, or lacks it, at any value.
@@ -288,6 +287,9 @@ fn base(ctx: &Ctx, word: &str) -> Tr<Vec<Value>> {
     match word {
         "Permanent" | "Card" | "card" | "Any" => Ok(Vec::new()),
         "Spell" => Ok(vec![json!("Spell")]),
+        "Self" => Ok(vec![json!("This")]),
+        // A word for a group of types reads as the property of the same name (`Affinity:Historic`).
+        "Historic" | "Outlaw" | "Party" => property(ctx, word),
         _ if ctx.world.subtypes.contains(word) => Ok(vec![json!({"Subtype": word})]),
         _ => super::filter::base(word).map_or_else(|| unmapped(format!("valid-base:{word}")), Ok),
     }
@@ -328,9 +330,14 @@ pub(super) fn split_properties(props: &str) -> Vec<String> {
                 last.push_str(part);
             }
             _ => {
-                greedy = ["AttachedTo ", "EnchantedBy ", "EquippedBy "]
-                    .iter()
-                    .any(|head| part.strip_prefix(head).is_some_and(|arg| arg.contains('.')));
+                greedy = [
+                    "AttachedTo ",
+                    "EnchantedBy ",
+                    "EquippedBy ",
+                    "SharesColorWith ",
+                ]
+                .iter()
+                .any(|head| part.strip_prefix(head).is_some_and(|arg| arg.contains('.')));
                 out.push(part.to_owned());
             }
         }
@@ -350,6 +357,10 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let mut gaps = super::filter::Unknowns::default();
     let (mut preds, props) = if matches!(head, "Targeted" | "TargetedCard") {
         targeted_base(&objects(ctx.last_target()?)?, props)
+    } else if head == "Triggered" && ctx.trigger.is_some() {
+        // `Triggered.sameName`: the trigger's object, as `Targeted.sameName` is the target's.
+        let object = super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?;
+        targeted_base(&objects(object)?, props)
     } else if let Some(slot) = memory_head(head) {
         targeted_base(&objects(super::memory::held_objects(ctx, slot)?)?, props)
     } else {
@@ -486,7 +497,7 @@ pub fn source_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
 /// one each (`Instant.YouCtrl,Sorcery.YouCtrl`, `Creature.attacking,Creature.blocking`).
 pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let spec = &commas(spec);
-    let alternatives: Vec<&str> = spec.split(',').collect();
+    let alternatives = super::filter::alternatives(spec);
     if let [only] = alternatives.as_slice() {
         return selector(ctx, only);
     }
@@ -744,7 +755,17 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     if let Some((first, second)) = word.trim().split_once(" & ")
         && !second.contains(" & ")
         && [first, second].iter().all(|part| {
-            super::triggered::is_word(part) || matches!(part.trim(), "Self" | "Targeted")
+            super::triggered::is_word(part)
+                || part.trim().starts_with("Valid ")
+                || matches!(
+                    part.trim(),
+                    "Self"
+                        | "Targeted"
+                        | "ThisTargetedCard"
+                        | "Enchanted"
+                        | "Equipped"
+                        | "ExiledWith"
+                )
         })
     {
         let (first, second) = (defined(ctx, first)?, defined(ctx, second)?);
@@ -792,53 +813,28 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         each.extend(targeting);
         return Ok(json!({ "Each": each }));
     }
-    let controller = |inner: Value| Ok(json!({ "ControllerOf": inner }));
+    if let Some(held) = ctx.delayed_remembered.clone().filter(|_| {
+        matches!(
+            word.trim(),
+            "DelayTriggerRemembered" | "DelayTriggerRememberedLKI" | "DelayedTriggerRemembered"
+        )
+    }) {
+        return Ok(held);
+    }
+    if let Some(reference) = super::refs::read(ctx, word, super::refs::Scope::Now) {
+        return reference;
+    }
     match word.trim() {
-        "You" => Ok(json!("You")),
-        // Teams do not exist at our tables: the other players are the opponents.
-        "Opponent" | "Player.Opponent" | "Player.Other" => Ok(json!("Opponents")),
-        "Player" => Ok(json!("EachPlayer")),
-        "Self" | "Card.Self" => Ok(json!("This")),
         "EffectSource" | "Card.EffectSource" if ctx.effect_source => Ok(json!("This")),
-        "Sacrificed" | "Discarded" => Ok(json!("Paid")),
         "Tapped" if tapped_alone(ctx.oracle) => Ok(json!("Paid")),
-        "Convoked" => Ok(json!("Convoked")),
         "Exiled" => super::cost::exiled_paid(ctx, "defined"),
-        // The cards this permanent exiled and that are still in exile.
-        "ExiledWith" => Ok(json!({"Each": [{"ExiledWith": "This"}, {"In": "Exile"}]})),
-        "TopOfLibrary" => {
-            Ok(json!({"Each": [{"In": "Library"}, {"OwnedBy": "You"}, "TopOfLibrary"]}))
-        }
-        "Targeted" | "TargetedPlayer" | "TargetedCard" | "ThisTargetedCard" => ctx.last_target(),
-        "ParentTarget" => ctx.parent(),
-        "TargetedController" => controller(ctx.last_target()?),
-        "TargetedOrController" => Ok(json!({"OrController": ctx.last_target()?})),
-        "TargetedOwner" => Ok(json!({ "OwnerOf": ctx.last_target()? })),
-        "RememberedOwner" => Ok(json!({ "OwnerOf": super::memory::remembered(ctx)? })),
-        "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "OriginalHost" if ctx.granted => Ok(json!("Granter")),
-        "EnchantedController" | "EquippedController" => controller(json!("Attached")),
-        "EnchantedPlayer" | "Player.EnchantedBy" => Ok(json!("AttachedPlayer")),
         "ChosenCard" => ctx.chosen_card.as_ref().map_or_else(
             || unmapped("defined:ChosenCard-without-a-choice"),
             |name| Ok(json!({"Bound": name})),
         ),
         "ChosenPlayer" => chosen_player(ctx, "defined:ChosenCard-without-a-choice"),
         "Player.Chosen" => chosen_player(ctx, "defined:Player.Chosen"),
-        "RememberedController" => super::memory::remembered_controller(ctx),
-        "ImprintedController" => super::memory::imprinted_controller(ctx),
-        "DelayTriggerRemembered" | "DelayTriggerRememberedLKI" | "DelayedTriggerRemembered"
-            if ctx.delayed_remembered.is_some() =>
-        {
-            Ok(ctx.delayed_remembered.clone().unwrap_or_default())
-        }
-        "DelayTriggerRemembered"
-        | "DelayTriggerRememberedLKI"
-        | "DelayedTriggerRemembered"
-        | "RememberedLKI"
-        | "RememberedCard"
-        | "DirectRemembered"
-        | "Remembered" => super::memory::remembered(ctx),
         "Player.IsRemembered" => {
             let held = super::memory::remembered(ctx)?;
             if super::memory::mixes_the_player(ctx, &held) {
@@ -849,10 +845,7 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         word if super::triggered::is_word(word) => {
             super::triggered::resolve(ctx.trigger.as_ref(), word)
         }
-        "DefendingPlayer" | "TriggeredDefendingPlayer" | "Spawner>TriggeredDefendingPlayer" => {
-            Ok(json!("Defending"))
-        }
-        other => super::valid_more::defined_word(ctx, other),
+        other => super::valid_more::defined_word(other),
     }
 }
 

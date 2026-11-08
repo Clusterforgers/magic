@@ -32,6 +32,7 @@ use uuid::Uuid;
 
 use crate::images::{Images, Warmer};
 use crate::precons::{PreconCache, PreconError, PreconIndex};
+use crate::reads::PendingReads;
 use crate::recipe::{Catalog, GameRecipe};
 
 /// Why the cards of a deck could not be had.
@@ -236,10 +237,13 @@ pub struct CardSource {
     caps: Caps,
     names: Arc<NameIndex>,
     precons: Arc<PreconCache>,
+    pending: Arc<PendingReads>,
     stored: Arc<StoredRules>,
     images: Option<Images>,
     #[cfg(test)]
     gate: Option<Arc<tests::BuildGate>>,
+    #[cfg(test)]
+    precon_gate: Option<Arc<tests::BuildGate>>,
 }
 
 /// The library of the hand-written rules and the rows of `card_rules`, built when the rows change, and the same with
@@ -262,7 +266,7 @@ struct Built {
 }
 
 /// Runs CPU-heavy `work` on the blocking pool, so the runtime's workers keep serving meanwhile.
-async fn off_runtime<T: Send + 'static>(
+pub(crate) async fn off_runtime<T: Send + 'static>(
     work: impl FnOnce() -> T + Send + 'static,
 ) -> Result<T, CatalogError> {
     tokio::task::spawn_blocking(work)
@@ -312,10 +316,13 @@ impl CardSource {
             caps: mtg_engine::caps(),
             names: Arc::default(),
             precons: Arc::default(),
+            pending: Arc::default(),
             stored: Arc::default(),
             images: None,
             #[cfg(test)]
             gate: None,
+            #[cfg(test)]
+            precon_gate: None,
         }
     }
 
@@ -345,6 +352,7 @@ impl CardSource {
         // What the library and the index hold was built from the old rules.
         self.stored = Arc::default();
         self.precons = Arc::default();
+        self.pending = Arc::default();
         self
     }
 
@@ -353,6 +361,7 @@ impl CardSource {
     pub fn with_caps(mut self, caps: Caps) -> CardSource {
         self.caps = caps;
         self.precons = Arc::default();
+        self.pending = Arc::default();
         self
     }
 
@@ -410,7 +419,10 @@ impl CardSource {
             Some((_, held_drafts, full)) if held_drafts.as_ref() == Some(&drafts) => {
                 (full, Some(drafts.clone()))
             }
-            _ => match self.with_current_drafts(base.clone()).await {
+            previous => match self
+                .with_current_drafts(base.clone(), previous.map(|(_, _, full)| full))
+                .await
+            {
                 Some(library) => (Arc::new(library), Some(drafts.clone())),
                 // Served this once, never cached as current.
                 None => (base.clone(), None),
@@ -472,8 +484,14 @@ impl CardSource {
         Ok(library)
     }
 
-    /// `base` with the current drafts and the state of their reads; none if they cannot be read.
-    async fn with_current_drafts(&self, base: Arc<Library>) -> Option<Library> {
+    /// `base` with the current drafts and the state of their reads; none if they cannot be read. What `previous`, a
+    /// library over the same base, decided of a card whose draft and verdicts did not change is taken over, so a
+    /// verdict makes the card endpoints, the deck checks and the precon index decide only the cards it changed.
+    async fn with_current_drafts(
+        &self,
+        base: Arc<Library>,
+        previous: Option<Arc<Library>>,
+    ) -> Option<Library> {
         let rows = match self.current_drafts().await {
             Ok(rows) => rows,
             Err(error) => {
@@ -482,7 +500,14 @@ impl CardSource {
             }
         };
         let started = Instant::now();
-        let (library, left_out) = match off_runtime(move || base.with_drafts(&rows)).await {
+        let built = off_runtime(move || {
+            let (library, left_out) = base.with_drafts(&rows);
+            if let Some(previous) = previous {
+                library.inherit_decisions(&previous);
+            }
+            (library, left_out)
+        });
+        let (library, left_out) = match built.await {
             Ok(built) => built,
             Err(error) => {
                 tracing::warn!(%error, "the drafts could not be added");
@@ -496,12 +521,19 @@ impl CardSource {
         Some(library)
     }
 
-    /// Builds the library once, so the first request does not wait for it; a failure is logged and a later
-    /// request tries again.
+    /// Builds the library and then the precon index once, so the first request does not wait for them and the
+    /// precons' cards are decided before a deck list asks for them; a failure is logged and a later request tries
+    /// again.
     pub(crate) async fn warm(&self) {
         match self.layers().await {
             Ok(_) => tracing::info!("card library warmed"),
-            Err(error) => tracing::warn!(%error, "the card library could not be warmed"),
+            Err(error) => {
+                tracing::warn!(%error, "the card library could not be warmed");
+                return;
+            }
+        }
+        if let Err(error) = self.precon_index().await {
+            tracing::warn!(%error, "the precon index could not be warmed");
         }
     }
 
@@ -530,7 +562,7 @@ impl CardSource {
     }
 
     /// The library a game that pinned `reads` builds with: the hand-written and compiled rules and exactly those
-    /// drafts, each as read and found correct whatever the verdicts are now.
+    /// drafts, each running whatever the verdicts are now, labelled `Read` or `Forge` once approved, else `Unverified`.
     async fn pinned_library(&self, reads: &Reads) -> Result<Arc<Library>, CatalogError> {
         let base = self.base_library().await?;
         let keys: Vec<DraftKey> = reads
@@ -558,14 +590,33 @@ impl CardSource {
         if !missing.is_empty() {
             return Err(CatalogError::NotFound { ids: missing });
         }
+        // Only the label follows today's verdicts: a whole draft runs pending or approved alike, and a partial one runs
+        // only approved, so it always pins as such. A whole draft nobody approved shows as Unverified.
+        let current = self.library().await.ok().map(|(library, _)| library);
         let rows: Vec<DraftRules> = stored
             .into_iter()
             .map(|draft| {
                 let forge = is_trusted_forge(&draft);
-                draft_rules(draft, mtg_db::ReadState::Approved, forge)
+                let approved = draft.proof.is_some()
+                    || current
+                        .as_ref()
+                        .and_then(|library| library.draft(draft.oracle_id.as_str()))
+                        .filter(|now| now.read_hash == draft.read_hash)
+                        .map_or(forge, |now| now.read == ReadState::Approved);
+                let read = if approved {
+                    mtg_db::ReadState::Approved
+                } else {
+                    mtg_db::ReadState::Pending
+                };
+                draft_rules(draft, read, forge)
             })
             .collect();
-        let (library, left_out) = off_runtime(move || base.with_drafts(&rows)).await?;
+        let (library, left_out) = off_runtime(move || {
+            let (library, left_out) = base.with_drafts(&rows);
+            library.inherit_decisions(&base);
+            (library, left_out)
+        })
+        .await?;
         for error in &left_out {
             tracing::warn!(%error, "pinned draft left out");
         }
@@ -607,6 +658,12 @@ impl CardSource {
 
     /// The index of every stored precon with its deck check, kept until the precons, the cards or
     /// the printings change (`precons.rs`).
+    /// The cards waiting for a first read, kept until the stored rules, the drafts, the verdicts or the cards change
+    /// (`reads.rs`).
+    pub(crate) fn pending_reads(&self) -> &PendingReads {
+        &self.pending
+    }
+
     pub(crate) async fn precon_index(&self) -> Result<Arc<PreconIndex>, PreconError> {
         self.precons.index(self).await
     }
@@ -784,8 +841,8 @@ impl CardSource {
     }
 
     /// The definitions a recipe needs, built as the game was created: a recipe that pinned reads gets exactly those
-    /// drafts as approved, one that pinned none gets no draft. A recipe with no deck of oracle ids needs none and
-    /// does not touch the database, so games with demo decks resume on a server whose database has no cards.
+    /// drafts, running whatever the verdicts are now, one that pinned none gets no draft. A recipe with no deck of
+    /// oracle ids needs none and does not touch the database, so games with demo decks resume on a server whose database has no cards.
     pub async fn catalog_for(&self, recipe: &GameRecipe) -> Result<Catalog, CatalogError> {
         let ids = recipe.oracle_ids();
         if ids.is_empty() {
@@ -816,7 +873,7 @@ fn catalog_of(assembled: BTreeMap<String, Assembled>) -> Catalog {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     //! Goal: a card the server reads for a game names its oracle id on the card and on each face, and keeps its deck fingerprint; building the rules library leaves the runtime serving, and one build serves every caller.
     #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -1025,26 +1082,49 @@ mod tests {
 
     /// Holds the compiled-rules build until the test opens it, and tells when a build reached it.
     #[derive(Debug, Default)]
-    pub(super) struct BuildGate {
-        reached: tokio::sync::Notify,
-        passes: std::sync::atomic::AtomicUsize,
+    pub(crate) struct BuildGate {
+        pub(crate) reached: tokio::sync::Notify,
+        pub(crate) passes: std::sync::atomic::AtomicUsize,
         open: std::sync::Mutex<bool>,
         opened: std::sync::Condvar,
-        timed_out: std::sync::atomic::AtomicBool,
+        pub(crate) timed_out: std::sync::atomic::AtomicBool,
     }
 
     impl BuildGate {
-        fn open(&self) {
+        /// Lets every build that waits, and every later one, through.
+        pub(crate) fn open(&self) {
             *self.open.lock().unwrap() = true;
             self.opened.notify_all();
         }
     }
 
     impl CardSource {
-        /// Waits at the gate, if any; a build on the runtime's only worker would starve the test, so the wait
-        /// ends after a while and says so.
+        /// Waits at the gate of the compiled-rules build, if any.
         pub(super) fn pass_gate(&self) {
-            let Some(gate) = &self.gate else { return };
+            if let Some(gate) = &self.gate {
+                gate.pass();
+            }
+        }
+
+        /// The same source whose precon index builds wait at `gate`; it shares the caches of `self`.
+        pub(crate) fn with_precon_gate(mut self, gate: Arc<BuildGate>) -> CardSource {
+            self.precon_gate = Some(gate);
+            self
+        }
+
+        /// Waits at the gate of the precon index build, if any.
+        pub(crate) fn pass_precon_gate(&self) {
+            if let Some(gate) = &self.precon_gate {
+                gate.pass();
+            }
+        }
+    }
+
+    impl BuildGate {
+        /// Waits until the gate is open; a build on the runtime's only worker would starve the test, so the wait
+        /// ends after a while and says so.
+        fn pass(&self) {
+            let gate = self;
             gate.passes
                 .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
             gate.reached.notify_one();

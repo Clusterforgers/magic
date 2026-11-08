@@ -3,7 +3,8 @@
  * the search and filters over them. Pure, so the rows' words and the filters are tested without a page.
  */
 import { BY_HAND, byHandCopies, cardsByHand } from '@/lib/byHand'
-import { RUNS_ON_READS } from '@/lib/toRead'
+import { runsBreakdown, WHOLE_DECK_RUNS } from '@/lib/toRead'
+import type { ReadTarget } from '@/lib/toRead'
 import { cardsText } from '@/features/decks/format'
 import type { DeckInfo } from '@/net/api'
 import type { Counts, DeckListItem, DeckPicture, DeckState, PreconListItem } from '@/protocol/generated'
@@ -134,6 +135,13 @@ const COLOUR_LETTER: Record<DeckInfo['color'], string> = {
   Green: 'G',
 }
 
+/** The review screen of a row: a stored deck by id, a precon by code; none for a built-in deck, which has no drafts. */
+export function readTargetOf(entry: Pick<DeckEntry, 'id' | 'kind'>): ReadTarget | undefined {
+  if (entry.kind === 'own') return { deck: entry.id }
+  if (entry.kind === 'precon') return { precon: entry.id.slice('precon:'.length) }
+  return undefined
+}
+
 /** A built-in deck as a row: a Normal deck the whole game runs. */
 export function entryOfBuiltIn(deck: DeckInfo): DeckEntry {
   return {
@@ -164,11 +172,11 @@ export function entryFacts(entry: DeckEntry): string {
     .join(' · ')
 }
 
-/** The chip of a row: "Whole deck runs", "Runs on reads", "9 played by hand", "Cannot be taken" or "Not checked yet". */
+/** The chip of a row: "Whole deck runs" (Verified or not), "9 played by hand", "Cannot be taken" or "Not checked yet". */
 export function entrySupport(entry: DeckEntry): { state: DeckState; label: string } {
   if (entry.state === 'blocked') return { state: 'blocked', label: 'Cannot be taken' }
   if (entry.state === 'unchecked') return { state: 'unchecked', label: 'Not checked yet' }
-  if (entry.state === 'read') return { state: 'read', label: RUNS_ON_READS }
+  if (entry.state === 'read') return { state: 'read', label: WHOLE_DECK_RUNS }
   if (entry.state === 'verified' && entry.byHand === 0) return { state: 'verified', label: 'Whole deck runs' }
   return { state: 'manual_play', label: `${entry.byHand} ${BY_HAND}` }
 }
@@ -242,10 +250,12 @@ export function sortEntries(entries: readonly DeckEntry[], sort: SortKey): DeckE
 }
 
 /**
- * The count of cards played by hand in plain words, for a row whose chip does not say it ("Runs on reads", "Cannot be
- * taken", "Not checked yet"); null where the chip already does, or where the game runs the whole deck.
+ * The quiet line beside a row's chip: for a deck that runs whole without being all Verified, its other copies by tier
+ * ("34 from Forge · 120 unverified · 2 read"); for a row whose chip does not count them ("Cannot be taken", "Not checked
+ * yet"), the cards played by hand; null where the chip already says it all.
  */
 export function handWords(entry: DeckEntry, always: boolean): string | null {
   if (entry.counts === null || entry.state === 'verified' || entry.state === 'manual_play') return null
+  if (entry.state === 'read') return runsBreakdown(entry.counts) || null
   return entry.byHand > 0 || always ? cardsByHand(entry.byHand) : null
 }

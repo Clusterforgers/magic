@@ -1,4 +1,4 @@
-//! Goal: a draft counts as `Read` only when a player approved the exact rules and text, by the precedence of the Read tier (a rules file, a Verified compiled row, an approved draft, any other compiled row, nothing), the hash of a read moves with the text and the draft, `Read` is counted apart in a deck and on the wire, and no Verified number of the corpus changes.
+//! Goal: a draft counts as `Read` only when a player approved the exact rules and text and as `Unverified` while it waits for that read, by the precedence of the Read tier (a rules file, a Verified compiled row, a running draft, any other compiled row, nothing), the hash of a read moves with the text and the draft, `Read` and `Unverified` are counted apart in a deck and on the wire, and no Verified number of the corpus changes.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -166,13 +166,13 @@ fn with_draft(library: &Library, draft: Draft, shown: &PrintedCard) -> Library {
 
 #[rstest]
 #[case::nothing_and_no_draft(Rules::Nothing, Draft::None, Support::Manual)]
-#[case::nothing_and_a_pending_draft(Rules::Nothing, Draft::Pending, Support::Manual)]
+#[case::nothing_and_a_pending_draft(Rules::Nothing, Draft::Pending, Support::Unverified)]
 #[case::nothing_and_an_approved_draft(Rules::Nothing, Draft::Approved, Support::Read)]
 #[case::nothing_and_a_wrong_draft(Rules::Nothing, Draft::Wrong, Support::Manual)]
 #[case::nothing_and_a_read_before_an_edit(
     Rules::Nothing,
     Draft::ApprovedBeforeAnEdit,
-    Support::Manual
+    Support::Unverified
 )]
 #[case::a_whole_file_outranks_a_draft(
     Rules::File(Shape::Whole),
@@ -210,30 +210,30 @@ fn with_draft(library: &Library, draft: Draft, shown: &PrintedCard) -> Library {
     Draft::Approved,
     Support::Read
 )]
-#[case::a_pending_draft_leaves_a_partial_row(
+#[case::a_pending_draft_outranks_a_partial_row(
     Rules::Compiled(Shape::Partial),
     Draft::Pending,
-    Support::Partial
+    Support::Unverified
 )]
 #[case::a_wrong_draft_leaves_a_partial_row(
     Rules::Compiled(Shape::Partial),
     Draft::Wrong,
     Support::Partial
 )]
-#[case::an_old_read_leaves_a_partial_row(
+#[case::an_old_read_outranks_a_partial_row_unverified(
     Rules::Compiled(Shape::Partial),
     Draft::ApprovedBeforeAnEdit,
-    Support::Partial
+    Support::Unverified
 )]
-#[case::a_pending_draft_leaves_a_manual_row(
+#[case::a_pending_draft_outranks_a_manual_row(
     Rules::Compiled(Shape::Manual),
     Draft::Pending,
-    Support::Manual
+    Support::Unverified
 )]
-#[case::a_pending_draft_leaves_a_stale_row(
+#[case::a_pending_draft_outranks_a_stale_row(
     Rules::Compiled(Shape::Stale),
     Draft::Pending,
-    Support::Stale
+    Support::Unverified
 )]
 fn the_precedence_decides_the_support_of_a_card(
     #[case] rules: Rules,
@@ -250,8 +250,9 @@ fn the_precedence_decides_the_support_of_a_card(
 
     assert_eq!(record.support, expected);
     assert_eq!(assembled.support, record);
-    assert_eq!(assembled.definition.read, expected == Support::Read);
-    if expected == Support::Read {
+    let runs = matches!(expected, Support::Read | Support::Unverified);
+    assert_eq!(assembled.definition.read, runs);
+    if runs {
         assert_eq!(record.clauses, vec![]);
         assert_eq!(assembled.definition.manual, vec![]);
         assert_eq!(
@@ -356,7 +357,7 @@ fn after_an_erratum(shown: &PrintedCard) -> PrintedCard {
 }
 
 #[rstest]
-#[case::nobody_read_it(ReadState::Pending, false, ReadState::Pending, Support::Manual)]
+#[case::nobody_read_it(ReadState::Pending, false, ReadState::Pending, Support::Unverified)]
 #[case::a_player_approved_it(ReadState::Approved, false, ReadState::Approved, Support::Read)]
 #[case::a_player_found_it_wrong(ReadState::Wrong, false, ReadState::Wrong, Support::Manual)]
 #[case::the_text_changed_after_the_approval(
@@ -692,9 +693,10 @@ fn a_deck_counts_the_copies_of_read_cards_apart_and_is_not_verified_by_them() {
         (
             on_a_pending.verified,
             on_a_pending.read,
+            on_a_pending.unverified,
             on_a_pending.manual
         ),
-        (20, 0, 6)
+        (20, 0, 6, 0)
     );
     let on_a_file = counts(&verified);
     assert_eq!((on_a_file.verified, on_a_file.read), (26, 0));

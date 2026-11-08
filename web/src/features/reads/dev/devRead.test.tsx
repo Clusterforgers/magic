@@ -33,7 +33,7 @@ describe('parseDevReadSearch', () => {
   })
 
   it('knows every view the route draws', () => {
-    expect(DEV_READ_VIEWS).toEqual(['deck', 'precon', 'done', 'loading', 'error', 'stale', 'dialog'])
+    expect(DEV_READ_VIEWS).toEqual(['deck', 'precon', 'all', 'done', 'loading', 'error', 'stale', 'dialog'])
   })
 })
 

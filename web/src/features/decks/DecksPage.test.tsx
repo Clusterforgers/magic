@@ -151,7 +151,7 @@ describe('the list', () => {
 describe('the check state of a deck', () => {
   const WORDS: ReadonlyArray<readonly [DeckState, string]> = [
     ['verified', 'Verified'],
-    ['read', 'Runs on reads'],
+    ['read', 'Whole deck runs'],
     ['manual_play', 'Played by hand'],
     ['blocked', 'Blocked'],
     ['unchecked', 'Unchecked'],

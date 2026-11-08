@@ -171,6 +171,14 @@ fn objects_of(ctx: &Ctx, word: &str) -> Tr<Value> {
 /// names (`Self`, `Enchanted`, `Valid ...`); `None` for a word that is neither.
 fn controller_of(ctx: &Ctx, word: &str) -> Option<Value> {
     let word = word.trim();
+    // The owner of the enchanted or equipped permanent is a `Defined$` word only: the one script that filters by it (Become
+    // the Pilot) says less than its card, so the filter waits for a probe that reads it as printed.
+    if matches!(
+        word,
+        "EnchantedOwner" | "EquippedOwner" | "ThisTargetedOwner"
+    ) {
+        return None;
+    }
     let found = defined(ctx, word).ok()?;
     if is_player(&found) {
         return Some(found);
@@ -187,7 +195,11 @@ pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     if let Some(name) = prop.strip_prefix("named")
         && !name.is_empty()
     {
-        let name = name.replace(';', ",");
+        let mut name = name.replace(';', ",");
+        // A count word writes a space as `_` (`namedAether_Burst`).
+        if !ctx.world.names.contains(&name) && name.contains('_') {
+            name = name.replace('_', " ");
+        }
         return if ctx.world.names.contains(&name) {
             Ok(Some(vec![json!({"Named": name})]))
         } else {
@@ -230,6 +242,13 @@ pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
             }
             one(json!({ "HasAttached": attached }))
         }
+        // "Attacking planeswalkers your opponents control" (or you control).
+        "attacking" if arg.trim() == "Valid Planeswalker.OppCtrl" => {
+            one(json!({"AttackingPlaneswalkerOf": "Opponents"}))
+        }
+        "attacking" if arg.trim() == "Valid Planeswalker.YouCtrl" => {
+            one(json!({"AttackingPlaneswalkerOf": "You"}))
+        }
         "attacking" => match defined(ctx, arg) {
             Ok(who) if is_player(&who) => one(json!({"AttackingPlayer": who})),
             // The player one group of attackers attacks: a trigger reads it only when the group attacks a player.
@@ -259,7 +278,10 @@ pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
 pub fn extreme(ctx: &Ctx, prop: &str, group: &[Value]) -> Tr<Option<Vec<Value>>> {
     let (pred, rest) = if let Some(rest) = prop.strip_prefix("greatest") {
         ("GreatestAmong", rest)
-    } else if let Some(rest) = prop.strip_prefix("least") {
+    } else if let Some(rest) = prop
+        .strip_prefix("least")
+        .or_else(|| prop.strip_prefix("lowest"))
+    {
         ("LeastAmong", rest)
     } else {
         return Ok(None);
@@ -275,7 +297,15 @@ pub fn extreme(ctx: &Ctx, prop: &str, group: &[Value]) -> Tr<Option<Vec<Value>>>
     let Some(stat) = stat else {
         return Ok(None);
     };
-    let mut group = group.to_vec();
+    // `greatestCMC_Creature` names its kind; "the lowest mana value" among permanents is among nonland permanents, as the
+    // Oracle texts say.
+    let (mut group, rest) = match super::valid_grammar::extreme_kind(rest) {
+        Some((kind, rest)) => (kind, rest),
+        None if prop.starts_with("lowest") && group.is_empty() && rest.is_empty() => {
+            (vec![json!({"Not": {"Type": "Land"}})], rest)
+        }
+        None => (group.to_vec(), rest),
+    };
     if group.is_empty() {
         return unmapped(format!("valid:{prop}-without-a-kind"));
     }

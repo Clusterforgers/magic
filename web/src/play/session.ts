@@ -22,7 +22,7 @@ import { createManualLedger, isManualOf } from './manualLedger'
 import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
-import { saveAutoChoices, saveEndTurnByHand, welcomeRequests } from './flowPrefs'
+import { saveAutoChoices, saveAutoYields, saveEndTurnByHand, welcomeRequests } from './flowPrefs'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
 import { owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
@@ -244,6 +244,7 @@ export function createSession(deps: SessionDeps): Session {
           stops: message.stops,
           endTurnByHand: message.end_turn_by_hand,
           autoChoices: message.auto_choices,
+          autoYields: message.auto_yields,
         }))
           socket.send(request)
         return
@@ -265,6 +266,7 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'AutoYields':
         setState({ autoYields: message.yields })
+        saveAutoYields(message.yields)
         return
       case 'Lobby':
         // The server sends the whole roster each time, so the newest one simply replaces the last.
@@ -339,7 +341,7 @@ export function createSession(deps: SessionDeps): Session {
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
         preview: null,
-        log: mergeHistory(state.log, message.seq, message.log),
+        log: mergeHistory(state.log, message.seq, message.log, message.hosts),
         logNames: mergeLogNames(state.logNames, message.names),
         snapshots: state.snapshots + 1,
         phase: state.result === null ? 'playing' : 'over',

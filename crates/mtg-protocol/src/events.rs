@@ -768,7 +768,7 @@ pub fn project_log(
     events: &[Event],
     viewer: PlayerId,
 ) -> Result<Vec<EventView>, ProtocolError> {
-    fold_views(before, events, viewer, |_| {}).map(|(views, _)| views)
+    fold_views(before, events, viewer, |_| {}).map(|(views, _, _)| views)
 }
 
 /// How many names a snapshot's log window carries at most; the oldest objects go first.
@@ -783,9 +783,27 @@ pub struct LogName {
     pub name: String,
 }
 
+/// Where the attachment of one attach event of a snapshot's log window hung just before it: a permanent, a player, or
+/// neither (it hung on nothing).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct LogHost {
+    /// Index in the window's `log` of the attach event.
+    pub at: u32,
+    /// The permanent it hung on, when the seat knew it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub card: Option<ObjectId>,
+    /// The player it hung on.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub player: Option<PlayerId>,
+}
+
 /// The log window of a snapshot with the names it needs.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LogWindow {
+    /// The old host of each attach event of `log` the seat can read it for, by index into `log`.
+    pub hosts: Vec<LogHost>,
     /// The events as [`project_log`] gives them.
     pub log: Vec<EventView>,
     /// Objects the viewer had in sight at some point of the window that the state after it shows by no name (a token
@@ -805,7 +823,7 @@ pub fn project_window(
 ) -> Result<LogWindow, ProtocolError> {
     let mut names = BTreeMap::new();
     note_names(before, viewer, &mut names);
-    let (log, state) = fold_views(before, events, viewer, |state| {
+    let (log, state, hosts) = fold_views(before, events, viewer, |state| {
         note_names(state, viewer, &mut names);
     })?;
     for shown in visible_objects(&state, viewer) {
@@ -820,28 +838,51 @@ pub fn project_window(
         .into_iter()
         .map(|(object, name)| LogName { object, name })
         .collect();
-    Ok(LogWindow { log, names })
+    Ok(LogWindow { hosts, log, names })
 }
 
 /// The views of `events` for `viewer`, each judged against the state ahead of it, and the state after the last one;
-/// `after_each` sees the state after every event.
+/// `after_each` sees the state after every event. The third part is the old host of each public attach event, judged
+/// against what `viewer` may identify.
 fn fold_views(
     before: &GameState,
     events: &[Event],
     viewer: PlayerId,
     mut after_each: impl FnMut(&GameState),
-) -> Result<(Vec<EventView>, GameState), ProtocolError> {
+) -> Result<(Vec<EventView>, GameState, Vec<LogHost>), ProtocolError> {
     let mut state = before.clone();
     let mut views = Vec::with_capacity(events.len());
+    let mut hosts = Vec::new();
     for event in events {
-        views.push(match redact(&state, event, viewer) {
+        let hidden = redact(&state, event, viewer);
+        if hidden.is_none() {
+            hosts.extend(old_host(&state, event, viewer, views.len()));
+        }
+        views.push(match hidden {
             Some(hidden) => EventView::Hidden(hidden),
             None => EventView::Public(event.clone()),
         });
         apply_event(&mut state, event)?;
         after_each(&state);
     }
-    Ok((views, state))
+    Ok((views, state, hosts))
+}
+
+/// Where the attachment of `event` (at `at` in the log) hangs in `state`, ahead of it; none for another event or for a
+/// permanent `viewer` may not identify.
+fn old_host(state: &GameState, event: &Event, viewer: PlayerId, at: usize) -> Option<LogHost> {
+    let (Event::Attached { object, .. } | Event::AttachedToPlayer { object, .. }) = event else {
+        return None;
+    };
+    let card = state.host_of(*object);
+    if card.is_some_and(|host| !knows(state, host, viewer)) {
+        return None;
+    }
+    Some(LogHost {
+        at: u32::try_from(at).ok()?,
+        card,
+        player: state.player_host_of(*object),
+    })
 }
 
 /// Adds the name of every object `viewer` may identify in `state` that is not named yet.

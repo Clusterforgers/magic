@@ -1,4 +1,4 @@
-// Goal: where a deck check says drafts wait for a player, "N cards to read" appears as a link to the review screen (a deck by id or a precon by code, none for a deck that is not saved), nothing is drawn for none, and a draft note speaks only for a draft that waits or was found wrong.
+// Goal: where a deck check says drafts wait for a player, "N cards to read" appears as a link to the review screen (a deck by id, a precon by code, every card for a deck that is not saved, no link in a list option), nothing is drawn for none, and a draft note speaks only for a draft that waits or was found wrong.
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { ReadTarget } from '@/lib/toRead'
@@ -8,9 +8,10 @@ import { renderInRouter } from '@/test-utils/router'
 import { ToRead } from './ToRead'
 
 describe('ToRead', () => {
-  it.each<[number, ReadTarget | undefined, string, string | null]>([
+  it.each<[number, ReadTarget | null | undefined, string, string | null]>([
     [1, { deck: 'deck-1' }, '1 card to read', '/read?deck=deck-1'],
     [12, { precon: 'c18-adaptive-enchantment' }, '12 cards to read', '/read?precon=c18-adaptive-enchantment'],
+    [2, null, '2 cards to read', '/read'],
     [3, undefined, '3 cards to read', null],
   ])('for %i cards says "%s" as a link to the review screen at %s', async (count, target, words, path) => {
     await renderInRouter(<ToRead count={count} target={target} />)

@@ -47,6 +47,7 @@ export function cardWords(support: Support): string {
     case 'verified':
     case 'read':
     case 'forge':
+    case 'unverified':
       return RUNS_AUTOMATICALLY
     case 'partial':
       return 'Partly automatic'

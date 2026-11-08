@@ -411,19 +411,17 @@ pub fn remembered_of(ctx: &mut Ctx, line: &Params) -> Tr<Option<Value>> {
         Some("Targeted" | "ThisTargetedCard") if line.has("ValidTgts") => {
             Ok(Some(subject(ctx, line, "", None)?))
         }
-        Some("Targeted") => Ok(Some(ctx.last_target()?)),
-        Some("Self") => Ok(Some(json!("This"))),
         // Nothing writes the memory ("choose a source" keeps a choice, not a memory): the effect remembers nothing, and a
         // part that reads `IsRemembered` stays a gap for want of a recipient.
         Some("Remembered") if ctx.memory.unwritten && ctx.remembered.is_none() => Ok(None),
-        Some("Remembered" | "RememberedCard") => {
-            Ok(Some(super::valid::defined(ctx, "Remembered")?))
-        }
         // The card an earlier step of the ability chose.
         Some("ChosenCard") => Ok(Some(super::valid::defined(ctx, "ChosenCard")?)),
         Some(word) if super::triggered::is_word(word) => Ok(Some(
             super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?,
         )),
-        Some(other) => unmapped(format!("key:Effect.RememberObjects={other}")),
+        Some(word) => super::refs::read_or(ctx, word, super::refs::Scope::Lasting, || {
+            format!("key:Effect.RememberObjects={word}")
+        })
+        .map(Some),
     }
 }

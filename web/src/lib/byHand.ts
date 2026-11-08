@@ -13,11 +13,11 @@ export const PARTLY_BY_HAND = 'partly played by hand'
 /** What is said of a card whose draft a player read and found correct: the game runs it, counted apart from Verified. */
 export const ON_A_READ = "runs on a player's read"
 
-/** Whether the game runs every rule of a card, so nothing is played by hand: Verified, Read by a player, or translated from Forge. */
-export const runsWhole = (support: Support): support is 'verified' | 'read' | 'forge' =>
-  support === 'verified' || support === 'read' || support === 'forge'
+/** Whether the game runs every rule of a card, so nothing is played by hand: Verified, Read by a player, translated from Forge, or Unverified. */
+export const runsWhole = (support: Support): support is 'verified' | 'read' | 'forge' | 'unverified' =>
+  support === 'verified' || support === 'read' || support === 'forge' || support === 'unverified'
 
-/** Copies the game does not run whole (everything but Verified, Read and Unplayable): the partial, manual and stale ones. */
+/** Copies the game does not run whole (everything but the tiers that run whole and Unplayable): the partial, manual and stale ones. */
 export const byHandCopies = (counts: Counts): number => counts.partial + counts.manual + counts.stale
 
 /** "no cards played by hand", "1 card played by hand", "3 cards played by hand". */

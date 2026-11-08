@@ -76,6 +76,11 @@ impl Popularity {
         self.last
     }
 
+    /// Every card with its rank.
+    pub fn ranks(&self) -> impl Iterator<Item = (&str, u32)> {
+        self.ranks.iter().map(|(id, rank)| (id.as_str(), *rank))
+    }
+
     /// The weight of a card: that of its rank, or of the last rank when it has none.
     pub fn weight(&self, oracle_id: &str) -> f64 {
         weight_of(self.rank(oracle_id).unwrap_or(self.last))

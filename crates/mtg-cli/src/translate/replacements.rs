@@ -146,6 +146,7 @@ fn not_moved(ctx: &mut Ctx, p: &Params, event: &str, condition: Option<&Value>) 
         "Destroy" if condition.is_none() => super::replacements_moved::destroyed(ctx, p),
         "Counter" => super::replacements_counter::counter(ctx, p),
         "Draw" => super::replacements_counter::draw(ctx, p),
+        "Mill" if condition.is_none() => super::replacements_counter::mill(ctx, p),
         "GainLife" => super::replacements_counter::gain_life(ctx, p),
         "AddCounter" => super::replacements_counter::add_counter(ctx, p),
         "ProduceMana" => super::replacements_mana::produce_mana(ctx, p, condition),

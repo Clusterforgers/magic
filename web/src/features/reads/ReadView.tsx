@@ -1,27 +1,35 @@
 import { Link } from '@tanstack/react-router'
-import { BookOpenIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon, TriangleAlertIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import {
+  BookOpenIcon,
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  LibraryIcon,
+  TriangleAlertIcon,
+} from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { Loading } from '@/components/Loading'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { BulkLink } from '@/features/bulk-reads/BulkLink'
 import { describeDeckError } from '@/features/decks/errors'
 import { cn } from '@/lib/utils'
 import { BY_HAND } from '@/lib/byHand'
 import { TO_READ } from '@/lib/toRead'
 import type { ReadTarget } from '@/lib/toRead'
 import type { ReadsApi } from '@/net/reads'
-import type { ReadQueue, ReadVerdict } from '@/protocol/generated'
-import { STATE_WORDS, nextToRead } from './model'
+import type { ReadCard, ReadQueue, ReadVerdict } from '@/protocol/generated'
+import { STATE_WORDS, countLine, nextToRead, queueKey, rankText, savePosition, savedPosition } from './model'
 import { ReadCardView } from './ReadCardView'
 
 type QueueLoad =
   { status: 'loading' } | { status: 'ready'; queue: ReadQueue } | { status: 'error'; error: unknown }
 
-function useQueue(api: Pick<ReadsApi, 'queue'>, target: ReadTarget) {
+function useQueue(api: Pick<ReadsApi, 'queue'>, target: ReadTarget | null) {
   const [load, setLoad] = useState<QueueLoad>({ status: 'loading' })
-  const key = 'deck' in target ? `deck:${target.deck}` : `precon:${target.precon}`
+  const key = queueKey(target)
   const [attempt, setAttempt] = useState(0)
   useEffect(() => {
     let live = true
@@ -43,8 +51,42 @@ function useQueue(api: Pick<ReadsApi, 'queue'>, target: ReadTarget) {
   return { load, retry: () => setAttempt((n) => n + 1) }
 }
 
-/** The way back to the deck the cards are read from. */
-function BackLink({ target }: { target: ReadTarget }) {
+/**
+ * The read client with one card asked for ahead: `prefetch` starts loading the card that comes next, and the next
+ * `get` of it takes that answer, so a verdict opens the next card at once.
+ */
+function usePrefetching(api: ReadsApi) {
+  return useMemo(() => {
+    const ahead = new Map<string, Promise<ReadCard>>()
+    const client: ReadsApi = {
+      ...api,
+      get: (oracleId) => {
+        const early = ahead.get(oracleId)
+        ahead.delete(oracleId)
+        return early ?? api.get(oracleId)
+      },
+    }
+    const prefetch = (oracleId: string): void => {
+      if (ahead.has(oracleId)) return
+      const early = api.get(oracleId)
+      // A failed fetch ahead is asked again when the card opens.
+      early.catch(() => ahead.delete(oracleId))
+      ahead.clear()
+      ahead.set(oracleId, early)
+    }
+    return { client, prefetch }
+  }, [api])
+}
+
+/** The way back to the deck the cards are read from, or to the decks for every card. */
+function BackLink({ target }: { target: ReadTarget | null }) {
+  if (target === null) {
+    return (
+      <Link to="/decks" className={buttonVariants({ variant: 'outline' })}>
+        Your decks
+      </Link>
+    )
+  }
   return 'deck' in target ? (
     <Link
       to="/decks/$deckId"
@@ -62,30 +104,48 @@ function BackLink({ target }: { target: ReadTarget }) {
 
 interface ReadViewProps {
   api: ReadsApi
-  target: ReadTarget
+  /** The deck whose cards are read; null for every card waiting for a first read. */
+  target: ReadTarget | null
 }
 
 /**
- * The review screen's body (docs/web.md, Reading cards): the deck's waiting cards in a list (from `lg`; a "Card 2 of 7"
- * bar with Previous and Next under it) beside the card being read. A verdict moves on to the next card not judged.
+ * The review screen's body (docs/web.md, Reading cards): the waiting cards, most played first, in a list (from `lg`;
+ * a "Card 2 of 7" bar with Previous and Next under it) beside the card being read. A verdict opens the next card not
+ * judged at once, loaded ahead; the browser keeps the card the reader is on, so a reload opens the queue there.
  */
 export function ReadView({ api, target }: ReadViewProps) {
   const { load, retry } = useQueue(api, target)
+  const { client, prefetch } = usePrefetching(api)
+  const key = queueKey(target)
   const [current, setCurrent] = useState<string | null>(null)
   const [done, setDone] = useState<ReadonlyMap<string, ReadVerdict>>(new Map())
   const [said, setSaid] = useState('')
   const cards = load.status === 'ready' ? load.queue.cards : []
-  const shown = current ?? cards[0]?.oracle_id ?? null
+  const kept = useMemo(() => savedPosition(key), [key])
+  const resumed = cards.some((card) => card.oracle_id === kept) ? kept : null
+  const shown = current ?? resumed ?? cards[0]?.oracle_id ?? null
+  const following = shown === null ? null : nextToRead(cards, new Set(done.keys()), shown)
+  const listRef = useRef<HTMLUListElement>(null)
+
+  useEffect(() => {
+    if (shown !== null) savePosition(key, shown)
+  }, [key, shown])
+  useEffect(() => {
+    if (following !== null && following !== shown) prefetch(following)
+  }, [following, shown, prefetch])
+  useEffect(() => {
+    listRef.current?.querySelector('[aria-current="true"]')?.scrollIntoView?.({ block: 'nearest' })
+  }, [shown])
 
   const judged = (oracleId: string, name: string, verdict: ReadVerdict): void => {
     const next = new Map(done).set(oracleId, verdict)
     setDone(next)
-    const following = nextToRead(cards, new Set(next.keys()), oracleId)
-    const nextName = cards.find((card) => card.oracle_id === following)?.name
+    const after = nextToRead(cards, new Set(next.keys()), oracleId)
+    const nextName = cards.find((card) => card.oracle_id === after)?.name
     setSaid(
       `${name}: ${verdict === 'correct' ? 'correct' : 'wrong'}, saved.${nextName === undefined ? '' : ` Next: ${nextName}.`}`,
     )
-    if (following !== null) setCurrent(following)
+    if (after !== null) setCurrent(after)
   }
 
   if (load.status === 'loading') {
@@ -125,20 +185,46 @@ export function ReadView({ api, target }: ReadViewProps) {
     const card = cards[(index + by + cards.length) % cards.length]
     if (card !== undefined) setCurrent(card.oracle_id)
   }
+  const title = target === null ? 'Read every card' : `Read the cards of ${queue.title}`
   return (
     <section aria-labelledby="read-title" className="grid gap-4">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="grid min-w-0 gap-1">
           <h1 id="read-title" className="text-2xl font-semibold tracking-tight break-words">
-            Read the cards of {queue.title}
+            {title}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {cards.length === 0
-              ? 'Nothing waits for your read in this deck.'
-              : `${cards.length - left} of ${cards.length} read. Read each clause beside the game's own words, then say whether the game does what the card says.`}
+            {cards.length === 0 ? (
+              target === null ? (
+                'Nothing waits for a first read.'
+              ) : (
+                'Nothing waits for your read in this deck.'
+              )
+            ) : (
+              <>
+                <span data-slot="read-count" className="font-medium text-foreground tabular-nums">
+                  {countLine(cards, new Set(done.keys()), target)}
+                </span>{' '}
+                Most played first. Read each clause beside the game&apos;s own words, then say whether the
+                game does what the card says.
+              </>
+            )}
           </p>
         </div>
-        {cards.length === 0 || finished ? null : <BackLink target={target} />}
+        <div className="flex flex-wrap gap-2">
+          <BulkLink />
+          {cards.length === 0 || finished ? null : (
+            <>
+              {target === null ? null : (
+                <Link to="/read" className={buttonVariants({ variant: 'ghost' })}>
+                  <LibraryIcon aria-hidden="true" />
+                  Every card
+                </Link>
+              )}
+              <BackLink target={target} />
+            </>
+          )}
+        </div>
       </header>
       <p aria-live="polite" className="sr-only">
         {said}
@@ -150,15 +236,21 @@ export function ReadView({ api, target }: ReadViewProps) {
           action={<BackLink target={target} />}
         >
           {finished
-            ? `Thank you. A card found correct runs automatically from the next game; one found wrong is ${BY_HAND} until it is fixed.`
-            : 'Every draft in this deck has your read, or the deck has none.'}
+            ? `Thank you. A card found correct counts as read from the next game; one found wrong is ${BY_HAND} until it is fixed.`
+            : target === null
+              ? 'Every draft has a read.'
+              : 'Every draft in this deck has your read, or the deck has none.'}
         </EmptyState>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
-          <nav aria-label={`Cards ${TO_READ}`} className="hidden lg:block">
-            <ul className="surface grid gap-0.5 p-1">
+          <nav aria-label={`Cards ${TO_READ}`} className="hidden lg:sticky lg:top-4 lg:block">
+            <ul
+              ref={listRef}
+              className="surface grid max-h-[calc(100dvh-12rem)] gap-0.5 overflow-y-auto overscroll-contain p-1"
+            >
               {cards.map((card) => {
                 const verdict = done.get(card.oracle_id)
+                const rank = rankText(card.rank)
                 return (
                   <li key={card.oracle_id}>
                     <button
@@ -174,10 +266,21 @@ export function ReadView({ api, target }: ReadViewProps) {
                         {verdict === undefined ? null : (
                           <CheckIcon aria-label="Read" className="size-4 shrink-0 text-support-verified" />
                         )}
-                        <span className="min-w-0 truncate">{card.name}</span>
+                        <span className="min-w-0 flex-1 truncate">{card.name}</span>
+                        {rank === null ? null : (
+                          <span
+                            title="Popularity rank"
+                            className="shrink-0 text-xs font-normal text-muted-foreground tabular-nums"
+                          >
+                            {rank}
+                          </span>
+                        )}
                       </span>
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <span className="flex flex-wrap items-center gap-x-1 text-xs text-muted-foreground">
                         {verdict === undefined ? STATE_WORDS[card.state] : `You said ${verdict}`}
+                        {card.in_decks && (target === null || !('deck' in target)) ? (
+                          <span>· in your decks</span>
+                        ) : null}
                         {card.differs === 0 ? null : (
                           <>
                             <TriangleAlertIcon aria-hidden="true" className="size-3 text-support-partial" />
@@ -209,7 +312,7 @@ export function ReadView({ api, target }: ReadViewProps) {
               <div className="surface p-4">
                 <ReadCardView
                   key={shown}
-                  api={api}
+                  api={client}
                   oracleId={shown}
                   onJudged={(card, verdict) => judged(card.oracle_id, card.name, verdict)}
                 />

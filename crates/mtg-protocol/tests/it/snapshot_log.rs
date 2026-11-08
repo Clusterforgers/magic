@@ -174,6 +174,7 @@ fn a_snapshot_with_its_log_stays_small_next_to_the_state() {
             state: Box::new(StateView::for_player(&state, PlayerId::from_index(0))),
             log,
             names,
+            hosts: Vec::new(),
         };
         serde_json::to_string(&message).unwrap().len()
     };

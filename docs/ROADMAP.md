@@ -37,7 +37,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
 - Web table: lanes and card sizes, the seat corner, battles with their defense and protector, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list and the precon browser (`docs/web.md`).
-- Reading cards: the read endpoints with the fix mark of a `wrong`, `stale_read` and account deletion, and the review screen `/read` with the 2 s delay, keys C and W, `ReadDialog` from the table's preview and a link to it from every deck check (`docs/server.md`, `docs/web.md`).
+- Reading cards: the read endpoints with the fix mark of a `wrong`, `stale_read` and account deletion, and the review screen `/read` (a deck, a precon or every card, most played first, the next card loaded ahead) with the 2 s delay, keys C and W, `ReadDialog` from the table's preview and a link to it from every deck check (`docs/server.md`, `docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps and side-by-side test binaries, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
@@ -46,16 +46,12 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (pf25a) Hovering or focusing a folded stack chip draws the target arrows of every item in its run, not only its top one's (`combat/stackArrows.ts`, `stackGroups.ts`)
-- [ ] (pf23a) A mana source in the hand (Simian Spirit Guide, Elvish Spirit Guide) is offered for payments and counted when an unpayable optional payment is declined without asking
+- [ ] (pf23b) An affordability check can count one hand card twice, as a Spirit Guide and as the card a Cadaverous Bloom-style cost exiles (the payment itself is right)
 
-- [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
-- [ ] (v92l) Keyboard-only walk of a whole turn: focus order, the focus return after H and Escape across a resize, contrast of the by-hand and unplayable marks in both themes
 - [ ] (v92m) Duel walk by hand of a counterspell, a combat trick and a sacrifice, and of the timer bank as the other seat sees it (needs a seat that has earned an extension)
 - [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
-- [ ] (w2j) An attach line of a rebuilt log has no old host: `Snapshot` could carry the host each attach event of its window replaced (its name in `names`), so the line reads "moves from A to B" as it did live (`play/store.ts` `mergeHistory`, `hosts.ts`)
 - [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
 - [ ] (pl2l) `join.spec.ts` "a guest follows an invite link" timed out once on the Join button in a full run and never in 50 solo runs: a recurrence needs a Playwright trace (`retain-on-failure`) to name the cause
 
@@ -67,11 +63,9 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 The table and its prompts are live; the items below polish them.
 
-- [ ] (i2c1) A stack item in the stack panel offers "Always yield to" on its own menu, also while the seat is not asked, and per-ability yields are kept with the account like the auto choices (i2d)
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
-- [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
 - [ ] (ts6b) Narrow compact faces (under 76 px) cut their marks to stubs ("Si", "+1/+…"): marks as icons or short glyphs that read whole at 1024 (`CardFace.tsx`)
 - [ ] (ui1i2) The effect moments attack, block, damage, life, enter, rival, activate, resolve, counter, land, draw and equip are still to be read by screenshot at the six design sizes (death, enter and draw read at 1024 and 390)
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus

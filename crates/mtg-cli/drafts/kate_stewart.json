@@ -15,7 +15,8 @@
                   "Batch": {
                     "CountersPut": {
                       "what": [{ "ControlledBy": "You" }, { "In": "Battlefield" }],
-                      "counter": { "Other": "time" }
+                      "counter": { "Other": "time" },
+                      "each": true
                     }
                   }
                 },

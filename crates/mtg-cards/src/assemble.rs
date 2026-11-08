@@ -14,7 +14,7 @@ use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
-use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause};
+use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause, Shown};
 use crate::effect::{Effect, Produce};
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
@@ -94,7 +94,7 @@ pub(crate) fn assemble_record(
 ) -> Assembled {
     let attach = matches!(
         record.support,
-        Support::Verified | Support::Read | Support::Forge | Support::Partial
+        Support::Verified | Support::Read | Support::Forge | Support::Unverified | Support::Partial
     );
     let face_of = |index: usize| -> CardDefinition {
         let mut definition = printed_side(&printed.faces[index]);
@@ -114,7 +114,12 @@ pub(crate) fn assemble_record(
             }
         }
         definition.manual = manual_clauses(&record, attach, index, printed);
-        definition.read = from_draft || matches!(record.support, Support::Read | Support::Forge);
+        definition.read = from_draft
+            || matches!(
+                record.support,
+                Support::Read | Support::Forge | Support::Unverified
+            );
+        definition.unverified = Shown(record.support == Support::Unverified);
         definition.partial = attach && !definition.manual.is_empty();
         definition
     };
@@ -211,6 +216,7 @@ fn whole_card(
             whole.color_indicator = (union != from_cost).then_some(union);
             whole.manual = faces.iter().flat_map(|face| face.manual.clone()).collect();
             whole.read = faces.iter().any(|face| face.read);
+            whole.unverified = Shown(faces.iter().any(|face| face.unverified.0));
             whole.partial = faces.iter().any(|face| face.partial);
             // The card as a whole is what a fused split spell is (CR 702.102c), so it carries that spell's rules.
             whole.rules.extend(fused_spell(&faces).map(Arc::new));
@@ -529,6 +535,10 @@ pub struct ManaShape<'a> {
     pub tap: bool,
     /// The source is sacrificed.
     pub sacrifice: bool,
+    /// The source, a card in the hand, is exiled (a Spirit Guide).
+    pub exile: bool,
+    /// The zone it is activated from: the battlefield, or the hand for a source that exiles itself.
+    pub from: ZoneKind,
     /// The mana of its cost (`{1}` for a Signet), paid from mana already in the pool; empty when it costs none.
     pub mana: ManaCost,
     /// The other parts of its cost: life, energy, counters of the source.
@@ -702,14 +712,14 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         condition,
         limit,
         by: Activators::Controller,
-        from: ZoneKind::Battlefield,
+        from: from @ (ZoneKind::Battlefield | ZoneKind::Hand),
         targets,
         effects,
     } = ability
     else {
         return None;
     };
-    let (mut tap, mut sacrifice) = (false, false);
+    let (mut tap, mut sacrifice, mut exile) = (false, false, false);
     let mut pays = Vec::new();
     let mut picks = Vec::new();
     let mut cost_mana = None;
@@ -717,6 +727,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         let seen = match item {
             CostItem::Tap => &mut tap,
             CostItem::SacrificeSelf => &mut sacrifice,
+            CostItem::ExileSelf if from.is_hand() => &mut exile,
             // A cost with an X or a Phyrexian symbol is not paid from the pool alone.
             CostItem::Mana(paid) if !paid.has_x() && paid.rest().life_symbols() == 0 => {
                 if cost_mana.replace(paid.rest().clone()).is_some() {
@@ -776,13 +787,17 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         .as_ref()
         .is_some_and(|cost| !cost.symbols().is_empty());
     let distinct = c8_time_distinct(then);
+    // A card in the hand makes mana by leaving it ("Exile this card from your hand: Add {R}"), and only so.
+    let leaves_hand = !from.is_hand() || (exile && !tap && !sacrifice);
     (targets.is_empty()
+        && leaves_hand
         && matches!(
             limit,
             None | Some(Limit::OncePerTurn | Limit::OncePerGame | Limit::TimesPerTurn(_))
         )
         && (tap
             || sacrifice
+            || exile
             || !pays.is_empty()
             || !picks.is_empty()
             || limit.is_some()
@@ -796,6 +811,8 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             extra,
             tap,
             sacrifice,
+            exile,
+            from: *from,
             mana: cost_mana.unwrap_or_default(),
             pays,
             condition: condition.as_ref(),
@@ -1209,6 +1226,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         layout: Layout::Normal,
         manual: Vec::new(),
         read: false,
+        unverified: Shown(false),
         partial: false,
         faces: Vec::new(),
         identity: None,
@@ -1437,6 +1455,21 @@ mod tests {
     fn shape_of(json: &str) -> Option<(ManaProduced<'static>, bool, bool, usize)> {
         let parsed: &'static Ability = Box::leak(Box::new(ability(json)));
         mana_shape(parsed).map(|s| (s.produces, s.tap, s.sacrifice, s.then.len()))
+    }
+
+    #[rstest]
+    #[case::a_spirit_guide(r#"{"Activated":{"from":"Hand","cost":["ExileSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#, Some((true, ZoneKind::Hand)))]
+    #[case::a_hand_card_that_stays(r#"{"Activated":{"from":"Hand","cost":"{1}","effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#, None)]
+    #[case::a_hand_card_that_taps(r#"{"Activated":{"from":"Hand","cost":["Tap","ExileSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#, None)]
+    #[case::exiling_a_permanent(r#"{"Activated":{"cost":["ExileSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#, None)]
+    #[case::from_the_graveyard(r#"{"Activated":{"from":"Graveyard","cost":["ExileSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#, None)]
+    #[case::a_treasure(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, Some((false, ZoneKind::Battlefield)))]
+    fn a_card_in_the_hand_makes_mana_only_by_exiling_itself(
+        #[case] json: &str,
+        #[case] expected: Option<(bool, ZoneKind)>,
+    ) {
+        let parsed = ability(json);
+        assert_eq!(mana_shape(&parsed).map(|s| (s.exile, s.from)), expected);
     }
 
     static ONE: Amount = Amount::Fixed(1);

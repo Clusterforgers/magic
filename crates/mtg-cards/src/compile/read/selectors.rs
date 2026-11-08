@@ -717,7 +717,9 @@ fn like_this(r: &mut Reader<'_>) -> Option<Pred> {
 
 /// The words after the noun for one predicate: the older writers first, then the combat and damage suffixes of a target.
 pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
-    suffix_text_main(pred, form).or_else(|| super::w19d_suffixes::w19d_suffix_text(pred, form))
+    suffix_text_main(pred, form)
+        .or_else(|| super::w19d_suffixes::w19d_suffix_text(pred, form))
+        .or_else(|| super::vp20_atoms::vp20_suffix_text(pred, form))
 }
 
 #[allow(clippy::too_many_lines)]
@@ -1432,10 +1434,14 @@ fn names_own_commander(preds: &[Pred]) -> bool {
 /// A selector as a phrase, the way `phrase` reads it.
 #[allow(clippy::too_many_lines)]
 pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
+    if !super::vp20_atoms::vp20_fits(selector, form) {
+        return None;
+    }
     let (spell, preds) = match selector.0.split_first() {
         Some((Pred::Spell, rest)) => (true, rest),
         _ => (false, selector.0.as_slice()),
     };
+    let preds = &super::w21a_atoms::w21a_zone_first(preds);
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtypes, mut card, mut token) = (Vec::<&str>::new(), false, false);
     // The zone of a card comes last ("permanent card with mana value 3 or less from your graveyard").

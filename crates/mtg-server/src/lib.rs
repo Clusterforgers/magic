@@ -83,6 +83,7 @@ mod api;
 mod auth;
 mod auto_yields;
 mod bank;
+mod bulk_reads;
 mod card_api;
 mod cards;
 pub mod config;
