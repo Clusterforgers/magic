@@ -18,7 +18,7 @@ pub(super) fn normal(text: &str) -> String {
             text = changed;
         }
     }
-    super::w17_forms::normal(&text)
+    super::w18_forms::normal(&super::w17_forms::normal(&text))
 }
 
 /// The text of the words when it differs from the original.
@@ -102,7 +102,10 @@ fn bare_you(text: &str) -> Option<String> {
 }
 
 /// The verbs whose form follows the number of the subject, as the form of one subject.
-const NUMBER: [(&str, &str); 14] = [
+const NUMBER: [(&str, &str); 17] = [
+    ("put", "puts"),
+    ("shuffle", "shuffles"),
+    ("search", "searches"),
     ("have", "has"),
     ("deal", "deals"),
     ("become", "becomes"),
@@ -122,6 +125,11 @@ const NUMBER: [(&str, &str); 14] = [
 /// "creatures have" as "creatures has": a verb's number says nothing the subject does not.
 fn verb_number(text: &str) -> Option<String> {
     let source: Vec<&str> = text.split(' ').collect();
+    // The verbs of an order ("put", "shuffle", "search") take a number only after a subject that is several players.
+    let groups = {
+        let lower = text.to_ascii_lowercase();
+        lower.contains("all players") || lower.contains("each player")
+    };
     let words: Vec<String> = source
         .iter()
         .enumerate()
@@ -135,14 +143,35 @@ fn verb_number(text: &str) -> Option<String> {
                 );
             // "phase out" is a verb; "main phase" is a noun.
             let noun = core == "phase" && source.get(at + 1) != Some(&"out");
-            match NUMBER.iter().find(|(plural, _)| *plural == core) {
+            let lower = core.to_ascii_lowercase();
+            let capital = core.starts_with(|c: char| c.is_ascii_uppercase());
+            match NUMBER.iter().find(|(plural, _)| {
+                *plural == lower
+                    && (groups || !matches!(lower.as_str(), "put" | "shuffle" | "search"))
+            }) {
                 Some(_) if noun => (*word).to_owned(),
+                // Only a verb no action of an order repeats is changed at the start of a sentence.
+                Some((_, single)) if !infinitive && capital => {
+                    if matches!(lower.as_str(), "shuffle" | "search") {
+                        format!("{}{tail}", capitalized(single))
+                    } else {
+                        (*word).to_owned()
+                    }
+                }
                 Some((_, single)) if !infinitive => format!("{single}{tail}"),
                 _ => (*word).to_owned(),
             }
         })
         .collect();
     joined(&words, text)
+}
+
+/// The word with its first letter in upper case.
+fn capitalized(word: &str) -> String {
+    let mut chars = word.chars();
+    chars.next().map_or_else(String::new, |first| {
+        first.to_ascii_uppercase().to_string() + chars.as_str()
+    })
 }
 
 /// The nouns "each" and "all" name.
@@ -160,7 +189,17 @@ const KINDS: [&str; 10] = [
 ];
 
 /// The words that may stand between "each" and its noun.
-const MODIFIERS: [&str; 9] = [
+const MODIFIERS: [&str; 19] = [
+    "snow",
+    "noncreature",
+    "legendary",
+    "multicolored",
+    "colorless",
+    "nongreen",
+    "nonwhite",
+    "nonblack",
+    "nonred",
+    "nonblue",
     "nonland",
     "nontoken",
     "nonartifact",
@@ -179,10 +218,9 @@ fn each_all(text: &str) -> Option<String> {
     let mut at = 0;
     while let Some(word) = words.get(at) {
         let mut end = at + 1;
-        while words
-            .get(end)
-            .is_some_and(|next| MODIFIERS.contains(&next.to_ascii_lowercase().as_str()))
-        {
+        while words.get(end).is_some_and(|next| {
+            MODIFIERS.contains(&next.to_ascii_lowercase().as_str()) || next.starts_with("non-")
+        }) {
             end += 1;
         }
         // "for each creature" counts, "for all creatures" does not.

@@ -624,7 +624,7 @@ impl<'a> Pairer<'a> {
                 continue;
             }
             if matches!(ability, Ability::Spell { .. }) {
-                for slot in self.c11f_spell_slots(&written) {
+                for slot in self.c11f_spell_slots(&written, rolls_dice(ability)) {
                     self.settle(at, slot, ClauseState::Reads { ability: at });
                 }
                 continue;
@@ -711,7 +711,13 @@ impl<'a> Pairer<'a> {
             ) {
                 let text = &self.slots[at].clause.text;
                 let wanted = rows.get(at - head - 1).map_or(&[][..], Vec::as_slice);
-                if !wanted
+                if wanted.is_empty() {
+                    state = Some(ClauseState::Unwritten {
+                        ability: *ability,
+                        construct: "die roll row (the effects of the row have no writer)"
+                            .to_owned(),
+                    });
+                } else if !wanted
                     .iter()
                     .any(|written| same_written_text(written, text))
                 {
@@ -780,6 +786,11 @@ impl<'a> Pairer<'a> {
             .open_slots(kinds_of(ability))
             .into_iter()
             .filter(|&slot| !self.is_block_slot(slot))
+            .filter(|&slot| {
+                !(matches!(ability, Ability::Spell { .. })
+                    && rolls_dice(ability)
+                    && is_die_row(&self.slots[slot].clause.text))
+            })
             .collect();
         match (own.first(), matches!(ability, Ability::Spell { .. })) {
             (Some(_), true) => return Choice::Pair(own),
@@ -818,11 +829,15 @@ impl<'a> Pairer<'a> {
     /// The clauses a spell ability reads as one text: its spell and modal lines, else those with the lines the compiler
     /// takes for statics ("Metalcraft — If you control three or more artifacts, exile that creature."), which a whole
     /// wording of the spell then has to name.
-    fn c11f_spell_slots(&self, written: &[String]) -> Vec<usize> {
+    fn c11f_spell_slots(&self, written: &[String], rolls: bool) -> Vec<usize> {
         let spell = [ClauseKind::Spell, ClauseKind::Modal];
         let wider = [ClauseKind::Spell, ClauseKind::Modal, ClauseKind::Static];
         for kinds in [&spell[..], &wider[..]] {
-            let open = self.open_slots(kinds);
+            let mut open = self.open_slots(kinds);
+            if rolls {
+                // The rows of a die roll's table are read after the roll (`tables`).
+                open.retain(|&slot| !is_die_row(&self.slots[slot].clause.text));
+            }
             let joined = self.joined(&open);
             if written.iter().any(|variant| self.same(variant, &joined)) {
                 return open;
