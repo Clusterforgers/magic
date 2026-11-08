@@ -100,3 +100,6 @@ export const HIGHLIGHT: Record<Highlight, string> = {
   selected: 'ring-4 ring-primary',
   dimmed: 'opacity-40 saturate-50',
 }
+
+/** A compact face narrower than this (px) has no room for a second line of name nor a wrapped row of marks. */
+export const NARROW_PX = 76

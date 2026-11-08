@@ -1,8 +1,8 @@
 /** The widths a page takes, narrowest first. */
-export const PAGE_WIDTHS = ['narrow', 'page', 'wide'] as const
+export const PAGE_WIDTHS = ['narrow', 'page', 'wide', 'wider'] as const
 
 /**
  * The scale of page widths: `narrow` (28rem) for a form, `page` (48rem) for reading and lists of cards, `wide` (72rem)
- * for a table of rows.
+ * for a table of rows, `wider` (90rem) for the builder, which keeps a rail beside the deck.
  */
 export type PageWidth = (typeof PAGE_WIDTHS)[number]
