@@ -293,7 +293,7 @@ export function DeckPane({
             <CheckBar
               counts={counts}
               toRead={report.summary.to_read}
-              readTarget={deckId === undefined ? undefined : { deck: deckId }}
+              readTarget={deckId === undefined ? null : { deck: deckId }}
               asSaved={asSaved}
               status={check.status}
               error={check.error}
@@ -431,6 +431,7 @@ export function DeckPane({
                                 outside={outsideByLine.get(lineKey(line)) ?? null}
                                 actions={actions}
                                 fixMarks={fixMarks}
+                                readTarget={deckId === undefined ? undefined : { deck: deckId }}
                               />
                             ))}
                           </ul>

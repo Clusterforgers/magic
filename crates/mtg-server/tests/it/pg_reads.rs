@@ -1,4 +1,4 @@
-//! Goal: the read endpoints work end to end over real HTTP on Postgres: only a signed-in account within its budget reaches them, a deck lists what its reader has left to read, a card shows its draft's sheet and the account's verdict, `correct` approves the draft and `wrong` needs a note and marks the card to fix, a hash that is no longer current is 409 `stale_read`, the card endpoint carries the draft, and deleting an account takes its verdicts.
+//! Goal: the read endpoints work end to end over real HTTP on Postgres: only a signed-in account within its budget reaches them, a deck lists what its reader has left to read, every card lists the pending drafts with rank and deck membership, a card shows its draft's sheet and the account's verdict, `correct` approves the draft and `wrong` needs a note and marks the card to fix, a hash that is no longer current is 409 `stale_read`, the card endpoint carries the draft, and deleting an account takes its verdicts.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -186,7 +186,7 @@ async fn a_correct_read_approves_the_draft_and_leaves_it_to_others(pool: PgPool)
     let ann = register(server.addr, "ann", PASSWORD).await;
     let bo = register(server.addr, "bob", PASSWORD).await;
     let deck = store(&server, &ann).await;
-    assert_eq!(support(&server).await, "manual");
+    assert_eq!(support(&server).await, "unverified");
 
     let reply = verdict(
         &server,
@@ -284,7 +284,7 @@ async fn a_hash_that_is_not_current_is_a_stale_read_and_a_card_without_a_draft_i
         let reply = ann.get(server.addr, &path).await;
         assert_eq!(reply.status, 404, "{path}: {}", reply.text());
     }
-    let neither = ann.get(server.addr, "/api/reads").await;
+    let neither = ann.get(server.addr, "/api/reads?deck=").await;
     assert_eq!(neither.status, 400);
 }
 
@@ -331,5 +331,60 @@ async fn deleting_an_account_takes_its_verdicts_and_the_draft_waits_again(pool: 
         .await;
     assert_eq!(gone.status, 204, "{}", gone.text());
     assert_eq!(db.reads().list(false).await.unwrap().len(), 0);
-    assert_eq!(support(&server).await, "manual");
+    assert_eq!(
+        support(&server).await,
+        "unverified",
+        "unread again, it runs unverified"
+    );
+}
+
+async fn every_card(server: &TestServer, who: &Browser) -> Vec<Value> {
+    let reply = who.get(server.addr, "/api/reads").await;
+    assert_eq!(reply.status, 200, "{}", reply.text());
+    assert_eq!(reply.json()["title"], "");
+    reply.json()["cards"].as_array().unwrap().clone()
+}
+
+#[sqlx::test(migrations = false)]
+async fn every_card_lists_the_pending_drafts_with_rank_and_whether_a_deck_holds_them(pool: PgPool) {
+    let (db, key, server) = start(&pool).await;
+    db.ranks()
+        .replace(&[(key.oracle_id.clone(), 42)])
+        .await
+        .unwrap();
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    let reply = request(server.addr, "GET", "/api/reads", &[], b"").await;
+    assert_eq!(reply.status, 401);
+
+    let cards = every_card(&server, &ann).await;
+    assert_eq!(cards.len(), 1, "{cards:?}");
+    assert_eq!(
+        (&cards[0]["name"], &cards[0]["state"], &cards[0]["rank"]),
+        (&json!(CARD), &json!("pending"), &json!(42))
+    );
+    assert_eq!(cards[0]["in_decks"], false);
+
+    let deck = store(&server, &ann).await;
+    assert_eq!(every_card(&server, &ann).await[0]["in_decks"], true);
+    assert_eq!(queue(&server, &ann, &deck).await[0]["in_decks"], true);
+
+    // Approved by another player, the draft no longer waits for a first read: every card lists only pending ones.
+    let bob = register(server.addr, "bob", PASSWORD).await;
+    let reply = verdict(
+        &server,
+        &bob,
+        json!({"read_hash": key.read_hash, "verdict": "correct"}),
+    )
+    .await;
+    assert_eq!(reply.status, 200);
+    assert_eq!(every_card(&server, &ann).await, Vec::<Value>::new());
+    assert_eq!(queue(&server, &ann, &deck).await[0]["state"], "approved");
+
+    // The list held from the verdict is not served once the verdict is gone: the draft waits again.
+    let body = json!({"password": PASSWORD}).to_string();
+    let gone = bob
+        .send(server.addr, "DELETE", "/api/auth/account", &body, &[])
+        .await;
+    assert_eq!(gone.status, 204, "{}", gone.text());
+    assert_eq!(every_card(&server, &ann).await[0]["state"], "pending");
 }

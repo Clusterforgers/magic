@@ -11,12 +11,13 @@ use ts_rs::{Config, ExportError, TS};
 
 use crate::message::{ClientMessage, PROTOCOL_VERSION, ServerMessage};
 use crate::rest::{
-    AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, CardDetail,
-    CardSearchPage, CheckRequest, ChooseDeck, CreatedAccount, Credentials, DeckBlockedBody,
-    DeckBody, DeckChoiceErrorCode, DeckErrorCode, DeckList, DeckView, FavouritePrecons,
-    FixMarkBody, FixMarkList, GameInfo, ImportRequest, ImportResult, JoinCodeRequest, JoinRequest,
-    Joined, LobbyErrorCode, LobbyList, MyGames, PasswordChange, PasswordReset, PreconErrorCode,
-    PreconList, PreconView, ReadBody, ReadCard, ReadQueue, UserPrefs, UserView, VisibilityBody,
+    AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, BulkApprovalBody,
+    BulkApprovalResult, BulkReads, CardDetail, CardSearchPage, CheckRequest, ChooseDeck,
+    CreatedAccount, Credentials, DeckBlockedBody, DeckBody, DeckChoiceErrorCode, DeckErrorCode,
+    DeckList, DeckView, FavouritePrecons, FixMarkBody, FixMarkList, GameInfo, ImportRequest,
+    ImportResult, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyList, MyGames,
+    PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView, ReadBody, ReadCard,
+    ReadQueue, UserPrefs, UserView, VisibilityBody,
 };
 
 /// Where the committed bindings live, relative to the workspace root.
@@ -87,6 +88,9 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     ReadBody::export_all(&config)?;
     ReadCard::export_all(&config)?;
     ReadQueue::export_all(&config)?;
+    BulkReads::export_all(&config)?;
+    BulkApprovalBody::export_all(&config)?;
+    BulkApprovalResult::export_all(&config)?;
     fs::write(dir.join("index.ts"), index(dir)?)?;
     Ok(())
 }

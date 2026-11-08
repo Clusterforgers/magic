@@ -30,7 +30,11 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
             player_counters(p).map(|inner| batch(&inner))
         }
         "CounterAddedOnce" | "CounterPlayerAddedAll" => {
-            counters(ctx, p, "CountersPut").map(|inner| batch(&inner))
+            counters(ctx, p, "CountersPut").map(|inner| {
+                let mut found = batch(&inner);
+                e19_each_by_wording(&mut found, p.get("TriggerDescription"));
+                found
+            })
         }
         _ => return None,
     })
@@ -184,4 +188,35 @@ fn attached(ctx: &Ctx, p: &Params) -> Tr<Value> {
         }
     }
     Ok(json!({ "Attached": pattern }))
+}
+
+/// Marks a batch of counters put on permanents `each` when its description names a single permanent ("one or more -1/-1
+/// counters are put on a creature", "you put one or more counters on another creature"): the counters put on each are an
+/// event of their own (CR 603.2c). A plural subject ("on one or more creatures you control") and the card itself stay one
+/// event.
+pub fn e19_each_by_wording(pattern: &mut Value, description: Option<&str>) {
+    let Some(put) = pattern
+        .get_mut("Batch")
+        .and_then(|batch| batch.get_mut("CountersPut"))
+    else {
+        return;
+    };
+    let itself = put
+        .get("what")
+        .and_then(Value::as_array)
+        .is_some_and(|what| what.iter().any(|pred| pred == "This"));
+    if itself {
+        return;
+    }
+    let text = description.unwrap_or_default().to_lowercase();
+    let singular = ["counters are put on ", "counters on "].iter().any(|said| {
+        text.split(said).skip(1).any(|rest| {
+            ["a ", "an ", "another "]
+                .iter()
+                .any(|article| rest.starts_with(article))
+        })
+    });
+    if singular {
+        put["each"] = json!(true);
+    }
 }

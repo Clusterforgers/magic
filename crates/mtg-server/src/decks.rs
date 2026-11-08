@@ -146,6 +146,11 @@ fn deck_view(loaded: &Loaded, deck: &StoredDeck) -> DeckView {
     }
 }
 
+/// [`deck_view`] on the blocking pool.
+async fn deck_view_off(loaded: &Loaded, deck: StoredDeck) -> Result<DeckView, ApiError> {
+    loaded.off(move |loaded| deck_view(loaded, &deck)).await
+}
+
 /// The cards whose pictures stand for a deck in a list: its commanders, else the first card of its main zone.
 fn pictures_of(loaded: &Loaded, lines: &[Line], commanders: &[CardHit]) -> Vec<DeckPicture> {
     let picture = |card: &CardHit| DeckPicture {
@@ -206,7 +211,7 @@ async fn prepare(cards: &CardSource, body: &DeckBody) -> Result<Prepared, ApiErr
     let checked = check_body(body)?;
     let loaded = Loaded::load(cards, &checked.lines).await?;
     loaded.require(&checked.lines)?;
-    let report = loaded.report(&checked.format, &checked.lines);
+    let report = loaded.report_off(&checked.format, &checked.lines).await?;
     Ok(Prepared {
         draft: DeckDraft {
             name: checked.name,
@@ -239,7 +244,9 @@ pub(crate) async fn list(
     let decks = s.repo.list(s.owner).await.map_err(|error| failed(&error))?;
     let lines: Vec<Line> = decks.iter().flat_map(lines_of).collect();
     let loaded = Loaded::load(s.cards, &lines).await?;
-    let items = decks.iter().map(|deck| list_item(&loaded, deck)).collect();
+    let items = loaded
+        .off(move |loaded| decks.iter().map(|deck| list_item(loaded, deck)).collect())
+        .await?;
     Ok(Json(DeckList { decks: items }))
 }
 
@@ -260,7 +267,7 @@ pub(crate) async fn create(
         .create(s.owner, &prepared.draft, MAX_DECKS_PER_USER)
         .await
         .map_err(save_failed)?;
-    let view = deck_view(&prepared.loaded, &stored);
+    let view = deck_view_off(&prepared.loaded, stored).await?;
     Ok((StatusCode::CREATED, Json(view)))
 }
 
@@ -279,7 +286,7 @@ pub(crate) async fn get_one(
         .map_err(|error| failed(&error))?
         .ok_or_else(not_found)?;
     let loaded = Loaded::load(s.cards, &lines_of(&deck)).await?;
-    Ok(Json(deck_view(&loaded, &deck)))
+    Ok(Json(deck_view_off(&loaded, deck).await?))
 }
 
 /// `PUT /api/decks/{id}`: replaces the deck (name, format, notes and every line) and the check
@@ -303,7 +310,7 @@ pub(crate) async fn replace(
         .await
         .map_err(|error| failed(&error))?
         .ok_or_else(not_found)?;
-    Ok(Json(deck_view(&prepared.loaded, &stored)))
+    Ok(Json(deck_view_off(&prepared.loaded, stored).await?))
 }
 
 /// `DELETE /api/decks/{id}`: deletes the deck; 204.
@@ -378,7 +385,7 @@ pub(crate) async fn check(
     };
     let loaded = Loaded::load(s.cards, &lines).await?;
     loaded.require(&lines)?;
-    let mut report = loaded.report(&format, &lines);
+    let mut report = loaded.report_off(&format, &lines).await?;
     if let Some((kind, house)) = table {
         judge_at_table(s.cards, &lines, &mut report, kind, &house).await?;
     }

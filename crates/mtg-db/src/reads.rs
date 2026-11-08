@@ -12,6 +12,7 @@ use uuid::Uuid;
 use crate::drafts::{DraftKey, unzip_keys, uuid_of};
 use crate::error::DbError;
 use crate::fix_marks::clean;
+use crate::ranks::{RankRepo, by_rank};
 
 /// What a verdict says of a draft.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, sqlx::Type)]
@@ -287,7 +288,8 @@ impl ReadRepo {
 
     /// What `user` has left to read among these cards (a deck's, in deck order): the cards whose
     /// current draft is pending, then those approved that this account has not judged on the current
-    /// hash. A card that is `wrong` or has no current draft, and one `user` judged, is not in it.
+    /// hash, each part by popularity (`card_ranks`, most played first; cards without a rank after, in
+    /// deck order). A card that is `wrong` or has no current draft, and one `user` judged, is not in it.
     pub async fn queue(&self, user: Uuid, cards: &[OracleId]) -> Result<Vec<DraftRead>, DbError> {
         let states = self.state_of(cards).await?;
         let keys: Vec<DraftKey> = states
@@ -304,7 +306,12 @@ impl ReadRepo {
             .filter(|read| read.current)
             .map(|read| read.oracle_id)
             .collect();
-        Ok(queue_order(cards, states, &judged))
+        let mut queue = queue_order(cards, states, &judged);
+        let ranks = RankRepo::new(self.pool.clone()).of(cards).await?;
+        by_rank(&mut queue, |read| ranks.get(&read.oracle_id).copied());
+        // A stable sort on the state alone keeps the pending part first and each part by rank.
+        queue.sort_by_key(|read| read.state != ReadState::Pending);
+        Ok(queue)
     }
 
     /// Every verdict ever given, by card name, account (the server's first) and time; with

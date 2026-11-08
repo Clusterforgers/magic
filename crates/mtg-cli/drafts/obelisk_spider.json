@@ -26,7 +26,11 @@
               "Caused": {
                 "inner": {
                   "Batch": {
-                    "CountersPut": { "what": [{ "Type": "Creature" }], "counter": "-1/-1" }
+                    "CountersPut": {
+                      "what": [{ "Type": "Creature" }],
+                      "counter": "-1/-1",
+                      "each": true
+                    }
                   }
                 },
                 "by": "You"

@@ -1,4 +1,4 @@
-//! Goal: the server loads the current drafts with their read state into the library of a game: a trusted Forge draft (source `forge`, Oracle text matched) is played automatically as `forge`, a draft a player approved as `read`, any other draft and any draft with a `wrong` verdict by hand; a game pins the drafts it plays in its recipe, so a verdict never changes a game that runs, its resume builds the same cards, and a pinned draft that is gone fails the game; seats that chose under different draft states play one definition per card, so the game resumes; a draft load that failed is not kept as current; the next game after a `wrong` verdict is played by hand; an ability the game leaves to the table records the server's own `wrong`; and a fix mark on a card that runs on a read records the account's `wrong`.
+//! Goal: the server loads the current drafts with their read state into the library of a game: a trusted Forge draft (source `forge`, Oracle text matched) is played automatically as `forge`, a draft a player approved as `read`, any other draft as `unverified` and any draft with a `wrong` verdict by hand; a game pins the drafts it plays in its recipe, so a verdict never changes a game that runs, its resume builds the same cards (only the Unverified label follows the verdicts), and a pinned draft that is gone fails the game; seats that chose under different draft states play one definition per card, so the game resumes; a draft load that failed is not kept as current; the next game after a `wrong` verdict is played by hand; an ability the game leaves to the table records the server's own `wrong`; and a fix mark on a card that runs on a read records the account's `wrong`.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -134,7 +134,7 @@ const CASES: &[Case] = &[
         SOURCE_SWEEP,
         false,
         &[],
-        Support::Manual,
+        Support::Unverified,
     ),
     (
         "a sweep draft a player approved",
@@ -169,7 +169,7 @@ const CASES: &[Case] = &[
         SOURCE_FORGE,
         false,
         &[],
-        Support::Manual,
+        Support::Unverified,
     ),
     (
         "a Forge draft whose text did not match, approved",
@@ -319,6 +319,45 @@ async fn a_game_resumes_with_its_pinned_cards_whatever_the_verdicts_are_now(pool
 }
 
 #[sqlx::test(migrations = false)]
+async fn a_game_pins_an_unread_draft_as_unverified_and_a_read_given_later_changes_only_its_label(
+    pool: PgPool,
+) {
+    let db = seeded(&pool).await;
+    let key = draft(&db, SOURCE_SWEEP, false, false).await;
+    assert_eq!(support(&source(&pool)).await, Support::Unverified);
+    let config = config(66);
+    let first = registry(&pool, &config);
+    let (game, _bots) = started(&first, 66, 60).await;
+    let before = first.handle(game).unwrap().status().await.unwrap();
+    drop(first);
+    let recipe: GameRecipe = serde_json::from_value(recipe_of(&pool, game).await).unwrap();
+    assert_eq!(recipe.reads.get(&id_of(CARD)), Some(&key.read_hash));
+    let card = |catalog: &mtg_server::Catalog| {
+        let card = catalog.get(&id_of(CARD)).unwrap();
+        (card.read, card.unverified.0, card.rules.len())
+    };
+    let unread = card(&source(&pool).catalog_for(&recipe).await.unwrap());
+    assert_eq!(
+        (unread.0, unread.1),
+        (true, true),
+        "it runs, shown as unverified"
+    );
+
+    verdict(&db, &key, Verdict::Correct, Some(5)).await;
+    let second = registry(&pool, &config);
+    let report = second.resume().await.unwrap();
+
+    assert_eq!((report.resumed, report.failed.len()), (1, 0), "{report:?}");
+    let after = second.handle(game).unwrap().status().await.unwrap();
+    assert_eq!(
+        (after.events, after.state_hash),
+        (before.events, before.state_hash)
+    );
+    let read = card(&source(&pool).catalog_for(&recipe).await.unwrap());
+    assert_eq!(read, (true, false, unread.2), "the same rules, now read");
+}
+
+#[sqlx::test(migrations = false)]
 async fn a_game_whose_pinned_draft_is_gone_fails_at_boot_like_a_lost_card(pool: PgPool) {
     let db = seeded(&pool).await;
     draft(&db, SOURCE_FORGE, true, false).await;
@@ -437,7 +476,9 @@ async fn a_fix_mark_on_a_card_that_runs_on_a_read_records_the_accounts_wrong(poo
 #[sqlx::test(migrations = false)]
 async fn a_fix_mark_on_a_card_played_by_hand_records_no_verdict(pool: PgPool) {
     let db = seeded(&pool).await;
-    draft(&db, SOURCE_SWEEP, false, false).await;
+    let key = draft(&db, SOURCE_SWEEP, false, false).await;
+    verdict(&db, &key, Verdict::Wrong, Some(7)).await;
+    assert_eq!(support(&source(&pool)).await, Support::Manual);
     let server = TestServer::start_with_cards(pool.clone(), bot_config(), source(&pool)).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let path = format!("/api/fix-marks/{}", id_of(CARD));
@@ -449,7 +490,38 @@ async fn a_fix_mark_on_a_card_played_by_hand_records_no_verdict(pool: PgPool) {
         .fetch_one(&pool)
         .await
         .unwrap();
-    assert_eq!(verdicts, 0);
+    assert_eq!(verdicts, 1, "only the earlier wrong");
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_fix_mark_on_an_unverified_card_records_the_accounts_wrong_and_plays_it_by_hand(
+    pool: PgPool,
+) {
+    let db = seeded(&pool).await;
+    draft(&db, SOURCE_SWEEP, false, false).await;
+    let server = TestServer::start_with_cards(pool.clone(), bot_config(), source(&pool)).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    let path = format!("/api/fix-marks/{}", id_of(CARD));
+    let card = || async {
+        net::get(server.addr, &format!("/api/cards/{}", id_of(CARD)))
+            .await
+            .json()["card"]["support"]
+            .clone()
+    };
+    assert_eq!(card().await, "unverified", "the card detail names the tier");
+
+    let marked = ann.put(server.addr, &path, &mark_body(None)).await;
+
+    assert_eq!(marked.status, 200, "{}", marked.text());
+    assert_eq!(card().await, "manual", "played by hand from the next game");
+    let wrong: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM card_reads WHERE verdict = 'wrong' AND user_id IS NOT NULL",
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert_eq!(wrong, 1);
+    assert_eq!(support(&source(&pool)).await, Support::Manual);
 }
 
 // ---- seats that chose under different draft states ----

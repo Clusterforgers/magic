@@ -1,4 +1,5 @@
-/** The one wording and address for cards that wait for a player's read, so every deck check agrees (docs/web.md, "Accounts and games pages"). */
+/** The one wording and address for cards that wait for a player's read, so every deck check agrees, and the words of the tiers that run before a read (docs/web.md, "Accounts and games pages"). */
+import type { Counts } from '@/protocol/generated'
 import { BY_HAND } from './byHand'
 
 /** What is said of a draft nobody has judged, in a count: "3 cards to read". */
@@ -7,8 +8,17 @@ export const TO_READ = 'to read'
 /** The name of a filter or a heading for the cards that wait for a read. */
 export const TO_READ_TITLE = 'To read'
 
-/** The deck state of a deck whose only cards that are not Verified are approved reads. */
-export const RUNS_ON_READS = 'Runs on reads'
+/** The deck state of a deck the game runs whole, whether or not every card of it is Verified. */
+export const WHOLE_DECK_RUNS = 'Whole deck runs'
+
+/** The word of a card whose draft runs before any player read it. */
+export const UNVERIFIED = 'Unverified'
+
+/** What an unverified card is, in plain words: the game runs it, nobody has read it yet. */
+export const UNVERIFIED_MEANING = 'Runs automatically, not verified: nobody has read its rules yet'
+
+/** The link that opens the read of an unverified card. */
+export const READ_IT = 'Read it'
 
 /** What a card translated from a Forge script is, in plain words: the game runs it, nobody verified it. */
 export const FROM_FORGE = 'Runs automatically, translated from Forge, not verified'
@@ -24,9 +34,18 @@ export function cardsToRead(count: number): string {
   return `${count} ${count === 1 ? 'card' : 'cards'} ${TO_READ}`
 }
 
-/** "1 card on reads", "4 cards on reads": copies of cards that run on a player's read. */
-export function cardsOnReads(count: number): string {
-  return `${count} ${count === 1 ? 'card' : 'cards'} on reads`
+/**
+ * The quiet line under a deck the game runs whole: its copies that are not Verified, by tier, "34 from Forge · 120
+ * unverified · 2 read"; empty when every copy is Verified.
+ */
+export function runsBreakdown(counts: Pick<Counts, 'forge' | 'unverified' | 'read'>): string {
+  return [
+    counts.forge > 0 ? `${counts.forge} from Forge` : null,
+    counts.unverified > 0 ? `${counts.unverified} unverified` : null,
+    counts.read > 0 ? `${counts.read} read` : null,
+  ]
+    .filter((part) => part !== null)
+    .join(' · ')
 }
 
 /** What a draft that is on a card of a deck says of its read: nobody read it yet, or a player found it wrong. */

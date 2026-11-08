@@ -23,6 +23,11 @@ read: number,
  */
 forge: number, 
 /**
+ * Copies of `unverified` cards: whole drafts waiting for their first read, which the game runs like `read` ones. A
+ * check stored before this tier has none.
+ */
+unverified: number, 
+/**
  * Copies of `partial` cards.
  */
 partial: number, 

@@ -1,4 +1,4 @@
-//! Goal: a trusted Forge draft is `Forge`, not `Read`: it is approved only when its read state is, runs like a read card (the definition is on a read, fail-soft resolution applies), has a fingerprint of its own, is counted apart in a deck whose state is still "runs on reads", and changes no `Verified` number.
+//! Goal: a trusted Forge draft is `Forge`, not `Read`: it is `Forge` only when its read state is approved and `Unverified` while pending, runs like a read card (the definition is on a read, fail-soft resolution applies), has a fingerprint of its own, is counted apart in a deck whose state is still `read`, and changes no `Verified` number.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::{Corpus, printed};
@@ -46,7 +46,9 @@ fn library(read: ReadState, forge: bool) -> (Library, PrintedCard) {
 #[case::a_trusted_forge_draft_that_is_approved(ReadState::Approved, true, Support::Forge)]
 #[case::a_player_approved_draft(ReadState::Approved, false, Support::Read)]
 #[case::a_trusted_forge_draft_found_wrong(ReadState::Wrong, true, Support::Manual)]
-#[case::a_trusted_forge_draft_still_pending(ReadState::Pending, true, Support::Manual)]
+#[case::a_trusted_forge_draft_still_pending(ReadState::Pending, true, Support::Unverified)]
+#[case::a_player_draft_still_pending(ReadState::Pending, false, Support::Unverified)]
+#[case::a_player_draft_found_wrong(ReadState::Wrong, false, Support::Manual)]
 fn the_tier_of_a_draft_follows_its_source_and_its_read_state(
     #[case] read: ReadState,
     #[case] forge: bool,

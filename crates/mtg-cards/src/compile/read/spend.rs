@@ -599,11 +599,49 @@ pub(super) fn more(text: &str) -> Vec<String> {
     let mut forms = vec![text.to_owned()];
     forms.extend(singular(text));
     let mut found: Vec<String> = forms[1..].to_vec();
+    found.extend(pair_forms(text));
     for form in &forms {
         found.extend(and_or(form));
         found.extend(abilities(form));
     }
     found
+}
+
+/// "cast a Knight spell or an Equipment spell" and "cast a Knight or Equipment spell" for "cast Knight spells or Equipment
+/// spells"; the short form only for two single-word kinds, where "or" cannot join a longer phrase.
+fn pair_forms(text: &str) -> Vec<String> {
+    let Some((head, nouns)) = text.split_once("only to cast ") else {
+        return Vec::new();
+    };
+    let Some((first, rest)) = nouns.split_once(" spells or ") else {
+        return Vec::new();
+    };
+    let Some((second, tail)) = rest.split_once(" spells") else {
+        return Vec::new();
+    };
+    let plain = |kind: &str| {
+        !kind.is_empty()
+            && !kind.contains(" or ")
+            && !kind.contains(',')
+            && !kind.contains("spell")
+            && !kind.contains(" of ")
+    };
+    if !(plain(first) && plain(second)) || tail.contains("spell") {
+        return Vec::new();
+    }
+    let article = super::triggers::article;
+    let mut forms = vec![format!(
+        "{head}only to cast {} {first} spell or {} {second} spell{tail}",
+        article(first),
+        article(second)
+    )];
+    if !first.contains(' ') && !second.contains(' ') {
+        forms.push(format!(
+            "{head}only to cast {} {first} or {second} spell{tail}",
+            article(first)
+        ));
+    }
+    forms
 }
 
 /// "cast instant and/or sorcery spells" for "cast instant or sorcery spells", "Vampire, Cleric, and/or Demon spells" for

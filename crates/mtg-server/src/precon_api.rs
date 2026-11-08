@@ -31,7 +31,7 @@ use crate::cards::CardSource;
 use crate::deck_cards::{Line, Loaded};
 use crate::deck_choice::judge_cards_at_table;
 use crate::decks::table_of;
-use crate::precons::{Judge, Judged, PreconError, zone_of};
+use crate::precons::{Judged, PreconError, judged_off, zone_of};
 use crate::server::AppState;
 
 impl From<PreconError> for ApiError {
@@ -92,8 +92,7 @@ pub(crate) async fn judged_precon(
         return Ok(None);
     };
     let rules = cards.rules().await?;
-    let judged = Judge::new(&rules).judge(&deck);
-    Ok(Some((deck, judged)))
+    Ok(Some(judged_off(&rules, deck).await?))
 }
 
 /// `POST /api/decks/check` for `precon:<code>` as the deck: the precon's report, judged by the
@@ -155,7 +154,7 @@ pub(crate) async fn get_one(
         .map_err(|error| failed(&error))?
         .ok_or_else(ApiError::not_found)?;
     let rules = cards.rules().await?;
-    let judged = Judge::new(&rules).judge(&deck);
+    let (deck, judged) = judged_off(&rules, deck).await?;
     let loaded = Loaded::load_under(cards, rules.clone(), &judged.lines).await?;
 
     let reported: HashMap<(DeckZone, &str), &ReportCard> = judged

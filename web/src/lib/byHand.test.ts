@@ -19,6 +19,7 @@ const counts = (found: Partial<Counts>): Counts => ({
   verified: 100,
   read: 0,
   forge: 0,
+  unverified: 0,
   partial: 0,
   manual: 0,
   stale: 0,
@@ -49,6 +50,7 @@ describe('the words', () => {
     ['partial, manual and stale copies add up', counts({ partial: 1, manual: 2, stale: 3 }), 6],
     ['unplayable copies are not played at all', counts({ unplayable: 4 }), 0],
     ['read copies run whole, so none is played by hand', counts({ verified: 96, read: 4 }), 0],
+    ['unverified and Forge copies run whole too', counts({ verified: 80, unverified: 16, forge: 4 }), 0],
   ])('count the copies of %s', (_what, given, copies) => {
     expect(byHandCopies(given)).toBe(copies)
   })
@@ -57,6 +59,7 @@ describe('the words', () => {
     ['verified', true],
     ['read', true],
     ['forge', true],
+    ['unverified', true],
     ['partial', false],
     ['manual', false],
     ['stale', false],

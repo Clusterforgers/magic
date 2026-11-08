@@ -1,4 +1,4 @@
-//! Goal: a replacement of damage, tokens, counters, a draw or a move between zones is written as the card words it, in every wording the card may use, and the wording of another player, source, kind of counter, number or zone is not its text.
+//! Goal: a replacement of damage, tokens, counters, a draw, a mill or a move between zones is written as the card words it, in every wording the card may use, and the wording of another player, source, kind of counter, number or zone is not its text.
 use super::*;
 
 /// Whether one of the wordings of the ability is the text.
@@ -76,6 +76,14 @@ fn writes(json: &str, text: &str) -> bool {
 #[case::thought_reflection(
     r#"{"Replacement":{"when":{"Draw":{}},"by":{"Multiply":2}}}"#,
     "If you would draw a card, draw two cards instead."
+)]
+#[case::bruvac_the_grandiloquent(
+    r#"{"Replacement":{"when":{"Mill":{"who":"Opponents"}},"by":{"Multiply":2}}}"#,
+    "If an opponent would mill one or more cards, they mill twice that many cards instead."
+)]
+#[case::the_water_crystal(
+    r#"{"Replacement":{"when":{"Mill":{"who":"Opponents"}},"by":{"Add":4}}}"#,
+    "If an opponent would mill one or more cards, they mill that many cards plus four instead."
 )]
 #[case::rest_in_peace(
     r#"{"Replacement":{"when":{"ZoneChange":{"what":[],"to":"Graveyard"}},"by":{"MoveTo":"Exile"}}}"#,
@@ -157,6 +165,22 @@ fn replacements_are_written_as_the_card_words_them(#[case] json: &str, #[case] t
 #[case::three_cards_for_two(
     r#"{"Replacement":{"when":{"Draw":{}},"by":{"Multiply":3}}}"#,
     "If you would draw a card, draw two cards instead."
+)]
+#[case::mill_of_another_player(
+    r#"{"Replacement":{"when":{"Mill":{"who":"You"}},"by":{"Multiply":2}}}"#,
+    "If an opponent would mill one or more cards, they mill twice that many cards instead."
+)]
+#[case::mill_three_times(
+    r#"{"Replacement":{"when":{"Mill":{"who":"Opponents"}},"by":{"Multiply":3}}}"#,
+    "If an opponent would mill one or more cards, they mill twice that many cards instead."
+)]
+#[case::mill_plus_another_number(
+    r#"{"Replacement":{"when":{"Mill":{"who":"Opponents"}},"by":{"Add":3}}}"#,
+    "If an opponent would mill one or more cards, they mill that many cards plus four instead."
+)]
+#[case::mill_prevented(
+    r#"{"Replacement":{"when":{"Mill":{"who":"Opponents"}},"by":"Prevent"}}"#,
+    "If an opponent would mill one or more cards, they mill twice that many cards instead."
 )]
 fn the_wording_of_another_replacement_is_not_the_text(#[case] json: &str, #[case] text: &str) {
     assert!(!writes(json, text), "{text}");

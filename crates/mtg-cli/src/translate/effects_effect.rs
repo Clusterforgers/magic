@@ -406,19 +406,26 @@ pub(super) fn remembered(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "key:Effect.Defined={defined}-beside-RememberObjects"
         ));
     }
+    // The statics begin as the effect does, so they fix what the word names then (CR 611.2c).
     let who = match word {
         "Targeted" | "ThisTargetedCard" if p.has("ValidTgts") => subject(ctx, p, "", None)?,
-        "Self" => json!("This"),
-        "Targeted" => ctx.last_target()?,
-        "Remembered" | "RememberedCard" => defined(ctx, "Remembered")?,
-        // A word another step of the line already reads as an object: the choice, the imprint, the enchanted creature.
-        "ChosenCard" | "Imprinted" | "Enchanted" => defined(ctx, word)?,
+        // A word another step of the line already reads as an object: the choice.
+        "ChosenCard" => defined(ctx, word)?,
         "TriggeredCard" => super::triggered::resolve(ctx.trigger.as_ref(), "TriggeredCard")?,
         word if super::triggered::is_word(word) => {
             super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?
         }
-        "ParentTarget" => ctx.parent()?,
-        other => return unmapped(format!("key:Effect.RememberObjects={other}")),
+        // Two references side by side, or every object a valid-string selects: the objects as the effect begins.
+        word if word.contains(" & ") || word.starts_with("Valid") => {
+            // "Each of those creatures ... for as long as it has a counter" ends per object, the engine's duration for all.
+            if p.has("ForgetCounter") {
+                return unmapped("key:Effect.ForgetCounter-on-a-group");
+            }
+            defined(ctx, word)?
+        }
+        word => super::refs::read_or(ctx, word, super::refs::Scope::Fixed, || {
+            format!("key:Effect.RememberObjects={word}")
+        })?,
     };
     Ok(who)
 }

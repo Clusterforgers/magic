@@ -80,13 +80,13 @@ impl Report {
 fn state_table(out: &mut String, tally: &[StateTally], cards: u32, copies: u32) {
     let _ = writeln!(
         out,
-        "{:<9} {:>6} {:>6} {:>8} {:>6}",
+        "{:<10} {:>5} {:>6} {:>8} {:>6}",
         "state", "cards", "share", "copies", "share"
     );
     for row in tally {
         let _ = writeln!(
             out,
-            "{:<9} {:>6} {:>6} {:>8} {:>6}",
+            "{:<10} {:>5} {:>6} {:>8} {:>6}",
             row.bucket.name(),
             row.cards,
             percent(row.cards, cards),

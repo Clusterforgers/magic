@@ -105,7 +105,7 @@ fn simple(ctx: &mut Ctx, p: &Params, api: &str, verb: &str) -> Tr<Value> {
 /// picks on resolution. `RememberTapped$` binds the permanents that became tapped. A cap other than "all that match"
 /// stays a gap.
 fn tap(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    let remember = remember::wanted(p, &["RememberTapped"]);
+    let remember = remember::wanted(p, "Tap");
     let Some(choices) = p.get("CardChoices") else {
         return Ok(vec![simple(ctx, p, "Tap", "Tap")?]);
     };
@@ -171,7 +171,7 @@ fn all_of(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
     }
     let valid = p.get("ValidCards").unwrap_or_default();
     let mut effect = json!({ verb: {"what": {"Each": frame::all_matching(ctx, p, verb, valid)?}} });
-    if remember::wanted(p, &["RememberTapped"]) {
+    if remember::wanted(p, "TapAll") {
         remember::bind_moved(ctx, &mut effect, verb, "tapped");
     }
     Ok(effect)
@@ -246,7 +246,7 @@ fn destroy(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     };
     let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
     // The target is remembered whether or not it is destroyed (a regenerated creature is still "that creature").
-    let remembers = remember::wanted(p, &["RememberDestroyed", "RememberLKI", "RememberTargets"]);
+    let remembers = remember::wanted(p, "Destroy");
     // "Destroy up to three target permanents. For each of those permanents, ...": the targets, destroyed or not.
     let those = p.get("RememberTargets") == Some("True")
         && ctx.oracle.to_lowercase().contains("for each of those");
@@ -281,7 +281,7 @@ fn destroy_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let regenerate = p.get("NoRegen") != Some("True");
     let what = json!({"Each": frame::all_matching(ctx, p, "DestroyAll", valid)?});
     let mut effect = json!({"Destroy": {"what": what, "regenerate": regenerate}});
-    if remember::wanted(p, &["RememberDestroyed"]) {
+    if remember::wanted(p, "DestroyAll") {
         remember::bind_moved(ctx, &mut effect, "Destroy", "destroyed");
     }
     Ok(effect)
@@ -633,7 +633,7 @@ fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         ],
     )?;
     // "If that spell is countered this way": the spells the step countered, as the cards they became.
-    let remembers = remember::wanted(p, &["RememberCountered"]);
+    let remembers = remember::wanted(p, "Counter");
     // Forge remembers the source of a countered ability, which our name does not hold.
     if remembers && p.get("TargetType").is_some_and(|kinds| kinds != "Spell") {
         return unmapped("key:Counter.RememberCountered-of-an-ability");
@@ -1834,7 +1834,7 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let count = frame::count(ctx, p, &SACRIFICE)?.max;
     let verb = if up_to { "SacrificeUpTo" } else { "Sacrifice" };
     let mut effect = json!({verb: {"who": who.clone(), "filter": filter, "count": count}});
-    if remember::wanted(p, &["RememberSacrificed"]) {
+    if remember::wanted(p, "Sacrifice") {
         remember::bind_moved(ctx, &mut effect, verb, "sacrificed");
     }
     if may && !up_to {
@@ -2010,7 +2010,7 @@ pub fn attach(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RememberAttached",
         ],
     )?;
-    let remembers = remember::wanted(p, &["RememberAttached"]);
+    let remembers = remember::wanted(p, "Attach");
     // Forge adds each attachment to what earlier steps remembered, which a choice that excludes the remembered reads.
     if remembers && p.get("Choices").is_some_and(|c| c.contains("Remembered")) {
         return unmapped("key:Attach.RememberAttached-with-remembered-choices");
