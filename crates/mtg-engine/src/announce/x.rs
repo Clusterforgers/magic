@@ -57,7 +57,8 @@ impl XCost {
             }
             What::Ability(ability) => match rules? {
                 activated @ Ability::Activated { cost, .. } => {
-                    let cost = crate::free_activation::cost(state, player, (*ability, activated), cost);
+                    let cost =
+                        crate::free_activation::cost(state, player, (*ability, activated), cost);
                     let price = Price::announced_in(
                         &cost,
                         state,

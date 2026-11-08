@@ -55,9 +55,20 @@ pub(crate) fn cost<'a>(
         .unwrap_or(Cow::Borrowed(cost))
 }
 
+/// Whether `player` may activate the ability `rules` at `address`, which is activated only as a sorcery, now: they could
+/// cast a sorcery, or an `InstantActivation` lets them at instant speed.
+pub(crate) fn timing_open(
+    state: &GameState,
+    player: PlayerId,
+    (address, rules): (AbilityRef, &Ability),
+) -> bool {
+    crate::priority::sorcery_timing(state, player)
+        || at_instant_speed(state, player, (address, rules))
+}
+
 /// Whether `player` may activate the ability `rules` at `address`, which is activated only as a sorcery, any time they
 /// could cast an instant: a permanent they control has an `InstantActivation` of its kind whose condition holds.
-pub(crate) fn at_instant_speed(
+fn at_instant_speed(
     state: &GameState,
     player: PlayerId,
     (address, rules): (AbilityRef, &Ability),

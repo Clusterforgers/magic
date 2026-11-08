@@ -19,6 +19,7 @@ use crate::decision::{FaceOption, PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::faces;
+use crate::free_activation;
 use crate::keywords;
 use crate::loyalty;
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
@@ -216,7 +217,8 @@ fn can_activate(
         return false;
     }
     let cost = crate::free_activation::cost(state, player, (address, rules), cost);
-    let Ok(price) = Price::announced_in(&cost, state, player, object.id(), address.source.granter())
+    let Ok(price) =
+        Price::announced_in(&cost, state, player, object.id(), address.source.granter())
     else {
         return false;
     };
@@ -234,9 +236,7 @@ fn can_activate(
     let Some(claimed) = price.claimed(state, player, object.id()) else {
         return false;
     };
-    if *timing == Timing::Sorcery
-        && !sorcery_timing(state, player)
-        && !crate::free_activation::at_instant_speed(state, player, (address, rules))
+    if *timing == Timing::Sorcery && !free_activation::timing_open(state, player, (address, rules))
     {
         return false;
     }

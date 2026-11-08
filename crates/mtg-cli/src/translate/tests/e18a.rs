@@ -14,30 +14,30 @@ fn gated(svar: &str) -> String {
     )
 }
 
-fn tally(event: Value, filter: Value) -> Value {
+fn tally(event: &Value, filter: &Value) -> Value {
     json!({"Tally": {"event": event, "who": "You", "filter": filter}})
 }
 
 #[rstest]
 #[case::equip(
     "Count$ThisTurnActivated_Activated.Equip+YouCtrl",
-    tally(json!({"KindActivated": "Equip"}), json!([]))
+    tally(&json!({"KindActivated": "Equip"}), &json!([]))
 )]
 #[case::cycling(
     "Count$ThisTurnActivated_Activated.Cycling+YouCtrl",
-    tally(json!({"KindActivated": "Cycling"}), json!([]))
+    tally(&json!({"KindActivated": "Cycling"}), &json!([]))
 )]
 #[case::loyalty_of_a_planeswalker(
     "Count$ThisTurnActivated_Activated.Loyalty+Planeswalker+YouCtrl",
-    tally(json!({"KindActivated": "Loyalty"}), json!([]))
+    tally(&json!({"KindActivated": "Loyalty"}), &json!([]))
 )]
 #[case::unearth(
     "Count$ThisTurnActivated_Activated.Unearth+YouCtrl",
-    tally(json!({"KindActivated": "Unearth"}), json!([]))
+    tally(&json!({"KindActivated": "Unearth"}), &json!([]))
 )]
 #[case::of_an_artifact(
     "Count$ThisTurnActivated_Activated.Artifact+YouCtrl",
-    tally(json!("Activated"), json!([{"Type": "Artifact"}]))
+    tally(&json!("Activated"), &json!([{"Type": "Artifact"}]))
 )]
 fn activations_of_the_turn_read(#[case] svar: &str, #[case] expected: Value) {
     let text = gated(svar);
@@ -86,7 +86,9 @@ fn free_activations_read(#[case] line: &str, #[case] expected: Value) {
 }
 
 #[rstest]
-#[case::a_discard_for_equip("ValidSA$ Activated.Equip | ValidPlayer$ You | Cost$ Discard<1/CARDNAME> | CostDesc$ 0")]
+#[case::a_discard_for_equip(
+    "ValidSA$ Activated.Equip | ValidPlayer$ You | Cost$ Discard<1/CARDNAME> | CostDesc$ 0"
+)]
 #[case::mana("ValidSA$ Activated.Equip | ValidPlayer$ You | Cost$ 1")]
 #[case::loyalty("ValidSA$ Activated.Loyalty | ValidPlayer$ You | Cost$ 0")]
 #[case::another_kind("ValidSA$ Activated.PowerUp | ValidPlayer$ You | Cost$ 0")]
@@ -105,7 +107,10 @@ fn flash(line: &str) -> String {
     "ValidSA$ Activated.Equip | Caster$ You | Condition$ PlayerTurn",
     Some(json!({"InstantActivation": {"kind": "Equip", "condition": "YourTurn"}}))
 )]
-#[case::loyalty("ValidCard$ Planeswalker.YouCtrl | ValidSA$ Activated.Loyalty | Caster$ You", None)]
+#[case::loyalty(
+    "ValidCard$ Planeswalker.YouCtrl | ValidSA$ Activated.Loyalty | Caster$ You",
+    None
+)]
 #[case::any_player("ValidSA$ Activated.Equip", None)]
 fn instant_activations_read(#[case] line: &str, #[case] expected: Option<Value>) {
     let text = flash(line);

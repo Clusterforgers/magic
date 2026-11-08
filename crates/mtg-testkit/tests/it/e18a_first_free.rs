@@ -11,10 +11,10 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
+use mtg_engine::PresetPermanent;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{forest, mountain};
-use mtg_engine::PresetPermanent;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -84,7 +84,10 @@ fn scenario_with(
     guide: Arc<CardDefinition>,
     more: Vec<PresetPermanent>,
 ) -> Scenario {
-    let mut mine = vec![ready(guide), ready(mtg_testkit::cards::free_creature("Bear", 2, 2))];
+    let mut mine = vec![
+        ready(guide),
+        ready(mtg_testkit::cards::free_creature("Bear", 2, 2)),
+    ];
     mine.extend(more);
     mine.extend((0..4).map(|_| ready(mountain())));
     let mut scenario = Scenario::new(seats).at(1, 0, Step::Main1);
@@ -146,11 +149,19 @@ fn the_first_ability_of_the_kind_each_turn_is_free(
     activate(&mut driver, "One").unwrap();
     assert_eq!(tapped_mountains(&driver), 0, "the first {kind} is free");
     activate(&mut driver, "Two").unwrap();
-    assert_eq!(tapped_mountains(&driver), 2, "the second {kind} costs {{2}}");
+    assert_eq!(
+        tapped_mountains(&driver),
+        2,
+        "the second {kind} costs {{2}}"
+    );
     let next = 1 + u32::try_from(seats).unwrap();
     driver.idle_until(next, Step::Main1).unwrap();
     activate(&mut driver, "Three").unwrap();
-    assert_eq!(tapped_mountains(&driver), 0, "a new turn's first {kind} is free");
+    assert_eq!(
+        tapped_mountains(&driver),
+        0,
+        "a new turn's first {kind} is free"
+    );
     replays(&driver, &setup);
 }
 
@@ -169,7 +180,8 @@ fn without_a_condition_every_ability_of_the_kind_is_free(#[values(2, 3, 4)] seat
 #[case::another_kind("Equip", "Cycling")]
 #[case::unearth_for_equip("Unearth", "Equip")]
 fn a_guide_of_another_kind_frees_nothing(#[case] guided: &str, #[case] kind: &str) {
-    let mut driver = Driver::from_scenario(scenario(2, kind, guide(guided, Some(&first(guided))))).unwrap();
+    let mut driver =
+        Driver::from_scenario(scenario(2, kind, guide(guided, Some(&first(guided))))).unwrap();
     activate(&mut driver, "One").unwrap();
     assert_eq!(tapped_mountains(&driver), 2);
 }
@@ -214,9 +226,15 @@ fn the_tally_of_the_turn_is_kept_by_kind(#[values(2, 3, 4)] seats: usize) {
 /// `None` for an artifact without it.
 fn quick(rule: Option<bool>) -> Arc<CardDefinition> {
     let json = match rule {
-        None => r#"{"Activated":{"cost":["Tap"],"effects":[{"GainLife":{"amount":1}}]}}"#.to_owned(),
+        None => {
+            r#"{"Activated":{"cost":["Tap"],"effects":[{"GainLife":{"amount":1}}]}}"#.to_owned()
+        }
         Some(yours) => {
-            let condition = if yours { r#","condition":"YourTurn""# } else { "" };
+            let condition = if yours {
+                r#","condition":"YourTurn""#
+            } else {
+                ""
+            };
             format!(r#"{{"InstantActivation":{{"kind":"Equip"{condition}}}}}"#)
         }
     };

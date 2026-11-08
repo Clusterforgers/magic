@@ -6,7 +6,6 @@
 //! [`characteristics`], never stored.
 
 mod activation_kind;
-mod free_activation;
 mod announce;
 mod answers;
 mod attach;
@@ -30,6 +29,7 @@ mod faces;
 #[cfg(test)]
 mod fixtures;
 mod flow;
+mod free_activation;
 #[cfg(test)]
 mod help_tests;
 mod land_types;

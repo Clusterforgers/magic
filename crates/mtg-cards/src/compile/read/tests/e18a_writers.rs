@@ -18,7 +18,7 @@ fn free(kind: &str, condition: Option<String>) -> String {
     format!(r#"{{"FreeActivation":{{"kind":"{kind}"{condition}}}}}"#)
 }
 
-fn your_turns(held: String) -> String {
+fn your_turns(held: &str) -> String {
     format!(r#"{{"All":["YourTurn",{held}]}}"#)
 }
 
@@ -27,12 +27,17 @@ const FORGE_ANEW: &str = "You may pay {0} rather than pay the equip cost of the 
 const GAVI: &str =
     "You may pay {0} rather than pay the cycling cost of the first card you cycle each turn.";
 const NEW_PERSPECTIVES: &str = "As long as you have seven or more cards in hand, you may pay {0} rather than pay cycling costs.";
-const SEVEN_IN_HAND: &str = r#"{"Compare":{"left":{"Count":[{"OwnedBy":"You"},{"In":"Hand"}]},"op":"Ge","right":7}}"#;
+const SEVEN_IN_HAND: &str =
+    r#"{"Compare":{"left":{"Count":[{"OwnedBy":"You"},{"In":"Hand"}]},"op":"Ge","right":7}}"#;
 
 #[rstest]
 #[case::bruenor(free("Equip", Some(first("Equip", "Lt", 1))), BRUENOR, true)]
 #[case::none_yet(free("Equip", Some(first("Equip", "Eq", 0))), BRUENOR, true)]
-#[case::forge_anew(free("Equip", Some(your_turns(first("Equip", "Lt", 1)))), FORGE_ANEW, true)]
+#[case::forge_anew(
+    free("Equip", Some(your_turns(&first("Equip", "Lt", 1)))),
+    FORGE_ANEW,
+    true
+)]
 #[case::gavi(free("Cycling", Some(first("Cycling", "Lt", 1))), GAVI, true)]
 #[case::new_perspectives(free("Cycling", Some(SEVEN_IN_HAND.to_owned())), NEW_PERSPECTIVES, true)]
 #[case::every_equip(
@@ -45,7 +50,11 @@ const SEVEN_IN_HAND: &str = r#"{"Compare":{"left":{"Count":[{"OwnedBy":"You"},{"
 #[case::the_second(free("Equip", Some(first("Equip", "Lt", 2))), BRUENOR, false)]
 #[case::no_condition(free("Equip", None), BRUENOR, false)]
 #[case::lost_turn(free("Equip", Some(first("Equip", "Lt", 1))), FORGE_ANEW, false)]
-#[case::every_turn_for_yours(free("Equip", Some(your_turns(first("Equip", "Lt", 1)))), BRUENOR, false)]
+#[case::every_turn_for_yours(
+    free("Equip", Some(your_turns(&first("Equip", "Lt", 1)))),
+    BRUENOR,
+    false
+)]
 #[case::without_the_hand(free("Cycling", None), NEW_PERSPECTIVES, false)]
 #[case::shikari(
     r#"{"InstantActivation":{"kind":"Equip"}}"#.to_owned(),
