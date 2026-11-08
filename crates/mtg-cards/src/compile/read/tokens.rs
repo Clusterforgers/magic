@@ -216,8 +216,8 @@ pub fn same_text(left: &str, right: &str) -> bool {
 /// readers keep the stricter [`same_text`], so no clause is read into data that lacks what the text says.
 pub fn same_written_text(left: &str, right: &str) -> bool {
     let normal = |text: &str| {
-        symbols_sorted(without_period(&canonical(&super::w15_wordings::normal(
-            text,
+        symbols_sorted(without_period(&canonical(&super::w16_wordings::normal(
+            &super::w15_wordings::normal(text),
         ))))
     };
     normal(left) == normal(right)
