@@ -419,6 +419,8 @@ pub fn remembered_of(ctx: &mut Ctx, line: &Params) -> Tr<Option<Value>> {
         Some(word) if super::triggered::is_word(word) => Ok(Some(
             super::triggered::remembered_by_event(ctx.trigger.as_ref(), word)?,
         )),
+        // Every object a valid-string selects as the effect begins: the shield names them then (CR 611.2c).
+        Some(word) if word.starts_with("Valid ") => Ok(Some(super::valid::defined(ctx, word)?)),
         Some(word) => super::refs::read_or(ctx, word, super::refs::Scope::Lasting, || {
             format!("key:Effect.RememberObjects={word}")
         })
