@@ -6,6 +6,24 @@ use super::condition::{KEYS, condition};
 use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use crate::forge::script::Params;
 
+/// The secondary `GameWin` line of "you can't lose the game and your opponents can't win the game": the `GameLoss` line
+/// of the same text already states it (`opponents_cant_win`), so this line gives no ability of its own.
+pub fn opponents_cant_win(p: &Params) -> Tr<()> {
+    let read = ["Event", "ActiveZones", "ValidPlayer", "Layer", "Secondary", "Description"];
+    check_keys(p, "Replacement.GameWin", &read, |_, _| false)?;
+    let same_text = p.get("Description").map(str::trim)
+        == Some("You can't lose the game and your opponents can't win the game.");
+    if p.get("Layer") != Some("CantHappen")
+        || p.get("ValidPlayer") != Some("Opponent")
+        || p.get("Secondary") != Some("True")
+        || !same_text
+        || !matches!(p.get("ActiveZones"), None | Some("Battlefield"))
+    {
+        return unmapped("replacement:GameWin");
+    }
+    Ok(())
+}
+
 /// A `GameLoss` line with `Layer$ CantHappen` for the controller, under the line's own condition.
 pub fn game_loss(ctx: &Ctx, p: &Params, prefixed: Option<&Value>) -> Tr<Value> {
     let mut read = vec!["Event", "ActiveZones", "ValidPlayer", "Layer"];
