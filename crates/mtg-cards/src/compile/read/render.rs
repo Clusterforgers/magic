@@ -488,6 +488,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     graveyard_wordings(ability, &mut texts);
     produced_wordings(&mut texts);
     super::w15b_time::w15b_wordings(ability, &mut texts);
+    super::fix32_animate::wordings(ability, &mut texts);
     super::w20b_reflexive::w20b_wordings(ability, &mut texts);
     texts
 }
@@ -730,6 +731,12 @@ fn graveyard_wordings(ability: &Ability, texts: &mut Vec<String>) {
                     ": Return ~ from your graveyard to your hand",
                 );
             }
+            let said: Vec<String> = texts
+                .iter()
+                .filter(|text| !text.contains("Activate only"))
+                .map(|text| format!("{text} Activate only if ~ is in your graveyard."))
+                .collect();
+            texts.extend(said);
         }
         Ability::Triggered {
             when: TriggerPattern::StepBegins { .. },

@@ -12,7 +12,46 @@ use crate::forge::script::Params;
 
 /// The effects of an ability line and of the sub-abilities it names, in order.
 pub fn chain(ctx: &mut Ctx, params: &Params) -> Tr<Vec<Value>> {
-    chain_at(ctx, params, true)
+    chain_at(ctx, params, true).map(color_with_pump)
+}
+
+/// "Target creature becomes red and gains haste until end of turn. Draw a card.": Forge runs the color after the draw, the
+/// card says it with the pump; a color nothing in between depends on moves up to the pump of the same target.
+fn color_with_pump(mut effects: Vec<Value>) -> Vec<Value> {
+    let only_colors = |effect: &Value| {
+        effect.get("Continuous").is_some_and(|c| {
+            c["mods"]
+                .as_array()
+                .is_some_and(|m| m.len() == 1 && m[0].get("SetColors").is_some())
+        })
+    };
+    let Some(last) = effects
+        .len()
+        .checked_sub(1)
+        .filter(|&l| l >= 2 && only_colors(&effects[l]))
+    else {
+        return effects;
+    };
+    let same = |a: &Value, b: &Value| {
+        a.get("Continuous").is_some_and(|a| {
+            b.get("Continuous")
+                .is_some_and(|b| a["affected"] == b["affected"] && a["duration"] == b["duration"])
+        })
+    };
+    let between_are_draws = effects[1..last].iter().all(|e| e.get("Draw").is_some());
+    if !between_are_draws || !same(&effects[0], &effects[last]) || only_colors(&effects[0]) {
+        return effects;
+    }
+    let color = effects.remove(last);
+    if let (Some(Value::Array(mods)), Some(Value::Array(set))) = (
+        effects[0]
+            .get_mut("Continuous")
+            .and_then(|c| c.get_mut("mods")),
+        color.get("Continuous").map(|c| c["mods"].clone()),
+    ) {
+        mods.splice(0..0, set);
+    }
+    effects
 }
 
 /// The effects of a line and of the sub-abilities after it. A part that is not the ability itself (`top`) and has a cost

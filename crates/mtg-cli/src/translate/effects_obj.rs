@@ -1286,6 +1286,9 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
     }
     mods.extend(type_mods(ctx, p)?);
+    if affected == "This" {
+        plain_artifact_creature(ctx, &mut mods);
+    }
     if let Some(keywords) = p.get("Keywords") {
         for keyword in keyword_list(ctx, keywords)? {
             mods.push(json!({ "AddKeyword": keyword }));
@@ -1324,6 +1327,35 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.push(pump_at_eot(ctx, word, &affected)?);
     }
     Ok(effects)
+}
+
+/// A noncreature artifact that becomes "a 3/3 Construct artifact creature": the creature types it has are the ones it is
+/// given (an artifact has none of its own), so they are set, and the card types follow in the order of the words.
+fn plain_artifact_creature(ctx: &Ctx, mods: &mut Vec<Value>) {
+    let has = |word: &str| ctx.types.split_whitespace().any(|t| t == word);
+    if !has("Artifact") || has("Land") || has("Creature") {
+        return;
+    }
+    let (artifact, creature) = (
+        json!({"AddType": "Artifact"}),
+        json!({"AddType": "Creature"}),
+    );
+    if !mods.contains(&artifact)
+        || !mods.contains(&creature)
+        || mods.iter().any(|m| m.get("SetCreatureTypes").is_some())
+    {
+        return;
+    }
+    let kinds: Vec<Value> = mods
+        .iter()
+        .filter_map(|m| m.get("AddSubtype").cloned())
+        .collect();
+    mods.retain(|m| m.get("AddSubtype").is_none() && *m != artifact && *m != creature);
+    if !kinds.is_empty() {
+        mods.push(json!({"SetCreatureTypes": kinds}));
+    }
+    mods.push(artifact);
+    mods.push(creature);
 }
 
 /// Colours as the DSL names them; `Colorless` names none, so setting it gives the empty set (CR 105.2c).

@@ -19,7 +19,7 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "LifeLostAll" => life_lost(p).map(|inner| batch(&inner)),
         "SacrificedOnce" => sacrificed(ctx, p).map(|inner| batch(&inner)),
         "DamageAll" => damage(ctx, p, "DamageAll").map(|inner| batch(&inner)),
-        "DamageDealtOnce" => damage(ctx, p, "DamageDealtOnce").map(|inner| batch(&inner)),
+        "DamageDealtOnce" => damage(ctx, p, "DamageDealtOnce").map(|inner| per_source(&inner)),
         "UnlockDoor" => unlock_door(p),
         "CommitCrime" => player_event(p, "CommitCrime", "W11cCrime"),
         "DungeonCompleted" => player_event(p, "DungeonCompleted", "CompletedDungeon"),
@@ -34,6 +34,27 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         }
         _ => return None,
     })
+}
+
+/// `DamageDealtOnce` triggers once for each source: a group of sources with no recipient named is the plain event of
+/// each creature, one object (or a named recipient) a batch of what it deals together.
+fn per_source(inner: &Value) -> Value {
+    // Only a group named by kind and controller is the plain event of each of its creatures.
+    let by_kind = |source: &Value| {
+        source.as_array().is_some_and(|preds| {
+            preds.iter().all(|pred| {
+                pred == "Spell"
+                    || pred.as_object().is_some_and(|map| {
+                        map.keys()
+                            .all(|key| matches!(key.as_str(), "Type" | "Subtype" | "ControlledBy"))
+                    })
+            })
+        })
+    };
+    let one = inner
+        .get("DealsDamage")
+        .is_none_or(|event| event.get("to").is_some() || !by_kind(&event["source"]));
+    if one { batch(inner) } else { inner.clone() }
 }
 
 /// "Whenever you get one or more {E}": counters put on a player together (e16c).

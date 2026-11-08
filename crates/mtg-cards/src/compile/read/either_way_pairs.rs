@@ -15,6 +15,9 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     let mut texts = fight_texts(first, second);
     texts.extend(fight_texts(second, first));
     texts.extend(shield_texts(first, second));
+    texts.extend(super::fix32_pairs::damage_to_player_or_permanent(
+        first, second,
+    ));
     texts
 }
 
