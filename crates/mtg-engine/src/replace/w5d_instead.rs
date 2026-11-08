@@ -3,7 +3,7 @@
 
 use mtg_cards::effect::Effect;
 
-use super::{Candidate, Item, Origin, Pass, Unit, slots_of};
+use super::{Candidate, Item, Origin, Pass, Slot, Unit, slots_of};
 use crate::abilities::Cause;
 use crate::choose::Target;
 use crate::combat::DamageTarget;
@@ -93,6 +93,53 @@ impl Pass<'_> {
                 slot
             })
             .collect();
+        self.slots.splice(at..=at, slots);
+    }
+
+    /// The tokens of the event at `at` are created and the tokens the effects make join them: one event, so the
+    /// replacements still to apply see them all (CR 614.5: this one does not apply again). Effects that cannot run
+    /// without a question leave the event as it is.
+    pub(super) fn ep21_plus(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        effects: &[Effect],
+        unit: &Unit,
+        applied: Vec<Origin>,
+    ) {
+        let Item::Tokens(run) = self.slots[at].item.clone() else {
+            self.slots[at].applied = applied;
+            return;
+        };
+        let cause = self.w5d_cause(at, unit);
+        let Ok(events) = w5d_run_instead(
+            self.state,
+            candidate.controller,
+            candidate.object,
+            &cause,
+            effects,
+        ) else {
+            self.slots[at].applied = applied;
+            return;
+        };
+        let controller = run[0].controller;
+        let mut made = run;
+        let mut rest = Vec::new();
+        for event in self.w9c_fresh_tokens(events) {
+            match event {
+                Event::TokenCreated(token) if token.controller == controller => made.push(token),
+                other => rest.push(other),
+            }
+        }
+        let mut slots = vec![Slot {
+            item: Item::Tokens(made),
+            applied: applied.clone(),
+            frozen: false,
+        }];
+        slots.extend(slots_of(rest).into_iter().map(|mut slot| {
+            slot.applied.clone_from(&applied);
+            slot
+        }));
         self.slots.splice(at..=at, slots);
     }
 }

@@ -1,10 +1,12 @@
 //! `Effect::MoveCounters`: counters are moved from one permanent onto another (CR 122.5).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::value::CounterKind;
 
 use super::put_counters::{holders, whole};
 use super::wrong_effect;
-use crate::counters::{CountersChanged, held_by};
+use crate::choose::Target;
+use crate::counters::{CountersChanged, held_by, kinds_held};
 use crate::events::Event;
 use crate::resolve::{Cx, ResolveError, Run};
 
@@ -30,21 +32,68 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     ) else {
         return Ok(Run::events(Vec::new()));
     };
-    let moved = held_by(cx.state(), source, counter).min(count.unsigned_abs());
+    if source == target || count <= 0 {
+        return Ok(Run::events(Vec::new()));
+    }
+    let wanted = count.unsigned_abs();
+    let taken: Vec<(CounterKind, u32)> = match counter {
+        Some(counter) => vec![(
+            counter.clone(),
+            held_by(cx.state(), source, counter).min(wanted),
+        )],
+        None => match any_kind(cx, source, wanted)? {
+            Ok(taken) => taken,
+            Err(asked) => return Ok(asked),
+        },
+    };
     let mut events = Vec::new();
-    if source != target
-        && let Ok(moved) = i32::try_from(moved)
-        && moved > 0
-    {
-        for (on, delta) in [(source, -moved), (target, moved)] {
-            events.push(Event::CountersChanged(CountersChanged {
-                on,
-                counter: counter.clone(),
-                delta,
-            }));
+    for (counter, moved) in taken {
+        let Ok(moved) = i32::try_from(moved) else {
+            continue;
+        };
+        if moved > 0 {
+            for (on, delta) in [(source, -moved), (target, moved)] {
+                events.push(Event::CountersChanged(CountersChanged {
+                    on,
+                    counter: counter.clone(),
+                    delta,
+                }));
+            }
         }
     }
     Ok(Run::events(events))
+}
+
+/// The counters of any kinds `wanted` takes from `source`: every one when the count reaches all there are or one kind
+/// is held, else the kinds the controller picks one at a time (the question of `w2f_any_counters`).
+fn any_kind(
+    cx: &Cx<'_>,
+    source: Target,
+    wanted: u32,
+) -> Result<Result<Vec<(CounterKind, u32)>, Run>, ResolveError> {
+    let held: Vec<(CounterKind, u32)> = kinds_held(cx.state(), source)
+        .into_iter()
+        .filter(|(_, n)| *n > 0)
+        .collect();
+    let total: u32 = held.iter().map(|(_, n)| *n).sum();
+    if wanted >= total || held.len() == 1 {
+        return Ok(Ok(held
+            .into_iter()
+            .map(|(kind, n)| (kind, n.min(wanted)))
+            .collect()));
+    }
+    match super::w2f_any_counters::w2f_pick(cx, vec![source], None, wanted, false)? {
+        Run::Done { events, .. } => Ok(Ok(events
+            .into_iter()
+            .filter_map(|event| match event {
+                Event::CountersChanged(CountersChanged { counter, delta, .. }) => {
+                    Some((counter, delta.unsigned_abs()))
+                }
+                _ => None,
+            })
+            .collect())),
+        asked => Ok(Err(asked)),
+    }
 }
 
 #[cfg(test)]

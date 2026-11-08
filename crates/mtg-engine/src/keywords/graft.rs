@@ -41,7 +41,7 @@ impl KeywordRules for Graft {
                 effects: vec![Effect::MoveCounters {
                     from: Ref::This,
                     to: Ref::Triggering,
-                    counter,
+                    counter: Some(counter),
                     count: Amount::one(),
                 }],
             }],
