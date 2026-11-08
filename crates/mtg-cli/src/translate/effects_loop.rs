@@ -645,7 +645,9 @@ pub fn add_phase(p: &Params) -> Tr<Value> {
         p.get("AfterPhase"),
         p.get("FollowedBy"),
     ) {
-        (Some("Combat"), Some("EndCombat"), None) => json!(["Combat"]),
+        (Some("Combat"), Some("EndCombat") | None, None) => {
+            json!(["Combat"])
+        }
         (Some("Combat"), None, Some("Main2")) => json!(["Combat", "Main"]),
         (Some("Beginning"), None, None) => json!(["Beginning"]),
         (Some(phase), after, followed) => {

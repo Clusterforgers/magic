@@ -2564,8 +2564,12 @@ impl Walker<'_> {
             if !creature || spec.power.is_some() || spec.toughness.is_some() {
                 self.problem("a token sized by an amount is a creature with no power and toughness of its own");
             }
-        } else if creature != (spec.power.is_some() && spec.toughness.is_some()) {
-            self.problem("a creature token needs power and toughness, any other token none");
+        } else if (creature || spec.subtypes.iter().any(|subtype| subtype.0 == "Vehicle"))
+            != (spec.power.is_some() && spec.toughness.is_some())
+        {
+            self.problem(
+                "a creature token needs power and toughness (a Vehicle token too), any other token none",
+            );
         }
         let saved = std::mem::take(&mut self.scope);
         self.nested += 1;

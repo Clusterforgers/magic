@@ -354,6 +354,10 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             let who = super::triggered::resolve(ctx.trigger.as_ref(), head)?;
             return super::amount_more::player_stat(ctx, head, what, &who).map(Some);
         }
+        "PlayerCountRememberedController" => {
+            let who = super::memory::remembered_controller(ctx)?;
+            return super::amount_more::player_stat(ctx, head, what, &who).map(Some);
+        }
         "TriggeredPlayer" | "TriggeredCardController" => {
             let who = super::triggered::resolve(ctx.trigger.as_ref(), head)?;
             return super::amount_more::player_stat(ctx, head, what, &who).map(Some);
