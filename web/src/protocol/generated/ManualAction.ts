@@ -71,6 +71,14 @@ token: ManualToken,
 /**
  * How many, 1 to 10.
  */
+count: number, } } | { "CopyToken": { 
+/**
+ * The permanent copied, of any seat.
+ */
+object: ObjectId, 
+/**
+ * How many, 1 to 10.
+ */
 count: number, } } | { "Tap": { 
 /**
  * The permanent.
