@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "138d2d9d-d5ab-400f-a714-cd38212a0dae",
+  "oracle_id": "5c77bf76-bb0f-4e44-babe-0e7b7b555e1f",
+  "multiverse_ids": [
+    599069
+  ],
+  "mtgo_id": 107879,
+  "tcgplayer_id": 475385,
+  "cardmarket_id": 688758,
+  "name": "Quicksilver Dagger",
+  "lang": "en",
+  "released_at": "2023-01-13",
+  "uri": "https://api.scryfall.com/cards/138d2d9d-d5ab-400f-a714-cd38212a0dae",
+  "scryfall_uri": "https://scryfall.com/card/dmr/195/quicksilver-dagger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:53:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.jpg?1783918428",
+    "normal": "https://cards.scryfall.io/normal/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.jpg?1783918428",
+    "large": "https://cards.scryfall.io/large/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.jpg?1783918428",
+    "png": "https://cards.scryfall.io/png/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.png?1783918428",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.jpg?1783918428",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.jpg?1783918428",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.webp?1783918428",
+    "grid": "https://cards.scryfall.io/grid/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.webp?1783918428",
+    "display": "https://cards.scryfall.io/display/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.webp?1783918428",
+    "art": "https://cards.scryfall.io/art/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.webp?1783918428",
+    "crop": "https://cards.scryfall.io/crop/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.webp?1783918428",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/3/138d2d9d-d5ab-400f-a714-cd38212a0dae.jpg?1783918428"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has \"{T}: This creature deals 1 damage to target player or planeswalker. You draw a card.\"",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set": "dmr",
+  "set_name": "Dominaria Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/138d2d9d-d5ab-400f-a714-cd38212a0dae/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5c77bf76-bb0f-4e44-babe-0e7b7b555e1f&unique=prints",
+  "collector_number": "195",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The dwarves call their quicksilver techniques \"improvisational weaponsmithing.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alex Horley-Orlandelli",
+  "artist_ids": [
+    "1631a2ad-bf03-4ab9-b86c-60da982d58a1"
+  ],
+  "illustration_id": "2b2a9b64-d838-4060-901d-ec1ee0092e18",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13734,
+  "penny_rank": 16207,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.19",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.28",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=599069&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DQuicksilver%2BDagger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DQuicksilver%2BDagger",
+    "edhrec": "https://edhrec.com/route/?cc=Quicksilver+Dagger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F475385%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=688758&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/107879?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

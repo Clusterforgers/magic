@@ -153,10 +153,15 @@ fn expression_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
     ];
     for (word, live) in as_cast {
         if let Some(rest) = expression.trim().strip_prefix(word) {
-            if !ctx.as_cast.get() {
-                return unmapped(format!("amount:{}", word.trim_end()));
+            let live = expression_amount(ctx, &format!("{live}{rest}"));
+            if ctx.as_cast.get() {
+                return live;
             }
-            return expression_amount(ctx, &format!("{live}{rest}"));
+            // Read at resolution, the count the Oracle words "as you cast this spell" is the one the spell kept then.
+            if ctx.oracle.contains("as you cast this spell") {
+                return Ok(json!({ "CountedAsCast": live? }));
+            }
+            return unmapped(format!("amount:{}", word.trim_end()));
         }
     }
     match read_expression(ctx, expression) {
@@ -390,6 +395,12 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         | "TriggeredSource"
         | "TriggeredSourceLKICopy" => super::triggered::resolve(ctx.trigger.as_ref(), head)?,
         "TriggeredSpellAbility" if casts(ctx) => json!("Triggering"),
+        // "Cards exiled with this permanent": those still in exile.
+        "ExiledWith" => {
+            let of = [json!({"ExiledWith": "This"}), json!({"In": "Exile"})];
+            let reduce = if what == "Amount" { "" } else { what };
+            return super::amount_more::reduced(head, &of, reduce).map(Some);
+        }
         "Enchanted" | "Equipped" => json!("Attached"),
         "OriginalHost" if ctx.granted => json!("Granter"),
         "Sacrificed" | "Discarded" => json!("Paid"),
@@ -406,7 +417,7 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             return super::memory::total_in(ctx, super::memory::Slot::Imprinted, what).map(Some);
         }
         // What the reflexive trigger of an `ImmediateTrigger` was told to remember (`RememberObjects$`).
-        "TriggerRemembered" => match &ctx.delayed_remembered {
+        "TriggerRemembered" | "Spawner>Sacrificed" => match &ctx.delayed_remembered {
             Some(bound) => bound.clone(),
             None => return unmapped("amount:TriggerRemembered"),
         },

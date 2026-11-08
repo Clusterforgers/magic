@@ -657,6 +657,9 @@ pub enum Amount {
     },
     /// How far apart the two amounts are, never negative: "the difference between its power and toughness".
     Difference(Box<Amount>, Box<Amount>),
+    /// The inner amount for the caster as the spell was cast ("for each creature you controlled as you cast this spell"); a
+    /// copy that was not cast reads it now.
+    CountedAsCast(Box<Amount>),
 }
 
 impl Amount {
@@ -814,6 +817,7 @@ enum Tagged {
         up: bool,
     },
     Difference(Box<Amount>, Box<Amount>),
+    CountedAsCast(Box<Amount>),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -940,6 +944,7 @@ enum TaggedRef<'a> {
         up: bool,
     },
     Difference(&'a Amount, &'a Amount),
+    CountedAsCast(&'a Amount),
 }
 
 impl From<Tagged> for Amount {
@@ -1016,6 +1021,7 @@ impl From<Tagged> for Amount {
             Tagged::Product(parts) => Amount::Product(parts),
             Tagged::Quotient { of, by, up } => Amount::Quotient { of, by, up },
             Tagged::Difference(left, right) => Amount::Difference(left, right),
+            Tagged::CountedAsCast(inner) => Amount::CountedAsCast(inner),
         }
     }
 }
@@ -1133,6 +1139,7 @@ impl Serialize for Amount {
             Amount::Difference(left, right) => {
                 TaggedRef::Difference(left, right).serialize(serializer)
             }
+            Amount::CountedAsCast(inner) => TaggedRef::CountedAsCast(inner).serialize(serializer),
         }
     }
 }

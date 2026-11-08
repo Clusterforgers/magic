@@ -1,0 +1,27 @@
+{
+  "oracle_id": "dc671205-f2fa-454f-9957-921a6069ad53",
+  "name": "High Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Tide",
+      "oracle_fingerprint": "255c36c03911d94ac07f3fb9abc618cb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "TappedForMana": { "what": [{ "Subtype": "Island" }] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "AddMana": { "who": "Triggering", "mana": { "Fixed": ["Blue"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

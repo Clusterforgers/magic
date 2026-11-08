@@ -1,0 +1,41 @@
+{
+  "oracle_id": "685c1f37-2519-4fe5-908d-27d359cb5ad9",
+  "name": "Painiac",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Painiac",
+      "oracle_fingerprint": "765a7a95367768d17ff17b37a4b4ca9f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [
+                              { "ModifyPT": { "power": { "DieResult": "Only" }, "toughness": 0 } }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

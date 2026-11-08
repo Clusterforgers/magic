@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1c0a72dc-4756-4d60-b6b4-4c2c69699efd",
+  "name": "Pull from the Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pull from the Deep",
+      "oracle_fingerprint": "c64a864c33dff946e8656669b82257d1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Instant" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Sorcery" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

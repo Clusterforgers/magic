@@ -1,0 +1,23 @@
+{
+  "oracle_id": "846ba66c-a4eb-4d00-a0f1-d9f9524b9695",
+  "name": "Cryogenic Stasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryogenic Stasis",
+      "oracle_fingerprint": "5fa62eec186f56a0efa0411ae82c972b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

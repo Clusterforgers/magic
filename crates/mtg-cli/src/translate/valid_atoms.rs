@@ -18,6 +18,7 @@ pub fn atom(prop: &str) -> Option<Vec<Value>> {
             return one(json!({"AnyOf": basic.map(|name| json!({"Subtype": name}))}));
         }
         "TopLibrary" => return one(json!("TopOfLibrary")),
+        "TopGraveyard" => return one(json!("TopOfGraveyard")),
         "BottomLibrary" => return one(json!("BottomOfLibrary")),
         "Suspended" => return one(json!("Suspended")),
         "ThisTurnEntered" => return one(json!("EnteredThisTurn")),
@@ -283,12 +284,22 @@ pub fn extreme(ctx: &Ctx, prop: &str, group: &[Value]) -> Tr<Option<Vec<Value>>>
             .strip_prefix("ControlledBy")
             .and_then(|word| match word {
                 "Opponent" => Some(json!("Opponents")),
+                // The player of the pass the line is in ("each opponent sacrifices a creature with the greatest power").
+                "Remembered" => ctx
+                    .player_loop
+                    .as_ref()
+                    .map(|name| json!({ "Bound": name })),
                 other => controller_of(ctx, other),
             });
         let Some(who) = who else {
             return unmapped(format!("valid:{prop}"));
         };
         group.push(json!({"ControlledBy": who}));
+        // A pass over players picks from the creatures that player controls, not any creature of the same power.
+        if rest == "ControlledByRemembered" {
+            let extreme = json!({ pred: {"stat": stat, "group": group} });
+            return Ok(Some(vec![json!({"ControlledBy": who}), extreme]));
+        }
     }
     Ok(Some(vec![json!({ pred: {"stat": stat, "group": group} })]))
 }

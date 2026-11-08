@@ -1,0 +1,65 @@
+{
+  "oracle_id": "e6f95e3a-61a6-40a9-8070-ffd2767764ad",
+  "name": "Ethereal Absolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Absolution",
+      "oracle_fingerprint": "6145e5aad8c3eabe21c00401a94b45f9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}{B}",
+            "targets": [
+              { "what": { "Object": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White", "Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

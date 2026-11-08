@@ -325,6 +325,21 @@ fn cast(who: &Ref, filter: &Selector, more_than: Option<u32>) -> Option<String> 
 
 /// The spells of a filter: "spells", "creature spells", "blue creature spells", "spells of the chosen color", "spell"
 /// for one.
+/// The permanent types, as the translator lists them for "permanent" outside the battlefield.
+fn permanent_kinds() -> Vec<Pred> {
+    [
+        CardType::Artifact,
+        CardType::Battle,
+        CardType::Creature,
+        CardType::Enchantment,
+        CardType::Land,
+        CardType::Planeswalker,
+    ]
+    .into_iter()
+    .map(Pred::Type)
+    .collect()
+}
+
 fn spells(filter: &Selector, one: bool) -> Option<String> {
     let noun = if one { "spell" } else { "spells" };
     match filter.0.as_slice() {
@@ -334,6 +349,10 @@ fn spells(filter: &Selector, one: bool) -> Option<String> {
         // A land is never cast, so a nonland name is the same rule.
         [Pred::ChosenName, Pred::Not(land)] if !one && **land == Pred::Type(CardType::Land) => {
             return Some("spells with the chosen name".to_owned());
+        }
+        // Codie, Vociferous Codex: a spell of any permanent type.
+        [Pred::AnyOf(kinds)] if !one && *kinds == permanent_kinds() => {
+            return Some("permanent spells".to_owned());
         }
         _ => {}
     }

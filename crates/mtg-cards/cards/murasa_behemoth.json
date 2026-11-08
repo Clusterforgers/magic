@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0dfdeaa0-fa12-49cf-b361-efa49d3ffcb2",
+  "name": "Murasa Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murasa Behemoth",
+      "oracle_fingerprint": "19fd4524c1640f709a3c35753e122bb0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

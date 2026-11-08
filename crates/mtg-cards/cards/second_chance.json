@@ -1,0 +1,20 @@
+{
+  "oracle_id": "aa19bbf0-7de3-4ec3-a98b-2ac7533c6b0b",
+  "name": "Second Chance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Second Chance",
+      "oracle_fingerprint": "6ba0059910f51c6908fd41a77da9cddb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 5 } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }, { "ExtraTurn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

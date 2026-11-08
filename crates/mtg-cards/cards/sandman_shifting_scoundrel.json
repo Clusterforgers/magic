@@ -1,0 +1,57 @@
+{
+  "oracle_id": "8b205480-b1fb-490c-b1c9-cf5cc3c5acdb",
+  "name": "Sandman, Shifting Scoundrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandman, Shifting Scoundrel",
+      "oracle_fingerprint": "ab8f06a14895f5268b34edbfdbf4b6b6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}{G}",
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

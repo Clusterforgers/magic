@@ -1,0 +1,28 @@
+{
+  "oracle_id": "987b74f4-02cb-4d47-94e5-d58a3c8e92e4",
+  "name": "Flay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flay",
+      "oracle_fingerprint": "e784e8233ad0645a9bbb35cad7a46d40",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "random": true } },
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": "{1}",
+                  "unpaid": [{ "Discard": { "who": { "Target": 0 }, "random": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

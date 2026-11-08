@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2219e636-74d0-4f82-8704-e6d66c5f7f09",
+  "name": "Rocketeer Boostbuggy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rocketeer Boostbuggy",
+      "oracle_fingerprint": "9fbd8ab33977f4fd7fa9b9ada7c9b8a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}
