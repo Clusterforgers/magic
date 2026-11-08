@@ -11,7 +11,7 @@ use super::ctx::{CARD_TYPES, Ctx, Tr, unmapped};
 const PARTY_TYPES: [&str; 4] = ["Cleric", "Rogue", "Warrior", "Wizard"];
 
 /// The predicates of an atom that is one of these, `None` for any other atom.
-pub(super) fn atom(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
+fn atom(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
     let one = |value: Value| Ok(Some(vec![value]));
     match prop {
         "Kicked" => return one(json!("Kicked")),
@@ -42,6 +42,18 @@ pub(super) fn atom(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         return one(found);
     }
     Ok(None)
+}
+
+/// The atoms the readers of `valid` leave: this module's, then the atom table of `filter`; an unknown word is a gap, and
+/// an atom of the table of gaps is named by its row (one key per missing fact, whatever its argument).
+pub(super) fn rest(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
+    if let Some(preds) = atom(ctx, prop)? {
+        return Ok(preds);
+    }
+    super::filter::atom(ctx, ctx.scope.get(), prop).unwrap_or_else(|| {
+        let word = unmapped_row(prop).map_or(prop, |row| row.word);
+        unmapped(format!("valid:{word}"))
+    })
 }
 
 /// Party creatures: one of the four types, when the world knows them all.
@@ -113,8 +125,8 @@ fn against_source(prop: &str) -> Option<Value> {
     }}))
 }
 
-/// `numColorsEQX`, `counters_GEX_CHARGE`: a characteristic or a counter count against a named part. A color count takes
-/// any amount; a counter count only a part that is a written number.
+/// `numColorsEQX`, `counters_GEX_CHARGE`: a characteristic or a counter count against a part the script defines. A color count
+/// takes any amount; a counter count only a part that is a written number.
 fn counted_bound(ctx: &Ctx, prop: &str) -> Tr<Option<Value>> {
     let named = |bound: &str| {
         bound.chars().next().is_some_and(|c| c.is_ascii_uppercase())
@@ -123,16 +135,30 @@ fn counted_bound(ctx: &Ctx, prop: &str) -> Tr<Option<Value>> {
     if let Some(rest) = prop.strip_prefix("numColors")
         && let Some((op, bound)) = rest.get(..2).and_then(super::valid::cmp).zip(rest.get(2..))
         && named(bound)
+        && ctx.svar(bound).is_some()
     {
         let to = amount(ctx, bound)?;
-        return Ok(Some(json!({"Compare": {"stat": "Colors", "op": op, "to": to}})));
+        // The X paid for the source says nothing of an object it compares (`Count$xPaid` in a static ability).
+        if to == json!("X") {
+            return unmapped(format!("valid:{prop}"));
+        }
+        return Ok(Some(
+            json!({"Compare": {"stat": "Colors", "op": op, "to": to}}),
+        ));
     }
     if let Some(rest) = prop.strip_prefix("counters_")
         && let Some((bound, kind)) = rest.split_once('_')
-        && let Some((op, part)) = bound.get(..2).and_then(super::valid::cmp).zip(bound.get(2..))
+        && let Some((op, part)) = bound
+            .get(..2)
+            .and_then(super::valid::cmp)
+            .zip(bound.get(2..))
         && named(part)
+        && ctx.svar(part).is_some()
     {
-        let Some(to) = amount(ctx, part)?.as_u64().and_then(|n| u32::try_from(n).ok()) else {
+        let Some(to) = amount(ctx, part)?
+            .as_u64()
+            .and_then(|n| u32::try_from(n).ok())
+        else {
             return unmapped(format!("valid:{prop}"));
         };
         let Some(kind) = super::amount::counter_kind(kind) else {
@@ -164,68 +190,123 @@ pub struct Unmapped {
     pub needs: &'static str,
 }
 
+/// A row of the table of gaps.
+const fn row(word: &'static str, needs: &'static str) -> Unmapped {
+    Unmapped { word, needs }
+}
+
 /// The atoms in use in Forge's scripts that no reader maps, with the reason each stays a gap (`valid:<atom>`).
 pub const UNMAPPED: &[Unmapped] = &[
-    Unmapped { word: "hasManaAbility", needs: "the abilities an object has, as a selector" },
-    Unmapped { word: "hasNonManaActivatedAbility", needs: "the abilities an object has, as a selector" },
-    Unmapped { word: "NoAbilities", needs: "the abilities an object has, as a selector" },
-    Unmapped { word: "hasAbility", needs: "the abilities an object has, as a selector" },
-    Unmapped { word: "firstTurnControlled", needs: "the turn control of a permanent began" },
-    Unmapped { word: "attackedLastTurn", needs: "the records of the previous turn" },
-    Unmapped { word: "dealtDamagetoAny", needs: "damage records over the whole game" },
-    Unmapped { word: "dealtCombatDamagetoAny", needs: "damage records over the whole game" },
-    Unmapped { word: "Damaged", needs: "damage records to a source that has left the battlefield" },
-    Unmapped { word: "Above", needs: "positions in a graveyard" },
-    Unmapped { word: "DirectlyAbove", needs: "positions in a graveyard" },
-    Unmapped { word: "BottomGraveyard", needs: "positions in a graveyard" },
-    Unmapped { word: "BottomLibrary_Creature", needs: "the bottommost card of a kind in a library" },
-    Unmapped { word: "withFlanking", needs: "the keyword flanking" },
-    Unmapped { word: "withoutFlanking", needs: "the keyword flanking" },
-    Unmapped { word: "withoutRampage", needs: "the keyword rampage" },
-    Unmapped { word: "withWarp", needs: "the keyword warp" },
-    Unmapped { word: "withAugment", needs: "the keyword augment" },
-    Unmapped { word: "kicked 1", needs: "which of two kicker costs was paid" },
-    Unmapped { word: "kicked 2", needs: "which of two kicker costs was paid" },
-    Unmapped { word: "ManaSpent LTX", needs: "a bound read against the spell or the source by script" },
-    Unmapped { word: "ManaSpent GTX", needs: "a bound read against the spell or the source by script" },
-    Unmapped { word: "ManaFromCard.StrictlySelf", needs: "mana spent from one named source" },
-    Unmapped { word: "canProduceManaColor", needs: "the mana an object could produce" },
-    Unmapped { word: "CostsHybridMana", needs: "the symbols of a mana cost" },
-    Unmapped { word: "CostsPhyrexianMana", needs: "the symbols of a mana cost" },
-    Unmapped { word: "SharesCMCWith", needs: "a shared mana value predicate" },
-    Unmapped { word: "sharesLandTypeWith", needs: "a shared land type predicate" },
-    Unmapped { word: "sharesCreatureTypeWithAll", needs: "a type shared with each of several objects" },
-    Unmapped { word: "sharesControllerWith", needs: "a shared controller predicate" },
-    Unmapped { word: "sharesOwnerWith", needs: "a shared owner predicate" },
-    Unmapped { word: "sharesBlockingAssignmentWith", needs: "the blocks of one attacker as a selector" },
-    Unmapped { word: "attackingSame", needs: "the attacked player or planeswalker of another attacker" },
-    Unmapped { word: "WithSameName", needs: "a group constraint of a cost" },
-    Unmapped { word: "WithDifferentNames", needs: "a group constraint of a cost" },
-    Unmapped { word: "withTypesGE4", needs: "a group constraint of a cost" },
-    Unmapped { word: "withTotalCMCGE30", needs: "a group constraint of a cost" },
-    Unmapped { word: "HasDevoured", needs: "what a permanent devoured" },
-    Unmapped { word: "exploited", needs: "what a permanent exploited" },
-    Unmapped { word: "foretold", needs: "foretold cards in exile" },
-    Unmapped { word: "prepared", needs: "a prepared spell (the spell, not the permanent)" },
-    Unmapped { word: "copiedSpell", needs: "copies of spells as a selector" },
-    Unmapped { word: "activated", needs: "the loyalty activations of the turn" },
-    Unmapped { word: "enlistedThisCombat", needs: "the enlist records of the combat" },
-    Unmapped { word: "hadToAttackThisCombat", needs: "attack requirements as a selector" },
-    Unmapped { word: "noName", needs: "nameless objects" },
-    Unmapped { word: "EnemyColor", needs: "pairs of enemy colors" },
-    Unmapped { word: "ColorsYouCtrl", needs: "the colors among your permanents" },
-    Unmapped { word: "OwnerDoesntControl", needs: "the owner of the object itself as a reference" },
-    Unmapped { word: "ControllerControlsMoreLand", needs: "counts of the candidate's controller" },
-    Unmapped { word: "ControllerControlsLand_LE3", needs: "counts of the candidate's controller" },
-    Unmapped { word: "OppProtect", needs: "the protector of a battle" },
-    Unmapped { word: "EnteredUnder", needs: "the controller a permanent entered under" },
-    Unmapped { word: "numTypesGE2", needs: "the number of card types of an object" },
-    Unmapped { word: "hasANonBasicLandType", needs: "the nonbasic land types" },
-    Unmapped { word: "yardGreatestPower", needs: "an extreme among graveyard cards" },
+    row(
+        "hasManaAbility",
+        "the abilities an object has, as a selector",
+    ),
+    row(
+        "hasNonManaActivatedAbility",
+        "the abilities an object has, as a selector",
+    ),
+    row("NoAbilities", "the abilities an object has, as a selector"),
+    row("hasAbility", "the abilities an object has, as a selector"),
+    row(
+        "firstTurnControlled",
+        "the turn control of a permanent began",
+    ),
+    row("attackedLastTurn", "the records of the previous turn"),
+    row("dealtDamagetoAny", "damage records over the whole game"),
+    row(
+        "dealtCombatDamagetoAny",
+        "damage records over the whole game",
+    ),
+    row(
+        "Damaged",
+        "damage records to a source that has left the battlefield",
+    ),
+    row("Above", "positions in a graveyard"),
+    row("DirectlyAbove", "positions in a graveyard"),
+    row("BottomGraveyard", "positions in a graveyard"),
+    row(
+        "BottomLibrary_Creature",
+        "the bottommost card of a kind in a library",
+    ),
+    row("withFlanking", "the keyword flanking"),
+    row("withoutFlanking", "the keyword flanking"),
+    row("withoutRampage", "the keyword rampage"),
+    row("withWarp", "the keyword warp"),
+    row("withAugment", "the keyword augment"),
+    row("kicked 1", "which of two kicker costs was paid"),
+    row("kicked 2", "which of two kicker costs was paid"),
+    row(
+        "ManaSpent LTX",
+        "a bound read against the spell or the source by script",
+    ),
+    row(
+        "ManaSpent GTX",
+        "a bound read against the spell or the source by script",
+    ),
+    row(
+        "ManaFromCard.StrictlySelf",
+        "mana spent from one named source",
+    ),
+    row("canProduceManaColor", "the mana an object could produce"),
+    row("CostsHybridMana", "the symbols of a mana cost"),
+    row("CostsPhyrexianMana", "the symbols of a mana cost"),
+    row("SharesCMCWith", "a shared mana value predicate"),
+    row("sharesLandTypeWith", "a shared land type predicate"),
+    row(
+        "sharesCreatureTypeWithAll",
+        "a type shared with each of several objects",
+    ),
+    row("sharesControllerWith", "a shared controller predicate"),
+    row("sharesOwnerWith", "a shared owner predicate"),
+    row(
+        "sharesBlockingAssignmentWith",
+        "the blocks of one attacker as a selector",
+    ),
+    row(
+        "attackingSame",
+        "the attacked player or planeswalker of another attacker",
+    ),
+    row("WithSameName", "a group constraint of a cost"),
+    row("WithDifferentNames", "a group constraint of a cost"),
+    row("withTypesGE4", "a group constraint of a cost"),
+    row("withTotalCMCGE30", "a group constraint of a cost"),
+    row("HasDevoured", "what a permanent devoured"),
+    row("exploited", "what a permanent exploited"),
+    row("foretold", "foretold cards in exile"),
+    row(
+        "prepared",
+        "a prepared spell (the spell, not the permanent)",
+    ),
+    row("copiedSpell", "copies of spells as a selector"),
+    row("activated", "the loyalty activations of the turn"),
+    row("enlistedThisCombat", "the enlist records of the combat"),
+    row("hadToAttackThisCombat", "attack requirements as a selector"),
+    row("noName", "nameless objects"),
+    row("EnemyColor", "pairs of enemy colors"),
+    row("ColorsYouCtrl", "the colors among your permanents"),
+    row(
+        "OwnerDoesntControl",
+        "the owner of the object itself as a reference",
+    ),
+    row(
+        "ControllerControlsMoreLand",
+        "counts of the candidate's controller",
+    ),
+    row(
+        "ControllerControlsLand_LE3",
+        "counts of the candidate's controller",
+    ),
+    row("OppProtect", "the protector of a battle"),
+    row("EnteredUnder", "the controller a permanent entered under"),
+    row("numTypesGE2", "the number of card types of an object"),
+    row("hasANonBasicLandType", "the nonbasic land types"),
+    row("yardGreatestPower", "an extreme among graveyard cards"),
 ];
 
 /// The row of an atom, matched whole or by the head before a space.
-pub(super) fn unmapped_row(prop: &str) -> Option<&'static Unmapped> {
+fn unmapped_row(prop: &str) -> Option<&'static Unmapped> {
     let head = prop.split(' ').next().unwrap_or(prop);
-    UNMAPPED.iter().find(|row| row.word == prop || row.word == head)
+    UNMAPPED
+        .iter()
+        .find(|row| row.word == prop || row.word == head)
 }

@@ -21,9 +21,9 @@ use crate::forge::script::Script;
 /// A world that also knows the card names and the party types the cases use.
 fn wider() -> World {
     let mut world = world();
-    world.subtypes.extend(
-        ["Cleric", "Warrior", "Swamp", "Druid", "Saga"].map(str::to_owned),
-    );
+    world
+        .subtypes
+        .extend(["Cleric", "Warrior", "Swamp", "Druid", "Saga"].map(str::to_owned));
     world
         .names
         .extend(["Alpha, the Test", "Aether Burst"].map(str::to_owned));
@@ -184,14 +184,17 @@ fn alternatives_split_at_commas_outside_names(#[case] spec: &str, #[case] expect
 
 #[rstest]
 #[case::party_needs_its_types("Creature.Party", "valid:Party")]
-#[case::color_of_mana("Card.SharesColorWith ActivationColor", "valid:SharesColorWith ActivationColor")]
-#[case::color_of_a_bare_word("Card.SharesColorWith", "valid:SharesColorWith")]
-#[case::a_negated_cast_fact("Card.CastSa Spell.!ManaFromTreasure", "valid:CastSa Spell.!ManaFromTreasure")]
-#[case::a_kind_that_is_no_card_type("Creature.greatestCMC_Bogus", "valid:greatestCMC_Bogus")]
-#[case::counters_against_an_amount(
-    "Creature.counters_GEX_P1P1",
-    "valid:counters_GEX_P1P1"
+#[case::color_of_mana(
+    "Card.SharesColorWith ActivationColor",
+    "valid:SharesColorWith ActivationColor"
 )]
+#[case::color_of_a_bare_word("Card.SharesColorWith", "valid:SharesColorWith")]
+#[case::a_negated_cast_fact(
+    "Card.CastSa Spell.!ManaFromTreasure",
+    "valid:CastSa Spell.!ManaFromTreasure"
+)]
+#[case::a_kind_that_is_no_card_type("Creature.greatestCMC_Bogus", "valid:greatestCMC_Bogus")]
+#[case::counters_against_an_amount("Creature.counters_GEX_P1P1", "valid:counters_GEX_P1P1")]
 fn a_near_miss_stays_a_gap(#[case] valid: &str, #[case] gap: &str) {
     let text = format!(
         "Name:T\nTypes:Sorcery\nA:SP$ DealDamage | ValidTgts$ Any | NumDmg$ Y\nSVar:Y:Count$Valid {valid}\nSVar:X:Count$CardPower\n"
@@ -213,7 +216,12 @@ fn every_row_of_the_table_of_gaps_stays_a_gap_named_by_its_row() {
             row.word
         );
         let key = format!("valid:{}", row.word);
-        assert!(gaps(&text).contains(&key), "{}: {:?}", row.word, gaps(&text));
+        assert!(
+            gaps(&text).contains(&key),
+            "{}: {:?}",
+            row.word,
+            gaps(&text)
+        );
     }
 }
 
@@ -230,7 +238,7 @@ fn every_row_of_the_table_of_gaps_is_in_use_in_the_checkout() {
     let Ok(scripts) = crate::forge::script::read_checkout(&checkout) else {
         return;
     };
-    let text: String = scripts.iter().map(|script| format!("{script:?}")).collect();
+    let text = format!("{scripts:?}");
     for row in UNMAPPED {
         assert!(text.contains(row.word), "{} is in no script", row.word);
     }
@@ -240,7 +248,7 @@ fn every_row_of_the_table_of_gaps_is_in_use_in_the_checkout() {
 fn a_party_choice_stays_a_gap() {
     let text = "Name:T\nTypes:Sorcery\nA:SP$ ChooseCard | Defined$ Player | Choices$ Creature | ChooseEach$ Party | Reveal$ True\n";
     assert!(
-        gaps(text).iter().any(|gap| gap == "key:ChooseCard.ChooseEach-Party"),
+        gaps(text).iter().any(|gap| gap == "valid-base:Party"),
         "{:?}",
         gaps(text)
     );
@@ -272,13 +280,21 @@ fn verdict(type_line: &str, oracle: &str, found: &[Value]) -> Verdict {
     };
     let names = BTreeSet::from(["alpha".to_owned()]);
     let json = json!({"faces": [{"abilities": found}]}).to_string();
-    check_exact(&json, &card, &Library::default(), &names, &mtg_engine::caps()).verdict()
+    check_exact(
+        &json,
+        &card,
+        &Library::default(),
+        &names,
+        &mtg_engine::caps(),
+    )
+    .verdict()
 }
 
 const ASSASSIN: &str = "Name:Alpha\nTypes:Creature Elf\nPT:2/2\nA:AB$ Destroy | Cost$ T | ValidTgts$ Creature.hasKeywordLandwalk:Island\n";
 const SCALES: &str = "Name:Alpha\nTypes:Enchantment\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigDestroy\nSVar:TrigDestroy:DB$ Destroy | ValidTgts$ Permanent.nonLand+lowestCMC\n";
 const FAVOR: &str = "Name:Alpha\nTypes:Enchantment\nS:Mode$ Continuous | Affected$ Creature.greatestCMC_Creature | AddKeyword$ Flying\n";
-const KICKED: &str = "Name:Alpha\nTypes:Instant\nA:SP$ Counter | TargetType$ Spell | ValidTgts$ Card.Kicked\n";
+const KICKED: &str =
+    "Name:Alpha\nTypes:Instant\nA:SP$ Counter | TargetType$ Spell | ValidTgts$ Card.Kicked\n";
 const JADED: &str = "Name:Alpha\nTypes:Instant\nA:SP$ Counter | TargetType$ Spell | ValidTgts$ Card | ConditionDefined$ Targeted | ConditionPresent$ Spell.SharesColorWith Valid Creature.YouCtrl\n";
 const BANNER: &str = "Name:Alpha\nTypes:Artifact Equipment\nK:Equip:2\nS:Mode$ Continuous | Affected$ Creature.SharesColorWith Equipped | AddPower$ 1 | AddToughness$ 1\n";
 const MIRKO: &str = "Name:Alpha\nTypes:Creature Elf\nPT:2/2\nT:Mode$ Phase | Phase$ End of Turn | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigReturn\nSVar:TrigReturn:DB$ ChangeZone | Origin$ Graveyard | Destination$ Hand | ValidTgts$ Creature.YouOwn+powerLTCount$CardPower\n";
@@ -286,9 +302,24 @@ const REACTOR: &str = "Name:Alpha\nTypes:Sorcery\nA:SP$ Destroy | ValidTgts$ Art
 const KASSANDRA: &str = "Name:Alpha\nTypes:Enchantment\nT:Mode$ DamageDone | ValidSource$ Creature.YouCtrl+EquippedByValid Equipment.Legendary | ValidTarget$ Player | CombatDamage$ True | TriggerZones$ Battlefield | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw\n";
 
 #[rstest]
-#[case::islandwalk(ASSASSIN, "Creature — Elf", "{T}: Destroy target creature with islandwalk.", Verdict::Accepted)]
-#[case::swampwalk(ASSASSIN, "Creature — Elf", "{T}: Destroy target creature with swampwalk.", Verdict::Mismatch)]
-#[case::any_creature(ASSASSIN, "Creature — Elf", "{T}: Destroy target creature.", Verdict::Mismatch)]
+#[case::islandwalk(
+    ASSASSIN,
+    "Creature — Elf",
+    "{T}: Destroy target creature with islandwalk.",
+    Verdict::Accepted
+)]
+#[case::swampwalk(
+    ASSASSIN,
+    "Creature — Elf",
+    "{T}: Destroy target creature with swampwalk.",
+    Verdict::Mismatch
+)]
+#[case::any_creature(
+    ASSASSIN,
+    "Creature — Elf",
+    "{T}: Destroy target creature.",
+    Verdict::Mismatch
+)]
 #[case::lowest(
     SCALES,
     "Enchantment",
@@ -307,12 +338,27 @@ const KASSANDRA: &str = "Name:Alpha\nTypes:Enchantment\nT:Mode$ DamageDone | Val
     "At the beginning of your upkeep, destroy target permanent with the lowest mana value.",
     Verdict::Mismatch
 )]
-#[case::greatest_creature(FAVOR, "Enchantment", "Each creature with the greatest mana value has flying.", Verdict::Accepted)]
-#[case::greatest_artifact(FAVOR, "Enchantment", "Each artifact with the greatest mana value has flying.", Verdict::Mismatch)]
+#[case::greatest_creature(
+    FAVOR,
+    "Enchantment",
+    "Each creature with the greatest mana value has flying.",
+    Verdict::Accepted
+)]
+#[case::greatest_artifact(
+    FAVOR,
+    "Enchantment",
+    "Each artifact with the greatest mana value has flying.",
+    Verdict::Mismatch
+)]
 #[case::every_creature(FAVOR, "Enchantment", "Each creature has flying.", Verdict::Mismatch)]
 #[case::kicked(KICKED, "Instant", "Counter target kicked spell.", Verdict::Accepted)]
 #[case::any_spell(KICKED, "Instant", "Counter target spell.", Verdict::Mismatch)]
-#[case::multicolored_spell(KICKED, "Instant", "Counter target multicolored spell.", Verdict::Mismatch)]
+#[case::multicolored_spell(
+    KICKED,
+    "Instant",
+    "Counter target multicolored spell.",
+    Verdict::Mismatch
+)]
 #[case::shares_with_yours(
     JADED,
     "Instant",
@@ -386,7 +432,11 @@ fn a_mapped_atom_reads_back_as_its_oracle_text(
     #[case] expected: Verdict,
 ) {
     assert_eq!(gaps(script), Vec::<String>::new());
-    assert_eq!(verdict(type_line, oracle, &abilities(script)), expected, "{oracle}");
+    assert_eq!(
+        verdict(type_line, oracle, &abilities(script)),
+        expected,
+        "{oracle}"
+    );
 }
 
 const PADEEM: &str = "Name:Alpha\nTypes:Enchantment\nT:Mode$ Phase | Phase$ Upkeep | ValidPlayer$ You | TriggerZones$ Battlefield | IsPresent$ Artifact.greatestCMC_Artifact+YouCtrl | Execute$ TrigDraw\nSVar:TrigDraw:DB$ Draw\n";

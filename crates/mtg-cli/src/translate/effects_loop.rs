@@ -178,7 +178,7 @@ fn choose_each(
     }
     // A party is up to one creature of each party type, not one creature of any of them.
     if each.split(" & ").any(|kind| kind.trim() == "Party") {
-        return unmapped("key:ChooseCard.ChooseEach-Party");
+        return unmapped("valid-base:Party");
     }
     let min = match (p.get("MinAmount"), p.get("Mandatory")) {
         (Some("0"), _) | (None, None | Some("False")) => 0,

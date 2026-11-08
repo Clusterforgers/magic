@@ -37,7 +37,8 @@ fn kind_of(selector: &Selector) -> Vec<Pred> {
 /// with the greatest mana value" is the greatest among creatures). A phrase with more ("artifact you control with the
 /// greatest mana value" reads as among yours), an extreme among another kind or one after "a" has no words.
 pub(super) fn vp20_fits(selector: &Selector, form: Form) -> bool {
-    let extreme = |pred: &Pred| matches!(pred, Pred::GreatestAmong { .. } | Pred::LeastAmong { .. });
+    let extreme =
+        |pred: &Pred| matches!(pred, Pred::GreatestAmong { .. } | Pred::LeastAmong { .. });
     if !selector.0.iter().any(extreme) {
         return true;
     }
@@ -61,7 +62,7 @@ pub(super) fn vp20_fits(selector: &Selector, form: Form) -> bool {
 fn extreme_text(stat: StatKind, greatest: bool) -> Option<String> {
     let name = stat_name(stat)?;
     let word = match (stat, greatest) {
-                (StatKind::ManaValue, false) => "lowest",
+        (StatKind::ManaValue, false) => "lowest",
         (_, true) => "greatest",
         (_, false) => "least",
     };
@@ -92,10 +93,11 @@ pub(super) fn vp20_suffix_text(pred: &Pred, form: Form) -> Option<String> {
             Some(format!("with a legendary Equipment attached to {it}"))
         }
         Pred::Test {
-            left: Amount::Stat {
-                of: Ref::Candidate,
-                stat,
-            },
+            left:
+                Amount::Stat {
+                    of: Ref::Candidate,
+                    stat,
+                },
             op: op @ (Cmp::Lt | Cmp::Gt),
             right:
                 Amount::Stat {
@@ -117,4 +119,3 @@ fn legendary_equipment() -> Selector {
         Pred::Supertype(Supertype::Legendary),
     ])
 }
-

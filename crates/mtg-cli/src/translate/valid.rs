@@ -174,14 +174,7 @@ pub(super) fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
     if prop.chars().next().is_some_and(char::is_uppercase) && ctx.world.subtypes.contains(prop) {
         return one(json!({"Subtype": prop}));
     }
-    if let Some(preds) = super::valid_grammar::atom(ctx, prop)? {
-        return Ok(preds);
-    }
-    super::filter::atom(ctx, ctx.scope.get(), prop).unwrap_or_else(|| {
-        // An atom of the table of gaps is named by its row: one key per missing fact, whatever its argument.
-        let word = super::valid_grammar::unmapped_row(prop).map_or(prop, |row| row.word);
-        unmapped(format!("valid:{word}"))
-    })
+    super::valid_grammar::rest(ctx, prop)
 }
 
 /// A keyword with a parameter (`withToxic`, `withoutForetell`): has it, or lacks it, at any value.
@@ -337,9 +330,14 @@ pub(super) fn split_properties(props: &str) -> Vec<String> {
                 last.push_str(part);
             }
             _ => {
-                greedy = ["AttachedTo ", "EnchantedBy ", "EquippedBy ", "SharesColorWith "]
-                    .iter()
-                    .any(|head| part.strip_prefix(head).is_some_and(|arg| arg.contains('.')));
+                greedy = [
+                    "AttachedTo ",
+                    "EnchantedBy ",
+                    "EquippedBy ",
+                    "SharesColorWith ",
+                ]
+                .iter()
+                .any(|head| part.strip_prefix(head).is_some_and(|arg| arg.contains('.')));
                 out.push(part.to_owned());
             }
         }
