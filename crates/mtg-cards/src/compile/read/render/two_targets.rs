@@ -58,6 +58,19 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
             spec_text(second)?,
             crate::compile::read::copy_spells::c10_xp_copy_duration_text(duration)?
         )),
+        [
+            Effect::MoveCounters {
+                from: Ref::Target(0),
+                to: Ref::Target(1),
+                counter,
+                count,
+            },
+        ] => Some(format!(
+            "move {} from {} onto a second {}",
+            crate::compile::read::counters::text(counter, count)?,
+            spec_text(first)?,
+            spec_text(second)?
+        )),
         _ => None,
     }
 }

@@ -256,7 +256,7 @@ fn a_continuous_line_changes_colours_and_creature_types(
     "key:Static.Continuous.AddType=ChosenType"
 )]
 #[case::defining_a_keyword(
-    "S:Mode$ Continuous | Affected$ Card.Self | CharacteristicDefining$ True | AddKeyword$ Flash",
+    "S:Mode$ Continuous | Affected$ Card.Self | CharacteristicDefining$ True | AddKeyword$ Haste",
     "key:Static.Continuous.defining-other-than-stats"
 )]
 fn a_colour_or_type_word_it_cannot_read_stays_a_gap_by_name(#[case] line: &str, #[case] gap: &str) {

@@ -338,6 +338,9 @@ fn of_defined(
             super::memory::slot_ref_loose(ctx, super::memory::Slot::Remembered)
                 .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok)?
         }
+        // A name the imprint bound inside a condition or a "may" is counted like the remembered one.
+        "Imprinted" => super::memory::slot_ref_loose(ctx, super::memory::Slot::Imprinted)
+            .map_or_else(|| unmapped("defined:Imprinted-without-a-change"), Ok)?,
         _ => defined(ctx, word)?,
     };
     // "If a creature is dealt damage this way": the object the damage was aimed at, only when it was really dealt some.

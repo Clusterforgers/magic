@@ -265,6 +265,8 @@ mod w16a_owner;
 mod w16a_return_cost;
 mod w16a_state_trigger;
 mod w16a_static_and;
+mod w20_exile_x;
+mod w20_fishing;
 mod w4a_if;
 mod w4a_if_conditions;
 mod w4a_if_instead;
@@ -824,6 +826,8 @@ fn add_more(ability: &Ability, texts: &mut Vec<String>) {
     except_for::add(ability, texts);
     except_lands_tokens::add(ability, texts);
     exile_each::add(ability, texts);
+    w20_exile_x::add(ability, texts);
+    w20_fishing::add(ability, texts);
     exile_play::add(ability, texts);
     af2::add(ability, texts);
     for_each_card::add(ability, texts);

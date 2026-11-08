@@ -1,0 +1,28 @@
+{
+  "oracle_id": "896af9a9-12a2-4dd6-957c-e52150b5f3a2",
+  "name": "Gaseous Form",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaseous Form",
+      "oracle_fingerprint": "b11d3f6f6b349b6ef272e8773c4d2a09",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached", "combat": true } },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": [{ "Type": "Creature" }, { "Is": "Attached" }], "combat": true }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

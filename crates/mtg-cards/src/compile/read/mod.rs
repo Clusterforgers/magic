@@ -227,6 +227,8 @@ mod w17_wordings;
 mod w17b_statics;
 mod w17c_cast_only;
 mod w18_forms;
+mod w19a_flash;
+mod w19d_suffixes;
 mod w20a_look_pick;
 mod w20b_reflexive;
 mod w20c_counter;

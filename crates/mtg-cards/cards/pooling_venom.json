@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4933c2a9-0ef7-4b59-8c55-faa1cb3abbc2",
+  "name": "Pooling Venom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pooling Venom",
+      "oracle_fingerprint": "efd9e6e4c3572af7aed5c0299d91f61d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        },
+        { "Activated": { "cost": "{3}{B}", "effects": [{ "Destroy": { "what": "Attached" } }] } }
+      ]
+    }
+  ]
+}
