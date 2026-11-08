@@ -34,6 +34,10 @@ impl Pass<'_> {
     /// The mill that begins at `at`: the player and the end (exclusive) of the run of slots that mill their cards.
     fn e19_mill_run(&self, at: usize) -> Option<(PlayerId, usize)> {
         let player = milled_by(self.slots.get(at)?)?;
+        // A slot inside a run was changed with the run from its first slot.
+        if at > 0 && milled_by(&self.slots[at - 1]) == Some(player) {
+            return None;
+        }
         let end = (at..self.slots.len())
             .find(|&slot| milled_by(&self.slots[slot]) != Some(player))
             .unwrap_or(self.slots.len());
