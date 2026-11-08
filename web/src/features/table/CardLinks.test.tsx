@@ -1,4 +1,4 @@
-// Goal: a card draws the counters on a permanent as badges (a number for loyalty), cues what an Aura or Equipment is attached to and what a host has attached, says all of it in words to a screen reader, keeps permanents that differ in them out of one stack, and the wire check accepts the new fields and refuses malformed ones.
+// Goal: a card draws the counters on a permanent as badges (a number for loyalty or a battle's defense), labels the player who protects a battle, cues what an Aura or Equipment is attached to and what a host has attached, says all of it in words to a screen reader, keeps permanents that differ in them out of one stack, and the wire check accepts the new fields and refuses malformed ones.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { CounterKind, ObjectView } from '@/protocol/generated'
@@ -9,7 +9,8 @@ import { clone, must } from '@/test-utils/batches'
 import { fixtureOf } from '@/test-utils/combatTable'
 import { renderTable } from '@/test-utils/tableHarness'
 import { Card } from './Card'
-import { counterLabels, counterName, counterWords, linkWords, loyaltyOf } from './cardModel'
+import { counterLabels, counterName, counterWords, linkWords, loyaltyOf, statCounterOf } from './cardModel'
+import type { StatCounter } from './cardModel'
 import { groupPermanents } from './group'
 
 const ID = 900
@@ -57,6 +58,33 @@ describe('counters', () => {
     expect(loyalty).toHaveTextContent('4')
     expect(container.querySelector('[data-slot="card-counter"]')).toBeNull()
     expect(screen.getByRole('button').getAttribute('aria-label')).toMatch(/loyalty 4/)
+  })
+
+  it.each<[string, number | undefined]>([
+    ['with its protector', 1],
+    ['before a protector is chosen', undefined],
+  ])("shows a battle's defense in the stat box and labels it %s", (_, protector) => {
+    const { container } = renderWith({
+      name: 'Invasion of Theros',
+      types: ['Battle'],
+      subtypes: ['Siege'],
+      power: null,
+      toughness: null,
+      counters: [[{ Other: 'defense' }, 4]],
+      ...(protector === undefined ? {} : { protector }),
+    })
+    expect(must(container.querySelector('[data-slot="card-defense"]'))).toHaveTextContent('4')
+    expect(container.querySelector('[data-slot="card-counter"]')).toBeNull()
+    const label = screen.getByRole('button').getAttribute('aria-label')
+    expect(label).toMatch(/defense 4/)
+    const shown = container.querySelector('[data-slot="card-protector"]')
+    if (protector === undefined) {
+      expect(shown).toBeNull()
+      expect(label).not.toMatch(/protected by/)
+    } else {
+      expect(shown).toHaveTextContent(/^Protected by \S/)
+      expect(label).toMatch(/battle protected by \S/)
+    }
   })
 
   it('draws nothing for a card without counters', () => {
@@ -115,6 +143,50 @@ describe('the words', () => {
       'attached to Bear',
       'A and B attached',
     ])
+  })
+
+  const defense: CounterKind = { Other: 'defense' }
+  it.each<[string, Partial<ObjectView>, StatCounter | null, string[], string[]]>([
+    [
+      'a battle keeps its defense for the stat box',
+      { types: ['Battle'], counters: [[defense, 4]] },
+      { kind: 'defense', count: 4 },
+      [],
+      ['defense 4'],
+    ],
+    [
+      'a battle with other counters badges only those',
+      {
+        types: ['Battle'],
+        counters: [
+          [defense, 2],
+          [{ Other: 'time' }, 1],
+        ],
+      },
+      { kind: 'defense', count: 2 },
+      ['time'],
+      ['defense 2', '1 time counter'],
+    ],
+    [
+      'a planeswalker keeps loyalty there',
+      { types: ['Planeswalker'], counters: [['loyalty', 3]] },
+      { kind: 'loyalty', count: 3 },
+      [],
+      ['loyalty 3'],
+    ],
+    [
+      'defense on a permanent that is no battle is a plain badge',
+      { types: ['Creature'], counters: [[defense, 1]] },
+      null,
+      ['defense'],
+      ['1 defense counter'],
+    ],
+    ['a battle with no defense left', { types: ['Battle'], counters: [] }, null, [], []],
+  ])('%s', (_, over, stat, labels, words) => {
+    const object = card(over)
+    expect(statCounterOf(object)).toEqual(stat)
+    expect(counterLabels(object)).toEqual(labels)
+    expect(counterWords(object)).toEqual(words)
   })
 })
 

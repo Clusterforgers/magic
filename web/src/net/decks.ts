@@ -131,6 +131,7 @@ const SUPPORTS: Record<Support, true> = {
   verified: true,
   read: true,
   forge: true,
+  unverified: true,
   partial: true,
   manual: true,
   stale: true,
@@ -156,9 +157,12 @@ function readCounts(value: unknown): Counts | null {
   const { total, verified, read, partial, manual, stale, unplayable } = value
   // A check stored before the Forge tier has no count of it.
   const forge = value.forge === undefined ? 0 : value.forge
+  // Nor one stored before the Unverified tier.
+  const unverified = value.unverified === undefined ? 0 : value.unverified
   if (!isCount(total) || !isCount(verified) || !isCount(read) || !isCount(partial)) return null
   if (!isCount(manual) || !isCount(stale) || !isCount(unplayable) || !isCount(forge)) return null
-  return { total, verified, read, forge, partial, manual, stale, unplayable }
+  if (!isCount(unverified)) return null
+  return { total, verified, read, forge, unverified, partial, manual, stale, unplayable }
 }
 
 /** Reads the summary of a check; null when a field is missing or of another kind. */

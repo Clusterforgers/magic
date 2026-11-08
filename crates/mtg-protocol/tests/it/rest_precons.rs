@@ -19,6 +19,7 @@ fn summary(state: DeckState) -> Summary {
         verified: 90,
         read: 0,
         forge: 0,
+        unverified: 0,
         partial: 4,
         manual: 6,
         stale: 0,

@@ -203,7 +203,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         .ok_or(Refused::Unknown)?;
     let lines = lines_of(&deck);
     let loaded = Loaded::load(source, &lines).await?;
-    let report = loaded.report(&deck.format, &lines);
+    let report = loaded.report_off(&deck.format, &lines).await?;
 
     if is_held_back(&report) {
         return Err(Refused::Blocked(report.legality.clone()));

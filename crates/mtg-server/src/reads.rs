@@ -1,18 +1,19 @@
-//! The read endpoints: a signed-in account lists what it has left to read in a deck or a precon, reads a card's
+//! The read endpoints: a signed-in account lists what it has left to read in a deck, a precon or every card, reads a card's
 //! current draft beside its printed text (`mtg_cards::read::sheet`) and gives a verdict on it. A `wrong` needs a note
 //! and also marks the card to fix. Every request counts against the account's budget
 //! (`AttemptLimits::read_requests_per_user`); a server without a database answers 503 `cards_unavailable`.
 
 use std::collections::{HashMap, HashSet};
+use std::sync::PoisonError;
 
 use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Query, Request, State};
 use axum::http::{HeaderMap, StatusCode};
 use mtg_cards::ReadState;
-use mtg_cards::deck::DeckReport;
+use mtg_cards::deck::{DeckReport, differs_of};
 use mtg_cards::read::sheet;
-use mtg_db::{Card, DeckId, DraftKey, Verdict};
+use mtg_db::{Card, DeckId, DraftKey, IndexVersion, Verdict};
 use mtg_import::ids::OracleId;
 use mtg_protocol::rest::{
     CardDraft, DeckErrorCode, MyRead, ReadBody, ReadCard, ReadQueue, ReadQueueCard, ReadVerdict,
@@ -21,7 +22,7 @@ use sqlx::types::uuid::Uuid;
 
 use crate::api::{ApiError, read_json_limited};
 use crate::card_api::failed;
-use crate::cards::{CardSource, Rules, printed_card};
+use crate::cards::{CardSource, Rules, StoredVersion, printed_card};
 use crate::deck_cards::Loaded;
 use crate::decks::lines_of;
 use crate::fix_marks::{card_id, clean_note};
@@ -32,14 +33,17 @@ use crate::server::AppState;
 const READ_BODY_LIMIT: usize = 4 * 1024;
 
 /// What every read request has: the card source and the signed-in account, within its budget.
-struct Session<'a> {
-    cards: &'a CardSource,
-    user: Uuid,
+pub(crate) struct Session<'a> {
+    pub(crate) cards: &'a CardSource,
+    pub(crate) user: Uuid,
 }
 
 /// The 503 of a server without a database, the 401 of a request without a session, then the 429 of an account over
 /// its budget.
-async fn session<'a>(app: &'a AppState, headers: &HeaderMap) -> Result<Session<'a>, ApiError> {
+pub(crate) async fn session<'a>(
+    app: &'a AppState,
+    headers: &HeaderMap,
+) -> Result<Session<'a>, ApiError> {
     let cards = app.cards().ok_or_else(|| {
         ApiError::new(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -147,41 +151,162 @@ impl Session<'_> {
     }
 
     /// What this account has left to read among the cards of `report`: pending drafts first, then approved ones it
-    /// has not judged, each in deck order.
-    async fn queue(&self, title: String, report: &DeckReport) -> Result<ReadQueue, ApiError> {
+    /// has not judged, each most played first.
+    async fn deck_queue(&self, title: String, report: &DeckReport) -> Result<ReadQueue, ApiError> {
         let mut seen = HashSet::new();
-        let mut ids = Vec::new();
-        let mut known: HashMap<String, (String, u32)> = HashMap::new();
+        let mut waiting = Vec::new();
         for card in &report.cards {
             let waits = matches!(card.draft, Some(ReadState::Pending | ReadState::Approved));
             if waits && seen.insert(card.oracle_id.clone()) {
-                ids.push(OracleId(card.oracle_id.clone()));
                 let differs = u32::try_from(card.differs.len()).unwrap_or(u32::MAX);
-                known.insert(card.oracle_id.clone(), (card.name.clone(), differs));
+                waiting.push(Waiting {
+                    oracle_id: OracleId(card.oracle_id.clone()),
+                    name: card.name.clone(),
+                    differs,
+                });
             }
         }
-        let rows = self
+        self.queue(title, waiting, false).await
+    }
+
+    /// Every card whose current draft decides it and waits for a first read, most played first. The library is
+    /// walked off the runtime; nothing here judges a deck or a precon.
+    async fn all_queue(&self) -> Result<ReadQueue, ApiError> {
+        let rules = self.cards.rules().await?;
+        let cards = self
             .cards
             .database()
+            .cards()
+            .index_version()
+            .await
+            .map_err(|error| failed(&error))?;
+        let stamp = (rules.version().clone(), cards);
+        let held = self.cards.pending_reads();
+        if let Some(waiting) = held.get(&stamp) {
+            return self.queue(String::new(), waiting, true).await;
+        }
+        let waiting = self.pending_now(rules).await?;
+        held.keep(stamp, &waiting);
+        self.queue(String::new(), waiting, true).await
+    }
+
+    /// The cards whose current draft decides them and is pending, worked out again.
+    async fn pending_now(&self, rules: Rules) -> Result<Vec<Waiting>, ApiError> {
+        let candidates: Vec<OracleId> = rules
+            .library()
+            .drafts()
+            .filter(|(_, draft)| draft.read == ReadState::Pending)
+            .map(|(id, _)| OracleId(id.to_owned()))
+            .collect();
+        let stored = self
+            .cards
+            .database()
+            .cards()
+            .get_many(&candidates)
+            .await
+            .map_err(|error| failed(&error))?;
+        tokio::task::spawn_blocking(move || pending_of(&rules, &stored))
+            .await
+            .map_err(|_| ApiError::unavailable())
+    }
+
+    /// The queue of `waiting` as the account stands: what it has not judged, by state and popularity, each card with
+    /// its rank and whether one of the account's decks holds it. With `only_pending`, approved drafts are left out.
+    async fn queue(
+        &self,
+        title: String,
+        waiting: Vec<Waiting>,
+        only_pending: bool,
+    ) -> Result<ReadQueue, ApiError> {
+        let db = self.cards.database();
+        let ids: Vec<OracleId> = waiting.iter().map(|card| card.oracle_id.clone()).collect();
+        let known: HashMap<OracleId, Waiting> = waiting
+            .into_iter()
+            .map(|card| (card.oracle_id.clone(), card))
+            .collect();
+        let rows = db
             .reads()
             .queue(self.user, &ids)
             .await
             .map_err(|error| failed(&error))?;
+        let ranks = db.ranks().of(&ids).await.map_err(|error| failed(&error))?;
+        let mine: HashSet<OracleId> = db
+            .decks()
+            .list(self.user)
+            .await
+            .map_err(|error| failed(&error))?
+            .into_iter()
+            .flat_map(|deck| deck.lines.into_iter().map(|line| line.oracle_id))
+            .collect();
         let cards = rows
             .into_iter()
+            .filter(|row| !only_pending || row.state == mtg_db::ReadState::Pending)
             .filter_map(|row| {
-                let (name, differs) = known.get(row.oracle_id.as_str())?.clone();
+                let card = known.get(&row.oracle_id)?;
                 Some(ReadQueueCard {
                     oracle_id: row.oracle_id.to_string(),
-                    name,
+                    name: card.name.clone(),
                     read_hash: row.read_hash,
                     state: wire_state(row.state),
-                    differs,
+                    differs: card.differs,
+                    rank: ranks.get(&row.oracle_id).copied(),
+                    in_decks: mine.contains(&row.oracle_id),
                 })
             })
             .collect();
         Ok(ReadQueue { title, cards })
     }
+}
+
+/// What the pending cards were worked out under: the stored rules with the drafts and verdicts, and the cards.
+type PendingStamp = (StoredVersion, IndexVersion);
+
+/// The cards waiting for a first read, kept for the stamp they were worked out under, so a page load of the queue of
+/// every card reads the library and the cards only after a draft, a verdict or an import changed them.
+#[derive(Debug, Default)]
+pub(crate) struct PendingReads {
+    held: std::sync::Mutex<Option<(PendingStamp, Vec<Waiting>)>>,
+}
+
+impl PendingReads {
+    /// The cards held for `stamp`, if these are they.
+    fn get(&self, stamp: &PendingStamp) -> Option<Vec<Waiting>> {
+        let held = self.held.lock().unwrap_or_else(PoisonError::into_inner);
+        held.as_ref()
+            .filter(|(at, _)| at == stamp)
+            .map(|(_, waiting)| waiting.clone())
+    }
+
+    /// Keeps `waiting` as the cards of `stamp`.
+    fn keep(&self, stamp: PendingStamp, waiting: &[Waiting]) {
+        let mut held = self.held.lock().unwrap_or_else(PoisonError::into_inner);
+        *held = Some((stamp, waiting.to_vec()));
+    }
+}
+
+/// A card whose draft waits for a read, before the account's verdicts are known.
+#[derive(Debug, Clone)]
+struct Waiting {
+    oracle_id: OracleId,
+    name: String,
+    differs: u32,
+}
+
+/// The stored cards whose current draft decides them under `rules` and is pending for their text today.
+fn pending_of(rules: &Rules, stored: &[Card]) -> Vec<Waiting> {
+    let library = rules.library();
+    stored
+        .iter()
+        .filter_map(|card| {
+            let printed = printed_card(card);
+            let state = library.draft_state(&printed, rules.caps())?;
+            (state == ReadState::Pending).then(|| Waiting {
+                oracle_id: card.oracle_id.clone(),
+                name: card.name.clone(),
+                differs: u32::try_from(differs_of(library, &printed).len()).unwrap_or(u32::MAX),
+            })
+        })
+        .collect()
 }
 
 /// A stored read state as the wire says it.
@@ -193,10 +318,11 @@ fn wire_state(state: mtg_db::ReadState) -> ReadState {
     }
 }
 
-/// Which deck a list is for: exactly one of `deck` (the account's own) and `precon` (a code).
+/// Which cards a list is for: at most one of `deck` (the account's own) and `precon` (a code); neither is every card.
 enum Target {
     Deck(DeckId),
     Precon(String),
+    All,
 }
 
 fn target_of(params: &HashMap<String, String>) -> Result<Target, ApiError> {
@@ -215,12 +341,15 @@ fn target_of(params: &HashMap<String, String>) -> Result<Target, ApiError> {
             .map(|uuid| Target::Deck(DeckId(uuid)))
             .map_err(|_| ApiError::not_found()),
         (None, Some(code)) => Ok(Target::Precon(code.trim().to_ascii_lowercase())),
-        _ => Err(ApiError::invalid("name either a `deck` or a `precon`")),
+        (None, None) if params.is_empty() => Ok(Target::All),
+        _ => Err(ApiError::invalid(
+            "name either a `deck` or a `precon`, or neither",
+        )),
     }
 }
 
-/// `GET /api/reads?deck=<id>` or `?precon=<code>`: what the account has left to read in that deck. A deck of another
-/// account and an unknown code are 404.
+/// `GET /api/reads?deck=<id>` or `?precon=<code>`: what the account has left to read in that deck; `GET /api/reads`:
+/// every card waiting for a first read. A deck of another account and an unknown code are 404.
 pub(crate) async fn list(
     State(app): State<AppState>,
     Query(params): Query<HashMap<String, String>>,
@@ -228,6 +357,7 @@ pub(crate) async fn list(
 ) -> Result<Json<ReadQueue>, ApiError> {
     let s = session(&app, &headers).await?;
     let (title, report) = match target_of(&params)? {
+        Target::All => return Ok(Json(s.all_queue().await?)),
         Target::Deck(id) => {
             let deck = s
                 .cards
@@ -239,7 +369,10 @@ pub(crate) async fn list(
                 .ok_or_else(ApiError::not_found)?;
             let lines = lines_of(&deck);
             let loaded = Loaded::load(s.cards, &lines).await?;
-            (deck.name.clone(), loaded.report(&deck.format, &lines))
+            (
+                deck.name.clone(),
+                loaded.report_off(&deck.format, &lines).await?,
+            )
         }
         Target::Precon(code) => {
             let (deck, judged) = judged_precon(s.cards, &code)
@@ -248,7 +381,7 @@ pub(crate) async fn list(
             (deck.summary.name, judged.report)
         }
     };
-    Ok(Json(s.queue(title, &report).await?))
+    Ok(Json(s.deck_queue(title, &report).await?))
 }
 
 /// `GET /api/reads/{oracle_id}`: the card's current draft with its read sheet and the account's verdict. A card
@@ -334,7 +467,6 @@ mod tests {
     }
 
     #[rstest]
-    #[case(&[], 400)]
     #[case(&[("deck", " ")], 400)]
     #[case(&[("deck", "4457ed35-7c10-48c8-9776-456485fdf070"), ("precon", "c18")], 400)]
     #[case(&[("precon", "c18"), ("page", "2")], 400)]
@@ -344,6 +476,11 @@ mod tests {
             panic!("{pairs:?} names a target");
         };
         assert_eq!(error.status().as_u16(), status);
+    }
+
+    #[test]
+    fn no_parameter_lists_every_card() {
+        assert!(matches!(target_of(&params(&[])), Ok(Target::All)));
     }
 
     #[test]

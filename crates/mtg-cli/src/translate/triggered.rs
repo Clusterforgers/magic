@@ -44,8 +44,27 @@ pub fn targeting(when: &Value) -> Option<Vec<Value>> {
     found.as_array().cloned()
 }
 
+/// The name `key_of` gives a batch of counters put on each object alone, plain or by a cause ("one or more -1/-1 counters are put on
+/// a creature"): the card of the event is the object they were put on.
+pub const COUNTERS_ON_OBJECTS: &str = "CountersPutBatch";
+
+/// Whether the pattern is a batch of counters put on each object alone.
+fn counters_on_objects(when: &Value) -> bool {
+    let inner = when
+        .get("Caused")
+        .and_then(|caused| caused.get("inner"))
+        .unwrap_or(when);
+    inner
+        .get("Batch")
+        .and_then(|batch| batch.get("CountersPut"))
+        .is_some_and(|put| put.get("each") == Some(&json!(true)))
+}
+
 /// The name of the pattern a trigger's `when` is.
 pub fn key_of(when: &Value) -> String {
+    if counters_on_objects(when) {
+        return COUNTERS_ON_OBJECTS.to_owned();
+    }
     (when.as_object())
         .and_then(|map| map.keys().next())
         .cloned()
@@ -174,6 +193,8 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
     };
     let mode = shape.mode.as_str();
     let did = holds(mode);
+    // "That creature" of "one or more counters are put on a creature" too: the engine triggers once for each object.
+    let one_object = ONE_OBJECT.contains(&mode) || shape.pattern == COUNTERS_ON_OBJECTS;
     // A tap for mana holds the permanent and the player who tapped it, who controls it: "that player" is the player
     // alone, so damage to them spares a land creature. The mana of "its controller adds" is the shape a triggered mana
     // ability folds into the tap, which names the player `Triggering`.
@@ -196,13 +217,11 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         }
     }
     let reference = match what {
-        Word::Owner if ONE_OBJECT.contains(&mode) => "Triggering",
+        Word::Owner if one_object => "Triggering",
         // An activation holds the player and the permanent; the player alone is "that player".
         Word::Activator if mode == "AbilityCast" => "TriggeringPlayer",
         Word::Activator if matches!(mode, "SpellCast" | "SpellAbilityCast") => "Triggering",
-        Word::Card if ONE_OBJECT.contains(&mode) || PLAYER_AND_OBJECT.contains(&mode) => {
-            "Triggering"
-        }
+        Word::Card if one_object || PLAYER_AND_OBJECT.contains(&mode) => "Triggering",
         Word::Card if did.is_some_and(|(_, object)| object) => "Triggering",
         // The permanent that was tapped for mana is the event's first subject.
         Word::Card if mode == "TapsForMana" => "Triggering",
@@ -258,10 +277,8 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
     }
     match (what, reference) {
         (Word::Owner, _) => Ok(json!({"OwnerOf": reference})),
-        (Word::Card, "This") if ONE_OBJECT.contains(&mode) => Ok(json!("You")),
-        (Word::Card, "Triggering") if ONE_OBJECT.contains(&mode) => {
-            Ok(json!({"ControllerOf": "Triggering"}))
-        }
+        (Word::Card, "This") if one_object => Ok(json!("You")),
+        (Word::Card, "Triggering") if one_object => Ok(json!({"ControllerOf": "Triggering"})),
         (Word::Source | Word::Blocker, "Dealer") => Ok(json!({"ControllerOf": "Dealer"})),
         // The caster controls the spell on the stack; the creature hit or attacking is a permanent.
         (Word::Card, "Triggering") if mode == "SpellCast" => {

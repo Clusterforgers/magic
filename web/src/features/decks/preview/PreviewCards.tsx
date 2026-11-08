@@ -1,11 +1,13 @@
-import { BookOpenCheckIcon, HammerIcon, HandIcon, ShieldHalfIcon } from 'lucide-react'
-import { useState } from 'react'
+import { BookDashedIcon, BookOpenCheckIcon, HammerIcon, HandIcon, ShieldHalfIcon } from 'lucide-react'
+import { useContext, useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
+import { FixMarksApiContext } from '@/features/fixmarks/apiContext'
+import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { SupportMark } from '@/features/decks/SupportMark'
 import { BY_HAND, BY_HAND_TITLE, ON_A_READ, PARTLY_BY_HAND, runsWhole } from '@/lib/byHand'
 import { cardWords } from '@/lib/lineMarks'
-import { FROM_FORGE } from '@/lib/toRead'
+import { FROM_FORGE, UNVERIFIED_MEANING } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import type { Support } from '@/protocol/generated'
 import { LineMarks } from './LineMarks'
@@ -16,6 +18,7 @@ const PLAYED_BY_HAND: Readonly<Record<Support, string>> = {
   verified: 'runs whole',
   read: ON_A_READ,
   forge: FROM_FORGE,
+  unverified: UNVERIFIED_MEANING,
   partial: PARTLY_BY_HAND,
   manual: BY_HAND,
   stale: `${BY_HAND} until it is checked again`,
@@ -30,6 +33,7 @@ export function cardLabel(card: PreviewCard): string {
 
 /** The large picture of one card with its type, its support and why it is not Verified. */
 export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose: () => void }) {
+  const fixMarks = useContext(FixMarksApiContext)
   return (
     <Dialog open={card !== null} onOpenChange={(open) => (open ? undefined : onClose())}>
       <DialogContent className="max-w-lg justify-items-center" data-slot="card-zoom">
@@ -55,6 +59,15 @@ export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose:
                 {cardWords(card.support)}
               </p>
               {card.support === 'partial' ? <LineMarks card={card} /> : null}
+              {card.support === 'verified' ? null : (
+                <FixMarkButton
+                  oracleId={card.oracleId}
+                  name={card.name}
+                  api={fixMarks}
+                  emphasis="prominent"
+                  support={card.support}
+                />
+              )}
               {card.reasons.length === 0 ? null : (
                 <ul aria-label={BY_HAND_TITLE} className="grid gap-1 text-left text-xs text-muted-foreground">
                   {[...new Set(card.reasons)].map((reason) => (
@@ -113,6 +126,15 @@ function Tile({ card, onOpen }: { card: PreviewCard; onOpen: (card: PreviewCard)
               className="absolute -bottom-1.5 -left-1.5 grid size-6 place-items-center rounded-full border border-support-forge bg-popover text-support-forge shadow-e1"
             >
               <HammerIcon className="size-3.5" />
+            </span>
+          ) : null}
+          {card.support === 'unverified' ? (
+            <span
+              data-slot="support-badge"
+              aria-hidden="true"
+              className="absolute -bottom-1.5 -left-1.5 grid size-6 place-items-center rounded-full border border-support-unverified bg-popover text-support-unverified shadow-e1"
+            >
+              <BookDashedIcon className="size-3.5" />
             </span>
           ) : null}
           {hand ? (

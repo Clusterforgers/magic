@@ -32,6 +32,7 @@ export type CardCommandId =
   | 'pump'
   | 'grant'
   | 'unsick'
+  | 'copy'
   | 'sacrifice'
   | 'give'
   | 'transform'
@@ -272,6 +273,15 @@ export function controlCommands(input: MenuInput): CardCommand[] {
       unavailable: off ?? noOne,
     })
   }
+  if (kind === 'battlefield') {
+    out.push({
+      id: 'copy',
+      label: 'Create a token copy',
+      effect: 'A token that is a copy of it enters under your control.',
+      action: { CopyToken: { object: object.id, count: 1 } },
+      unavailable: off,
+    })
+  }
   const spell = object.types.includes('Instant') || object.types.includes('Sorcery')
   if ((kind === 'graveyard' || kind === 'exile') && object.owner === seat && !spell) {
     out.push({
@@ -393,6 +403,8 @@ export function previewOfCard(command: CardCommand, draft: CardDraft, context: C
         action: built.action,
       }
     }
+    case 'copy':
+      return sends(command, `${name}: a token copy of it enters under your control`, `Copy ${name}`)
     case 'unsick':
       return sends(command, `${name}: no longer summoning sick this turn`, 'Remove summoning sickness')
     case 'sacrifice':

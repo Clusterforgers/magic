@@ -682,8 +682,15 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         selector().prop_map(|what| TriggerPattern::Unblocked { what }),
         (selector(), 1u32..5)
             .prop_map(|(what, at_least)| TriggerPattern::GroupAttacks { what, at_least }),
-        (selector(), proptest::option::of(counter()))
-            .prop_map(|(what, counter)| TriggerPattern::CountersPut { what, counter }),
+        (selector(), proptest::option::of(counter()), any::<bool>()).prop_map(
+            |(what, counter, each)| {
+                TriggerPattern::CountersPut {
+                    what,
+                    counter,
+                    each,
+                }
+            }
+        ),
         selector().prop_map(|what| TriggerPattern::Untapped { what }),
         (selector(), proptest::option::of(counter()))
             .prop_map(|(what, counter)| TriggerPattern::CountersRemoved { what, counter }),
@@ -1331,6 +1338,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 )
                     .prop_map(|(on, counter)| ReplaceWhen::CountersPut { on, counter }),
                 reference().prop_map(|who| ReplaceWhen::LifeGain { who }),
+                reference().prop_map(|who| ReplaceWhen::Mill { who }),
                 (reference(), 0..3u32).prop_map(|(who, except_draw_step)| ReplaceWhen::Draw {
                     who,
                     except_draw_step

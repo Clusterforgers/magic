@@ -1,8 +1,11 @@
+import { Link } from '@tanstack/react-router'
 import { HoverPicture } from '@/features/cards/CardPicture'
 import { Trash2Icon, TriangleAlertIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
+import { READ_IT } from '@/lib/toRead'
+import type { ReadTarget } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { Line } from './deckEdit'
@@ -27,6 +30,8 @@ interface LineRowProps {
   actions: LineActions
   /** The fix-mark endpoints; with them a card that is not Verified gets the flag. */
   fixMarks?: FixMarksApi
+  /** The saved deck the review screen reads; an unverified card links there. */
+  readTarget?: ReadTarget
 }
 
 /**
@@ -35,7 +40,16 @@ interface LineRowProps {
  * game cannot play by itself has an edge in its state's colour, the flag that marks it important to fix and, under the
  * name, its mark and the reasons the check gives.
  */
-export function LineRow({ line, format, room, check, outside = null, actions, fixMarks }: LineRowProps) {
+export function LineRow({
+  line,
+  format,
+  room,
+  check,
+  outside = null,
+  actions,
+  fixMarks,
+  readTarget,
+}: LineRowProps) {
   const { zone, card } = line
   const id = card.oracle_id
   const issue = isIssue(check.support)
@@ -91,6 +105,16 @@ export function LineRow({ line, format, room, check, outside = null, actions, fi
           className="order-5 col-span-full flex items-start gap-2 sm:order-none sm:col-span-3 sm:col-start-2"
         >
           <SupportMark support={check.support} />
+          {check.support === 'unverified' && readTarget !== undefined ? (
+            <Link
+              to="/read"
+              search={readTarget}
+              data-slot="line-read"
+              className="pt-1 text-xs font-medium text-primary underline-offset-4 hover:underline"
+            >
+              {READ_IT}
+            </Link>
+          ) : null}
           {reasons.length === 0 ? null : (
             <ul
               aria-label={`Why ${card.name} is not verified`}

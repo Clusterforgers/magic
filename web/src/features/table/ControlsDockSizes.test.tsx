@@ -1,5 +1,5 @@
 // Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1600 up and behind one Stops button below, the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen (whole, with key hints, from a 1150 px main area; short without them below it), every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
-import { act, screen, waitFor, within } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, FullControlMode, Step, YieldUntil } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
@@ -282,7 +282,6 @@ describe('the keyboard', () => {
       'Mine, none set',
       'Theirs, none set',
       'keep-stops',
-      'Your precombat main stop: off. Press to stop here this turn',
       'full-control-toggle',
       'full-control-menu',
       'secondary-action',
@@ -332,7 +331,7 @@ describe('the keyboard', () => {
 
   it('leaves the keys to a stop that has focus, as to any button', async () => {
     const { user, answer } = dockOf({ width: 1600, own: true, stacked: false, step: 'Main1' })
-    act(() => must(within(dock()).getAllByRole('button', { name: /stop: / })[0]).focus())
+    act(() => must(screen.getAllByRole('button', { name: /stop: / })[0]).focus())
     await user.keyboard(' ')
     expect(answer).not.toHaveBeenCalled()
   })

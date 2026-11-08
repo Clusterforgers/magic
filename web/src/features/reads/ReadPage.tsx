@@ -1,18 +1,17 @@
-import { Link, Navigate } from '@tanstack/react-router'
+import { Navigate } from '@tanstack/react-router'
 import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
-import { buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
-import { TO_READ, readPath } from '@/lib/toRead'
+import { readPath } from '@/lib/toRead'
 import type { ReadTarget } from '@/lib/toRead'
 import { readsApi } from '@/net/reads'
 import type { ReadsApi } from '@/net/reads'
 import { ReadView } from './ReadView'
 
 interface ReadPageProps {
-  /** The deck whose cards are read, from the address; null when it names none. */
+  /** The deck whose cards are read, from the address; null for every card waiting for a first read. */
   target: ReadTarget | null
   /** The read endpoints; the shared client unless a test brings its own. */
   api?: ReadsApi
@@ -33,26 +32,14 @@ function Notice({ children, action }: { children: string; action?: React.ReactNo
 }
 
 /**
- * `/read?deck=<id>` and `/read?precon=<code>`: the review screen, where a signed-in player reads the drafts of a deck's
- * cards and says whether each is correct. Someone who is not signed in is sent to the sign-in form and back.
+ * `/read` (every card), `/read?deck=<id>` and `/read?precon=<code>`: the review screen, where a signed-in player reads
+ * the drafts of cards and says whether each is correct. Someone who is not signed in is sent to the sign-in form and back.
  */
 export function ReadPage({ target, api = readsApi }: ReadPageProps) {
   usePageTitle('Read cards')
   const status = useAuth((state) => state.status)
 
-  if (target === null) {
-    return (
-      <Notice
-        action={
-          <Link to="/decks" className={buttonVariants({ size: 'lg' })}>
-            Your decks
-          </Link>
-        }
-      >
-        {`Open this page from a deck or a precon that has cards ${TO_READ}.`}
-      </Notice>
-    )
-  }
+  const path = target === null ? '/read' : readPath(target)
   if (status === 'loading') {
     return (
       <PageShell width="wide">
@@ -65,7 +52,7 @@ export function ReadPage({ target, api = readsApi }: ReadPageProps) {
   if (status === 'signed-out') {
     return (
       <PageShell width="wide">
-        <Navigate to="/login" search={{ next: readPath(target) }} replace />
+        <Navigate to="/login" search={{ next: path }} replace />
         <p role="status" className="text-sm text-muted-foreground">
           You need to sign in to read cards. Taking you to the sign-in page…
         </p>
@@ -77,7 +64,7 @@ export function ReadPage({ target, api = readsApi }: ReadPageProps) {
   }
   return (
     <PageShell width="wide">
-      <ReadView key={readPath(target)} api={api} target={target} />
+      <ReadView key={path} api={api} target={target} />
     </PageShell>
   )
 }

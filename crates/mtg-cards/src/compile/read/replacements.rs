@@ -16,6 +16,7 @@ pub(super) fn handles(when: &ReplaceWhen) -> bool {
             | ReplaceWhen::TokenCreation { .. }
             | ReplaceWhen::CountersPut { .. }
             | ReplaceWhen::Draw { .. }
+            | ReplaceWhen::Mill { .. }
             | ReplaceWhen::ZoneChange { .. }
     )
 }
@@ -42,6 +43,7 @@ pub(super) fn sentences(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<String> {
             who: Ref::You,
             except_draw_step,
         } => draw(*except_draw_step, by),
+        ReplaceWhen::Mill { who } => mill(who, by),
         ReplaceWhen::ZoneChange { what, from, to } => zone_change(what, *from, *to, by),
         _ => Vec::new(),
     }
@@ -284,6 +286,29 @@ fn draw(except: u32, by: &ReplaceBy) -> Vec<String> {
     vec![format!(
         "if you would draw a card{exception}, draw two cards instead"
     )]
+}
+
+/// "If an opponent would mill one or more cards, they mill twice that many cards instead" and "that many cards plus
+/// four".
+fn mill(who: &Ref, by: &ReplaceBy) -> Vec<String> {
+    let (whom, they) = match who {
+        Ref::Opponents => ("an opponent", "they"),
+        Ref::EachPlayer => ("a player", "they"),
+        Ref::You => ("you", "you"),
+        _ => return Vec::new(),
+    };
+    let counts: Vec<String> = match by {
+        ReplaceBy::Multiply(2) => vec!["twice that many cards".to_owned()],
+        ReplaceBy::Add(extra) => numbers(*extra)
+            .into_iter()
+            .map(|number| format!("that many cards plus {number}"))
+            .collect(),
+        _ => return Vec::new(),
+    };
+    counts
+        .into_iter()
+        .map(|count| format!("if {whom} would mill one or more cards, {they} mill {count} instead"))
+        .collect()
 }
 
 /// What happens to the object instead of the move.

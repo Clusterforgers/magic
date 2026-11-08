@@ -119,7 +119,9 @@ pub enum Bucket {
     Verified,
     /// `Read`: a draft a player read and found correct, or a trusted translation of a Forge script (`Forge`).
     Read,
-    /// A card whose draft waits for its first read; it plays by hand (`Partial` or `Manual`) until then.
+    /// `Unverified`: a whole draft that runs while it waits for its first read.
+    Unverified,
+    /// A card whose draft waits for its first read and does not run (a partial draft); it plays by hand until then.
     Waiting,
     /// `Partial`, with no draft waiting.
     Partial,
@@ -131,9 +133,10 @@ pub enum Bucket {
 
 impl Bucket {
     /// Every bucket in report order.
-    pub const ALL: [Bucket; 6] = [
+    pub const ALL: [Bucket; 7] = [
         Bucket::Verified,
         Bucket::Read,
+        Bucket::Unverified,
         Bucket::Waiting,
         Bucket::Partial,
         Bucket::Manual,
@@ -145,6 +148,7 @@ impl Bucket {
         match state {
             Support::Verified => Bucket::Verified,
             Support::Read | Support::Forge => Bucket::Read,
+            Support::Unverified => Bucket::Unverified,
             Support::Partial => Bucket::Partial,
             Support::Manual => Bucket::Manual,
             Support::Stale | Support::Unplayable => Bucket::Other,
@@ -156,6 +160,7 @@ impl Bucket {
         match self {
             Bucket::Verified => "verified",
             Bucket::Read => "read",
+            Bucket::Unverified => "unverified",
             Bucket::Waiting => "waiting",
             Bucket::Partial => "partial",
             Bucket::Manual => "manual",
@@ -472,7 +477,9 @@ fn blockers_of(
 ) -> BTreeSet<Blocker> {
     let rules = |what: &str| BTreeSet::from([Blocker::Rules(what.to_owned())]);
     match state {
-        Support::Verified | Support::Read | Support::Forge => return BTreeSet::new(),
+        Support::Verified | Support::Read | Support::Forge | Support::Unverified => {
+            return BTreeSet::new();
+        }
         Support::Stale => return rules("stale"),
         Support::Unplayable => return rules("unplayable"),
         Support::Partial | Support::Manual => {}

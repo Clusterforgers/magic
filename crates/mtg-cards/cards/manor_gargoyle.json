@@ -1,0 +1,37 @@
+{
+  "oracle_id": "edb6c7ea-b4e1-4cb7-b5a9-8c5644a2aad9",
+  "name": "Manor Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manor Gargoyle",
+      "oracle_fingerprint": "983f7db0832dc5909afe6ee4a50f5038",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Matches": { "subject": "This", "selector": [{ "HasKeyword": "Defender" }] }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "RemoveKeyword": "Defender" }, { "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

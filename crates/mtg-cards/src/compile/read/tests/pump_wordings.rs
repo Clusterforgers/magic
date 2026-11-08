@@ -116,17 +116,39 @@ fn a_counter_put_on_it_in_the_trigger_of_a_creature_reads_and_writes_back(#[case
 )]
 #[case::a_creature_you_control(
     "Whenever one or more counters are put on a creature you control, you gain 1 life.",
-    r#"{"Triggered":{"when":{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"effects":[{"GainLife":{"amount":1}}]}}"#
+    r#"{"Triggered":{"when":{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"each":true}}},"effects":[{"GainLife":{"amount":1}}]}}"#
 )]
 #[case::a_named_kind(
     "Whenever one or more charge counters are put on ~, draw a card.",
     r#"{"Triggered":{"when":{"Batch":{"CountersPut":{"what":["This"],"counter":"charge"}}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::one_or_more_creatures_you_control(
+    "Whenever one or more counters are put on one or more creatures you control, you gain 1 life.",
+    r#"{"Triggered":{"when":{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"effects":[{"GainLife":{"amount":1}}]}}"#
 )]
 fn one_or_more_counters_put_on_is_a_batch_of_counter_events(
     #[case] text: &str,
     #[case] json: &str,
 ) {
     reads_as(text, ClauseKind::Triggered, false, json);
+}
+
+/// A batch of counters on each creature alone and on one or more creatures together, each with the other's words.
+#[rstest]
+#[case::each_is_not_plural(
+    r#"{"Triggered":{"when":{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"each":true}}},"effects":[{"GainLife":{"amount":1}}]}}"#,
+    "Whenever one or more counters are put on one or more creatures you control, you gain 1 life."
+)]
+#[case::together_is_not_singular(
+    r#"{"Triggered":{"when":{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"effects":[{"GainLife":{"amount":1}}]}}"#,
+    "Whenever one or more counters are put on a creature you control, you gain 1 life."
+)]
+fn the_number_of_the_subject_of_a_counter_batch_is_written_back(
+    #[case] json: &str,
+    #[case] text: &str,
+) {
+    let written = render_variants(&ability(json));
+    assert!(!written.iter().any(|w| same_text(w, text)), "{text}");
 }
 
 #[rstest]

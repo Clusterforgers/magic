@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'r
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { FixMarksApiContext } from '@/features/fixmarks/apiContext'
+import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { describeMarkError } from '@/features/fixmarks/errors'
 import { useFixMarks } from '@/features/fixmarks/useFixMarks'
 import { usePlay } from '@/features/game/gameContext'
@@ -103,16 +104,21 @@ function Panel({ target }: { target: MenuTarget }) {
   const menu = useMemo(() => (input === null ? null : manualMenu(input)), [input])
 
   // The fix mark of the card (a card without a printed identity, such as a token, has none).
-  const marks = useFixMarks(useContext(FixMarksApiContext))
+  const fixMarksApi = useContext(FixMarksApiContext)
+  const marks = useFixMarks(fixMarksApi)
   const [told, setTold] = useState<string | undefined>(undefined)
   const oracleId = input?.object.identity?.oracle_id
   const marked = oracleId !== undefined && marks.markOf(oracleId) !== undefined
+  // A card the game does not run whole carries the fix-mark button in the header instead of the menu's entry.
+  const notVerified =
+    input !== null &&
+    (input.object.partial === true || input.object.read === true || (input.object.manual ?? []).length > 0)
   const groups = useMemo(
     () =>
-      menu === null || oracleId === undefined || marks.unavailable
+      menu === null || oracleId === undefined || marks.unavailable || notVerified
         ? (menu?.groups ?? [])
         : [...menu.groups, fixMarkGroup(marked, marks.loading)],
-    [menu, oracleId, marks.unavailable, marks.loading, marked],
+    [menu, oracleId, marks.unavailable, marks.loading, marked, notVerified],
   )
 
   // The card left the table (or the seat is gone) while the menu was open.
@@ -241,6 +247,16 @@ function Panel({ target }: { target: MenuTarget }) {
             <ByHandList clauses={menu.clauses} className="text-xs" />
           </section>
         )}
+        {notVerified && oracleId !== undefined ? (
+          <FixMarkButton
+            oracleId={oracleId}
+            name={menu.title}
+            api={fixMarksApi}
+            emphasis="prominent"
+            support={input.object.partial === true ? 'partial' : undefined}
+            className="mt-1"
+          />
+        ) : null}
         {error === undefined && !failed ? null : (
           <p role="alert" data-slot="menu-feedback" className="text-xs text-destructive">
             {error ?? (sender.feedback === null ? '' : feedbackWords(sender.feedback))}

@@ -207,7 +207,7 @@ describe('the marker beside the name', () => {
     ['a clean saved check', { state: 'verified', verified: true }, 'Verified'],
     ['a deck played by hand', { state: 'manual_play' }, 'Played by hand'],
     ['a blocked deck', { state: 'blocked' }, 'Blocked'],
-    ['a deck on reads', { state: 'read' }, 'Runs on reads'],
+    ['a deck on reads', { state: 'read' }, 'Whole deck runs'],
   ] as const)('says the word for %s', async (_what, over, word) => {
     await renderBuilder({ view: over })
     const marker = deckPane().querySelector('[data-marker]')

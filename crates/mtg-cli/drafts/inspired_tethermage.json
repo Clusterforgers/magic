@@ -13,7 +13,11 @@
               "Caused": {
                 "inner": {
                   "Batch": {
-                    "CountersPut": { "what": [{ "Type": "Planeswalker" }], "counter": "loyalty" }
+                    "CountersPut": {
+                      "what": [{ "Type": "Planeswalker" }],
+                      "counter": "loyalty",
+                      "each": true
+                    }
                   }
                 },
                 "by": "You"

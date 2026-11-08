@@ -28,6 +28,7 @@ mod precon_oracle_ids;
 mod precon_resolution;
 mod prefs;
 mod printing_import;
+mod ranks;
 mod reads;
 mod row_counts;
 mod rulings_import;

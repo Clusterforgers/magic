@@ -99,6 +99,7 @@ mod tests {
             manual: Vec::new(),
             manual_owed: false,
             read: false,
+            unverified: false,
             partial: false,
             note: None,
             granted: Vec::new(),

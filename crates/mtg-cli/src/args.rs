@@ -58,6 +58,8 @@ pub enum Command {
     Reads(ReadsArgs),
     /// Find the drafts likely to be wrong, read-only and without a model: the engine's English of each draft against the Oracle text on a fixed list of meaning-bearing tokens, as a TSV of findings per draft.
     DraftSuspects(DraftSuspectsArgs),
+    /// List the drafts whose clauses read back as other text only in wording (the bulk read check, read-only, local database): counts per equivalence and a TSV of slug, name, printed clause, engine clause and rule.
+    ReadCandidates(ReadCandidatesArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
     ForgeCheck(ForgeCheckArgs),
     /// Translate the Forge card scripts of a read-only checkout into proposals in the format `propose` writes, with mappers and no model; `check-rules` then judges them.
@@ -267,6 +269,18 @@ pub struct DraftSuspectsArgs {
     /// Write the TSV to this file and print only the summary.
     #[arg(long, value_name = "FILE")]
     pub out: Option<PathBuf>,
+}
+
+/// Options of `read-candidates`.
+#[derive(Debug, Args)]
+pub struct ReadCandidatesArgs {
+    /// Where the TSV of the candidates goes.
+    #[arg(long, value_name = "FILE", default_value = "read-candidates.tsv")]
+    pub out: PathBuf,
+
+    /// Also write the clauses that matched no equivalence (slug, printed, engine) to this file.
+    #[arg(long, value_name = "FILE")]
+    pub misses: Option<PathBuf>,
 }
 
 /// Options of `reads`.

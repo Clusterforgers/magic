@@ -7,7 +7,7 @@ import type { PreconListItem } from '@/protocol/generated'
 import { PreconBadge } from './PreconBadge'
 import { FavouriteButton } from './FavouriteButton'
 import type { Favourites } from './useFavourites'
-import { commandersText, releaseText, statusOf } from './format'
+import { breakdownWords, commandersText, releaseText, statusOf } from './format'
 
 /** The window from which the precons are a table with columns; under it each is a stacked row. */
 export const TABLE_FROM = '(min-width: 64rem)'
@@ -77,6 +77,18 @@ function Check({ precon }: { precon: PreconListItem }) {
   return (
     <div className="grid justify-items-start gap-1">
       <PreconBadge precon={precon} id={statusId(precon)} />
+      {breakdownWords(precon) === '' ? null : (
+        // Each tier keeps its number beside its word; the line breaks only between tiers.
+        <span data-slot="precon-breakdown" className="flex flex-wrap gap-x-1 text-xs text-muted-foreground">
+          {breakdownWords(precon)
+            .split(' · ')
+            .map((part, index) => (
+              <span key={part} className="whitespace-nowrap">
+                {index === 0 ? part : `· ${part}`}
+              </span>
+            ))}
+        </span>
+      )}
       <ToRead count={precon.summary.to_read} target={{ precon: precon.code }} className="text-xs" />
       {statusOf(precon) === 'blocked' ? (
         <span className="text-xs whitespace-nowrap text-muted-foreground">Details list what stops it.</span>

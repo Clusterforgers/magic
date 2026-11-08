@@ -4,7 +4,7 @@
  */
 import { issueWords } from '@/features/game/deckWords'
 import { cardsByHand, runsWhole } from '@/lib/byHand'
-import { RUNS_ON_READS } from '@/lib/toRead'
+import { WHOLE_DECK_RUNS } from '@/lib/toRead'
 import type { DeckReport, DeckState } from '@/protocol/generated'
 
 /** The verdict of one deck at one table. */
@@ -25,9 +25,9 @@ export function verdictOf(report: DeckReport): Verdict {
   if (reasons.length > 0) return { kind: 'blocked', reasons }
   const cards = counts.manual + counts.partial + counts.stale
   if (cards === 0)
-    return counts.read + counts.forge === 0
+    return counts.read + counts.forge + counts.unverified === 0
       ? { kind: 'runs' }
-      : { kind: 'reads', cards: counts.read + counts.forge }
+      : { kind: 'reads', cards: counts.read + counts.forge + counts.unverified }
   const names = [...new Set(report.cards.filter((card) => !runsWhole(card.support)).map((card) => card.name))]
   return { kind: 'hand', cards, names, toRead: report.summary.to_read }
 }
@@ -46,13 +46,13 @@ export function verdictState(verdict: Verdict): DeckState {
   }
 }
 
-/** "Whole deck runs", "Runs on reads", "3 cards played by hand" or "Cannot be taken". */
+/** "Whole deck runs" (Verified or not), "3 cards played by hand" or "Cannot be taken". */
 export function verdictLabel(verdict: Verdict): string {
   switch (verdict.kind) {
     case 'runs':
       return 'Whole deck runs'
     case 'reads':
-      return RUNS_ON_READS
+      return WHOLE_DECK_RUNS
     case 'hand':
       return cardsByHand(verdict.cards)
     case 'blocked':

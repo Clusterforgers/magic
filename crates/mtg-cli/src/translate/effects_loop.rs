@@ -176,6 +176,10 @@ fn choose_each(
     if p.get("AtRandom") == Some("True") || !matches!(p.get("Amount"), None | Some("1")) {
         return unmapped("key:ChooseCard.ChooseEach-shape");
     }
+    // A party is up to one creature of each party type, not one creature of any of them.
+    if each.split(" & ").any(|kind| kind.trim() == "Party") {
+        return unmapped("valid-base:Party");
+    }
     let min = match (p.get("MinAmount"), p.get("Mandatory")) {
         (Some("0"), _) | (None, None | Some("False")) => 0,
         (None | Some("1"), Some("True")) => 1,
@@ -387,10 +391,11 @@ pub fn immediate_trigger(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
                 loose.unwrap_or_default()
             }
             // A target an earlier step moved is another object now (CR 400.7), so `Targeted` stays a gap.
-            "Remembered" | "RememberedCard" | "RememberedLKI" | "ChosenCard" | "ChosenPlayer"
-            | "Sacrificed" => defined(ctx, word)?,
+            "ChosenCard" | "ChosenPlayer" | "Sacrificed" => defined(ctx, word)?,
             w if super::triggered::is_word(w) => defined(ctx, w)?,
-            other => return unmapped(format!("key:ImmediateTrigger.RememberObjects={other}")),
+            w => super::refs::read_or(ctx, w, super::refs::Scope::Reflexive, || {
+                format!("key:ImmediateTrigger.RememberObjects={w}")
+            })?,
         };
         let bind = ctx.fresh("when");
         out.push(json!({"Bind": {"what": what, "as": bind}}));

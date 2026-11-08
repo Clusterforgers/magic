@@ -201,6 +201,24 @@ fn bare(keyword: &Keyword) -> Keyword {
     }
 }
 
+const GENDERED: [&str; 8] = [
+    "he", "she", "him", "her", "his", "hers", "himself", "herself",
+];
+
+/// Whether a text names a person with a gendered pronoun.
+fn gendered(text: &str) -> bool {
+    text.split(|c: char| !c.is_alphabetic())
+        .any(|word| GENDERED.contains(&word.to_lowercase().as_str()))
+}
+
+/// The variant sharing the longest prefix with the clause; a gendered wording is a last resort unless the clause is gendered.
+fn closest(variants: Vec<String>, wanted: &str) -> Option<String> {
+    let person = gendered(wanted);
+    variants
+        .into_iter()
+        .max_by_key(|variant| (person || !gendered(variant), common_prefix(variant, wanted)))
+}
+
 /// The number of leading characters two texts share.
 fn common_prefix(left: &str, right: &str) -> usize {
     left.chars()
@@ -723,11 +741,7 @@ impl<'a> Pairer<'a> {
                     .iter()
                     .any(|written| same_written_text(written, text))
                 {
-                    let written = wanted
-                        .iter()
-                        .max_by_key(|variant| common_prefix(variant, text))
-                        .cloned()
-                        .unwrap_or_default();
+                    let written = closest(wanted.to_vec(), text).unwrap_or_default();
                     state = Some(ClauseState::Differs {
                         ability: *ability,
                         written,
@@ -875,10 +889,7 @@ pub(super) fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str
         };
     }
     let written = written_variants(ability);
-    match written
-        .into_iter()
-        .max_by_key(|variant| common_prefix(variant, wanted))
-    {
+    match closest(written, wanted) {
         Some(written) => ClauseState::Differs {
             ability: at,
             written,
@@ -1170,5 +1181,36 @@ mod e14f_tests {
             found.iter().any(|text| same_text(text, clause)),
             "{found:?}"
         );
+    }
+}
+
+#[cfg(test)]
+mod w19r_tests {
+    //! Goal: the wording shown for a differing clause is the closest one that names the card as the clause does, so a card is "it" unless the clause says "he" or "she".
+    use super::closest;
+
+    fn owned(texts: &[&str]) -> Vec<String> {
+        texts.iter().map(|text| (*text).to_owned()).collect()
+    }
+
+    #[test]
+    fn a_gendered_wording_is_shown_only_for_a_gendered_clause() {
+        let variants = owned(&[
+            "When ~ enters, she deals 1 damage.",
+            "When ~ enters, it deals 1 damage.",
+        ]);
+        assert_eq!(
+            closest(variants.clone(), "When ~ enters, it deals 2 damage."),
+            Some("When ~ enters, it deals 1 damage.".to_owned())
+        );
+        assert_eq!(
+            closest(variants, "When ~ enters, she deals 2 damage."),
+            Some("When ~ enters, she deals 1 damage.".to_owned())
+        );
+    }
+
+    #[test]
+    fn nothing_is_shown_without_a_wording() {
+        assert_eq!(closest(Vec::new(), "Draw a card."), None);
     }
 }

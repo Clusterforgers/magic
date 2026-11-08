@@ -65,6 +65,7 @@ pub mod oracle;
 mod players_where;
 mod r6a;
 mod rebind;
+pub mod refs;
 pub mod remember;
 pub mod replacements;
 mod replacements_counter;
@@ -107,6 +108,7 @@ pub mod triggers_r4;
 mod triggers_static;
 pub mod valid;
 pub mod valid_atoms;
+pub mod valid_grammar;
 pub mod valid_more;
 
 #[cfg(test)]

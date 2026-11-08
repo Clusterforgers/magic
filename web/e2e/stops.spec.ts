@@ -3,9 +3,9 @@ import type { Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
 import type { Player } from './lobby'
 
-/** A stop button of the ladder by the start of its spoken name, such as "Your upkeep stop: off". */
+/** A stop button of the step ladder in the top bar by the start of its spoken name, such as "Your upkeep stop: off". */
 const stop = (page: Page, name: string) => page.getByRole('button', { name: new RegExp(`^${name}`) })
-/** Shows one side of the stops row: "Mine" for your own turns or "Theirs" for the opponents'. */
+/** Shows one side of the step ladder: "Mine" for your own turns or "Theirs" for the opponents'. */
 const side = (page: Page, name: 'Mine' | 'Theirs') =>
   page
     .getByRole('group', { name: 'Stops for' })
@@ -46,7 +46,8 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     const pinned = stop(ada.page, "Opponents' end step stop: on every turn")
     await expect(pinned).toHaveAttribute('data-keep', 'lasting')
     await expect(pinned.locator('.lucide-pin')).toBeVisible()
-    await expect(lit(ada.page)).toHaveCount(2)
+    // The ladder shows one side at a time: Theirs is on show with its one stop.
+    await expect(lit(ada.page)).toHaveCount(1)
 
     // The stops are Ada's alone.
     await expect(lit(bo.page)).toHaveCount(0)
@@ -54,7 +55,7 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     // Another press clears a stop; the Keep toggle makes a plain press set a lasting one.
     await side(ada.page, 'Mine')
     await stop(ada.page, 'Your upkeep stop: on for one turn').click()
-    await expect(lit(ada.page)).toHaveCount(1)
+    await expect(lit(ada.page)).toHaveCount(0)
     await ada.page.getByRole('button', { name: 'Keep stops' }).click()
     await stop(ada.page, 'Your declare attackers stop: off').click()
     await expect(stop(ada.page, 'Your declare attackers stop: on every turn')).toHaveAttribute(
@@ -84,7 +85,7 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     // The server keeps both for the seat: a reload joins again and the Welcome brings them back.
     await ada.page.reload()
     await expect(fullControl(ada.page, 'held')).toHaveAttribute('aria-pressed', 'true')
-    await expect(lit(ada.page)).toHaveCount(2)
+    await expect(lit(ada.page)).toHaveCount(1)
     await side(ada.page, 'Theirs')
     await expect(stop(ada.page, "Opponents' end step stop: on every turn")).toBeVisible()
     await side(ada.page, 'Mine')

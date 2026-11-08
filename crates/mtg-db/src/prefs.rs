@@ -23,6 +23,8 @@ pub struct StoredPrefs {
     pub auto_assign_damage: bool,
     /// Whether the account's seats have smart stops.
     pub auto_smart_stops: bool,
+    /// A JSON array of the abilities the account's seats always yield to, as the server wrote it.
+    pub auto_yields: Value,
 }
 
 impl Default for StoredPrefs {
@@ -33,6 +35,7 @@ impl Default for StoredPrefs {
             auto_order_triggers: false,
             auto_assign_damage: false,
             auto_smart_stops: false,
+            auto_yields: Value::Array(Vec::new()),
         }
     }
 }
@@ -51,7 +54,7 @@ impl PrefsRepo {
     /// The preferences of `user`; the defaults when none were saved.
     pub async fn get(&self, user: Uuid) -> Result<StoredPrefs, DbError> {
         let row = sqlx::query!(
-            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops FROM user_prefs WHERE user_id = $1",
+            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_yields FROM user_prefs WHERE user_id = $1",
             user
         )
         .fetch_optional(&self.pool)
@@ -62,27 +65,30 @@ impl PrefsRepo {
             auto_order_triggers: row.auto_order_triggers,
             auto_assign_damage: row.auto_assign_damage,
             auto_smart_stops: row.auto_smart_stops,
+            auto_yields: row.auto_yields,
         }))
     }
 
     /// Replaces the preferences of `user`.
     pub async fn put(&self, user: Uuid, prefs: &StoredPrefs) -> Result<(), DbError> {
         sqlx::query!(
-            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops)
-             VALUES ($1, $2, $3, $4, $5, $6)
+            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_yields)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
              ON CONFLICT (user_id) DO UPDATE
              SET default_stops = EXCLUDED.default_stops,
                  end_turn_by_hand = EXCLUDED.end_turn_by_hand,
                  auto_order_triggers = EXCLUDED.auto_order_triggers,
                  auto_assign_damage = EXCLUDED.auto_assign_damage,
                  auto_smart_stops = EXCLUDED.auto_smart_stops,
+                 auto_yields = EXCLUDED.auto_yields,
                  updated_at = now()",
             user,
             prefs.default_stops,
             prefs.end_turn_by_hand,
             prefs.auto_order_triggers,
             prefs.auto_assign_damage,
-            prefs.auto_smart_stops
+            prefs.auto_smart_stops,
+            prefs.auto_yields
         )
         .execute(&self.pool)
         .await?;

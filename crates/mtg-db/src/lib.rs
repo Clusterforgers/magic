@@ -14,6 +14,7 @@ pub mod import;
 pub mod model;
 pub mod precons;
 pub mod prefs;
+pub mod ranks;
 pub mod reads;
 mod rows;
 pub mod runs;
@@ -43,5 +44,6 @@ pub use precons::{
     PreconVersion,
 };
 pub use prefs::{PrefsRepo, StoredPrefs};
+pub use ranks::{RankRepo, by_rank};
 pub use reads::{AccountRead, DraftRead, ReadRepo, ReadState, StoredRead, Verdict};
 pub use runs::{ImportRun, ImportRuns, ImportSource, RunId, RunStatus, STALE_AFTER};

@@ -37,7 +37,9 @@ export const preconItem = (over: Partial<PreconListItem> = {}): PreconListItem =
 })
 
 /** The copies a check found that the game does not run whole. */
-export type Found = Partial<Pick<Counts, 'partial' | 'manual' | 'stale' | 'unplayable' | 'read'>> & {
+export type Found = Partial<
+  Pick<Counts, 'partial' | 'manual' | 'stale' | 'unplayable' | 'read' | 'forge' | 'unverified'>
+> & {
   /** Distinct cards whose draft waits for a read. */
   toRead?: number
 }
@@ -47,12 +49,22 @@ export type Found = Partial<Pick<Counts, 'partial' | 'manual' | 'stale' | 'unpla
  * block the deck; a deck with `playable` false is blocked too, with or without them.
  */
 export function checked(item: PreconListItem, found: Found = {}, playable?: boolean): PreconListItem {
-  const { partial = 0, manual = 0, stale = 0, unplayable = 0, read = 0, toRead = 0 } = found
+  const {
+    partial = 0,
+    manual = 0,
+    stale = 0,
+    unplayable = 0,
+    read = 0,
+    forge = 0,
+    unverified = 0,
+    toRead = 0,
+  } = found
+  const runs = read + forge + unverified
   const total = item.card_count
   const rest = partial + manual + stale + unplayable
   const open = playable ?? unplayable === 0
   const state =
-    !open || unplayable > 0 ? 'blocked' : rest > 0 ? 'manual_play' : read > 0 ? 'read' : 'verified'
+    !open || unplayable > 0 ? 'blocked' : rest > 0 ? 'manual_play' : runs > 0 ? 'read' : 'verified'
   return {
     ...item,
     state,
@@ -61,7 +73,17 @@ export function checked(item: PreconListItem, found: Found = {}, playable?: bool
     summary: summary({
       format: item.format,
       state,
-      counts: counts({ total, verified: total - rest - read, read, partial, manual, stale, unplayable }),
+      counts: counts({
+        total,
+        verified: total - rest - runs,
+        read,
+        forge,
+        unverified,
+        partial,
+        manual,
+        stale,
+        unplayable,
+      }),
       to_read: toRead,
     }),
   }

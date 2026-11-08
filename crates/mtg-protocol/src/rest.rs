@@ -7,6 +7,7 @@
 //! These are the REST types the web takes from the generated bindings. The body of
 //! `POST /api/games` is still written by hand on both sides.
 
+mod bulk_reads;
 mod cards;
 mod decks;
 mod favourites;
@@ -23,6 +24,10 @@ use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
+pub use bulk_reads::{
+    BulkApproval, BulkApprovalBody, BulkApprovalResult, BulkCard, BulkClause, BulkReads, BulkRule,
+    MAX_BULK_APPROVALS,
+};
 pub use cards::{
     CardColor, CardDetail, CardFaceView, CardHit, CardImages, CardSearchPage, DEFAULT_PER_PAGE,
     ImageLinks, MAX_PAGE, MAX_PER_PAGE, PrintingView, RulingView,
@@ -44,7 +49,7 @@ pub use precons::{
     PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList, PreconListItem,
     PreconView,
 };
-pub use prefs::{MAX_DEFAULT_STOPS, UserPrefs};
+pub use prefs::{MAX_AUTO_YIELDS, MAX_DEFAULT_STOPS, UserPrefs};
 pub use reads::{CardDraft, MyRead, ReadBody, ReadCard, ReadQueue, ReadQueueCard, ReadVerdict};
 
 /// Fewest characters in a username.
