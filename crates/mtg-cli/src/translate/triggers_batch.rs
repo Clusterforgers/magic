@@ -39,10 +39,21 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
 /// `DamageDealtOnce` triggers once for each source: a group of sources with no recipient named is the plain event of
 /// each creature, one object (or a named recipient) a batch of what it deals together.
 fn per_source(inner: &Value) -> Value {
-    let one = inner.get("DealsDamage").is_none_or(|event| {
-        let source = event["source"].to_string();
-        event.get("to").is_some() || source == r#"["This"]"# || source.contains("\"Attached\"")
-    });
+    // Only a group named by kind and controller is the plain event of each of its creatures.
+    let by_kind = |source: &Value| {
+        source.as_array().is_some_and(|preds| {
+            preds.iter().all(|pred| {
+                pred == "Spell"
+                    || pred.as_object().is_some_and(|map| {
+                        map.keys()
+                            .all(|key| matches!(key.as_str(), "Type" | "Subtype" | "ControlledBy"))
+                    })
+            })
+        })
+    };
+    let one = inner
+        .get("DealsDamage")
+        .is_none_or(|event| event.get("to").is_some() || !by_kind(&event["source"]));
     if one { batch(inner) } else { inner.clone() }
 }
 

@@ -33,7 +33,7 @@ pub(super) fn form(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     (creature || !artifact).then_some(())?;
     // Without a creature type only the additive form reads ("is a creature with base power and toughness 5/5 in addition
     // to its other types").
-    (!kinds.is_empty() || creature).then_some(())?;
+    (!kinds.is_empty() || (creature && !artifact)).then_some(())?;
     r.words("with base power and toughness").then_some(())?;
     let power = i32::try_from(r.number()?).ok()?;
     r.punct('/').then_some(())?;
