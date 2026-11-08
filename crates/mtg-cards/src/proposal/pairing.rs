@@ -315,7 +315,20 @@ impl<'a> Pairer<'a> {
             "enchanted" => ("quipped creature", "nchanted creature"),
             _ => return variant.to_owned(),
         };
-        variant.replace(from, to)
+        // A quoted ability belongs to the object that gains it, which names its own attachment ("enchanted permanent
+        // ... has "Equipped creature has lifelink."").
+        variant
+            .split('"')
+            .enumerate()
+            .map(|(at, part)| {
+                if at % 2 == 0 {
+                    part.replace(from, to)
+                } else {
+                    part.to_owned()
+                }
+            })
+            .collect::<Vec<_>>()
+            .join("\"")
     }
 
     /// Whether a written wording is the clause text; the face's own names count as `~` in it, as in the clause.
@@ -943,6 +956,49 @@ mod tests {
     ) {
         let text = format!("{{X}}: {word} creature gets +X/+0 until end of turn.");
         let states = c11f_states(type_line, &text, W16_PUMP);
+        let read = states
+            .iter()
+            .all(|state| matches!(state, ClauseState::Reads { ability: 0 }));
+        assert_eq!(read, reads, "{states:?}");
+    }
+
+    const FIX27_GRANT: &str = r#"{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Lifelink"}]}}}],"condition":{"Matches":{"subject":"Attached","selector":[{"Subtype":"Equipment"}]}}}}]}]}"#;
+
+    #[rstest]
+    #[case::aura_grants_to_an_equipment("enchanted permanent", "it", "Equipped", "lifelink", true)]
+    #[case::aura_grants_another_keyword(
+        "enchanted permanent",
+        "it",
+        "Equipped",
+        "deathtouch",
+        false
+    )]
+    #[case::aura_names_its_own_object_equipped(
+        "equipped creature",
+        "it",
+        "Equipped",
+        "lifelink",
+        false
+    )]
+    #[case::aura_gives_to_equipped_creature(
+        "enchanted permanent",
+        "equipped creature",
+        "Equipped",
+        "lifelink",
+        false
+    )]
+    fn fix27_a_quoted_ability_keeps_its_own_attachment(
+        #[case] subject: &str,
+        #[case] holder: &str,
+        #[case] word: &str,
+        #[case] keyword: &str,
+        #[case] reads: bool,
+    ) {
+        let type_line = "Enchantment \u{2014} Aura";
+        let text = format!(
+            "As long as {subject} is an Equipment, {holder} has \"{word} creature has {keyword}.\""
+        );
+        let states = c11f_states(type_line, &text, FIX27_GRANT);
         let read = states
             .iter()
             .all(|state| matches!(state, ClauseState::Reads { ability: 0 }));
