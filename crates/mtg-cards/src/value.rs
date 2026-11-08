@@ -1226,6 +1226,9 @@ pub enum Condition {
     /// The spell was cast at a time its caster couldn't have cast a sorcery (CR 307.1): another turn, a step that is no
     /// main phase or a stack that held more; a permanent and its abilities read the spell it came from.
     CastOffSorceryTiming,
+    /// The inner condition held for the caster as the spell was cast ("if you controlled a Dragon as you cast this spell");
+    /// a permanent and its abilities read the spell it came from.
+    AsCast(Box<Condition>),
     /// At least one mana of this type was spent to cast the spell (CR 601.2h): "if {R} was spent to cast this spell"; a
     /// permanent and its abilities read the spell it came from, as the mana it was cast with.
     ManaSpent(ManaType),

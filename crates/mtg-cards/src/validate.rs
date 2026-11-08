@@ -1162,6 +1162,12 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// "as you cast this spell": the condition it asks as the spell is cast.
+    fn as_cast(&mut self, inner: &Condition) {
+        self.uses("Condition", "AsCast");
+        self.at("inner", |w| w.condition(inner));
+    }
+
     fn condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Not(inner) => self.at("Not", |w| w.condition(inner)),
@@ -1207,6 +1213,7 @@ impl<'a> Walker<'a> {
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
+            Condition::AsCast(inner) => self.as_cast(inner),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
             Condition::StartingPlayer(who) => {
