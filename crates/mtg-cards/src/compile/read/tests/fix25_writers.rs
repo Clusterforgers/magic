@@ -64,19 +64,43 @@ fn f25_a_group_read_by_control_is_not_them_when_named_again() {
     "−9: Gain control of all creatures until end of turn. Untap them. They gain haste until end of turn."
 )]
 fn f25_the_clause_reads_back(#[case] json: &str, #[case] clause: &str) {
-    assert!(f25_written(json, clause), "{:?}", written_variants(&ability(json)));
+    assert!(
+        f25_written(json, clause),
+        "{:?}",
+        written_variants(&ability(json))
+    );
 }
 
 #[rstest]
 #[case::karn_by_power(F25_KARNS_TOUCH, "\"stat\":\"ManaValue\"", "\"stat\":\"Power\"")]
 #[case::karn_for_good(F25_KARNS_TOUCH, "UntilEndOfTurn", "Forever")]
-#[case::vigilantes_fixed_blow(F25_DWARVEN_VIGILANTES, "{\"Stat\":{\"of\":\"This\",\"stat\":\"Power\"}}", "2")]
+#[case::vigilantes_fixed_blow(
+    F25_DWARVEN_VIGILANTES,
+    "{\"Stat\":{\"of\":\"This\",\"stat\":\"Power\"}}",
+    "2"
+)]
 #[case::vigilantes_keeps_its_damage(F25_DWARVEN_VIGILANTES, "AssignsNoCombatDamage", "DoesntUntap")]
-#[case::hellion_of_creatures(F25_EMBERMAW_HELLION, "{\"Color\":\"Red\"}", "{\"Type\":\"Creature\"}")]
+#[case::hellion_of_creatures(
+    F25_EMBERMAW_HELLION,
+    "{\"Color\":\"Red\"}",
+    "{\"Type\":\"Creature\"}"
+)]
 #[case::hellion_to_players(F25_EMBERMAW_HELLION, "\"source\"", "\"to\":\"EachPlayer\",\"source\"")]
-#[case::broadcast_for_an_opponent(F25_BROADCAST_TAKEOVER, "\"SetController\":\"You\"", "\"SetController\":\"Opponents\"")]
-#[case::broadcast_untaps_another_group(F25_BROADCAST_TAKEOVER, "{\"Untap\":{\"what\":{\"Bound\":\"taken\"}}}", "{\"Untap\":{\"what\":{\"Each\":[{\"Type\":\"Artifact\"},{\"ControlledBy\":\"Opponents\"}]}}}")]
-#[case::broadcast_haste_for_good(F25_BROADCAST_TAKEOVER, "\"UntilEndOfTurn\",\"mods\":[{\"AddKeyword\"", "\"Forever\",\"mods\":[{\"AddKeyword\"")]
+#[case::broadcast_for_an_opponent(
+    F25_BROADCAST_TAKEOVER,
+    "\"SetController\":\"You\"",
+    "\"SetController\":\"Opponents\""
+)]
+#[case::broadcast_untaps_another_group(
+    F25_BROADCAST_TAKEOVER,
+    "{\"Untap\":{\"what\":{\"Bound\":\"taken\"}}}",
+    "{\"Untap\":{\"what\":{\"Each\":[{\"Type\":\"Artifact\"},{\"ControlledBy\":\"Opponents\"}]}}}"
+)]
+#[case::broadcast_haste_for_good(
+    F25_BROADCAST_TAKEOVER,
+    "\"UntilEndOfTurn\",\"mods\":[{\"AddKeyword\"",
+    "\"Forever\",\"mods\":[{\"AddKeyword\""
+)]
 fn f25_another_wording_does_not_read_back(
     #[case] json: &str,
     #[case] from: &str,
@@ -104,9 +128,11 @@ const F25_ALPHAS_BLOCKS: &str = r#"{"Triggered":{"effects":[{"Together":{"effect
 const F25_ALPHAS_BLOCKED: &str = r#"{"Triggered":{"effects":[{"Together":{"effects":[{"DealDamage":{"amount":3,"to":"Dealer"}},{"DealDamage":{"amount":3,"to":{"ControllerOf":"Dealer"}}}]}}],"when":{"BecomesBlocked":{"by":[{"Type":"Creature"}],"what":["This"]}}}}"#;
 const F25_BOND_ATTACKS: &str = r#"{"Triggered":{"effects":[{"LoseLife":{"amount":3,"who":{"ControllerOf":"Triggering"}}}],"when":{"Attacks":{"what":[{"Is":"Attached"}]}}}}"#;
 const F25_BOND_BLOCKS: &str = r#"{"Triggered":{"effects":[{"LoseLife":{"amount":3,"who":{"ControllerOf":"Dealer"}}}],"when":{"Blocks":{"what":[{"Is":"Attached"}]}}}}"#;
-const F25_GASEOUS_TO: &str = r#"{"Replacement":{"by":"Prevent","when":{"Damage":{"combat":true,"to":"Attached"}}}}"#;
+const F25_GASEOUS_TO: &str =
+    r#"{"Replacement":{"by":"Prevent","when":{"Damage":{"combat":true,"to":"Attached"}}}}"#;
 const F25_GASEOUS_BY: &str = r#"{"Replacement":{"by":"Prevent","when":{"Damage":{"combat":true,"source":[{"Type":"Creature"},{"Is":"Attached"}]}}}}"#;
-const F25_HEART_TO: &str = r#"{"Replacement":{"by":"Prevent","when":{"Damage":{"to":"Attached"}}}}"#;
+const F25_HEART_TO: &str =
+    r#"{"Replacement":{"by":"Prevent","when":{"Damage":{"to":"Attached"}}}}"#;
 const F25_HEART_BY: &str = r#"{"Replacement":{"by":"Prevent","when":{"Damage":{"source":[{"Type":"Creature"},{"Is":"Attached"}]}}}}"#;
 
 #[rstest]
@@ -153,16 +179,61 @@ fn f25_the_pair_reads_as_one_sentence(
 }
 
 #[rstest]
-#[case::another_amount(F25_ASHMOUTH_BLOCKS, F25_ASHMOUTH_BLOCKED, "\"amount\":1", "\"amount\":2")]
-#[case::the_blocked_names_itself(F25_ASHMOUTH_BLOCKS, F25_ASHMOUTH_BLOCKED, "\"Dealer\"", "\"This\"")]
-#[case::a_kind_for_one_event(F25_ASHMOUTH_BLOCKS, F25_ASHMOUTH_BLOCKED, "[{\"Type\":\"Creature\"}],\"what\"", "[{\"Subtype\":\"Wall\"}],\"what\"")]
-#[case::once_for_all_blockers(F25_ASHMOUTH_BLOCKS, F25_ASHMOUTH_BLOCKED, "\"what\":[\"This\"]", "\"what\":[\"This\"],\"once\":true")]
-#[case::alphas_hits_the_other_player(F25_ALPHAS_BLOCKS, F25_ALPHAS_BLOCKED, "{\"ControllerOf\":\"Dealer\"}", "\"You\"")]
-#[case::bond_hits_you(F25_BOND_ATTACKS, F25_BOND_BLOCKS, "{\"ControllerOf\":\"Dealer\"}", "\"You\"")]
-#[case::bond_of_another_creature(F25_BOND_ATTACKS, F25_BOND_BLOCKS, "{\"Is\":\"Attached\"}", "\"This\"")]
+#[case::another_amount(
+    F25_ASHMOUTH_BLOCKS,
+    F25_ASHMOUTH_BLOCKED,
+    "\"amount\":1",
+    "\"amount\":2"
+)]
+#[case::the_blocked_names_itself(
+    F25_ASHMOUTH_BLOCKS,
+    F25_ASHMOUTH_BLOCKED,
+    "\"Dealer\"",
+    "\"This\""
+)]
+#[case::a_kind_for_one_event(
+    F25_ASHMOUTH_BLOCKS,
+    F25_ASHMOUTH_BLOCKED,
+    "[{\"Type\":\"Creature\"}],\"what\"",
+    "[{\"Subtype\":\"Wall\"}],\"what\""
+)]
+#[case::once_for_all_blockers(
+    F25_ASHMOUTH_BLOCKS,
+    F25_ASHMOUTH_BLOCKED,
+    "\"what\":[\"This\"]",
+    "\"what\":[\"This\"],\"once\":true"
+)]
+#[case::alphas_hits_the_other_player(
+    F25_ALPHAS_BLOCKS,
+    F25_ALPHAS_BLOCKED,
+    "{\"ControllerOf\":\"Dealer\"}",
+    "\"You\""
+)]
+#[case::bond_hits_you(
+    F25_BOND_ATTACKS,
+    F25_BOND_BLOCKS,
+    "{\"ControllerOf\":\"Dealer\"}",
+    "\"You\""
+)]
+#[case::bond_of_another_creature(
+    F25_BOND_ATTACKS,
+    F25_BOND_BLOCKS,
+    "{\"Is\":\"Attached\"}",
+    "\"This\""
+)]
 #[case::gaseous_by_any_creature(F25_GASEOUS_TO, F25_GASEOUS_BY, ",{\"Is\":\"Attached\"}", "")]
-#[case::gaseous_one_shield_of_all_damage(F25_GASEOUS_TO, F25_GASEOUS_BY, "\"combat\":true,\"source\"", "\"source\"")]
-#[case::heart_halves_the_damage(F25_HEART_TO, F25_HEART_BY, "\"by\":\"Prevent\"", "\"by\":{\"Add\":1}")]
+#[case::gaseous_one_shield_of_all_damage(
+    F25_GASEOUS_TO,
+    F25_GASEOUS_BY,
+    "\"combat\":true,\"source\"",
+    "\"source\""
+)]
+#[case::heart_halves_the_damage(
+    F25_HEART_TO,
+    F25_HEART_BY,
+    "\"by\":\"Prevent\"",
+    "\"by\":{\"Add\":1}"
+)]
 fn f25_another_pair_does_not_read_as_one(
     #[case] first: &str,
     #[case] second: &str,
@@ -182,7 +253,13 @@ fn f25_another_pair_does_not_read_as_one(
         return;
     }
     for clause in clauses {
-        assert!(!f25_pair(first, &changed, clause), "{changed} reads {clause}");
-        assert!(!f25_pair(&changed, first, clause), "{changed} reads {clause}");
+        assert!(
+            !f25_pair(first, &changed, clause),
+            "{changed} reads {clause}"
+        );
+        assert!(
+            !f25_pair(&changed, first, clause),
+            "{changed} reads {clause}"
+        );
     }
 }

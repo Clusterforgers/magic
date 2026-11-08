@@ -8,7 +8,9 @@ use super::{abilities, gaps};
 fn effects(script: &str) -> Value {
     assert_eq!(gaps(script), Vec::<String>::new(), "{script}");
     let first = abilities(script).into_iter().next().unwrap_or_default();
-    let body = first.as_object().and_then(|map| map.values().next().cloned());
+    let body = first
+        .as_object()
+        .and_then(|map| map.values().next().cloned());
     body.and_then(|body| body.get("effects").cloned())
         .unwrap_or_default()
 }
@@ -68,5 +70,9 @@ fn a_self_copy_without_targets_chooses_none(#[case] oracle: &str, #[case] new_ta
         .iter()
         .find_map(|ability| ability.pointer("/Triggered/effects/0/CopySpell").cloned())
         .unwrap_or_default();
-    assert_eq!(copy.get("new_targets") == Some(&json!(true)), new_targets, "{copy}");
+    assert_eq!(
+        copy.get("new_targets") == Some(&json!(true)),
+        new_targets,
+        "{copy}"
+    );
 }

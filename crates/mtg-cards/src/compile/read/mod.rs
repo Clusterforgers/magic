@@ -24,7 +24,6 @@ mod amounts;
 mod as_long_as;
 mod attack_pairs;
 mod attack_tax;
-mod either_way_pairs;
 mod attackers;
 mod aura_additive;
 mod aura_forms;
@@ -84,6 +83,7 @@ mod e10c_granted;
 mod e14b_entering;
 mod e14d_sparing;
 mod effects;
+mod either_way_pairs;
 mod equip_options;
 mod evasion;
 mod event_wordings;
@@ -235,6 +235,7 @@ pub use chance::{add_row as add_die_row, die_row, ends_in_roll, row_texts as die
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use costs::text as render_cost;
+pub use either_way_pairs::texts as either_way_pair_texts;
 pub use equip_options::equip_line;
 pub use group_phrases::{all_groups, subject_group};
 pub use levels::block as level_block;
@@ -243,7 +244,6 @@ pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_lin
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
-pub use either_way_pairs::texts as either_way_pair_texts;
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;

@@ -87,14 +87,25 @@ fn ripple_of_a_countered_spell_casts_cards_of_its_name(
     let spell = (driver.state().stack().iter().copied())
         .find(|&id| name_of(driver.state(), id) == "Surge")
         .expect("Surge is on the stack");
-    assert_eq!(driver.state().stack().len(), 2, "the ripple trigger waits above Surge");
+    assert_eq!(
+        driver.state().stack().len(),
+        2,
+        "the ripple trigger waits above Surge"
+    );
     let target = Target::Object(driver.state().object(spell).unwrap().reference());
     driver.cast_at("Counterspell", &[target])?;
-    assert_eq!(name_of(driver.state(), *driver.state().stack().last().unwrap()), "Counterspell");
+    assert_eq!(
+        name_of(driver.state(), *driver.state().stack().last().unwrap()),
+        "Counterspell"
+    );
     settle(&mut driver, answers)?;
     assert_eq!(driver.state().player(pid(0)).unwrap().life(), life);
     let graveyard = names(driver.state(), Zone::Graveyard(pid(0)));
     let surges = graveyard.iter().filter(|name| *name == "Surge").count();
-    assert_eq!(surges, 1 + usize::try_from((life - 20) / 2).unwrap(), "{graveyard:?}");
+    assert_eq!(
+        surges,
+        1 + usize::try_from((life - 20) / 2).unwrap(),
+        "{graveyard:?}"
+    );
     Ok(())
 }

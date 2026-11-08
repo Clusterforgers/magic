@@ -100,13 +100,18 @@ fn blocks_either(named: &Ability, kind: &Selector) -> Vec<String> {
     let head = format!("Whenever ~ blocks or becomes blocked by {article} {phrase}, ");
     let mut texts = Vec::new();
     for text in written_variants(&stand) {
-        let Some(at) = text.find(" attacks, ").filter(|_| text.starts_with("Whenever ")) else {
+        let Some(at) = text
+            .find(" attacks, ")
+            .filter(|_| text.starts_with("Whenever "))
+        else {
             continue;
         };
         let body = &text[at + " attacks, ".len()..];
         texts.push(format!("{head}{body}"));
         // The event's creature is "it" after "attacks"; the sentence names it "that creature".
-        let spoken = body.replace(" it.", " that creature.").replace(" it ", " that creature ");
+        let spoken = body
+            .replace(" it.", " that creature.")
+            .replace(" it ", " that creature ");
         if let Some(joined) = and_its_controller(&spoken).filter(|_| hits_both(named)) {
             texts.push(format!("{head}{joined}"));
         }
@@ -133,15 +138,27 @@ fn hits_both(ability: &Ability) -> bool {
         && second.pointer("/DealDamage/to") == Some(&json!({"ControllerOf": "Triggering"}))
         && amount.is_some()
         && second.pointer("/DealDamage/amount") == amount
-        && first.as_object().and_then(|m| m.get("DealDamage")).and_then(Value::as_object).map(serde_json::Map::len) == Some(2)
-        && second.as_object().and_then(|m| m.get("DealDamage")).and_then(Value::as_object).map(serde_json::Map::len) == Some(2)
+        && first
+            .as_object()
+            .and_then(|m| m.get("DealDamage"))
+            .and_then(Value::as_object)
+            .map(serde_json::Map::len)
+            == Some(2)
+        && second
+            .as_object()
+            .and_then(|m| m.get("DealDamage"))
+            .and_then(Value::as_object)
+            .map(serde_json::Map::len)
+            == Some(2)
 }
 
 /// "~ deals 3 damage to that creature and 3 damage to that creature's controller." for the two blows the renderers
 /// write as two sentences.
 fn and_its_controller(body: &str) -> Option<String> {
     let (first, second) = body.split_once(". Then ")?;
-    let amount = first.strip_prefix("~ deals ")?.strip_suffix(" damage to that creature")?;
+    let amount = first
+        .strip_prefix("~ deals ")?
+        .strip_suffix(" damage to that creature")?;
     let wanted = format!("~ deals {amount} damage to that player.");
     (second == wanted).then(|| {
         format!("~ deals {amount} damage to that creature and {amount} damage to that creature's controller.")

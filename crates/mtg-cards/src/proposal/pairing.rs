@@ -7,8 +7,7 @@ use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
     Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, either_way_pair_texts,
-    own_names, read_keyword,
-    read_keywords, same_text, static_pair_texts, written_variants,
+    own_names, read_keyword, read_keywords, same_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;

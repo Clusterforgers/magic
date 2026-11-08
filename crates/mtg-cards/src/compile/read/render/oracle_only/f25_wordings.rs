@@ -26,7 +26,8 @@ const BLOW: (&str, &str) = (
 
 /// Adds the oracle wordings of the sentences.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
-    if let Some(sentence) = taken_group(ability.effects()).filter(|_| ability.targets().is_empty()) {
+    if let Some(sentence) = taken_group(ability.effects()).filter(|_| ability.targets().is_empty())
+    {
         // A loyalty ability keeps the cost the renderers wrote before its colon.
         let loyal: Vec<String> = match ability {
             Ability::Loyalty { .. } => texts
@@ -83,8 +84,7 @@ fn taken_group(effects: &[Effect]) -> Option<String> {
     else {
         return None;
     };
-    let ([Modification::SetController(Ref::You)], true) =
-        (control.as_slice(), *affected == them)
+    let ([Modification::SetController(Ref::You)], true) = (control.as_slice(), *affected == them)
     else {
         return None;
     };
@@ -94,11 +94,13 @@ fn taken_group(effects: &[Effect]) -> Option<String> {
     };
     let keywords = match grant {
         [] => None,
-        [Effect::Continuous {
-            affected,
-            mods,
-            duration: Duration::UntilEndOfTurn,
-        }] if *affected == them => Some(
+        [
+            Effect::Continuous {
+                affected,
+                mods,
+                duration: Duration::UntilEndOfTurn,
+            },
+        ] if *affected == them => Some(
             mods.iter()
                 .map(|change| match change {
                     Modification::AddKeyword(keyword) => keyword_text(keyword),
