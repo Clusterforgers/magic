@@ -230,16 +230,6 @@ fn w16_unordered_lists(#[case] left: &str, #[case] right: &str, #[case] same: bo
     "Counter target spell. If its mana value is 4 or less, proliferate.",
     false
 )]
-#[case::equipped(
-    "{2}: Equipped creature gains hexproof until end of turn.",
-    "{2}: Enchanted creature gains hexproof until end of turn.",
-    true
-)]
-#[case::equipped_target(
-    "{2}: Equipped creature gains hexproof until end of turn.",
-    "{2}: Target creature gains hexproof until end of turn.",
-    false
-)]
 fn w16_forms(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     assert_eq!(same_written_text(left, right), same, "{right}");
 }
@@ -265,6 +255,11 @@ fn w16_forms(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     "Create a 2/2 white Cat creature token for each Equipment attached to it.",
     true
 )]
+#[case::attached_to_this_creature(
+    "This creature gets +2/+2 for each Aura and Equipment attached to it.",
+    "~ gets +2/+2 for each Equipment and/or Aura attached to her.",
+    true
+)]
 #[case::attached_to_a_target(
     "Create a 2/2 white Cat creature token for each Equipment attached to target creature.",
     "Create a 2/2 white Cat creature token for each Equipment attached to it.",
@@ -280,6 +275,11 @@ fn w16_one_object(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
 }
 
 #[rstest]
+#[case::lines_are_one_text(
+    "Support 2.\nDraw a card.",
+    "Put a +1/+1 counter on each of up to two other target creatures, then draw a card.",
+    true
+)]
 #[case::then_draw(
     "Each player loses 2 life. You draw two cards.",
     "Each player loses 2 life. Then draw two cards.",

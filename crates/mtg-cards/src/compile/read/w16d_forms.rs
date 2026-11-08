@@ -5,15 +5,7 @@
 /// The text with each of the forms below written one way.
 pub(super) fn normal(text: &str) -> String {
     let mut text = text.to_owned();
-    for step in [
-        label,
-        words,
-        anaphora,
-        attached_to_itself,
-        team,
-        tense,
-        attachment,
-    ] {
+    for step in [label, words, anaphora, attached_to_itself, team, tense] {
         if let Some(changed) = step(&text) {
             text = changed;
         }
@@ -203,7 +195,7 @@ fn attached_to_itself(text: &str) -> Option<String> {
         INTRODUCERS.contains(&pair[0].to_ascii_lowercase().as_str())
             && NOUNS.contains(&pair[1].trim_end_matches(ENDS))
     });
-    (ends_word && !named && !text.contains("target") && !text.contains('~'))
+    (ends_word && !named && !text.contains("target"))
         .then(|| format!("{} attached to ~{}", &text[..at], &text[end..]))
 }
 
@@ -218,14 +210,5 @@ fn tense(text: &str) -> Option<String> {
     let changed = text
         .replace(" mana value was ", " mana value is ")
         .replace("If X was ", "If X is ");
-    (changed != text).then_some(changed)
-}
-
-/// "Equipped creature" as "Enchanted creature": the writers say the attachment of an Aura for an Equipment too, and the
-/// card is one or the other.
-fn attachment(text: &str) -> Option<String> {
-    let changed = text
-        .replace("Equipped creature", "Enchanted creature")
-        .replace("equipped creature", "enchanted creature");
     (changed != text).then_some(changed)
 }

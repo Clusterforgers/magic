@@ -1,4 +1,4 @@
-//! Goal: the w15 wordings (a toll counted by "{X}, where X is the number of", "sacrifice any number", the other card of two looked at, the top card revealed and sorted, a pair of types counted, damage divided among up to X targets, "also deals", names of modes and quoted abilities, support, blight and adamant) read as the text they mean, and a text of another meaning never reads as the clause.
+//! Goal: the w15 wordings (a toll counted by "{X}, where X is the number of", "sacrifice any number", the other card of two looked at, the top card revealed and sorted, a pair of types counted, damage divided among up to X targets, "also deals", names of quoted abilities (the names of modes are written), support, blight and adamant) read as the text they mean, and a text of another meaning never reads as the clause.
 use super::*;
 
 #[rstest]
@@ -539,10 +539,10 @@ fn w15_look_and_may_reveal(#[case] left: &str, #[case] right: &str, #[case] same
 }
 
 #[rstest]
-#[case::mode_name(
+#[case::mode_names_are_written(
     "Choose one — / • Two-Weapon Fighting — Double target creature's power and toughness until end of turn. / • Archery — This spell deals 5 damage to target creature with flying.",
     "Choose one — / • Double target creature's power and toughness until end of turn. / • ~ deals 5 damage to target creature with flying.",
-    true
+    false
 )]
 #[case::a_mode_the_data_leaves_unnamed(
     "Choose one — / • Two-Weapon Fighting — Double target creature's power and toughness until end of turn. / • This spell deals 5 damage to target creature with flying.",
@@ -569,7 +569,7 @@ fn w15_look_and_may_reveal(#[case] left: &str, #[case] right: &str, #[case] same
     "• Draw a card.",
     false
 )]
-fn w15_names_of_modes_and_quoted_abilities(
+fn w15_names_of_quoted_abilities_and_modes(
     #[case] left: &str,
     #[case] right: &str,
     #[case] same: bool,

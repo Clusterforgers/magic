@@ -458,27 +458,17 @@ fn look_and_may_reveal(text: &str) -> Option<String> {
     (changed != text).then_some(changed)
 }
 
-/// The text without the names that open a mode ("• Archery — ") or a quoted ability ("gains "Landfall — Whenever ..."")
-/// and carry no rules: an ability word is flavor. The names of modes go only where every mode has one: a list with one
-/// name missing is a list whose data lacks it.
+/// The text without the names that open a quoted ability ("gains "Landfall — Whenever ..."") and carry no rules: an
+/// ability word is flavor. The names of modes stay: the rules carry them.
 fn flavor_names(text: &str) -> Option<String> {
     let mut out = String::with_capacity(text.len());
     let mut rest = text;
     let mut changed = false;
-    let named = text.split("• ").skip(1).collect::<Vec<_>>();
-    let every_mode_named = !named.is_empty()
-        && named
-            .iter()
-            .all(|mode| super::super::classify::ability_word_len(mode).is_some());
-    while let Some(at) = rest.find(['"', '•']) {
-        let quoted = rest[at..].starts_with('"');
-        let marker = if quoted { "\"" } else { "• " };
-        let after = (at + marker.len()).min(rest.len());
+    while let Some(at) = rest.find('"') {
+        let after = at + 1;
         out.push_str(&rest[..after]);
         rest = &rest[after..];
-        if (quoted || every_mode_named)
-            && let Some(len) = super::super::classify::ability_word_len(rest)
-        {
+        if let Some(len) = super::super::classify::ability_word_len(rest) {
             rest = &rest[len..];
             changed = true;
         }

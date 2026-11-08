@@ -6,7 +6,8 @@
 
 /// The text with each of the wordings below written one way.
 pub(super) fn normal(text: &str) -> String {
-    let mut text = text.to_owned();
+    // Lines of a clause join as one text: a line break is a space.
+    let mut text = text.split_whitespace().collect::<Vec<_>>().join(" ");
     for step in [pronouns, dies, one_duration] {
         if let Some(changed) = step(&text) {
             text = changed;
