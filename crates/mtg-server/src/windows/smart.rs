@@ -90,6 +90,7 @@ mod tests {
                     timing,
                     condition: None,
                     limit: None,
+                    by: mtg_cards::ability::Activators::Controller,
                     from: ZoneKind::Battlefield,
                     targets: Vec::new(),
                     effects: vec![gain_life(1)],
