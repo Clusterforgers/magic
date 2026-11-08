@@ -634,7 +634,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     // What a later line reads of a target named again is its past (last known information), which no name here holds.
     if p.get("Defined") == Some("Targeted")
         && p.has("ValidTgts")
-        && remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"])
+        && remember::wanted(p, "ChangeZone")
     {
         return unmapped("key:ChangeZone.Defined-with-memory");
     }
@@ -651,9 +651,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
         );
     }
     let two_ways = p.has("DestinationAlternative");
-    let keeps = p.has("Duration")
-        || p.has("StaticEffect")
-        || remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]);
+    let keeps = p.has("Duration") || p.has("StaticEffect") || remember::wanted(p, "ChangeZone");
     if (two_ways && (keeps || whats.len() > 1)) || (keeps && whats.len() > 1) {
         return unmapped("key:ChangeZone.DestinationAlternative-with-memory");
     }
@@ -716,7 +714,7 @@ fn keep_track(
         }
         Some(_) => return unmapped("key:ChangeZone.Duration"),
     }
-    if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
+    if remember::wanted(p, "ChangeZone") {
         bind_moved(ctx, effect);
     }
     Ok(())
@@ -857,7 +855,7 @@ fn each_kind(
         || p.has("DifferentNames")
         || p.has("AtRandom")
         || p.has("DefinedPlayer")
-        || remember::wanted(p, &["RememberChanged"])
+        || remember::wanted(p, "ChangeZone.Hidden")
     {
         return unmapped("key:ChangeZone.Choose.EACH-shape");
     }
@@ -927,7 +925,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     } else {
         json!({"Choose": {"who": chooser, "from": {"Each": filter}, "count": {"min": count.min, "max": count.max}, "as": bind}})
     };
-    let remembers = remember::wanted(p, &["RememberChanged"]);
+    let remembers = remember::wanted(p, "ChangeZone.Hidden");
     let places = frame::places(ctx, p, destination, false)?;
     if places.second.is_some() && (remembers || p.has("StaticEffect") || who.each.is_some()) {
         return unmapped("key:ChangeZone.Choose.DestinationAlternative-with-memory");
@@ -1898,7 +1896,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         }
         Some(_) => return unmapped("key:ChangeZoneAll.Duration"),
     }
-    if remember::wanted(p, &["RememberChanged"]) {
+    if remember::wanted(p, "ChangeZoneAll") {
         let (verb, stem) = if effect.get("Exile").is_some() {
             ("Exile", "exiled")
         } else {
