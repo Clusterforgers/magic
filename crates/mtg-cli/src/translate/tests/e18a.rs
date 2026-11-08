@@ -1,6 +1,6 @@
 //! Goal: pack e18a's turn's activations by kind read from Forge lines: `ThisTurnActivated_Activated.<kind>+YouCtrl` as the
 //! tally of the kind, a source filter without a kind as the plain tally, and `AlternativeCost` of equip, cycling and unearth
-//! abilities at {0} as a `FreeActivation` with its condition; another player, a targeting filter, another kind or another
+//! abilities at {0} as a `FreeActivation` with its condition, `CastWithFlash` of equip as an `InstantActivation`; another player, a targeting filter, another kind or another
 //! cost stays a gap.
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -92,4 +92,27 @@ fn free_activations_read(#[case] line: &str, #[case] expected: Value) {
 #[case::any_player("ValidSA$ Activated.Equip | Cost$ 0")]
 fn other_alternative_activation_costs_stay_gaps(#[case] line: &str) {
     assert!(!gaps(&free(line)).is_empty(), "{line}");
+}
+
+fn flash(line: &str) -> String {
+    format!("Name:T\nTypes:Artifact\nS:Mode$ CastWithFlash | {line} | Description$ D.\n")
+}
+
+#[rstest]
+#[case::equip("ValidSA$ Activated.Equip | Caster$ You", Some(json!({"InstantActivation": {"kind": "Equip"}})))]
+#[case::your_turn(
+    "ValidSA$ Activated.Equip | Caster$ You | Condition$ PlayerTurn",
+    Some(json!({"InstantActivation": {"kind": "Equip", "condition": "YourTurn"}}))
+)]
+#[case::loyalty("ValidCard$ Planeswalker.YouCtrl | ValidSA$ Activated.Loyalty | Caster$ You", None)]
+#[case::any_player("ValidSA$ Activated.Equip", None)]
+fn instant_activations_read(#[case] line: &str, #[case] expected: Option<Value>) {
+    let text = flash(line);
+    match expected {
+        Some(expected) => {
+            assert_eq!(gaps(&text), Vec::<String>::new());
+            assert_eq!(abilities(&text)[0], expected);
+        }
+        None => assert!(!gaps(&text).is_empty(), "{line}"),
+    }
 }

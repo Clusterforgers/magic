@@ -23,6 +23,7 @@ pub(super) fn label(ability: &Ability) -> String {
         Ability::AdditionalCost { .. } => "additional cost".to_owned(),
         Ability::FreeCast { .. } | Ability::AltCast { .. } => "alternative cost".to_owned(),
         Ability::FreeActivation { .. } => "alternative activation cost".to_owned(),
+        Ability::InstantActivation { .. } => "activation timing".to_owned(),
         Ability::CastOnly { .. } => "casting restriction".to_owned(),
         Ability::OpeningHand | Ability::OpeningReveal { .. } => "opening-hand ability".to_owned(),
         Ability::Keyword(keyword) => format!("keyword {}", parts::keyword(&ctx, keyword)),
@@ -272,6 +273,13 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             out.push(Step::new(
                 depth,
                 format!("may pay {{0}} rather than the cost of {kind:?} abilities"),
+            ));
+            gate(&ctx, "if", condition.as_ref(), depth, out);
+        }
+        Ability::InstantActivation { kind, condition } => {
+            out.push(Step::new(
+                depth,
+                format!("may activate {kind:?} abilities any time they could cast an instant"),
             ));
             gate(&ctx, "if", condition.as_ref(), depth, out);
         }

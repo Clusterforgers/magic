@@ -234,7 +234,10 @@ fn can_activate(
     let Some(claimed) = price.claimed(state, player, object.id()) else {
         return false;
     };
-    if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
+    if *timing == Timing::Sorcery
+        && !sorcery_timing(state, player)
+        && !crate::free_activation::at_instant_speed(state, player, (address, rules))
+    {
         return false;
     }
     // "Activate only if ..." is judged as the ability is activated (CR 602.5b).

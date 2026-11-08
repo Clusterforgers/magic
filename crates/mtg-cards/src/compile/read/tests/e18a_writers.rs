@@ -1,4 +1,4 @@
-//! Goal: pack e18a writes the first ability of a kind each turn as the cards print it ("you may pay {0} rather than pay the equip cost of the first equip ability you activate each turn", during each of your turns, the first card you cycle, cycling costs as long as a condition holds) and the turn's activations by kind ("you cycled two or more cards this turn", a loyalty ability activated, a spell cast from or an ability activated in a graveyard); another kind, another number, a missing condition or a lost turn reads Differs.
+//! Goal: pack e18a writes the first ability of a kind each turn as the cards print it ("you may pay {0} rather than pay the equip cost of the first equip ability you activate each turn", during each of your turns, the first card you cycle, cycling costs as long as a condition holds, equip abilities at instant speed) and the turn's activations by kind ("you cycled two or more cards this turn", a loyalty ability activated, a spell cast from or an ability activated in a graveyard); another kind, another number, a missing condition or a lost turn reads Differs.
 use super::*;
 
 fn written(json: &str, clause: &str) -> bool {
@@ -47,6 +47,26 @@ const SEVEN_IN_HAND: &str = r#"{"Compare":{"left":{"Count":[{"OwnedBy":"You"},{"
 #[case::lost_turn(free("Equip", Some(first("Equip", "Lt", 1))), FORGE_ANEW, false)]
 #[case::every_turn_for_yours(free("Equip", Some(your_turns(first("Equip", "Lt", 1)))), BRUENOR, false)]
 #[case::without_the_hand(free("Cycling", None), NEW_PERSPECTIVES, false)]
+#[case::shikari(
+    r#"{"InstantActivation":{"kind":"Equip"}}"#.to_owned(),
+    "You may activate equip abilities any time you could cast an instant.",
+    true
+)]
+#[case::forge_anew_flash(
+    r#"{"InstantActivation":{"kind":"Equip","condition":"YourTurn"}}"#.to_owned(),
+    "During your turn, you may activate equip abilities any time you could cast an instant.",
+    true
+)]
+#[case::flash_without_your_turn(
+    r#"{"InstantActivation":{"kind":"Equip"}}"#.to_owned(),
+    "During your turn, you may activate equip abilities any time you could cast an instant.",
+    false
+)]
+#[case::flash_of_cycling(
+    r#"{"InstantActivation":{"kind":"Cycling"}}"#.to_owned(),
+    "You may activate equip abilities any time you could cast an instant.",
+    false
+)]
 fn first_free_activations_read_back(
     #[case] json: String,
     #[case] clause: &str,

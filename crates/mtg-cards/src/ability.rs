@@ -304,6 +304,15 @@ pub enum Ability {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         condition: Option<Condition>,
     },
+    /// "You may activate equip abilities any time you could cast an instant." (CR 602.5d): the controller activates the
+    /// abilities of the kind that are activated only as a sorcery at instant speed while the condition holds for them.
+    InstantActivation {
+        /// The kind of ability.
+        kind: ActivationKind,
+        /// The permission holds only while this holds for the controller; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
+    },
     /// An alternative cost to cast this card for (CR 118.9) with the zone it is cast from, the condition that opens it and
     /// the timing: one row of the table of alternative costs (warp, surge, web-slinging, impending). The spell remembers the
     /// way it was cast (`Condition::CastWith`), and what the permanent does because of it is written as abilities that read

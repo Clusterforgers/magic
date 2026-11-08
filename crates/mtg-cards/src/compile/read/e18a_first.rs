@@ -48,8 +48,25 @@ const fn word(kind: ActivationKind) -> Option<&'static str> {
     }
 }
 
-/// The sentences of a `FreeActivation`, without the period.
+/// The sentences of an `InstantActivation`, without the period: "you may activate equip abilities any time you could cast
+/// an instant", during your turn.
+fn instant_texts(kind: ActivationKind, condition: Option<&Condition>) -> Vec<String> {
+    let Some(noun) = word(kind) else {
+        return Vec::new();
+    };
+    let rule = format!("you may activate {noun} abilities any time you could cast an instant");
+    match condition {
+        None => vec![rule],
+        Some(Condition::YourTurn) => vec![format!("during your turn, {rule}")],
+        Some(_) => Vec::new(),
+    }
+}
+
+/// The sentences of a `FreeActivation` or an `InstantActivation`, without the period.
 pub(super) fn free_activation_texts(ability: &Ability) -> Vec<String> {
+    if let Ability::InstantActivation { kind, condition } = ability {
+        return instant_texts(*kind, condition.as_ref());
+    }
     let Ability::FreeActivation { kind, condition } = ability else {
         return Vec::new();
     };

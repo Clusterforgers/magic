@@ -1,6 +1,7 @@
 //! "You may pay {0} rather than pay the equip cost of the first equip ability you activate each turn." (CR 118.9): the
 //! cost of an activation of a kind with a `FreeActivation` in play, and the turn's tally of activations by kind that its
-//! condition reads ("the first ... each turn").
+//! condition reads ("the first ... each turn"); and "you may activate equip abilities any time you could cast an instant"
+//! (`InstantActivation`).
 //!
 //! The alternative is always taken: paying {0} in place of the printed cost never leaves the player worse off, and the
 //! activation counts toward "the first" either way.
@@ -54,8 +55,42 @@ pub(crate) fn cost<'a>(
         .unwrap_or(Cow::Borrowed(cost))
 }
 
+/// Whether `player` may activate the ability `rules` at `address`, which is activated only as a sorcery, any time they
+/// could cast an instant: a permanent they control has an `InstantActivation` of its kind whose condition holds.
+pub(crate) fn at_instant_speed(
+    state: &GameState,
+    player: PlayerId,
+    (address, rules): (AbilityRef, &Ability),
+) -> bool {
+    crate::activation_kind::specific(state, address, rules).is_some_and(|kind| {
+        held(state, player, |ability| match ability {
+            Ability::InstantActivation {
+                kind: wanted,
+                condition,
+            } => (*wanted == kind).then_some(condition.as_ref()),
+            _ => None,
+        })
+    })
+}
+
 /// Whether a permanent `player` controls has a `FreeActivation` of the kind whose condition holds for them.
 fn applies(state: &GameState, player: PlayerId, kind: ActivationKind) -> bool {
+    held(state, player, |ability| match ability {
+        Ability::FreeActivation {
+            kind: wanted,
+            condition,
+        } => (*wanted == kind).then_some(condition.as_ref()),
+        _ => None,
+    })
+}
+
+/// Whether a permanent `player` controls has an ability `wanted` picks (with the condition it holds under, none for
+/// always) whose condition holds for them.
+fn held(
+    state: &GameState,
+    player: PlayerId,
+    wanted: impl Fn(&Ability) -> Option<Option<&mtg_cards::value::Condition>>,
+) -> bool {
     state.zone(Zone::Battlefield).iter().any(|id| {
         let Some(holder) = state.object(*id) else {
             return false;
@@ -71,19 +106,13 @@ fn applies(state: &GameState, player: PlayerId, kind: ActivationKind) -> bool {
             return false;
         }
         abilities_of(state, *id).iter().any(|(_, ability)| {
-            let Ability::FreeActivation {
-                kind: wanted,
-                condition,
-            } = &**ability
-            else {
-                return false;
-            };
-            *wanted == kind
-                && condition.as_ref().is_none_or(|held| {
+            wanted(ability).is_some_and(|condition| {
+                condition.is_none_or(|held| {
                     Scope::announcing(state, player, holder.reference())
                         .holds(held)
                         .unwrap_or(false)
                 })
+            })
         })
     })
 }

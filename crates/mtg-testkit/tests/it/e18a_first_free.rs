@@ -1,8 +1,9 @@
 //! Goal: pack e18a's first ability of a kind each turn plays whole at two, three and four seats: with "you may pay {0}
 //! rather than pay the [kind] cost of the first [kind] ability you activate each turn" the first equip, cycling or unearth
 //! of the turn costs nothing and the second its printed cost, the tally starts again on the controller's next turn, a
-//! `FreeActivation` without a condition makes every one free, the turn's tally of activations is kept by kind, and each
-//! game replays to the live state.
+//! `FreeActivation` without a condition makes every one free, the turn's tally of activations is kept by kind, an
+//! `InstantActivation` of equip offers the equip abilities of its controller (only) while the stack holds a spell and on
+//! another player's turn when it has no condition, and each game replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -207,4 +208,57 @@ fn the_tally_of_the_turn_is_kept_by_kind(#[values(2, 3, 4)] seats: usize) {
     assert!(!offered(&driver, "Equipped"));
     activate(&mut driver, "Two").unwrap();
     assert!(offered(&driver, "Cycled Twice"));
+}
+
+/// The guide with "you may activate equip abilities any time you could cast an instant", during your turn when `yours`;
+/// `None` for an artifact without it.
+fn quick(rule: Option<bool>) -> Arc<CardDefinition> {
+    let json = match rule {
+        None => r#"{"Activated":{"cost":["Tap"],"effects":[{"GainLife":{"amount":1}}]}}"#.to_owned(),
+        Some(yours) => {
+            let condition = if yours { r#","condition":"YourTurn""# } else { "" };
+            format!(r#"{{"InstantActivation":{{"kind":"Equip"{condition}}}}}"#)
+        }
+    };
+    Arc::new(
+        CardDefinition::new("Guide")
+            .with_type(CardType::Artifact)
+            .with_rules(rules(&json)),
+    )
+}
+
+/// Whether seat 0 is offered the equip ability of the Equipment named "One" at its first priority in `step` of seat
+/// `active`'s turn.
+fn equip_offered(seats: usize, rule: Option<bool>, active: usize, step: Step) -> bool {
+    let scenario = scenario(seats, "Equip", quick(rule)).at(1, active, step);
+    let setup = scenario.clone().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    for _ in 0..seats {
+        if driver.decision().unwrap().player.0 == 0 {
+            break;
+        }
+        driver.pass().unwrap();
+    }
+    assert_eq!(driver.decision().unwrap().player.0, 0);
+    let offered = !driver.offered_abilities("One").unwrap().is_empty();
+    replays(&driver, &setup);
+    offered
+}
+
+#[rstest]
+#[case::own_main_phase(None, 0, Step::Main1, true)]
+#[case::own_combat_without(None, 0, Step::BeginCombat, false)]
+#[case::own_combat(Some(false), 0, Step::BeginCombat, true)]
+#[case::own_combat_your_turn(Some(true), 0, Step::BeginCombat, true)]
+#[case::another_players_turn(Some(false), 1, Step::Main1, true)]
+#[case::another_players_turn_your_turn(Some(true), 1, Step::Main1, false)]
+#[case::another_players_turn_without(None, 1, Step::Main1, false)]
+fn an_instant_activation_opens_equip_at_instant_speed(
+    #[case] rule: Option<bool>,
+    #[case] active: usize,
+    #[case] step: Step,
+    #[case] offered: bool,
+    #[values(2, 3, 4)] seats: usize,
+) {
+    assert_eq!(equip_offered(seats, rule, active, step), offered);
 }

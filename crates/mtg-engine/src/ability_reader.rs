@@ -247,11 +247,13 @@ pub(crate) const fn is_rule(ability: &Ability) -> bool {
     matches!(ability, Ability::Rule { .. })
 }
 
-/// Whether an ability is a cost modifier.
+/// Whether an ability is a cost modifier, or changes how abilities of a kind are activated.
 pub(crate) const fn is_cost_modifier(ability: &Ability) -> bool {
     matches!(
         ability,
-        Ability::CostModifier { .. } | Ability::FreeActivation { .. }
+        Ability::CostModifier { .. }
+            | Ability::FreeActivation { .. }
+            | Ability::InstantActivation { .. }
     )
 }
 
@@ -273,7 +275,9 @@ pub(crate) fn w17b_definition_keeps_counters(definition: &CardDefinition) -> boo
 /// spells an affinity (`GameState::possible`).
 pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool {
     let modifier = |rules: &Ability| match rules {
-        Ability::CostModifier { .. } | Ability::FreeActivation { .. } => true,
+        Ability::CostModifier { .. }
+        | Ability::FreeActivation { .. }
+        | Ability::InstantActivation { .. } => true,
         Ability::Static { mods, .. } => {
             mods.iter()
                 .any(|given| matches!(given, WantedModification::AddKeyword(Keyword::Affinity(_))))

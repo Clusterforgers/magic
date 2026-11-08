@@ -66,6 +66,33 @@ pub fn free_activation(p: &Params) -> Option<Tr<Value>> {
     Some(free(p, word))
 }
 
+/// `CastWithFlash` of the activated abilities of a kind (`ValidSA$ Activated.Equip`, "you may activate equip abilities any
+/// time you could cast an instant") as an `InstantActivation`; `None` for a line about spells.
+pub fn instant_activation(p: &Params) -> Option<Tr<Value>> {
+    if p.get("Mode") != Some("CastWithFlash") {
+        return None;
+    }
+    let word = p.get("ValidSA")?.strip_prefix("Activated.")?;
+    Some(instant(p, word))
+}
+
+fn instant(p: &Params, word: &str) -> Tr<Value> {
+    check_keys(
+        p,
+        "Static.CastWithFlash",
+        &["Mode", "ValidSA", "Caster"],
+        |key, _| key == "Mode",
+    )?;
+    // A loyalty ability keeps its own timing (CR 606.3), which no row here changes.
+    let Some(kind) = kind(word).filter(|kind| *kind == "Equip") else {
+        return unmapped(format!("static:CastWithFlash-of-Activated.{word}"));
+    };
+    if p.get("Caster") != Some("You") {
+        return unmapped("static:CastWithFlash-of-an-activation-for-another-player");
+    }
+    Ok(json!({"InstantActivation": {"kind": kind}}))
+}
+
 fn free(p: &Params, word: &str) -> Tr<Value> {
     check_keys(
         p,
