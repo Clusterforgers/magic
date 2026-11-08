@@ -80,6 +80,30 @@ fn w9d_exert_split(line: &str) -> Option<usize> {
     (exert && rest.starts_with("When you do, ")).then(|| first.chars().count() + 1)
 }
 
+/// The words of "As ~ enters, choose Khans or Dragons." and the lines after it, each a bullet that opens with one of the
+/// words in the same order ("• Khans — ..."), as the word and the text after its dash; `None` for any other clause.
+pub fn word_block(text: &str) -> Option<(Vec<&str>, Vec<(&str, &str)>)> {
+    let mut lines = text.lines();
+    let (subject, choice) = lines.next()?.strip_prefix("As ")?.split_once(", choose ")?;
+    let enters = subject.ends_with(" enters") || subject.ends_with(" enters the battlefield");
+    let words: Vec<&str> = choice.strip_suffix('.')?.split(" or ").collect();
+    let plain = |word: &str| {
+        word.chars().next().is_some_and(char::is_uppercase)
+            && word.chars().all(|c| c.is_alphanumeric() || c == ' ')
+            && !word.contains(", ")
+    };
+    if !enters || words.len() != 2 || !words.iter().all(|word| plain(word)) {
+        return None;
+    }
+    let mut modes = Vec::new();
+    for (line, word) in lines.by_ref().zip(&words) {
+        let (name, body) = line.strip_prefix("\u{2022} ")?.split_once(" \u{2014} ")?;
+        (name == *word && !body.is_empty()).then_some(())?;
+        modes.push((name, body));
+    }
+    (modes.len() == words.len() && lines.next().is_none()).then_some((words, modes))
+}
+
 /// A mode of a modal spell or a cost of a Spree spell.
 fn is_bullet(line: &str) -> bool {
     line.starts_with('\u{2022}') || line.starts_with("+ {")

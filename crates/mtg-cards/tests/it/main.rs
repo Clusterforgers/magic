@@ -16,6 +16,7 @@ mod deck_companion;
 mod deck_read;
 mod deck_report;
 mod deck_table;
+mod e15f_names;
 mod fix19_engine_shapes;
 mod fix21;
 mod fixture_real;

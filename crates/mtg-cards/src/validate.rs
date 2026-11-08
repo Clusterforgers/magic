@@ -1208,6 +1208,7 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "ChosenWord");
                 self.chosen_as(name);
             }
+            Condition::EnteredAs(_) => self.uses("Condition", "EnteredAs"),
             Condition::Performed => self.performed(),
             Condition::CompletedDungeon(who) => {
                 self.uses("Condition", "CompletedDungeon");
@@ -4767,9 +4768,15 @@ impl Walker<'_> {
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
             | ReplaceBy::EntersPrepared
+            | ReplaceBy::ChooseWord(_)
                 if !enters =>
             {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
+            }
+            ReplaceBy::ChooseWord(words) => {
+                if words.len() < 2 || words.iter().any(String::is_empty) {
+                    self.problem("a choice of words offers two or more words");
+                }
             }
             ReplaceBy::Devour { counters, of } => {
                 if !enters {

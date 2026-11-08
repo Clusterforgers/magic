@@ -25,6 +25,7 @@ use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprin
 
 pub use classify::ClauseKind;
 pub use classify::classify as classify_clause;
+pub(crate) use clauses::word_block;
 pub use keywords::quality_word as protection_quality_word;
 pub use keywords::read as read_keyword;
 pub use keywords::read_all as read_keywords;
@@ -266,10 +267,13 @@ fn read_clause(
         ClauseKind::Static
             if text.starts_with("LEVEL ")
                 || clauses::is_station_block(text)
-                || clauses::is_class_block(text) =>
+                || clauses::is_class_block(text)
+                || clauses::word_block(text).is_some() =>
         {
             let block = if text.starts_with("LEVEL ") {
                 read::level_block(text, x_free, own)
+            } else if clauses::word_block(text).is_some() {
+                read::word_block(text, x_free, own)
             } else if clauses::is_class_block(text) {
                 read::class_block(text, x_free, own)
             } else {

@@ -562,6 +562,9 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
         return unmapped("svar:missing");
     };
     let part = Params::parse(text);
+    if let Some(found) = super::e15f_words::choose_word(ctx, &part) {
+        return found;
+    }
     // The chooser is the controller as the permanent enters.
     if part.get("Defined").is_some_and(|who| who != "You") {
         return unmapped("key:ETBReplacement.Defined");

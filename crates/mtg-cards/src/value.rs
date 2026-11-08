@@ -1241,6 +1241,9 @@ pub enum Condition {
         /// The word asked about.
         word: String,
     },
+    /// The source's controller chose this word as the source entered the battlefield (`ReplaceBy::ChooseWord`, a
+    /// Siege's "Khans"): false for a permanent that entered without the choice.
+    EnteredAs(String),
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
     /// accepted, a cost that was paid, cards that were moved.
     Performed,
