@@ -38,7 +38,7 @@ use super::*;
     false
 )]
 fn w15_toll_counted(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -78,7 +78,7 @@ fn w15_toll_counted(#[case] left: &str, #[case] right: &str, #[case] same: bool)
     false
 )]
 fn w15_sacrifice_any_number(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -108,7 +108,7 @@ fn w15_sacrifice_any_number(#[case] left: &str, #[case] right: &str, #[case] sam
     false
 )]
 fn w15_the_other_card(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -148,7 +148,7 @@ fn w15_the_other_card(#[case] left: &str, #[case] right: &str, #[case] same: boo
     false
 )]
 fn w15_reveal_the_top_card(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -173,7 +173,7 @@ fn w15_reveal_the_top_card(#[case] left: &str, #[case] right: &str, #[case] same
     false
 )]
 fn w15_a_pair_of_types_counted(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -193,7 +193,7 @@ fn w15_a_pair_of_types_counted(#[case] left: &str, #[case] right: &str, #[case] 
     false
 )]
 fn w15_damage_divided_among_up_to_x(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -208,7 +208,7 @@ fn w15_damage_divided_among_up_to_x(#[case] left: &str, #[case] right: &str, #[c
     false
 )]
 fn w15_also_deals(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -248,7 +248,7 @@ fn w15_also_deals(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     false
 )]
 fn w15_support_and_blight(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -273,7 +273,7 @@ fn w15_support_and_blight(#[case] left: &str, #[case] right: &str, #[case] same:
     false
 )]
 fn w15_adamant(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -298,7 +298,7 @@ fn w15_adamant(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     false
 )]
 fn w15_small_words(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -323,7 +323,7 @@ fn w15_small_words(#[case] left: &str, #[case] right: &str, #[case] same: bool) 
     false
 )]
 fn w15_lesser_mana_value(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -358,7 +358,7 @@ fn w15_lesser_mana_value(#[case] left: &str, #[case] right: &str, #[case] same: 
     false
 )]
 fn w15_for_each_and_where_x(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -388,7 +388,7 @@ fn w15_for_each_and_where_x(#[case] left: &str, #[case] right: &str, #[case] sam
     false
 )]
 fn w15_either_kind(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -430,7 +430,7 @@ fn w15_either_kind(#[case] left: &str, #[case] right: &str, #[case] same: bool) 
 )]
 #[case::plural_name("When ~ enter, draw a card.", "When ~ enters, draw a card.", true)]
 fn w15_same_words(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -455,7 +455,7 @@ fn w15_same_words(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     false
 )]
 fn w15_costs_in_either_order(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -475,7 +475,7 @@ fn w15_costs_in_either_order(#[case] left: &str, #[case] right: &str, #[case] sa
     false
 )]
 fn w15_blocks_a_permanent(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -505,7 +505,7 @@ fn w15_blocks_a_permanent(#[case] left: &str, #[case] right: &str, #[case] same:
     false
 )]
 fn w15_one_or_more(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -535,7 +535,7 @@ fn w15_one_or_more(#[case] left: &str, #[case] right: &str, #[case] same: bool) 
     false
 )]
 fn w15_look_and_may_reveal(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }
 
 #[rstest]
@@ -574,5 +574,5 @@ fn w15_names_of_modes_and_quoted_abilities(
     #[case] right: &str,
     #[case] same: bool,
 ) {
-    assert_eq!(same_text(left, right), same, "{right}");
+    assert_eq!(same_written_text(left, right), same, "{right}");
 }

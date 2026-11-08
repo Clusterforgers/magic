@@ -246,7 +246,7 @@ pub use render::{
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;
-pub use tokens::same_text;
+pub use tokens::{same_text, same_written_text};
 
 use super::{ClauseKind, classify};
 use crate::ability::Ability;

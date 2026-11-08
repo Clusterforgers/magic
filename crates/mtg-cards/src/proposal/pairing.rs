@@ -7,7 +7,7 @@ use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
     Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, own_names, read_keyword,
-    read_keywords, same_text, static_pair_texts, written_variants,
+    read_keywords, same_written_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;
@@ -280,7 +280,7 @@ impl<'a> Pairer<'a> {
 
     /// Whether a written wording is the clause text; the face's own names count as `~` in it, as in the clause.
     fn same(&self, variant: &str, text: &str) -> bool {
-        if same_text(variant, text) {
+        if same_written_text(variant, text) {
             return true;
         }
         if let Some(unworded) = r7c_unworded(text) {
@@ -290,7 +290,7 @@ impl<'a> Pairer<'a> {
         for name in &self.names {
             shown = shown.replace(name.as_str(), "~");
         }
-        shown != variant && same_text(&shown, text)
+        shown != variant && same_written_text(&shown, text)
     }
 
     /// The clauses a `Manual` ability of the proposal leaves to the table.
@@ -603,7 +603,10 @@ impl<'a> Pairer<'a> {
             ) {
                 let text = &self.slots[at].clause.text;
                 let wanted = rows.get(at - head - 1).map_or(&[][..], Vec::as_slice);
-                if !wanted.iter().any(|written| same_text(written, text)) {
+                if !wanted
+                    .iter()
+                    .any(|written| same_written_text(written, text))
+                {
                     let written = wanted
                         .iter()
                         .max_by_key(|variant| common_prefix(variant, text))
