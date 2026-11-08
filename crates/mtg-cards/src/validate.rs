@@ -4770,6 +4770,7 @@ impl Walker<'_> {
             | ReplaceBy::MayWithCounters { .. }
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
+            | ReplaceBy::WithCounterOf(_)
             | ReplaceBy::EntersPrepared
                 if !enters =>
             {
@@ -4791,6 +4792,9 @@ impl Walker<'_> {
             ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 self.pay_or_graveyard(enters, cost, *optional);
+            }
+            ReplaceBy::WithCounterOf(kinds) if kinds.len() < 2 => {
+                self.problem("a choice of a counter offers two kinds or more");
             }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");

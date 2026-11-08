@@ -291,6 +291,10 @@ fn other_keyword(ctx: &Ctx, name: &str, first: Option<&str>, second: Option<&str
         },
         ("Partner", Some(group)) => Ok(json!({"PartnerGroup": group})),
         ("Partner with", Some(with)) => Ok(json!({"PartnerWith": with})),
+        // "Landwalk of the chosen type": the land type the card's controller chose as it entered.
+        ("Landwalk", Some("ChosenType")) if ctx.memory.entered.land_type => {
+            Ok(json!({"Landwalk": ["ChosenSubtype"]}))
+        }
         ("Landwalk", Some(land)) => Ok(json!({"Landwalk": selector_any(ctx, land)?})),
         (word, None) if word.ends_with("walk") => landwalk(word),
         _ => unmapped(format!("keyword:{name}")),
@@ -584,6 +588,8 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
             hints_only(&["DB", "Defined", "Type"])?;
             Ok(json!({"Choose": "CreatureType"}))
         }
+        (Some("ChooseType"), _, None) => super::e15b_entering::type_choice(&part),
+        (Some("PutCounter"), None, None) => super::e15b_entering::counter_of(&part),
         (Some("ChoosePlayer"), None, Some(choices)) => {
             hints_only(&["DB", "Defined", "Choices"])?;
             match choices {

@@ -696,6 +696,7 @@ const RUNS: &[&str] = &[
     "Keyword.Riot",
     "Keyword.Decayed",
     "ReplaceBy.Riot",
+    "ReplaceBy.WithCounterOf",
     "Keyword.Fabricate",
     "Keyword.Ascend",
     "Keyword.ForMirrodin",
@@ -1320,6 +1321,7 @@ mod tests {
     #[case::riot("Keyword.Riot", true)]
     #[case::decayed("Keyword.Decayed", true)]
     #[case::choosing_a_counter_or_haste_as_it_enters("ReplaceBy.Riot", true)]
+    #[case::choosing_the_kind_of_a_counter_as_it_enters("ReplaceBy.WithCounterOf", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]
     #[case::retrace("Keyword.Retrace", true)]

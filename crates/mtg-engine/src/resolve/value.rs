@@ -2058,10 +2058,12 @@ impl<'a> Scope<'a> {
                 matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
             }
             Pred::ChosenSubtype => {
-                matches!(self.entered_choice(), Some(Chosen::CreatureType(_)))
-                    && self
-                        .entered_choice()
-                        .is_some_and(|chosen| Self::is_chosen(seen, chosen))
+                matches!(
+                    self.entered_choice(),
+                    Some(Chosen::CreatureType(_) | Chosen::LandType(_) | Chosen::CardType(_))
+                ) && self
+                    .entered_choice()
+                    .is_some_and(|chosen| Self::is_chosen(seen, chosen))
             }
             Pred::ChosenName => {
                 matches!(self.entered_choice(), Some(Chosen::Name(_)))

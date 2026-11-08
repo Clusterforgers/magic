@@ -205,6 +205,7 @@ mod c5_mr_writers;
 mod c5_sz_writers;
 mod c6_af_writers;
 mod c6_au_dead;
+mod e15b_writers;
 mod g12d_blight_cost;
 mod g9b;
 mod g9d_writers;
