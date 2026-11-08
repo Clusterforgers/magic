@@ -124,7 +124,9 @@ pub(super) fn e16c_group_at_text(what: &Selector, at: &Ref, at_least: u32) -> Op
             }
             // "Whenever you attack a player with one or more equipped creatures": a quality of the creatures.
             [kind, Pred::ControlledBy(Ref::You), quality]
-                if *kind == creature && *at == Ref::EachPlayer && *quality != Pred::Token =>
+                if *kind == creature
+                    && *at == Ref::EachPlayer
+                    && matches!(quality, Pred::HasAttached(_) | Pred::Compare { .. }) =>
             {
                 let group = Selector(vec![creature, quality.clone()]);
                 return Some(format!(

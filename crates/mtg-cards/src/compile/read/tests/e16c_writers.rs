@@ -70,6 +70,15 @@ const LIGHTBRINGER: &str = "Whenever you attack a player, create a 1/1 white Gli
     at(ANY, "You", 1, WEAKER),
     "Whenever one or more creatures attack you, those creatures get -1/-0 until end of turn."
 )]
+#[case::non_toys(
+    at(
+        r#"[{"Type":"Creature"},{"ControlledBy":"You"},{"Not":{"Subtype":"Toy"}}]"#,
+        "EachPlayer",
+        1,
+        DRAW
+    ),
+    "Whenever one or more non-Toy creatures you control attack a player, draw a card."
+)]
 fn e16c_an_attack_at_one_player_reads_back(#[case] json: String, #[case] clause: &str) {
     assert!(
         written(&json, clause),
