@@ -174,6 +174,9 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let Some(shape) = mana_shape(&rules) else {
             continue;
         };
+        if shape.from != crate::resolve::zone_kind(object.zone()) {
+            continue;
+        }
         // The mana is counted after what the ability does first (a counter put on the source).
         let ahead = c8_time_ahead(state, player, object, shape.before);
         let ahead_scope = ahead
@@ -202,7 +205,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             continue;
         }
         // What the cost takes: the source is not offered to itself when the cost taps or loses it.
-        let barred = if shape.tap || shape.sacrifice {
+        let barred = if shape.tap || shape.sacrifice || shape.exile {
             vec![id]
         } else {
             Vec::new()
@@ -376,6 +379,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         // Every use takes others, so what limits the uses is what the cost takes.
         let repeat = !tap
             && !sacrifice
+            && !shape.exile
             && !once
             && !takes.is_empty()
             && shape.pays.is_empty()
@@ -397,6 +401,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     produces,
                     count,
                     sacrifice,
+                    exile: shape.exile,
                     extra,
                     tapless: !tap,
                     only: only.clone(),
@@ -499,9 +504,30 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             }
         }
     }
+    found.extend(hand_options(state, player));
     // The replacement comes first: the mana a triggered mana ability adds is not mana the permanent produced (CR 605.1b).
     let found = crate::mana_replace::fold(state, player, found);
     mana_bonus::fold(state, player, found)
+}
+
+/// The mana abilities of the cards in `player`'s hand that exile themselves for mana (a Spirit Guide): sources of a
+/// payment and of priority like a permanent's, which no tap, untap or summoning sickness limits.
+fn hand_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
+    let mut found = Vec::new();
+    for &id in state.zone(Zone::Hand(player)) {
+        // Most cards have no ability that works from the hand; only those are read.
+        let works = state
+            .object(id)
+            .is_some_and(|object| crate::ability_reader::definition_works_elsewhere(object.card()));
+        if !works || mana_forbidden(state, player, id) {
+            continue;
+        }
+        let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());
+        for mana in rule_mana(state, player, id, printed) {
+            found.extend(mana.options);
+        }
+    }
+    found
 }
 
 /// The state after the effects a mana ability runs before its mana (CR 605.3b: in the order written), or `None` when
@@ -595,6 +621,14 @@ pub(crate) fn activation(
             cause: ZoneCause::Sacrificed,
         });
     }
+    if shape.as_ref().is_some_and(|shape| shape.exile) {
+        events.push(Event::ZoneChanged {
+            object: id,
+            from: object.zone(),
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
+        });
+    }
     if let Some(shape) = &shape {
         events.extend(run_inline(state, player, object, shape.before)?);
     }
@@ -608,7 +642,7 @@ pub(crate) fn activation(
     if let Some(shape) = shape {
         // What it does besides reads the state after the cost is paid (CR 602.2): a depletion land is sacrificed once
         // its last counter is removed. The sacrificed source is read where it was, as before.
-        let paid = (!shape.sacrifice && !shape.then.is_empty())
+        let paid = (!shape.sacrifice && !shape.exile && !shape.then.is_empty())
             .then(|| r6e_after(state, &events))
             .flatten();
         let now = paid.as_ref().unwrap_or(state);

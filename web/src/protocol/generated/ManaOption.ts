@@ -34,6 +34,10 @@ tapless?: boolean,
  */
 sacrifice?: boolean, 
 /**
+ * Its source is a card in the hand that the activation exiles (a Spirit Guide); left out means a permanent.
+ */
+exile?: boolean, 
+/**
  * What the mana it adds may be spent on (Mishra's Workshop: artifact spells); left out means anything.
  */
 only?: Array<SpendOn>, 
