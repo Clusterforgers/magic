@@ -1441,6 +1441,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         Some((Pred::Spell, rest)) => (true, rest),
         _ => (false, selector.0.as_slice()),
     };
+    let preds = &super::w21a_atoms::w21a_zone_first(preds);
     let (mut adjectives, mut types, mut suffixes) = (Vec::new(), Vec::new(), Vec::new());
     let (mut subtypes, mut card, mut token) = (Vec::<&str>::new(), false, false);
     // The zone of a card comes last ("permanent card with mana value 3 or less from your graveyard").
