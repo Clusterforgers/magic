@@ -1,10 +1,15 @@
 import { ShieldCheckIcon } from 'lucide-react'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { DraftNote } from '@/features/decks/DraftNote'
+import { ClauseList } from '@/features/decks/unvalidated/ClauseList'
+import { clauseLines } from '@/features/decks/unvalidated/model'
+import type { FaceTexts } from '@/features/decks/unvalidated/model'
+import { useCardTexts } from '@/features/decks/unvalidated/useCardTexts'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
-import { BY_HAND, BY_HAND_TITLE } from '@/lib/byHand'
+import { BY_HAND, BY_HAND_TITLE, runsWhole } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
+import type { CardsApi } from '@/net/cards'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { CardHit } from '@/protocol/generated'
 import type { HandCard } from './deckSummary'
@@ -15,18 +20,24 @@ interface HandListProps {
   /** Opens the preview of a card; `opener` is the control focus returns to. */
   onPreview: (card: CardHit, opener: HTMLElement) => void
   fixMarks?: FixMarksApi
+  /** The card endpoint the words each reason covers are quoted from. */
+  cardsApi: Pick<CardsApi, 'get'>
 }
 
 function Entry({
   entry,
   onPreview,
   fixMarks,
+  faces,
+  pending,
 }: {
   entry: HandCard
   onPreview: HandListProps['onPreview']
   fixMarks?: FixMarksApi
+  faces: FaceTexts
+  pending: boolean
 }) {
-  const { card, count, support, draft, reasons } = entry
+  const { card, count, support, draft, reasons, clauses } = entry
   return (
     <li
       data-hand={card.oracle_id}
@@ -52,16 +63,20 @@ function Entry({
             <FixMarkButton compact oracleId={card.oracle_id} name={card.name} api={fixMarks} />
           )}
         </div>
-        {reasons.length === 0 ? (
+        {reasons.length === 0 || runsWhole(support) ? (
           <p className="text-xs text-muted-foreground">The reasons appear once the deck is checked.</p>
         ) : (
-          <ul aria-label={`Why ${card.name} is ${BY_HAND}`} className="grid gap-1 text-xs">
-            {[...new Set(reasons)].map((reason) => (
-              <li key={reason} className="text-muted-foreground [overflow-wrap:anywhere]">
-                {reason}
-              </li>
-            ))}
-          </ul>
+          <div aria-label={`Why ${card.name} is ${BY_HAND}`} role="group">
+            <ClauseList
+              lines={clauseLines(
+                { oracleId: card.oracle_id, name: card.name, support, reasons: clauses, decks: [] },
+                faces.get(card.oracle_id),
+              )}
+              support={support}
+              pending={pending}
+              stacked
+            />
+          </div>
         )}
         <DraftNote draft={draft} />
       </div>
@@ -74,7 +89,11 @@ function Entry({
  * flag that marks it important to fix, so the player sees what is played by hand and can build the deck around
  * it. A card the game cannot play at all is listed apart, since the deck cannot be taken with it.
  */
-export function HandList({ cards, onPreview, fixMarks }: HandListProps) {
+export function HandList({ cards, cardsApi, onPreview, fixMarks }: HandListProps) {
+  const { faces, pending } = useCardTexts(
+    cardsApi,
+    cards.filter((entry) => entry.reasons.length > 0).map((entry) => entry.card.oracle_id),
+  )
   const hand = cards.filter((entry) => entry.support !== 'unplayable')
   const blocked = cards.filter((entry) => entry.support === 'unplayable')
   const copies = (list: readonly HandCard[]): number => list.reduce((sum, entry) => sum + entry.count, 0)
@@ -90,7 +109,14 @@ export function HandList({ cards, onPreview, fixMarks }: HandListProps) {
           {hand.length === 0 ? null : (
             <ul aria-label={`Cards ${BY_HAND}`} className="grid gap-2">
               {hand.map((entry) => (
-                <Entry key={entry.card.oracle_id} entry={entry} onPreview={onPreview} fixMarks={fixMarks} />
+                <Entry
+                  key={entry.card.oracle_id}
+                  entry={entry}
+                  onPreview={onPreview}
+                  fixMarks={fixMarks}
+                  faces={faces}
+                  pending={pending}
+                />
               ))}
             </ul>
           )}
@@ -102,7 +128,14 @@ export function HandList({ cards, onPreview, fixMarks }: HandListProps) {
               </h4>
               <ul aria-label="Cards the game cannot play" className="grid gap-2">
                 {blocked.map((entry) => (
-                  <Entry key={entry.card.oracle_id} entry={entry} onPreview={onPreview} fixMarks={fixMarks} />
+                  <Entry
+                    key={entry.card.oracle_id}
+                    entry={entry}
+                    onPreview={onPreview}
+                    fixMarks={fixMarks}
+                    faces={faces}
+                    pending={pending}
+                  />
                 ))}
               </ul>
             </>
