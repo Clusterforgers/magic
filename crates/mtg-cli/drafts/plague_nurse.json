@@ -1,0 +1,36 @@
+{
+  "oracle_id": "af7abd22-3134-4872-bbe2-0ad84742d9e5",
+  "name": "Plague Nurse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague Nurse",
+      "oracle_fingerprint": "09218ecb186a4edd10cd653b0212de5a",
+      "abilities": [
+        { "Keyword": { "Toxic": 2 } },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "HasKeywordNamed": "Toxic" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": { "Toxic": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "66d41377-626d-4ae6-ba86-17bf0c8b3362",
+  "name": "Nim Deathmantle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nim Deathmantle",
+      "oracle_fingerprint": "0a74127bfc7e5302d0a16155c135fca2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Intimidate" },
+              { "SetColors": ["Black"] },
+              { "SetCreatureTypes": ["Zombie"] }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{4}",
+                  "paid": [
+                    { "Move": { "what": "Triggering", "to": { "Battlefield": {} }, "as": "moved" } },
+                    { "Attach": { "what": "This", "to": { "Bound": "moved" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

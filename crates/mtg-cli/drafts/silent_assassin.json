@@ -1,0 +1,29 @@
+{
+  "oracle_id": "05b07f1f-42e1-41fb-8858-5e4a311c4ed9",
+  "name": "Silent Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silent Assassin",
+      "oracle_fingerprint": "b71865f4efccec86a801f363fff12014",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Blocking"] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

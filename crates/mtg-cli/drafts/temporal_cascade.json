@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c65dc9cb-3aad-4d15-a8c0-c0c142058d45",
+  "name": "Temporal Cascade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Cascade",
+      "oracle_fingerprint": "0f8f21609e001485bd4eecaa45576822",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }]
+                            },
+                            "to": { "Library": { "place": "Shuffled" } }
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Draw": { "who": "EachPlayer", "count": 7 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{2}" } }
+      ]
+    }
+  ]
+}

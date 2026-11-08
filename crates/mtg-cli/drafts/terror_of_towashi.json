@@ -1,0 +1,59 @@
+{
+  "oracle_id": "c4b6dd8f-cdef-413a-a820-ec47e168b3bd",
+  "name": "Terror of Towashi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terror of Towashi",
+      "oracle_fingerprint": "8439664760a3f2ee04b97c3fd62a5aee",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{3}{B}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Battlefield": {} },
+                              "as": "moved"
+                            }
+                          },
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "moved" },
+                              "mods": [{ "AddSubtype": "Phyrexian" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9777a54b-1c60-4d6b-bb83-c57cb3a1d7e6",
+  "name": "Rage Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rage Weaver",
+      "oracle_fingerprint": "06f8cd6214b2ceb483b0912118ac0f8c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Green" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

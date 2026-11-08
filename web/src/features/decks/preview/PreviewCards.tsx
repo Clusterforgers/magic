@@ -1,17 +1,21 @@
-import { BookOpenCheckIcon, HandIcon, ShieldHalfIcon } from 'lucide-react'
+import { BookOpenCheckIcon, HammerIcon, HandIcon, ShieldHalfIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { SupportMark } from '@/features/decks/SupportMark'
 import { BY_HAND, BY_HAND_TITLE, ON_A_READ, PARTLY_BY_HAND, runsWhole } from '@/lib/byHand'
+import { cardWords } from '@/lib/lineMarks'
+import { FROM_FORGE } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import type { Support } from '@/protocol/generated'
+import { LineMarks } from './LineMarks'
 import { copiesOf } from './model'
 import type { CardGroup, PreviewCard } from './model'
 
 const PLAYED_BY_HAND: Readonly<Record<Support, string>> = {
   verified: 'runs whole',
   read: ON_A_READ,
+  forge: FROM_FORGE,
   partial: PARTLY_BY_HAND,
   manual: BY_HAND,
   stale: `${BY_HAND} until it is checked again`,
@@ -47,6 +51,10 @@ export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose:
               </DialogTitle>
               <DialogDescription>{card.typeLine}</DialogDescription>
               <SupportMark support={card.support} />
+              <p data-slot="card-words" className="text-sm font-medium">
+                {cardWords(card.support)}
+              </p>
+              {card.support === 'partial' ? <LineMarks card={card} /> : null}
               {card.reasons.length === 0 ? null : (
                 <ul aria-label={BY_HAND_TITLE} className="grid gap-1 text-left text-xs text-muted-foreground">
                   {[...new Set(card.reasons)].map((reason) => (
@@ -96,6 +104,15 @@ function Tile({ card, onOpen }: { card: PreviewCard; onOpen: (card: PreviewCard)
               className="absolute -bottom-1.5 -left-1.5 grid size-6 place-items-center rounded-full border border-support-read bg-popover text-support-read shadow-e1"
             >
               <BookOpenCheckIcon className="size-3.5" />
+            </span>
+          ) : null}
+          {card.support === 'forge' ? (
+            <span
+              data-slot="support-badge"
+              aria-hidden="true"
+              className="absolute -bottom-1.5 -left-1.5 grid size-6 place-items-center rounded-full border border-support-forge bg-popover text-support-forge shadow-e1"
+            >
+              <HammerIcon className="size-3.5" />
             </span>
           ) : null}
           {hand ? (

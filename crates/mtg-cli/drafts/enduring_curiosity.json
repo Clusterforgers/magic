@@ -1,0 +1,47 @@
+{
+  "oracle_id": "9d2460c3-8eeb-4f35-b6f6-748c478664c7",
+  "name": "Enduring Curiosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enduring Curiosity",
+      "oracle_fingerprint": "5fed1b0d7173dd68b6c83a80f90cfb76",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetTypes": ["Enchantment"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

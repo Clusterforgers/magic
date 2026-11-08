@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c822665a-b577-4e20-802a-18dbcd29cce8",
+  "name": "Triumphant Getaway",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Triumphant Getaway",
+      "oracle_fingerprint": "57042665acae7e9c241f9c0bbb26109c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 76 } }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "OwnedBy": "You" } }], "by": "You" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "929117cd-caa6-402b-9d7b-1f684d75695c",
+  "name": "Scythecat Cub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scythecat Cub",
+      "oracle_fingerprint": "638ba9b4d36a42244344838fa8543ae1",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Ne", "right": 2 } },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

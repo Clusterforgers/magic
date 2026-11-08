@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "808830ff-496a-41dc-8b64-334ddaca9435",
+  "oracle_id": "f7b70077-5518-45f9-9833-01a4f8afac71",
+  "multiverse_ids": [
+    3670
+  ],
+  "mtgo_id": 7641,
+  "mtgo_foil_id": 7642,
+  "tcgplayer_id": 5886,
+  "cardmarket_id": 8464,
+  "name": "Mortal Wound",
+  "lang": "en",
+  "released_at": "1997-02-03",
+  "uri": "https://api.scryfall.com/cards/808830ff-496a-41dc-8b64-334ddaca9435",
+  "scryfall_uri": "https://scryfall.com/card/vis/113/mortal-wound?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:49:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.jpg?1783946982",
+    "normal": "https://cards.scryfall.io/normal/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.jpg?1783946982",
+    "large": "https://cards.scryfall.io/large/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.jpg?1783946982",
+    "png": "https://cards.scryfall.io/png/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.png?1783946982",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.jpg?1783946982",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.jpg?1783946982",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.webp?1783946982",
+    "grid": "https://cards.scryfall.io/grid/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.webp?1783946982",
+    "display": "https://cards.scryfall.io/display/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.webp?1783946982",
+    "art": "https://cards.scryfall.io/art/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.webp?1783946982",
+    "crop": "https://cards.scryfall.io/crop/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.webp?1783946982",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/0/808830ff-496a-41dc-8b64-334ddaca9435.jpg?1783946982"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen enchanted creature is dealt damage, destroy it.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2c32f1a9-7921-4826-bea0-80bbac70532c",
+  "set": "vis",
+  "set_name": "Visions",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2c32f1a9-7921-4826-bea0-80bbac70532c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avis&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vis?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/808830ff-496a-41dc-8b64-334ddaca9435/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af7b70077-5518-45f9-9833-01a4f8afac71&unique=prints",
+  "collector_number": "113",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Their tears spill over Jamuraa. Mixed with blood, they wash everything red.\"\n—\"Love Song of Night and Day\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kev Walker",
+  "artist_ids": [
+    "f366a0ee-a0cd-466d-ba6a-90058c7a31a6"
+  ],
+  "illustration_id": "df0134b2-b1b5-4d7c-ab38-60ede9d9fa9e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26596,
+  "prices": {
+    "usd": "0.11",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3670&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMortal%2BWound",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMortal%2BWound",
+    "edhrec": "https://edhrec.com/route/?cc=Mortal+Wound"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5886%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8464&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/7641?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

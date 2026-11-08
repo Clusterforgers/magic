@@ -1,0 +1,60 @@
+{
+  "oracle_id": "04eeb9ad-5c59-411b-8809-db8349838588",
+  "name": "Westvale Abbey // Ormendahl, Profane Prince",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Westvale Abbey",
+      "oracle_fingerprint": "8527550eceb3a05417df0aed4a7b1753",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", { "PayLife": 1 }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Cleric",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Cleric"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": 5 } }
+            ],
+            "effects": [{ "Transform": { "what": "This" } }, { "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ormendahl, Profane Prince",
+      "oracle_fingerprint": "682ad3ce64698a3ff40f8c9d040aab81",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Indestructible" },
+        { "Keyword": "Haste" }
+      ]
+    }
+  ]
+}

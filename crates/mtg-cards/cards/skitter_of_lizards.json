@@ -1,0 +1,21 @@
+{
+  "oracle_id": "14646c85-12ad-4b99-a2af-e4a790e034ef",
+  "name": "Skitter of Lizards",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skitter of Lizards",
+      "oracle_fingerprint": "05ea1bb137187704e589431262109517",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{1}{R}" } },
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "Kicks" } }
+          }
+        }
+      ]
+    }
+  ]
+}

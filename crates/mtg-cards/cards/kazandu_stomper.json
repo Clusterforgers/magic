@@ -1,0 +1,29 @@
+{
+  "oracle_id": "121f6c96-2911-4ee3-b14e-d3b143eb14c3",
+  "name": "Kazandu Stomper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kazandu Stomper",
+      "oracle_fingerprint": "5143656f926309f0fc79ac3521aedad3",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

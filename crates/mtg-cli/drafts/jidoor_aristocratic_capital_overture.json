@@ -1,0 +1,44 @@
+{
+  "oracle_id": "bd513d9d-5aa2-4860-bd86-8b5d9430f133",
+  "name": "Jidoor, Aristocratic Capital // Overture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jidoor, Aristocratic Capital",
+      "oracle_fingerprint": "d78f07fefc90e62ac7c139d2db82e747",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Overture",
+      "oracle_fingerprint": "7526d9125eb7840859dd56fec15e3c74",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

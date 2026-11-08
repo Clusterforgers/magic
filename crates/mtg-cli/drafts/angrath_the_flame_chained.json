@@ -1,0 +1,98 @@
+{
+  "oracle_id": "092ceffb-1ee4-452c-b15e-5b79267d42a6",
+  "name": "Angrath, the Flame-Chained",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angrath, the Flame-Chained",
+      "oracle_fingerprint": "61cfc78145545e8af61e1a66290941e6",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Discard": { "who": "Opponents" } },
+              { "LoseLife": { "who": "Opponents", "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Bind": { "what": { "Target": 0 }, "as": "target" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "target" },
+                            "selector": [
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                            ],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Sacrifice": {
+                              "filter": [{ "Is": { "Bound": "target" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "target" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Count": [{ "OwnedBy": { "Bound": "each" } }, { "In": "Graveyard" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

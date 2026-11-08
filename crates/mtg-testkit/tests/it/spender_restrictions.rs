@@ -230,3 +230,22 @@ fn a_spell_is_told_from_a_graveyard_and_by_who_owns_it(
     assert!(spend.traits.from_graveyard);
     assert_eq!(spend.traits.not_owned, !owned_by_the_caster);
 }
+
+#[rstest]
+#[case::your_graveyard_your_card(0, "FromYourGraveyard", true)]
+#[case::your_graveyard_their_card(1, "FromYourGraveyard", false)]
+#[case::any_graveyard_their_card(1, "FromGraveyard", true)]
+fn the_fact_from_your_graveyard_holds_only_for_the_casters_own_card(
+    #[values(2, 4)] seats: usize,
+    #[case] owner: usize,
+    #[case] fact: &str,
+    #[case] holds: bool,
+) {
+    let rock = spell(&[Artifact], &[], "{2}", 0);
+    let driver = Driver::from_scenario(Scenario::new(seats).graveyard(owner, [rock])).unwrap();
+    let id = driver.state().zone(Zone::Graveyard(pid(owner)))[0];
+    let spend = Spend::for_spell(driver.state(), id, pid(0), false);
+    let filter: mtg_cards::spend::SpendFilter =
+        serde_json::from_str(&format!(r#"{{"facts":["{fact}"]}}"#)).unwrap();
+    assert_eq!(filter.holds(&spend.traits), holds);
+}

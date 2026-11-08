@@ -1,0 +1,32 @@
+{
+  "oracle_id": "27692079-a517-4d38-b452-7409980b5912",
+  "name": "HYDRA Infiltration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "HYDRA Infiltration",
+      "oracle_fingerprint": "c2642d192b2bfebfa9350554907b70c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

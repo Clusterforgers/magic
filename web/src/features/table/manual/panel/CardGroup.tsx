@@ -8,7 +8,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
-import { LIMITS, targetKey, zoneKind } from '../offers'
+import { GRANT_KEYWORDS, GRANT_TEXT, LIMITS, targetKey, zoneKind } from '../offers'
 import type { MenuInput } from '../offers'
 import { useMenuInput } from '../useMenuInput'
 import { AmountField } from './AmountField'
@@ -37,6 +37,7 @@ const COUNTER_SPEC: AmountSpec = {
   start: 0,
 }
 const DAMAGE_SPEC: AmountSpec = { signed: false, min: 1, max: LIMITS.damage, presets: [1, 2, 3, 5], start: 1 }
+const BLOCKS_SPEC: AmountSpec = { signed: false, min: 1, max: LIMITS.blocks, presets: [1, 2, 3], start: 1 }
 const PUMP_SPEC: AmountSpec = {
   signed: true,
   min: -LIMITS.pump,
@@ -354,6 +355,15 @@ function CardFields({ command, draft, set, context }: FieldsProps) {
           />
         </>
       )
+    case 'blocks':
+      return (
+        <AmountField
+          label="More creatures"
+          spec={BLOCKS_SPEC}
+          value={draft.count}
+          onChange={(count) => set({ count })}
+        />
+      )
     case 'pump':
       return (
         <>
@@ -369,6 +379,40 @@ function CardFields({ command, draft, set, context }: FieldsProps) {
             value={draft.toughness}
             onChange={(toughness) => set({ toughness })}
           />
+        </>
+      )
+    case 'grant':
+      return (
+        <>
+          <NativeSelect
+            aria-label="Ability"
+            value={draft.ability}
+            onChange={(event) => set({ ability: event.currentTarget.value })}
+          >
+            {GRANT_KEYWORDS.map(([name, words]) => (
+              <NativeSelectOption key={name} value={name}>
+                {words}
+              </NativeSelectOption>
+            ))}
+            <NativeSelectOption value={GRANT_TEXT}>Other…</NativeSelectOption>
+          </NativeSelect>
+          {draft.ability === GRANT_TEXT ? (
+            <Input
+              aria-label="Ability text"
+              maxLength={LIMITS.note}
+              value={draft.text}
+              onChange={(event) => set({ text: event.currentTarget.value })}
+              className="h-8 pointer-coarse:h-11"
+            />
+          ) : null}
+          <NativeSelect
+            aria-label="Lasts"
+            value={draft.forGood ? 'good' : 'turn'}
+            onChange={(event) => set({ forGood: event.currentTarget.value === 'good' })}
+          >
+            <NativeSelectOption value="turn">Until end of turn</NativeSelectOption>
+            <NativeSelectOption value="good">For good</NativeSelectOption>
+          </NativeSelect>
         </>
       )
     case 'give':

@@ -1,0 +1,250 @@
+{
+  "oracle_id": "f6209f18-9f40-44b4-9a8c-3445eda89928",
+  "name": "Heroic Defiance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heroic Defiance",
+      "oracle_fingerprint": "7b1890a28d38784db81782d712917975",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": "Attached" },
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Color": "White" } },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "White" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Blue" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "White" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Black" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "White" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Red" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "White" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Green" }] }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Color": "Blue" } },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Blue" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "White" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Blue" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Black" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Blue" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Red" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Blue" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Green" }] }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Color": "Black" } },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Black" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "White" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Black" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Blue" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Black" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Red" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Black" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Green" }] }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Color": "Red" } },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Red" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "White" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Red" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Blue" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Red" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Black" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Red" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Green" }] }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Color": "Green" } },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Green" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "White" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Green" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Blue" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Green" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Black" }] }
+                                  }
+                                }
+                              },
+                              {
+                                "Not": {
+                                  "Test": {
+                                    "left": { "Count": [{ "Color": "Green" }] },
+                                    "op": "Ge",
+                                    "right": { "Count": [{ "Color": "Red" }] }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "f27fb53f-a983-410a-821b-e48cd8c01f2e",
+  "name": "Noosegraf Mob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noosegraf Mob",
+      "oracle_fingerprint": "722f30d4528db758b354e5158959c9b0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 5 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                    }
+                  },
+                  "slot": "remembered_number"
+                }
+              },
+              { "RemoveCounters": { "from": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

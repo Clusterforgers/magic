@@ -1,0 +1,185 @@
+{
+  "object": "card",
+  "id": "a7cbdd54-7685-4921-ab60-dc36e647a4c5",
+  "oracle_id": "a6375c5b-ec78-4ee8-b681-8d92797a5b43",
+  "multiverse_ids": [
+    540941,
+    540942
+  ],
+  "mtgo_id": 94510,
+  "arena_id": 78889,
+  "tcgplayer_id": 253054,
+  "cardmarket_id": 581894,
+  "name": "Bloodsworn Squire // Bloodsworn Knight",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/a7cbdd54-7685-4921-ab60-dc36e647a4c5",
+  "scryfall_uri": "https://scryfall.com/card/vow/97/bloodsworn-squire-bloodsworn-knight?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:41:23Z",
+  "cmc": 4.0,
+  "type_line": "Creature — Vampire Soldier // Creature — Vampire Knight",
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Bloodsworn Squire",
+      "mana_cost": "{3}{B}",
+      "type_line": "Creature — Vampire Soldier",
+      "oracle_text": "{1}{B}, Discard a card: This creature gains indestructible until end of turn. Tap it. Then if there are four or more creature cards in your graveyard, transform this creature. (Damage and effects that say \"destroy\" don't destroy it.)",
+      "colors": [
+        "B"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "artist": "Darren Tan",
+      "artist_id": "14c7f83c-d0fb-43f0-90f3-703f910f8bb9",
+      "illustration_id": "d39bedaa-8e4c-40cf-8491-ff9333235809",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "normal": "https://cards.scryfall.io/normal/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "large": "https://cards.scryfall.io/large/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "png": "https://cards.scryfall.io/png/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.png?1783924883",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "thumb": "https://cards.scryfall.io/thumb/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "grid": "https://cards.scryfall.io/grid/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "display": "https://cards.scryfall.io/display/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "art": "https://cards.scryfall.io/art/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "crop": "https://cards.scryfall.io/crop/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "jpeg": "https://cards.scryfall.io/normal/front/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Bloodsworn Knight",
+      "mana_cost": "",
+      "type_line": "Creature — Vampire Knight",
+      "oracle_text": "Bloodsworn Knight's power and toughness are each equal to the number of creature cards in your graveyard.\n{1}{B}, Discard a card: This creature gains indestructible until end of turn. Tap it. (Damage and effects that say \"destroy\" don't destroy it.)",
+      "colors": [
+        "B"
+      ],
+      "color_indicator": [
+        "B"
+      ],
+      "power": "*",
+      "toughness": "*",
+      "artist": "Darren Tan",
+      "artist_id": "14c7f83c-d0fb-43f0-90f3-703f910f8bb9",
+      "illustration_id": "79facc8e-49a6-4de8-b2a3-daf957cf5a38",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "normal": "https://cards.scryfall.io/normal/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "large": "https://cards.scryfall.io/large/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "png": "https://cards.scryfall.io/png/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.png?1783924883",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883",
+        "thumb": "https://cards.scryfall.io/thumb/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "grid": "https://cards.scryfall.io/grid/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "display": "https://cards.scryfall.io/display/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "art": "https://cards.scryfall.io/art/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "crop": "https://cards.scryfall.io/crop/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.webp?1783924883",
+        "jpeg": "https://cards.scryfall.io/normal/back/a/7/a7cbdd54-7685-4921-ab60-dc36e647a4c5.jpg?1783924883"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set": "vow",
+  "set_name": "Innistrad: Crimson Vow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avow&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vow?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a7cbdd54-7685-4921-ab60-dc36e647a4c5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa6375c5b-ec78-4ee8-b681-8d92797a5b43&unique=prints",
+  "collector_number": "97",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Darren Tan",
+  "artist_ids": [
+    "14c7f83c-d0fb-43f0-90f3-703f910f8bb9"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "sunmoondfc"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18926,
+  "preview": {
+    "source": "Café Magic",
+    "source_uri": "https://www.youtube.com/watch?v=HRiK40rFg7Y",
+    "previewed_at": "2021-11-01"
+  },
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.21",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.27",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=540941&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBloodsworn%2BSquire%2B%252F%252F%2BBloodsworn%2BKnight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBloodsworn%2BSquire%2B%252F%252F%2BBloodsworn%2BKnight",
+    "edhrec": "https://edhrec.com/route/?cc=Bloodsworn+Squire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F253054%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=581894&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/94510?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

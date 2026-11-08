@@ -10,14 +10,21 @@
         {
           "Triggered": {
             "when": {
-              "DealsDamage": { "source": ["Commander"], "to": "Opponents", "combat": true }
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, "Commander", { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
             },
             "effects": [
               {
                 "DealDamage": {
                   "source": "Dealer",
                   "to": {
-                    "Each": [{ "Subtype": "Opponent" }, { "Not": { "SameCard": "Triggering" } }]
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "Triggering" } }
+                    }
                   },
                   "amount": "Triggering"
                 }

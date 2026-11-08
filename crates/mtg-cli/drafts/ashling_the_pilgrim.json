@@ -1,0 +1,60 @@
+{
+  "oracle_id": "bc92f0ba-2cf0-453c-a0d3-98a8784fe55b",
+  "name": "Ashling the Pilgrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashling the Pilgrim",
+      "oracle_fingerprint": "72b01dd57915a2443cb5fb08e3d93582",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [
+                    {
+                      "RememberValue": {
+                        "value": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                        "slot": "remembered_number"
+                      }
+                    },
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": "+1/+1",
+                        "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "Each": [{ "Type": "Creature" }] },
+                        "amount": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": "EachPlayer",
+                        "amount": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

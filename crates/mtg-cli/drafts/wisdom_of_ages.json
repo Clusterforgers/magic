@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d9722ec3-aa5e-4c69-8ff0-cef1b1839fa4",
+  "name": "Wisdom of Ages",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wisdom of Ages",
+      "oracle_fingerprint": "ed252da715134f1e6eb0f5c6a40dbbf8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              { "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "Forever" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

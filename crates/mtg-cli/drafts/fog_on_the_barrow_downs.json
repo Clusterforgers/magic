@@ -1,0 +1,20 @@
+{
+  "oracle_id": "66bee79a-7e47-4fc4-ba07-323cd2de6261",
+  "name": "Fog on the Barrow-Downs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fog on the Barrow-Downs",
+      "oracle_fingerprint": "173c3f1c1cf8537b28991422b25c5d50",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["CantAttack", "CantBlock", { "SetCreatureTypes": ["Spirit"] }]
+          }
+        }
+      ]
+    }
+  ]
+}

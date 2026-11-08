@@ -1,0 +1,38 @@
+{
+  "oracle_id": "022b42a6-ee0f-4080-b973-c1b68938c3be",
+  "name": "Phyrexian Dragon Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Dragon Engine",
+      "oracle_fingerprint": "8a4f7d7a54edd2183f769bc9cbde69b2",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "OwnedBy": "You" }],
+                "from": "Graveyard",
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    }
+                  ],
+                  "paid": [{ "Draw": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{3}{R}{R}" } }
+      ]
+    }
+  ]
+}

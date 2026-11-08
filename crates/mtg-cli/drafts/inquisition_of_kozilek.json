@@ -1,0 +1,33 @@
+{
+  "oracle_id": "395611fa-aec2-4c9e-92c3-70cf95cc00f4",
+  "name": "Inquisition of Kozilek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inquisition of Kozilek",
+      "oracle_fingerprint": "0d3c89317d77bd408a86bfe9ad5fde69",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0f9b78ca-1556-4157-a91c-55276fd78127",
+  "name": "Sand Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sand Golem",
+      "oracle_fingerprint": "238fc0eba08cb9906f9196ac3d2c2db5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": { "inner": { "Discarded": { "what": ["This"] } }, "by": "Opponents" }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

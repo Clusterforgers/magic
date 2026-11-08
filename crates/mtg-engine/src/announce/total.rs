@@ -8,7 +8,7 @@ use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
 use super::payment::spend;
-use super::{Ctx, Next, What, Work, alternative, c9_emerge_reduce, modifiers, optional, x};
+use super::{Ctx, Next, What, Work, alternative, c9_emerge_reduce, modifiers, optional, price, x};
 use crate::choose::Choices;
 use crate::help::{self, Offered};
 use crate::mana::{ManaOption, can_afford_with, reserve_energy};
@@ -47,11 +47,15 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let printed = printed(ctx, choices)?;
     let mana = alternative::replace(ctx, choices, printed.mana);
     let mana = optional::add(ctx, choices, mana);
+    let mana = price::add(ctx, choices, mana);
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);
     let mana = c9_emerge_reduce::c9_emerge_reduce(ctx, choices, mana);
     let help = match ctx.what {
         What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
+        What::Ability(_) if printed.waterbend => {
+            help::waterbend(ctx.state, ctx.player, &printed.taken)
+        }
         _ => Offered::default(),
     };
     Some(Total {
@@ -73,6 +77,8 @@ struct Printed {
     life: u32,
     /// The objects the other parts sacrifice, tap, return or exile: no source of mana and no helper.
     taken: Vec<ObjectId>,
+    /// The cost holds a waterbend part: artifacts and creatures may tap to pay for it.
+    waterbend: bool,
 }
 
 impl Printed {
@@ -82,8 +88,18 @@ impl Printed {
             sources,
             life,
             taken: Vec::new(),
+            waterbend: false,
         }
     }
+}
+
+/// The objects an activation targets once its targets are announced (CR 601.2c comes before the total cost, 601.2f); `None`
+/// before.
+fn announced<'a>(
+    choices: &Choices,
+    targeted: &'a [crate::object::ObjectRef],
+) -> Option<&'a [crate::object::ObjectRef]> {
+    (!choices.targets.is_empty()).then_some(targeted)
 }
 
 /// The cost as the card prints it and the sources that may pay its mana: the mana cost of a spell, the cost of an
@@ -116,22 +132,60 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
             })
         }
         What::Ability(ability) => match ctx.ability? {
-            Ability::Activated { cost, .. } => {
+            rules @ Ability::Activated { cost, .. } => {
                 let x = choices.x.unwrap_or(0);
-                let price = Price::announced(cost).ok()?.at(x);
+                let price = Price::announced_in(
+                    cost,
+                    ctx.state,
+                    ctx.player,
+                    ability.object,
+                    ability.source.granter(),
+                )
+                .ok()?
+                .at(x);
                 let mut sources = price.sources(ctx.state, ctx.player, ability.object);
                 // What the cost sacrifices, taps or returns is not there to tap for mana.
                 let picked: Vec<ObjectId> =
                     choices.cost_picks().iter().flatten().copied().collect();
                 crate::mana_takes::leave(&mut sources, &picked);
                 let life = price.life();
-                let mana =
-                    crate::c11a_less::c11a_mana(ctx.state, ctx.player, ability.object, &price);
-                Some(Printed::new(mana, sources, life))
+                let targeted = choices.targeted_objects();
+                let mana = crate::c11a_less::c11a_mana(
+                    ctx.state,
+                    ctx.player,
+                    (ability.object, *ability, rules),
+                    &price,
+                    announced(choices, &targeted),
+                );
+                let mut printed = Printed::new(mana, sources, life);
+                if price.waterbend > 0 {
+                    printed.waterbend = true;
+                    printed.taken = picked;
+                    if price.tap || price.moves_source() {
+                        printed.taken.push(ability.object);
+                    }
+                }
+                Some(printed)
+            }
+            // A loyalty cost is counters; only what a cost modifier adds is mana.
+            rules @ Ability::Loyalty { .. } => {
+                let targeted = choices.targeted_objects();
+                let Some((mana, price)) = crate::c11a_less::loyalty_mana(
+                    ctx.state,
+                    ctx.player,
+                    (ability.object, *ability, rules),
+                    announced(choices, &targeted),
+                ) else {
+                    return Some(Printed::new(None, Vec::new(), 0));
+                };
+                let sources = price.sources(ctx.state, ctx.player, ability.object);
+                Some(Printed::new(Some(mana), sources, 0))
             }
             _ => Some(Printed::new(None, Vec::new(), 0)),
         },
-        What::Trigger(_) | What::Attack(..) => Some(Printed::new(None, Vec::new(), 0)),
+        What::Trigger(_) | What::Attack(..) | What::Block(_) => {
+            Some(Printed::new(None, Vec::new(), 0))
+        }
     }
 }
 
@@ -143,7 +197,7 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
     let life = seat
         .life()
         .saturating_sub(i32::try_from(total.life).unwrap_or(i32::MAX));
-    total.mana.as_ref().is_none_or(|cost| {
+    let alone = |cost: &ManaCost| {
         can_afford_with(
             cost,
             seat.mana(),
@@ -152,5 +206,13 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
             life,
             &total.spend,
         )
+    };
+    total.mana.as_ref().is_none_or(|cost| {
+        alone(cost)
+            || match ctx.what {
+                What::Spell(spell) => super::assist::helped(ctx.state, ctx.player, *spell, cost)
+                    .is_some_and(|less| alone(&less)),
+                _ => false,
+            }
     })
 }

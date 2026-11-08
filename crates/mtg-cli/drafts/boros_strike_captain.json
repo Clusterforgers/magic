@@ -1,0 +1,49 @@
+{
+  "oracle_id": "30b20932-0d9a-447f-b934-1daa8c44a678",
+  "name": "Boros Strike-Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boros Strike-Captain",
+      "oracle_fingerprint": "a5a6d9f3418395a918afeac0794c281d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "when": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

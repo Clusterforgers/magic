@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e7e69583-8326-417e-8a9a-6b917c8ba4b6",
+  "name": "Anowon, the Ruin Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anowon, the Ruin Thief",
+      "oracle_fingerprint": "0e7a10487f6eb3c2242dcd43b86e1268",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Rogue" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Rogue" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "Mill": { "who": "Triggering", "count": "Triggering", "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

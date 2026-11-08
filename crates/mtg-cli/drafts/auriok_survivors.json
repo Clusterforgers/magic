@@ -1,0 +1,43 @@
+{
+  "oracle_id": "103b92c7-8f8e-4924-8d7e-fc0a01486e86",
+  "name": "Auriok Survivors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auriok Survivors",
+      "oracle_fingerprint": "57fb7141637429a28cf4561a252fdd58",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Equipment" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+                    {
+                      "May": {
+                        "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "This" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

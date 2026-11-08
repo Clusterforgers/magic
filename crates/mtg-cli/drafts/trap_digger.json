@@ -1,0 +1,45 @@
+{
+  "oracle_id": "91857f68-4b0e-4fdf-8782-74324b496648",
+  "name": "Trap Digger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trap Digger",
+      "oracle_fingerprint": "13931de6083af85577b175893f71f5cd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "trap" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Land" }, { "HasCounter": { "Other": "trap" } }]
+                }
+              }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "Not": { "HasKeyword": "Flying" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

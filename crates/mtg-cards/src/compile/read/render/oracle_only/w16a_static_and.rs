@@ -3,6 +3,7 @@
 
 use serde_json::Value;
 
+use super::super::super::written_memo::{as_parts, may_join};
 use super::w4d_parts::wordings;
 use crate::ability::Ability;
 
@@ -11,6 +12,10 @@ const W16A_VERBS: [&str; 6] = [" gets ", " get ", " has ", " can't ", " is ", " 
 
 /// Adds the wordings of a static ability whose first modification and the rest are joined by "and".
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
+    // A part of a part joins no parts of its own: the Oracle text joins three parts with "and" at most.
+    if !may_join() {
+        return;
+    }
     let Ok(value) = serde_json::to_value(ability) else {
         return;
     };
@@ -24,8 +29,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Some((first, rest)) = mods.split_first().filter(|(_, rest)| !rest.is_empty()) else {
         return;
     };
-    let firsts = w16a_with_mods(&value, std::slice::from_ref(first));
-    let rests = w16a_with_mods(&value, rest);
+    let (firsts, rests) = as_parts(|| {
+        (
+            w16a_with_mods(&value, std::slice::from_ref(first)),
+            w16a_with_mods(&value, rest),
+        )
+    });
     for one in &firsts {
         let Some(subject) = w16a_subject(one) else {
             continue;

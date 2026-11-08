@@ -1,0 +1,56 @@
+{
+  "oracle_id": "763882f9-a7ad-4fb1-bdf4-c9a158d4b68e",
+  "name": "Mage Duel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mage Duel",
+      "oracle_fingerprint": "b8854d3dd06eba06f46e670c6956df80",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

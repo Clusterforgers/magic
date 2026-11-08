@@ -1,0 +1,66 @@
+{
+  "oracle_id": "3362dec2-b157-4a00-8abf-0d7b5a14c6f8",
+  "name": "Launch the Fleet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Launch the Fleet",
+      "oracle_fingerprint": "15c7aa37052f53a463a0355054ecc90d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{1}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Attacks": { "what": ["This"] } },
+                          "effects": [
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Soldier",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Soldier"],
+                                    "power": 1,
+                                    "toughness": 1
+                                  }
+                                },
+                                "tapped": true,
+                                "attacking": true
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

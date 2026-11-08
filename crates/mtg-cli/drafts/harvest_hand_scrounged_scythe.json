@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ffd3c928-af42-4d69-8d22-a4c72f93b1c7",
+  "name": "Harvest Hand // Scrounged Scythe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harvest Hand",
+      "oracle_fingerprint": "00448ba9f924b433df4cd6fc9bc91749",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scrounged Scythe",
+      "oracle_fingerprint": "dfa7d37f3b31b76f7ac1feda23586747",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Menace" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Human" }] }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

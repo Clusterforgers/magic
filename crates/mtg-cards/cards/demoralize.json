@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d0741810-0772-47f3-a709-4739fbf85576",
+  "name": "Demoralize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demoralize",
+      "oracle_fingerprint": "7d6bd305a4d4e33882e9660108252ef0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }] },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

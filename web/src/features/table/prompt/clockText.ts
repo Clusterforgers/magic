@@ -67,6 +67,7 @@ const AT_ZERO: Partial<Record<ClockKind, { countdown: string; announced: string 
     announced: 'chooses the smallest number for you',
   },
   ChooseNumberCancel: { countdown: 'Cancelling for you', announced: 'cancels for you' },
+  ChooseName: { countdown: 'Naming no card for you', announced: 'names no card for you' },
   PayMana: {
     countdown: "Paying with the game's choice of sources",
     announced: 'pays with its own choice of sources for you',

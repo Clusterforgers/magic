@@ -1,0 +1,78 @@
+{
+  "oracle_id": "4945f03b-ff99-4923-b62d-3cdb60275ef1",
+  "name": "The Elder Dragon War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Elder Dragon War",
+      "oracle_fingerprint": "a2167c9aa4f3e7dd7425962e1195c7fb",
+      "abilities": [
+        { "Keyword": "ReadAhead" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 2 } },
+              { "DealDamage": { "to": "Opponents", "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

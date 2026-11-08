@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1c367fa2-844a-4083-9484-c6def1dee8a8",
+  "name": "Due Respect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Due Respect",
+      "oracle_fingerprint": "143c60bc86bd9a3545bd730cb5767c58",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Enters": { "what": [] } },
+                  "by": "Tapped",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

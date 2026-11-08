@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e25b516c-bf95-42bc-8b1e-04617a3d28df",
+  "name": "Baron Bertram Graywater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baron Bertram Graywater",
+      "oracle_fingerprint": "7b1910eefbe61972f186676b675c8bf8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire Rogue",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire", "Rogue"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

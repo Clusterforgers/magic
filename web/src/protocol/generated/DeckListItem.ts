@@ -37,7 +37,7 @@ state: DeckState,
  */
 verified: boolean, 
 /**
- * A check is stored but the deck changed since it.
+ * Always false; kept so older clients still read the field.
  */
 changed: boolean, 
 /**

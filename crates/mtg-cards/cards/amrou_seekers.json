@@ -1,0 +1,27 @@
+{
+  "oracle_id": "396efb56-7a54-4d91-b2ce-7f3c62c3238b",
+  "name": "Amrou Seekers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amrou Seekers",
+      "oracle_fingerprint": "5548ae8d58b844243c90e8a142a97492",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Not": { "Type": "Artifact" } },
+                  { "Not": { "Color": "White" } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

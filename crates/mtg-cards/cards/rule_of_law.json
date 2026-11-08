@@ -1,0 +1,18 @@
+{
+  "oracle_id": "53e88e64-6f82-4154-a66e-6aeb0154b368",
+  "name": "Rule of Law",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rule of Law",
+      "oracle_fingerprint": "5c1e9c617adbeb4f428a0c6f5ebd2276",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "EachPlayer", "action": { "Cast": { "more_than": 1 } } } }
+          }
+        }
+      ]
+    }
+  ]
+}

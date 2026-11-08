@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d3b259e9-f9c7-4830-91fa-6e3d9f4cc1e3",
+  "name": "One Thousand Lashes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "One Thousand Lashes",
+      "oracle_fingerprint": "a9e855846fc101ee425d368f57d350c8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

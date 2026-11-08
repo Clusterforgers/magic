@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b0672aa3-3207-4ff8-af8f-bdabacbb4d04",
+  "name": "Mechanical Mobster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mechanical Mobster",
+      "oracle_fingerprint": "a22c8b15c403a1ecaa2199cc16221d22",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "Connive": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

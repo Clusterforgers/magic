@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "c832c0b8-aefa-459c-8de8-aa32400612cd",
+  "oracle_id": "f15460d9-0133-436c-b0fe-1661989124f0",
+  "multiverse_ids": [
+    555235
+  ],
+  "mtgo_id": 98287,
+  "arena_id": 80185,
+  "tcgplayer_id": 268676,
+  "cardmarket_id": 651623,
+  "name": "All-Seeing Arbiter",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/c832c0b8-aefa-459c-8de8-aa32400612cd",
+  "scryfall_uri": "https://scryfall.com/card/snc/34/all-seeing-arbiter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:12:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.jpg?1783923151",
+    "normal": "https://cards.scryfall.io/normal/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.jpg?1783923151",
+    "large": "https://cards.scryfall.io/large/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.jpg?1783923151",
+    "png": "https://cards.scryfall.io/png/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.png?1783923151",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.jpg?1783923151",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.jpg?1783923151",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.webp?1783923151",
+    "grid": "https://cards.scryfall.io/grid/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.webp?1783923151",
+    "display": "https://cards.scryfall.io/display/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.webp?1783923151",
+    "art": "https://cards.scryfall.io/art/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.webp?1783923151",
+    "crop": "https://cards.scryfall.io/crop/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.webp?1783923151",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/8/c832c0b8-aefa-459c-8de8-aa32400612cd.jpg?1783923151"
+  },
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Avatar",
+  "oracle_text": "Flying\nWhenever this creature enters or attacks, draw two cards, then discard a card.\nWhenever you discard a card, target creature an opponent controls gets -X/-0 until your next turn, where X is the number of different mana values among cards in your graveyard.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
+  "set": "snc",
+  "set_name": "Streets of New Capenna",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c832c0b8-aefa-459c-8de8-aa32400612cd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af15460d9-0133-436c-b0fe-1661989124f0&unique=prints",
+  "collector_number": "34",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Robin Olausson",
+  "artist_ids": [
+    "adb9ad6d-6173-454b-8b50-a102b182548b"
+  ],
+  "illustration_id": "5cc1efa9-9c9b-417a-bc9a-b3ee889abe7c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11578,
+  "penny_rank": 3310,
+  "preview": {
+    "source": "AfterOfficeTTV",
+    "source_uri": "https://twitter.com/AfterTtv/status/1512536934270353409",
+    "previewed_at": "2022-04-08"
+  },
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.52",
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": "0.68",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555235&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAll-Seeing%2BArbiter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAll-Seeing%2BArbiter",
+    "edhrec": "https://edhrec.com/route/?cc=All-Seeing+Arbiter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268676%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651623&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/98287?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

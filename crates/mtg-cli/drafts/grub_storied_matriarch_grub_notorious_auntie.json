@@ -1,0 +1,58 @@
+{
+  "oracle_id": "180286e4-67fa-44d5-9e90-4a4e99c016a7",
+  "name": "Grub, Storied Matriarch // Grub, Notorious Auntie",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grub, Storied Matriarch",
+      "oracle_fingerprint": "b67352ff9364ad58e411a1c81c5adc3d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "Transformed", "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Goblin" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{R}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Grub, Notorious Auntie",
+      "oracle_fingerprint": "27f1105c9dc012a46463471a113ce258",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 206 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{B}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

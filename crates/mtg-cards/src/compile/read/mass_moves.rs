@@ -46,6 +46,7 @@ pub fn put_all(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Move {
         what,
         to: Destination::Library { place, order: None },
+        bind: None,
     }])
 }
 
@@ -68,6 +69,7 @@ pub fn return_all(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 transformed: false,
                 counters: Vec::new(),
             },
+            bind: None,
         }]);
     }
     permanents(selector).then_some(())?;
@@ -77,6 +79,7 @@ pub fn return_all(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Move {
         what,
         to: Destination::Hand,
+        bind: None,
     }])
 }
 
@@ -85,6 +88,7 @@ pub fn text(effect: &Effect) -> Option<String> {
     let Effect::Move {
         what: Ref::Each(selector),
         to,
+        ..
     } = effect
     else {
         return None;

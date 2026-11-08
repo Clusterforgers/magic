@@ -1,0 +1,71 @@
+{
+  "oracle_id": "088dfd02-c0e0-41d1-9923-efe023fb2ad1",
+  "name": "Counterbalance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Counterbalance",
+      "oracle_fingerprint": "07f49f2a68fab54306decb93e77ced53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept2" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest3" },
+                        "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": "Triggering",
+                            "selector": [
+                              {
+                                "Compare": {
+                                  "stat": "ManaValue",
+                                  "op": "Eq",
+                                  "to": {
+                                    "Total": {
+                                      "of": [
+                                        { "In": "Library" },
+                                        { "OwnedBy": "You" },
+                                        "TopOfLibrary"
+                                      ],
+                                      "stat": "ManaValue"
+                                    }
+                                  }
+                                }
+                              }
+                            ],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Counter": { "what": "Triggering" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

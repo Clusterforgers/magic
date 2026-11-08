@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a94bb381-74e2-488f-896d-a017a2b568ab",
+  "name": "Avid Reclaimer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avid Reclaimer",
+      "oracle_fingerprint": "3915a63a2510095627ec7352e45d8cf4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Green", "Blue"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Planeswalker" },
+                          { "Subtype": "Nissa" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

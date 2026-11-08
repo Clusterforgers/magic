@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4bae4e34-fcf4-4aee-8da2-5b3ee41a595a",
+  "name": "Thought Erasure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Erasure",
+      "oracle_fingerprint": "48098e75c7db15b1b8e07915f26b6579",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              },
+              { "Surveil": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

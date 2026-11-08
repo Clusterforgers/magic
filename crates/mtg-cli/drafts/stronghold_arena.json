@@ -1,0 +1,56 @@
+{
+  "oracle_id": "7dabd64c-8d0b-4e56-b6be-5651c9e985c5",
+  "name": "Stronghold Arena",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stronghold Arena",
+      "oracle_fingerprint": "dc45fc5d0caa6888977b711038e51f73",
+      "abilities": [
+        { "Keyword": { "Kicker": "{G}" } },
+        { "Keyword": { "Kicker": "{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": { "Times": { "by": 3, "of": "Kicks" } } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                        "to": "Hand",
+                        "as": "moved4"
+                      }
+                    },
+                    {
+                      "LoseLife": {
+                        "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

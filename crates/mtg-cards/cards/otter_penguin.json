@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e2171c48-a816-41b2-aa55-e0ba2503fd6a",
+  "name": "Otter-Penguin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otter-Penguin",
+      "oracle_fingerprint": "7503eccb05a52932a94a9597c34659d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

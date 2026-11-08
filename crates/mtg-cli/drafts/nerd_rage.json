@@ -1,0 +1,51 @@
+{
+  "oracle_id": "4601e4c7-74bc-44ce-9274-68ba79f8aae1",
+  "name": "Nerd Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nerd Rage",
+      "oracle_fingerprint": "4f9548c8ae8252cc5131dfa4a188d267",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "if": {
+                      "Compare": {
+                        "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "op": "Ge",
+                        "right": 10
+                      }
+                    },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "ModifyPT": { "power": 10, "toughness": 10 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              { "GrantAbility": { "Rule": { "rule": { "NoMaxHandSize": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "42b01697-8663-4b53-86d5-699063bd0778",
+  "name": "Flowstone Sculpture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flowstone Sculpture",
+      "oracle_fingerprint": "063f6627d44625efd6ec405128d3be31",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Discard": {} }],
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "AddKeyword": "Flying" }],
+                          "duration": "Forever"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "AddKeyword": "FirstStrike" }],
+                          "duration": "Forever"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "AddKeyword": "Trample" }],
+                          "duration": "Forever"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

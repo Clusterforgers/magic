@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f953afdf-96f7-4851-994c-1617e8f5e5c9",
+  "name": "Ajani Vengeant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani Vengeant",
+      "oracle_fingerprint": "961ba9a8682d0ac4c4490c6358481be3",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

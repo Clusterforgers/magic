@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b6f4148d-8511-46b3-93ec-2f5eb1e4ffad",
+  "name": "Blizzard Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blizzard Specter",
+      "oracle_fingerprint": "adbd98da2af21d625a485773fa8dfacf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": "Triggering",
+                            "from": { "Each": [{ "ControlledBy": "Triggering" }] },
+                            "as": "picked"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                      ]
+                    },
+                    { "effects": [{ "Discard": { "who": "Triggering" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

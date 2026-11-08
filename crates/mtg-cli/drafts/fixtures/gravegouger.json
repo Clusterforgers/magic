@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "acfcd559-374e-4e6f-9333-2e5c855abff5",
+  "oracle_id": "2677c0d9-1251-478e-b157-072859c593a9",
+  "multiverse_ids": [
+    32210
+  ],
+  "mtgo_id": 17201,
+  "mtgo_foil_id": 17202,
+  "tcgplayer_id": 9740,
+  "cardmarket_id": 2331,
+  "name": "Gravegouger",
+  "lang": "en",
+  "released_at": "2002-02-04",
+  "uri": "https://api.scryfall.com/cards/acfcd559-374e-4e6f-9333-2e5c855abff5",
+  "scryfall_uri": "https://scryfall.com/card/tor/62/gravegouger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:19:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.jpg?1783945157",
+    "normal": "https://cards.scryfall.io/normal/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.jpg?1783945157",
+    "large": "https://cards.scryfall.io/large/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.jpg?1783945157",
+    "png": "https://cards.scryfall.io/png/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.png?1783945157",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.jpg?1783945157",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.jpg?1783945157",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.webp?1783945157",
+    "grid": "https://cards.scryfall.io/grid/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.webp?1783945157",
+    "display": "https://cards.scryfall.io/display/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.webp?1783945157",
+    "art": "https://cards.scryfall.io/art/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.webp?1783945157",
+    "crop": "https://cards.scryfall.io/crop/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.webp?1783945157",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/c/acfcd559-374e-4e6f-9333-2e5c855abff5.jpg?1783945157"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Nightmare Horror",
+  "oracle_text": "When this creature enters, exile up to two target cards from a single graveyard.\nWhen this creature leaves the battlefield, return the exiled cards to their owner's graveyard.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e0b3fda1-a6ca-4996-849b-08b463d39484",
+  "set": "tor",
+  "set_name": "Torment",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e0b3fda1-a6ca-4996-849b-08b463d39484",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ator&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tor?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/acfcd559-374e-4e6f-9333-2e5c855abff5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2677c0d9-1251-478e-b157-072859c593a9&unique=prints",
+  "collector_number": "62",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daren Bader",
+  "artist_ids": [
+    "7da1a585-c875-45e4-b322-5da9e8e1f651"
+  ],
+  "illustration_id": "5cc1b66b-bc33-4108-8b6f-b6779d43b117",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29314,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "1.03",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.52",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=32210&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGravegouger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGravegouger",
+    "edhrec": "https://edhrec.com/route/?cc=Gravegouger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F9740%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2331&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17201?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

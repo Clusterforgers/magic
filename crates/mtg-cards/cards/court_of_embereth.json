@@ -1,0 +1,61 @@
+{
+  "oracle_id": "87a82441-9dfb-49bd-8b9e-eaab2c552843",
+  "name": "Court of Embereth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court of Embereth",
+      "oracle_fingerprint": "4996c4401cf2351a4484e02e42882c82",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 3,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": { "condition": { "Monarch": "You" }, "then": 1, "otherwise": 0 }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": "Opponents",
+                        "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

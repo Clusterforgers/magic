@@ -14,7 +14,7 @@ use super::tokens::Reader;
 use super::transform;
 use super::triggers;
 use crate::effect::Effect;
-use crate::refs::Ref;
+use crate::refs::{Ref, ZoneKind};
 use crate::value::{Amount, Cmp, Condition, CounterKind};
 
 /// The sentence shapes of this part, tried before those of `effects` (a look at the top card is read with the
@@ -198,7 +198,35 @@ pub fn condition_texts(condition: &Condition) -> Vec<String> {
     if !announced.is_empty() {
         return announced;
     }
+    // "If you search your library this way, shuffle." (r5b).
+    if let Condition::Searched {
+        who: Ref::You,
+        zone: ZoneKind::Library,
+    } = condition
+    {
+        return vec!["you search your library this way".to_owned()];
+    }
+    if let Some(time) = resolved_time(condition) {
+        return vec![format!(
+            "this is the {time} time this ability has resolved this turn"
+        )];
+    }
     counters_text(condition).map_or_else(|| as_long_as::texts(condition), |text| vec![text])
+}
+
+/// "first", "second", "third": the resolution of the ability this turn that the condition asks for (r5b).
+pub(super) fn resolved_time(condition: &Condition) -> Option<&'static str> {
+    let Condition::Compare {
+        left: Amount::ResolvedThisTurn,
+        op: Cmp::Eq,
+        right: Amount::Fixed(number),
+    } = condition
+    else {
+        return None;
+    };
+    ["first", "second", "third"]
+        .get(usize::try_from(*number).ok()?.checked_sub(1)?)
+        .copied()
 }
 
 /// "X is 5 or more", "X is five or less": the announced X against a number; "it's an Elf": the one target is of a kind.

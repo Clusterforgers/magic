@@ -1,0 +1,85 @@
+{
+  "oracle_id": "15e3e226-0dd1-4c9b-a7ec-af67509cbfc5",
+  "name": "Nissa of Shadowed Boughs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa of Shadowed Boughs",
+      "oracle_fingerprint": "1270fa67e64b9d6b00eb96d536978372",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddSubtype": "Elemental" },
+                          { "AddType": "Creature" },
+                          { "AddKeyword": "Haste" },
+                          { "AddKeyword": "Menace" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                        }
+                      },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "counters": [["+1/+1", 2]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "107e9ada-4e2e-4032-addd-274bca956621",
+  "name": "Zoo Escapees",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zoo Escapees",
+      "oracle_fingerprint": "c34b0291b7b6b26a718ba77625602294",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutagen",
+                      "types": ["Artifact"],
+                      "subtypes": ["Mutagen"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                            "timing": "Sorcery",
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [
+                              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "0d60ffba-9904-442e-8d4a-a6b1b50a38eb",
+  "name": "Prismari Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismari Apprentice",
+      "oracle_fingerprint": "a0b074a7910f57b8917075119a57701d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

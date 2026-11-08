@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cad05528-917b-4296-9d23-ba9433612709",
+  "name": "Mana Leech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Leech",
+      "oracle_fingerprint": "f8beb85ec3fd87d4e985822ee10bc2a0",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

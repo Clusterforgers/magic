@@ -15,17 +15,11 @@
               {
                 "what": {
                   "Object": [
-                    {
-                      "AnyOf": [
-                        { "Type": "Creature" },
-                        { "Ability": "Triggered" },
-                        { "Type": "Artifact" }
-                      ]
-                    },
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
                     {
                       "AnyOf": [
                         { "TargetsPlayer": "You" },
-                        { "Targeting": [{ "ControlledBy": "You" }, { "Type": "Creature" }] }
+                        { "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
                       ]
                     }
                   ]

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5beb8d6e-d3c1-46a5-8516-d6bf66413cff",
+  "name": "Malicious Eclipse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malicious Eclipse",
+      "oracle_fingerprint": "173358d8eb751ed63afbc845ff7565f1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

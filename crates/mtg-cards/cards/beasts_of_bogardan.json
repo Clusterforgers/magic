@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9b0bc2d3-d64b-455a-a258-d3c91892f1a7",
+  "name": "Beasts of Bogardan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beasts of Bogardan",
+      "oracle_fingerprint": "3663096940ba3ea99b778cfc32933f65",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Color": "White" },
+                    { "ControlledBy": "Opponents" },
+                    { "Not": "Token" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

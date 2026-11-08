@@ -1,0 +1,71 @@
+{
+  "oracle_id": "cdda2f04-d59e-4ef8-a26d-964d80750940",
+  "name": "Terminal Velocity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terminal Velocity",
+      "oracle_fingerprint": "f476aa580b519ad5cda8f05846310d3d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Hand" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved2" },
+                  "mods": [
+                    { "AddKeyword": "Haste" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                          "effects": [
+                            {
+                              "DealDamage": {
+                                "to": { "Each": [{ "Type": "Creature" }] },
+                                "amount": { "Stat": { "of": "This", "stat": "ManaValue" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                          "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

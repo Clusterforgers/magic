@@ -1,0 +1,40 @@
+{
+  "oracle_id": "8110f092-41b0-4e53-a7d7-f7e3cbc4a52a",
+  "name": "Dread Slaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Slaver",
+      "oracle_fingerprint": "0ec7b2a8c418bcc91dd1c4bced043acb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Zombie" }, { "AddColors": ["Black"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

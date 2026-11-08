@@ -1,0 +1,24 @@
+{
+  "oracle_id": "0961b68d-bb0c-4bfb-ad78-01f90b3b97c8",
+  "name": "Amethyst Dragon // Explosive Crystal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amethyst Dragon",
+      "oracle_fingerprint": "9e9e7cdf08e4e4260bc39b2f0dc6996b",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Haste" }]
+    },
+    {
+      "name": "Explosive Crystal",
+      "oracle_fingerprint": "5ed32968299a26185b0e21d3ff691fc6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 4 }, "divide": 4 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "10bca1b1-4f92-40e8-b9c0-d08c534903e1",
+  "name": "Cyclops Superconductor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclops Superconductor",
+      "oracle_fingerprint": "8204049fba63b20d4525afcdf47bb83b",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 3 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

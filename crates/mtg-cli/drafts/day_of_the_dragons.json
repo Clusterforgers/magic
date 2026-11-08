@@ -1,0 +1,61 @@
+{
+  "oracle_id": "c4df259a-cdd4-420a-8e3d-7b69da5c9f6f",
+  "name": "Day of the Dragons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Day of the Dragons",
+      "oracle_fingerprint": "0764a89fe83059c2ca5c489603ef4d45",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "Bound": "exiled~moved" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                  "count": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a9a0605d-295a-47e6-9f49-3c82a7ef1e7b",
+  "name": "Govern the Guildless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Govern the Guildless",
+      "oracle_fingerprint": "69831495345080d649a31bc9f8f043e7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, { "RevealFromHand": { "filter": ["This"] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "limit": "OncePerTurn",
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Colors", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

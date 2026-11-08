@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6944092f-22c6-4b65-840d-8c1b70883127",
+  "name": "Tainted Indulgence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Indulgence",
+      "oracle_fingerprint": "7db35968498afe00e04d43a0eaf23c9d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                          "stat": "ManaValue"
+                        }
+                      },
+                      "op": "Le",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "bd8c633c-ba99-47ac-a1d1-9e15aa948933",
+  "name": "Trusty Companion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trusty Companion",
+      "oracle_fingerprint": "079fa667687c1aae8220bf4f24e2138f",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } }
+      ]
+    }
+  ]
+}

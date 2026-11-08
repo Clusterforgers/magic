@@ -1,0 +1,48 @@
+{
+  "oracle_id": "14bc29ee-4f84-4e62-8ede-5741b99414c9",
+  "name": "Reach the Horizon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reach the Horizon",
+      "oracle_fingerprint": "fb5cfeefb5a67a1edff2adee26e688c4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Land" } },
+                              { "Not": { "Supertype": "Basic" } }
+                            ]
+                          }
+                        },
+                        { "Subtype": "Town" }
+                      ]
+                    }
+                  ],
+                  "count": { "min": 0, "max": 2 },
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

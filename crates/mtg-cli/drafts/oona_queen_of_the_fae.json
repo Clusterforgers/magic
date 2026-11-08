@@ -1,0 +1,55 @@
+{
+  "oracle_id": "6052822d-47a2-4d69-a32d-40cdd600d7a9",
+  "name": "Oona, Queen of the Fae",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oona, Queen of the Fae",
+      "oracle_fingerprint": "63ab70637278335dd831a22696d423b1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{X}{U/B}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              { "ExileTop": { "who": { "Target": 0 }, "count": "X", "as": "exiled2" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie Rogue",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie", "Rogue"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled2" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "ChosenAs": "chosen" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

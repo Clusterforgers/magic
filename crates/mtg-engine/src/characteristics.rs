@@ -2,7 +2,7 @@
 
 use mtg_cards::AbilityDef;
 use mtg_cards::modify::Attacked;
-use mtg_core::card::{CardType, CardTypes, Subtype};
+use mtg_core::card::{CardType, CardTypes, Subtype, Supertype};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -25,6 +25,10 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Subtype>>", optional))]
     pub subtypes: Vec<Subtype>,
+    /// The supertypes effects gave it; the ones printed on the card are the card's.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Supertype>>", optional))]
+    pub supertypes: Vec<Supertype>,
     /// An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -71,6 +75,7 @@ impl Characteristics {
         Characteristics {
             types: CardTypes::default(),
             subtypes: Vec::new(),
+            supertypes: Vec::new(),
             creature_types_set: false,
             land_types_set: false,
             all_creature_types: false,
@@ -91,6 +96,16 @@ impl Characteristics {
 /// those its characteristic-defining abilities define (CR 604.3). An ability on the stack has none.
 pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristics> {
     seen_as(state, id).map(|(chars, _)| chars)
+}
+
+/// Whether the object `id` has `supertype`: printed on its card or given by an effect (CR 205.4).
+pub(crate) fn has_supertype(state: &GameState, id: ObjectId, supertype: Supertype) -> bool {
+    state
+        .object(id)
+        .is_some_and(|object| object.card().supertypes.contains(&supertype))
+        || (state.possible.supertypes
+            && characteristics(state, id)
+                .is_some_and(|chars| chars.supertypes.contains(&supertype)))
 }
 
 /// The characteristics and the controller of `id` from one reading of the layers: what the value evaluator and the
@@ -227,11 +242,17 @@ pub(crate) fn cant_be_turned_face_up(state: &GameState, id: ObjectId) -> bool {
     })
 }
 
-/// Whether an effect that applies to `id` says it can't block: the one place the block rules read this restriction.
+/// Whether an effect that applies to `id` says it can't block, or it has the ability "This creature can't block" its
+/// suspected designation gives (CR 701.60c), which losing all abilities takes away: the one place the block rules read
+/// this restriction.
 pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
-    restricted(state, id, |modification| {
-        matches!(modification, Modification::CantBlock)
-    })
+    state
+        .layers()
+        .get(id)
+        .is_some_and(|held| held.suspect_cant_block)
+        || restricted(state, id, |modification| {
+            matches!(modification, Modification::CantBlock)
+        })
 }
 
 /// Whether an effect that applies to the attacker `attacker` says the creature `blocker` can't block it ("can't be
@@ -329,6 +350,7 @@ fn restricted(state: &GameState, id: ObjectId, is: impl Fn(&Modification) -> boo
 /// The characteristics of a card or token on its own, before any effect.
 pub(crate) fn base(object: &GameObject) -> Characteristics {
     let card = object.card();
+    let prototype = object.prototype();
     Characteristics {
         types: object.base_types(),
         // A bestowed creature card is an Aura while it is bestowed (CR 702.103b).
@@ -337,12 +359,13 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         } else {
             Vec::new()
         },
+        supertypes: Vec::new(),
         creature_types_set: false,
         land_types_set: false,
         all_creature_types: false,
-        colors: card.colors(),
-        power: card.power,
-        toughness: card.toughness,
+        colors: prototype.map_or_else(|| card.colors(), |(cost, _, _)| cost.colors()),
+        power: prototype.map_or(card.power, |(_, power, _)| Some(power)),
+        toughness: prototype.map_or(card.toughness, |(_, _, toughness)| Some(toughness)),
         abilities: card.abilities.clone(),
     }
 }

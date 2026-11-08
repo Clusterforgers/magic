@@ -1,0 +1,19 @@
+{
+  "oracle_id": "74a7d880-5a49-412b-af4d-0b4cdb8453ee",
+  "name": "Redirect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redirect",
+      "oracle_fingerprint": "d1bf73502d159b81677ec7b9da550e98",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

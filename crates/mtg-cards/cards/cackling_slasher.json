@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b9671f4b-72d2-48d7-a497-2ea0ab72cd0b",
+  "name": "Cackling Slasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cackling Slasher",
+      "oracle_fingerprint": "46426660c1bbb7e8c2b0986e2411ee9f",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

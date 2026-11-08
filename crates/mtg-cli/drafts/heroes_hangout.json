@@ -1,0 +1,68 @@
+{
+  "oracle_id": "43306a78-85b5-4df4-a018-75dd75aa8997",
+  "name": "Heroes' Hangout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heroes' Hangout",
+      "oracle_fingerprint": "6edac5219d51f3f7dbd8fab28a691fce",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "ExileTop": { "count": 2, "as": "exiled" } },
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                            "as": "card2"
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "card2" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfYourNextTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }] },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 0 } },
+                              { "AddKeyword": "FirstStrike" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

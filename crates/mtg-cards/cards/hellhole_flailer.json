@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e13c1703-1184-4a8c-9310-f11e4e673597",
+  "name": "Hellhole Flailer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellhole Flailer",
+      "oracle_fingerprint": "bf99f41daebf26893d80909aeeae73ab",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "unleash", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}{R}" }, "SacrificeSelf"],
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

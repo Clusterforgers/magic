@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c45423ad-1920-46f7-bcc1-ecade5880821",
+  "name": "Chainweb Aracnir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chainweb Aracnir",
+      "oracle_fingerprint": "934f0dd073cdd48d964687c8df23c5c0",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "HasKeyword": "Flying" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{3}{G}{G}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } },
+            "condition": { "CastWith": "Escape" }
+          }
+        }
+      ]
+    }
+  ]
+}

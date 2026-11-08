@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6b7933b3-821a-4d64-9a10-af8a69fa008e",
+  "name": "Dread Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Charge",
+      "oracle_fingerprint": "b0fa989aa208c0363a7883601996092c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Color": "Black" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    { "CantBeBlockedBy": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

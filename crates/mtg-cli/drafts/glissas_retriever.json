@@ -1,0 +1,77 @@
+{
+  "oracle_id": "d099be2e-1879-4bb0-a27d-a386308387c0",
+  "name": "Glissa's Retriever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glissa's Retriever",
+      "oracle_fingerprint": "f7fe9f6af83c9e33d54bacb400c19105",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": { "Toxic": 3 } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": ["This"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                            "bounds": {
+                              "min": 0,
+                              "max": {
+                                "Players": {
+                                  "PlayersWhere": {
+                                    "who": "Opponents",
+                                    "test": {
+                                      "Compare": {
+                                        "left": { "Counters": { "on": "You", "counter": "poison" } },
+                                        "op": "Ge",
+                                        "right": 3
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

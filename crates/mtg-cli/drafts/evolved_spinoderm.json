@@ -1,0 +1,70 @@
+{
+  "oracle_id": "482ec736-7d4a-49c6-a757-e134123329ca",
+  "name": "Evolved Spinoderm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evolved Spinoderm",
+      "oracle_fingerprint": "8741e9c49615669d444491b04dd15189",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 4 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "Type": "Creature" },
+                  { "CounterCount": { "kind": { "Other": "oil" }, "op": "Le", "to": 2 } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "oil" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "HasCounter": { "Other": "oil" } } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "Type": "Creature" },
+                  { "CounterCount": { "kind": { "Other": "oil" }, "op": "Gt", "to": 2 } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

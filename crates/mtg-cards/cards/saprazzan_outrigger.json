@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cd57638e-8444-4522-8638-4514dec8b3ed",
+  "name": "Saprazzan Outrigger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saprazzan Outrigger",
+      "oracle_fingerprint": "ffa6ccfba6abee4c2f20129f92d2831e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

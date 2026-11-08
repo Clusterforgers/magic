@@ -1,0 +1,44 @@
+{
+  "oracle_id": "89ae3475-9063-4700-a7bd-47d5dcd43a3b",
+  "name": "Vantress Transmuter // Croaking Curse",
+  "impl_status": "Full",
+  "faces": [
+    { "name": "Vantress Transmuter", "oracle_fingerprint": "e3b0c44298fc1c149afbf4c8996fb924" },
+    {
+      "name": "Croaking Curse",
+      "oracle_fingerprint": "892d0f887a0d4b2da1d3ba10db8509ab",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cursed",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

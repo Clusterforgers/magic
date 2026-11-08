@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cb8889c8-8ee3-4e27-9f47-ad1021ff61bb",
+  "name": "Intrepid Ace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intrepid Ace",
+      "oracle_fingerprint": "7f678cd3948db5f7b1118b84b10377c1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "Not": "Attacking" }, { "Not": "Blocking" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

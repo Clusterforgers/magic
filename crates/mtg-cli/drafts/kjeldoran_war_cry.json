@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e45a1626-d659-4eda-bc6b-bd8119ce7386",
+  "name": "Kjeldoran War Cry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran War Cry",
+      "oracle_fingerprint": "62729daa345eb8a2634e7bd5eef3a1cd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Sum": [
+                            { "Count": [{ "Named": "Kjeldoran War Cry" }, { "In": "Graveyard" }] },
+                            1
+                          ]
+                        },
+                        "toughness": {
+                          "Sum": [
+                            { "Count": [{ "Named": "Kjeldoran War Cry" }, { "In": "Graveyard" }] },
+                            1
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

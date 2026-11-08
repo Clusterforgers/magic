@@ -53,6 +53,7 @@ fn ballot(name: &str, secret: bool) -> Arc<CardDefinition> {
                         bind: None,
                     },
                     Effect::Draw {
+                        bind: None,
                         who: Ref::You,
                         count: Amount::Players(Ref::Bound("heads".to_owned())),
                     },

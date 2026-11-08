@@ -1,0 +1,44 @@
+{
+  "oracle_id": "fddac567-c42c-453b-9c82-c3140b374a06",
+  "name": "Vedalken Shackles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vedalken Shackles",
+      "oracle_fingerprint": "b6ba5ac28e1aae81c41ddfa6c1c6ba4c",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Le",
+                        "to": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

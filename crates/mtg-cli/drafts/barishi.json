@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ffa93a79-7a10-4331-91de-eabbc4fee17e",
+  "name": "Barishi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barishi",
+      "oracle_fingerprint": "8d73c2f9b1fa5c1aa5823c97a44dba20",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0898fb77-d304-496c-8f2e-1cfe50cc5507",
+  "name": "Zombie Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zombie Ogre",
+      "oracle_fingerprint": "9ec9afe2f62802c1e8c2ec618409c918",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Venture": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

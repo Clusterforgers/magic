@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5c104ac8-738a-4a9d-a68b-5706018d2061",
+  "name": "Threats Around Every Corner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Threats Around Every Corner",
+      "oracle_fingerprint": "f07723c63b99f4a0da58b1776452c840",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["FaceDown", { "ControlledBy": "You" }], "to": "Battlefield" }
+            },
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

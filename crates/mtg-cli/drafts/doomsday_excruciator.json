@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ad0db433-a406-4ef0-8ffa-416af610c4e7",
+  "name": "Doomsday Excruciator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doomsday Excruciator",
+      "oracle_fingerprint": "a1f907d7559cbdca67b0c9f8afdfe684",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", { "WasCast": {} }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "ExileTop": {
+                        "who": { "Bound": "each" },
+                        "count": {
+                          "Sum": [
+                            { "Count": [{ "OwnedBy": { "Bound": "each" } }, { "In": "Library" }] },
+                            -6
+                          ]
+                        },
+                        "as": "exiled2",
+                        "sealed": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1dfaa773-7cd5-4489-9790-661cef4ed6f3",
+  "name": "Raven Guild Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raven Guild Master",
+      "oracle_fingerprint": "0cf960dedd47b32ea77b403825069252",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "ExileTop": { "who": "Triggering", "count": 10, "as": "exiled" } }]
+          }
+        },
+        { "Keyword": { "Morph": "{2}{U}{U}" } }
+      ]
+    }
+  ]
+}

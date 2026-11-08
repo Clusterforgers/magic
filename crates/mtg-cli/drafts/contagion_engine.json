@@ -1,0 +1,33 @@
+{
+  "oracle_id": "482bd55a-ba73-4722-8643-94fa12818515",
+  "name": "Contagion Engine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Contagion Engine",
+      "oracle_fingerprint": "28616d1737500cdd4f0fbb4e75ff198b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "counter": "-1/-1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 88, "end": 243 }
+          }
+        }
+      ]
+    }
+  ]
+}

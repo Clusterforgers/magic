@@ -1,0 +1,34 @@
+{
+  "oracle_id": "909b3d90-5762-461b-b49a-004a9e72733d",
+  "name": "Black Mage's Rod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Mage's Rod",
+      "oracle_fingerprint": "5fcdfa4457b486773294c37e9a671a7f",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "AddSubtype": "Wizard" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                    },
+                    "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

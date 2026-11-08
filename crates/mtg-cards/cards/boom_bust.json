@@ -1,0 +1,38 @@
+{
+  "oracle_id": "514fdac0-95f4-4034-b891-283fe0fb6da6",
+  "name": "Boom // Bust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boom",
+      "oracle_fingerprint": "aca1c5b9ea29aabb11d8366878e0781f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "ControlledBy": "You" } }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    { "Destroy": { "what": { "Target": 1 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bust",
+      "oracle_fingerprint": "c6998e6de610465f7e07ec02ccc7934f",
+      "abilities": [
+        { "Spell": { "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Land" }] } } }] } }
+      ]
+    }
+  ]
+}

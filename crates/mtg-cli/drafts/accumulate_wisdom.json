@@ -1,0 +1,74 @@
+{
+  "oracle_id": "a63eb744-71c4-447d-9372-c3a734f022c5",
+  "name": "Accumulate Wisdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Accumulate Wisdom",
+      "oracle_fingerprint": "6dd27b01ad372734faa2297724563865",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": {
+                    "min": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Subtype": "Lesson" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 3
+                          }
+                        },
+                        "then": 3,
+                        "otherwise": 1
+                      }
+                    },
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Subtype": "Lesson" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 3
+                          }
+                        },
+                        "then": 3,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "57fe5c94-ee93-45c6-bf7e-89d177d0fe70",
+  "name": "Metrognome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metrognome",
+      "oracle_fingerprint": "541337a49b6bd591cff7f4372bac492f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": { "inner": { "Discarded": { "what": ["This"] } }, "by": "Opponents" }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gnome",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Gnome"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gnome",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Gnome"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

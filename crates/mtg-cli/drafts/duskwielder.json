@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b9227f38-7db7-4ea1-9482-94e5de3984fe",
+  "name": "Duskwielder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duskwielder",
+      "oracle_fingerprint": "8245611a4453a61039dc615d7536f13b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

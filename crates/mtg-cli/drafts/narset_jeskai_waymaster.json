@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1a2a74b8-0689-4959-9348-02cc832194cf",
+  "name": "Narset, Jeskai Waymaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narset, Jeskai Waymaster",
+      "oracle_fingerprint": "da4a3fad1a921e62b6c3b4d116639fd7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "Tally": {
+                            "event": "SpellCast",
+                            "who": "EachPlayer",
+                            "filter": [{ "ControlledBy": "You" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

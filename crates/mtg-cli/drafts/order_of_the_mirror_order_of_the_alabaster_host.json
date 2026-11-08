@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d849be9d-0447-4f0b-a382-3f4ceb98f9a5",
+  "name": "Order of the Mirror // Order of the Alabaster Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Order of the Mirror",
+      "oracle_fingerprint": "7071b8685f234a3096c8aba63b1a2380",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{W/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order of the Alabaster Host",
+      "oracle_fingerprint": "01ea62eb462fa8139855dd6d8e3f8d13",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Dealer",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

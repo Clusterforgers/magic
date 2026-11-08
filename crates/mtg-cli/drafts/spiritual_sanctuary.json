@@ -1,0 +1,26 @@
+{
+  "oracle_id": "91edef61-2487-405c-a3ec-67a814dfeff2",
+  "name": "Spiritual Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiritual Sanctuary",
+      "oracle_fingerprint": "985bb39462ef25e4bac7915a197929c3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "ActivePlayer" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "GainLife": { "who": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "915091d5-3f58-4429-8f3a-0fd7aef87afe",
+  "name": "Enigmatic Incarnation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enigmatic Incarnation",
+      "oracle_fingerprint": "9450fbad1370d7aed917ce3a8d2b5ec8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Enchantment" }, "Other"],
+                        "as": "sacrificed2"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed2~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Search": {
+                              "filter": [
+                                { "Type": "Creature" },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Eq",
+                                    "to": {
+                                      "Sum": [
+                                        {
+                                          "Stat": {
+                                            "of": { "Bound": "sacrificed2" },
+                                            "stat": "ManaValue"
+                                          }
+                                        },
+                                        1
+                                      ]
+                                    }
+                                  }
+                                }
+                              ],
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                          { "Shuffle": {} }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

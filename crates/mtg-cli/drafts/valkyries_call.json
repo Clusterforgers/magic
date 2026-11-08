@@ -1,0 +1,45 @@
+{
+  "oracle_id": "27400927-9aba-4fb3-90c4-490d01969e60",
+  "name": "Valkyrie's Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valkyrie's Call",
+      "oracle_fingerprint": "4f4a2bbbfe2d489b4736fea61ab11a19",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "Not": { "Subtype": "Angel" } },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "counters": [["+1/+1", 1]] } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Angel" }, { "AddKeyword": "Flying" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

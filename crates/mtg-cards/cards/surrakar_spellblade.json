@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e87813a3-893d-4416-9263-2ea2e3140490",
+  "name": "Surrakar Spellblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surrakar Spellblade",
+      "oracle_fingerprint": "cb288d2efec29c2383e0ec455d3efa98",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Draw": { "count": { "Counters": { "on": "This", "counter": "charge" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

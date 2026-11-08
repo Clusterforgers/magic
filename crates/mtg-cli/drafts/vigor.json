@@ -1,0 +1,36 @@
+{
+  "oracle_id": "70787d8b-0a40-43ea-837a-9617dc13e7e5",
+  "name": "Vigor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vigor",
+      "oracle_fingerprint": "8c7a1922733b87c44a3df0a8f8f3060c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] }
+              }
+            },
+            "by": {
+              "PreventAnd": [
+                { "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": "Triggering" } }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

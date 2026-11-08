@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bd310727-1091-4474-8d9e-ce56f7dac7c1",
+  "name": "Infernal Caretaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Caretaker",
+      "oracle_fingerprint": "6f52a7a19929fb1e314c6185bbbf43f1",
+      "abilities": [
+        { "Keyword": { "Morph": "{3}{B}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Subtype": "Zombie" }, { "In": "Graveyard" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

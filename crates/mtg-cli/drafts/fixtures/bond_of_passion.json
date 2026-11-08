@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "ae644e9d-9bc4-4ccd-aef4-3d0559948aa6",
+  "oracle_id": "826f9f42-f2ff-4b9e-be79-a9de6b5b7b38",
+  "multiverse_ids": [
+    461043
+  ],
+  "mtgo_id": 71838,
+  "arena_id": 69567,
+  "tcgplayer_id": 188609,
+  "cardmarket_id": 372223,
+  "name": "Bond of Passion",
+  "lang": "en",
+  "released_at": "2019-05-03",
+  "uri": "https://api.scryfall.com/cards/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6",
+  "scryfall_uri": "https://scryfall.com/card/war/116/bond-of-passion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:03:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.jpg?1783933433",
+    "normal": "https://cards.scryfall.io/normal/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.jpg?1783933433",
+    "large": "https://cards.scryfall.io/large/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.jpg?1783933433",
+    "png": "https://cards.scryfall.io/png/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.png?1783933433",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.jpg?1783933433",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.jpg?1783933433",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.webp?1783933433",
+    "grid": "https://cards.scryfall.io/grid/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.webp?1783933433",
+    "display": "https://cards.scryfall.io/display/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.webp?1783933433",
+    "art": "https://cards.scryfall.io/art/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.webp?1783933433",
+    "crop": "https://cards.scryfall.io/crop/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.webp?1783933433",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/e/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6.jpg?1783933433"
+  },
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Gain control of target creature until end of turn. Untap that creature. It gains haste until end of turn. Bond of Passion deals 2 damage to any other target.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set": "war",
+  "set_name": "War of the Spark",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awar&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/war?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ae644e9d-9bc4-4ccd-aef4-3d0559948aa6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A826f9f42-f2ff-4b9e-be79-a9de6b5b7b38&unique=prints",
+  "collector_number": "116",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Why don't we fight for what's right and let bureaucrats argue over details?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Izzy",
+  "artist_ids": [
+    "2c3d2473-ff5d-4309-8194-e0b2def2ab65"
+  ],
+  "illustration_id": "c3b6ef31-502f-4381-897b-4fdb1942ec22",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23984,
+  "penny_rank": 16741,
+  "preview": {
+    "source": "Jim Davis",
+    "source_uri": "https://youtu.be/nsbPuj52HSM",
+    "previewed_at": "2019-04-12"
+  },
+  "prices": {
+    "usd": "0.07",
+    "usd_foil": "0.38",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.25",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=461043&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBond%2Bof%2BPassion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBond%2Bof%2BPassion",
+    "edhrec": "https://edhrec.com/route/?cc=Bond+of+Passion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F188609%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=372223&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/71838?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "2d80ee9c-55d4-4115-8a58-63e8460f9795",
+  "name": "Desculpting Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desculpting Blast",
+      "oracle_fingerprint": "98d0be8115e349317c7d3d2c1e9c3621",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": ["Attacking"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Drone",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Drone"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              { "Keyword": "Flying" },
+                              {
+                                "Static": {
+                                  "affected": "This",
+                                  "mods": [
+                                    {
+                                      "CanBlockOnly": [
+                                        { "Type": "Creature" },
+                                        { "HasKeyword": "Flying" }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

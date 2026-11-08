@@ -1,0 +1,47 @@
+{
+  "oracle_id": "8981d1d1-e102-4a3d-96ad-3904c83d1611",
+  "name": "Shocker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shocker",
+      "oracle_fingerprint": "722a587762ac5f721d4ae656f331fa55",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [
+              {
+                "Discard": {
+                  "who": "Triggering",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "who": "Triggering",
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

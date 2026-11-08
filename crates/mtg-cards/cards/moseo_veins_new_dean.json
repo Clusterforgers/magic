@@ -1,0 +1,75 @@
+{
+  "oracle_id": "c2e2f21a-0338-44d7-96a5-5a277f0ec419",
+  "name": "Moseo, Vein's New Dean",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moseo, Vein's New Dean",
+      "oracle_fingerprint": "2750e064d3c529ea23b4d8fa3523aaa5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pest",
+                      "colors": ["Black", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Pest"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": ["This"] } },
+                            "effects": [{ "GainLife": { "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                      }
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "325b88e1-ec7f-4d22-887c-a7f18a868bb0",
+  "name": "Monastery Messenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monastery Messenger",
+      "oracle_fingerprint": "928aa5d0267da7e8ae0d81a66acff98b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "Not": { "Type": "Creature" } },
+                    { "Not": { "Type": "Land" } },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

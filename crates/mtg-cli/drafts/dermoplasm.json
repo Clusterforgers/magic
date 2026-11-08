@@ -1,0 +1,69 @@
+{
+  "oracle_id": "963d4712-51b2-4102-9626-d810e4696b70",
+  "name": "Dermoplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dermoplasm",
+      "oracle_fingerprint": "47858d5400ae9e7164361cfff064eedb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Morph": "{2}{U}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          { "HasKeywordNamed": "Morph" },
+                          { "HasKeywordNamed": "Megamorph" }
+                        ]
+                      },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [
+                        { "Type": "Creature" },
+                        {
+                          "AnyOf": [
+                            { "HasKeywordNamed": "Morph" },
+                            { "HasKeywordNamed": "Megamorph" }
+                          ]
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

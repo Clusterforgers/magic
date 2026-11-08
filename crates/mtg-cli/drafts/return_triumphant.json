@@ -1,0 +1,83 @@
+{
+  "oracle_id": "a4814615-ffa2-4692-86bc-3a1b7fc2acc8",
+  "name": "Return Triumphant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Return Triumphant",
+      "oracle_fingerprint": "a7671e532ce29d2d2dcbf3f2da0739f8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Young Hero",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": { "Attacks": { "what": ["This"] } },
+                                    "if": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            "This",
+                                            {
+                                              "Compare": {
+                                                "stat": "Toughness",
+                                                "op": "Le",
+                                                "to": 3
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    "effects": [
+                                      { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

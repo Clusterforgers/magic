@@ -1,0 +1,20 @@
+{
+  "oracle_id": "adea7db6-634c-4c5d-be40-264b4acffc53",
+  "name": "Mage il-Vec",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mage il-Vec",
+      "oracle_fingerprint": "b412fc5be0cf53fe211f9d9f938ddf01",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "DiscardRandom": 1 }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

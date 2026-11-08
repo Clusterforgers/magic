@@ -1,0 +1,39 @@
+{
+  "oracle_id": "43dc0473-4b80-4844-9ce5-dc29754756a3",
+  "name": "Honor the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honor the Past",
+      "oracle_fingerprint": "807d8bf361cbe9c820a9603fff854145",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 6 } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetTypes": ["Artifact"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

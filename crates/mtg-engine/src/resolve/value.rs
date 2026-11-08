@@ -8,10 +8,11 @@ use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_cards::ability::Ability;
+use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::{
-    Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TurnTally,
+    Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TallyEvent, TurnTally,
 };
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
@@ -22,6 +23,7 @@ use thiserror::Error;
 use super::W7D_LEGAL;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 
+mod fe1a_atoms;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -35,7 +37,6 @@ use crate::announce::{kicked_with, payments};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
-use crate::combat::AttackTarget;
 use crate::keywords::{self, OptionalKind, gift};
 use crate::layers::{Held, View, outside};
 use crate::object::{Chosen, FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
@@ -92,6 +93,8 @@ pub struct Scope<'a> {
     pub(crate) specs: Vec<&'a TargetSpec>,
     /// How many of them come before the ones the running effect refers to: `Target(0)` is `specs[target_base]`.
     pub(crate) target_base: usize,
+    /// For each announced specification, how many come before the first of its mode (0 outside modal abilities).
+    pub(crate) spec_bases: Vec<usize>,
     pub(crate) bindings: &'a Bindings,
     pub(crate) snapshots: Vec<&'a Snapshot>,
     /// What earlier steps of this resolution moved away, as it was: a target among them stays named.
@@ -105,6 +108,21 @@ pub struct Scope<'a> {
     pub(crate) casting: Option<(ObjectId, PlayerId)>,
     /// What the spell being cast has announced, which `Pred::Targeting` reads whoever's ability asks.
     pub(crate) cast_targets: Option<CastTargets<'a>>,
+    /// The object a static ability's change is being worked out for (`Ref::Affected`), and where a read of it is noted.
+    pub(crate) affected: Option<(ObjectRef, &'a std::cell::Cell<bool>)>,
+    /// The object a `Pred::Test` is judging (`Ref::Candidate`).
+    pub(crate) candidate: std::cell::Cell<Option<ObjectRef>>,
+    /// The player whose candidates an `Effect::Choose` is working out (`Ref::Chooser`).
+    pub(crate) chooser: std::cell::Cell<Option<PlayerId>>,
+    /// The player whose ability asks the `PlayersWhere` test being worked out (`Ref::Asker`).
+    pub(crate) asker: Option<PlayerId>,
+    /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
+    pub(crate) caused: Option<crate::triggers::CausedBy>,
+    /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
+    pub(crate) granter: Option<ObjectId>,
+    /// Objects are judged as their snapshot in scope shows them, before the live object: a turn record's subject as it
+    /// was when the record was made (CR 608.2h).
+    pub(crate) as_was: bool,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -118,26 +136,31 @@ pub(crate) struct CastTargets<'a> {
 }
 
 /// What is known of an object: the object itself if it is still the one that was named, else how it was.
-struct Seen<'a> {
+pub(super) struct Seen<'a> {
     owner: PlayerId,
     controller: PlayerId,
     zone: Zone,
     kind: ObjectKind,
-    chars: Cow<'a, Characteristics>,
+    pub(super) chars: Cow<'a, Characteristics>,
     tapped: Option<bool>,
     /// The same card, whichever zone it has moved to since: its printed side does not change.
     card: Option<&'a GameObject>,
     /// The keywords it has: where the layers have worked them out, or as its snapshot holds them.
     keywords: Option<&'a [Keyword]>,
     /// The counters on it: its own while it is the object that was named, else those its snapshot holds.
-    counters: Counted<'a>,
+    pub(super) counters: Counted<'a>,
     /// The X it was cast with while it is a spell on the stack, else 0 (CR 202.3e).
     x: u32,
+    /// Whether it is suspected, or was as its snapshot holds it (CR 608.2h).
+    suspected: bool,
+    /// Its power and toughness after the layers that set them, where the layers have worked them out: else it is the
+    /// printed ones.
+    base_pt: Option<(Option<i32>, Option<i32>)>,
 }
 
 /// The counters of an object that was seen.
 #[derive(Clone, Copy)]
-enum Counted<'a> {
+pub(super) enum Counted<'a> {
     /// The permanent still is the object that was named.
     Live(&'a PermanentState),
     /// How a snapshot recorded them.
@@ -148,7 +171,7 @@ enum Counted<'a> {
 
 impl Counted<'_> {
     /// How many counters of `kind` there are.
-    fn of(self, kind: &CounterKind) -> u32 {
+    pub(super) fn of(self, kind: &CounterKind) -> u32 {
         match self {
             Counted::Live(permanent) => permanent.counters_of(kind),
             Counted::Shot(held) => held
@@ -157,6 +180,21 @@ impl Counted<'_> {
                 .map_or(0, |(_, count)| *count),
             Counted::Card(held) => held.get(kind).copied().unwrap_or(0),
         }
+    }
+
+    /// Each kind there is with its number, in the order of the kinds.
+    pub(super) fn g12b_kinds(self) -> Vec<(CounterKind, u32)> {
+        let mut kinds: Vec<(CounterKind, u32)> = match self {
+            Counted::Live(permanent) => permanent
+                .counters()
+                .map(|(kind, n)| (kind.clone(), n))
+                .collect(),
+            Counted::Shot(held) => held.to_vec(),
+            Counted::Card(held) => held.iter().map(|(kind, n)| (kind.clone(), *n)).collect(),
+        };
+        kinds.retain(|(_, n)| *n > 0);
+        kinds.sort();
+        kinds
     }
 
     /// How many counters there are of every kind together (CR 122.1).
@@ -186,13 +224,64 @@ fn colors_among(mana: &[ManaType]) -> usize {
         .count()
 }
 
-/// Whether the predicate holds only for objects on the stack (a spell, an ability, or one of several that are).
+/// The zone one alternative of "in this zone or that" names: `In`, a spell or an ability (the stack), or a conjunction
+/// written as not any of its negations that holds one of them (the cards of each zone under their own control or
+/// ownership rule, "a colorless spell").
+fn alternative_zone(pred: &Pred) -> Option<ZoneKind> {
+    match pred {
+        Pred::In(kind) => Some(*kind),
+        // "target spell or permanent": the spell alternative is looked for on the stack.
+        Pred::Spell | Pred::Ability(_) => Some(ZoneKind::Stack),
+        Pred::Not(inner) => match &**inner {
+            Pred::AnyOf(negated) => negated.iter().find_map(|each| match each {
+                Pred::Not(zone) => match &**zone {
+                    Pred::In(kind) => Some(*kind),
+                    Pred::Spell | Pred::Ability(_) => Some(ZoneKind::Stack),
+                    _ => None,
+                },
+                _ => None,
+            }),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
+/// Whether the predicate holds only for objects on the stack (a spell, an ability, one of several that are, or all of
+/// several of which one is).
 fn on_the_stack(pred: &Pred) -> bool {
     match pred {
         Pred::Spell | Pred::Ability(_) => true,
         Pred::AnyOf(any) => !any.is_empty() && any.iter().all(on_the_stack),
+        Pred::Not(inner) => matches!(&**inner, Pred::AnyOf(negated) if negated.iter().any(|each| {
+            matches!(each, Pred::Not(kept) if on_the_stack(kept))
+        })),
         _ => false,
     }
+}
+
+/// Whether `seen` is a double-faced card (CR 712.1), and with `back` a transforming one whose back face is up (CR 701.28):
+/// an ability or a permanent that is a copy is neither, and a face-down object shows no faces.
+fn double_faced(seen: &Seen<'_>, back: bool) -> bool {
+    use mtg_cards::definition::Layout;
+    let Some(card) = seen
+        .card
+        .filter(|card| card.kind != ObjectKind::Ability && card.face_down.is_none())
+    else {
+        return false;
+    };
+    let live = match seen.counters {
+        Counted::Live(held) => Some(held),
+        _ => None,
+    };
+    if live.is_some_and(|held| held.copy.is_some()) {
+        return false;
+    }
+    if back {
+        return card.def.layout == Layout::Transform
+            && live.is_some_and(|held| held.face.is_some());
+    }
+    matches!(card.def.layout, Layout::Transform | Layout::ModalDfc)
 }
 
 /// Whether `seen` is an ability on the stack of this kind.
@@ -235,6 +324,7 @@ impl<'a> Scope<'a> {
             source,
             choices: &NO_CHOICES,
             specs: Vec::new(),
+            spec_bases: Vec::new(),
             target_base: 0,
             bindings: &NO_BINDINGS,
             snapshots: Vec::new(),
@@ -243,6 +333,26 @@ impl<'a> Scope<'a> {
             layered: None,
             casting: None,
             cast_targets: None,
+            affected: None,
+            candidate: std::cell::Cell::new(None),
+            chooser: std::cell::Cell::new(None),
+            asker: None,
+            caused: None,
+            granter: None,
+            as_was: false,
+        }
+    }
+
+    /// The same scope matching events a spell or ability caused (`TriggerPattern::Caused`).
+    pub(crate) fn with_caused(self, caused: Option<crate::triggers::CausedBy>) -> Self {
+        Scope { caused, ..self }
+    }
+
+    /// The same scope working a static ability's change out for `object`; a read of `Ref::Affected` sets `read`.
+    pub(crate) fn with_affected(self, object: ObjectRef, read: &'a std::cell::Cell<bool>) -> Self {
+        Scope {
+            affected: Some((object, read)),
+            ..self
         }
     }
 
@@ -306,6 +416,8 @@ impl<'a> Scope<'a> {
         let kind = match what {
             TurnTally::Attackers => Tally::Attackers,
             TurnTally::DamageTaken => Tally::Hurt,
+            TurnTally::CombatDamageTaken => Tally::E16aCombatHurt,
+            TurnTally::NoncombatDamageTaken => Tally::E16aNoncombatHurt,
             TurnTally::LifeGained => Tally::Gained,
             TurnTally::SpellsCast => Tally::Cast,
             TurnTally::InstantsAndSorceriesCast => Tally::CastInstantOrSorcery,
@@ -315,6 +427,19 @@ impl<'a> Scope<'a> {
             TurnTally::Discarded => Tally::Discarded,
             TurnTally::Drawn => Tally::Drawn,
             TurnTally::LandsPlayed => Tally::LandsPlayed,
+            TurnTally::Scried => Tally::Scried,
+            TurnTally::Surveilled => Tally::Surveilled,
+            TurnTally::Sacrificed => Tally::Sacrificed,
+            TurnTally::Descended => Tally::Descended,
+            TurnTally::Crimes => Tally::G10cCrimes,
+            TurnTally::CardsGraved => Tally::G10cCardsGraved,
+            TurnTally::CreatureCardsGraved => Tally::G10cCreatureCardsGraved,
+            TurnTally::DungeonsCompleted => {
+                let total: u32 = (self.players(who)?.into_iter())
+                    .map(|player| self.state.w11d_completed(player))
+                    .sum();
+                return Ok(i64::from(total));
+            }
             TurnTally::LifeGainedTotal
             | TurnTally::CreaturesAttacked
             | TurnTally::CreaturesDied
@@ -322,8 +447,16 @@ impl<'a> Scope<'a> {
             | TurnTally::CreaturesDiedUnder
             | TurnTally::NontokenCreaturesDiedUnder
             | TurnTally::PhyrexiansDiedUnder
+            | TurnTally::PermanentsLeftUnder
+            | TurnTally::NonlandPermanentsLeft
+            | TurnTally::CreaturesLeftUnder
+            | TurnTally::SpellsWarped
             | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
+                    TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
+                    TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
+                    TurnTally::SpellsWarped => Tally::Warped,
+                    TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
@@ -348,6 +481,10 @@ impl<'a> Scope<'a> {
                     .sum();
                 return Ok(i64::from(lost));
             }
+            TurnTally::DamageDealtTo => {
+                let named = self.refs(who)?;
+                return Ok(self.g10c_damage_to(&named));
+            }
             TurnTally::CountersPut => {
                 let counts = self.refs(who)?.into_iter().filter_map(|named| match named {
                     Target::Object(object) => {
@@ -366,7 +503,36 @@ impl<'a> Scope<'a> {
             .unwrap_or(0))
     }
 
+    /// The most counters of the kind any one of the players `who` names holds.
+    fn highest_counters(&self, who: &Ref, counter: &CounterKind) -> Result<i64, ResolveError> {
+        let mut most = 0;
+        for player in self.players(who)? {
+            let held = self
+                .state
+                .player(player)
+                .map_or(0, |held| held.counters_of(counter));
+            most = most.max(i64::from(held));
+        }
+        Ok(most)
+    }
+
     /// The most objects `of` names for any one of the players `who` names, each taken as the controller of the scope.
+    /// The players `who` names for whom `test` holds, each taken as the controller (`Ref::PlayersWhere`).
+    fn players_where(&self, who: &Ref, test: &Condition) -> Result<Vec<Target>, ResolveError> {
+        let mut found = Vec::new();
+        for player in self.players(who)? {
+            let each = Scope {
+                controller: player,
+                asker: Some(self.controller),
+                ..self.clone()
+            };
+            if each.holds(test)? {
+                found.push(Target::Player(player));
+            }
+        }
+        Ok(found)
+    }
+
     fn largest(&self, who: &Ref, of: &Selector) -> Result<i64, ResolveError> {
         let counted = Amount::Count(of.clone());
         let mut most = 0;
@@ -435,6 +601,74 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
+    /// The colors in the identity of the commanders the players `who` names have, each counted once.
+    fn commander_colors(&self, who: &Ref) -> Result<i64, ResolveError> {
+        let mut colors = BTreeSet::new();
+        for player in self.players(who)? {
+            colors.extend(
+                crate::mana_kinds::identity_types(self.state, player)
+                    .into_iter()
+                    .map(|mana| format!("{mana:?}")),
+            );
+        }
+        Ok(i64::try_from(colors.len()).unwrap_or(i64::MAX))
+    }
+
+    /// How many targets the spell that triggered the ability has, each specification's targets counted.
+    fn triggering_targets(&self) -> Result<i64, ResolveError> {
+        let cause = self
+            .cause
+            .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?;
+        let count = cause
+            .subjects
+            .iter()
+            .filter_map(|subject| match subject {
+                Target::Object(object) => self.state.object(object.id),
+                Target::Player(_) => None,
+            })
+            .map(|spell| spell.choices().targets.iter().flatten().count())
+            .next()
+            .unwrap_or(0);
+        Ok(i64::try_from(count).unwrap_or(i64::MAX))
+    }
+
+    /// The events of the kind this turn that count for the players `who` names and whose object the filter selects.
+    fn logged(&self, event: TallyEvent, who: &Ref, filter: &Selector) -> Result<i64, ResolveError> {
+        self.logged_for(event, &self.players(who)?, filter)
+    }
+
+    /// [`Self::logged`] for the players themselves.
+    pub(crate) fn logged_for(
+        &self,
+        event: TallyEvent,
+        players: &[PlayerId],
+        filter: &Selector,
+    ) -> Result<i64, ResolveError> {
+        if crate::turn_log::is_record(event) {
+            return Ok(self.recorded(event, players, filter));
+        }
+        let mut scope = self.clone();
+        scope
+            .snapshots
+            .extend(self.state.tallies.logged.iter().map(|(_, _, shot)| shot));
+        let mut count = 0i64;
+        for (kind, player, shot) in &self.state.tallies.logged {
+            if *kind == event
+                && players.contains(player)
+                && scope.selects(
+                    filter,
+                    ObjectRef {
+                        id: shot.id,
+                        counter: shot.counter,
+                    },
+                )?
+            {
+                count += 1;
+            }
+        }
+        Ok(count)
+    }
+
     /// How many permanents the source devoured as it entered (CR 702.82); zero once it is a new object.
     fn w7e_devoured(&self) -> i64 {
         self.state
@@ -467,9 +701,14 @@ impl<'a> Scope<'a> {
         Ok(total)
     }
 
-    fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
+    pub(super) fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
-        if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
+        let shot_first = self.as_was
+            && self
+                .snapshots
+                .iter()
+                .any(|s| s.id == reference.id && s.counter == reference.counter);
+        if let Some(object) = live.filter(|o| o.counter() == reference.counter && !shot_first) {
             let tapped = object
                 .permanent()
                 .map(crate::object::PermanentState::tapped);
@@ -489,6 +728,10 @@ impl<'a> Scope<'a> {
                         keywords: Some(&held.keywords),
                         counters,
                         x: stacked_x(object),
+                        suspected: object
+                            .permanent()
+                            .is_some_and(crate::object::PermanentState::suspected),
+                        base_pt: Some(held.base_pt),
                     },
                     None => Seen {
                         owner: object.owner(),
@@ -501,6 +744,10 @@ impl<'a> Scope<'a> {
                         keywords: None,
                         counters,
                         x: stacked_x(object),
+                        suspected: object
+                            .permanent()
+                            .is_some_and(crate::object::PermanentState::suspected),
+                        base_pt: None,
                     },
                 });
             }
@@ -520,6 +767,14 @@ impl<'a> Scope<'a> {
                 keywords: None,
                 counters,
                 x: stacked_x(object),
+                suspected: object
+                    .permanent()
+                    .is_some_and(crate::object::PermanentState::suspected),
+                base_pt: self
+                    .state
+                    .layers()
+                    .get(object.id())
+                    .map(|held| held.base_pt),
             });
         }
         let shot = self
@@ -542,6 +797,8 @@ impl<'a> Scope<'a> {
             } else {
                 0
             },
+            suspected: shot.suspected,
+            base_pt: None,
         })
     }
 
@@ -568,6 +825,10 @@ impl<'a> Scope<'a> {
                 .permanent()
                 .map_or(Counted::Card(&object.card_counters), Counted::Live),
             x: stacked_x(object),
+            suspected: object
+                .permanent()
+                .is_some_and(crate::object::PermanentState::suspected),
+            base_pt: Some(held.base_pt),
         };
         for pred in &selector.0 {
             if !self.pred(pred, object.reference(), &seen)? {
@@ -620,6 +881,11 @@ impl<'a> Scope<'a> {
     /// The targets chosen for the specification `index` (counted from the first) that are legal now, or that an earlier
     /// step of this resolution moved away.
     fn w7d_legal_now(&self, index: usize) -> Vec<Target> {
+        // While targets are announced there are no specifications to recheck: a filter that reads an earlier target
+        // reads it as chosen (CR 601.2c).
+        if self.specs.is_empty() {
+            return self.choices.targets.get(index).cloned().unwrap_or_default();
+        }
         let (Some(set), Some(spec)) = (self.choices.targets.get(index), self.specs.get(index))
         else {
             return Vec::new();
@@ -632,6 +898,7 @@ impl<'a> Scope<'a> {
             self.controller,
             self.cause,
             Some(self.x_value()),
+            self.earlier(index),
         );
         set.iter()
             .copied()
@@ -645,13 +912,25 @@ impl<'a> Scope<'a> {
         let Some(spec) = self.specs.get(self.target_base + index) else {
             return Ok(Vec::new());
         };
-        match &spec.what {
+        let mut what = &spec.what;
+        while let Targetable::Together { what: inner, .. }
+        | Targetable::Another { what: inner, .. }
+        | Targetable::ChosenBy { what: inner, .. } = what
+        {
+            what = inner;
+        }
+        match what {
             Targetable::Object(selector) => self.refs(&Ref::Each(selector.clone())),
             Targetable::PerPlayer { players, what } => self.refs(&Ref::Each(
                 Targetable::c10_dice_per_player_objects(players, what),
             )),
             Targetable::Player => self.refs(&Ref::EachPlayer),
             Targetable::Opponent => self.refs(&Ref::Opponents),
+            Targetable::Together { .. }
+            | Targetable::Another { .. }
+            | Targetable::ChosenBy { .. } => {
+                Err(ResolveError::Unsupported("overload of a nested target"))
+            }
             Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(
                 "overload of a target that is not an object or a player",
             )),
@@ -676,7 +955,17 @@ impl<'a> Scope<'a> {
             self.controller,
             self.cause,
             Some(self.x_value()),
+            self.earlier(index),
         ))
+    }
+
+    /// The targets chosen before the specification `index` within its mode, which a filter of it reads as
+    /// `Target(0)` onwards.
+    fn earlier(&self, index: usize) -> &[Vec<Target>] {
+        let targets = &self.choices.targets;
+        let end = index.min(targets.len());
+        let base = self.spec_bases.get(index).copied().unwrap_or(0).min(end);
+        &targets[base..end]
     }
 
     /// Whether each chosen target is legal now, in the shape of `Choices::targets`; a target of no announced
@@ -715,6 +1004,18 @@ impl<'a> Scope<'a> {
         any
     }
 
+    /// The objects and players the sources named by `on` remember in `slot`.
+    fn remembered(&self, on: &Ref, slot: &str) -> Result<Vec<Target>, ResolveError> {
+        let mut held = Vec::new();
+        for source in self.objects(on)? {
+            let objects = crate::memory::recall(self.state, source, slot);
+            held.extend(objects.into_iter().map(Target::Object));
+            let players = crate::memory::recall_players(self.state, source, slot);
+            held.extend(players.into_iter().map(Target::Player));
+        }
+        Ok(held)
+    }
+
     /// The players and objects a reference names, in the order the rules process them.
     pub fn refs(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
         let state = self.state;
@@ -732,6 +1033,22 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .collect(),
             Ref::This => vec![Target::Object(self.source)],
+            Ref::Affected => {
+                let (object, read) = self.affected.ok_or_else(|| {
+                    ResolveError::Invalid("there is no affected object here".into())
+                })?;
+                read.set(true);
+                vec![Target::Object(object)]
+            }
+            // Nobody outside the candidates of a choice made by each player.
+            Ref::Chooser => self.chooser.get().map(Target::Player).into_iter().collect(),
+            Ref::Asker => vec![Target::Player(self.asker.unwrap_or(self.controller))],
+            Ref::Candidate => {
+                let object = self.candidate.get().ok_or_else(|| {
+                    ResolveError::Invalid("there is no candidate object here".into())
+                })?;
+                vec![Target::Object(object)]
+            }
             Ref::Target(index) if self.choices.way == Some(CastWay::Overload) => {
                 self.each_target(usize::from(*index))?
             }
@@ -740,23 +1057,28 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| cause.subjects.clone())
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
-            Ref::Dealer => self
+            Ref::TriggeringFirst => self
                 .cause
-                .and_then(|cause| cause.source)
-                .map(Target::Object)
-                .into_iter()
-                .collect(),
-            Ref::Attached => state
-                .host_of(self.source.id)
-                .and_then(|host| state.object(host))
-                .map(|host| Target::Object(host.reference()))
-                .into_iter()
-                .collect(),
+                .map(|cause| cause.subjects.first().copied().into_iter().collect())
+                .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::TriggeringPlayer => self
+                .cause
+                .map(|cause| {
+                    (cause.subjects.iter())
+                        .filter(|subject| matches!(subject, Target::Player(_)))
+                        .copied()
+                        .collect()
+                })
+                .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::Dealer => self.dealer(),
+            Ref::Against => self.against(),
+            Ref::Attached => self.host().map(Target::Object).into_iter().collect(),
             Ref::AttachedPlayer => state
                 .player_host_of(self.source.id)
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
+            Ref::Granter => self.granter_on_battlefield(),
             Ref::Monarch => state.monarch().map(Target::Player).into_iter().collect(),
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
             Ref::Chosen => self
@@ -764,21 +1086,29 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .into_iter()
                 .collect(),
-            Ref::Defending => self.defending().map(Target::Player).into_iter().collect(),
+            Ref::Defending => self.defending().into_iter().map(Target::Player).collect(),
             Ref::Attacked => self
                 .attacked_opponents()
                 .into_iter()
                 .map(Target::Player)
                 .collect(),
             Ref::MostLife => self.most_life().into_iter().map(Target::Player).collect(),
-            Ref::Bound(name) => self
-                .bindings
-                .get(name)
-                .cloned()
-                .ok_or_else(|| ResolveError::Invalid(format!("`{name}` is not bound")))?,
+            Ref::ActivePlayer => state
+                .active_player()
+                .map(Target::Player)
+                .into_iter()
+                .collect(),
+            // Validation proves a name is bound by an earlier step; only a declined or skipped branch leaves it unset.
+            Ref::Bound(name) => self.bindings.get(name).cloned().unwrap_or_default(),
             Ref::Paid => self.paid(),
+            Ref::Convoked => self.convoked(),
+            Ref::Remembered { on, slot } => self.remembered(on, slot)?,
+            Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
+            Ref::Departed(of) => self.departed_of(of)?,
+            Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
+            Ref::OrController(inner) => self.players_or_controllers(inner)?,
             Ref::Each(selector) => self
                 .matching(selector)?
                 .into_iter()
@@ -787,7 +1117,24 @@ impl<'a> Scope<'a> {
         })
     }
 
-    /// The objects the cost picked, in the order of its parts: one the cost took out of its zone is the object it was
+    /// The object that dealt the damage or blocked, when the cause names one.
+    fn dealer(&self) -> Vec<Target> {
+        self.cause
+            .and_then(|cause| cause.source)
+            .map(Target::Object)
+            .into_iter()
+            .collect()
+    }
+
+    /// What the attacker attacks or the blocker blocks, when the cause names it.
+    fn against(&self) -> Vec<Target> {
+        self.cause
+            .and_then(|cause| cause.against)
+            .into_iter()
+            .collect()
+    }
+
+    /// The objects the cost picked, in the order of its parts: one the cost took out of its zone is theobject it was
     /// (`Choices.cost_shots` holds how it was), any other the object it is now. A copy of a spell paid nothing and names
     /// what the original's cost took.
     fn paid(&self) -> Vec<Target> {
@@ -823,12 +1170,56 @@ impl<'a> Scope<'a> {
         refs.into_iter().map(Target::Object).collect()
     }
 
-    /// The player the attacking creature of the event, else the source, attacks or attacked when it left combat.
-    fn defending(&self) -> Option<PlayerId> {
+    /// The creatures that convoked the spell: what the spell recorded, else what the permanent its source is remembers while
+    /// it is still the object named, else its last-known information (CR 702.51). A creature that has changed zones since
+    /// is another object, which an effect on it finds gone.
+    fn convoked(&self) -> Vec<Target> {
+        let convoked = if self.choices.convoked().is_empty() {
+            self.state
+                .object(self.source.id)
+                .filter(|object| object.counter() == self.source.counter)
+                .map(|object| object.convoked().to_vec())
+                .filter(|convoked| !convoked.is_empty())
+                .or_else(|| {
+                    self.snapshot_of(self.source)
+                        .map(|shot| shot.convoked.clone())
+                })
+                .unwrap_or_default()
+        } else {
+            self.choices.convoked().to_vec()
+        };
+        convoked.into_iter().map(Target::Object).collect()
+    }
+
+    /// The player the attacking creature of the event, else the source, attacks or attacked when it left combat;
+    /// for a source that is not attacking, the defending players of the combat (CR 506.2).
+    fn defending(&self) -> Vec<PlayerId> {
         let attacker = self
             .cause
             .and_then(|cause| cause.subjects.iter().find_map(|subject| subject.object()))
             .map_or(self.source.id, |object| object.id);
+        match self.defending_of(attacker) {
+            Some(player) => vec![player],
+            None => self.combat_defending(),
+        }
+    }
+
+    /// The defending players of the combat phase in progress: every player but the active one (CR 506.2, 802.2);
+    /// nobody outside a combat phase.
+    fn combat_defending(&self) -> Vec<PlayerId> {
+        if !self.in_combat() {
+            return Vec::new();
+        }
+        let active = self.state.turn().active();
+        self.state
+            .turn_order_from(active)
+            .into_iter()
+            .filter(|player| *player != active)
+            .collect()
+    }
+
+    /// The player the creature attacks, or planeswalker's controller, as the attacker (or one that has left combat) is.
+    pub(crate) fn defending_of(&self, attacker: ObjectId) -> Option<PlayerId> {
         let combat = self.state.combat();
         let target = combat
             .attackers()
@@ -884,6 +1275,54 @@ impl<'a> Scope<'a> {
         Ok(seats)
     }
 
+    /// What the source is attached to: its host now, or, once the source has left (an Aura sacrificed to pay for its
+    /// ability), the host its last known information names while that is still the same permanent (CR 112.7a, 400.7).
+    pub(crate) fn host(&self) -> Option<ObjectRef> {
+        let state = self.state;
+        if let Some(host) = state.host_of(self.source.id) {
+            return state.object(host).map(GameObject::reference);
+        }
+        let gone = state
+            .object(self.source.id)
+            .is_none_or(|object| object.counter() != self.source.counter);
+        let host = (self.snapshots.iter())
+            .filter(|shot| gone && shot.reference() == self.source)
+            .find_map(|shot| shot.host)?;
+        state
+            .object(host.id)
+            .is_some_and(|object| {
+                object.counter() == host.counter && object.zone() == Zone::Battlefield
+            })
+            .then_some(host)
+    }
+
+    /// The permanent whose static ability gave the running ability, while it is on the battlefield.
+    fn granter_on_battlefield(&self) -> Vec<Target> {
+        self.granter
+            .and_then(|id| self.state.object(id))
+            .filter(|object| object.zone() == Zone::Battlefield)
+            .map(|object| Target::Object(object.reference()))
+            .into_iter()
+            .collect()
+    }
+
+    /// The players `inner` names, and the controllers of the objects it names.
+    fn players_or_controllers(&self, inner: &Ref) -> Result<Vec<Target>, ResolveError> {
+        let mut seats = Vec::new();
+        for named in self.refs(inner)? {
+            let player = match named {
+                Target::Player(player) => Some(player),
+                Target::Object(object) => self.seen(object).map(|seen| seen.controller),
+            };
+            if let Some(player) = player.map(Target::Player)
+                && !seats.contains(&player)
+            {
+                seats.push(player);
+            }
+        }
+        Ok(seats)
+    }
+
     /// The players a reference names (objects among them are ignored).
     pub fn players(&self, reference: &Ref) -> Result<Vec<PlayerId>, ResolveError> {
         Ok(self
@@ -891,6 +1330,46 @@ impl<'a> Scope<'a> {
             .into_iter()
             .filter_map(Target::player)
             .collect())
+    }
+
+    /// The objects the reference named that have moved once since and are now in `zone`: the card they became (CR 400.7).
+    /// An object that moved twice, moved to another zone or is gone is nobody.
+    fn arrived(&self, of: &Ref, zone: ZoneKind) -> Result<Vec<Target>, ResolveError> {
+        let mut found: Vec<Target> = Vec::new();
+        for named in self.objects(of)? {
+            if let Some(now) = self.state.object(named.id).filter(|now| {
+                now.counter() == named.counter + 1
+                    && now.kind() != ObjectKind::Ability
+                    && zone_kind(now.zone()) == zone
+            }) && !found.contains(&Target::Object(now.reference()))
+            {
+                found.push(Target::Object(now.reference()));
+            }
+        }
+        Ok(found)
+    }
+
+    /// The objects the reference named that moved once since, each as the object it was before the move, when the
+    /// resolution kept a record of it (CR 400.7, 608.2h). An object with no record is nobody.
+    fn departed_of(&self, of: &Ref) -> Result<Vec<Target>, ResolveError> {
+        let mut found: Vec<Target> = Vec::new();
+        for named in self.objects(of)? {
+            let Some(before) = named.counter.checked_sub(1) else {
+                continue;
+            };
+            let recorded = self
+                .departed
+                .iter()
+                .any(|shot| shot.id == named.id && shot.counter == before);
+            let old = Target::Object(ObjectRef {
+                id: named.id,
+                counter: before,
+            });
+            if recorded && !found.contains(&old) {
+                found.push(old);
+            }
+        }
+        Ok(found)
     }
 
     /// The objects a reference names (players among them are ignored).
@@ -951,14 +1430,10 @@ impl<'a> Scope<'a> {
             .iter()
             .find_map(|pred| match pred {
                 Pred::In(kind) => Some(vec![*kind]),
-                Pred::AnyOf(list) if list.iter().all(|pred| matches!(pred, Pred::In(_))) => Some(
-                    list.iter()
-                        .filter_map(|pred| match pred {
-                            Pred::In(kind) => Some(*kind),
-                            _ => None,
-                        })
-                        .collect(),
-                ),
+                Pred::AnyOf(list) => list
+                    .iter()
+                    .map(alternative_zone)
+                    .collect::<Option<Vec<_>>>(),
                 _ => None,
             })
             .unwrap_or_default();
@@ -979,8 +1454,12 @@ impl<'a> Scope<'a> {
                 ZoneKind::Exile => zones.push(Zone::Exile),
                 ZoneKind::Command => zones.extend(seats().map(Zone::Command)),
                 ZoneKind::Battlefield => zones.push(Zone::Battlefield),
+                // No object is ever outside the game (a Commander game has no sideboard).
+                ZoneKind::Outside => {}
             }
         }
+        // Two alternatives on the stack ("a spell or an ability") look there once.
+        zones.dedup();
         zones
     }
 
@@ -1002,6 +1481,39 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// How many of the objects the reference names satisfy the selector.
+    pub(super) fn count_of(&self, subject: &Ref, selector: &Selector) -> Result<i64, ResolveError> {
+        // A name no step bound (a declined "you may") stands for no objects.
+        if let Ref::Bound(name) = subject
+            && !self.bindings.contains_key(name)
+        {
+            return Ok(0);
+        }
+        let mut count = 0;
+        for object in self.objects(subject)? {
+            // An object that is gone (a token that left) is judged as it was; one that is there, as it is.
+            let judged = if self.seen(object).is_some() {
+                object
+            } else {
+                self.as_it_left(object)
+            };
+            if self.selects(selector, judged)? {
+                count += 1;
+            }
+        }
+        Ok(count)
+    }
+
+    /// The reference to read an object a step moved (an `as` name binds it as the object it became) by: the object as it
+    /// was when it left, when that is known (CR 608.2h), so a sacrificed creature keeps its counters and a token that
+    /// ceased to exist is still seen. Any other reference stays as it is.
+    fn as_it_left(&self, reference: ObjectRef) -> ObjectRef {
+        self.snapshots
+            .iter()
+            .find(|s| s.id == reference.id && s.counter + 1 == reference.counter)
+            .map_or(reference, |s| s.reference())
+    }
+
     /// Whether the object satisfies every predicate of the selector.
     pub fn selects(&self, selector: &Selector, reference: ObjectRef) -> Result<bool, ResolveError> {
         let Some(seen) = self.seen(reference) else {
@@ -1015,17 +1527,26 @@ impl<'a> Scope<'a> {
         Ok(true)
     }
 
-    /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway).
+    /// Whether the object is a card in exile that one of the permanents the reference names hid face down (hideaway) or exiled.
     fn exiled_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
-        let hidden = self
+        let card = self
             .state
             .object(reference.id)
-            .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile)
-            .and_then(GameObject::face_down);
-        match hidden {
-            Some(FaceDown::Hideaway { by }) => Ok(self.objects(named)?.contains(&by)),
-            _ => Ok(false),
+            .filter(|card| card.counter() == reference.counter && card.zone() == Zone::Exile);
+        let Some(card) = card else {
+            return Ok(false);
+        };
+        let sources = self.objects(named)?;
+        if let Some(
+            FaceDown::Hideaway { by } | FaceDown::Held { by, .. } | FaceDown::Sealed { by },
+        ) = card.face_down()
+        {
+            return Ok(sources.contains(&by));
         }
+        Ok(sources.into_iter().any(|source| {
+            crate::memory::recall(self.state, source, mtg_cards::refs::EXILED_SLOT)
+                .contains(&reference)
+        }))
     }
 
     /// Whether the object is a creature that one of the cards the reference names is encoded on (cipher).
@@ -1079,6 +1600,7 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
+    #[allow(clippy::too_many_lines)]
     fn pred(
         &self,
         pred: &Pred,
@@ -1090,23 +1612,38 @@ impl<'a> Scope<'a> {
             Pred::This => reference.id == self.source.id,
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
+            Pred::CanEnchantSource => {
+                crate::attach::legal_host_entering(state, reference.id, self.source.id)
+            }
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::SharesName(_)
             | Pred::SharesType(_)
             | Pred::SharesColor(_)
             | Pred::XInCost
+            | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::HasAttached(_)
-            | Pred::AttachedTo(_) => self.w6d_pred(pred, seen)?,
+            | Pred::AttachedTo(_) => self.w6d_pred(pred, reference, seen)?,
             Pred::Paired | Pred::PairedWith(_) => self.soulbond_pred(pred, reference)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
+            Pred::HauntedBy(named) => self
+                .objects(named)?
+                .into_iter()
+                .filter_map(|card| self.state.object(card.id))
+                .any(|card| card.zone() == Zone::Exile && card.haunting() == Some(reference)),
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
-            Pred::Supertype(supertype) => seen
-                .card
-                .is_some_and(|c| c.card().supertypes.contains(supertype)),
+            Pred::Supertype(supertype) => {
+                seen.chars.supertypes.contains(supertype)
+                    || seen
+                        .card
+                        .is_some_and(|c| c.card().supertypes.contains(supertype))
+                    || (*supertype == mtg_core::card::Supertype::Legendary
+                        && seen.zone == Zone::Battlefield
+                        && crate::ring::is_legendary_bearer(self.state, reference.id))
+            }
             Pred::Subtype(subtype) => {
                 seen.chars.has_subtype(&[], subtype)
                     || seen
@@ -1123,37 +1660,34 @@ impl<'a> Scope<'a> {
             Pred::Untapped => seen.tapped == Some(false),
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::Renowned => matches!(seen.counters, Counted::Live(held) if held.renowned()),
+            Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
+            Pred::Suspected => seen.suspected,
+            Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
+            Pred::DoubleFaced => double_faced(seen, false),
+            Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
+            Pred::SummoningSick => crate::keywords::summoning_sick(state, reference.id),
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
+            Pred::HasAdventure => seen
+                .card
+                .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
-            Pred::DamagedBy(named) => self
-                .objects(named)?
-                .iter()
-                .any(|source| state.damaged_by(reference, *source)),
+            Pred::DidThisTurn {
+                event,
+                by,
+                to,
+                combat,
+            } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
+            Pred::DamagedBy(named) => self.objects(named)?.iter().any(|source| {
+                state.damaged_by(reference, *source)
+                    || state.damaged_by_departed(reference, *source)
+            }),
             Pred::SameCard(named) => self
                 .objects(named)?
                 .iter()
                 .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
-            Pred::Attacking => state
-                .combat()
-                .attackers()
-                .iter()
-                .any(|a| a.object() == reference.id),
-            Pred::AttackingPlayer(who) => {
-                let attacked = self.players(who)?;
-                state.combat().attackers().iter().any(|a| {
-                    a.object() == reference.id
-                        && matches!(a.target(), AttackTarget::Player(player) if attacked.contains(&player))
-                })
-            }
-            Pred::Blocking => state
-                .combat()
-                .attackers()
-                .iter()
-                .any(|a| a.blockers().contains(&reference.id)),
-            Pred::Unblocked => state.combat().is_unblocked(state, reference.id),
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
@@ -1167,22 +1701,55 @@ impl<'a> Scope<'a> {
             },
             Pred::HasCounter(kind) => seen.counters.of(kind) > 0,
             Pred::HasAnyCounter => seen.counters.c10_any_total() > 0,
-            Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
-            Pred::ChosenColor => {
-                matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
+            Pred::CounterCount { kind, op, to } => {
+                op.holds(i64::from(seen.counters.of(kind)), i64::from(*to))
             }
-            Pred::ChosenSubtype => {
-                matches!(self.entered_choice(), Some(Chosen::CreatureType(subtype))
-                    if seen.chars.has_subtype(&[], subtype)
-                        || seen.card.is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype)))
+            Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
+            Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
+                self.chosen_pred(pred, seen)
             }
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
-            Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
-                self.w21a_pred(pred, reference, seen)?
+            Pred::Test { left, op, right } => {
+                // The amounts read the object judged as `Ref::Candidate`.
+                let before = self.candidate.replace(Some(reference));
+                let amounts = self.amount(left).and_then(|l| Ok((l, self.amount(right)?)));
+                self.candidate.set(before);
+                let (left, right) = amounts?;
+                op.holds(left, right)
             }
+            Pred::Modified
+            | Pred::RingBearer
+            | Pred::FaceDown
+            | Pred::SpentFrom { .. }
+            | Pred::TargetsPlayer(_)
+            | Pred::GravedThisTurn
+            | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
+            Pred::Attacking
+            | Pred::AttackingPlayer(_)
+            | Pred::AttackingPlaneswalkerOf(_)
+            | Pred::AttackingAlone
+            | Pred::AttackingPlayerOrPlaneswalker(_)
+            | Pred::Blocking
+            | Pred::Unblocked
+            | Pred::WasCast { .. }
+            | Pred::CastWith(_)
+            | Pred::TopOfLibrary
+            | Pred::BottomOfLibrary
+            | Pred::TopOfGraveyard
+            | Pred::TopCreatureOfGraveyard
+            | Pred::BlockedBy(_)
+            | Pred::Blocks(_)
+            | Pred::TargetedBy(_)
+            | Pred::SingleTarget
+            | Pred::GreatestAmong { .. }
+            | Pred::LeastAmong { .. }
+            | Pred::HasKeywordNamed(_)
+            | Pred::Kicked
+            | Pred::AdditionalCostPaid
+            | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
         })
@@ -1211,11 +1778,30 @@ impl<'a> Scope<'a> {
             .and_then(|permanent| permanent.chosen())
     }
 
-    fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
+    /// The printed name of the card, none for a face-down card (it has no name).
+    pub(super) fn card_name(seen: &Seen<'_>) -> Option<String> {
+        seen.card
+            .filter(|card| card.face_down().is_none())
+            .map(|card| card.card().name.clone())
+    }
+
+    pub(super) fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
         match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
+            // The base after the effects that set it (CR 613.4b): a printed 1/1 that an effect made 3/3 reads 3.
+            StatKind::BasePower => seen
+                .base_pt
+                .map_or_else(|| seen.card.and_then(|c| c.card().power), |base| base.0)
+                .map(i64::from),
+            StatKind::BaseToughness => seen
+                .base_pt
+                .map_or_else(|| seen.card.and_then(|c| c.card().toughness), |base| base.1)
+                .map(i64::from),
+            StatKind::ManaSpent => seen
+                .card
+                .and_then(|c| i64::try_from(c.mana_spent().len()).ok()),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen
                 .card
@@ -1234,6 +1820,8 @@ impl<'a> Scope<'a> {
             StatKind::BasicLandTypes => {
                 i64::try_from(Self::w7a_basic_land_types(seen).count()).ok()
             }
+            // A name and creature types are no numbers; `Amount::Distinct` and `Amount::MostCommon` read them.
+            StatKind::Name | StatKind::CreatureType => None,
         }
     }
 
@@ -1259,6 +1847,7 @@ impl<'a> Scope<'a> {
     }
 
     /// The number an amount stands for as one recipient of the running effect reads it (`share`, see `share.rs`).
+    #[allow(clippy::too_many_lines)]
     pub(super) fn amount_of(
         &self,
         amount: &Amount,
@@ -1269,13 +1858,14 @@ impl<'a> Scope<'a> {
             Amount::X => i64::from(self.x_value()),
             Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,
-            Amount::Stat { of, stat } => match self.objects(of)?.first() {
-                Some(object) => self
-                    .seen(*object)
-                    .and_then(|seen| Self::stat(&seen, *stat))
-                    .unwrap_or(0),
-                None => 0,
-            },
+            Amount::Stat { of, stat } => self
+                .objects(of)?
+                .iter()
+                .filter_map(|object| {
+                    self.seen(self.as_it_left(*object))
+                        .and_then(|seen| Self::stat(&seen, *stat))
+                })
+                .sum(),
             Amount::Life(who) => self
                 .players(who)?
                 .first()
@@ -1286,21 +1876,12 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(|player| i64::from(self.state.commander_casts_by(player)))
                 .sum(),
-            Amount::Counters { on, counter } => {
-                let mut total = 0i64;
-                for named in self.refs(on)? {
-                    total += match named {
-                        Target::Player(player) => self
-                            .state
-                            .player(player)
-                            .map_or(0, |held| i64::from(held.counters_of(counter))),
-                        Target::Object(object) => self
-                            .seen(object)
-                            .map_or(0, |seen| i64::from(seen.counters.of(counter))),
-                    };
-                }
-                total
-            }
+            Amount::Speed(who) => self
+                .players(who)?
+                .into_iter()
+                .map(|player| i64::from(self.state.speed(player)))
+                .sum(),
+            Amount::Counters { on, counter } => self.counters_on(on, counter)?,
             Amount::AnyCounters(on) => self.c10_any_counters(on)?,
             Amount::Sum(parts) => {
                 let mut sum = 0i64;
@@ -1313,6 +1894,17 @@ impl<'a> Scope<'a> {
             Amount::Half { of, up } => {
                 let whole = self.amount_of(of, share)?.max(0);
                 if *up { (whole + 1) / 2 } else { whole / 2 }
+            }
+            Amount::Quotient { of, by, up } => {
+                let whole = self.amount_of(of, share)?.max(0);
+                match self.amount_of(by, share)? {
+                    by if by <= 0 => 0,
+                    by if *up => (whole + by - 1) / by,
+                    by => whole / by,
+                }
+            }
+            Amount::Difference(left, right) => {
+                (self.amount_of(left, share)? - self.amount_of(right, share)?).abs()
             }
             Amount::Divided => {
                 let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
@@ -1341,22 +1933,50 @@ impl<'a> Scope<'a> {
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
+            Amount::DamageDealtThisWay => self.g10c_dealt_this_way(),
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
             Amount::Exiled(of) => self.w14b_exiled(of)?,
             Amount::PhasedOut(of) => self.w11b_phased(of)?,
             Amount::DieResult(which) => self.c11e_die_result(*which),
+            Amount::Chosen | Amount::ChosenAs(_) => self.chosen_number(amount),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
+            Amount::ResolvedThisTurn => self.resolved_this_turn(),
             Amount::Devoured => self.w7e_devoured(),
+            Amount::Bound(name) => self.kept_number(name),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
             Amount::Tallied { who, what } => self.tallied(who, *what)?,
             Amount::Largest { who, of } => self.largest(who, of)?,
+            Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
+            Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
+            Amount::CommanderColors(who) => self.commander_colors(who)?,
+            Amount::TurnNumber => i64::from(self.state.turn().number()),
+            Amount::TriggeringTargets => self.triggering_targets()?,
+            Amount::When { .. }
+            | Amount::ManaSpent { .. }
+            | Amount::ManaColors(_)
+            | Amount::MostCommon { .. }
+            | Amount::Product(_)
+            | Amount::CountOf { .. }
+            | Amount::Random { .. }
+            | Amount::ManaInPool(_)
+            | Amount::Doors(_) => self.fill_amount(amount, share)?,
+            Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
+            Amount::Remembered { on, slot } => {
+                let mut total = 0_i64;
+                for source in self.objects(on)? {
+                    total += crate::memory::recall_numbers(self.state, source, slot)
+                        .iter()
+                        .sum::<i64>();
+                }
+                total
+            }
             Amount::Triggering => self
                 .cause
                 .map(|cause| i64::from(cause.amount))
@@ -1382,6 +2002,41 @@ impl<'a> Scope<'a> {
         })
     }
 
+    /// How many times the resolving ability has resolved this turn, this resolution included; zero for a scope that is not
+    /// the resolving ability's own.
+    fn resolved_this_turn(&self) -> i64 {
+        let times = self.state.resolving.as_ref().and_then(|resolving| {
+            let object = self.state.object(resolving.object)?;
+            if !std::ptr::eq(self.choices, object.choices()) {
+                return None;
+            }
+            let ability = object.ability()?;
+            Some(self.state.ability_resolutions(
+                ability.source(),
+                ability.origin(),
+                ability.index(),
+            ))
+        });
+        i64::from(times.unwrap_or(0))
+    }
+
+    /// The number a `Let` of the resolving spell or ability fixed under the name, read only by the scope of that spell or
+    /// ability; zero before it ran.
+    fn kept_number(&self, name: &str) -> i64 {
+        let kept = self.state.resolving.as_ref().and_then(|resolving| {
+            let object = self.state.object(resolving.object)?;
+            if !std::ptr::eq(self.choices, object.choices()) {
+                return None;
+            }
+            resolving
+                .lets
+                .iter()
+                .find(|(kept, _)| kept == name)
+                .map(|(_, value)| *value)
+        });
+        kept.unwrap_or(0)
+    }
+
     /// The X a payment of the resolving spell or ability announced ("you may pay {X}{R}. If you do"), read only by the
     /// scope of that spell or ability.
     fn w6c_paid_x(&self) -> Option<u32> {
@@ -1390,6 +2045,76 @@ impl<'a> Scope<'a> {
         std::ptr::eq(self.choices, object.choices())
             .then_some(resolving.w6c_paid_x)
             .flatten()
+    }
+
+    /// The value the resolving spell or ability chose under the name (`Effect::ChooseValue`), read only by the scope of
+    /// that spell or ability.
+    pub(crate) fn chosen_value(&self, name: &str) -> Option<&Chosen> {
+        let resolving = self.state.resolving.as_ref()?;
+        let object = self.state.object(resolving.object)?;
+        std::ptr::eq(self.choices, object.choices())
+            .then(|| resolving.chosen.get(name))
+            .flatten()
+    }
+
+    /// Whether the object has what the source chose as it entered (a colour, a creature type, a card name) or what the
+    /// resolution chose under a name (any value that is a characteristic).
+    fn chosen_pred(&self, pred: &Pred, seen: &Seen<'_>) -> bool {
+        match pred {
+            Pred::ChosenColor => {
+                matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
+            }
+            Pred::ChosenSubtype => {
+                matches!(
+                    self.entered_choice(),
+                    Some(Chosen::CreatureType(_) | Chosen::LandType(_) | Chosen::CardType(_))
+                ) && self
+                    .entered_choice()
+                    .is_some_and(|chosen| Self::is_chosen(seen, chosen))
+            }
+            Pred::ChosenName => {
+                matches!(self.entered_choice(), Some(Chosen::Name(_)))
+                    && self
+                        .entered_choice()
+                        .is_some_and(|chosen| Self::is_chosen(seen, chosen))
+            }
+            Pred::ChosenAs(name) => self
+                .chosen_value(name)
+                .is_some_and(|chosen| Self::is_chosen(seen, chosen)),
+            _ => false,
+        }
+    }
+
+    /// The number the source chose as it entered or the resolution chose under a name; 0 for any other value.
+    fn chosen_number(&self, amount: &Amount) -> i64 {
+        let chosen = match amount {
+            Amount::ChosenAs(name) => self.chosen_value(name),
+            _ => self.entered_choice(),
+        };
+        match chosen {
+            Some(Chosen::Number(number)) => i64::from(*number),
+            _ => 0,
+        }
+    }
+
+    /// Whether the object has the colour, type or name that was chosen; a number or a word is no characteristic.
+    fn is_chosen(seen: &Seen<'_>, chosen: &Chosen) -> bool {
+        let has_subtype = |subtype: &Subtype| {
+            seen.chars.has_subtype(&[], subtype)
+                || seen
+                    .card
+                    .is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype))
+        };
+        match chosen {
+            Chosen::Color(color) => seen.chars.colors.contains(*color),
+            Chosen::Colors(colors) => colors
+                .iter()
+                .any(|color| seen.chars.colors.contains(*color)),
+            Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => has_subtype(subtype),
+            Chosen::CardType(kind) => seen.chars.types.contains(*kind),
+            Chosen::Name(name) => seen.card.is_some_and(|c| c.card().name == *name),
+            Chosen::Player(_) | Chosen::Chapter(_) | Chosen::Number(_) | Chosen::Word(_) => false,
+        }
     }
 
     /// A characteristic of each object the selector matches that has one.
@@ -1414,7 +2139,7 @@ impl<'a> Scope<'a> {
             let cost = self
                 .seen(object)
                 .and_then(|seen| seen.card)
-                .and_then(|card| card.card().mana_cost.as_ref());
+                .and_then(|card| card.mana_cost());
             let symbols = cost.map_or(&[][..], ManaCost::symbols);
             let counted = symbols
                 .iter()
@@ -1501,6 +2226,30 @@ impl<'a> Scope<'a> {
     /// The life the resolving spell or ability has made players lose so far; 0 outside a resolution.
     /// How many different values of the characteristic there are among the objects the selector matches.
     fn w2c_distinct(&self, of: &Selector, stat: StatKind) -> Result<i64, ResolveError> {
+        if stat == StatKind::Colors {
+            // Each color once among the objects, a multicolored object adding every one of its colors.
+            let mut colors = BTreeSet::new();
+            for object in self.matching(of)? {
+                if let Some(seen) = self.seen(object) {
+                    colors.extend(seen.chars.colors.iter().map(|color| format!("{color:?}")));
+                }
+            }
+            return Ok(i64::try_from(colors.len()).unwrap_or(i64::MAX));
+        }
+        if stat == StatKind::Name {
+            let mut names = BTreeSet::new();
+            for object in self.matching(of)? {
+                // A face-down card has no name.
+                let found = self
+                    .seen(object)
+                    .and_then(|seen| seen.card)
+                    .filter(|card| card.face_down().is_none());
+                if let Some(card) = found {
+                    names.insert(card.card().name.clone());
+                }
+            }
+            return Ok(i64::try_from(names.len()).unwrap_or(i64::MAX));
+        }
         let values: BTreeSet<i64> = if stat == StatKind::BasicLandTypes {
             // Domain counts each basic land type once, a land of several types adding each of them.
             let mut types = BTreeSet::new();
@@ -1561,6 +2310,10 @@ impl<'a> Scope<'a> {
     }
 
     /// The lowest starting life total among the players a reference names; 0 for none.
+    fn cast_last_turn(&self, who: &Ref) -> Result<i64, ResolveError> {
+        Ok(i64::from(self.state.cast_last_turn(&self.players(who)?)))
+    }
+
     fn w14b_starting_life(&self, who: &Ref) -> Result<i64, ResolveError> {
         Ok(self
             .players(who)?
@@ -1568,6 +2321,16 @@ impl<'a> Scope<'a> {
             .map(|player| i64::from(self.state.ruleset().starting_life(player)))
             .min()
             .unwrap_or(0))
+    }
+
+    /// The damage the resolving spell or ability has dealt so far; zero outside a resolution.
+    fn g10c_dealt_this_way(&self) -> i64 {
+        i64::from(
+            self.state
+                .resolving
+                .as_ref()
+                .map_or(0, |resolving| resolving.g10c_dealt),
+        )
     }
 
     fn life_lost_this_way(&self) -> i64 {
@@ -1621,6 +2384,24 @@ impl<'a> Scope<'a> {
             .map_or(0, |source| payments(source.card(), self.paid_costs(), kind))
     }
 
+    /// Whether the spell the source is, or the permanent it became, was cast off sorcery timing, while it is still the
+    /// object named.
+    fn off_sorcery_timing(&self) -> bool {
+        self.state
+            .object(self.source.id)
+            .filter(|source| source.counter() == self.source.counter)
+            .is_some_and(GameObject::cast_off_sorcery_timing)
+    }
+
+    /// Whether `inner` held as the spell the source is, or the permanent it became, was cast, while it is still the object
+    /// named.
+    fn held_as_cast(&self, inner: &Condition) -> bool {
+        self.state
+            .object(self.source.id)
+            .filter(|source| source.counter() == self.source.counter)
+            .is_some_and(|source| source.held_as_cast(inner))
+    }
+
     /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is
     /// or came from was cast for while that is still the object named.
     fn cast_way(&self) -> Option<CastWay> {
@@ -1638,7 +2419,7 @@ impl<'a> Scope<'a> {
 
     /// The mana spent to cast the spell: what the spell announced, else what the spell its source is or came from paid
     /// while that is still the object named, else what its last-known information holds.
-    fn mana_spent(&self) -> Vec<ManaType> {
+    pub(super) fn mana_spent(&self) -> Vec<ManaType> {
         if !self.choices.spent().is_empty() {
             return self.choices.spent().to_vec();
         }
@@ -1650,6 +2431,23 @@ impl<'a> Scope<'a> {
             .or_else(|| {
                 self.snapshot_of(self.source)
                     .map(|snapshot| snapshot.spent.clone())
+            })
+            .unwrap_or_default()
+    }
+
+    /// The sources of the mana spent to cast the spell, found as [`Self::mana_spent`] finds the mana.
+    pub(super) fn mana_spent_from(&self) -> Vec<mtg_cards::spend::SpentFrom> {
+        if !self.choices.spent_from().is_empty() {
+            return self.choices.spent_from().to_vec();
+        }
+        self.state
+            .object(self.source.id)
+            .filter(|object| object.counter() == self.source.counter)
+            .map(|object| object.mana_spent_from().to_vec())
+            .filter(|spent| !spent.is_empty())
+            .or_else(|| {
+                self.snapshot_of(self.source)
+                    .map(|snapshot| snapshot.spent_from.clone())
             })
             .unwrap_or_default()
     }
@@ -1673,13 +2471,31 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// Whether "you" are one of the players `who` names (`Condition::Among`). The reference is the asking ability's: a
+    /// target is judged for the asker, not for the player a `PlayersWhere` tests.
+    fn among(&self, who: &Ref) -> Result<bool, ResolveError> {
+        let asking = Scope {
+            controller: self.asker.unwrap_or(self.controller),
+            asker: None,
+            ..self.clone()
+        };
+        Ok(asking.players(who)?.contains(&self.controller))
+    }
+
+    /// Whether the players `who` names (all of them, at least one) took the first turn (`Condition::StartingPlayer`).
+    fn started(&self, who: &Ref) -> Result<bool, ResolveError> {
+        let first = self.state.first_player();
+        let named = self.players(who)?;
+        Ok(!named.is_empty() && named.iter().all(|player| *player == first))
+    }
+
     /// Whether the turn is in a combat phase.
     fn in_combat(&self) -> bool {
         self.state.turn().step().phase() == crate::turn::Phase::Combat
     }
 
     /// Whether a player `who` names holds the designation of the condition: has completed a dungeon, is the monarch,
-    /// was it as the turn began, has the initiative, or has the city's blessing.
+    /// was it as the turn began, has the initiative, has the city's blessing, or has max speed.
     fn w11d_designation(&self, condition: &Condition, who: &Ref) -> Result<bool, ResolveError> {
         let began = self.state.monarch_at_turn_start();
         Ok(self.players(who)?.iter().any(|player| match condition {
@@ -1688,6 +2504,7 @@ impl<'a> Scope<'a> {
             // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.
             Condition::Monarch(_) => self.state.monarch() == Some(*player),
             Condition::MonarchAtTurnStart(_) => began == Some(*player),
+            Condition::MaxSpeed(_) => self.state.has_max_speed(*player),
             _ => self.state.has_citys_blessing(*player),
         }))
     }
@@ -1702,6 +2519,11 @@ impl<'a> Scope<'a> {
             .searched
             .iter()
             .any(|(player, place)| players.contains(player) && zone_kind(*place) == zone))
+    }
+
+    /// Whether the permanent entered as the given word (a Siege's "Khans" or "Dragons").
+    fn e15f_entered_as(&self, word: &str) -> bool {
+        matches!(self.entered_choice(), Some(Chosen::Word(chosen)) if chosen == word)
     }
 
     /// Whether a condition is true now.
@@ -1732,15 +2554,16 @@ impl<'a> Scope<'a> {
                 op.holds(self.amount(left)?, self.amount(right)?)
             }
             Condition::Matches { subject, selector } => {
-                let mut holds = true;
-                for object in self.objects(subject)? {
-                    if !self.selects(selector, object)? {
-                        holds = false;
-                        break;
-                    }
-                }
-                holds
+                self.count_of(subject, selector)?
+                    == i64::try_from(self.objects(subject)?.len()).unwrap_or(i64::MAX)
             }
+            Condition::AtTrigger(inner) => self.holds(inner)?,
+            Condition::CountOf {
+                subject,
+                selector,
+                op,
+                right,
+            } => op.holds(self.count_of(subject, selector)?, self.amount(right)?),
             Condition::Kicked => self.payments(OptionalKind::Kicker) > 0,
             Condition::KickedWith(cost) => self
                 .state
@@ -1750,18 +2573,27 @@ impl<'a> Scope<'a> {
                 self.payments(OptionalKind::Additional) + self.payments(OptionalKind::Gift) > 0
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
+            Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
+            Condition::AsCast(inner) => self.held_as_cast(inner),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
+            Condition::ChosenWord { name, word } => {
+                matches!(self.chosen_value(name), Some(Chosen::Word(chosen)) if chosen == word)
+            }
+            Condition::EnteredAs(word) => self.e15f_entered_as(word),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
             | Condition::Monarch(who)
             | Condition::MonarchAtTurnStart(who)
-            | Condition::CitysBlessing(who) => self.w11d_designation(condition, who)?,
+            | Condition::CitysBlessing(who)
+            | Condition::MaxSpeed(who) => self.w11d_designation(condition, who)?,
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
             Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::Among(who) => self.among(who)?,
+            Condition::StartingPlayer(who) => self.started(who)?,
             Condition::Step(named) => {
                 crate::triggers::step_matches(*named, self.state.turn().step())
             }
@@ -2245,6 +3077,52 @@ mod tests {
     }
 
     #[test]
+    fn departed_names_a_moved_object_as_it_was_and_its_controller_is_the_last_known_one() {
+        // CR 400.7, 608.2h: "its controller" of a permanent that was destroyed is the one who controlled it, not its owner.
+        let mut game = game();
+        let old = named(&game, "Ogre", 1);
+        let mut shot = snapshot(&game, old.id).unwrap();
+        shot.controller = PlayerId(0);
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: old.id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(PlayerId(1)),
+                cause: ZoneCause::Destroyed,
+            },
+        )
+        .unwrap();
+        let new = ObjectRef {
+            id: old.id,
+            counter: old.counter + 1,
+        };
+        let bindings: Bindings = [("it".to_owned(), vec![Target::Object(new)])].into();
+        let seats = |scope: &Scope<'_>, json: &str| -> Vec<PlayerId> {
+            scope
+                .players(&serde_json::from_str::<Ref>(json).unwrap())
+                .unwrap()
+        };
+        let before = r#"{"ControllerOf":{"Departed":{"Bound":"it"}}}"#;
+        let mut scope = scope(&game);
+        scope.bindings = &bindings;
+        assert_eq!(
+            seats(&scope, before),
+            [],
+            "without a record of the move there is nobody"
+        );
+        let departed = [shot];
+        scope.departed = &departed;
+        scope.snapshots = vec![&departed[0]];
+        assert_eq!(seats(&scope, before), [PlayerId(0)]);
+        assert_eq!(
+            seats(&scope, r#"{"ControllerOf":{"Bound":"it"}}"#),
+            [PlayerId(1)],
+            "the card now in the graveyard answers to its owner"
+        );
+    }
+
+    #[test]
     fn an_object_that_changed_zones_is_a_new_object_and_the_old_one_is_read_from_its_snapshot() {
         let mut game = game();
         let old = named(&game, "Ogre", 1);
@@ -2384,6 +3262,7 @@ mod tests {
             snapshots: Vec::new(),
             amount: 0,
             source: None,
+            against: None,
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();
@@ -2395,14 +3274,69 @@ mod tests {
         assert_eq!(scope.players(&triggering).unwrap(), [PlayerId(1)]);
     }
 
+    #[rstest]
+    #[case::not_moved(&[], ZoneKind::Graveyard, true)]
+    #[case::moved_once_to_the_zone(&[Zone::Graveyard(PlayerId(1))], ZoneKind::Graveyard, false)]
+    #[case::moved_once_elsewhere(&[Zone::Exile], ZoneKind::Graveyard, true)]
+    #[case::moved_twice(&[Zone::Graveyard(PlayerId(1)), Zone::Exile], ZoneKind::Exile, true)]
+    #[case::returned_to_the_battlefield(&[Zone::Graveyard(PlayerId(1)), Zone::Battlefield], ZoneKind::Battlefield, true)]
+    fn the_object_one_move_on_is_nobody_unless_it_moved_once_into_the_zone(
+        #[case] moves: &[Zone],
+        #[case] zone: ZoneKind,
+        #[case] nobody: bool,
+    ) {
+        let mut game = game();
+        let ogre = named(&game, "Ogre", 1);
+        let mut from = Zone::Battlefield;
+        for to in moves {
+            apply_event(
+                &mut game,
+                &Event::ZoneChanged {
+                    object: ogre.id,
+                    from,
+                    to: *to,
+                    cause: ZoneCause::Moved,
+                },
+            )
+            .unwrap();
+            from = *to;
+        }
+        let bound: Bindings = [("it".to_owned(), vec![Target::Object(ogre)])].into();
+        let mut scope = scope(&game);
+        scope.bindings = &bound;
+        let arrived = Ref::Arrived {
+            of: Box::new(Ref::Bound("it".to_owned())),
+            zone,
+        };
+        let found = scope.objects(&arrived).unwrap();
+        assert_eq!(found.is_empty(), nobody);
+        if let [now] = found.as_slice() {
+            assert_eq!(now.counter, ogre.counter + 1);
+        }
+    }
+
     #[test]
-    fn a_name_nothing_bound_is_an_error_not_an_empty_set() {
+    fn what_the_event_went_against_reads_empty_without_a_cause_or_a_target() {
+        let game = game();
+        let against: Ref = serde_json::from_str(r#""Against""#).unwrap();
+        let mut scope = scope(&game);
+        assert_eq!(scope.refs(&against), Ok(Vec::new()));
+        let none = crate::abilities::Cause::default();
+        scope.cause = Some(&none);
+        assert_eq!(scope.refs(&against), Ok(Vec::new()));
+        let some = crate::abilities::Cause {
+            against: Some(Target::Player(PlayerId(1))),
+            ..none.clone()
+        };
+        scope.cause = Some(&some);
+        assert_eq!(scope.players(&against).unwrap(), [PlayerId(1)]);
+    }
+
+    #[test]
+    fn a_name_nothing_bound_is_an_empty_set() {
         let game = game();
         let ghost: Ref = serde_json::from_str(r#"{"Bound":"ghost"}"#).unwrap();
-        assert!(matches!(
-            scope(&game).refs(&ghost),
-            Err(ResolveError::Invalid(_))
-        ));
+        assert_eq!(scope(&game).refs(&ghost).unwrap().len(), 0);
     }
 
     #[test]
@@ -2493,6 +3427,17 @@ mod tests {
     #[case::no_plus_counter(r#"[{"Type":"Creature"},{"Not":{"HasCounter":"+1/+1"}}]"#, &["Ogre 1", "Bear 1"])]
     #[case::either_kind(r#"[{"AnyOf":[{"HasCounter":"+1/+1"},{"HasCounter":"-1/-1"}]}]"#, &["Bear 0", "Ogre 1"])]
     #[case::with_the_rest_of_the_selector(r#"[{"ControlledBy":"Opponents"},{"HasCounter":"+1/+1"}]"#, &[])]
+    #[case::count_at_least_two(r#"[{"CounterCount":{"kind":"+1/+1","op":"Ge","to":2}}]"#, &["Bear 0"])]
+    #[case::count_at_least_three(r#"[{"CounterCount":{"kind":"+1/+1","op":"Ge","to":3}}]"#, &[])]
+    #[case::count_fewer_than_two_includes_none(
+        r#"[{"Type":"Creature"},{"CounterCount":{"kind":"+1/+1","op":"Lt","to":2}}]"#,
+        &["Ogre 1", "Bear 1"]
+    )]
+    #[case::count_exactly_zero(
+        r#"[{"Type":"Creature"},{"CounterCount":{"kind":"+1/+1","op":"Eq","to":0}}]"#,
+        &["Ogre 1", "Bear 1"]
+    )]
+    #[case::count_of_another_kind(r#"[{"CounterCount":{"kind":"-1/-1","op":"Eq","to":1}}]"#, &["Ogre 1"])]
     #[case::c10_any_kind(r#"["HasAnyCounter"]"#, &["Bear 0", "Ogre 1"])]
     #[case::c10_any_none(r#"[{"Type":"Creature"},{"Not":"HasAnyCounter"}]"#, &["Bear 1"])]
     #[case::c10_any_of_yours(r#"[{"ControlledBy":"You"},"HasAnyCounter"]"#, &["Bear 0"])]

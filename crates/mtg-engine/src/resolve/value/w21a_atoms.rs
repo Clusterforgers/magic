@@ -2,6 +2,7 @@
 //! a player target, and a card put into a graveyard from the battlefield this turn.
 
 use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::value::CastWay;
 use mtg_core::card::Subtype;
 
 use super::{ResolveError, Scope, Seen};
@@ -19,9 +20,27 @@ impl Scope<'_> {
     ) -> Result<bool, ResolveError> {
         Ok(match pred {
             Pred::Modified => self.w21a_modified(seen)?,
-            Pred::FaceDown => self.state.object(reference.id).is_some_and(|object| {
-                object.reference() == reference && object.face_down().is_some()
-            }),
+            Pred::RingBearer => {
+                seen.zone == Zone::Battlefield
+                    && self
+                        .state
+                        .object(reference.id)
+                        .is_some_and(|object| object.reference() == reference)
+                    && crate::characteristics::controller_of(self.state, reference.id)
+                        .is_some_and(|player| self.state.ring_bearer(player) == Some(reference.id))
+            }
+            Pred::FaceDown => {
+                // A spell still being announced is face down when it is cast that way (morph, disguise).
+                let announcing = self.casting.is_some_and(|(cast, _)| cast == reference.id)
+                    && self
+                        .cast_targets
+                        .as_ref()
+                        .is_some_and(|cast| cast.choices.way == Some(CastWay::FaceDown));
+                announcing
+                    || self.state.object(reference.id).is_some_and(|object| {
+                        object.reference() == reference && object.face_down().is_some()
+                    })
+            }
             Pred::TargetsPlayer(who) => {
                 let players = self.players(who)?;
                 seen.zone == Zone::Stack
@@ -40,6 +59,23 @@ impl Scope<'_> {
                         .state
                         .object_tallied(reference, None, Tally::W21aGraved)
                         > 0
+            }
+            Pred::SpentFrom { from, least } => {
+                seen.zone == Zone::Stack
+                    && seen.card.is_some_and(|card| {
+                        let spent: u32 = card
+                            .mana_spent_from()
+                            .iter()
+                            .filter(|source| from.holds(&source.traits))
+                            .map(|source| source.count)
+                            .sum();
+                        spent >= *least
+                    })
+            }
+            Pred::ArrivedFrom(origin) => {
+                self.state
+                    .object_tallied(reference, None, Tally::ArrivedFrom(*origin))
+                    > 0
             }
             _ => false,
         })

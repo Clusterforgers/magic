@@ -1,0 +1,30 @@
+{
+  "oracle_id": "111f3f1c-4387-4e61-8bff-6ebe3b7b9d9f",
+  "name": "Dream Thrush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Thrush",
+      "oracle_fingerprint": "8f151c4d765c3d59b3e2e5737fd35ba9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "f61591d5-0f2a-48cd-a091-863d2e93e019",
+  "name": "Ivy Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ivy Seer",
+      "oracle_fingerprint": "bc598f69392fd80a9aa71ee931a39cc8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Color": "Green" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Is": { "Bound": "revealed" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "Is": { "Bound": "revealed" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

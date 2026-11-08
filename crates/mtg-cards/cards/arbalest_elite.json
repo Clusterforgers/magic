@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1d79b7a8-2b4c-4893-afdb-879c74957288",
+  "name": "Arbalest Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arbalest Elite",
+      "oracle_fingerprint": "3da5d6aa7c1c61d7505ffbf302513ddb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

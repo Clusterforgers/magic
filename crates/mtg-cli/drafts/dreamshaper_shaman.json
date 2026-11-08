@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d06ef178-f02a-45a4-8193-140dee52c99d",
+  "name": "Dreamshaper Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamshaper Shaman",
+      "oracle_fingerprint": "8edd87afe3ff1448dd3cc124e5a07f54",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Mana": "{2}{R}" },
+                    { "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }
+                  ],
+                  "paid": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "as": "found",
+                        "revealed_as": "revealed2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed2" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

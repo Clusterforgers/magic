@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e04fa58e-be7a-4c9c-98d0-48241742a41b",
+  "name": "Backfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Backfire",
+      "oracle_fingerprint": "2698dff2b5685009930744c905460953",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Is": "Attached" }], "to": "You" } },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

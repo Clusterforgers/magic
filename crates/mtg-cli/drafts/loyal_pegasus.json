@@ -1,0 +1,16 @@
+{
+  "oracle_id": "3b7b862a-7edd-4e96-b4b9-f7113b4c93f9",
+  "name": "Loyal Pegasus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loyal Pegasus",
+      "oracle_fingerprint": "1a27137dc47ea531690ef77acaf115e0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantBlockAlone" } } } }
+      ]
+    }
+  ]
+}

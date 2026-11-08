@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d46d8913-7575-4aef-b511-6c0ca9d4b506",
+  "name": "Battle Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Brawler",
+      "oracle_fingerprint": "4255b91b5bcb0b0f0ca98d3b02cdd39f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "AddKeyword": "FirstStrike" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Red" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ce4d714c-c22b-47be-a372-a3139c4e5b1c",
+  "name": "Endless Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless Wurm",
+      "oracle_fingerprint": "2186f17b9e78064d60597c169fb15c78",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Enchantment" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

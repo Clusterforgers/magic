@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ffce416c-90c6-43ed-9019-e5a32accad6d",
+  "name": "Master Symmetrist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master Symmetrist",
+      "oracle_fingerprint": "edff011fef3b288780807f8acb494b8f",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                      "op": "Eq",
+                      "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                    }
+                  },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

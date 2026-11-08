@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5232fcc0-5dba-4569-8e99-c0b2c230e9f0",
+  "name": "Dogmeat, Ever Loyal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dogmeat, Ever Loyal",
+      "oracle_fingerprint": "c11dc25e2b380c205e6228c578fbb6e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 5 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "AnyOf": [
+                      { "HasAttached": [{ "Subtype": "Aura" }] },
+                      { "HasAttached": [{ "Subtype": "Equipment" }] }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "junk" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

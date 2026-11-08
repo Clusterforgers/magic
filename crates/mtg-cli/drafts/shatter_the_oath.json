@@ -1,0 +1,65 @@
+{
+  "oracle_id": "f545870d-b628-4acb-88c7-37c2d72a5a85",
+  "name": "Shatter the Oath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shatter the Oath",
+      "oracle_fingerprint": "a0b7f4b4c39a44c476925d67501145d4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Creature" }] }]
+                }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wicked",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+                          }
+                        },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "a14a838a-49f4-45e3-9ec0-3c803af45a68",
+  "name": "Red Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Hulk",
+      "oracle_fingerprint": "9b34308cbb9a7ac524107136585c62d5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": { "subject": "This", "selector": [], "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Either": [
+                                { "Object": [{ "Type": "Creature" }, "Other"] },
+                                "Player",
+                                { "Object": [{ "Type": "Planeswalker" }, "Other"] },
+                                { "Object": [{ "Type": "Battle" }, "Other"] }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -42,7 +42,7 @@ const NARSETS_REVERSAL: &str = r#"{"Spell":{"targets":[{"what":{"Object":["Spell
 const ROOTHA: &str = r#"{"Activated":{"cost":[{"Mana":"{2}"},{"ReturnToHand":{"filter":["This"]}}],"targets":[{"what":{"Object":["Spell",{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]},{"ControlledBy":"You"}]}}],"effects":[{"CopySpell":{"what":{"Target":0},"new_targets":true}}]}}"#;
 
 /// "Whenever an enchantment you control enters, you may create a token that's a copy of it. Do this only once each turn."
-const ONDU: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Enchantment"},{"ControlledBy":"You"}],"to":"Battlefield"}},"limit":"OncePerTurn","effects":[{"May":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"Triggering"}}}}]}}]}}"#;
+const ONDU: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Enchantment"},{"ControlledBy":"You"}],"to":"Battlefield"}},"limit":"OncePerTurnDone","effects":[{"May":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"Triggering"}}}}]}}]}}"#;
 
 /// "At the beginning of your first main phase, you may discard two cards. If you do, return this card from your graveyard to your hand."
 const OLD_ONE_EYE: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"Main1","whose":"You"}},"from":"Graveyard","effects":[{"Pay":{"cost":[{"Discard":{"count":2}}],"paid":[{"Move":{"what":"This","to":"Hand"}}]}}]}}"#;

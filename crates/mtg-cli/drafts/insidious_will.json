@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8088d110-2314-45c3-b6ee-3f55d1f388e4",
+  "name": "Insidious Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insidious Will",
+      "oracle_fingerprint": "fbd22c97925df6e672315e1194f78a92",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

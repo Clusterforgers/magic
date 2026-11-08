@@ -1,0 +1,38 @@
+{
+  "oracle_id": "dcbf8d72-3367-43e1-9a71-e674e0ed52d9",
+  "name": "Taj-Nar Swordsmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taj-Nar Swordsmith",
+      "oracle_fingerprint": "ab5e4de83ef97889637d997bf262bc4d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Subtype": "Equipment" },
+                          { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "14c344f3-8745-43ee-98da-3f28ba35ea96",
+  "name": "Jon Irenicus, the Exile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jon Irenicus, the Exile",
+      "oracle_fingerprint": "ef567d5161cf39e799df30e2af113336",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Library" }] },
+                      "op": "Ge",
+                      "right": { "Count": [{ "OwnedBy": { "Target": 0 } }, { "In": "Library" }] }
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [{ "Mill": { "who": "Opponents", "count": 5 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

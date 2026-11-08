@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3dfc6a52-d58c-4455-96fe-ec193743d67a",
+  "name": "Fairgrounds Trumpeter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fairgrounds Trumpeter",
+      "oracle_fingerprint": "8a0fedba1561c2e456dbb856681a957b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "PlusOneCountersPut",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

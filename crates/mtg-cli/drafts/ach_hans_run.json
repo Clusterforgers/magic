@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a2c5ee76-6084-413c-bb70-45490d818374",
+  "name": "\"Ach! Hans, Run!\"",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "\"Ach! Hans, Run!\"",
+      "oracle_fingerprint": "8ec59535eb0fcb278204af08c580bfd1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "kind": { "CardName": [{ "Type": "Creature" }] },
+                        "as": "name"
+                      }
+                    },
+                    { "Search": { "filter": [{ "ChosenAs": "name" }], "as": "found2" } },
+                    { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "found2" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "found2" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

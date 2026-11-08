@@ -1,0 +1,57 @@
+{
+  "oracle_id": "7f87a770-af47-4345-8dc1-0a1e8bae75c5",
+  "name": "Caparocti Sunborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caparocti Sunborn",
+      "oracle_fingerprint": "4c599d9d4f2627fc9a46bb193935e1cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "TapPermanents": {
+                        "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                        "count": 2
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "ExileUntil": {
+                        "filter": [
+                          { "Not": { "Type": "Land" } },
+                          { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                        ],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "found" },
+                        "free": true,
+                        "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "837e4452-3002-41e3-890b-3d54b469e7b9",
+  "name": "Firemane Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firemane Angel",
+      "oracle_fingerprint": "db6a690befe02d43078f191ce5f0a9e0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 } },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}{W}{W}{R}{R}",
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

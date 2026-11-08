@@ -1,0 +1,46 @@
+{
+  "oracle_id": "bad2e3b2-ad47-4e17-b35e-0fcc13e82937",
+  "name": "Konstrari Improviser // Soul Tether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Konstrari Improviser",
+      "oracle_fingerprint": "bbef1b929d4d72006818a6d2bbea155f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } }
+      ]
+    },
+    {
+      "name": "Soul Tether",
+      "oracle_fingerprint": "b591a091646e071b853c1fd461e4ae0d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Heartwood",
+                      "colors": ["Red", "Green"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Heartwood"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

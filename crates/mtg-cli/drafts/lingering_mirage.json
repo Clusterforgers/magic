@@ -8,18 +8,7 @@
       "oracle_fingerprint": "b9f995d70e8ce7c94bc6b760ec4846ff",
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
-        {
-          "Static": {
-            "affected": {
-              "Each": [
-                { "Type": "Land" },
-                { "ControlledBy": "You" },
-                { "HasAttached": [{ "Is": "This" }] }
-              ]
-            },
-            "mods": [{ "SetTypes": ["Land"] }, { "AddSubtype": "Island" }]
-          }
-        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetLandTypes": ["Island"] }] } },
         { "Keyword": { "Cycling": "{2}" } }
       ]
     }

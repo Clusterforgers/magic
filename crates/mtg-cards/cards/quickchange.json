@@ -1,0 +1,29 @@
+{
+  "oracle_id": "77f34281-6f93-4043-a13d-8d83014e7620",
+  "name": "Quickchange",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quickchange",
+      "oracle_fingerprint": "2c344b5032347e01faf174c9bbe8d7a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Colors", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

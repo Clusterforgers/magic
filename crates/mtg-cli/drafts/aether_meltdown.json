@@ -1,0 +1,33 @@
+{
+  "oracle_id": "433a2880-d989-4c40-99fa-0896de341b88",
+  "name": "Aether Meltdown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Meltdown",
+      "oracle_fingerprint": "52bf4973cf06b2882226b72c11b0d5c7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

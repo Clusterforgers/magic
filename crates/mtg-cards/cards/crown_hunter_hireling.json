@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fece36a3-deb6-4fef-a456-b6514056bfd2",
+  "name": "Crown-Hunter Hireling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown-Hunter Hireling",
+      "oracle_fingerprint": "0399f348139abe580950acfce724d778",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "This", "action": { "Attack": { "unless": { "Monarch": "You" } } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

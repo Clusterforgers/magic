@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2dd32fec-5bc3-4cc0-a9b4-814229a64914",
+  "name": "Balustrade Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balustrade Wurm",
+      "oracle_fingerprint": "c943a2e9282025a0542f9588b2ea9369",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{2}{G}{G}",
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

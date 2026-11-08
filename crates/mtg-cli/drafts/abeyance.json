@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6300de53-6e71-4f0e-87e1-b0acd25c59a8",
+  "name": "Abeyance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abeyance",
+      "oracle_fingerprint": "f3c0d0bfe5d337a9b42d26ecfd17ba5a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Target": 0 },
+                      "action": {
+                        "Cast": {
+                          "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                        }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "Activate": [] } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

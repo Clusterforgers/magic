@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ffd666c7-a8ca-4467-8733-878efb127268",
+  "name": "Hazardous Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hazardous Blast",
+      "oracle_fingerprint": "829e4a8845e24e9b527414fe7f98b1e1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

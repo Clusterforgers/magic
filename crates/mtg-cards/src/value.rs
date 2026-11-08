@@ -11,6 +11,7 @@ use mtg_core::mana::ManaType;
 use crate::cost::Cost;
 use crate::keyword::Keyword;
 use crate::refs::{Ref, Selector, ZoneKind};
+use crate::spend::SpendFilter;
 use crate::trigger::Step;
 
 /// A characteristic of an object that has a number.
@@ -28,6 +29,16 @@ pub enum StatKind {
     Colors,
     /// Its basic land types (CR 305.6): how many as a number, each type once among objects (`Amount::Distinct`, domain).
     BasicLandTypes,
+    /// Its printed power, as the card has it before any effect (a face-down or copied object reads what it is now).
+    BasePower,
+    /// Its printed toughness, as the card has it before any effect.
+    BaseToughness,
+    /// The mana spent to cast it, while it is a spell or when it was cast.
+    ManaSpent,
+    /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
+    Name,
+    /// Its creature types: no number, so only `Amount::MostCommon` reads it (the most creatures sharing one type).
+    CreatureType,
 }
 
 /// A comparison between two numbers.
@@ -79,6 +90,8 @@ pub enum CastWay {
     Suspend,
     /// Foretell (CR 702.143): from exile, face down, on a later turn than it was foretold, for its foretell cost.
     Foretold,
+    /// Plot (CR 702.170): from exile, face up, as a sorcery on a later turn than it was plotted, without paying its mana cost.
+    Plotted,
     /// Escape (CR 702.138): from a graveyard for its escape cost, which exiles other cards of the graveyard; the permanent remembers that it escaped.
     Escape,
     /// Dash (CR 702.109): the creature has haste and returns to its owner's hand at the next end step.
@@ -91,6 +104,8 @@ pub enum CastWay {
     Prowl,
     /// Spectacle (CR 702.137): a spell cast from a hand for its spectacle cost, which its abilities read as "if its spectacle cost was paid".
     Spectacle,
+    /// Freerunning (CR 702.173): a spell cast from a hand for its freerunning cost, which its abilities read as "if its freerunning cost was paid".
+    Freerunning,
     /// Mayhem (CR 702.190): a spell cast from a graveyard for its mayhem cost, which its abilities read as "if its mayhem cost was paid".
     Mayhem,
     /// Disturb (CR 702.146): the back face of a transforming double-faced card cast from a graveyard for its disturb cost, which its abilities read as "if its disturb cost was paid"; exiled when it leaves the stack.
@@ -105,12 +120,26 @@ pub enum CastWay {
     FaceDown,
     /// Mutate (CR 702.140): a creature spell cast from a hand for its mutate cost that targets a non-Human creature with the same owner and merges with it as it resolves.
     Mutate,
+    /// Warp (the alternative cost table): a card cast from a hand for its warp cost, which its abilities read as "if its warp cost was paid".
+    Warp,
+    /// Surge: a spell cast from a hand for its surge cost after the caster cast another spell this turn.
+    Surge,
+    /// Web-slinging: a spell cast from a hand for its web-slinging cost, which returns a tapped creature the caster controls.
+    WebSlinging,
+    /// Sneak: a spell cast from a hand in the declare blockers step for its sneak cost, which returns an unblocked attacker the caster controls; the permanent enters tapped and attacking what that creature attacked.
+    Sneak,
+    /// Prototype (CR 702.160): a permanent spell cast from a hand for its prototype cost; the spell and the permanent have the prototype mana cost, colours, power and toughness.
+    Prototype,
+    /// Impending: a permanent spell cast from a hand for its impending cost; it enters with time counters and is no creature while it has one.
+    Impending,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
     /// Emerge (CR 702.119): from a hand for its emerge cost and the sacrifice of a creature, reduced by that creature's mana value.
     Emerge,
     /// Harmonize (CR 702.180): from a graveyard for its harmonize cost, reduced by the power of a creature tapped for it; exiled when it leaves the stack.
     Harmonize,
+    /// An alternative cost the card prints in a static line, chosen per card (CR 118.9): cast from where `AltCast` names for the cost it gives.
+    Alternative,
 }
 
 impl CastWay {
@@ -187,6 +216,20 @@ impl CounterKind {
         })
     }
 
+    /// The power and toughness one counter of this kind adds (CR 122.1a, 613.4c): `+1/+1` adds (1, 1), `-1/-1` adds
+    /// (-1, -1) and a counter named for its numbers such as `+2/+0` or `-0/-1` adds those; any other kind adds nothing.
+    pub fn power_toughness(&self) -> (i32, i32) {
+        match self {
+            CounterKind::PlusOnePlusOne => (1, 1),
+            CounterKind::MinusOneMinusOne => (-1, -1),
+            CounterKind::Other(name) => name
+                .split_once('/')
+                .and_then(|(power, toughness)| Some((signed(power)?, signed(toughness)?)))
+                .unwrap_or((0, 0)),
+            _ => (0, 0),
+        }
+    }
+
     /// The kind as a card names it: `+1/+1`, `poison`, `charge`.
     pub fn name(&self) -> &str {
         match self {
@@ -198,6 +241,19 @@ impl CounterKind {
             CounterKind::Other(name) => name,
         }
     }
+}
+
+/// A counter's signed number written with its sign (`+2`, `-0`).
+fn signed(text: &str) -> Option<i32> {
+    let (sign, digits) = match text.split_at_checked(1)? {
+        ("+", digits) => (1, digits),
+        ("-", digits) => (-1, digits),
+        _ => return None,
+    };
+    if digits.is_empty() || !digits.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    digits.parse::<i32>().ok().map(|n| sign * n)
 }
 
 /// Whether it is day or night (CR 726.1).
@@ -217,6 +273,10 @@ pub enum TurnTally {
     Attackers,
     /// The damage dealt to the player after prevention, by any source.
     DamageTaken,
+    /// The combat damage the player took.
+    CombatDamageTaken,
+    /// The noncombat damage the player took.
+    NoncombatDamageTaken,
     /// The times the player gained life, once for each gain of any amount.
     LifeGained,
     /// The times counters were put on the object (read through an object reference, not a player): one for each
@@ -264,6 +324,66 @@ pub enum TurnTally {
     /// The cards that left the graveyards of the players read this turn, to any zone ("if a card left your graveyard this
     /// turn"). Added up over the players.
     CardsLeftGraveyard,
+    /// The permanents that left the battlefield for any zone while the players read controlled them (revolt: "if a
+    /// permanent left the battlefield under your control this turn"). Added up over the players.
+    PermanentsLeftUnder,
+    /// The times the player scried this turn, once for each scry that looked at a card.
+    Scried,
+    /// The times the player surveilled this turn, once for each surveil that looked at a card.
+    Surveilled,
+    /// The permanents the player sacrificed this turn, each once, as the player who controlled it.
+    Sacrificed,
+    /// The permanent cards put into the player's graveyard from anywhere this turn (descended, CR 702.188 of the Lost Caverns rules); a token is no card.
+    Descended,
+    /// The damage dealt this turn, after prevention, to the objects the reference names, as the objects they were then (a
+    /// creature that died since counts what it was dealt before it died), and to the players it names; added up.
+    DamageDealtTo,
+    /// The cards put into the player's graveyard from anywhere this turn, each once; a token is no card.
+    CardsGraved,
+    /// The creature cards put into the player's graveyard from anywhere this turn, each once; a token is no card.
+    CreatureCardsGraved,
+    /// The crimes the player committed this turn (CR 700.13): each spell they cast and each ability they put on the stack
+    /// that targets an opponent, something an opponent controls or a card in an opponent's graveyard, once.
+    Crimes,
+    /// The dungeons the player has completed this game (CR 309.7), each completion once; not reset by the turn.
+    DungeonsCompleted,
+    /// The nonland permanents that left the battlefield for any zone while the players read controlled them (void).
+    /// Added up over the players.
+    NonlandPermanentsLeft,
+    /// The spells the player cast with warp this turn (void). Added up over the players.
+    SpellsWarped,
+    /// The creatures that left the battlefield for any zone while the players read controlled them ("for each creature that
+    /// left the battlefield under your control this turn"). Added up over the players.
+    CreaturesLeftUnder,
+}
+
+/// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum TallyEvent {
+    /// A token was created (the object is the token, as it entered).
+    TokenCreated,
+    /// A spell was cast (the object is the spell, as it was cast).
+    SpellCast,
+    /// A permanent entered the battlefield, a token included (the object as it entered, under the controller it entered with).
+    Entered,
+    /// A permanent was put into a graveyard from the battlefield (the object as it last existed there, tokens included).
+    Died,
+    /// Damage was dealt (the dealer; an amount counts the damage dealt, `Pred::DidThisTurn` reads who it went to).
+    Damaged,
+    /// A creature was declared as an attacker (the attacker; `Pred::DidThisTurn` reads who it attacks).
+    Attacked,
+    /// A creature was declared as a blocker (the blocker; `Pred::DidThisTurn` reads the attacker it blocks).
+    Blocked,
+    /// An ability was activated, a mana ability excepted (the source of the ability).
+    Activated,
+    /// Counters were put on a permanent or a card in exile by a spell or ability (the object; an amount counts the
+    /// counters put, for the player who controlled the spell or ability).
+    CountersPut,
+    /// +1/+1 counters were put on a permanent or a card in exile by a spell or ability, as for `CountersPut`; an amount
+    /// counts the +1/+1 counters put.
+    PlusOneCountersPut,
+    /// A permanent was sacrificed (as it last was, for its controller).
+    Sacrificed,
 }
 
 /// Which result of the latest die roll an amount reads.
@@ -288,7 +408,7 @@ pub enum Amount {
     X,
     /// How many objects match the selector when the effect runs.
     Count(Selector),
-    /// A characteristic of the referenced object (its last known value if it left).
+    /// A characteristic of the referenced object (its last known value if it left); of several objects, their total.
     Stat {
         /// The object.
         of: Ref,
@@ -300,6 +420,8 @@ pub enum Amount {
     /// How many times the player has cast their commanders from the command zone this game, all of them together
     /// (CR 903.8): the count behind the commander tax.
     CommanderCasts(Ref),
+    /// A player's speed (CR 702.179): 0 until start your engines! gives them one, at most 4.
+    Speed(Ref),
     /// How many counters of a kind are on the object or player.
     Counters {
         /// The object or player.
@@ -375,6 +497,9 @@ pub enum Amount {
     /// The life the players lost to the effects of the spell or ability that is resolving ("you gain life equal to the
     /// life lost this way"): the amounts of its `LifeLost` events so far.
     LifeLostThisWay,
+    /// The damage the resolving spell or ability has dealt so far, after prevention, to every player and object together
+    /// ("you gain life equal to the damage dealt this way"); zero outside a resolution.
+    DamageDealtThisWay,
     /// How many permanents the resolving spell or ability has destroyed so far that matched the selector as they last
     /// existed ("for each creature destroyed this way", "creatures you controlled that were destroyed this way"); tokens
     /// count, and a permanent regenerated or indestructible was not destroyed.
@@ -393,8 +518,13 @@ pub enum Amount {
     Mutations(Ref),
     /// One if the caster promised a gift as they cast the spell the ability reads, else zero (CR 702.174).
     Promised,
+    /// How many times the ability that reads it has resolved this turn, this resolution included; zero outside a resolving
+    /// ability (Ashling's "if this is the third time this ability has resolved this turn").
+    ResolvedThisTurn,
     /// How many permanents this permanent devoured as it entered (CR 702.82); zero once it has left the battlefield.
     Devoured,
+    /// The number a `Let` of the resolving spell or ability fixed under the name; zero before it ran.
+    Bound(String),
     /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
     CastWith(CastWay),
     /// How many colors there are among the mana spent to cast the spell the source is or came from (CR 702.44, sunburst).
@@ -418,8 +548,19 @@ pub enum Amount {
         /// The objects counted for each, written for "you".
         of: Selector,
     },
+    /// The most counters of the kind that any one of the players the reference names holds ("the most poison counters
+    /// among your opponents"); never the sum, and zero when no player is named.
+    HighestCounters {
+        /// The players compared.
+        who: Ref,
+        /// The kind of counter.
+        counter: CounterKind,
+    },
     /// The life total the players the reference names began the game with (the least of them).
     StartingLife(Ref),
+    /// The most spells one of the players the reference names cast during the previous turn ("no spells were cast last turn":
+    /// `EachPlayer`, equal to 0; "a player cast two or more spells last turn": at least 2); 0 before any turn has ended.
+    CastLastTurn(Ref),
     /// The size of the party of the player the reference names (CR 700.8): the most roles among Cleric, Rogue, Warrior and
     /// Wizard their creatures fill, each creature filling one role and each role once, so 0 to 4; the largest when it names several.
     Party(Ref),
@@ -427,8 +568,95 @@ pub enum Amount {
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found, and for a batch of damage the damage dealt in all.
     Triggering,
+    /// The events of the kind this turn whose object the filter selects, counted for the players the reference names
+    /// ("the second creature token you created this turn").
+    Tally {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+    },
+    /// The number of colors in the color identity of the commanders the players named have, all together (CR 903.4).
+    CommanderColors(Ref),
+    /// The numbers the sources named by `on` remember in `slot` (`Effect::RememberValue`), added up; 0 when none is held.
+    Remembered {
+        /// The object whose memory is read.
+        on: Ref,
+        /// The name of the memory.
+        slot: String,
+    },
+    /// The number of the turn, counting from 1 (CR 500).
+    TurnNumber,
+    /// How many targets the spell or ability that triggered this one has.
+    TriggeringTargets,
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
     DieResult(DieResult),
+    /// The first amount when the condition holds when the effect runs, else the second ("X is 3 if you control a Goblin, else 1").
+    When {
+        /// The fact checked.
+        condition: Box<Condition>,
+        /// The amount when it holds.
+        then: Box<Amount>,
+        /// The amount when it does not.
+        otherwise: Box<Amount>,
+    },
+    /// How much mana was spent to cast the spell the source is or came from: of the one type, or of all types when none is named,
+    /// and only the mana of sources of that kind when one is ("mana from a Treasure", tapped before the cast or during it).
+    ManaSpent {
+        /// The type counted; all mana when none.
+        of: Option<ManaType>,
+        /// The kind of source the mana came from; any source when none.
+        from: Option<Box<SpendFilter>>,
+    },
+    /// How many different colors of mana the players the reference names hold in their pools, all together.
+    ManaColors(Ref),
+    /// How many permanents share the value of the characteristic that most of the objects the selector names share
+    /// ("the most common color among creatures you control", with `Colors` each color counted once per object); zero when none match.
+    MostCommon {
+        /// The objects compared.
+        of: Selector,
+        /// The characteristic.
+        stat: StatKind,
+    },
+    /// A whole number from `min` to `max`, drawn from the game's seeded random stream, so a replay of the log draws it again.
+    Random {
+        /// The lowest number.
+        min: i32,
+        /// The highest number.
+        max: i32,
+    },
+    /// How much mana the players the reference names hold in their pools, restricted mana included.
+    ManaInPool(Ref),
+    /// The doors unlocked among the Rooms the selector names (CR 709.5), both doors of a Room counting twice.
+    Doors(Selector),
+    /// The number the controller of the source chose as the source entered the battlefield; 0 when it chose none.
+    Chosen,
+    /// The number the resolution remembered under the name (`Effect::ChooseValue`); 0 for a value that is no number.
+    ChosenAs(String),
+    /// How many of the objects the reference names satisfy the filter, an object that left the zone judged as it was
+    /// (CR 400.7): "the number of Humans among the sacrificed creatures". Zero when the reference names none.
+    CountOf {
+        /// The objects counted from.
+        of: Ref,
+        /// What each must satisfy.
+        filter: Selector,
+    },
+    /// The product of the amounts: "X times the number of ...".
+    Product(Vec<Amount>),
+    /// The amount divided by another, rounded up or down; zero when the divisor is zero or less: "a third of their
+    /// life, rounded up", "X divided evenly, rounded down, among the creatures".
+    Quotient {
+        /// The amount divided.
+        of: Box<Amount>,
+        /// What it is divided by.
+        by: Box<Amount>,
+        /// Rounded up; else down.
+        up: bool,
+    },
+    /// How far apart the two amounts are, never negative: "the difference between its power and toughness".
+    Difference(Box<Amount>, Box<Amount>),
 }
 
 impl Amount {
@@ -467,43 +695,125 @@ impl Amount {
 enum Tagged {
     X,
     Count(Selector),
-    Stat { of: Ref, stat: StatKind },
+    Stat {
+        of: Ref,
+        stat: StatKind,
+    },
     Life(Ref),
     CommanderCasts(Ref),
-    Counters { on: Ref, counter: CounterKind },
+    Speed(Ref),
+    Counters {
+        on: Ref,
+        counter: CounterKind,
+    },
     AnyCounters(Ref),
     Sum(Vec<Amount>),
-    Times { by: i32, of: Box<Amount> },
-    Half { of: Box<Amount>, up: bool },
+    Times {
+        by: i32,
+        of: Box<Amount>,
+    },
+    Half {
+        of: Box<Amount>,
+        up: bool,
+    },
     Divided,
     EvenShare(Box<Amount>),
     TargetCount(u8),
     Devotion(Vec<Color>),
-    Greatest { of: Selector, stat: StatKind },
-    Total { of: Selector, stat: StatKind },
-    Distinct { of: Selector, stat: StatKind },
+    Greatest {
+        of: Selector,
+        stat: StatKind,
+    },
+    Total {
+        of: Selector,
+        stat: StatKind,
+    },
+    Distinct {
+        of: Selector,
+        stat: StatKind,
+    },
     CardTypes(Selector),
     Players(Ref),
     LowestLife(Ref),
     HighestLife(Ref),
     LowestHand(Ref),
     LifeLostThisWay,
+    DamageDealtThisWay,
     Destroyed(Selector),
     Exiled(Selector),
     PhasedOut(Selector),
     Kicks,
     Mutations(Ref),
     Promised,
+    ResolvedThisTurn,
     Devoured,
+    Bound(String),
     CastWith(CastWay),
     ColorsSpent,
     PermanentsGraved,
-    Tallied { who: Ref, what: TurnTally },
-    Largest { who: Ref, of: Selector },
+    Tallied {
+        who: Ref,
+        what: TurnTally,
+    },
+    Largest {
+        who: Ref,
+        of: Selector,
+    },
+    HighestCounters {
+        who: Ref,
+        counter: CounterKind,
+    },
     StartingLife(Ref),
+    CastLastTurn(Ref),
     Party(Ref),
     Triggering,
+    Tally {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+    },
+    Remembered {
+        on: Ref,
+        slot: String,
+    },
+    CommanderColors(Ref),
+    TurnNumber,
+    TriggeringTargets,
     DieResult(DieResult),
+    When {
+        condition: Box<Condition>,
+        then: Box<Amount>,
+        otherwise: Box<Amount>,
+    },
+    ManaSpent {
+        of: Option<ManaType>,
+        #[serde(default)]
+        from: Option<Box<SpendFilter>>,
+    },
+    ManaColors(Ref),
+    MostCommon {
+        of: Selector,
+        stat: StatKind,
+    },
+    Random {
+        min: i32,
+        max: i32,
+    },
+    ManaInPool(Ref),
+    Doors(Selector),
+    Chosen,
+    ChosenAs(String),
+    CountOf {
+        of: Ref,
+        filter: Selector,
+    },
+    Product(Vec<Amount>),
+    Quotient {
+        of: Box<Amount>,
+        by: Box<Amount>,
+        up: bool,
+    },
+    Difference(Box<Amount>, Box<Amount>),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -517,6 +827,7 @@ enum TaggedRef<'a> {
     },
     Life(&'a Ref),
     CommanderCasts(&'a Ref),
+    Speed(&'a Ref),
     Counters {
         on: &'a Ref,
         counter: &'a CounterKind,
@@ -553,13 +864,16 @@ enum TaggedRef<'a> {
     HighestLife(&'a Ref),
     LowestHand(&'a Ref),
     LifeLostThisWay,
+    DamageDealtThisWay,
     Destroyed(&'a Selector),
     Exiled(&'a Selector),
     PhasedOut(&'a Selector),
     Kicks,
     Mutations(&'a Ref),
     Promised,
+    ResolvedThisTurn,
     Devoured,
+    Bound(&'a str),
     CastWith(CastWay),
     ColorsSpent,
     PermanentsGraved,
@@ -571,10 +885,61 @@ enum TaggedRef<'a> {
         who: &'a Ref,
         of: &'a Selector,
     },
+    HighestCounters {
+        who: &'a Ref,
+        counter: &'a CounterKind,
+    },
     StartingLife(&'a Ref),
+    CastLastTurn(&'a Ref),
     Party(&'a Ref),
     Triggering,
+    Tally {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+    },
+    Remembered {
+        on: &'a Ref,
+        slot: &'a str,
+    },
+    CommanderColors(&'a Ref),
+    TurnNumber,
+    TriggeringTargets,
     DieResult(DieResult),
+    When {
+        condition: &'a Condition,
+        then: &'a Amount,
+        otherwise: &'a Amount,
+    },
+    ManaSpent {
+        of: Option<ManaType>,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        from: Option<&'a SpendFilter>,
+    },
+    ManaColors(&'a Ref),
+    MostCommon {
+        of: &'a Selector,
+        stat: StatKind,
+    },
+    Random {
+        min: i32,
+        max: i32,
+    },
+    ManaInPool(&'a Ref),
+    Doors(&'a Selector),
+    Chosen,
+    ChosenAs(&'a String),
+    CountOf {
+        of: &'a Ref,
+        filter: &'a Selector,
+    },
+    Product(&'a [Amount]),
+    Quotient {
+        of: &'a Amount,
+        by: &'a Amount,
+        up: bool,
+    },
+    Difference(&'a Amount, &'a Amount),
 }
 
 impl From<Tagged> for Amount {
@@ -585,6 +950,7 @@ impl From<Tagged> for Amount {
             Tagged::Stat { of, stat } => Amount::Stat { of, stat },
             Tagged::Life(who) => Amount::Life(who),
             Tagged::CommanderCasts(who) => Amount::CommanderCasts(who),
+            Tagged::Speed(who) => Amount::Speed(who),
             Tagged::Counters { on, counter } => Amount::Counters { on, counter },
             Tagged::AnyCounters(on) => Amount::AnyCounters(on),
             Tagged::Sum(parts) => Amount::Sum(parts),
@@ -602,6 +968,7 @@ impl From<Tagged> for Amount {
             Tagged::HighestLife(who) => Amount::HighestLife(who),
             Tagged::LowestHand(who) => Amount::LowestHand(who),
             Tagged::LifeLostThisWay => Amount::LifeLostThisWay,
+            Tagged::DamageDealtThisWay => Amount::DamageDealtThisWay,
             Tagged::Distinct { of, stat } => Amount::Distinct { of, stat },
             Tagged::Destroyed(of) => Amount::Destroyed(of),
             Tagged::Exiled(of) => Amount::Exiled(of),
@@ -609,21 +976,53 @@ impl From<Tagged> for Amount {
             Tagged::Kicks => Amount::Kicks,
             Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
+            Tagged::ResolvedThisTurn => Amount::ResolvedThisTurn,
             Tagged::Devoured => Amount::Devoured,
+            Tagged::Bound(name) => Amount::Bound(name),
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
             Tagged::PermanentsGraved => Amount::PermanentsGraved,
             Tagged::Tallied { who, what } => Amount::Tallied { who, what },
             Tagged::Largest { who, of } => Amount::Largest { who, of },
+            Tagged::HighestCounters { who, counter } => Amount::HighestCounters { who, counter },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
+            Tagged::CastLastTurn(who) => Amount::CastLastTurn(who),
             Tagged::Party(who) => Amount::Party(who),
             Tagged::Triggering => Amount::Triggering,
             Tagged::DieResult(which) => Amount::DieResult(which),
+            Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
+            Tagged::Remembered { on, slot } => Amount::Remembered { on, slot },
+            Tagged::CommanderColors(who) => Amount::CommanderColors(who),
+            Tagged::TurnNumber => Amount::TurnNumber,
+            Tagged::TriggeringTargets => Amount::TriggeringTargets,
+            Tagged::When {
+                condition,
+                then,
+                otherwise,
+            } => Amount::When {
+                condition,
+                then,
+                otherwise,
+            },
+            Tagged::ManaSpent { of, from } => Amount::ManaSpent { of, from },
+            Tagged::ManaColors(who) => Amount::ManaColors(who),
+            Tagged::MostCommon { of, stat } => Amount::MostCommon { of, stat },
+            Tagged::Random { min, max } => Amount::Random { min, max },
+            Tagged::ManaInPool(who) => Amount::ManaInPool(who),
+            Tagged::Doors(of) => Amount::Doors(of),
+            Tagged::Chosen => Amount::Chosen,
+            Tagged::ChosenAs(name) => Amount::ChosenAs(name),
+            Tagged::CountOf { of, filter } => Amount::CountOf { of, filter },
+            Tagged::Product(parts) => Amount::Product(parts),
+            Tagged::Quotient { of, by, up } => Amount::Quotient { of, by, up },
+            Tagged::Difference(left, right) => Amount::Difference(left, right),
         }
     }
 }
 
 impl Serialize for Amount {
+    // One arm for each variant of the amount.
+    #[allow(clippy::too_many_lines)]
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
             Amount::Fixed(n) => serializer.serialize_i32(*n),
@@ -632,6 +1031,7 @@ impl Serialize for Amount {
             Amount::Stat { of, stat } => TaggedRef::Stat { of, stat: *stat }.serialize(serializer),
             Amount::Life(who) => TaggedRef::Life(who).serialize(serializer),
             Amount::CommanderCasts(who) => TaggedRef::CommanderCasts(who).serialize(serializer),
+            Amount::Speed(who) => TaggedRef::Speed(who).serialize(serializer),
             Amount::Counters { on, counter } => {
                 TaggedRef::Counters { on, counter }.serialize(serializer)
             }
@@ -655,6 +1055,7 @@ impl Serialize for Amount {
             Amount::HighestLife(who) => TaggedRef::HighestLife(who).serialize(serializer),
             Amount::LowestHand(who) => TaggedRef::LowestHand(who).serialize(serializer),
             Amount::LifeLostThisWay => TaggedRef::LifeLostThisWay.serialize(serializer),
+            Amount::DamageDealtThisWay => TaggedRef::DamageDealtThisWay.serialize(serializer),
             Amount::Distinct { of, stat } => {
                 TaggedRef::Distinct { of, stat: *stat }.serialize(serializer)
             }
@@ -664,7 +1065,9 @@ impl Serialize for Amount {
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
+            Amount::ResolvedThisTurn => TaggedRef::ResolvedThisTurn.serialize(serializer),
             Amount::Devoured => TaggedRef::Devoured.serialize(serializer),
+            Amount::Bound(name) => TaggedRef::Bound(name).serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
             Amount::ColorsSpent => TaggedRef::ColorsSpent.serialize(serializer),
             Amount::PermanentsGraved => TaggedRef::PermanentsGraved.serialize(serializer),
@@ -672,10 +1075,64 @@ impl Serialize for Amount {
                 TaggedRef::Tallied { who, what: *what }.serialize(serializer)
             }
             Amount::Largest { who, of } => TaggedRef::Largest { who, of }.serialize(serializer),
+            Amount::HighestCounters { who, counter } => {
+                TaggedRef::HighestCounters { who, counter }.serialize(serializer)
+            }
             Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
+            Amount::CastLastTurn(who) => TaggedRef::CastLastTurn(who).serialize(serializer),
             Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
             Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),
+            Amount::Tally { event, who, filter } => TaggedRef::Tally {
+                event: *event,
+                who,
+                filter,
+            }
+            .serialize(serializer),
+            Amount::Remembered { on, slot } => {
+                TaggedRef::Remembered { on, slot }.serialize(serializer)
+            }
+            Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
+            Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
+            Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
+            Amount::When {
+                condition,
+                then,
+                otherwise,
+            } => TaggedRef::When {
+                condition,
+                then,
+                otherwise,
+            }
+            .serialize(serializer),
+            Amount::ManaSpent { of, from } => TaggedRef::ManaSpent {
+                of: *of,
+                from: from.as_deref(),
+            }
+            .serialize(serializer),
+            Amount::ManaColors(who) => TaggedRef::ManaColors(who).serialize(serializer),
+            Amount::MostCommon { of, stat } => {
+                TaggedRef::MostCommon { of, stat: *stat }.serialize(serializer)
+            }
+            Amount::Random { min, max } => TaggedRef::Random {
+                min: *min,
+                max: *max,
+            }
+            .serialize(serializer),
+            Amount::ManaInPool(who) => TaggedRef::ManaInPool(who).serialize(serializer),
+            Amount::Doors(of) => TaggedRef::Doors(of).serialize(serializer),
+            Amount::Chosen => TaggedRef::Chosen.serialize(serializer),
+            Amount::ChosenAs(name) => TaggedRef::ChosenAs(name).serialize(serializer),
+            Amount::CountOf { of, filter } => {
+                TaggedRef::CountOf { of, filter }.serialize(serializer)
+            }
+            Amount::Product(parts) => TaggedRef::Product(parts).serialize(serializer),
+            Amount::Quotient { of, by, up } => {
+                TaggedRef::Quotient { of, by, up: *up }.serialize(serializer)
+            }
+            Amount::Difference(left, right) => {
+                TaggedRef::Difference(left, right).serialize(serializer)
+            }
         }
     }
 }
@@ -742,6 +1199,20 @@ pub enum Condition {
         /// The predicates it must satisfy.
         selector: Selector,
     },
+    /// The inner condition is checked as the ability triggers and not again as it resolves (an "if" that is no intervening
+    /// "if", Forge's `NoResolvingCheck`).
+    AtTrigger(Box<Condition>),
+    /// The number of referenced objects that have the selector's characteristics (zone ignored) compares this way.
+    CountOf {
+        /// The objects counted.
+        subject: Ref,
+        /// The predicates each must satisfy.
+        selector: Selector,
+        /// The comparison.
+        op: Cmp,
+        /// The amount compared with.
+        right: Amount,
+    },
     /// The spell was kicked (any kicker cost was paid); a permanent and its abilities read the spell it came from.
     Kicked,
     /// The spell was kicked with this one of its kicker costs ('Kicker {W} and/or {2}{B}'): "if it was kicked with its {W}
@@ -752,11 +1223,22 @@ pub enum Condition {
     AdditionalCostPaid,
     /// The spell was cast for this alternative cost; a permanent and its abilities read the spell it came from.
     CastWith(CastWay),
+    /// The spell was cast at a time its caster couldn't have cast a sorcery (CR 307.1): another turn, a step that is no
+    /// main phase or a stack that held more; a permanent and its abilities read the spell it came from.
+    CastOffSorceryTiming,
+    /// The inner condition held for the caster as the spell was cast ("if you controlled a Dragon as you cast this spell");
+    /// a permanent and its abilities read the spell it came from.
+    AsCast(Box<Condition>),
     /// At least one mana of this type was spent to cast the spell (CR 601.2h): "if {R} was spent to cast this spell"; a
     /// permanent and its abilities read the spell it came from, as the mana it was cast with.
     ManaSpent(ManaType),
     /// It is the controller's turn.
     YourTurn,
+    /// The player the reference names (all of them when it names several) took the first turn of the game.
+    StartingPlayer(Ref),
+    /// "You" are one of the players the reference names: inside a `PlayersWhere` test, the player tested ("each other
+    /// opponent" is each opponent not among "that player").
+    Among(Ref),
     /// A player the reference names (any of them when it names several) searched their own zone of that kind earlier in
     /// this resolution, whether or not they found a card ("If you search your library this way, shuffle").
     Searched {
@@ -766,6 +1248,17 @@ pub enum Condition {
         /// The zone searched.
         zone: ZoneKind,
     },
+    /// The word the resolution's `ChooseValue` of words bound under the name is this one ("on the top or bottom"): false
+    /// when nothing was chosen.
+    ChosenWord {
+        /// The name the word was bound to.
+        name: String,
+        /// The word asked about.
+        word: String,
+    },
+    /// The source's controller chose this word as the source entered the battlefield (`ReplaceBy::ChooseWord`, a
+    /// Siege's "Khans"): false for a permanent that entered without the choice.
+    EnteredAs(String),
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
     /// accepted, a cost that was paid, cards that were moved.
     Performed,
@@ -781,6 +1274,8 @@ pub enum Condition {
     MonarchAtTurnStart(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
+    /// A player the reference names has max speed, a speed of 4 (CR 702.179): "Max speed — ...".
+    MaxSpeed(Ref),
     /// It is day (CR 726): "if it's day".
     IsDay,
     /// It is night (CR 726): "if it's night".
@@ -819,23 +1314,46 @@ mod tests {
     use crate::refs::Pred;
 
     #[rstest]
+    #[case::plus_one(CounterKind::PlusOnePlusOne, (1, 1))]
+    #[case::minus_one(CounterKind::MinusOneMinusOne, (-1, -1))]
+    #[case::plus_two_plus_two(CounterKind::Other("+2/+2".into()), (2, 2))]
+    #[case::power_only(CounterKind::Other("+1/+0".into()), (1, 0))]
+    #[case::toughness_down(CounterKind::Other("+0/-1".into()), (0, -1))]
+    #[case::negative_zero(CounterKind::Other("-0/-1".into()), (0, -1))]
+    #[case::big(CounterKind::Other("+12/-3".into()), (12, -3))]
+    #[case::keyword(CounterKind::Other("flying".into()), (0, 0))]
+    #[case::unsigned(CounterKind::Other("2/2".into()), (0, 0))]
+    #[case::garbage(CounterKind::Other("+a/+1".into()), (0, 0))]
+    #[case::poison(CounterKind::Poison, (0, 0))]
+    fn counters_add_power_and_toughness(#[case] kind: CounterKind, #[case] added: (i32, i32)) {
+        assert_eq!(kind.power_toughness(), added);
+    }
+
+    #[rstest]
     #[case::flashback(CastWay::Flashback, true)]
     #[case::evoke(CastWay::Evoke, true)]
     #[case::overload(CastWay::Overload, true)]
     #[case::madness(CastWay::Madness, true)]
     #[case::suspend(CastWay::Suspend, true)]
     #[case::foretold(CastWay::Foretold, true)]
+    #[case::plotted(CastWay::Plotted, true)]
     #[case::escape(CastWay::Escape, true)]
     #[case::dash(CastWay::Dash, true)]
     #[case::blitz(CastWay::Blitz, true)]
     #[case::prowl(CastWay::Prowl, true)]
     #[case::spectacle(CastWay::Spectacle, true)]
+    #[case::freerunning(CastWay::Freerunning, true)]
+    #[case::prototype(CastWay::Prototype, true)]
     #[case::mayhem(CastWay::Mayhem, true)]
     #[case::disturb(CastWay::Disturb, true)]
     #[case::emerge(CastWay::Emerge, true)]
     #[case::harmonize(CastWay::Harmonize, true)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]
+    #[case::warp(CastWay::Warp, true)]
+    #[case::surge(CastWay::Surge, true)]
+    #[case::web_slinging(CastWay::WebSlinging, true)]
+    #[case::impending(CastWay::Impending, true)]
     #[case::free(CastWay::Free, true)]
     #[case::jump_start(CastWay::JumpStart, false)]
     #[case::retrace(CastWay::Retrace, false)]
@@ -877,9 +1395,30 @@ mod tests {
     #[case::highest_life(Amount::HighestLife(Ref::Opponents), r#"{"HighestLife":"Opponents"}"#)]
     #[case::lowest_hand(Amount::LowestHand(Ref::EachPlayer), r#"{"LowestHand":"EachPlayer"}"#)]
     #[case::life_lost_this_way(Amount::LifeLostThisWay, r#""LifeLostThisWay""#)]
+    #[case::damage_dealt_this_way(Amount::DamageDealtThisWay, r#""DamageDealtThisWay""#)]
     #[case::destroyed_this_way(Amount::Destroyed(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Destroyed":[{"Type":"Creature"}]}"#)]
     #[case::exiled_this_way(Amount::Exiled(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Exiled":[{"Type":"Creature"}]}"#)]
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]
+    #[case::tally(Amount::Tally { event: TallyEvent::TokenCreated, who: Ref::You, filter: Selector(vec![Pred::Type(CardType::Creature)]) }, r#"{"Tally":{"event":"TokenCreated","who":"You","filter":[{"Type":"Creature"}]}}"#)]
+    #[case::remembered(Amount::Remembered { on: Ref::This, slot: "n".to_owned() }, r#"{"Remembered":{"on":"This","slot":"n"}}"#)]
+    #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
+    #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
+    #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]
+    #[case::when(
+        Amount::When { condition: Box::new(Condition::YourTurn), then: Box::new(Amount::Fixed(3)), otherwise: Box::new(Amount::X) },
+        r#"{"When":{"condition":"YourTurn","then":3,"otherwise":"X"}}"#
+    )]
+    #[case::mana_spent(Amount::ManaSpent { of: Some(ManaType::Red), from: None }, r#"{"ManaSpent":{"of":"Red"}}"#)]
+    #[case::all_mana_spent(Amount::ManaSpent { of: None, from: None }, r#"{"ManaSpent":{"of":null}}"#)]
+    #[case::mana_colors(Amount::ManaColors(Ref::You), r#"{"ManaColors":"You"}"#)]
+    #[case::mana_in_pool(Amount::ManaInPool(Ref::You), r#"{"ManaInPool":"You"}"#)]
+    #[case::most_common(Amount::MostCommon { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Colors }, r#"{"MostCommon":{"of":[{"Type":"Creature"}],"stat":"Colors"}}"#)]
+    #[case::random(Amount::Random { min: 1, max: 6 }, r#"{"Random":{"min":1,"max":6}}"#)]
+    #[case::doors(Amount::Doors(Selector(vec![Pred::Type(CardType::Enchantment)])), r#"{"Doors":[{"Type":"Enchantment"}]}"#)]
+    #[case::base_power(Amount::Stat { of: Ref::This, stat: StatKind::BasePower }, r#"{"Stat":{"of":"This","stat":"BasePower"}}"#)]
+    #[case::base_toughness(Amount::Stat { of: Ref::This, stat: StatKind::BaseToughness }, r#"{"Stat":{"of":"This","stat":"BaseToughness"}}"#)]
+    #[case::the_number_a_permanent_chose(Amount::Chosen, r#""Chosen""#)]
+    #[case::the_number_a_resolution_chose(Amount::ChosenAs("n".to_owned()), r#"{"ChosenAs":"n"}"#)]
     #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },

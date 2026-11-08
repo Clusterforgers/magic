@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4ede153c-89cb-4121-bf23-a1d213d6f238",
+  "name": "Crush of Tentacles",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Crush of Tentacles",
+      "oracle_fingerprint": "475fbda61a046d4d42233c3abad23c70",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{3}{U}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 116, "end": 249 }
+          }
+        }
+      ]
+    }
+  ]
+}

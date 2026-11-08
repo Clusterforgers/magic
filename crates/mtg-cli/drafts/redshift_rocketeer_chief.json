@@ -1,0 +1,76 @@
+{
+  "oracle_id": "582c7e54-d64c-4ffb-ae5f-d2752b3ed10b",
+  "name": "Redshift, Rocketeer Chief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redshift, Rocketeer Chief",
+      "oracle_fingerprint": "d167f2a2212c45b44ab127256c09daac",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": { "Stat": { "of": "This", "stat": "Power" } } },
+                  "only": [{ "Ability": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{10}{R}{G}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "OwnedBy": "You" },
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        },
+                        { "In": "Hand" }
+                      ]
+                    }
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

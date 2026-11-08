@@ -1,0 +1,42 @@
+{
+  "oracle_id": "cfcf34ba-b412-447f-b200-d841371c0a1c",
+  "name": "Polluted Cistern // Dim Oubliette",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Polluted Cistern",
+      "oracle_fingerprint": "5355a3f2d5568e993d4b3b60169c7e56",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 138 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dim Oubliette",
+      "oracle_fingerprint": "6f85c67e4573740023c8269baf95c5fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

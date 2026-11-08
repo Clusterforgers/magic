@@ -1,0 +1,54 @@
+{
+  "oracle_id": "579f9a86-a1af-4c2a-a7e5-8fea0bd0eb61",
+  "name": "Black Widow, Super Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Widow, Super Spy",
+      "oracle_fingerprint": "af992a27f48057e5c479bccbd3042df9",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "Triggering",
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": { "subject": "This", "selector": [], "op": "Eq", "right": 0 }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Not": { "Type": "Land" } }],
+                            "from": "Exile",
+                            "only": { "Bound": "found_exiled" },
+                            "spend_as": "AnyType"
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

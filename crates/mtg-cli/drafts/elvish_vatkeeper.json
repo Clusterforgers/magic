@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b881d61c-d7cf-49af-bed7-3bc657ea1208",
+  "name": "Elvish Vatkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Vatkeeper",
+      "oracle_fingerprint": "207236e8ad82cf3f5793333dc9061233",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Incubate": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Incubator" }, "Token", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Transform": { "what": { "Target": 0 } } },
+              { "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

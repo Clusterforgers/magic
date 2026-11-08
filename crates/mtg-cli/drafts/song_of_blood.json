@@ -1,0 +1,60 @@
+{
+  "oracle_id": "ab4b6524-3667-4db3-b5cb-1b02ee944906",
+  "name": "Song of Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Song of Blood",
+      "oracle_fingerprint": "d6e26f19b3b2ea327eaafd4ce260cb3d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Count": [
+                                  { "Is": { "Bound": "milled" } },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Battlefield" },
+                                      { "In": "Hand" },
+                                      { "In": "Library" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" },
+                                      { "In": "Stack" }
+                                    ]
+                                  },
+                                  { "Type": "Creature" }
+                                ]
+                              },
+                              "toughness": 0
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

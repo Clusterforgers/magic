@@ -1,0 +1,25 @@
+{
+  "oracle_id": "bcb5af89-a304-4de0-86af-b3f4cfabafc4",
+  "name": "Leeching Licid",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leeching Licid",
+      "oracle_fingerprint": "33750a15ca07e0d682e53ec151a16ad2",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 163 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

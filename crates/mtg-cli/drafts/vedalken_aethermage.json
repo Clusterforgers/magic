@@ -1,0 +1,22 @@
+{
+  "oracle_id": "271b37b6-b60b-4687-bd82-ecacf3b66cb3",
+  "name": "Vedalken Aethermage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vedalken Aethermage",
+      "oracle_fingerprint": "746bc4abe763f5e4e98277daf1a278b7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Sliver" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Wizard" }], "cost": "{3}" } } }
+      ]
+    }
+  ]
+}

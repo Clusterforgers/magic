@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2b7362a9-3518-4071-ab1b-40689a50e12a",
+  "name": "Old-Growth Educator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Old-Growth Educator",
+      "oracle_fingerprint": "80576ab5102cc33f2cac8052f840ec08",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

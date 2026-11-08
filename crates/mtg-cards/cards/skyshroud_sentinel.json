@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4f437f42-1ac5-4681-9b16-4eae9f49bb22",
+  "name": "Skyshroud Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyshroud Sentinel",
+      "oracle_fingerprint": "0d2a28e23b7ddef1098f3c78bc360527",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Skyshroud Sentinel" }],
+                        "count": { "min": 0, "max": 3 },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

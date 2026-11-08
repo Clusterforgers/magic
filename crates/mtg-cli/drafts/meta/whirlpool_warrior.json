@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Each player shuffles the cards from their hand into their library, then draws that many cards.",
+      "abilities": [],
+      "gap": "key:ChangeZoneAll.Defined"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, shuffle the cards from your hand into your library, then draw that many cards.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 105
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 106,
+          "end": 230
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

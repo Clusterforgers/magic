@@ -1,0 +1,47 @@
+{
+  "oracle_id": "8e7c5649-41c2-4a0c-b873-e6f6c5908567",
+  "name": "Hidden Herd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Herd",
+      "oracle_fingerprint": "1076ea8aa5b5247e3752ac6eaf1b4e16",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PlayedLand",
+                "what": [
+                  { "Type": "Land" },
+                  { "Not": { "Supertype": "Basic" } },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Beast"] },
+                    { "SetTypes": ["Creature"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

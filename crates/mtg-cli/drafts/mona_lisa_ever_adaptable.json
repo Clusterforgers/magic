@@ -1,0 +1,43 @@
+{
+  "oracle_id": "9fa38462-57b6-4f2f-a73c-f14a66f56946",
+  "name": "Mona Lisa, Ever Adaptable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mona Lisa, Ever Adaptable",
+      "oracle_fingerprint": "02d811ab27bba251b4464e6300dc59bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutagen",
+                      "types": ["Artifact"],
+                      "subtypes": ["Mutagen"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                            "timing": "Sorcery",
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [
+                              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

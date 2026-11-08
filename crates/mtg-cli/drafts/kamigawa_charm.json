@@ -1,0 +1,72 @@
+{
+  "oracle_id": "df44f8ba-ee15-4e04-af1b-4c30705d5d7f",
+  "name": "Kamigawa Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kamigawa Charm",
+      "oracle_fingerprint": "8417cd3939cc867ed6c606d1bff8ef63",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "GainLife": { "amount": 6 } }, { "Draw": {} }] },
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                            "count": { "min": 0, "max": 2 },
+                            "reveal": true,
+                            "as": "found"
+                          }
+                        },
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Land" }, { "Is": { "Bound": "found" } }],
+                            "as": "found2"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "found2" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Land" }, { "Is": { "Bound": "found" } }],
+                            "reveal": true,
+                            "as": "found3"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }],
+                            "reveal": true,
+                            "as": "found4"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "found4" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

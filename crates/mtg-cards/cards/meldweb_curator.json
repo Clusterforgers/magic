@@ -1,0 +1,33 @@
+{
+  "oracle_id": "26d6a089-b867-4b89-be8e-2ad11bff0d64",
+  "name": "Meldweb Curator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meldweb Curator",
+      "oracle_fingerprint": "84ea00012d7b9b0c018de52f1dfb8f8c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

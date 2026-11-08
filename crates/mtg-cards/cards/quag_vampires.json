@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1d28ed9a-cc4e-48d9-a1a6-7504fc6cc56d",
+  "name": "Quag Vampires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quag Vampires",
+      "oracle_fingerprint": "6ccee6fd40026b68a9b8b76309fdf7d4",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{1}{B}" } },
+        { "Keyword": { "Landwalk": [{ "Subtype": "Swamp" }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "Kicks" } }
+          }
+        }
+      ]
+    }
+  ]
+}

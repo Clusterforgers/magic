@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a1785817-f17b-471b-a63b-866e7972df1f",
+  "name": "Territorial Dispute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Territorial Dispute",
+      "oracle_fingerprint": "159ab88577ff6b2d37024cb1f5462e58",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "Cant": { "who": "EachPlayer", "action": "PlayLand" } } } }
+      ]
+    }
+  ]
+}

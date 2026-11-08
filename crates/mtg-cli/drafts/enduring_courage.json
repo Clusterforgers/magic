@@ -11,11 +11,7 @@
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [
-                  { "Type": "Creature" },
-                  { "ControlledBy": "You" },
-                  { "Not": { "Is": "This" } }
-                ],
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
                 "to": "Battlefield"
               }
             },
@@ -37,12 +33,21 @@
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [{ "Type": "Creature" }],
+                "what": ["This", { "Type": "Creature" }],
                 "from": "Battlefield",
                 "to": "Graveyard"
               }
             },
-            "effects": [{ "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }]
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetTypes": ["Enchantment"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

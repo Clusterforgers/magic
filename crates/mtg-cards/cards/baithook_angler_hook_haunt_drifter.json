@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c6bb4b41-8dae-429a-b928-ae9d39c74711",
+  "name": "Baithook Angler // Hook-Haunt Drifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baithook Angler",
+      "oracle_fingerprint": "996c25479abee96d72c7b5424e946d8e",
+      "abilities": [{ "Keyword": { "Disturb": "{1}{U}" } }]
+    },
+    {
+      "name": "Hook-Haunt Drifter",
+      "oracle_fingerprint": "532675b70843df4114d5df176102721f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

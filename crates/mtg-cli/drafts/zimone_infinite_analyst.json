@@ -1,0 +1,42 @@
+{
+  "oracle_id": "977f9390-e01d-4e9d-8e9c-e543b1266972",
+  "name": "Zimone, Infinite Analyst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zimone, Infinite Analyst",
+      "oracle_fingerprint": "48ca590f66c5a5187f643e528e0800f8",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "XInCost", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Counters": { "on": "This", "counter": "+1/+1" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }, "XInCost"]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": { "event": { "SpellCast": { "what": ["XInCost"], "by": "You" } }, "nth": 1 }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

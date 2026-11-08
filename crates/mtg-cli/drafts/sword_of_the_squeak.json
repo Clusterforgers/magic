@@ -1,0 +1,72 @@
+{
+  "oracle_id": "6ede28a7-57ea-47d6-a5fb-b0f061da2689",
+  "name": "Sword of the Squeak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of the Squeak",
+      "oracle_fingerprint": "1cc59d2be0dd074ef8cdc1c365eefcfa",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          { "Compare": { "stat": "BasePower", "op": "Eq", "to": 1 } },
+                          { "Compare": { "stat": "BaseToughness", "op": "Eq", "to": 1 } }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          { "Compare": { "stat": "BasePower", "op": "Eq", "to": 1 } },
+                          { "Compare": { "stat": "BaseToughness", "op": "Eq", "to": 1 } }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Hamster" },
+                      { "Subtype": "Mouse" },
+                      { "Subtype": "Rat" },
+                      { "Subtype": "Squirrel" }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

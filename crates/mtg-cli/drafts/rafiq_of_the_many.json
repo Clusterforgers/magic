@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c6e17443-2379-419d-8c32-13ea9bf52993",
+  "name": "Rafiq of the Many",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rafiq of the Many",
+      "oracle_fingerprint": "6bb948db6f6a0121e68246485d2cb395",
+      "abilities": [
+        { "Keyword": "Exalted" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

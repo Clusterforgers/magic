@@ -1,0 +1,93 @@
+{
+  "oracle_id": "0c4a2c42-0874-40b4-8d12-47eeadc3e976",
+  "name": "Domri Rade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domri Rade",
+      "oracle_fingerprint": "5a2faff227530a7a68e9f950b2268d1e",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [
+                          { "AddKeyword": "DoubleStrike" },
+                          { "AddKeyword": "Trample" },
+                          { "AddKeyword": "Hexproof" },
+                          { "AddKeyword": "Haste" }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

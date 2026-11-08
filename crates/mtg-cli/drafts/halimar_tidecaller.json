@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3aa709b5-0465-4103-aea1-8cfb15086f76",
+  "name": "Halimar Tidecaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halimar Tidecaller",
+      "oracle_fingerprint": "48738c5cdca43794a2d063dee43cc2d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "HasKeywordNamed": "Awaken" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Type": "Land" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

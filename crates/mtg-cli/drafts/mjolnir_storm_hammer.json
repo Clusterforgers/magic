@@ -1,0 +1,69 @@
+{
+  "oracle_id": "f497e9a5-0ad3-4aec-8422-14be8e0dba4c",
+  "name": "Mjölnir, Storm Hammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mjölnir, Storm Hammer",
+      "oracle_fingerprint": "0a74cbf115a1690b8c4f129a40283bfb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Supertype": "Legendary" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "Opponents",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Bound": "each" },
+                              "amount": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "each" } },
+                                  "Tapped"
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

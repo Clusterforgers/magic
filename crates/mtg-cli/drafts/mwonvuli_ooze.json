@@ -1,0 +1,48 @@
+{
+  "oracle_id": "42b2c6d0-e0da-41b0-8876-f17dbe5db79a",
+  "name": "Mwonvuli Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mwonvuli Ooze",
+      "oracle_fingerprint": "224fd74b5f793222a9890be60e9ad683",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [
+                      1,
+                      {
+                        "Times": {
+                          "by": 2,
+                          "of": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                        }
+                      }
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      1,
+                      {
+                        "Times": {
+                          "by": 2,
+                          "of": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

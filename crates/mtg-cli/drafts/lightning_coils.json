@@ -1,0 +1,77 @@
+{
+  "oracle_id": "bbb16f23-fdb1-444b-bef8-ce3e177c2678",
+  "name": "Lightning Coils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Coils",
+      "oracle_fingerprint": "3aac3657d97950750a7b0c3fc8951397",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "CounterCount": { "kind": "charge", "op": "Ge", "to": 5 } }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": { "Counters": { "on": "This", "counter": "charge" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": "charge",
+                  "count": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 3,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

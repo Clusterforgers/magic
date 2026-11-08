@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5c7f81ef-3c11-423c-a158-951275881f0b",
+  "name": "Spectacle of Destruction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectacle of Destruction",
+      "oracle_fingerprint": "194db99b55e6cba0e51f02ab4d055728",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "wreck" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "wreck" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "wreck" } } },
+              { "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,7 @@ use super::selectors::{Form, granted_text, keyword_text, phrase_text, type_name}
 use super::subtypes::plural_subtype;
 use crate::modify::Modification;
 use crate::value::Amount;
+use mtg_core::card::Supertype;
 
 /// The predicates of a static ability over a group (`plural`) or one object, in every wording; empty when a
 /// modification has no part here.
@@ -67,6 +68,15 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
             .map(|word| format!("{} {word}", verb(plural, "loses", "lose")))
             .into_iter()
             .collect(),
+        Modification::LockKeyword(keyword) => keyword_text(keyword)
+            .map(|word| {
+                format!(
+                    "{} {word} and can't have or gain {word}",
+                    verb(plural, "loses", "lose")
+                )
+            })
+            .into_iter()
+            .collect(),
         Modification::LoseAbilities => {
             vec![format!("{} all abilities", verb(plural, "loses", "lose"))]
         }
@@ -77,6 +87,20 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
             )],
             _ => Vec::new(),
         },
+        Modification::SetPower(Amount::Fixed(power)) => {
+            vec![format!(
+                "{} base power {power}",
+                verb(plural, "has", "have")
+            )]
+        }
+        Modification::SetToughness(Amount::Fixed(toughness)) => {
+            vec![format!(
+                "{} base toughness {toughness}",
+                verb(plural, "has", "have")
+            )]
+        }
+        Modification::AddSupertype(Supertype::Legendary) => vec![format!("{is} legendary")],
+        Modification::AddSupertype(Supertype::Snow) => vec![format!("{is} snow")],
         Modification::AddType(card_type) => {
             let name = type_name(*card_type);
             if name.is_empty() {
@@ -101,6 +125,12 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
                 format!("{is} {noun} in addition to {its} other creature types"),
             ]
         }
+        // The type chosen is a creature type.
+        Modification::AddChosenSubtype => vec![
+            format!("{is} the chosen type in addition to {its} other types"),
+            format!("{is} the chosen creature type in addition to {its} other types"),
+        ],
+        Modification::SetChosenColor => vec![format!("{is} the chosen color")],
         Modification::Goaded => vec![format!("{is} goaded")],
         Modification::CantBeBlockedBy(blockers) => phrase_text(blockers, Form::All)
             .map(|group| format!("can't be blocked by {group}"))

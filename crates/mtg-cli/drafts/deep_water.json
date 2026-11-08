@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cf9ef041-5396-4f18-8233-42d667db0888",
+  "name": "Deep Water",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep Water",
+      "oracle_fingerprint": "ac81e97dd2dfafd25a024c0af10f4fcc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "ManaProduced": {
+                      "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "who": "You",
+                      "change": { "OnlyType": "Blue" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

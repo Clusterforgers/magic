@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c87d547b-00a4-4fdd-ade4-f3f032e5ea3b",
+  "name": "Circu, Dimir Lobotomist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circu, Dimir Lobotomist",
+      "oracle_fingerprint": "b67ea90a8986a2fdaa3c6e8cc54d0d6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Blue" }], "by": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Black" }], "by": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      { "Not": { "Type": "Land" } },
+                      { "SharesName": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

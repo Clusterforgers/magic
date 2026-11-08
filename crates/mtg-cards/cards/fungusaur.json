@@ -1,0 +1,19 @@
+{
+  "oracle_id": "3e771f5b-2de3-4a1b-8281-ab1f7491e5a1",
+  "name": "Fungusaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fungusaur",
+      "oracle_fingerprint": "94e92632b08f2ff57f36bd52feacd504",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

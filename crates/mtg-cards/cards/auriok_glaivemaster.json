@@ -1,0 +1,28 @@
+{
+  "oracle_id": "77ec26f9-c7de-4bd8-bafb-8b9825891015",
+  "name": "Auriok Glaivemaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auriok Glaivemaster",
+      "oracle_fingerprint": "8182b4504b492484b6f3aacc4958d142",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "FirstStrike" }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

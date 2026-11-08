@@ -1,0 +1,53 @@
+{
+  "oracle_id": "fb4d99c2-daec-430a-9ca2-5a178a96618b",
+  "name": "Urza's Sylex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Sylex",
+      "oracle_fingerprint": "d41168b9846dc4601b155780d7f0e58b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{W}" }, "Tap", "ExileSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "Chooser" }] },
+                  "count": { "min": 6, "max": 6 },
+                  "as": "card"
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Not": { "Is": { "Bound": "card" } } }] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Exile" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Planeswalker" }, { "OwnedBy": "You" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

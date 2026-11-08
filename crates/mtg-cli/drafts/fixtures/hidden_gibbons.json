@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "8f94da51-b4d9-4d79-9113-39f8f4a1be34",
+  "oracle_id": "2315b044-bfd2-40dd-a73e-4cf064b36999",
+  "multiverse_ids": [
+    12441
+  ],
+  "mtgo_id": 12567,
+  "mtgo_foil_id": 12568,
+  "tcgplayer_id": 6325,
+  "cardmarket_id": 10661,
+  "name": "Hidden Gibbons",
+  "lang": "en",
+  "released_at": "1999-02-15",
+  "uri": "https://api.scryfall.com/cards/8f94da51-b4d9-4d79-9113-39f8f4a1be34",
+  "scryfall_uri": "https://scryfall.com/card/ulg/104/hidden-gibbons?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:37:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.jpg?1783946229",
+    "normal": "https://cards.scryfall.io/normal/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.jpg?1783946229",
+    "large": "https://cards.scryfall.io/large/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.jpg?1783946229",
+    "png": "https://cards.scryfall.io/png/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.png?1783946229",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.jpg?1783946229",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.jpg?1783946229",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.webp?1783946229",
+    "grid": "https://cards.scryfall.io/grid/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.webp?1783946229",
+    "display": "https://cards.scryfall.io/display/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.webp?1783946229",
+    "art": "https://cards.scryfall.io/art/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.webp?1783946229",
+    "crop": "https://cards.scryfall.io/crop/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.webp?1783946229",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/f/8f94da51-b4d9-4d79-9113-39f8f4a1be34.jpg?1783946229"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When an opponent casts an instant spell, if this permanent is an enchantment, it becomes a 4/4 Ape creature.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78ced61b-4b8a-4b33-b6b2-f5bd66f1a75a",
+  "set": "ulg",
+  "set_name": "Urza's Legacy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/78ced61b-4b8a-4b33-b6b2-f5bd66f1a75a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aulg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ulg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8f94da51-b4d9-4d79-9113-39f8f4a1be34/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2315b044-bfd2-40dd-a73e-4cf064b36999&unique=prints",
+  "collector_number": "104",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "When these apes want something, it's a matter of gibbon take.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Una Fricker",
+  "artist_ids": [
+    "0471a371-1bf8-49f2-8e76-cbe3a0bfa7e8"
+  ],
+  "illustration_id": "97598555-bb9b-4341-a809-317e701fab63",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19341,
+  "penny_rank": 8804,
+  "prices": {
+    "usd": "11.06",
+    "usd_foil": "56.68",
+    "usd_etched": null,
+    "eur": "12.93",
+    "eur_foil": "83.53",
+    "tix": "6.95"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=12441&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHidden%2BGibbons",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHidden%2BGibbons",
+    "edhrec": "https://edhrec.com/route/?cc=Hidden+Gibbons"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6325%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=10661&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/12567?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

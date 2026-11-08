@@ -1,0 +1,41 @@
+{
+  "oracle_id": "36215513-1c21-415f-b3bd-fb2eac14895b",
+  "name": "Impose Hierarchy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impose Hierarchy",
+      "oracle_fingerprint": "9fce20c4621cb3e5bee6cd6cdf1922af",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } },
+                      { "In": "Hand" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

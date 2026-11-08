@@ -1,7 +1,7 @@
 //! `Effect::RepeatEach`: the body is done once for each player or object the effect names, with the name bound to the one
 //! the pass is for.
 
-use mtg_cards::effect::{Effect, bound_names};
+use mtg_cards::effect::{Effect, bound_names, gathered_names};
 
 use super::may::performed_name;
 use super::wrong_effect;
@@ -12,6 +12,44 @@ use crate::resolve::{CLEAR, Cx, Next, ResolveError, Run};
 /// The name under which the items still to come are kept; no card can write it, since a name has no `~`.
 fn left_name(bind: &str) -> String {
     format!("{bind}~left")
+}
+
+/// The position of the repeat itself, whether the step runs at its start or at the start of a next pass.
+pub(super) fn repeat_at(cx: &Cx<'_>) -> Vec<usize> {
+    let position = cx.resolving.position();
+    let at = if is_next_pass(position) {
+        position.split_last().map_or(position, |(_, holder)| holder)
+    } else {
+        position
+    };
+    at.to_vec()
+}
+
+/// The steps that free what the passes before bound: the names the body binds and `extra` that are held (but not a name an adding bind gathers into), and the answer
+/// of every "may" in the body, which binds whether it was accepted under its position, run again by every pass.
+pub(super) fn clear_pass(
+    cx: &Cx<'_>,
+    effects: &[Effect],
+    extra: &[String],
+) -> Vec<(String, Vec<Target>)> {
+    let held = cx.resolving.bindings();
+    let gathered = gathered_names(effects);
+    let mut bound: Vec<(String, Vec<Target>)> = Vec::new();
+    for name in bound_names(effects)
+        .into_iter()
+        .chain(extra.iter().cloned())
+    {
+        if held.contains_key(&name) && !gathered.contains(&name) {
+            bound.push((format!("{CLEAR}{name}"), Vec::new()));
+        }
+    }
+    let inside = format!("{}.", performed_name(&repeat_at(cx)));
+    bound.extend(
+        held.keys()
+            .filter(|name| name.starts_with(&inside))
+            .map(|name| (format!("{CLEAR}{name}"), Vec::new())),
+    );
+    bound
 }
 
 /// Begins a pass, at the effect itself: the first time it lists what to repeat for, and at the start of each next pass it
@@ -36,28 +74,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Some((first, rest)) = items.split_first() else {
         return Ok(Run::events(Vec::new()));
     };
-    let mut bound: Vec<(String, Vec<Target>)> = Vec::new();
-    let names = bound_names(effects)
-        .into_iter()
-        .chain([bind.clone(), left.clone()]);
-    for name in names {
-        if held.contains_key(&name) {
-            bound.push((format!("{CLEAR}{name}"), Vec::new()));
-        }
-    }
-    // A "may" in the body binds whether it was accepted under its position, which every pass runs again.
-    let position = cx.resolving.position();
-    let at = if is_next_pass(position) {
-        position.split_last().map_or(position, |(_, holder)| holder)
-    } else {
-        position
-    };
-    let inside = format!("{}.", performed_name(at));
-    bound.extend(
-        held.keys()
-            .filter(|name| name.starts_with(&inside))
-            .map(|name| (format!("{CLEAR}{name}"), Vec::new())),
-    );
+    let mut bound = clear_pass(cx, effects, &[bind.clone(), left.clone()]);
     bound.push((bind.clone(), vec![*first]));
     bound.push((left, rest.to_vec()));
     Ok(Run::Done {

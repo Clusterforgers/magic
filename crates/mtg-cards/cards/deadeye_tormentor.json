@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ab735456-f831-4988-84c6-50ca14351990",
+  "name": "Deadeye Tormentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadeye Tormentor",
+      "oracle_fingerprint": "17db9a09bd5c3f67d5d0670a12ce407b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "d72b69aa-fb61-441e-9b62-4534d7a32a69",
+  "name": "Harbor Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harbor Guardian",
+      "oracle_fingerprint": "ebe2e421b4527bd4027d408d47c7b475",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "May": { "who": "Defending", "effects": [{ "Draw": { "who": "Defending" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

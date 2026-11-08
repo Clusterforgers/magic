@@ -1,0 +1,22 @@
+{
+  "oracle_id": "666b34b5-a0c2-43e3-befd-7c3979313682",
+  "name": "Infinite Coursework",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Infinite Coursework",
+      "oracle_fingerprint": "45bd80425d6841dcd18d36cca572437e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 86 }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["LoseAbilities"] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

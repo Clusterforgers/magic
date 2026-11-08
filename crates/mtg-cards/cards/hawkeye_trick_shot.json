@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ead2aee3-4f95-4ff1-8be9-ea9619e2386e",
+  "name": "Hawkeye, Trick Shot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hawkeye, Trick Shot",
+      "oracle_fingerprint": "e7c11600ec4db48d7a31b6bc67415ba7",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Hero" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "b308fa9a-3f69-4e59-9d4b-8007d9a2b1f1",
+  "name": "Kami of Industry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kami of Industry",
+      "oracle_fingerprint": "46710c311c0e7278dc528073d25d3150",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "pumped",
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "pumped" } },
+                              "filter": [{ "Is": { "Bound": "pumped" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "pumped" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

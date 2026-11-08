@@ -1,0 +1,42 @@
+{
+  "oracle_id": "952300de-766e-4ceb-bd36-e0b721bebc17",
+  "name": "Greasewrench Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greasewrench Goblin",
+      "oracle_fingerprint": "5cd9bbc58fd2cd086d47a7b3dbda8ff6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "limit": "OncePerGame",
+            "effects": [
+              { "Discard": { "count": 2, "optional": true, "as": "discarded" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

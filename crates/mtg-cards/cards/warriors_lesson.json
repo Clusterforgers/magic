@@ -1,0 +1,47 @@
+{
+  "oracle_id": "1d4605c0-47c5-4561-ab53-9cff677330aa",
+  "name": "Warriors' Lesson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warriors' Lesson",
+      "oracle_fingerprint": "32ceedec303b08a5d0a60fbf86c5c633",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Draw": {} }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

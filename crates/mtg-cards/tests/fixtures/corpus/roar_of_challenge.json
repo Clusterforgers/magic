@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "83456f8f-8a1a-403c-816b-25e454ba1edf",
+  "oracle_id": "9d83a1d3-ef0f-4134-a38b-c992d396592b",
+  "multiverse_ids": [
+    386639
+  ],
+  "mtgo_id": 54398,
+  "mtgo_foil_id": 54399,
+  "arena_id": 58227,
+  "tcgplayer_id": 93301,
+  "cardmarket_id": 269518,
+  "name": "Roar of Challenge",
+  "lang": "en",
+  "released_at": "2014-09-26",
+  "uri": "https://api.scryfall.com/cards/83456f8f-8a1a-403c-816b-25e454ba1edf",
+  "scryfall_uri": "https://scryfall.com/card/ktk/145/roar-of-challenge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:37:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.jpg?1783939065",
+    "normal": "https://cards.scryfall.io/normal/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.jpg?1783939065",
+    "large": "https://cards.scryfall.io/large/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.jpg?1783939065",
+    "png": "https://cards.scryfall.io/png/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.png?1783939065",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.jpg?1783939065",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.jpg?1783939065",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.webp?1783939065",
+    "grid": "https://cards.scryfall.io/grid/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.webp?1783939065",
+    "display": "https://cards.scryfall.io/display/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.webp?1783939065",
+    "art": "https://cards.scryfall.io/art/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.webp?1783939065",
+    "crop": "https://cards.scryfall.io/crop/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.webp?1783939065",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/3/83456f8f-8a1a-403c-816b-25e454ba1edf.jpg?1783939065"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "All creatures able to block target creature this turn do so.\nFerocious — That creature gains indestructible until end of turn if you control a creature with power 4 or greater.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Ferocious"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "6c7a715c-ded9-449e-89b0-c665773e9c3c",
+  "set": "ktk",
+  "set_name": "Khans of Tarkir",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/6c7a715c-ded9-449e-89b0-c665773e9c3c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aktk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ktk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/83456f8f-8a1a-403c-816b-25e454ba1edf/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9d83a1d3-ef0f-4134-a38b-c992d396592b&unique=prints",
+  "collector_number": "145",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "temur",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Viktor Titov",
+  "artist_ids": [
+    "2270c0b0-afb4-42b0-bcb6-25fe4ad6eef2"
+  ],
+  "illustration_id": "e0699c83-dc02-49b7-82bb-5502d830a417",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6723,
+  "penny_rank": 13369,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "2.27",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.52",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=386639&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRoar%2Bof%2BChallenge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRoar%2Bof%2BChallenge",
+    "edhrec": "https://edhrec.com/route/?cc=Roar+of+Challenge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F93301%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=269518&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/54398?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

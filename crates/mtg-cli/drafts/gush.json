@@ -1,0 +1,19 @@
+{
+  "oracle_id": "16d8ee99-8ec8-429f-9ba7-818a74b6f910",
+  "name": "Gush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gush",
+      "oracle_fingerprint": "fa0c749c6ea9a10700f2b99cc486bec6",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [{ "ReturnToHand": { "filter": [{ "Subtype": "Island" }], "count": 2 } }]
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

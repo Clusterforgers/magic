@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7fd06710-0721-4e3e-90ed-d0ccecb1919a",
+  "name": "Sigarda's Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigarda's Summons",
+      "oracle_fingerprint": "d4a9861b431f9ecfddfce18cccb9e854",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Flying" },
+              { "AddSubtype": "Angel" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

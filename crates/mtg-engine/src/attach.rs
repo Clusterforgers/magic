@@ -8,8 +8,10 @@ use mtg_cards::refs::{Bounds, Pred, Selector, TargetSpec, Targetable};
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use crate::abilities::Grant;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::{Target, legal_targets, options_for};
+use crate::effects::Modification;
 use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::fold::invalid;
@@ -129,7 +131,9 @@ fn judged_host(state: &GameState, attachment: ObjectId, host: ObjectId, in_play:
         Some(Kind::Fortification) => host_chars.types.contains(CardType::Land),
         None => false,
     };
-    allowed && !protects_host(state, attachment, host)
+    allowed
+        && !protects_host(state, attachment, host)
+        && !crate::prohibit::attach_banned(state, attachment, target.reference())
 }
 
 /// Whether the enchant ability of `id` is "enchant opponent" (`true`) or "enchant player" (`false`); `None` for an object
@@ -169,8 +173,56 @@ pub(crate) fn legal_player_host(state: &GameState, attachment: ObjectId, player:
 
 /// Whether a keyword of `host` (protection) keeps `attachment` from being attached to it (CR 702.16c).
 fn protects_host(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
-    keywords::Source::live(state, attachment)
-        .is_some_and(|source| keywords::protected_from(state, Holder::Object(host), source))
+    let Some(source) = keywords::Source::live(state, attachment) else {
+        return false;
+    };
+    keywords_of(state, host).into_iter().any(|keyword| {
+        keywords::rules(keyword).protects_from(state, keyword, Holder::Object(host), source)
+            && !spares(state, keyword, attachment, host)
+    })
+}
+
+/// Whether a protection with an exception ("This effect doesn't remove this Aura") leaves `attachment` on `host`: the
+/// exception is judged for each permanent whose static ability or effect gave the keyword, or for the host when it is
+/// printed on it.
+fn spares(state: &GameState, keyword: &Keyword, attachment: ObjectId, host: ObjectId) -> bool {
+    let Keyword::ProtectionSparing { spares, .. } = keyword else {
+        return false;
+    };
+    let Some(object) = state.object(attachment) else {
+        return false;
+    };
+    let mut granters: Vec<ObjectId> = state
+        .layers()
+        .get(host)
+        .map(|held| {
+            held.applied
+                .iter()
+                .filter(|applied| {
+                    matches!(&applied.modification, Modification::AddKeyword(given) if given == keyword)
+                })
+                .filter_map(|applied| match applied.origin {
+                    Grant::Static { source, .. } => Some(source),
+                    Grant::Effect(id) => state
+                        .effects()
+                        .iter()
+                        .find(|effect| effect.id == id)
+                        .and_then(|effect| effect.source)
+                        .map(|source| source.id),
+                    Grant::Borrowed { .. } => None,
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    if granters.is_empty() {
+        granters.push(host);
+    }
+    granters.into_iter().any(|granter| {
+        state.object(granter).is_some_and(|by| {
+            let scope = Scope::announcing(state, controller_of_object(state, by), by.reference());
+            scope.selects(spares, object.reference()).unwrap_or(false)
+        })
+    })
 }
 
 /// Whether `id` has reconfigure, so it may equip a creature while it is a creature itself (CR 301.5c).
@@ -243,6 +295,7 @@ pub(crate) fn bestow_announceable(state: &GameState, player: PlayerId, id: Objec
         None,
         &[],
         None,
+        None,
     )
     .is_some()
 }
@@ -270,7 +323,20 @@ impl Host {
 /// may target (CR 601.2c); any other spell asks nothing here.
 pub(crate) fn announceable(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
     spell_target(state, id).is_none_or(|spec| {
-        options_for(state, id, player, 0, &spec, true, None, None, &[], None).is_some()
+        options_for(
+            state,
+            id,
+            player,
+            0,
+            &spec,
+            true,
+            None,
+            None,
+            &[],
+            None,
+            None,
+        )
+        .is_some()
     })
 }
 
@@ -470,6 +536,47 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
             _ => {}
         }
     }
+    events.extend(roles(state, leaving));
+    events
+}
+
+/// A creature with more than one Role of one controller keeps only the newest of that controller's Roles; the others go to
+/// their owners' graveyards (CR 704.5y).
+fn roles(state: &GameState, leaving: &[ObjectId]) -> Vec<Event> {
+    let role = Subtype("Role".to_owned());
+    let mut groups: std::collections::BTreeMap<(ObjectId, PlayerId), Vec<(u64, ObjectId)>> =
+        std::collections::BTreeMap::new();
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(object) = state.object(id).filter(|_| !leaving.contains(&id)) else {
+            continue;
+        };
+        let Some(host) = state.host_of(id) else {
+            continue;
+        };
+        let is_role = characteristics(state, id)
+            .is_some_and(|chars| chars.has_subtype(&object.card().subtypes, &role));
+        if let (true, Some(permanent)) = (is_role, object.permanent()) {
+            groups
+                .entry((host, controller_of_object(state, object)))
+                .or_default()
+                .push((permanent.timestamp, id));
+        }
+    }
+    let mut events = Vec::new();
+    for (_, mut roles) in groups {
+        roles.sort_unstable();
+        roles.pop();
+        for (_, id) in roles {
+            if let Some(object) = state.object(id) {
+                events.push(Event::ZoneChanged {
+                    object: id,
+                    from: Zone::Battlefield,
+                    to: Zone::Graveyard(object.owner()),
+                    cause: ZoneCause::StateBased,
+                });
+            }
+        }
+    }
     events
 }
 
@@ -478,7 +585,7 @@ mod player_tests;
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an attachment is legal exactly where its kind allows (an Aura where its enchant ability does and never on itself or when it is a creature, an Equipment on a creature when it is none, a Fortification on a land), becoming attached sets the host and gives the attachment the next timestamp while becoming unattached clears the host and refuses what is not attached, the state-based actions put an Aura attached to nothing or to what it may not enchant into its owner's graveyard and take an Equipment, a Fortification or any other permanent off what it may not be attached to, an Aura card targets through its enchant ability and no other card does, and an Aura entering without being cast may enchant the permanents its ability allows.
+    //! Goal: an attachment is legal exactly where its kind allows (an Aura where its enchant ability does and never on itself or when it is a creature, an Equipment on a creature when it is none, a Fortification on a land), becoming attached sets the host and gives the attachment the next timestamp while becoming unattached clears the host and refuses what is not attached, the state-based actions put an Aura attached to nothing or to what it may not enchant into its owner's graveyard and take an Equipment, a Fortification or any other permanent off what it may not be attached to, an Aura card targets through its enchant ability and no other card does, and an Aura entering without being cast may enchant the permanents its ability allows, and an attachment a rule bans from its host may not be attached there.
     use std::sync::Arc;
 
     use mtg_cards::ability::Ability;
@@ -727,6 +834,117 @@ mod tests {
             .map(|(name, put)| ((*name).to_owned(), *put))
             .collect();
         assert_eq!(actions(&attached), expected);
+    }
+
+    /// Seat 0: a Warden creature whose rule bans the attachments `banned` selects from it, the Halo Aura and the Blade
+    /// Equipment, both attached to the Warden.
+    fn banned_from_warden(banned: &str) -> GameState {
+        let rule = format!(
+            r#"{{"Rule":{{"rule":{{"Cant":{{"who":"This","action":{{"BeAttachedBy":{banned}}}}}}}}}}}"#
+        );
+        let mut game = setup(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    card("Warden", &[CardType::Creature], "", &[&rule]),
+                    card("Halo", &[CardType::Enchantment], "Aura", &[ON_CREATURES]),
+                    card("Blade", &[CardType::Artifact], "Equipment", &[]),
+                ],
+                vec![],
+            ],
+        );
+        for place in [1, 2] {
+            let preset = &mut game.players[0].battlefield[place];
+            *preset = PresetPermanent {
+                attached_to: Some((0, 0)),
+                ..preset.clone()
+            };
+        }
+        GameState::from_setup(&game).unwrap()
+    }
+
+    #[rstest]
+    #[case::a_banned_aura_goes_to_the_graveyard(r#"[{"Subtype":"Aura"}]"#, &[("Halo", true)], (false, true))]
+    #[case::a_banned_equipment_comes_off(r#"[{"Subtype":"Equipment"}]"#, &[("Blade", false)], (true, false))]
+    #[case::every_attachment(r"[]", &[("Blade", false), ("Halo", true)], (false, false))]
+    fn an_attachment_a_rule_bans_from_its_host_is_attached_illegally(
+        #[case] banned: &str,
+        #[case] expected: &[(&str, bool)],
+        #[case] legal: (bool, bool),
+    ) {
+        let game = banned_from_warden(banned);
+        let expected: Vec<(String, bool)> = expected
+            .iter()
+            .map(|(name, put)| ((*name).to_owned(), *put))
+            .collect();
+        assert_eq!(done_to(&game), expected);
+        let warden = id(&game, "Warden");
+        let hosts = (
+            legal_host(&game, id(&game, "Halo"), warden),
+            legal_host(&game, id(&game, "Blade"), warden),
+        );
+        assert_eq!(hosts, legal);
+    }
+
+    fn role(name: &str) -> Arc<CardDefinition> {
+        let mut card = CardDefinition::new(name)
+            .with_type(CardType::Enchantment)
+            .with_rules(serde_json::from_str::<Ability>(ON_CREATURES).unwrap());
+        card.subtypes.push(Subtype("Aura".into()));
+        card.subtypes.push(Subtype("Role".into()));
+        Arc::new(card)
+    }
+
+    /// Seat 0: Bear, Ogre, Halo (an Aura, no Role) and the Roles Royal, Wicked and Cursed; seat 1: the Role Monster. Each pair
+    /// says which seat-0 permanent a permanent starts attached to; the stamp order is the order of the battlefield.
+    fn role_actions(attached: &[(usize, usize, usize)]) -> Vec<String> {
+        let mut game = setup(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    creature("Bear", 2, 2),
+                    creature("Ogre", 3, 4),
+                    card("Halo", &[CardType::Enchantment], "Aura", &[ON_CREATURES]),
+                    role("Royal"),
+                    role("Wicked"),
+                    role("Cursed"),
+                ],
+                vec![role("Monster")],
+            ],
+        );
+        for (seat, place, host) in attached {
+            let preset = &mut game.players[*seat].battlefield[*place];
+            *preset = PresetPermanent {
+                attached_to: Some((0, *host)),
+                ..preset.clone()
+            };
+        }
+        let game = GameState::from_setup(&game).unwrap();
+        let mut put: Vec<String> = roles(&game, &[])
+            .iter()
+            .map(|event| match event {
+                Event::ZoneChanged { object, .. } => {
+                    game.object(*object).unwrap().card().name.clone()
+                }
+                other => panic!("{other:?}"),
+            })
+            .collect();
+        put.sort();
+        put
+    }
+
+    #[rstest]
+    #[case::one_role_stays(vec![(0, 3, 0)], &[])]
+    #[case::the_newer_of_two_roles_of_one_controller_stays(vec![(0, 3, 0), (0, 4, 0)], &["Royal"])]
+    #[case::of_three_only_the_newest_stays(vec![(0, 3, 0), (0, 4, 0), (0, 5, 0)], &["Royal", "Wicked"])]
+    #[case::roles_on_different_creatures_stay(vec![(0, 3, 0), (0, 4, 1)], &[])]
+    #[case::roles_of_different_controllers_stay(vec![(0, 3, 0), (1, 0, 0)], &[])]
+    #[case::an_aura_that_is_no_role_stays(vec![(0, 2, 0), (0, 3, 0)], &[])]
+    fn a_creature_keeps_only_the_newest_role_of_each_controller(
+        #[case] attached: Vec<(usize, usize, usize)>,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(role_actions(&attached), expected);
     }
 
     #[rstest]

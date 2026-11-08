@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c420d9c8-dc54-46b8-bd22-39c21019c3d7",
+  "name": "Orbs of Warding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orbs of Warding",
+      "oracle_fingerprint": "cbe46e428964668cafc9f2ab6650c77d",
+      "abilities": [
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": "You", "source": [{ "Type": "Creature" }, { "In": "Battlefield" }] }
+            },
+            "by": { "PreventUpTo": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

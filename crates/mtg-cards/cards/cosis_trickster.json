@@ -1,0 +1,21 @@
+{
+  "oracle_id": "372633d9-ac74-4630-a1ae-a1906bb2aed0",
+  "name": "Cosi's Trickster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cosi's Trickster",
+      "oracle_fingerprint": "ff3afeb6c0f2a2315943b135d3718fdd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Shuffled", "who": "Opponents" } },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

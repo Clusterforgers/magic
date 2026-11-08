@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1cf3126e-fbac-4245-beba-3d4eedda24bf",
+  "name": "Descendant of Soramaro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descendant of Soramaro",
+      "oracle_fingerprint": "77c1d67d5635f3b108f1a87f2397d511",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "as": "top"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

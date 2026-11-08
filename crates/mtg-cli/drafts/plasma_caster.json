@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1c50c637-750c-4e31-a69c-915430fc3194",
+  "name": "Plasma Caster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plasma Caster",
+      "oracle_fingerprint": "50ca504444b2a830cad2ca81f9521541",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 2 }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Blocks": "Attached" }] } }
+            ],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [{ "Exile": { "what": { "Target": 0 } } }],
+                  "lose": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

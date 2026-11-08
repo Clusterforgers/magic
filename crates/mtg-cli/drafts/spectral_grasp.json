@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4d2377fb-ac3b-453b-b632-abe918d72529",
+  "name": "Spectral Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Grasp",
+      "oracle_fingerprint": "37a02220701e9e2697c47b483c83e871",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "CantAttackYou": "Both" }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Is": "Attached" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

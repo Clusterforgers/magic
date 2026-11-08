@@ -1,0 +1,39 @@
+{
+  "oracle_id": "15679808-baba-4a11-b111-f313ce24197f",
+  "name": "Glistening Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glistening Sphere",
+      "oracle_fingerprint": "271e7d57e52c3487b3a88ecef5ff91e8",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Proliferate": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "HighestCounters": { "who": "Opponents", "counter": "poison" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

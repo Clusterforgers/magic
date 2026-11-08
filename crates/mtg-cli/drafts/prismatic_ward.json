@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ad5e2cb0-00d7-4dad-b20e-23bd41ada398",
+  "name": "Prismatic Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismatic Ward",
+      "oracle_fingerprint": "32407e168440841fd99ad4c6fa211ef9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached", "source": ["ChosenColor"] } },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

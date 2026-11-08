@@ -1,0 +1,63 @@
+{
+  "oracle_id": "c505d304-9428-4532-87a2-167c69f16969",
+  "name": "Pox Plague",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pox Plague",
+      "oracle_fingerprint": "2415e4f9a2f581b4ed54dbba6c845e48",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": { "Half": { "of": { "Life": { "Bound": "each" } }, "up": false } }
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Bound": "each" },
+                        "count": {
+                          "Half": {
+                            "of": {
+                              "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "each" } }]
+                            },
+                            "up": false
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "each" },
+                        "filter": [],
+                        "count": {
+                          "Half": {
+                            "of": {
+                              "Largest": {
+                                "who": { "Bound": "each" },
+                                "of": [{ "ControlledBy": { "Bound": "each" } }]
+                              }
+                            },
+                            "up": false
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

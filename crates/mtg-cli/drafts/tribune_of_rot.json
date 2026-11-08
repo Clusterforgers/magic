@@ -1,0 +1,51 @@
+{
+  "oracle_id": "cd1b3ef3-73ac-4f06-8cfb-5f2388481379",
+  "name": "Tribune of Rot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tribune of Rot",
+      "oracle_fingerprint": "72568c2dfb4595597dfb5f686f220d18",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, "This"] } },
+            "effects": [
+              { "Mill": { "count": 2, "as": "milled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Creature" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "efbb5b87-d175-477e-a490-85dd98b62de6",
+  "name": "Feral Contest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feral Contest",
+      "oracle_fingerprint": "c24bdfbcc58c9580c56e5bb13118dfbd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": { "who": { "Target": 1 }, "attacker": { "Target": 0 } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

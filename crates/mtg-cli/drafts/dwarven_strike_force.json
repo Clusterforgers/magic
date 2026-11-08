@@ -1,0 +1,27 @@
+{
+  "oracle_id": "66dd0e68-f5ec-45e5-991f-d588aa726387",
+  "name": "Dwarven Strike Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Strike Force",
+      "oracle_fingerprint": "ea2f51eb7c934f1df7b0ae1a4e0528b4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "DiscardRandom": 1 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

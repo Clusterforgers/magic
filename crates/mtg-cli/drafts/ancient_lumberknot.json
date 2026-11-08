@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d714f1f6-539e-4a2a-b738-226854d7ff09",
+  "name": "Ancient Lumberknot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Lumberknot",
+      "oracle_fingerprint": "2226f33f1aabf6ad277cb7a0a81c1c39",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Lt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                      }
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "quirk": "AssignsByToughness"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

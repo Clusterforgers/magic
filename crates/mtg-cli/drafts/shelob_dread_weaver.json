@@ -1,0 +1,70 @@
+{
+  "oracle_id": "7eade76f-92e4-4d26-9eb8-d3d954845c04",
+  "name": "Shelob, Dread Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shelob, Dread Weaver",
+      "oracle_fingerprint": "575d1ba225c9772f0199a5360a3d258c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  { "Not": "Token" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              {
+                "ExiledToGraveyard": {
+                  "filter": [{ "Type": "Creature" }, { "ExiledWith": "This" }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              { "Draw": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}{1}{B}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ExiledWith": "This" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Exile" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

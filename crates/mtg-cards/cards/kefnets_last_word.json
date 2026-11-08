@@ -1,0 +1,48 @@
+{
+  "oracle_id": "67cf6ba1-55ad-4008-ba1f-96c363a96b16",
+  "name": "Kefnet's Last Word",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kefnet's Last Word",
+      "oracle_fingerprint": "bb9c158d01f638891916df9057e3596e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

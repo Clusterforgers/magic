@@ -127,3 +127,38 @@ describe('focus', () => {
     expect(answer.mock.calls[0]?.[0]).toEqual({ ChooseOption: 0 })
   })
 })
+
+describe('a long list (a card name)', () => {
+  const names = (count: number): ChoiceOption[] =>
+    Array.from({ length: count }, (_, n) => ({ Label: `Card ${n + 1}` }))
+  const field = (): HTMLElement => screen.getByRole('searchbox', { name: 'Filter options' })
+
+  it.each([1, 11, 12])('of %i has no filter field', (count) => {
+    mount(names(count))
+    expect(screen.queryByRole('searchbox', { name: 'Filter options' })).toBeNull()
+  })
+
+  it('of 40 has a filter that narrows the buttons and answers with the index in the whole list', async () => {
+    const { buttons, user, answer } = mount(names(40))
+    expect(buttons()).toHaveLength(40)
+    await user.type(field(), 'card 27')
+    expect(buttons().map((b) => b.getAttribute('aria-label'))).toEqual(['Card 27'])
+    await user.click(must(buttons()[0]))
+    expect(answer).toHaveBeenCalledTimes(1)
+    expect(answer.mock.calls[0]?.[0]).toEqual({ ChooseOption: 26 })
+  })
+
+  it('keeps every button when the filter is empty and none when nothing matches', async () => {
+    const { list, user } = mount(names(15))
+    await user.type(field(), 'zzz')
+    expect(within(list()).queryAllByRole('button')).toHaveLength(0)
+    await user.clear(field())
+    expect(within(list()).getAllByRole('button')).toHaveLength(15)
+  })
+
+  it('leaves the digits to the filter field', async () => {
+    const { user, answer } = mount(names(15))
+    await user.type(field(), '12')
+    expect(answer).not.toHaveBeenCalled()
+  })
+})

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "51685f85-06ad-4de2-a7a6-06e6f59a1cbb",
+  "name": "Breakneck Rider // Neck Breaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breakneck Rider",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Neck Breaker",
+      "oracle_fingerprint": "590dfceadd649e950a45dd5f914be923",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

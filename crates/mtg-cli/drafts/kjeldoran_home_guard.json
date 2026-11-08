@@ -1,0 +1,54 @@
+{
+  "oracle_id": "5f7ae611-a78d-4535-9d76-755001bda34c",
+  "name": "Kjeldoran Home Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kjeldoran Home Guard",
+      "oracle_fingerprint": "f33f10a66b785bb813b10577770f0702",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      "This",
+                      {
+                        "AnyOf": [
+                          { "DidThisTurn": { "event": "Attacked", "combat": true } },
+                          { "DidThisTurn": { "event": "Blocked", "combat": true } }
+                        ]
+                      }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "-0/-1" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Deserter",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Deserter"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "39229fbc-1296-4ac7-9f79-65c6f0d09991",
+  "name": "Caribou Range",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caribou Range",
+      "oracle_fingerprint": "fa25409aaacfe3e28608330db9cbba4a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{W}{W}" }, "Tap"],
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Caribou",
+                              "colors": ["White"],
+                              "types": ["Creature"],
+                              "subtypes": ["Caribou"],
+                              "power": 0,
+                              "toughness": 1
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Caribou" }, "Token"] } }],
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

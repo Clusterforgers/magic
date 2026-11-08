@@ -1,0 +1,92 @@
+{
+  "oracle_id": "4f66489c-5a19-40ad-9126-461fa8231f1b",
+  "name": "Liliana, Untouched by Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana, Untouched by Death",
+      "oracle_fingerprint": "1ad72014a8d5fa5af8d7ac092661b0d0",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Subtype": "Zombie" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Subtype": "Zombie" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "what": [{ "Subtype": "Zombie" }], "from": "Graveyard" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

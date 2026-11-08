@@ -1,0 +1,65 @@
+{
+  "oracle_id": "3d4ec57a-8541-42ed-9790-7933f96c8adf",
+  "name": "Piety Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Piety Charm",
+      "oracle_fingerprint": "b009574d43854fc8ebe0a6fd94137b1b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Subtype": "Aura" },
+                              { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Soldier" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "AddKeyword": "Vigilance" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

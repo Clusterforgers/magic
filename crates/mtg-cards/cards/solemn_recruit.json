@@ -1,0 +1,27 @@
+{
+  "oracle_id": "cf747d6e-05ae-484d-9e72-1d0fb71fd4ff",
+  "name": "Solemn Recruit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solemn Recruit",
+      "oracle_fingerprint": "b4106ed65e488ae0377f9a24ff82e443",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

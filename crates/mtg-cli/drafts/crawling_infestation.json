@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a42262b8-8a26-4570-a6ee-24b239d095fc",
+  "name": "Crawling Infestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crawling Infestation",
+      "oracle_fingerprint": "7dea0140ab0ff05987c8dab579a8dd8d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "May": { "effects": [{ "Mill": { "count": 2 } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "Not": "Token" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

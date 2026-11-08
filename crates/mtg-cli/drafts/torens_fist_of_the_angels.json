@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2cb96408-9195-4e41-ad9a-f8c74fbad083",
+  "name": "Torens, Fist of the Angels",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torens, Fist of the Angels",
+      "oracle_fingerprint": "c1bd7254425b9b9a1b08192b76057471",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "training", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": { "Macro": { "name": "training", "amount": 0 } } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

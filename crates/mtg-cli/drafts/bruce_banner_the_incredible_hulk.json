@@ -1,0 +1,69 @@
+{
+  "oracle_id": "b6c0ee14-2028-4e8b-9acd-ff78821bca9b",
+  "name": "Bruce Banner // The Incredible Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bruce Banner",
+      "oracle_fingerprint": "81a5abca70be3a6be6b9cc21eca614d9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{X}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [{ "Draw": { "count": "X" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}{R}{G}{G}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Incredible Hulk",
+      "oracle_fingerprint": "c56b5abbe1d6772852314116c198178f",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Type": "Creature" }, "Attacking"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Untap": { "what": "This" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Type": "Creature" }, "Attacking"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "AddPhase": { "phases": ["Combat"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

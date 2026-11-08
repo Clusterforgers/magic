@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d2bd182c-532f-4c77-adb8-754f2c2fcd82",
+  "name": "Marsh Casualties",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marsh Casualties",
+      "oracle_fingerprint": "542f73dd8e74f0bf2a400d908ad7f1aa",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 2, "otherwise": 1 } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "oracle_id": "1fba543c-bd22-4f7b-9ff4-0631af8ee814",
+  "name": "Protective Bubble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protective Bubble",
+      "oracle_fingerprint": "d5ef2270412e035dc8b1bd739ea4cb6c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Shroud" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantBeBlocked"] } }
+      ]
+    }
+  ]
+}

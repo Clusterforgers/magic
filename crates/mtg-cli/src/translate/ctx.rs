@@ -1,0 +1,561 @@
+//! The state of one translation: the named parts of the face, what the checkout knows (subtypes, token scripts), the
+//! targets declared so far and the names of bound results, and the error that names an unmapped Forge construct.
+
+use std::collections::{BTreeMap, BTreeSet};
+
+use serde_json::{Value, json};
+
+use crate::forge::script::{Face, Params, Script};
+
+/// A Forge construct the translator has no mapper for, named for the ranking of gaps (`effect:Dig`, `key:Pump.Duration`).
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Unmapped(pub String);
+
+/// The result of translating one construct.
+pub type Tr<T> = Result<T, Unmapped>;
+
+/// An error that names the construct.
+pub fn unmapped<T>(name: impl Into<String>) -> Tr<T> {
+    Err(Unmapped(name.into()))
+}
+
+/// What the checkout knows besides the card scripts: the subtypes its type lines name and its token scripts.
+#[derive(Debug, Clone, Default)]
+pub struct World {
+    /// Every word after the card types of a type line, so that a capitalized word in a valid-string can be told from a
+    /// property.
+    pub subtypes: BTreeSet<String>,
+    /// The token scripts by file stem (`w_1_1_soldier`).
+    pub tokens: BTreeMap<String, Face>,
+    /// The names of the checkout's cards and tokens.
+    pub names: BTreeSet<String>,
+    /// The slugs of the cards the database stores, when the run reads it: a name a card conjures is checked against them.
+    pub stored: Option<BTreeSet<String>>,
+}
+
+impl World {
+    /// The subtypes of the card scripts and the given token scripts.
+    pub fn new(scripts: &[Script], tokens: BTreeMap<String, Face>) -> World {
+        let mut subtypes = BTreeSet::new();
+        let mut names = BTreeSet::new();
+        for face in scripts.iter().flat_map(|script| &script.faces) {
+            subtypes.extend(known_subtypes(&face.types));
+            names.insert(face.name.clone());
+        }
+        for face in tokens.values() {
+            subtypes.extend(known_subtypes(&face.types));
+            names.insert(face.name.clone());
+        }
+        // Creature types that no script's own type line names: a land becomes one.
+        subtypes.extend(ONLY_BECOMES.iter().map(|word| (*word).to_owned()));
+        World {
+            subtypes,
+            tokens,
+            names,
+            stored: None,
+        }
+    }
+}
+
+/// Creature types a card only becomes ("becomes a 3/3 Llama creature"), so that no type line of the checkout names them.
+const ONLY_BECOMES: [&str; 2] = ["Blinkmoth", "Llama"];
+
+/// The card types a `Types:` line may start with.
+pub const CARD_TYPES: [&str; 11] = [
+    "Artifact",
+    "Battle",
+    "Creature",
+    "Enchantment",
+    "Instant",
+    "Kindred",
+    "Land",
+    "Planeswalker",
+    "Sorcery",
+    "Tribal",
+    "Conspiracy",
+];
+
+/// The supertypes a `Types:` line may start with.
+pub const SUPERTYPES: [&str; 4] = ["Basic", "Legendary", "Snow", "World"];
+
+/// The subtypes of a type line that some card has: `You` of a planeswalker is the player in a valid-string, not a subtype.
+fn known_subtypes(types: &str) -> impl Iterator<Item = String> {
+    subtypes_of(types)
+        .into_iter()
+        .filter(|word| mtg_core::subtypes::is_known_subtype(word))
+}
+
+/// The subtypes a type line names: its words that are neither card types nor supertypes.
+pub fn subtypes_of(types: &str) -> Vec<String> {
+    types
+        .split_whitespace()
+        .filter(|word| !CARD_TYPES.contains(word) && !SUPERTYPES.contains(word))
+        .map(str::to_owned)
+        .collect()
+}
+
+/// The translation of one face.
+// Each flag is a separate fact about the part being translated.
+#[allow(clippy::struct_excessive_bools)]
+pub struct Ctx<'a> {
+    /// The named parts of the face.
+    pub svars: &'a BTreeMap<String, String>,
+    /// The bodies of the `K:` lines of the face.
+    pub keywords: &'a [String],
+    /// The `Types:` line of the face.
+    pub types: &'a str,
+    /// Forge's rendering of the card's text, only to tell two spellings of the same rule apart.
+    pub oracle: &'a str,
+    /// The `ManaCost:` line of the face.
+    pub mana_cost: &'a str,
+    /// The `PT:` line of the face.
+    pub pt: Option<&'a str>,
+    /// The checkout's subtypes and tokens.
+    pub world: &'a World,
+    /// The target specifications of the ability being translated, in order.
+    pub targets: Vec<Value>,
+    /// The objects the latest zone change moved (`RememberChanged$`), which `Defined$ Remembered` names later.
+    pub remembered: Option<Value>,
+    /// The loop variable of the enclosing `RepeatEach` over players: Forge remembers the player there, and later
+    /// `Remember*` steps add to that set, which this reader keeps apart.
+    pub player_loop: Option<String>,
+    /// The objects the latest `Imprint*` step moved, which `Defined$ Imprinted` names later.
+    pub imprinted: Option<Value>,
+    /// For a name a step bound to what it moved, the reference the step named them by: they are other objects now (CR 400.7)
+    /// and `RememberedController` is read on those named before the move.
+    pub moved_from: BTreeMap<String, Value>,
+    /// The bound names a step of the resolution moved onto the battlefield: the engine binds such a name again to the
+    /// permanents that arrived, so a later move of the name takes them unless it keeps to the zone it moves from.
+    pub arrived: std::collections::BTreeSet<String>,
+    /// The bound names whose step keeps how many objects it moved (`<name>~moved`), which survives a token that ceased to exist.
+    pub counted: std::collections::BTreeSet<String>,
+    /// The bound names a condition or a "may" bound: later steps may count them or test that they hold something (an
+    /// unbound name reads as empty), but not use the objects themselves.
+    pub scoped: std::collections::BTreeSet<String>,
+    /// The `Cost$` of the ability line being translated, which `Exiled` reads (the cards its exile parts took).
+    pub ability_cost: Option<String>,
+    /// The name a reflexive trigger reads as `TriggerRememberAmount`: the number its setup kept (`RememberSVarAmount$`).
+    pub trigger_amount: Option<String>,
+    /// The memories the card reads on a line other than the one that wrote them.
+    pub memory: super::memory::Plan,
+    /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
+    /// `reset` because the carried lines are translated as lines of their own.
+    pub pinned: Option<Value>,
+    /// What `DelayTriggerRemembered` names in the steps of a delayed trigger: the name its setup bound.
+    pub delayed_remembered: Option<Value>,
+    /// What a line that deals damage remembered (`RememberDamaged$`) and the source of that damage: a condition on it asks
+    /// that the source really dealt it damage, which a prevention stops.
+    pub damaged: Option<(Value, Value)>,
+    /// A cost is being translated: the engine checks a cost against no target specification, so the count grammar
+    /// reads no target there.
+    pub in_cost: std::cell::Cell<bool>,
+    /// A target bound or a divided total is being read: the spell is being cast, so "as you cast" counts read live.
+    pub as_cast: std::cell::Cell<bool>,
+    /// The cost being read is that of an activated ability, the one place a waterbend cost has its helpers.
+    pub waterbend_ok: std::cell::Cell<bool>,
+    /// A keyword a static ability gives may cost "equal to its mana cost" (`CardManaCost`).
+    pub own_cost_ok: std::cell::Cell<bool>,
+    /// Where the filter being read stands (`filter::Scope`): atoms refuse the scopes they are not legal in.
+    pub scope: std::cell::Cell<super::filter::Scope>,
+    /// The index of the target the line being translated is about to declare, for the condition it states ahead of its effect.
+    pub coming: Option<u8>,
+    /// The target the line is about to declare is a player.
+    pub coming_player: bool,
+    /// The latest target the ability had declared before the line being translated (`Defined$ ParentTarget`).
+    pub parent_target: Option<u8>,
+    /// The targets declared by lines that only choose them (a `Pump` with nothing to pump), as their index and spec: a later
+    /// `Defined$ Targeted` destroy reads them all ("Destroy target creature and target land").
+    pub r6e_selected: Vec<(u8, Value)>,
+    /// The name the latest value chosen by the ability is bound to (`ChosenColor`, `ChosenType` after it).
+    pub chosen: Option<String>,
+    /// What kind of value `chosen` holds (`Color`, `CreatureType`, `LandType`, `CardType`), none for a name.
+    pub chosen_kind: Option<&'static str>,
+    /// The name the cards the latest `ChooseCard` picked are bound to (`ChosenCard` after it).
+    pub chosen_card: Option<String>,
+    /// The name the latest number chosen by the ability is bound to (`ChosenNumber` after it).
+    pub chosen_number: Option<String>,
+    /// The card name the ability chose (the name of its `ChooseValue`) while an `Effect` line it holds is translated: the
+    /// statics and triggers of the effect read `NamedCard` as that choice through their own reset.
+    pub effect_name: Option<String>,
+    /// For a bound name, the `Let` that kept how many objects it held when it was bound, which a count of it reads.
+    pub kept_count: BTreeMap<String, String>,
+    /// The name the picks of the passes of the repeat being translated gather into (`Bind` with `adds`).
+    pub gathered: Option<String>,
+    /// The number an `Effect` line fixes with `SetChosenNumber$`, which `Count$ChosenNumber` reads in the parts it holds;
+    /// set only while that line is translated, so the statics and triggers it holds keep it through their own reset.
+    pub set_number: Option<Value>,
+    /// The `SVar` a damage step's `ExcessSVar` sets and the number the step bound the excess damage to.
+    pub excess: Option<(String, String)>,
+    /// Whether a line with `DamageMap$` has begun a chain whose `DamageResolve` is still to come.
+    pub damage_open: bool,
+    /// The amount a step remembered as a number (`RememberRemoved$`, `RememberCounteredCMC$`), which `Count$RememberedNumber` reads.
+    pub number: Option<Value>,
+    /// The name of the `SVar` that reads the result of the latest die roll (`ResultSVar`).
+    pub die_result: Option<String>,
+    /// The choice of a vote whose votes `VoteNum` counts.
+    pub vote_num: Option<String>,
+    /// The keyword (`Spree`, `Tiered`, `Escalate`) whose modal spell has not yet taken its mode costs.
+    pub modal_keyword: Option<&'static str>,
+    /// The cost `Escalate` adds for each mode beyond the first.
+    pub extra_mode_cost: Option<String>,
+    /// What the trigger line being translated is about, for its `Triggered*` words.
+    pub trigger: Option<super::triggered::Shape>,
+    /// The ability being translated is one a static ability gives (`AddAbility$`): `OriginalHost` is the card with that static.
+    pub granted: bool,
+    /// The printed text of the ability line being translated (`SpellDescription$`, `TriggerDescription$`), lower case.
+    pub printed: Option<String>,
+    /// The part being translated belongs to an `Effect` object's delayed trigger: `EffectSource` is the card whose ability made it.
+    pub effect_source: bool,
+    binds: usize,
+    depth: usize,
+}
+
+/// The deepest chain of named parts followed before the translator gives up (a cycle in a script).
+const MAX_DEPTH: usize = 24;
+
+impl<'a> Ctx<'a> {
+    /// A context for a face.
+    pub fn new(face: &'a Face, world: &'a World) -> Ctx<'a> {
+        Ctx {
+            svars: &face.svars,
+            keywords: &face.keywords,
+            types: &face.types,
+            oracle: &face.oracle,
+            mana_cost: &face.mana_cost,
+            pt: face.pt.as_deref(),
+            world,
+            targets: Vec::new(),
+            remembered: None,
+            player_loop: None,
+            imprinted: None,
+            moved_from: BTreeMap::new(),
+            arrived: std::collections::BTreeSet::new(),
+            ability_cost: None,
+            trigger_amount: None,
+            counted: std::collections::BTreeSet::new(),
+            scoped: std::collections::BTreeSet::new(),
+            in_cost: std::cell::Cell::new(false),
+            as_cast: std::cell::Cell::new(false),
+            waterbend_ok: std::cell::Cell::new(false),
+            own_cost_ok: std::cell::Cell::new(false),
+            scope: std::cell::Cell::new(super::filter::Scope::Object),
+            coming: None,
+            coming_player: false,
+            memory: super::memory::plan(face),
+            pinned: None,
+            delayed_remembered: None,
+            damaged: None,
+            parent_target: None,
+            r6e_selected: Vec::new(),
+            chosen: None,
+            chosen_kind: None,
+            chosen_card: None,
+            chosen_number: None,
+            set_number: None,
+            gathered: None,
+            effect_name: None,
+            kept_count: BTreeMap::new(),
+            die_result: None,
+            excess: None,
+            damage_open: false,
+            number: None,
+            vote_num: None,
+            granted: false,
+            printed: None,
+            effect_source: false,
+            modal_keyword: None,
+            extra_mode_cost: None,
+            trigger: None,
+            binds: 0,
+            depth: 0,
+        }
+    }
+
+    /// Starts the next ability: no targets and no bound names yet.
+    pub fn reset(&mut self) {
+        self.targets.clear();
+        self.remembered = None;
+        self.damaged = None;
+        self.imprinted = None;
+        self.moved_from.clear();
+        self.arrived.clear();
+        self.ability_cost = None;
+        self.counted.clear();
+        self.kept_count.clear();
+        self.scoped.clear();
+        self.coming = None;
+        self.coming_player = false;
+        self.parent_target = None;
+        self.chosen = None;
+        self.chosen_kind = None;
+        self.chosen_card = None;
+        self.chosen_number = None;
+        self.excess = None;
+        self.number = None;
+        self.die_result = None;
+        self.vote_num = None;
+        self.trigger = None;
+        self.binds = 0;
+        self.depth = 0;
+    }
+
+    /// Runs a translation of a line of its own (a static, a trigger) and restores the state of the ability around it.
+    pub fn nested<T>(&mut self, pinned: Option<Value>, run: impl FnOnce(&mut Ctx<'a>) -> T) -> T {
+        let before = std::mem::replace(&mut self.pinned, pinned);
+        let targets = std::mem::take(&mut self.targets);
+        let saved = (
+            self.remembered.take(),
+            self.imprinted.take(),
+            std::mem::take(&mut self.moved_from),
+            self.parent_target,
+            self.chosen.take(),
+            self.chosen_card.take(),
+            self.chosen_number.take(),
+            self.trigger.take(),
+            self.binds,
+            self.depth,
+        );
+        let arrived = std::mem::take(&mut self.arrived);
+        let die = self.die_result.take();
+        let excess = self.excess.take();
+        let number = self.number.take();
+        let out = run(self);
+        self.die_result = die;
+        self.arrived = arrived;
+        self.excess = excess;
+        self.number = number;
+        self.pinned = before;
+        self.targets = targets;
+        (
+            self.remembered,
+            self.imprinted,
+            self.moved_from,
+            self.parent_target,
+            self.chosen,
+            self.chosen_card,
+            self.chosen_number,
+            self.trigger,
+            self.binds,
+            self.depth,
+        ) = saved;
+        out
+    }
+
+    /// The text of a named part.
+    pub fn svar(&self, name: &str) -> Option<&'a str> {
+        self.svars.get(name.trim()).map(String::as_str)
+    }
+
+    /// The parts of the named part (an ability line), or the gap that names a missing or looping reference.
+    pub fn sub(&mut self, name: &str) -> Tr<Params> {
+        self.depth += 1;
+        if self.depth > MAX_DEPTH {
+            return unmapped("svar:loop");
+        }
+        match self.svar(name) {
+            Some(text) => Ok(Params::parse(text)),
+            None => unmapped("svar:missing"),
+        }
+    }
+
+    /// Declares a target and returns the reference to its chosen set.
+    pub fn target(&mut self, spec: Value) -> Tr<Value> {
+        let at = self.targets.len();
+        let Ok(index) = u8::try_from(at) else {
+            return unmapped("targets:too-many");
+        };
+        // A script that targets an opponent where the card says "target player" is wrong, not a choice; a card that names
+        // no opponent already reads as a player (`valid::player_printed`, Draconic Fealty).
+        let oracle = self.oracle.to_lowercase();
+        if spec.get("what") == Some(&json!("Opponent"))
+            && oracle.contains("target player")
+            && !oracle.contains("target opponent")
+        {
+            return unmapped("targets:Opponent-where-the-card-says-target-player");
+        }
+        self.targets.push(spec);
+        Ok(json!({ "Target": index }))
+    }
+
+    /// The reference to the latest declared target ("Targeted" in a sub-ability).
+    pub fn last_target(&self) -> Tr<Value> {
+        if let Some(index) = self
+            .coming
+            .filter(|_| self.scope.get() != super::filter::Scope::Targeting)
+        {
+            return Ok(json!({ "Target": index }));
+        }
+        match u8::try_from(self.targets.len().saturating_sub(1)) {
+            Ok(index) if !self.targets.is_empty() => Ok(json!({ "Target": index })),
+            _ => unmapped("defined:Targeted-without-target"),
+        }
+    }
+
+    /// The reference to the latest declared target when it is a player (`TargetedPlayer`), else a gap.
+    pub fn player_target(&self) -> Tr<Value> {
+        if self.coming.is_some()
+            && self.coming_player
+            && self.scope.get() != super::filter::Scope::Targeting
+        {
+            return self.last_target();
+        }
+        let player = self
+            .targets
+            .last()
+            .is_some_and(|spec| matches!(spec["what"].as_str(), Some("Player" | "Opponent")));
+        if player {
+            self.last_target()
+        } else {
+            unmapped("defined:TargetedPlayer-without-a-player-target")
+        }
+    }
+
+    /// The reference to the target declared before the current line (`ParentTarget` in a sub-ability).
+    pub fn parent(&self) -> Tr<Value> {
+        match self.parent_target {
+            Some(index) => Ok(json!({ "Target": index })),
+            None => unmapped("defined:ParentTarget-without-target"),
+        }
+    }
+
+    /// Notes the latest target declared so far as the parent target of the lines that follow.
+    pub fn mark_parent(&mut self) {
+        self.parent_target = u8::try_from(self.targets.len().saturating_sub(1))
+            .ok()
+            .filter(|_| !self.targets.is_empty());
+    }
+
+    /// A name for a result bound by one step and read by a later one.
+    pub fn fresh(&mut self, base: &str) -> String {
+        self.binds += 1;
+        if self.binds == 1 {
+            base.to_owned()
+        } else {
+            format!("{base}{}", self.binds)
+        }
+    }
+
+    /// Whether the face is an Aura.
+    pub fn is_aura(&self) -> bool {
+        self.types.split_whitespace().any(|word| word == "Aura")
+    }
+}
+
+/// The keys every ability line may carry besides its verb's own: text for people, hints for Forge's computer player and
+/// the keys the chain reads.
+const COMMON: [&str; 11] = [
+    "SP",
+    "AB",
+    "DB",
+    "Cost",
+    "SubAbility",
+    "SorcerySpeed",
+    "PlayerTurn",
+    "ActivationLimit",
+    "ActivationZone",
+    "Planeswalker",
+    "Ultimate",
+];
+
+/// Whether a key is only text for people or a hint for Forge's computer player.
+pub fn is_hint(key: &str) -> bool {
+    const SUFFIXES: [&str; 4] = ["Description", "Desc", "Prompt", "Title"];
+    const EXACT: [&str; 14] = [
+        "PromptToSkipOptionalAbility",
+        "Image",
+        "AILogic",
+        "AIPreference",
+        "StackDescription",
+        "SpellDescription",
+        "PrecostDesc",
+        "CostDesc",
+        "NonBasicSpell",
+        "ShowCurrentCard",
+        "Secondary",
+        "IsCurse",
+        "TriggerDescription",
+        "LockInText",
+    ];
+    EXACT.contains(&key)
+        || SUFFIXES.iter().any(|suffix| key.ends_with(suffix))
+        || (key.starts_with("AI") && key.len() > 2)
+}
+
+/// The keys that restrict the targets of a line, which `target_spec` reads.
+pub const SET_KEYS: [&str; 8] = [
+    "TargetingPlayer",
+    "TargetsWithDefinedController",
+    "TargetsWithSameController",
+    "TargetsWithDifferentControllers",
+    "TargetsWithDifferentNames",
+    "TargetsWithDifferentCMC",
+    "MaxTotalTargetCMC",
+    super::header::ANOTHER_THAN,
+];
+
+/// Refuses a key that the mapper of `api` does not read: a key that changes what the line does and is not understood
+/// must leave the line out, not be ignored.
+pub fn only(params: &Params, api: &str, read: &[&str]) -> Tr<()> {
+    check_keys(params, api, read, |key, _| {
+        COMMON.contains(&key) || SET_KEYS.contains(&key)
+    })?;
+    // `target_spec` reads them; the audit makes a line whose mapper builds no target a gap.
+    params.promise(api, &SET_KEYS);
+    Ok(())
+}
+
+/// The one place that checks the keys of a line against those a mapper reads: a key that is neither read, accepted, nor a
+/// hint makes the line a gap `key:<label>.<key>`, and a listed key that the mapper then never reads makes it a gap too
+/// (`audit` in `card.rs`).
+pub fn check_keys(
+    params: &Params,
+    label: &str,
+    read: &[&str],
+    accepted: impl Fn(&str, &str) -> bool,
+) -> Tr<()> {
+    for (key, value) in params.iter() {
+        if read.contains(&key) || accepted(key, value) || is_hint(key) {
+            continue;
+        }
+        return unmapped(format!("key:{label}.{key}"));
+    }
+    let promised: Vec<&str> = read
+        .iter()
+        .copied()
+        .filter(|key| !is_hint(key) && !INERT.contains(&(label, *key)))
+        .collect();
+    params.promise(label, &promised);
+    Ok(())
+}
+
+/// Keys that a mapper lists and may leave unread because they change nothing the translation keeps: bookkeeping of
+/// remembered objects, the hidden-zone flags of a library search (it may find nothing and always shuffles), and display
+/// flags of a private look.
+const INERT: [(&str, &str); 17] = [
+    ("Replacement.DamageDone", "AlwaysReplace"),
+    ("Cleanup", "ClearRemembered"),
+    ("Cleanup", "ClearImprinted"),
+    ("Cleanup", "ClearTriggered"),
+    ("Cleanup", "ClearChosenCard"),
+    ("Cleanup", "ClearNamedCard"),
+    ("Cleanup", "ClearChosenPlayer"),
+    ("ChooseSource", "ChoiceTitle"),
+    ("Effect", "Stackable"),
+    ("ChangeZone.Search", "Hidden"),
+    ("ChangeZone.Search", "Mandatory"),
+    ("ChangeZone.Search", "Optional"),
+    ("ChangeZone.Search", "ShuffleNonMandatory"),
+    ("ChangeZone.Choose", "Hidden"),
+    ("ChangeZone.Choose", "Optional"),
+    ("Static.Continuous", "AddSVar"),
+    ("Dig", "ForceRevealToController"),
+];
+
+/// A `True`/`False` key of a line: absent is false; any other word is a gap, never a silent false.
+pub fn flag(p: &Params, key: &str) -> Tr<bool> {
+    match p.get(key) {
+        None | Some("False") => Ok(false),
+        Some("True") => Ok(true),
+        Some(other) => unmapped(format!("key:{key}={other}")),
+    }
+}

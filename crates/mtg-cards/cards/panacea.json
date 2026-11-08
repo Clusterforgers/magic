@@ -1,0 +1,28 @@
+{
+  "oracle_id": "08ee7879-3c9d-43c6-a44e-f81180f938fd",
+  "name": "Panacea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panacea",
+      "oracle_fingerprint": "d718819778660b093fe7846d1e2db0f0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{X}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventCounted": "X" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

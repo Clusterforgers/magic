@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f2b88031-bfb7-46c4-abdd-3b6b5f5acfa4",
+  "name": "The Final Days",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Final Days",
+      "oracle_fingerprint": "6ab825c5a8904ff806d1f83d0be94ba5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Horror",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Horror"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                        }
+                      },
+                      "then": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "otherwise": 2
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{B}{B}" } }
+      ]
+    }
+  ]
+}

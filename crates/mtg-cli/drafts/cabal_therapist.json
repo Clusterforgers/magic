@@ -1,0 +1,59 @@
+{
+  "oracle_id": "9b7870df-6bca-499f-bc6e-e57f2ddfe640",
+  "name": "Cabal Therapist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cabal Therapist",
+      "oracle_fingerprint": "f6b14bac4ae43f3007984d7ff3430b31",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "Player" }],
+                        "effects": [
+                          {
+                            "ChooseValue": {
+                              "kind": { "CardName": [{ "Not": { "Type": "Land" } }] },
+                              "as": "name"
+                            }
+                          },
+                          {
+                            "Reveal": {
+                              "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                            }
+                          },
+                          {
+                            "Discard": {
+                              "who": { "Target": 0 },
+                              "count": {
+                                "Count": [
+                                  { "In": "Hand" },
+                                  { "OwnedBy": { "Target": 0 } },
+                                  { "ChosenAs": "name" }
+                                ]
+                              },
+                              "filter": [{ "ChosenAs": "name" }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

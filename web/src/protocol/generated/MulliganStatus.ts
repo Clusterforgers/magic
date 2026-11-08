@@ -3,4 +3,4 @@
 /**
  * Progress of one player through the opening-hand procedure.
  */
-export type MulliganStatus = "NeedsHand" | "Deciding" | "Mulliganing" | { "Bottoming": number } | "Scrying" | "Kept";
+export type MulliganStatus = "NeedsHand" | "Deciding" | "Mulliganing" | { "Bottoming": number } | "Opening" | "Scrying" | "Kept";

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "18e856b5-aab7-4802-8cec-1d44dd95d9f7",
+  "name": "Hoarding Broodlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hoarding Broodlord",
+      "oracle_fingerprint": "b692da47554a79373e4c28df1590a30d",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "ExileHidden": { "what": { "Bound": "found" }, "sealed": true, "as": "exiled2" } },
+              { "Shuffle": {} },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled2" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "LookAtExiled": { "what": [{ "In": "Exile" }], "only": { "Bound": "exiled2" } }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "WasCast": { "from": "Exile" } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        }
+      ]
+    }
+  ]
+}

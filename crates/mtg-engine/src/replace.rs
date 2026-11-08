@@ -31,7 +31,7 @@ use mtg_cards::modify::Modification;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
 use mtg_cards::value::{CastWay, CounterKind};
-use mtg_core::card::{CardType, LAND_TYPES, Subtype};
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
@@ -39,9 +39,10 @@ use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::announce::payments;
 use crate::characteristics::controller_of_object;
+use crate::choose::values;
 use crate::choose::{
-    CardsOptions, Choice, ChoiceOption, OptionOptions, ReplacementCandidate, ReplacementOptions,
-    Target, YesNoOptions,
+    CardsOptions, Choice, ChoiceOption, NameOptions, NumberOptions, OptionOptions,
+    ReplacementCandidate, ReplacementOptions, Target, YesNoOptions,
 };
 use crate::combat::DamageTarget;
 use crate::copies::{BecameCopy, copiable_values, may_be_copied};
@@ -79,6 +80,7 @@ pub fn process(
     proposed: Vec<Event>,
     journal: &[(PlayerId, Choice)],
 ) -> Result<Processed, EngineError> {
+    let proposed = crate::prohibit::filter(state, proposed);
     if !(state.possible.replacements || state.possible.protection) || proposed.is_empty() {
         return Ok(Processed::Events(proposed));
     }
@@ -101,7 +103,7 @@ pub fn process(
                 || returns_by_buyback(state, &item)
                 || exiles_by_adventure(state, &item)
                 || exiles_by_rebound(state, &item)
-                || commander_leaves(state, event)
+                || moves_by_a_rule(state, event)
         })
     {
         return Ok(Processed::Events(proposed));
@@ -157,7 +159,7 @@ pub fn process(
 
 /// The source `dealer` and the player who controls what `target` is, when protection of the target from the dealer
 /// prevents the damage (CR 702.16e).
-fn protection_of(
+pub(crate) fn protection_of(
     state: &GameState,
     dealer: ObjectId,
     target: DamageTarget,
@@ -254,6 +256,9 @@ enum Origin {
     /// A commander that would be put into a hand or a library, which its owner may put into the command zone instead
     /// (CR 903.9b): the card, which is one card of a merged permanent that moves.
     Commander(ObjectId),
+    /// A permanent with a finality counter that would be put into a graveyard from the battlefield, which is exiled instead
+    /// (CR 122.1g).
+    Finality,
 }
 
 impl Origin {
@@ -303,6 +308,25 @@ fn returns_by_buyback(state: &GameState, item: &Item) -> bool {
             spell.kind() == ObjectKind::Card
                 && payments(spell.card(), spell.paid_costs(), OptionalKind::Buyback) > 0
         })
+}
+
+/// Whether a rule that is no ability sends the object of the event elsewhere: a commander to its command zone or a permanent
+/// with a finality counter to exile.
+fn moves_by_a_rule(state: &GameState, event: &Event) -> bool {
+    commander_leaves(state, event) || exiles_by_finality(state, event)
+}
+
+/// Whether the event puts a permanent with a finality counter into a graveyard from the battlefield (CR 122.1g).
+fn exiles_by_finality(state: &GameState, event: &Event) -> bool {
+    moving(state, event).is_some_and(|(object, from, to)| {
+        from == Zone::Battlefield
+            && matches!(to, Zone::Graveyard(_))
+            && state.object(object).is_some_and(|moved| {
+                moved.permanent.as_ref().is_some_and(|held| {
+                    held.counters_of(&CounterKind::Other("finality".to_owned())) > 0
+                })
+            })
+    })
 }
 
 /// Whether the item is the resolution of an Adventure, which is exiled instead of going to the graveyard (CR 715.4).
@@ -360,7 +384,10 @@ fn shields_of(state: &GameState) -> Vec<RuleEffect> {
         .filter(|effect| {
             matches!(
                 effect.rule,
-                Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. }
+                Rule::PreventDamage(_)
+                    | Rule::Regenerate(_)
+                    | Rule::DiesInstead { .. }
+                    | Rule::Replaces { .. }
             ) && effect.source.is_some()
                 && effect.is_active(state)
         })
@@ -425,7 +452,15 @@ fn gather(state: &GameState) -> Vec<Source> {
         let listed: Vec<(AbilityRef, Arc<Ability>)> = if zone == Zone::Battlefield {
             abilities_of(state, object.id())
         } else if state.possible.elsewhere {
+            let anywhere = crate::ability_reader::printed(object)
+                .filter(|(_, rules)| {
+                    crate::ability_reader::works_anywhere(rules) && zone != Zone::PhasedOut
+                })
+                .filter(|(_, rules)| {
+                    crate::ability_reader::works_from(rules) != Some(zone_kind(zone))
+                });
             working_here(object)
+                .chain(anywhere)
                 .map(|(address, rules)| (address, Arc::clone(rules)))
                 .chain(provided_here(state, object))
                 .collect()
@@ -433,7 +468,13 @@ fn gather(state: &GameState) -> Vec<Source> {
             continue;
         };
         for (address, rules) in listed {
-            if matches!(&*rules, Ability::Replacement { from, .. } if *from == zone_kind(zone)) {
+            let applies = match &*rules {
+                Ability::Replacement { from, .. } => {
+                    *from == zone_kind(zone) || crate::ability_reader::works_anywhere(&rules)
+                }
+                _ => false,
+            };
+            if applies {
                 found.push(Source {
                     address,
                     ability: Arc::clone(&rules),
@@ -480,6 +521,8 @@ enum Unit {
         discard: bool,
         /// The move is a destruction (CR 701.8): lethal damage or deathtouch, or an effect that destroys.
         destroyed: bool,
+        /// The move is the end of a countered spell (CR 701.6).
+        countered: bool,
     },
     /// A card would enter the battlefield.
     Enter {
@@ -557,6 +600,8 @@ fn is_self(when: &ReplaceWhen) -> bool {
         ReplaceWhen::Enters { what }
         | ReplaceWhen::ZoneChange { what, .. }
         | ReplaceWhen::Destroyed { what }
+        | ReplaceWhen::Countered { what }
+        | ReplaceWhen::TurnedFaceUp { what }
         | ReplaceWhen::Discarded { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
@@ -571,12 +616,15 @@ fn is_self(when: &ReplaceWhen) -> bool {
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
         ReplaceBy::PreventUpTo(_)
+        | ReplaceBy::PreventHalf
         | ReplaceBy::PreventRemovingCounter(_)
         | ReplaceBy::PreventAnd(_)
         | ReplaceBy::PreventAllBut(_) => {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
+        // Only a shield counts its amount, and it begins as `PreventUpTo`.
+        ReplaceBy::PreventCounted(_) => false,
         ReplaceBy::UmbraArmor => matches!(
             unit,
             Unit::Move {
@@ -584,7 +632,10 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 ..
             }
         ),
-        ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Prevent => matches!(
+        ReplaceBy::Multiply(_)
+        | ReplaceBy::Add(_)
+        | ReplaceBy::Prevent
+        | ReplaceBy::PreventNext => matches!(
             unit,
             Unit::Tokens { .. }
                 | Unit::Damage { .. }
@@ -596,19 +647,58 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Move { .. })
                 && matches!(kind, ZoneKind::Exile | ZoneKind::Graveyard | ZoneKind::Hand)
         }
+        ReplaceBy::IntoLibrary { place, .. } => {
+            matches!(unit, Unit::Move { .. })
+                && !matches!(place, mtg_cards::effect::Place::Below(_))
+        }
         ReplaceBy::Tapped
+        | ReplaceBy::Untapped
         | ReplaceBy::WithCounters { .. }
+        | ReplaceBy::WithCountersAnd { .. }
+        | ReplaceBy::Tribute(_)
+        | ReplaceBy::Amplify(_)
+        | ReplaceBy::MayWithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
+        | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
+        | ReplaceBy::ChooseWord(_)
         | ReplaceBy::Riot
+        | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
+        ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
+            matches!(unit, Unit::Damage { .. })
+        }
     }
+}
+
+/// Whether the effect changes a part of the entering of its own: entering tapped or untapped, a choice made as it
+/// enters and the counters it enters with, so the order is not a choice (a Thriving land is tapped and asks for a color).
+const fn enters_apart(action: &Action) -> bool {
+    matches!(
+        action,
+        Action::Replace(
+            ReplaceBy::Tapped
+                | ReplaceBy::Untapped
+                | ReplaceBy::Choose(_)
+                | ReplaceBy::WithCounters { .. }
+                | ReplaceBy::WithCountersAnd { .. }
+                | ReplaceBy::Tribute(_)
+                | ReplaceBy::Amplify(_)
+                | ReplaceBy::MayWithCounters { .. }
+                | ReplaceBy::Devour { .. }
+                | ReplaceBy::Riot
+                | ReplaceBy::DayIfNeither
+                | ReplaceBy::WithCounterOf(_)
+                | ReplaceBy::EntersPrepared
+                | ReplaceBy::ChooseWord(_)
+        )
+    )
 }
 
 /// What an effect does to the event.
@@ -627,6 +717,7 @@ impl Action {
             Action::Replace(
                 ReplaceBy::Prevent
                     | ReplaceBy::PreventUpTo(_)
+                    | ReplaceBy::PreventHalf
                     | ReplaceBy::PreventRemovingCounter(_)
                     | ReplaceBy::PreventAnd(_)
                     | ReplaceBy::PreventAllBut(_)
@@ -709,6 +800,16 @@ impl Pass<'_> {
                 to,
                 discard: discards(event),
                 destroyed: destruction(item).is_some(),
+                countered: matches!(
+                    event,
+                    Event::ResolutionEnded {
+                        outcome: ResolutionOutcome::Countered,
+                        ..
+                    } | Event::ZoneChanged {
+                        cause: ZoneCause::Countered,
+                        ..
+                    }
+                ),
             };
         }
         match event {
@@ -789,7 +890,18 @@ impl Pass<'_> {
         when: &ReplaceWhen,
         unit: &Unit,
     ) -> Result<bool, EngineError> {
-        let scope = Scope::announcing(self.state, source.controller, source.object);
+        self.matches_for((source.controller, source.object), when, unit)
+    }
+
+    /// Whether the effect of this controller and source object replaces this event.
+    #[allow(clippy::too_many_lines)]
+    fn matches_for(
+        &self,
+        (controller, object): (PlayerId, ObjectRef),
+        when: &ReplaceWhen,
+        unit: &Unit,
+    ) -> Result<bool, EngineError> {
+        let scope = Scope::announcing(self.state, controller, object);
         Ok(match (when, unit) {
             (ReplaceWhen::TokenCreation { controller, .. }, Unit::Tokens { controller: made }) => {
                 scope.players(controller)?.contains(made)
@@ -880,6 +992,14 @@ impl Pass<'_> {
                     ..
                 },
             )
+            | (
+                ReplaceWhen::Countered { what },
+                Unit::Move {
+                    object,
+                    countered: true,
+                    ..
+                },
+            )
             | (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
                 let Some(reference) = self.reference(*object) else {
                     return Ok(false);
@@ -888,6 +1008,20 @@ impl Pass<'_> {
             }
             _ => false,
         })
+    }
+
+    /// Whether the damage the slot holds can't be prevented: the damage itself says so, or a rule about its source does.
+    fn unpreventable(&self, slot: &Slot, unit: &Unit) -> bool {
+        matches!(
+            slot.item,
+            Item::One(Event::DamageDealt {
+                unpreventable: true,
+                ..
+            })
+        ) || matches!(
+            unit,
+            Unit::Damage { source, .. } if damage_cant_be_prevented(self.state, *source, self.combat_damage())
+        )
     }
 
     /// The effects that apply to the item and have not been applied to it, in the order of their addresses.
@@ -900,10 +1034,7 @@ impl Pass<'_> {
         // A destruction is replaced by a regeneration shield before anything else applies to the permanent's move, but
         // for umbra armor, which is the other way to save it (CR 616.1).
         let regeneration = self.regeneration_candidate(&slot.item);
-        let unpreventable = matches!(
-            unit,
-            Unit::Damage { source, .. } if damage_cant_be_prevented(self.state, source, self.combat_damage())
-        );
+        let unpreventable = self.unpreventable(slot, &unit);
         if !unpreventable
             && let Unit::Damage { source, target } = &unit
             && let Some(protection) = self.protection_candidate(*source, *target)
@@ -1005,6 +1136,7 @@ impl Pass<'_> {
             self.buyback_candidate(slot),
             self.adventure_candidate(slot),
             self.rebound_candidate(slot),
+            self.finality_candidate(slot),
         ]
         .into_iter()
         .flatten()
@@ -1219,7 +1351,9 @@ impl Pass<'_> {
     fn out_of_library_batches(&mut self, gone: &[ObjectId]) {
         for slot in &mut self.slots {
             match &mut slot.item {
-                Item::One(Event::LibraryBottomed { cards, .. }) => {
+                Item::One(
+                    Event::LibraryBottomed { cards, .. } | Event::LibraryInserted { cards, .. },
+                ) => {
                     cards.retain(|id| !gone.contains(id));
                 }
                 Item::One(Event::LibraryShuffled { order, .. }) => {
@@ -1263,7 +1397,11 @@ impl Pass<'_> {
 
     /// The regeneration shield that replaces the destruction the item is, as the only effect that applies to it.
     fn regeneration_candidate(&self, item: &Item) -> Option<Candidate> {
-        let shield = self.regeneration_of(destroyed(item)?)?;
+        let object = destroyed(item)?;
+        if crate::rules::cant_be_regenerated(self.state, object) {
+            return None;
+        }
+        let shield = self.regeneration_of(object)?;
         Some(Candidate {
             origin: Origin::Shield(shield.id),
             object: shield.source?,
@@ -1275,31 +1413,69 @@ impl Pass<'_> {
 
     /// The prevention shields that cover the damage the slot holds and have not been applied to it.
     fn shield_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
+        let mut found = self.replaces_candidates(slot, unit)?;
         let Unit::Damage { source, target } = unit else {
-            return Ok(Vec::new());
+            return Ok(found);
         };
-        let mut found = Vec::new();
         for effect in &self.shields {
             let origin = Origin::Shield(effect.id);
             let (Rule::PreventDamage(shield), Some(maker)) = (&effect.rule, effect.source) else {
                 continue;
             };
             if slot.applied.contains(&origin)
+                || (shield.once && self.spent.contains(&effect.id))
                 || !self.shield_covers(effect, shield, *source, *target)?
             {
                 continue;
             }
-            let by = match self.left.get(&effect.id) {
-                Some(0) => continue,
-                Some(left) => ReplaceBy::PreventUpTo(*left),
-                None if shield.then.is_empty() => ReplaceBy::Prevent,
-                None => ReplaceBy::PreventAnd(shield.then.clone()),
+            let by = if let Some(ReplaceBy::RedirectUpTo { most, to }) = &shield.instead {
+                match self.left.get(&effect.id) {
+                    Some(0) => continue,
+                    left => ReplaceBy::RedirectUpTo {
+                        most: left.copied().unwrap_or(*most),
+                        to: to.clone(),
+                    },
+                }
+            } else if let Some(instead) = &shield.instead {
+                instead.clone()
+            } else {
+                match self.left.get(&effect.id) {
+                    Some(0) => continue,
+                    Some(left) => ReplaceBy::PreventUpTo(*left),
+                    None if shield.then.is_empty() => ReplaceBy::Prevent,
+                    None => ReplaceBy::PreventAnd(shield.then.clone()),
+                }
             };
             found.push(Candidate {
                 origin,
                 object: maker,
                 controller: effect.controller,
                 action: Action::Replace(by),
+                is_self: false,
+            });
+        }
+        Ok(found)
+    }
+
+    /// The shields over any event of a kind (`Rule::Replaces`) that cover this event, each once.
+    fn replaces_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
+        let mut found = Vec::new();
+        for effect in &self.shields {
+            let (Rule::Replaces { when, by }, Some(maker)) = (&effect.rule, effect.source) else {
+                continue;
+            };
+            let origin = Origin::Shield(effect.id);
+            if slot.applied.contains(&origin)
+                || !applies_to(by, unit)
+                || !self.matches_for((effect.controller, maker), when, unit)?
+            {
+                continue;
+            }
+            found.push(Candidate {
+                origin,
+                object: maker,
+                controller: effect.controller,
+                action: Action::Replace(by.clone()),
                 is_self: false,
             });
         }
@@ -1356,6 +1532,18 @@ impl Pass<'_> {
                 _ => false,
             });
             if !hit {
+                return Ok(false);
+            }
+        }
+        if let Some(each) = &shield.each {
+            let DamageTarget::Object(hit) = target else {
+                return Ok(false);
+            };
+            let (Some(maker), Some(reference)) = (effect.source, self.reference(hit)) else {
+                return Ok(false);
+            };
+            let scope = Scope::announcing(self.state, effect.controller, maker);
+            if !scope.selects(each, reference)? {
                 return Ok(false);
             }
         }
@@ -1460,6 +1648,9 @@ impl Pass<'_> {
             Origin::Buyback => "If its buyback cost was paid, put ~ into its owner's hand instead.",
             Origin::Rebound => "If cast from your hand, exile ~ with rebound instead.",
             Origin::Adventure => "Exile ~ instead of putting it into the graveyard.",
+            Origin::Finality => {
+                "If ~ has a finality counter and would be put into a graveyard from the battlefield, exile it instead."
+            }
             Origin::Commander(_) => {
                 "If ~ would be put into a hand or library, its owner may put it into the command zone instead."
             }
@@ -1513,26 +1704,15 @@ impl Pass<'_> {
                 let alike = pool
                     .iter()
                     .all(|c| matches!(c.action, Action::Replace(ReplaceBy::Prevent)));
-                // Entering tapped, a choice made as it enters and the counters it enters with each change a part of the
-                // entering of their own, so the order is not a choice (a Thriving land is tapped and asks for a color).
-                let apart = pool.iter().all(|c| {
-                    matches!(
-                        c.action,
-                        Action::Replace(
-                            ReplaceBy::Tapped
-                                | ReplaceBy::Choose(_)
-                                | ReplaceBy::WithCounters { .. }
-                                | ReplaceBy::Devour { .. }
-                                | ReplaceBy::Riot
-                                | ReplaceBy::DayIfNeither
-                                | ReplaceBy::EntersPrepared
-                        )
-                    )
-                });
+                let apart = pool.iter().all(|c| enters_apart(&c.action));
+                // Entering untapped comes last: its controller orders it after an effect that would tap the permanent,
+                // the order they choose (CR 616.1).
+                let last =
+                    |c: &&&Candidate| !matches!(c.action, Action::Replace(ReplaceBy::Untapped));
                 if let [only, ..] = pool.as_slice()
                     && (pool.len() == 1 || alike || apart)
                 {
-                    (*only).clone()
+                    (*pool.iter().find(last).unwrap_or(only)).clone()
                 } else {
                     let unit = self.unit(&self.slots[at].item);
                     let player = self.affected(&unit);
@@ -1733,6 +1913,7 @@ impl Pass<'_> {
             }
         }
         w13a_moved::w13a_without_counters_on_moved(self.state, &mut events);
+        g12a_library::g12a_order_shuffles(self.state, &mut events);
         events.extend(used);
         events
     }
@@ -1750,7 +1931,10 @@ impl Pass<'_> {
             Action::Replace(by) => by,
         };
         match (by, &unit) {
-            (ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_), Unit::Damage { .. }) => {
+            (
+                ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventHalf,
+                Unit::Damage { .. },
+            ) => {
                 self.prevent(at, candidate, by, applied);
             }
             (ReplaceBy::PreventRemovingCounter(kind), Unit::Damage { .. }) => {
@@ -1774,6 +1958,13 @@ impl Pass<'_> {
             }
             (ReplaceBy::Instead(effects), _) => {
                 self.w5d_instead(at, candidate, effects, &unit, applied);
+            }
+            (ReplaceBy::RedirectUpTo { most, .. }, Unit::Damage { .. }) => {
+                self.r6f_redirect_up_to(at, candidate, *most, applied);
+            }
+            (ReplaceBy::Redirect { .. }, Unit::Damage { .. }) => {
+                self.end_once_shield(candidate);
+                self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
             }
             (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
                 self.scale(at, by, &applied);
@@ -1811,6 +2002,9 @@ impl Pass<'_> {
                     self.redirect(at, *object, *from, destination, &applied);
                 }
             }
+            (ReplaceBy::IntoLibrary { place, reveal }, Unit::Move { object, from, .. }) => {
+                self.g12a_into_library(at, (*object, *from), (*place, *reveal), &applied);
+            }
             (ReplaceBy::Dredge(cards), Unit::Draw { .. }) => self.dredge(at, candidate, *cards),
             (ReplaceBy::UmbraArmor, Unit::Move { object, .. }) => {
                 self.umbra(at, candidate, *object);
@@ -1840,8 +2034,18 @@ impl Pass<'_> {
         match by {
             ReplaceBy::Devour { .. } => self.devour(at, candidate, by, object, controller, applied),
             ReplaceBy::Riot => self.riot(at, object, controller, applied),
+            ReplaceBy::WithCounterOf(kinds) => {
+                self.e15b_counter_of(at, (object, controller), kinds, applied)
+            }
+            ReplaceBy::Amplify(per) => {
+                self.amplify(at, candidate, (object, controller), *per, applied)
+            }
             ReplaceBy::RevealOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
+            }
+            ReplaceBy::PayOrGraveyard { cost, optional } => {
+                let paid = (cost, *optional);
+                self.e14b_pay_or_graveyard(at, candidate, paid, (object, controller), applied)
             }
             ReplaceBy::TappedForCounters { counter, count } => {
                 let got = (counter, *count);
@@ -1915,25 +2119,23 @@ impl Pass<'_> {
         kind: &CounterKind,
         applied: Vec<Origin>,
     ) {
-        // Removals already queued in this batch (several damage events at once) take counters too, so a permanent
-        // with fewer counters than events loses only those it has and the rest of the damage is still prevented.
-        let queued = self
-            .slots
-            .iter()
-            .filter(|slot| {
-                matches!(
+        // Damage dealt at once applies the effect once and removes one counter however many sources deal it (the
+        // Oathsworn Knight ruling), so a removal this effect already queued in the batch is the one.
+        let once = self.slots.iter().any(|slot| {
+            slot.applied.contains(&candidate.origin)
+                && matches!(
                     &slot.item,
                     Item::One(Event::CountersChanged(CountersChanged { on, counter, delta }))
                         if *on == Target::Object(candidate.object) && counter == kind && *delta < 0
                 )
-            })
-            .count();
-        let holds = self.state.object(candidate.object.id).is_some_and(|card| {
-            card.counter() == candidate.object.counter
-                && card.permanent().is_some_and(|held| {
-                    usize::try_from(held.counters_of(kind)).unwrap_or(usize::MAX) > queued
-                })
         });
+        let holds = !once
+            && self.state.object(candidate.object.id).is_some_and(|card| {
+                card.counter() == candidate.object.counter
+                    && card
+                        .permanent()
+                        .is_some_and(|held| held.counters_of(kind) > 0)
+            });
         if !holds {
             return;
         }
@@ -1959,6 +2161,7 @@ impl Pass<'_> {
             deathtouch,
             form,
             toxic,
+            unpreventable,
         }) = self.slots[at].item.clone()
         else {
             self.slots[at].applied = applied;
@@ -1966,6 +2169,7 @@ impl Pass<'_> {
         };
         let most = match by {
             ReplaceBy::PreventUpTo(most) => *most,
+            ReplaceBy::PreventHalf => amount.div_ceil(2),
             _ => u32::MAX,
         };
         let taken = most.min(amount);
@@ -1973,6 +2177,18 @@ impl Pass<'_> {
             && let Some(left) = self.left.get_mut(&id)
         {
             *left = left.saturating_sub(taken);
+            if !self.touched.contains(&id) {
+                self.touched.push(id);
+            }
+        }
+        // A shield for the next damage ends with the first event it prevents.
+        if let Origin::Shield(id) = candidate.origin
+            && self.shields.iter().any(|effect| {
+                effect.id == id
+                    && matches!(&effect.rule, Rule::PreventDamage(shield) if shield.once)
+            })
+        {
+            self.spent.insert(id);
             if !self.touched.contains(&id) {
                 self.touched.push(id);
             }
@@ -1990,10 +2206,27 @@ impl Pass<'_> {
                     deathtouch,
                     form,
                     toxic,
+                    unpreventable,
                 }),
                 applied,
                 frozen: false,
             };
+        }
+    }
+
+    /// A shield for the next damage ends with the first event it changes.
+    fn end_once_shield(&mut self, candidate: &Candidate) {
+        let Origin::Shield(id) = candidate.origin else {
+            return;
+        };
+        let once = self.shields.iter().any(|effect| {
+            effect.id == id && matches!(&effect.rule, Rule::PreventDamage(shield) if shield.once)
+        });
+        if once {
+            self.spent.insert(id);
+            if !self.touched.contains(&id) {
+                self.touched.push(id);
+            }
         }
     }
 
@@ -2074,6 +2307,7 @@ impl Pass<'_> {
                 deathtouch,
                 form,
                 toxic,
+                unpreventable,
             }) => {
                 let now = more(amount);
                 self.follow_lifelink(at, source, amount, now);
@@ -2084,6 +2318,7 @@ impl Pass<'_> {
                     deathtouch,
                     form,
                     toxic,
+                    unpreventable,
                 })]
             }
             Item::One(Event::CountersChanged(CountersChanged { on, counter, delta })) => {
@@ -2169,7 +2404,9 @@ impl Pass<'_> {
                 },
                 once: true,
                 this_turn: false,
+                until: None,
                 effects: vec![mtg_cards::effect::Effect::CastFromZone {
+                    rather: None,
                     who: Ref::You,
                     what: Ref::This,
                     free: true,
@@ -2179,7 +2416,9 @@ impl Pass<'_> {
                     bind: None,
                     otherwise: Vec::new(),
                 }],
+                targets: Vec::new(),
                 bindings: Vec::new(),
+                kept: None,
             },
         )))
     }
@@ -2329,44 +2568,48 @@ impl Pass<'_> {
         applied: Vec<Origin>,
     ) -> Result<Applied, EngineError> {
         let source = candidate.object.id;
-        let tapped = |step: &mut Pass<'_>, at: usize| {
+        let set_tapped = |step: &mut Pass<'_>, at: usize, to: bool| {
             let entered = step.entered_at(at, object, controller);
             if let Item::One(Event::Entered { tapped, .. }) = &mut step.slots[entered].item {
-                *tapped = true;
+                *tapped = to;
             }
         };
+        let tapped = |step: &mut Pass<'_>, at: usize| set_tapped(step, at, true);
         match by {
             ReplaceBy::Tapped => tapped(self, at),
+            ReplaceBy::Untapped => set_tapped(self, at, false),
             ReplaceBy::WithCounters {
                 counter,
                 count,
                 tapped: and_tapped,
             } => {
-                let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
-                let number = scope.amount(count)?.max(0);
-                if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
-                    && delta > 0
-                {
-                    // The counters go on the permanent the card becomes (CR 400.7).
-                    let on = Target::Object(ObjectRef {
-                        id: object,
-                        counter: card.counter() + 1,
-                    });
-                    let mut inherited = applied.clone();
-                    inherited.dedup();
-                    let follow = Slot {
-                        item: Item::One(Event::CountersChanged(CountersChanged {
-                            on,
-                            counter: counter.clone(),
-                            delta,
-                        })),
-                        applied: inherited,
-                        frozen: false,
-                    };
-                    self.slots.insert(at + 1, follow);
-                }
+                self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
                 if *and_tapped {
                     tapped(self, at);
+                }
+            }
+            ReplaceBy::WithCountersAnd {
+                counter,
+                count,
+                mods,
+            } => {
+                self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
+                self.enter_with_changes(at, object, controller, mods, &applied)?;
+            }
+            ReplaceBy::Tribute(count) => {
+                if let Asked::Ask(decision) =
+                    self.tribute(at, candidate, object, controller, *count, &applied)?
+                {
+                    return Ok(Applied::Ask(decision));
+                }
+            }
+            ReplaceBy::MayWithCounters { counter, count } => {
+                match self.takes_counters(source, controller)? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(true) => {
+                        self.enter_with_counters(at, candidate, object, counter, count, &applied)?;
+                    }
+                    Asked::Got(false) => {}
                 }
             }
             ReplaceBy::PayLifeOrTapped(life) => {
@@ -2392,8 +2635,8 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
-            ReplaceBy::Choose(kind) => {
-                let chosen = match self.chooses(source, controller, *kind)? {
+            ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) => {
+                let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,
                 };
@@ -2466,6 +2709,7 @@ impl Pass<'_> {
                     return Ok(Applied::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseCards(CardsOptions {
+                            one_per_name: false,
                             source: candidate.object.id,
                             max: u32::try_from(options.len()).unwrap_or(u32::MAX),
                             from: options,
@@ -2606,6 +2850,7 @@ impl Pass<'_> {
                 return Ok(Asked::Ask(Decision {
                     player: controller,
                     kind: DecisionKind::ChooseCards(CardsOptions {
+                        one_per_name: false,
                         source: source.id,
                         from: options,
                         min: 0,
@@ -2711,6 +2956,63 @@ impl Pass<'_> {
         }
     }
 
+    /// Adds the event that puts `count` counters of the kind on the permanent `object` becomes, after its enter event at `at`.
+    fn enter_with_counters(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        object: ObjectId,
+        counter: &CounterKind,
+        count: &mtg_cards::value::Amount,
+        applied: &[Origin],
+    ) -> Result<(), EngineError> {
+        let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+        let number = scope.amount(count)?.max(0);
+        if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
+            && delta > 0
+        {
+            // The counters go on the permanent the card becomes (CR 400.7).
+            let on = Target::Object(ObjectRef {
+                id: object,
+                counter: card.counter() + 1,
+            });
+            let mut inherited = applied.to_vec();
+            inherited.dedup();
+            let follow = Slot {
+                item: Item::One(Event::CountersChanged(CountersChanged {
+                    on,
+                    counter: counter.clone(),
+                    delta,
+                })),
+                applied: inherited,
+                frozen: false,
+            };
+            self.slots.insert(at + 1, follow);
+        }
+        Ok(())
+    }
+
+    /// Whether `controller` has the permanent enter with counters: asked yes or no.
+    fn takes_counters(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+    ) -> Result<Asked<bool>, EngineError> {
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::YesNo(YesNoOptions::new(
+                    source,
+                    "Have it enter with the counters?".to_owned(),
+                )),
+            })),
+            Some((who, Choice::YesNo(yes))) if *who == controller => Ok(Asked::Got(*yes)),
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the counters of {controller:?}"
+            ))),
+        }
+    }
+
     /// Whether `controller` pays `life` as the card enters: asked yes or no, with No the only answer when they cannot
     /// pay, so the pace does not show whether they could.
     fn pays_life(
@@ -2738,6 +3040,72 @@ impl Pass<'_> {
         }
     }
 
+    /// A card name that `controller` names as the card enters (CR 201.3); nothing when they name nothing.
+    fn chooses_name(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        nonland: bool,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::ChooseName(NameOptions {
+                    source,
+                    text: if nonland {
+                        "Choose a nonland card name.".to_owned()
+                    } else {
+                        "Choose a card name.".to_owned()
+                    },
+                    nonland,
+                }),
+            })),
+            Some((who, Choice::Name(name))) if *who == controller => Ok(Asked::Got(
+                (!name.is_empty()).then(|| Chosen::Name(name.clone())),
+            )),
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the choice of a name of {controller:?}"
+            ))),
+        }
+    }
+
+    /// A number from `min` to `max` that `controller` chooses as the card enters; the smallest when only one is allowed.
+    fn chooses_number(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        min: u32,
+        max: u32,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        let max = max.max(min);
+        if min == max {
+            return Ok(Asked::Got(Some(Chosen::Number(min))));
+        }
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::ChooseNumber(NumberOptions {
+                    source,
+                    min,
+                    max: Some(max),
+                    except: Vec::new(),
+                    text: "Choose a number.".to_owned(),
+                    can_cancel: false,
+                    cost: None,
+                    per_x: 0,
+                }),
+            })),
+            Some((who, Choice::Number(number)))
+                if *who == controller && (min..=max).contains(number) =>
+            {
+                Ok(Asked::Got(Some(Chosen::Number(*number))))
+            }
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the choice of a number of {controller:?}"
+            ))),
+        }
+    }
+
     /// What `controller` chooses as the card enters: asked unless there is one thing to choose or none.
     fn chooses(
         &mut self,
@@ -2745,6 +3113,12 @@ impl Pass<'_> {
         controller: PlayerId,
         kind: EntersChoice,
     ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        if let EntersChoice::Number { min, max } = kind {
+            return self.chooses_number(source, controller, min, max);
+        }
+        if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) {
+            return self.chooses_name(source, controller, kind == EntersChoice::NonlandCardName);
+        }
         let options = self.options_of(kind, controller, source);
         let picked = match options.as_slice() {
             [] => None,
@@ -2761,9 +3135,15 @@ impl Pass<'_> {
                         }
                         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
                         EntersChoice::LandType => "Choose a land type.".to_owned(),
+                        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
                         EntersChoice::Player => "Choose a player.".to_owned(),
                         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
                         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
+                        EntersChoice::CardName
+                        | EntersChoice::NonlandCardName
+                        | EntersChoice::CardType
+                        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
+                        EntersChoice::Number { .. } => String::new(),
                     };
                     return Ok(Asked::Ask(Decision {
                         player: controller,
@@ -2790,17 +3170,32 @@ impl Pass<'_> {
             let chapter = picked.and_then(|index| u32::try_from(index + 1).ok());
             return Ok(Asked::Got(chapter.map(Chosen::Chapter)));
         }
-        Ok(Asked::Got(picked.and_then(
-            |index| match options[index].clone() {
+        Ok(Asked::Got(picked.and_then(|index| {
+            match options[index].clone() {
                 ChoiceOption::Color(color) => Some(Chosen::Color(color)),
-                ChoiceOption::Label(name) if kind == EntersChoice::LandType => {
+                ChoiceOption::Label(name)
+                    if matches!(kind, EntersChoice::LandType | EntersChoice::BasicLandType) =>
+                {
                     Some(Chosen::LandType(Subtype(name)))
+                }
+                ChoiceOption::Label(name)
+                    if matches!(kind, EntersChoice::CardType | EntersChoice::CardTypeOf(_)) =>
+                {
+                    values::CARD_TYPES
+                        .into_iter()
+                        .find(|card_type| format!("{card_type:?}") == name)
+                        .map(Chosen::CardType)
+                }
+                ChoiceOption::Label(name)
+                    if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) =>
+                {
+                    Some(Chosen::Name(name))
                 }
                 ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
                 ChoiceOption::Player(player) => Some(Chosen::Player(player)),
                 ChoiceOption::Secret(_) => None,
-            },
-        )))
+            }
+        })))
     }
 
     /// What a player may choose as a permanent enters: the five colours (less the one a choice excludes), the creature types of the cards in the game, the land types or the players.
@@ -2826,21 +3221,14 @@ impl Pass<'_> {
                 .filter(|color| *color != other)
                 .map(ChoiceOption::Color)
                 .collect(),
-            EntersChoice::CreatureType => {
-                let mut types: Vec<String> = self
-                    .state
-                    .objects()
-                    .filter(|o| o.card().is_type(CardType::Creature))
-                    .flat_map(|o| o.card().subtypes.iter().map(|s| s.0.clone()))
-                    .collect();
-                types.sort();
-                types.dedup();
-                types.into_iter().map(ChoiceOption::Label).collect()
-            }
-            EntersChoice::LandType => LAND_TYPES
-                .iter()
-                .map(|name| ChoiceOption::Label((*name).to_owned()))
-                .collect(),
+            EntersChoice::CreatureType => values::creature_types(),
+            EntersChoice::LandType => values::land_types(),
+            EntersChoice::CardType => values::card_types(),
+            EntersChoice::CardTypeOf(set) => values::card_types_of(set),
+            EntersChoice::BasicLandType => values::basic_land_types(),
+            EntersChoice::CardName
+            | EntersChoice::NonlandCardName
+            | EntersChoice::Number { .. } => Vec::new(),
             EntersChoice::Player => self
                 .state
                 .turn_order_from(controller)
@@ -2872,6 +3260,9 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 mod day;
+mod g12a_library;
+
+mod e14b_pay_or_graveyard;
 
 mod prepared;
 
@@ -2879,13 +3270,22 @@ mod dredge;
 
 mod reveal;
 
+mod amplify;
+mod changes;
+mod e15b_counter_of;
+mod e15f_word;
 mod riot;
+mod tribute;
 
 mod w13b_tapped_for_counters;
 
 mod c6_blk_draw_step;
 
 mod c7_untap_dies;
+#[cfg(test)]
+mod r3d_replaces;
+
+mod finality;
 
 /// The event that keeps how many permanents `object` devoured as it entered, which its abilities read once it is on
 /// the battlefield; none when it devoured nothing.
@@ -2904,6 +3304,7 @@ mod shields;
 #[cfg(test)]
 mod umbra;
 
+mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;
 

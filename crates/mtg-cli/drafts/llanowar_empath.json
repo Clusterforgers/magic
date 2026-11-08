@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0f71416c-e244-48b4-acbe-2a8ef540db0f",
+  "name": "Llanowar Empath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Empath",
+      "oracle_fingerprint": "d3fb8f3384425d03cedca0df7e604c71",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Scry": { "count": 2 } },
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

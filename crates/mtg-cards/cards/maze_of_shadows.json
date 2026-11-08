@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b7b51ab1-403e-4640-8827-b04965aa6760",
+  "name": "Maze of Shadows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maze of Shadows",
+      "oracle_fingerprint": "7a64b4eb33ed204a68e2b8baa9e76b7b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "HasKeyword": "Shadow" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 }, "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

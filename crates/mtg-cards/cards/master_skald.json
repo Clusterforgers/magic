@@ -1,0 +1,37 @@
+{
+  "oracle_id": "34bccfc0-453d-4d1a-8046-70f9c3065e88",
+  "name": "Master Skald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master Skald",
+      "oracle_fingerprint": "53092b032a973cda2451d44bec7f2034",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

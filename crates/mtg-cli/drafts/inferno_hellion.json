@@ -1,0 +1,34 @@
+{
+  "oracle_id": "68c88a4c-8c2b-4e6f-b835-7e269eb073c8",
+  "name": "Inferno Hellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inferno Hellion",
+      "oracle_fingerprint": "66ed96f8e0edd26cc14916a65211d99f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "AnyOf": ["AttackedThisTurn", { "DidThisTurn": { "event": "Blocked" } }] }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

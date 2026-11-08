@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b35b3ea6-ae9c-4128-a47f-069d88ee49c2",
+  "name": "Tainted Well",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Well",
+      "oracle_fingerprint": "1abeb23f292c9dd660b31a62a5b31076",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetLandTypes": ["Swamp"] }] } }
+      ]
+    }
+  ]
+}

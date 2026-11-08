@@ -1,0 +1,35 @@
+{
+  "oracle_id": "935bcf49-ec8b-4ad6-b12d-77dc7cccf1d4",
+  "name": "Geometric Nexus",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Geometric Nexus",
+      "oracle_fingerprint": "74f2c561b6ac8f81203c8e52ce1aad06",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "charge",
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 136, "end": 331 }
+          }
+        }
+      ]
+    }
+  ]
+}

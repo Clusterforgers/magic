@@ -1,0 +1,32 @@
+{
+  "oracle_id": "980c32ff-c154-4ac9-adc2-ed3a85c8d71c",
+  "name": "Basalt Ravager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basalt Ravager",
+      "oracle_fingerprint": "42b5a0fb4efdc3b1c6a7492b110c9465",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "MostCommon": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "CreatureType"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

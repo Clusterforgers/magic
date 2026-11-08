@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8c1e5b25-ee5a-4ea9-a715-08dd1a4f51c4",
+  "name": "Raphael, the Nightwatcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raphael, the Nightwatcher",
+      "oracle_fingerprint": "a94c6f7c508bf6d710c495c2cd1887ff",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{1}{R}{R}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "DoubleStrike" }]
+          }
+        }
+      ]
+    }
+  ]
+}

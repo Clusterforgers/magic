@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e4751e45-8bb6-4f21-9659-cc8c1eb22456",
+  "name": "Audacious Knuckleblade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Audacious Knuckleblade",
+      "oracle_fingerprint": "9f559c95d4c5e53007fdecb17b5cba3c",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 98 } }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "limit": "OncePerGame",
+            "effects": [{ "Surveil": { "count": 2 } }, { "Untap": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

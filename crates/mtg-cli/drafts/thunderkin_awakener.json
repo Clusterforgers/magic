@@ -1,0 +1,62 @@
+{
+  "oracle_id": "c0171343-9c0f-4001-8f4e-a5af9256c4d2",
+  "name": "Thunderkin Awakener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderkin Awakener",
+      "oracle_fingerprint": "987e59e158b32d2b9b57019d6f133233",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Elemental" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "Toughness",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "This", "stat": "Toughness" } }
+                      }
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "moved" } },
+                        "filter": [{ "Is": { "Bound": "moved" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "moved" } }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "196948c7-7386-4b5f-ad2f-ec9e3aef26fe",
+  "name": "So Tiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "So Tiny",
+      "oracle_fingerprint": "138b4f4ef023d1cd2a093121aa5cc42a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "OwnedBy": { "ControllerOf": "Attached" } },
+                                  { "In": "Graveyard" }
+                                ]
+                              },
+                              "op": "Ge",
+                              "right": 7
+                            }
+                          },
+                          "then": 6,
+                          "otherwise": 2
+                        }
+                      }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

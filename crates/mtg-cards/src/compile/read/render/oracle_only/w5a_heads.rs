@@ -150,11 +150,15 @@ pub(super) fn event(when: &TriggerPattern) -> Option<(TriggerPattern, String)> {
             to: Some(Ref::Each(hit)),
             combat,
         } => {
-            let stand = TriggerPattern::DealsDamage {
+            let mut stand = TriggerPattern::DealsDamage {
                 source: source.clone(),
                 to: None,
                 combat: *combat,
             };
+            // One object's damage to no named recipient is worded as the batch ("Whenever ~ deals combat damage").
+            if super::super::super::r7e_events::one_object(source) {
+                stand = TriggerPattern::Batch(Box::new(stand));
+            }
             let said = format!("{} to {}", pattern_text(&stand)?, subject_text(hit)?);
             Some((stand, said))
         }

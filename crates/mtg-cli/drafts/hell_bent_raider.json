@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ee8ab29b-0749-463a-abbd-eb0b9013aec8",
+  "name": "Hell-Bent Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hell-Bent Raider",
+      "oracle_fingerprint": "c5dc40cf9ab660d2f6b964e132886606",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "DiscardRandom": 1 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "Protection": [{ "Color": "White" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

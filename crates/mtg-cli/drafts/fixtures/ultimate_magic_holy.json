@@ -1,0 +1,170 @@
+{
+  "object": "card",
+  "id": "8fdb8414-2f08-42fb-ae0a-c7f0af1e144e",
+  "oracle_id": "1eae48aa-f01d-4398-a68e-3b5af0542ab1",
+  "multiverse_ids": [],
+  "resource_id": "417EC374F90F83702BEB48965A2E06344EBA7A285638807771D629DC71D8731E",
+  "mtgo_id": 140055,
+  "tcgplayer_id": 631150,
+  "cardmarket_id": 824520,
+  "name": "Ultimate Magic: Holy",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e",
+  "scryfall_uri": "https://scryfall.com/card/fic/32/ultimate-magic:-holy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.jpg?1783906364",
+    "normal": "https://cards.scryfall.io/normal/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.jpg?1783906364",
+    "large": "https://cards.scryfall.io/large/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.jpg?1783906364",
+    "png": "https://cards.scryfall.io/png/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.png?1783906364",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.jpg?1783906364",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.jpg?1783906364",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.webp?1783906364",
+    "grid": "https://cards.scryfall.io/grid/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.webp?1783906364",
+    "display": "https://cards.scryfall.io/display/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.webp?1783906364",
+    "art": "https://cards.scryfall.io/art/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.webp?1783906364",
+    "crop": "https://cards.scryfall.io/crop/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.webp?1783906364",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/f/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e.jpg?1783906364"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Permanents you control gain indestructible until end of turn. If this spell was cast from exile, prevent all damage that would be dealt to you this turn.\nForetell {2}{W} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Foretell"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6c85ce70-7080-430e-8560-81bc09ca329e",
+      "component": "combo_piece",
+      "name": "Ultimate Magic: Holy",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/6c85ce70-7080-430e-8560-81bc09ca329e"
+    },
+    {
+      "object": "related_card",
+      "id": "809276a9-4804-422f-abb0-ba302f329e6e",
+      "component": "combo_piece",
+      "name": "Ultimate Magic: Meteor",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/809276a9-4804-422f-abb0-ba302f329e6e"
+    },
+    {
+      "object": "related_card",
+      "id": "d1d50fa8-e92c-4531-b773-b9ef406e8c44",
+      "component": "combo_piece",
+      "name": "Lifestream's Blessing",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/d1d50fa8-e92c-4531-b773-b9ef406e8c44"
+    },
+    {
+      "object": "related_card",
+      "id": "207b3d62-2541-4a51-8152-3c54218ab6f7",
+      "component": "combo_piece",
+      "name": "Foretell",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/207b3d62-2541-4a51-8152-3c54218ab6f7"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8fdb8414-2f08-42fb-ae0a-c7f0af1e144e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1eae48aa-f01d-4398-a68e-3b5af0542ab1&unique=prints",
+  "collector_number": "32",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ashley Mackenzie",
+  "artist_ids": [
+    "2e139900-a73a-4ac0-8ea0-b59e70ce1328"
+  ],
+  "illustration_id": "91f0f465-4eab-4d06-b303-a6f077106173",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond",
+    "ffvii"
+  ],
+  "edhrec_rank": 2630,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.75",
+    "eur_foil": null,
+    "tix": "1.82"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUltimate%2BMagic%253A%2BHoly",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUltimate%2BMagic%253A%2BHoly",
+    "edhrec": "https://edhrec.com/route/?cc=Ultimate+Magic%3A+Holy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631150%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824520&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140055?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5d24525f-dbac-434b-bda7-ff8af55245ff",
+  "name": "Glint Hawk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glint Hawk",
+      "oracle_fingerprint": "86eebc19926a25908574f908c045ebb7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Artifact" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4390e251-e154-4ef8-9929-0c78aa2c8f10",
+  "name": "Resuscitate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resuscitate",
+      "oracle_fingerprint": "270770cba8f9089125faa43e5283f0fe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{1}",
+                          "effects": [{ "Regenerate": { "what": "This" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

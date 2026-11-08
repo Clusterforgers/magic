@@ -1,0 +1,105 @@
+{
+  "oracle_id": "79a1783f-ea7e-4cdf-95f5-53b383d38c66",
+  "name": "Tevesh Szat, Doom of Fools",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tevesh Szat, Doom of Fools",
+      "oracle_fingerprint": "b4b4a9233bdeab87519d248136c614fd",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thrull",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Thrull"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                          "Other"
+                        ],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": ["Commander"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": ["Commander"] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": ["Commander", { "In": "Command" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

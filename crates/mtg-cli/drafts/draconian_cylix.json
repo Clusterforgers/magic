@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0880b36a-6141-4955-b532-cf88daca0869",
+  "name": "Draconian Cylix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draconian Cylix",
+      "oracle_fingerprint": "443099e16de6fb92bfc24ac19f19da79",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", { "DiscardRandom": 1 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

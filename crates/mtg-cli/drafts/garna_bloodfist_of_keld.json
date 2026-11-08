@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3fb83218-e18d-405d-91c8-46b5e4e672a9",
+  "name": "Garna, Bloodfist of Keld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garna, Bloodfist of Keld",
+      "oracle_fingerprint": "682aefa5d4c98d52fb9c4aa69b6d9d72",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": "Triggering",
+                          "filter": [{ "Type": "Creature" }, "Attacking"]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

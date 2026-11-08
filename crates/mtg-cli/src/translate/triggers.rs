@@ -1,0 +1,1064 @@
+//! Triggers: a `T:` line as the DSL's `Triggered` ability, its event pattern and the effects of its `Execute$` part.
+
+use serde_json::{Value, json};
+
+use super::condition::{condition, strip};
+use super::ctx::{Ctx, Tr, unmapped};
+use super::effects::chain_at;
+use super::valid::selector_any;
+use crate::forge::script::Params;
+
+/// The keys every trigger line may carry besides its mode's own.
+const COMMON: [&str; 7] = [
+    "ResolvedLimit",
+    "ActivationLimit",
+    "Mode",
+    "Execute",
+    "TriggerZones",
+    "OptionalDecider",
+    "NoResolvingCheck",
+];
+
+/// "Whenever you cast a spell, if at least four mana was spent to cast it": the amount of mana a cast spell's filter asks
+/// for (`Spell.ManaSpent GE4`) is the intervening condition the card prints, about the spell cast.
+fn spent_if(mut when: Value, intervening: Option<Value>) -> (Value, Option<Value>) {
+    let Some(what) = when
+        .pointer_mut("/SpellCast/what")
+        .and_then(Value::as_array_mut)
+    else {
+        return (when, intervening);
+    };
+    let spent = |pred: &Value| pred.pointer("/Compare/stat") == Some(&json!("ManaSpent"));
+    let found: Vec<Value> = what
+        .iter()
+        .filter(|pred| spent(pred))
+        .map(|pred| {
+            json!({"Compare": {
+                "left": {"Stat": {"of": "Triggering", "stat": "ManaSpent"}},
+                "op": pred["Compare"]["op"],
+                "right": pred["Compare"]["to"],
+            }})
+        })
+        .collect();
+    if found.is_empty() {
+        return (when, intervening);
+    }
+    // What is cast is a spell: the `Spell` the filter's own word adds says nothing more.
+    what.retain(|pred| !spent(pred) && *pred != json!("Spell"));
+    let condition = super::condition::single(intervening.into_iter().chain(found).collect());
+    (when, condition)
+}
+
+/// A trigger line as a `Triggered` ability.
+pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
+    ctx.reset();
+    let all = in_own_zone(Params::parse(body));
+    let intervening = condition(ctx, &all)?;
+    // The engine checks the condition again as the ability resolves (CR 603.4) unless the line says it does not.
+    let intervening = match (all.get("NoResolvingCheck"), intervening) {
+        (Some("True"), Some(condition)) => Some(json!({ "AtTrigger": condition })),
+        (_, other) => other,
+    };
+    let (p, intervening) = during(strip(&all), intervening)?;
+    let (p, intervening) = event_amount(p, intervening)?;
+    let (p, intervening) = defender_poisoned(p, intervening);
+    let (p, intervening) = kicked_with(ctx, p, intervening)?;
+    let (p, intervening) = super::triggers_g9a::g9a_block_filter(p, intervening)?;
+    let (when, intervening) = if p.get("Mode") == Some("Always") {
+        state_when(ctx, &p, &all)?
+    } else {
+        (pattern(ctx, &p)?, intervening)
+    };
+    let (when, intervening) = spent_if(when, intervening);
+    let itself = is_about_itself(&when);
+    ctx.trigger = Some(super::triggered::Shape {
+        mode: p.get("Mode").unwrap_or_default().to_owned(),
+        itself,
+        by: when
+            .get("BecomesBlocked")
+            .is_some_and(|node| node.get("by").is_some() && node.get("once").is_none()),
+        to_player: p.get("ValidTarget").is_some_and(|word| {
+            word == "Player" || word.starts_with("Player.") || word == "Opponent"
+        }),
+        pattern: super::triggered::key_of(&when),
+        arrives: super::triggered::arrival(&when),
+        targeting: super::triggered::targeting(&when),
+        destination: when
+            .get("ZoneChange")
+            .and_then(|change| change.get("to")?.as_str().map(str::to_owned)),
+    });
+    let intervening = match super::condition::on_triggered_card(ctx, &all)? {
+        Some(found) => super::condition::single(intervening.into_iter().chain([found]).collect()),
+        None => intervening,
+    };
+    let from = match p.get("TriggerZones") {
+        None | Some("Battlefield") => None,
+        Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library" | "Command")) => Some(zone),
+        Some(other) => return unmapped(format!("key:Trigger.TriggerZones={other}")),
+    };
+    let Some(execute) = p.get("Execute") else {
+        return unmapped("trigger:no-Execute");
+    };
+    let part = ctx.sub(execute)?;
+    let mut effects = chain_at(ctx, &part, false)?;
+    // An event of a player (a life gain, a step, a spell cast) has no object to change.
+    let about_a_player = when
+        .as_object()
+        .and_then(|map| map.values().next())
+        .is_some_and(|inner| inner.get("what").is_none())
+        && !damages_an_object(&when);
+    if about_a_player
+        && json!(effects)
+            .to_string()
+            .contains("\"affected\":\"Triggering\"")
+    {
+        return unmapped("trigger:object-effect-on-a-player-event");
+    }
+    // Paying a cost is a choice already: no "you may" beside "you may pay".
+    let pays = matches!(effects.as_slice(), [only] if only.get("Pay").is_some());
+    let decider = p.get("OptionalDecider").is_some();
+    let printed = p.get("TriggerDescription");
+    effects = super::r6a::printed(printed, (decider, pays), &when, effects, &ctx.targets)?;
+    printed_more(&p, &effects)?;
+    effects = decided(ctx, &p, &when, (pays, itself), effects)?;
+    if let Some(found) = &intervening
+        && when.get("SpellCast").is_some()
+        && counts_the_cast_exactly(found)
+    {
+        // The count grows as more spells are cast, so a recheck at resolution would pass the first spell when a second
+        // is cast in response; the engine has no first-of-the-turn event across all players.
+        return unmapped("trigger:SpellCast-exact-count-recheck");
+    }
+    if p.has("ResolvedLimit") {
+        effects = fix19_cast_asked(&effects).unwrap_or(effects);
+    }
+    let mut ability = json!({"when": when, "effects": effects});
+    if let Some(zone) = from {
+        ability["from"] = json!(zone);
+    }
+    if let Some(condition) = intervening {
+        ability["if"] = condition;
+    }
+    if let Some(limit) = limit(&p, &effects)? {
+        ability["limit"] = limit;
+    }
+    if !ctx.targets.is_empty() {
+        ability["targets"] = Value::Array(ctx.targets.clone());
+    }
+    let ability = json!({ "Triggered": ability });
+    // A triggered mana ability (CR 605.1b) only works in the shape the engine folds into the tap.
+    if p.get("Static") == Some("True") {
+        let folds = serde_json::from_value::<mtg_cards::ability::Ability>(ability.clone())
+            .is_ok_and(|found| mtg_cards::mana_trigger::mana_trigger(&found).is_some());
+        if !folds {
+            return unmapped("key:Trigger.TapsForMana.Static");
+        }
+    }
+    Ok(ability)
+}
+
+/// The limit of a trigger. A limit on what resolves after a choice ("you may ... Do this only once each turn") is spent as
+/// the choice is done (`OncePerTurnDone`), so a declined "may" or an unpaid cost does not use it up; a choice later than the
+/// first step stays a gap.
+/// A script that does less than its printed trigger says is a gap: "you may put ... counters" with no decider (the
+/// counters would be forced), and "Whenever a player kicks a spell" scripted for the spells you control.
+fn printed_more(p: &Params, effects: &[Value]) -> Tr<()> {
+    if p.get("OptionalDecider").is_none()
+        && p.get("TriggerDescription")
+            .is_some_and(|text| text.contains(", you may put ") && text.contains(" counter"))
+        && matches!(effects, [only] if only.get("PutCounters").is_some())
+    {
+        return unmapped("trigger:may-put-counters-without-decider");
+    }
+    // "you may gain control of target artifact" (Kukemssa Pirates), "you may have target land become a Plains"
+    // (Graceful Antelope): a script with no decider would force them.
+    if p.get("OptionalDecider").is_none()
+        && p.get("TriggerDescription").is_some_and(|text| {
+            text.contains(", you may gain control of target")
+                || text.contains(", you may have target")
+        })
+    {
+        return unmapped("trigger:may-target-without-decider");
+    }
+    if p.get("Mode") == Some("SpellCast")
+        && p.get("ValidCard")
+            .is_some_and(|valid| valid.starts_with("Card.YouCtrl"))
+        && p.get("TriggerDescription")
+            .is_some_and(|text| text.starts_with("Whenever a player"))
+    {
+        return unmapped("trigger:spell-you-control-printed-any-player");
+    }
+    Ok(())
+}
+
+/// "Do this only once each turn" counts the choices a `May` records, so effects that begin with a cast from a zone are
+/// wrapped in the caster's `May` again; none when they begin otherwise.
+fn fix19_cast_asked(effects: &[Value]) -> Option<Vec<Value>> {
+    let cast = effects.first()?.get("CastFromZone")?;
+    let mut may = json!({"May": {"effects": effects}});
+    if let Some(who) = cast.get("who").filter(|who| **who != json!("You")) {
+        may["May"]["who"] = who.clone();
+    }
+    Some(vec![may])
+}
+
+fn limit(p: &Params, effects: &[Value]) -> Tr<Option<Value>> {
+    let rendered = json!(effects).to_string();
+    let optional = p.get("OptionalDecider").is_some()
+        || rendered.contains("\"May\":")
+        || rendered.contains("\"Pay\":");
+    if p.get("ResolvedLimit").is_none() || !optional {
+        return once_a_turn(p);
+    }
+    let chosen_first = effects
+        .first()
+        .is_some_and(|first| first.get("May").is_some() || first.get("Pay").is_some());
+    if !chosen_first || p.get("ResolvedLimit") != Some("1") || p.has("ActivationLimit") {
+        return unmapped("key:Trigger.ResolvedLimit-optional");
+    }
+    Ok(Some(json!("OncePerTurnDone")))
+}
+
+/// The limit a line states: `ActivationLimit$ 1` ("triggers only once each turn"), or `ResolvedLimit$ 1` ("do this only once
+/// each turn"), which limits what happens, not the triggering. The engine spends the limit as the ability triggers: the same
+/// unless the first one is stifled, which a limit of 1 cannot tell apart from one that resolved.
+fn once_a_turn(p: &Params) -> Tr<Option<Value>> {
+    let once = Some(json!("OncePerTurn"));
+    match (p.get("ActivationLimit"), p.get("ResolvedLimit")) {
+        (None, None) => Ok(None),
+        (Some("1"), None) | (None, Some("1")) => Ok(once),
+        (Some(other), _) if other != "1" => {
+            unmapped(format!("key:Trigger.ActivationLimit={other}"))
+        }
+        (_, Some(other)) => unmapped(format!("key:Trigger.ResolvedLimit={other}")),
+        (Some(_), None) => Ok(once),
+    }
+}
+
+/// Damage to a permanent: the event's subject is the permanent that was damaged (a player recipient is a player).
+fn damages_an_object(when: &Value) -> bool {
+    let Some(to) = when.get("DealsDamage").and_then(|inner| inner.get("to")) else {
+        return false;
+    };
+    to.get("Each").is_some() || matches!(to.as_str(), Some("This" | "Attached"))
+}
+
+/// `IsPresent$ Card.StrictlySelf | PresentZone$ Command` beside `TriggerZones$ Command` (an Eminence ability): the card is in
+/// the zone the ability works from, which the ability's `from` already says.
+fn in_own_zone(p: Params) -> Params {
+    let zone = p.get("TriggerZones").filter(|zone| *zone == "Command");
+    if p.get("IsPresent") == Some("Card.StrictlySelf")
+        && zone.is_some()
+        && p.get("PresentZone") == zone
+        && !p.has("PresentCompare")
+        && !p.has("PresentPlayer")
+    {
+        return p.without(&["IsPresent", "PresentZone"]);
+    }
+    p
+}
+
+/// The step a card enters in (`Phase$ Declare Attackers` of a zone change) as a condition of the event, checked as the ability
+/// triggers; the line without the key and the condition joined with the intervening one.
+fn during(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Value>)> {
+    let Some(word) = p
+        .get("Phase")
+        .filter(|_| p.get("Mode") == Some("ChangesZone"))
+    else {
+        return Ok((p, intervening));
+    };
+    let state = match word {
+        "Declare Attackers" => json!({"Step": "DeclareAttackers"}),
+        "BeginCombat->EndCombat" => json!("InCombat"),
+        "Main1,Main2" => json!({"Any": [{"Step": "Main1"}, {"Step": "Main2"}]}),
+        _ => return unmapped(format!("key:Trigger.ChangesZone.Phase={word}")),
+    };
+    let during = json!({ "AtTrigger": state });
+    let both = match intervening {
+        None => during,
+        Some(other) => json!({"All": [other, during]}),
+    };
+    Ok((p.without(&["Phase"]), Some(both)))
+}
+
+/// The size an event must have (`DamageAmount$ GE5`, `CounterAmount$ EQ3`, `LifeAmount$ EQ1`) as a condition of the event,
+/// checked as the ability triggers: the amount of the event compared with a number. Other modes keep the key and name it.
+fn event_amount(p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Value>)> {
+    let key = match p.get("Mode") {
+        Some("DamageDone" | "DamageDoneOnce") => "DamageAmount",
+        Some("CounterAdded") => "CounterAmount",
+        // "When the last time counter is removed from ~": the counters left once they are removed (e16c).
+        Some("CounterRemoved") => "NewCounterAmount",
+        Some("LifeGained" | "LifeLost") => "LifeAmount",
+        _ => return Ok((p, intervening)),
+    };
+    let Some(word) = p.get(key) else {
+        return Ok((p, intervening));
+    };
+    // `NewCounterAmount$` gives the number left alone: exactly that many.
+    let word = if key == "NewCounterAmount" && word.parse::<u32>().is_ok() {
+        format!("EQ{word}")
+    } else {
+        word.to_owned()
+    };
+    let (op, number) = word.split_at_checked(2).unwrap_or_default();
+    let op = match op {
+        "EQ" => "Eq",
+        "NE" => "Ne",
+        "LT" => "Lt",
+        "LE" => "Le",
+        "GT" => "Gt",
+        "GE" => "Ge",
+        _ => return unmapped(format!("key:Trigger.{key}={word}")),
+    };
+    let Ok(number) = number.parse::<u32>() else {
+        return unmapped(format!("key:Trigger.{key}={word}"));
+    };
+    // The amount Forge compares for a counter put is the total on the object, not the number this event added.
+    let left = if matches!(key, "CounterAmount" | "NewCounterAmount") {
+        let on_itself = p.get("ValidCard") == Some("Card.Self");
+        let kind = p.get("CounterType").and_then(super::amount::counter_kind);
+        match (on_itself, kind) {
+            (true, Some(kind)) => json!({"Counters": {"on": "This", "counter": kind}}),
+            _ => return unmapped("key:Trigger.CounterAmount.Total"),
+        }
+    } else {
+        json!("Triggering")
+    };
+    let size = json!({"AtTrigger": {"Compare": {"left": left, "op": op, "right": number}}});
+    let both = match intervening {
+        None => size,
+        Some(other) => json!({"All": [other, size]}),
+    };
+    Ok((p.without(&[key]), Some(both)))
+}
+
+/// `DefendingPlayerPoisoned$ True` ("if defending player is poisoned") of an attack: the player attacked has a poison counter.
+fn defender_poisoned(p: Params, intervening: Option<Value>) -> (Params, Option<Value>) {
+    if p.get("Mode") != Some("Attacks") || p.get("DefendingPlayerPoisoned") != Some("True") {
+        return (p, intervening);
+    }
+    let poisoned = json!({"Compare": {"left": {"Counters": {"on": "Defending", "counter": super::amount::counter_kind("POISON")}}, "op": "Ge", "right": 1}});
+    let both = match intervening {
+        None => poisoned,
+        Some(other) => json!({"All": [other, poisoned]}),
+    };
+    (p.without(&["DefendingPlayerPoisoned"]), Some(both))
+}
+
+/// "When this creature enters, if it was kicked with its {1}{B} kicker" (`ValidCard$ Card.Self+kicked 2`): the pattern is the
+/// card entering and the kicker paid is the intervening condition.
+fn kicked_with(ctx: &Ctx, p: Params, intervening: Option<Value>) -> Tr<(Params, Option<Value>)> {
+    let numbered = p
+        .get("ValidCard")
+        .is_some_and(|valid| valid.starts_with("Card.Self+kicked "));
+    if p.get("Mode") != Some("ChangesZone")
+        || p.get("Destination") != Some("Battlefield")
+        || !numbered
+    {
+        return Ok((p, intervening));
+    }
+    let kicked = super::enters_with::condition(ctx, p.get("ValidCard").unwrap_or_default())?;
+    let both = match intervening {
+        None => kicked,
+        Some(other) => json!({"All": [other, kicked]}),
+    };
+    Ok((
+        p.without(&["ValidCard"]).with("ValidCard", "Card.Self"),
+        Some(both),
+    ))
+}
+
+/// "When you control no Islands": a state trigger holds the line's condition as its pattern and has no intervening one.
+fn state_when(ctx: &Ctx, p: &Params, all: &Params) -> Tr<(Value, Option<Value>)> {
+    keys(p, "Always", &[])?;
+    let Some(state) = condition(ctx, all)? else {
+        return unmapped("trigger:Always-without-condition");
+    };
+    Ok((json!({"State": {"condition": state}}), None))
+}
+
+/// Whether a pattern is about the card itself ("when this creature dies"), so that "that creature" is the card and its
+/// controller is "you".
+pub(super) fn is_about_itself(when: &Value) -> bool {
+    when.as_object()
+        .and_then(|map| map.values().next())
+        .and_then(|inner| inner.get("what"))
+        .is_some_and(|what| *what == json!(["This"]))
+}
+
+/// Checks the keys of a trigger line against those a mode reads.
+pub(super) fn keys(p: &Params, mode: &str, read: &[&str]) -> Tr<()> {
+    super::ctx::check_keys(p, &format!("Trigger.{mode}"), read, |key, _| {
+        COMMON.contains(&key)
+    })
+}
+
+/// The event pattern of a `DelayedTrigger` line and whether it waits only for this turn: the line reads its `Mode$` like a
+/// trigger line. "Next turn" is a step apart from "this turn" and stays a gap.
+pub fn delayed_when(ctx: &Ctx, p: &Params) -> Tr<(Value, bool)> {
+    if p.get("NextTurn").is_some() {
+        return unmapped("key:DelayedTrigger.NextTurn");
+    }
+    let this_turn = match p.get("ThisTurn") {
+        None => false,
+        Some("True") => true,
+        Some(other) => return unmapped(format!("key:DelayedTrigger.ThisTurn={other}")),
+    };
+    let line = p.without(&["ThisTurn", "RememberObjects"]);
+    // Valid words of a delayed trigger are the same words a trigger line reads.
+    let when = pattern(ctx, &line).map_err(|gap| match gap.0.strip_prefix("key:Trigger.") {
+        Some(rest) => super::ctx::Unmapped(format!("key:DelayedTrigger.{rest}")),
+        None => gap,
+    })?;
+    Ok((when, this_turn))
+}
+
+pub(super) fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    let mode = p.get("Mode").unwrap_or_default();
+    if let Some(found) = super::triggers_g13c::pattern(ctx, p, mode) {
+        return found;
+    }
+    if let Some(found) = super::triggers_caused::pattern(ctx, p, mode) {
+        return found;
+    }
+    if let Some(found) = super::triggers_more::pattern(ctx, p, mode) {
+        return found;
+    }
+    if let Some(found) = super::triggers_r2f::pattern(ctx, p, mode) {
+        return found;
+    }
+    if let Some(found) = super::triggers_did::pattern(ctx, p, mode) {
+        return found;
+    }
+    if let Some(found) = super::triggers_batch::pattern(ctx, p, mode) {
+        return found;
+    }
+    if let Some(found) = super::header::trigger_words(ctx, p, mode) {
+        return found;
+    }
+    match mode {
+        "ChangesZone" => changes_zone(ctx, p),
+        "Phase" => phase(p),
+        "Attacks" => attacks(ctx, p),
+        "AttackersDeclared" => attackers_declared(ctx, p),
+        "Discarded" => card_event(ctx, p, "Discarded"),
+        "Cycled" => card_event(ctx, p, "Cycled"),
+        "TurnFaceUp" => what_trigger(ctx, p, "TurnedFaceUp"),
+        "SpellCast" => spell_cast(ctx, p),
+        "DamageDone" => super::triggers_more::damage(ctx, p, "DamageDone"),
+        "Drawn" => drawn(p),
+        "LifeGained" => life_gained(p),
+        "Sacrificed" => sacrificed(ctx, p),
+        "Taps" if p.get("Attacker").is_some() || p.get("FirstTime").is_some() => {
+            super::e16a_history::taps(ctx, p)
+        }
+        "Taps" => what_trigger(ctx, p, "Tapped"),
+        "Untaps" => what_trigger(ctx, p, "Untapped"),
+        "Blocks" => blocks(ctx, p),
+        "AttackerBlocked" => attacker_blocked(ctx, p),
+        other => unmapped(format!("trigger:{other}")),
+    }
+}
+
+/// A zone word of a trigger (`Any` is no zone).
+fn zone(word: Option<&str>, key: &str) -> Tr<Option<&'static str>> {
+    match word {
+        None | Some("Any") => Ok(None),
+        Some("Battlefield") => Ok(Some("Battlefield")),
+        Some("Graveyard") => Ok(Some("Graveyard")),
+        Some("Hand") => Ok(Some("Hand")),
+        Some("Library") => Ok(Some("Library")),
+        Some("Exile") => Ok(Some("Exile")),
+        Some("Stack") => Ok(Some("Stack")),
+        Some("Command") => Ok(Some("Command")),
+        Some(other) => unmapped(format!("zone:Trigger.{key}={other}")),
+    }
+}
+
+fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "ChangesZone",
+        &["ValidCard", "Origin", "Destination", "TriggerController"],
+    )?;
+    // The controller of a trigger of a permanent leaving the battlefield is its controller as it left (CR 603.3a).
+    match (p.get("TriggerController"), p.get("Origin")) {
+        (None, _) | (Some("TriggeredCardController"), Some("Battlefield")) => {}
+        _ => return unmapped("key:Trigger.ChangesZone.TriggerController"),
+    }
+    let mut what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let (origins, destinations) = (zone_list(p, "Origin")?, zone_list(p, "Destination")?);
+    // "Enters from your graveyard": Forge names the zone alone, Oracle its owner too.
+    let yours = json!({"OwnedBy": "You"});
+    if origins == [Some("Graveyard")]
+        && destinations == [Some("Battlefield")]
+        && !p.get("ValidCard").is_some_and(|v| v.contains("Own"))
+        && p.get("TriggerDescription")
+            .is_some_and(|d| d.contains("from your graveyard"))
+        && !what.contains(&yours)
+    {
+        what.push(yours);
+    }
+    // Every zone but the battlefield, to one: "put into a graveyard from anywhere other than the battlefield".
+    if let ([_, _, ..], [Some(to)]) = (origins.as_slice(), destinations.as_slice())
+        && origins.len() == 5
+        && !origins.contains(&Some("Battlefield"))
+        && !origins.contains(&None)
+    {
+        return Ok(json!({"ZoneChangeExcept": {"what": what, "except": "Battlefield", "to": to}}));
+    }
+    let mut any = Vec::new();
+    for from in &origins {
+        for to in &destinations {
+            let mut pattern = json!({ "what": what });
+            if let Some(from) = from {
+                pattern["from"] = json!(from);
+            }
+            if let Some(to) = to {
+                pattern["to"] = json!(to);
+            }
+            any.push(json!({ "ZoneChange": pattern }));
+        }
+    }
+    // "Dies or is put into exile": either move triggers it once.
+    match any.len() {
+        1 => Ok(any.remove(0)),
+        2..=6 => Ok(json!({ "AnyOf": any })),
+        _ => unmapped("key:Trigger.ChangesZone.zone-list"),
+    }
+}
+
+/// The zones a comma-joined zone word names (`Graveyard,Exile`); `None` for any zone.
+fn zone_list(p: &Params, key: &str) -> Tr<Vec<Option<&'static str>>> {
+    let Some(words) = p.get(key) else {
+        return Ok(vec![None]);
+    };
+    if words == "Any" {
+        return Ok(vec![None]);
+    }
+    let mut out = Vec::new();
+    for word in words.split(',') {
+        let found = zone(Some(word), key)?;
+        if found.is_none() || out.contains(&found) {
+            return unmapped(format!("zone:Trigger.{key}={words}"));
+        }
+        out.push(found);
+    }
+    Ok(out)
+}
+
+/// The step a Forge `Phase$` word names.
+pub fn step(word: &str) -> Tr<&'static str> {
+    Ok(match word {
+        "Upkeep" => "Upkeep",
+        "Draw" => "Draw",
+        "Main1" => "Main1",
+        "Main2" => "Main2",
+        "BeginCombat" => "BeginCombat",
+        "EndCombat" => "EndCombat",
+        "End of Turn" | "End Of Turn" => "End",
+        "Untap" => "Untap",
+        other => return unmapped(format!("key:Trigger.Phase={other}")),
+    })
+}
+
+/// Whether the printed trigger says "the end step", not "your end step".
+fn prints_every_end_step(p: &Params) -> bool {
+    p.get("TriggerDescription")
+        .is_some_and(|text| text.to_lowercase().contains("beginning of the end step"))
+}
+
+/// The pattern of a `Mode$ Phase` line once its other keys are gone: "at the beginning of <step>".
+pub(super) fn step_pattern(p: &Params) -> Tr<Value> {
+    phase(p)
+}
+
+fn phase(p: &Params) -> Tr<Value> {
+    keys(p, "Phase", &["Phase", "ValidPlayer", "PhaseCount"])?;
+    // `Phase$ Main` with a count names the first or the second (postcombat) main phase.
+    let step = match (p.get("Phase"), p.get("PhaseCount")) {
+        (Some("Main"), Some("1")) => "Main1",
+        (Some("Main"), Some("2")) => "Main2",
+        (Some("Main"), _) | (_, Some(_)) => return unmapped("key:Trigger.Phase.PhaseCount"),
+        (word, None) => step(word.unwrap_or_default())?,
+    };
+    let whose = match p.get("ValidPlayer") {
+        // Forge scripts "the end step" (every player's) with `ValidPlayer$ You`; the print has no "your".
+        Some("You") if prints_every_end_step(p) => json!("EachPlayer"),
+        Some("You.descended") => json!("You"),
+        word => match player_ref(word) {
+            Ok(found) => found,
+            Err(_) => {
+                return unmapped(format!(
+                    "key:Trigger.Phase.ValidPlayer={}",
+                    word.unwrap_or_default()
+                ));
+            }
+        },
+    };
+    Ok(json!({"StepBegins": {"step": step, "whose": whose}}))
+}
+
+fn attacks(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "Attacks",
+        &["ValidCard", "Alone", "Attacked", "FirstAttack"],
+    )?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Creature"))?;
+    // "Attacks for the first time each turn": the turn's first attack of the creature.
+    if p.get("FirstAttack") == Some("True") {
+        if p.has("Alone") || p.has("Attacked") {
+            return unmapped("key:Trigger.Attacks.FirstAttack-with-more");
+        }
+        return Ok(json!({"Nth": {"event": {"Attacks": {"what": what}}, "nth": 1}}));
+    }
+    if let Some(word) = p.get("Attacked") {
+        if p.get("Alone") == Some("True") {
+            return unmapped("key:Trigger.Attacks.Attacked-with-Alone");
+        }
+        return attacks_at(word, &what);
+    }
+    let variant = if p.get("Alone") == Some("True") {
+        "AttacksAlone"
+    } else {
+        "Attacks"
+    };
+    Ok(json!({ variant: {"what": what} }))
+}
+
+/// An attack on a player (`Attacked$ You`), or on a player or a planeswalker that player controls
+/// (`Attacked$ You,Planeswalker.YouCtrl`): the two stay apart, and any other attacked thing is a gap.
+fn attacks_at(word: &str, what: &[Value]) -> Tr<Value> {
+    let gap = || unmapped(format!("key:Trigger.Attacks.Attacked={word}"));
+    let mut parts = word.split(',');
+    let Some(player) = parts.next() else {
+        return gap();
+    };
+    let Ok(at) = (if player == "Player.withMostLife" {
+        Ok(json!("MostLife"))
+    } else {
+        player_ref(Some(player))
+    }) else {
+        return gap();
+    };
+    let variant = match (parts.next(), parts.next(), &at) {
+        (None, ..) => "AttacksPlayer",
+        (Some("Planeswalker.YouCtrl"), None, Value::String(who)) if who == "You" => {
+            "AttacksPlayerOrPlaneswalker"
+        }
+        (Some("Planeswalker.OppCtrl"), None, Value::String(who)) if who == "Opponents" => {
+            "AttacksPlayerOrPlaneswalker"
+        }
+        (Some("Planeswalker.EnchantedPlayerCtrl"), None, Value::String(who))
+            if who == "AttachedPlayer" =>
+        {
+            "AttacksPlayerOrPlaneswalker"
+        }
+        _ => return gap(),
+    };
+    Ok(json!({ variant: {"what": what, "at": at} }))
+}
+
+/// The cards a player-related trigger is about and the player: the controller or owner in the valid-string is the player.
+fn card_and_player(ctx: &Ctx, valid: &str) -> Tr<(Vec<Value>, Option<&'static str>)> {
+    let mut what = selector_any(ctx, valid)?;
+    let mut by = None;
+    for (who, name) in [
+        (json!({"ControlledBy": "You"}), "You"),
+        (json!({"OwnedBy": "You"}), "You"),
+        (json!({"OwnedBy": "Opponents"}), "Opponents"),
+        (json!({"ControlledBy": "Opponents"}), "Opponents"),
+    ] {
+        if let Some(at) = what.iter().position(|pred| *pred == who) {
+            what.remove(at);
+            by = Some(name);
+        }
+    }
+    Ok((what, by))
+}
+
+/// `Discarded` and `Cycled`: a card is discarded or cycled, by a player or as itself.
+fn card_event(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
+    let p = &super::triggers_g13c::g13c_own_discard(p, variant);
+    let read: &[&str] = if variant == "Discarded" {
+        &["ValidCard", "ValidPlayer"]
+    } else {
+        &["ValidCard", "ValidPlayer", "FirstTime"]
+    };
+    keys(p, variant, read)?;
+    let (what, by) = card_and_player(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut pattern = json!({});
+    if !what.is_empty() {
+        pattern["what"] = json!(what);
+    }
+    if let Some(by) = by {
+        pattern["by"] = json!(by);
+    }
+    if let Some(word) = p.get("ValidPlayer") {
+        if pattern.get("by").is_some() {
+            return unmapped(format!("key:Trigger.{variant}.ValidPlayer-and-card-owner"));
+        }
+        pattern["by"] = player_ref(Some(word))?;
+    }
+    first_time(p, json!({ variant: pattern }))
+}
+
+/// "Whenever you attack" and "whenever you attack with two or more creatures".
+fn attackers_declared(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    // One player is attacked once in a declaration, so "attacks you" is the attackers at that one player.
+    if matches!(p.get("AttackedTarget"), Some("You" | "Player.EnchantedBy")) {
+        return super::triggers_r4::attackers_at_one_target(ctx, p, "AttackersDeclared");
+    }
+    keys(
+        p,
+        "AttackersDeclared",
+        &[
+            "AttackingPlayer",
+            "ValidAttackers",
+            "ValidAttackersAmount",
+            "AttackedTarget",
+        ],
+    )?;
+    // "Whenever an opponent attacks you and/or one or more planeswalkers you control", "whenever one or more of your
+    // opponents are attacked": once for the declaration, with the attackers of those players (and planeswalkers).
+    let attacked = match p.get("AttackedTarget") {
+        None => None,
+        Some("You,Planeswalker.YouCtrl") => Some(json!({"AttackingPlayerOrPlaneswalker": "You"})),
+        Some("Opponent") => Some(json!({"AttackingPlayer": "Opponents"})),
+        Some(other) => {
+            return unmapped(format!(
+                "key:Trigger.AttackersDeclared.AttackedTarget={other}"
+            ));
+        }
+    };
+    let word = p.get("AttackingPlayer");
+    let Ok(by) = player_ref(word) else {
+        return unmapped(format!(
+            "key:Trigger.AttackersDeclared.AttackingPlayer={}",
+            word.unwrap_or_default()
+        ));
+    };
+    let mut what = selector_any(ctx, p.get("ValidAttackers").unwrap_or("Creature"))?;
+    // The attackers are the attacking player's own creatures.
+    let own = json!({ "ControlledBy": by });
+    if by != "EachPlayer" && !what.contains(&own) {
+        what.push(own);
+    }
+    what.extend(attacked);
+    let mut pattern = json!({ "what": what });
+    match p.get("ValidAttackersAmount") {
+        None => {}
+        Some(amount) => match amount
+            .strip_prefix("GE")
+            .and_then(|n| n.parse::<u32>().ok())
+        {
+            Some(least) if least >= 2 => pattern["at_least"] = json!(least),
+            _ => return unmapped("key:Trigger.AttackersDeclared.ValidAttackersAmount"),
+        },
+    }
+    Ok(json!({ "GroupAttacks": pattern }))
+}
+
+/// The player a trigger's player word names: the controller, the opponents, anyone, the player an Aura enchants or that
+/// permanent's controller.
+pub(super) fn player_ref(word: Option<&str>) -> Tr<Value> {
+    match word {
+        None | Some("Player") => Ok(json!("EachPlayer")),
+        Some("You") => Ok(json!("You")),
+        // Teams do not exist at our tables: the other players are the opponents.
+        Some("Opponent" | "Player.Opponent" | "Player.Other") => Ok(json!("Opponents")),
+        Some("Player.EnchantedBy") => Ok(json!("AttachedPlayer")),
+        Some("Player.isMonarch") => Ok(json!("Monarch")),
+        Some("Player.EnchantedController") => Ok(json!({"ControllerOf": "Attached"})),
+        Some("Player.Chosen") => Ok(json!("Chosen")),
+        Some("Player.TriggeredDefendingPlayer" | "TriggeredDefendingPlayer") => {
+            Ok(json!("Defending"))
+        }
+        Some(other) => super::players_where::word(other)
+            .map_or_else(|| unmapped(format!("player:{other}")), Ok),
+    }
+}
+
+fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "SpellCast",
+        &[
+            "ValidCard",
+            "ValidActivatingPlayer",
+            "ActivatorThisTurnCast",
+            "TargetsValid",
+            "ValidSA",
+            "ValidSAonCard",
+            "IsSingleTarget",
+        ],
+    )?;
+    let by = player_ref(p.get("ValidActivatingPlayer"))?;
+    let mut pattern = json!({ "by": by });
+    if let Some(valid) = p.get("ValidCard") {
+        pattern["what"] = json!(selector_any(ctx, valid)?);
+    }
+    // The spell ability's own words ("an instant or sorcery spell with a single target") restrict the same spell.
+    for key in ["ValidSA", "ValidSAonCard"] {
+        if let Some(valid) = p.get(key) {
+            let more = selector_any(ctx, valid)?;
+            match pattern.get_mut("what").and_then(Value::as_array_mut) {
+                Some(what) => {
+                    for pred in more {
+                        if !what.contains(&pred) {
+                            what.push(pred);
+                        }
+                    }
+                }
+                None => pattern["what"] = json!(more),
+            }
+        }
+    }
+    match p.get("IsSingleTarget") {
+        None => {}
+        Some("True") => match pattern.get_mut("what").and_then(Value::as_array_mut) {
+            Some(what) => what.push(json!("SingleTarget")),
+            None => pattern["what"] = json!(["SingleTarget"]),
+        },
+        Some(other) => return unmapped(format!("key:Trigger.SpellCast.IsSingleTarget={other}")),
+    }
+    // "Whenever you cast a spell that targets a creature you control": one of its targets matches.
+    if let Some(valid) = p.get("TargetsValid") {
+        let targeting = g13a_targeting(ctx, valid)?;
+        match pattern.get_mut("what").and_then(Value::as_array_mut) {
+            Some(what) => what.push(targeting),
+            None => pattern["what"] = json!([targeting]),
+        }
+    }
+    if by != "You" {
+        super::triggers_g9a::g9a_caster_graveyard(&mut pattern);
+    }
+    super::triggers_more::nth_spell(p, json!({ "SpellCast": pattern }))
+}
+
+/// What a spell that triggers by its targets targets (`TargetsValid$`): objects that match, and the players of `You`,
+/// `Opponent` and `Player` among the alternatives ("a spell that targets an opponent or a creature an opponent controls").
+fn g13a_targeting(ctx: &Ctx, valid: &str) -> Tr<Value> {
+    let mut players = Vec::new();
+    let mut objects = Vec::new();
+    for alternative in valid.split(',').map(str::trim) {
+        match alternative {
+            "You" => players.push(json!({"TargetsPlayer": "You"})),
+            "Opponent" => players.push(json!({"TargetsPlayer": "Opponents"})),
+            "Player" => players.push(json!({"TargetsPlayer": "EachPlayer"})),
+            object => objects.push(object),
+        }
+    }
+    if players.is_empty() {
+        return Ok(json!({ "Targeting": selector_any(ctx, valid)? }));
+    }
+    if !objects.is_empty() {
+        players.push(json!({ "Targeting": selector_any(ctx, &objects.join(","))? }));
+    }
+    Ok(match <[Value; 1]>::try_from(players) {
+        Ok([only]) => only,
+        Err(several) => json!({ "AnyOf": several }),
+    })
+}
+
+/// A permanent is sacrificed, by a player.
+fn sacrificed(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "Sacrificed",
+        &["ValidCard", "ValidPlayer", "Origin", "Destination"],
+    )?;
+    // Forge's own scripts print these two words on a sacrifice and leave the event alone; any other pair is a gap.
+    for (key, plain) in [("Origin", "Any"), ("Destination", "Battlefield")] {
+        if let Some(word) = p.get(key).filter(|word| *word != plain) {
+            return unmapped(format!("key:Trigger.Sacrificed.{key}={word}"));
+        }
+    }
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let by = player_ref(p.get("ValidPlayer"))?;
+    Ok(json!({"Sacrificed": {"what": what, "by": by}}))
+}
+
+fn drawn(p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "Drawn",
+        &["ValidCard", "ValidPlayer", "Number", "FirstCardInDrawStep"],
+    )?;
+    // `ValidPlayer$` names who draws, `ValidCard$` names the card drawn and so who owns it; the two are not given together.
+    let who = match (p.get("ValidCard"), p.get("ValidPlayer")) {
+        (Some("Card.YouOwn" | "Card.YouCtrl"), None) => "You",
+        (Some("Card.OppOwn" | "Card.OppCtrl"), None) => "Opponents",
+        (Some("Card.OwnedBy Player.EnchantedBy"), None) => "AttachedPlayer",
+        (None | Some("Card"), None) => "EachPlayer",
+        (None, Some(word)) => match player_ref(Some(word)) {
+            Ok(found) if found == "You" => "You",
+            Ok(found) if found == "Opponents" => "Opponents",
+            Ok(found) if found == "EachPlayer" => "EachPlayer",
+            _ => return unmapped(format!("key:Trigger.Drawn.ValidPlayer={word}")),
+        },
+        (Some(other), _) => return unmapped(format!("key:Trigger.Drawn.ValidCard={other}")),
+    };
+    let mut drew = json!({"Drew": {"who": who}});
+    // "Except the first one they draw in each of their draw steps", "your first card during each of your draw steps".
+    match p.get("FirstCardInDrawStep") {
+        None => {}
+        Some("True") => drew["Drew"]["first_in_draw_step"] = json!(true),
+        Some("False") => drew["Drew"]["first_in_draw_step"] = json!(false),
+        Some(other) => return unmapped(format!("key:Trigger.Drawn.FirstCardInDrawStep={other}")),
+    }
+    // "Your second card each turn".
+    match p.get("Number").map(str::parse::<u32>) {
+        None => Ok(drew),
+        Some(Ok(nth)) if nth > 0 => Ok(json!({"Nth": {"event": drew, "nth": nth}})),
+        Some(_) => unmapped("key:Trigger.Drawn.Number"),
+    }
+}
+
+fn life_gained(p: &Params) -> Tr<Value> {
+    keys(p, "LifeGained", &["ValidPlayer", "FirstTime"])?;
+    let who = player_ref(p.get("ValidPlayer"))?;
+    first_time(p, json!({"LifeGained": {"who": who}}))
+}
+
+/// `FirstTime$ True`: the first time in the turn the event happens to the player or object.
+pub(super) fn first_time(p: &Params, event: Value) -> Tr<Value> {
+    match p.get("FirstTime") {
+        None | Some("False") => Ok(event),
+        Some("True") => Ok(json!({"Nth": {"event": event, "nth": 1}})),
+        Some(other) => unmapped(format!("key:Trigger.FirstTime={other}")),
+    }
+}
+
+/// A trigger on a permanent: sacrificed, tapped, untapped, blocks, becomes blocked.
+fn what_trigger(ctx: &Ctx, p: &Params, variant: &str) -> Tr<Value> {
+    keys(p, variant, &["ValidCard"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    Ok(json!({ variant: {"what": what} }))
+}
+
+/// `AttackerBlocked`: an attacker becomes blocked, once. A blocker filter ("whenever this blocks a creature") reads as the
+/// pattern's `by` only for a blocker that is one object, since `by` triggers once for each matching blocker.
+fn attacker_blocked(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "BecomesBlocked", &["ValidCard", "ValidBlocker"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut node = json!({ "what": what });
+    if let Some(valid) = p.get("ValidBlocker") {
+        // "By one or more Orcs" happens once; "by an artifact creature" is the pair line `triggers_g9a` made.
+        let one = attached_or_self(valid);
+        if !one && !one_or_more(p) {
+            return unmapped("key:Trigger.BecomesBlocked.ValidBlocker");
+        }
+        node["by"] = json!(selector_any(ctx, valid)?);
+        if !one {
+            node["once"] = json!(true);
+        }
+    }
+    Ok(json!({ "BecomesBlocked": node }))
+}
+
+/// `Blocks` with `ValidBlocked$` left by `triggers_g9a`: a block of one or more attackers of a kind, once for each
+/// blocker.
+fn blocks(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "Blocks", &["ValidCard", "ValidBlocked"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let mut node = json!({ "what": what });
+    match p.get("ValidBlocked") {
+        None => {}
+        Some(valid) if one_or_more(p) => node["blocking"] = json!(selector_any(ctx, valid)?),
+        Some(_) => return unmapped("key:Trigger.Blocks.ValidBlocked"),
+    }
+    Ok(json!({ "Blocks": node }))
+}
+
+/// Whether the printed trigger says "one or more" of the creatures on the other side of the block.
+fn one_or_more(p: &Params) -> bool {
+    p.get("TriggerDescription").is_some_and(|text| {
+        text.contains("blocked by one or more") || text.contains("blocks one or more")
+    })
+}
+
+/// The effects with the line's optional decider asked: you, or the player of the event ("that creature's controller
+/// may draw a card"); a decider beside a cost to pay is the payment.
+fn decided(
+    ctx: &Ctx,
+    p: &Params,
+    when: &Value,
+    (pays, itself): (bool, bool),
+    effects: Vec<Value>,
+) -> Tr<Vec<Value>> {
+    let you = json!("You");
+    Ok(match p.get("OptionalDecider") {
+        None => effects,
+        Some("You" | "TriggeredCardController") if pays => effects,
+        Some("You") if !super::fix26_printed::asks(p) => effects,
+        Some("You") => super::frame::ask(effects, &you),
+        // The card's own trigger, also with a condition on it ("When ~ dies, if it had no counters"): you decide.
+        Some("TriggeredCardController") if itself || g9a_about_this(when) => {
+            super::frame::ask(effects, &you)
+        }
+        Some(word) if !pays && g9a_player_word(word) => {
+            let who = super::triggered::resolve(ctx.trigger.as_ref(), word)
+                .map_err(|_| super::ctx::Unmapped(format!("key:Trigger.OptionalDecider={word}")))?;
+            super::frame::ask(effects, &who)
+        }
+        Some(other) => return unmapped(format!("key:Trigger.OptionalDecider={other}")),
+    })
+}
+
+/// Whether the pattern's object is the card itself, with or without more words about it.
+fn g9a_about_this(when: &Value) -> bool {
+    when.as_object()
+        .and_then(|map| map.values().next())
+        .and_then(|inner| inner.get("what"))
+        .and_then(Value::as_array)
+        .is_some_and(|what| what.contains(&json!("This")))
+}
+
+/// Whether a `Triggered*` word of an optional decider names a player of the event.
+fn g9a_player_word(word: &str) -> bool {
+    matches!(
+        word,
+        "TriggeredCardController"
+            | "TriggeredSourceController"
+            | "TriggeredPlayer"
+            | "TriggeredActivator"
+            | "TriggeredAttackingPlayer"
+            | "TriggeredCardOwner"
+    )
+}
+
+/// Whether a blocker word is one object: the card or what it is attached to.
+pub(super) fn attached_or_self(valid: &str) -> bool {
+    matches!(
+        valid,
+        "Card.Self"
+            | "Card.EquippedBy"
+            | "Card.AttachedBy"
+            | "Creature.AttachedBy"
+            | "Creature.EquippedBy"
+            | "Creature.EnchantedBy"
+    )
+}
+
+/// Whether the condition compares the turn's count of spells cast for equality or an upper bound: true when it was
+/// checked as the spell was cast, but a later spell changes it by the time the ability resolves.
+fn counts_the_cast_exactly(condition: &Value) -> bool {
+    let compare = |value: &Value| {
+        value.get("Compare").is_some_and(|c| {
+            matches!(
+                c.get("op").and_then(Value::as_str),
+                Some("Eq" | "Le" | "Lt")
+            ) && c
+                .get("left")
+                .is_some_and(|left| left.to_string().contains("\"event\":\"SpellCast\""))
+        })
+    };
+    compare(condition)
+        || condition
+            .get("All")
+            .and_then(Value::as_array)
+            .is_some_and(|all| all.iter().any(compare))
+}

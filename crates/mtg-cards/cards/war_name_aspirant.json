@@ -1,0 +1,39 @@
+{
+  "oracle_id": "448c84f9-712b-4970-8719-2ab9c2a59d20",
+  "name": "War-Name Aspirant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War-Name Aspirant",
+      "oracle_fingerprint": "c94ee9c094d8f97877d765170174373a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 1 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

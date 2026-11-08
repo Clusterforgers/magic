@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b0a4680f-9707-431c-b5d5-7d4424783602",
+  "name": "Vec Townships",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vec Townships",
+      "oracle_fingerprint": "d336d2222dbdd800613000e3d16a55cb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Green", "White"] } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

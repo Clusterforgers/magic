@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "148bbaab-bc7b-46ab-8e18-ade69d71d847",
+  "oracle_id": "1779869a-5e54-4ab5-86b8-d4d20e2e1ba4",
+  "multiverse_ids": [],
+  "resource_id": "7B7D8151F735B1D8C99AE684C6DAC5EAF9710F1C5DCA892CA2E803B7F4438B4C",
+  "mtgo_id": 144692,
+  "arena_id": 97381,
+  "tcgplayer_id": 661851,
+  "cardmarket_id": 857443,
+  "name": "June, Bounty Hunter",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/148bbaab-bc7b-46ab-8e18-ade69d71d847",
+  "scryfall_uri": "https://scryfall.com/card/tla/106/june-bounty-hunter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:09:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.jpg?1783904969",
+    "normal": "https://cards.scryfall.io/normal/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.jpg?1783904969",
+    "large": "https://cards.scryfall.io/large/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.jpg?1783904969",
+    "png": "https://cards.scryfall.io/png/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.png?1783904969",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.jpg?1783904969",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.jpg?1783904969",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.webp?1783904969",
+    "grid": "https://cards.scryfall.io/grid/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.webp?1783904969",
+    "display": "https://cards.scryfall.io/display/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.webp?1783904969",
+    "art": "https://cards.scryfall.io/art/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.webp?1783904969",
+    "crop": "https://cards.scryfall.io/crop/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.webp?1783904969",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/4/148bbaab-bc7b-46ab-8e18-ade69d71d847.jpg?1783904969"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Mercenary",
+  "oracle_text": "June can't be blocked as long as you've drawn two or more cards this turn.\n{1}, Sacrifice another creature: Create a Clue token. Activate only during your turn. (It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "148bbaab-bc7b-46ab-8e18-ade69d71d847",
+      "component": "combo_piece",
+      "name": "June, Bounty Hunter",
+      "type_line": "Legendary Creature — Human Mercenary",
+      "uri": "https://api.scryfall.com/cards/148bbaab-bc7b-46ab-8e18-ade69d71d847"
+    },
+    {
+      "object": "related_card",
+      "id": "8db9a248-d380-48e9-850c-38b2907332c1",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/8db9a248-d380-48e9-850c-38b2907332c1"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/148bbaab-bc7b-46ab-8e18-ade69d71d847/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1779869a-5e54-4ab5-86b8-d4d20e2e1ba4&unique=prints",
+  "collector_number": "106",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"My shirshu can smell a rat a continent away.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Shiren",
+  "artist_ids": [
+    "21c7279b-f378-43d2-b369-c3a7d1435106"
+  ],
+  "illustration_id": "61d87fa8-320b-4d8e-bec2-e17067826e37",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14285,
+  "penny_rank": 5313,
+  "preview": {
+    "source": "TCGplayer",
+    "source_uri": "https://www.tcgplayer.com/content/article/TCGplayer-s-MTG-%7C-Avatar-The-Last-Airbender-Preview-Card-is-a-Doozy/c5adfa8d-eccf-4df0-8ca1-32c6a61af8fd/",
+    "previewed_at": "2025-10-31"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.27",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.17",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJune%252C%2BBounty%2BHunter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJune%252C%2BBounty%2BHunter",
+    "edhrec": "https://edhrec.com/route/?cc=June%2C+Bounty+Hunter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F661851%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857443&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144692?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "df206fb3-2d98-439e-9f1a-161bdbdc47b2",
+  "name": "Hunters' Feast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunters' Feast",
+      "oracle_fingerprint": "53beb7b118b7fb684d9c824b14fa0090",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 6 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

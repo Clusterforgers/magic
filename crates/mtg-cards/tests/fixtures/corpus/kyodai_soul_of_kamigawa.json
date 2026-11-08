@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "cbbfd21e-96f1-4e5b-8546-73bb5a887b98",
+  "oracle_id": "d89bd776-8489-4c34-94ea-db1b088d9379",
+  "multiverse_ids": [
+    548316
+  ],
+  "mtgo_id": 96956,
+  "arena_id": 79443,
+  "tcgplayer_id": 262037,
+  "cardmarket_id": 607029,
+  "name": "Kyodai, Soul of Kamigawa",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/cbbfd21e-96f1-4e5b-8546-73bb5a887b98",
+  "scryfall_uri": "https://scryfall.com/card/neo/23/kyodai-soul-of-kamigawa?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:25:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.jpg?1783923918",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.jpg?1783923918",
+    "large": "https://cards.scryfall.io/large/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.jpg?1783923918",
+    "png": "https://cards.scryfall.io/png/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.png?1783923918",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.jpg?1783923918",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.jpg?1783923918",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.webp?1783923918",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.webp?1783923918",
+    "display": "https://cards.scryfall.io/display/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.webp?1783923918",
+    "art": "https://cards.scryfall.io/art/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.webp?1783923918",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.webp?1783923918",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cbbfd21e-96f1-4e5b-8546-73bb5a887b98.jpg?1783923918"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Dragon Spirit",
+  "oracle_text": "Flash\nFlying\nWhen Kyodai enters, another target permanent gains indestructible for as long as you control Kyodai.\n{W}{U}{B}{R}{G}: Kyodai gets +5/+5 until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59a2059f-5482-433f-8761-eb2e17859b71",
+  "set": "neo",
+  "set_name": "Kamigawa: Neon Dynasty",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59a2059f-5482-433f-8761-eb2e17859b71",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aneo&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/neo?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cbbfd21e-96f1-4e5b-8546-73bb5a887b98/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad89bd776-8489-4c34-94ea-db1b088d9379&unique=prints",
+  "collector_number": "23",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Zrom",
+  "artist_ids": [
+    "826eea7d-7381-42e0-b21d-60ec2d79b588"
+  ],
+  "illustration_id": "e97db26d-dcb3-4e93-8bde-1b7939756c2a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11538,
+  "penny_rank": 9449,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1277767538",
+    "previewed_at": "2022-01-27"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.27",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548316&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKyodai%252C%2BSoul%2Bof%2BKamigawa",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKyodai%252C%2BSoul%2Bof%2BKamigawa",
+    "edhrec": "https://edhrec.com/route/?cc=Kyodai%2C+Soul+of+Kamigawa"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262037%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=607029&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/96956?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

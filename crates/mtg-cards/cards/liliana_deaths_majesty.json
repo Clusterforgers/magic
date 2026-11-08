@@ -1,0 +1,69 @@
+{
+  "oracle_id": "7fca595e-1902-40fd-a359-622caa612b6a",
+  "name": "Liliana, Death's Majesty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana, Death's Majesty",
+      "oracle_fingerprint": "4625e86100e905f8bc157945e2cd4e0e",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              { "Mill": { "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Zombie" }, { "AddColors": ["Black"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Zombie" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

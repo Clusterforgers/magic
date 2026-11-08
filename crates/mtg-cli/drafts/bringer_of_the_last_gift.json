@@ -1,0 +1,46 @@
+{
+  "oracle_id": "0fb9a8a2-4331-4259-9460-a37397554962",
+  "name": "Bringer of the Last Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bringer of the Last Gift",
+      "oracle_fingerprint": "0b553deec9f16dedc66bc0eb1357565d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Creature" }, "Other"],
+                  "count": { "Count": [{ "Type": "Creature" }, "Other"] },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "sacrificed" } } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

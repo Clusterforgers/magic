@@ -1,0 +1,20 @@
+{
+  "oracle_id": "be6e835c-822e-45ff-a992-249d4d9781dc",
+  "name": "Gnarlid Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnarlid Pack",
+      "oracle_fingerprint": "89cc46c1597dd0da589e3e1ae9afc0d2",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{1}{G}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "Kicks" } }
+          }
+        }
+      ]
+    }
+  ]
+}

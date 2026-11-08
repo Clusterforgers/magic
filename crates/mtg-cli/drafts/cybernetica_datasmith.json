@@ -1,0 +1,41 @@
+{
+  "oracle_id": "23a265ef-d651-4d8d-94dd-0072f83541f9",
+  "name": "Cybernetica Datasmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cybernetica Datasmith",
+      "oracle_fingerprint": "6ea903f949f8344fc9d43d5fff6b1f9f",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Subtype": "Robot" }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Another": { "what": "Player", "earlier": [0] } } }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "Target": 1 },
+                  "token": {
+                    "Custom": {
+                      "name": "Robot",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

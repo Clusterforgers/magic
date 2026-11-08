@@ -1,0 +1,21 @@
+{
+  "oracle_id": "82372776-bedd-4893-92ad-f1272f9c3250",
+  "name": "Quicksilver Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksilver Wall",
+      "oracle_fingerprint": "3eeda3d4ad6bf593514f0569ef0fdfc6",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "by": "Anyone",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

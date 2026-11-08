@@ -1,0 +1,66 @@
+{
+  "oracle_id": "a7e7059e-83f8-4124-9cc0-64ba150b5d96",
+  "name": "Warren Warleader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warren Warleader",
+      "oracle_fingerprint": "764930fff115eeb2eb25f9138df8be41",
+      "abilities": [
+        { "Keyword": { "Offspring": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Rabbit",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Rabbit"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "tapped": true,
+                            "attacking": true
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                "Attacking",
+                                { "ControlledBy": "You" }
+                              ]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

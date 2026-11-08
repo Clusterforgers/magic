@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1f42a809-bbfc-4225-9c31-f7d0fa8fa17a",
+  "name": "Rigo, Streetwise Mentor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rigo, Streetwise Mentor",
+      "oracle_fingerprint": "e63ad7aaebc80721b351fae6f82aee75",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 126, "end": 232 }
+          }
+        }
+      ]
+    }
+  ]
+}

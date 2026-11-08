@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d2a29bbf-bfcd-4e4e-8c0b-95a15b58a612",
+  "name": "Coastal Wizard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coastal Wizard",
+      "oracle_fingerprint": "734fb957aa5c16ac88179316bf3db728",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Any": [
+                    { "Step": "Upkeep" },
+                    { "Step": "Draw" },
+                    { "Step": "Main1" },
+                    { "Step": "BeginCombat" }
+                  ]
+                }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand" } },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

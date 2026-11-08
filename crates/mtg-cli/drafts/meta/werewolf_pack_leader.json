@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Until end of turn, CARDNAME has base power and toughness 5/3, gains trample, and isn't a Human.",
+      "abilities": [],
+      "gap": "key:Animate.RemoveTypes"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Pack tactics — Whenever CARDNAME attacks, if you attacked with creatures with total power 6 or greater this combat, draw a card.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 133
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 134,
+          "end": 242
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "78f9ec0f-6015-4024-aca6-9a14cba373fa",
+  "name": "Pyrotechnic Performer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyrotechnic Performer",
+      "oracle_fingerprint": "f1db468526d13ffbd57d38f045fa1119",
+      "abilities": [
+        { "Keyword": { "Disguise": "{R}" } },
+        {
+          "Triggered": {
+            "when": {
+              "TurnedFaceUp": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

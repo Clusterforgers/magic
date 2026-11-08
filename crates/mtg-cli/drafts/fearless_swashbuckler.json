@@ -1,0 +1,74 @@
+{
+  "oracle_id": "6a6cdb3e-c850-4b3c-bf4b-c53dd4eaf56e",
+  "name": "Fearless Swashbuckler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fearless Swashbuckler",
+      "oracle_fingerprint": "f06e15c7fe00359f4f3c96df83f16966",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Sum": [
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": [{ "Subtype": "Pirate" }, "Attacking"] },
+                              "op": "Gt",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": { "Count": [{ "Subtype": "Pirate" }, "Attacking"] }
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "Subtype": "Vehicle" },
+                                  "Attacking"
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 1
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": {
+                            "Count": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }, "Attacking"]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "op": "Eq",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [{ "Draw": { "count": 3 } }, { "Discard": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

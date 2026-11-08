@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5753f4d6-08d0-4e12-85c5-875ee6441626",
+  "name": "Tidings of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidings of War",
+      "oracle_fingerprint": "2a3449e78dc5f0cc0927b8c2d5ade9a0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Amass": {
+                  "subtype": "Goblin",
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": { "from": "Graveyard" } }]
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{R}" } }
+      ]
+    }
+  ]
+}

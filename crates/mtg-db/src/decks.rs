@@ -277,9 +277,52 @@ async fn write_lines(
     Ok(())
 }
 
+/// A card as the saved decks of all accounts use it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CardDemand {
+    /// The card.
+    pub oracle_id: OracleId,
+    /// The card's name.
+    pub name: String,
+    /// In how many saved decks the card has a line.
+    pub decks: u32,
+    /// How many accounts own such a deck.
+    pub owners: u32,
+}
+
 impl DeckRepo {
     pub(crate) fn new(pool: PgPool) -> Self {
         Self { pool }
+    }
+
+    /// Every card in any saved deck with its deck and owner counts, the most used first (then by name).
+    /// It reads in a read-only transaction and names no account.
+    pub async fn card_demand(&self) -> Result<Vec<CardDemand>, DbError> {
+        let mut tx = self.pool.begin().await?;
+        sqlx::query("SET TRANSACTION READ ONLY")
+            .execute(&mut *tx)
+            .await?;
+        let rows: Vec<(Uuid, String, i64, i64)> = sqlx::query_as(
+            "SELECT dc.oracle_id, c.name, count(DISTINCT dc.deck_id), count(DISTINCT d.owner)
+             FROM deck_cards dc
+             JOIN decks d ON d.id = dc.deck_id
+             JOIN cards c ON c.oracle_id = dc.oracle_id
+             GROUP BY dc.oracle_id, c.name
+             ORDER BY count(DISTINCT dc.deck_id) DESC, count(DISTINCT d.owner) DESC, c.name, dc.oracle_id",
+        )
+        .fetch_all(&mut *tx)
+        .await?;
+        tx.rollback().await?;
+        let count = |n: i64| u32::try_from(n).unwrap_or(u32::MAX);
+        Ok(rows
+            .into_iter()
+            .map(|(oracle_id, name, decks, owners)| CardDemand {
+                oracle_id: OracleId(oracle_id.to_string()),
+                name,
+                decks: count(decks),
+                owners: count(owners),
+            })
+            .collect())
     }
 
     /// Stores a new deck for `owner`, unless the owner already holds `max_decks`. The count and the

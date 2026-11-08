@@ -1,0 +1,22 @@
+{
+  "oracle_id": "01da67a5-e3dc-44f4-8a93-513bfa4d8fbc",
+  "name": "Ionize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ionize",
+      "oracle_fingerprint": "31ec75c7b1552be58c6878f379c6b6d5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

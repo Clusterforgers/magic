@@ -1,0 +1,75 @@
+{
+  "oracle_id": "f7cac691-960f-4e36-8eae-f24bcdc1269b",
+  "name": "Tip the Scales",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tip the Scales",
+      "oracle_fingerprint": "37a8ca9ca9237eaf3667f584a31ea755",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "sacrificed" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Each": [{ "Type": "Creature" }] },
+                              "mods": [
+                                {
+                                  "ModifyPT": {
+                                    "power": {
+                                      "Times": {
+                                        "by": -1,
+                                        "of": {
+                                          "Stat": {
+                                            "of": { "Bound": "when2" },
+                                            "stat": "Toughness"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "toughness": {
+                                      "Times": {
+                                        "by": -1,
+                                        "of": {
+                                          "Stat": {
+                                            "of": { "Bound": "when2" },
+                                            "stat": "Toughness"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

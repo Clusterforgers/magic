@@ -1,0 +1,28 @@
+{
+  "oracle_id": "23f9bee4-ac7e-4828-82c0-576fee0d29b7",
+  "name": "Singing Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Singing Tree",
+      "oracle_fingerprint": "ecc41f79a59cc2f15b24557dda1d2784",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPower": 0 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

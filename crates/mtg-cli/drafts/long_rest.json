@@ -1,0 +1,45 @@
+{
+  "oracle_id": "fc8df5c8-fda6-454c-a1ac-21c6e3d75b9c",
+  "name": "Long Rest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Long Rest",
+      "oracle_fingerprint": "da2931369f3657ec83982c83f9da5e97",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                    "rule": "DifferentManaValues"
+                  }
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand", "as": "moved" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [{ "SetLife": { "amount": { "StartingLife": "You" } } }]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

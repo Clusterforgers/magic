@@ -1,0 +1,40 @@
+{
+  "oracle_id": "dac76b28-23e8-4138-8442-51579a590f16",
+  "name": "Grasping Tentacles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grasping Tentacles",
+      "oracle_fingerprint": "85d142746fcb41f3889effd65c861bec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 8 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

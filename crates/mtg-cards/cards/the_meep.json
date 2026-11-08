@@ -1,0 +1,72 @@
+{
+  "oracle_id": "ff2448d0-7a45-45be-bf02-19650f490b54",
+  "name": "The Meep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Meep",
+      "oracle_fingerprint": "6f5629f1f46cb63ff3d460fa77f58803",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 3 }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "mods": [
+                                {
+                                  "SetPT": {
+                                    "power": {
+                                      "Stat": {
+                                        "of": { "Bound": "sacrificed" },
+                                        "stat": "ManaValue"
+                                      }
+                                    },
+                                    "toughness": {
+                                      "Stat": {
+                                        "of": { "Bound": "sacrificed" },
+                                        "stat": "ManaValue"
+                                      }
+                                    }
+                                  }
+                                }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d4b50749-a016-4aff-8d70-a1707cabf57b",
+  "name": "Falter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falter",
+      "oracle_fingerprint": "31bd5d5c5bb69be1400ecc3ae2e9bffe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "58ed1294-ba7d-43a1-b988-8d78d9fa0e3e",
+  "name": "Phyrexian Battleflies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Battleflies",
+      "oracle_fingerprint": "2e1ab0998e9621498bc1dd758bac2eb7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "limit": { "TimesPerTurn": 2 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

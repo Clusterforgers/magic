@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0b4742b7-e769-4354-beaf-6b4d18768ec1",
+  "name": "Zhou Yu, Chief Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zhou Yu, Chief Commander",
+      "oracle_fingerprint": "90ef2df5c339b10701adafe04fa9956a",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

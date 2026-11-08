@@ -1,0 +1,43 @@
+{
+  "oracle_id": "07a28621-e617-46b0-af3e-2efb03b5056a",
+  "name": "Kwia Vigorbloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kwia Vigorbloom",
+      "oracle_fingerprint": "25fcb608f4cfd1bc32b56cfc4b1e38ca",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Lotus",
+                      "types": ["Artifact"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap", "SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

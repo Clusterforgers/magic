@@ -1,0 +1,32 @@
+{
+  "oracle_id": "11329dd8-b10b-4659-b747-fbdbecf16308",
+  "name": "Myrkul, Lord of Bones",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Myrkul, Lord of Bones",
+      "oracle_fingerprint": "a3cae7508f1329ceeb2dd572bb99d4aa",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Times": { "by": 2, "of": { "Life": "You" } } },
+                "op": "Le",
+                "right": { "StartingLife": "You" }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 110, "end": 293 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0ca9c400-c62a-49d8-8dce-5caca7f92ed9",
+  "name": "Shield Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shield Dancer",
+      "oracle_fingerprint": "409263370db2034d33e48591b094eb0c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": "This",
+                      "source": [{ "Is": { "Target": 0 } }],
+                      "combat": true
+                    }
+                  },
+                  "by": { "Redirect": { "to": { "Target": 0 }, "next": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

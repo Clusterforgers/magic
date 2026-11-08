@@ -1,0 +1,41 @@
+{
+  "oracle_id": "3270265f-fa9f-4ef0-a1a3-a68fc2349bf1",
+  "name": "Iridescent Hornbeetle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iridescent Hornbeetle",
+      "oracle_fingerprint": "73b777e2589c87760ab6255ae4375725",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Tally": {
+                      "event": "PlusOneCountersPut",
+                      "who": "You",
+                      "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

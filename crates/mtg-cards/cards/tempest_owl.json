@@ -1,0 +1,22 @@
+{
+  "oracle_id": "dfd2bc6e-32c8-4027-9c0d-8a3050b8eeda",
+  "name": "Tempest Owl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempest Owl",
+      "oracle_fingerprint": "624ff8decedce5880e05d6f036fe00ca",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}{U}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 0, "max": 3 } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

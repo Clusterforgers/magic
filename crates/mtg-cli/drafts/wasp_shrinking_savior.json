@@ -1,0 +1,44 @@
+{
+  "oracle_id": "002cd9b4-efce-429f-82cd-d37352d2e932",
+  "name": "Wasp, Shrinking Savior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wasp, Shrinking Savior",
+      "oracle_fingerprint": "83dae3e7907abc3a694ceacaa8d3dc1f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Lt", "to": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

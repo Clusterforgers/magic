@@ -1,0 +1,27 @@
+{
+  "oracle_id": "41699d92-c209-4fcb-bbd6-685b3437d0c2",
+  "name": "Gorehorn Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorehorn Raider",
+      "oracle_fingerprint": "717d9a7f7f57d15ca55df993c25e4383",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

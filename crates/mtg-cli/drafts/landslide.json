@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f15761cf-2ac5-4458-957c-15badb1dda50",
+  "name": "Landslide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Landslide",
+      "oracle_fingerprint": "21afd0d91b59a1bf49b71bf77d471b9e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Subtype": "Mountain" }],
+                  "count": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "Bound": "sacrificed~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

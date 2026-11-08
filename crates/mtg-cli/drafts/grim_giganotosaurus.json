@@ -1,0 +1,59 @@
+{
+  "oracle_id": "1c197b3c-f540-4766-aeaa-ae09d22214cb",
+  "name": "Grim Giganotosaurus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Giganotosaurus",
+      "oracle_fingerprint": "23118125402cfb28b15eb66527025e78",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{10}{B}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Opponents" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Monstrosity": { "count": 10 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }]
+                            }
+                          },
+                          { "Type": "Artifact" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

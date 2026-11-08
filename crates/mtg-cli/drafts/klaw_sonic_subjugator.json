@@ -1,0 +1,62 @@
+{
+  "oracle_id": "1c233e08-d5a3-48d7-9074-20393896a480",
+  "name": "Klaw, Sonic Subjugator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Klaw, Sonic Subjugator",
+      "oracle_fingerprint": "1ae8e57ef019a432c5925e17c08f6310",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": {
+                      "Sum": [
+                        {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        1
+                      ]
+                    },
+                    "max": {
+                      "Sum": [
+                        {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        1
+                      ]
+                    }
+                  },
+                  "as": "shown"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "shown" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "shown" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

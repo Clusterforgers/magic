@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e58e94dc-9602-48db-9dd9-9d3051c33a76",
+  "name": "The Thanos-Copter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Thanos-Copter",
+      "oracle_fingerprint": "c7945ed25886579b0509acec505de7bc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddType": "Creature" }, { "AddType": "Artifact" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

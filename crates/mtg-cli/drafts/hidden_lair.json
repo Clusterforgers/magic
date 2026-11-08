@@ -1,0 +1,49 @@
+{
+  "oracle_id": "7069d241-4e66-40bf-afd1-551a4a5457f0",
+  "name": "Hidden Lair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Lair",
+      "oracle_fingerprint": "212f858dbdeb5d46acc06cc3c5f3070a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    {
+                      "AnyOf": [
+                        { "Not": { "AnyOf": [{ "Not": "This" }, { "Not": "EnteredThisTurn" }] } },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Land" } },
+                              { "Not": { "Supertype": "Basic" } },
+                              { "Not": { "ControlledBy": "You" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

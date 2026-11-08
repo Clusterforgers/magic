@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0501af1f-c67c-4cb1-aced-4be426c83316",
+  "name": "Ebon Praetor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ebon Praetor",
+      "oracle_fingerprint": "d7b6302d9bf36235418b59d24f2241e2",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "-2/-2" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "-2/-2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Subtype": "Thrull" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": { "Other": "+1/+0" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

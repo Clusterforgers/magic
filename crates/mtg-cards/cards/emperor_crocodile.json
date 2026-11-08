@@ -1,0 +1,31 @@
+{
+  "oracle_id": "26eb7ee3-c0b6-4be0-bc80-92952f55a6f9",
+  "name": "Emperor Crocodile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emperor Crocodile",
+      "oracle_fingerprint": "a7cceb708ad631f668590c393da55726",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

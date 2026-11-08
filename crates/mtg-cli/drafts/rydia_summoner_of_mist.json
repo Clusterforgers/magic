@@ -1,0 +1,58 @@
+{
+  "oracle_id": "a08f79b7-d66f-47da-9670-afd7409c0c5c",
+  "name": "Rydia, Summoner of Mist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rydia, Summoner of Mist",
+      "oracle_fingerprint": "d3acb7759b913f5e1eebe7bf8fb1abe9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Saga" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

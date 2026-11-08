@@ -1,0 +1,59 @@
+{
+  "oracle_id": "a41e632f-9d36-44d2-b1dd-e17df0d2486e",
+  "name": "Breathkeeper Seraph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breathkeeper Seraph",
+      "oracle_fingerprint": "2320c0554346cd03d7b8b4dbeb3aa58a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Soulbond" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "AnyOf": ["This", { "PairedWith": "This" }] }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" }
+                    },
+                    "effects": [
+                      {
+                        "May": {
+                          "effects": [
+                            {
+                              "Bind": {
+                                "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                                "as": "event"
+                              }
+                            },
+                            {
+                              "DelayedTrigger": {
+                                "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                                "effects": [
+                                  {
+                                    "Move": {
+                                      "what": { "Bound": "event" },
+                                      "to": { "Battlefield": {} }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["Paired"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

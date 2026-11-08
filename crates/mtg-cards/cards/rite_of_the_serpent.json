@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f009ef70-d718-45cf-bb22-e560484bbfe5",
+  "name": "Rite of the Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of the Serpent",
+      "oracle_fingerprint": "9ebfe233022681f05674869f751b3f35",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }, { "HasCounter": "+1/+1" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Snake",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Snake"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

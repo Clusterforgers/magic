@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "5b1a44f0-1db8-406a-b7d9-f883f947f7bd",
+  "oracle_id": "1bd5e51f-f9a5-4eb7-bda2-957310602c20",
+  "multiverse_ids": [
+    461010
+  ],
+  "mtgo_id": 71772,
+  "arena_id": 69534,
+  "tcgplayer_id": 187211,
+  "cardmarket_id": 371869,
+  "name": "Davriel, Rogue Shadowmage",
+  "lang": "en",
+  "released_at": "2019-05-03",
+  "uri": "https://api.scryfall.com/cards/5b1a44f0-1db8-406a-b7d9-f883f947f7bd",
+  "scryfall_uri": "https://scryfall.com/card/war/83/davriel-rogue-shadowmage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:04:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.jpg?1783933448",
+    "normal": "https://cards.scryfall.io/normal/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.jpg?1783933448",
+    "large": "https://cards.scryfall.io/large/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.jpg?1783933448",
+    "png": "https://cards.scryfall.io/png/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.png?1783933448",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.jpg?1783933448",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.jpg?1783933448",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.webp?1783933448",
+    "grid": "https://cards.scryfall.io/grid/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.webp?1783933448",
+    "display": "https://cards.scryfall.io/display/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.webp?1783933448",
+    "art": "https://cards.scryfall.io/art/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.webp?1783933448",
+    "crop": "https://cards.scryfall.io/crop/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.webp?1783933448",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/b/5b1a44f0-1db8-406a-b7d9-f883f947f7bd.jpg?1783933448"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Planeswalker — Davriel",
+  "oracle_text": "At the beginning of each opponent's upkeep, if that player has one or fewer cards in hand, Davriel deals 2 damage to them.\n−1: Target player discards a card.",
+  "loyalty": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set": "war",
+  "set_name": "War of the Spark",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awar&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/war?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5b1a44f0-1db8-406a-b7d9-f883f947f7bd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1bd5e51f-f9a5-4eb7-bda2-957310602c20&unique=prints",
+  "collector_number": "83",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "2786f8b0-fa8c-4f04-aeaf-ca6f978e5c16",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11988,
+  "penny_rank": 445,
+  "preview": {
+    "source": "Brandon Sanderson",
+    "source_uri": "https://brandonsanderson.com/announcing-davriels-magic-the-gathering-cards/",
+    "previewed_at": "2019-04-01"
+  },
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.59",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "1.16",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=461010&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDavriel%252C%2BRogue%2BShadowmage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDavriel%252C%2BRogue%2BShadowmage",
+    "edhrec": "https://edhrec.com/route/?cc=Davriel%2C+Rogue+Shadowmage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F187211%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=371869&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/71772?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "821ce349-5379-4415-89e2-224e21dda24b",
+  "name": "Phantasmal Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantasmal Fiend",
+      "oracle_fingerprint": "883e86a8ccbf0947882e3e17821fb837",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

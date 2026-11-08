@@ -1,0 +1,27 @@
+{
+  "oracle_id": "76dc9452-4e81-4152-bb4d-cdec6db767ed",
+  "name": "Cataclysmic Prospecting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cataclysmic Prospecting",
+      "oracle_fingerprint": "013eae11387163c8b182ae6b142e1691",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": "X" } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "ManaSpent": { "of": null, "from": { "subtypes": ["Desert"] } } },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "82e5642a-0803-432c-85d3-091fca75c82f",
+  "name": "Spark Rupture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spark Rupture",
+      "oracle_fingerprint": "f17461246378a7351ca850db9cfd2ae8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Planeswalker" }, { "HasCounter": "loyalty" }] },
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Counters": { "on": "Affected", "counter": "loyalty" } },
+                  "toughness": { "Counters": { "on": "Affected", "counter": "loyalty" } }
+                }
+              },
+              "LoseAbilities",
+              { "SetTypes": ["Creature"] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

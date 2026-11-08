@@ -1,0 +1,59 @@
+{
+  "oracle_id": "3823afcf-6b15-46a9-ba49-3a9a39f8114e",
+  "name": "Vodalian Mindsinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vodalian Mindsinger",
+      "oracle_fingerprint": "747f6e108796a53232cdf5355771258e",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        { "Keyword": { "Kicker": "{1}{G}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Times": { "by": 2, "of": "Kicks" } }
+              }
+            },
+            "condition": {
+              "Compare": { "left": { "Times": { "by": 2, "of": "Kicks" } }, "op": "Ge", "right": 1 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -27,6 +27,7 @@ pub(crate) fn reduction(kind: &Selector) -> Ability {
     let mut counted = kind.0.clone();
     counted.push(Pred::ControlledBy(Ref::You));
     Ability::CostModifier {
+        targeting: None,
         applies_to: Selector::this(),
         change: CostChange::Reduce,
         mana: mtg_cards::mana::ManaCostX::new(
@@ -35,6 +36,8 @@ pub(crate) fn reduction(kind: &Selector) -> Ability {
         ),
         per: Amount::Count(Selector(counted)),
         condition: None,
+        activating: None,
+        least: 0,
     }
 }
 

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "3a06f4c1-2af1-495f-914f-1ac4e26f87d4",
+  "name": "Widespread Brutality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Widespread Brutality",
+      "oracle_fingerprint": "695eb712f0a1fd26d327659e96ceed28",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Amass": { "subtype": "Zombie", "count": 2, "as": "amassed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "amassed" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "amassed" },
+                        "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Army" } }] },
+                        "amount": {
+                          "Total": {
+                            "of": [
+                              { "Is": { "Bound": "amassed" } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

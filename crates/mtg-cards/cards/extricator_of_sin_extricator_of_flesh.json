@@ -1,0 +1,93 @@
+{
+  "oracle_id": "08b3328c-1d96-4a05-ae8b-f1b654084faa",
+  "name": "Extricator of Sin // Extricator of Flesh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extricator of Sin",
+      "oracle_fingerprint": "6f3e8fcd64a900671fd50142be095d5d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["Other"] } }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Eldrazi Horror",
+                            "types": ["Creature"],
+                            "subtypes": ["Eldrazi", "Horror"],
+                            "power": 3,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extricator of Flesh",
+      "oracle_fingerprint": "7e58f5150b1735d51c5d6776b5073d70",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Eldrazi" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Eldrazi" } }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Horror",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Horror"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

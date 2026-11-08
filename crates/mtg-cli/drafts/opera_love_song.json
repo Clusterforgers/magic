@@ -1,0 +1,59 @@
+{
+  "oracle_id": "22f259b3-9de1-44a1-a89d-f2f1b1249d4d",
+  "name": "Opera Love Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opera Love Song",
+      "oracle_fingerprint": "54b6a6b43984325cb32cb8c790122dd8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "ExileTop": { "count": 2, "as": "exiled" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "exiled" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilYourNextEndStep"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }] },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

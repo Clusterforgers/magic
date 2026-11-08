@@ -1,0 +1,44 @@
+{
+  "oracle_id": "39e20898-cf01-48dc-8972-7ac500c3fa79",
+  "name": "Ghoulish Procession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghoulish Procession",
+      "oracle_fingerprint": "09c090559a6e65e20c2c382312d69370",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "Not": "Token" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

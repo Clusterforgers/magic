@@ -1,0 +1,39 @@
+{
+  "oracle_id": "53b99846-3f80-4e9d-ad3c-52a4906b8823",
+  "name": "Gilt-Leaf Winnower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilt-Leaf Winnower",
+      "oracle_fingerprint": "3cc02fc6b609e9f9ae0e70f402d8d551",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Elf" } },
+                    {
+                      "Not": {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                          "op": "Eq",
+                          "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

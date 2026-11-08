@@ -1,0 +1,38 @@
+{
+  "oracle_id": "38ffe614-e8f7-4625-b921-9409e7e7ee5b",
+  "name": "Mirror of Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror of Fate",
+      "oracle_fingerprint": "2fc9945ce527adacadb7fa75f265eeda",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "OwnedBy": "You" }, { "Not": "FaceDown" }, { "In": "Exile" }]
+                  },
+                  "count": { "min": 0, "max": 7 },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }] } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Is": { "Bound": "card" } }, { "In": "Exile" }, { "OwnedBy": "You" }]
+                  },
+                  "to": { "Library": { "place": "Top" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

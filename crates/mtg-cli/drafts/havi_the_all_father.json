@@ -1,0 +1,87 @@
+{
+  "oracle_id": "3f58e0f2-7cb5-4a82-b794-071f433fe583",
+  "name": "Havi, the All-Father",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Havi, the All-Father",
+      "oracle_fingerprint": "b612641ca2d1206f488a7586427467d0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    {
+                      "AnyOf": [
+                        { "Supertype": "Legendary" },
+                        { "Type": "Artifact" },
+                        { "Subtype": "Saga" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Supertype": "Legendary" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Supertype": "Legendary" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

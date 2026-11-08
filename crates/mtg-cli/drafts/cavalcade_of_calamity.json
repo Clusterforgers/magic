@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e29be33c-e5b0-428d-a057-b1cd61127557",
+  "name": "Cavalcade of Calamity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavalcade of Calamity",
+      "oracle_fingerprint": "2a87371774fddbe02e4e2f750ebc77f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 1 } },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Against", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

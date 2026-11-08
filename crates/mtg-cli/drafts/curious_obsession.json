@@ -1,0 +1,45 @@
+{
+  "oracle_id": "22a23706-a5fe-46f3-b845-6f58d558c723",
+  "name": "Curious Obsession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curious Obsession",
+      "oracle_fingerprint": "b60dae79b2da0e92d49bef1b9a01f279",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

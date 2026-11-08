@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7f993ac7-c2cd-413c-a106-2c051a77ebf6",
+  "name": "Murktide Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murktide Regent",
+      "oracle_fingerprint": "0e605dd15bc48d4807baadaa4b6739c9",
+      "abilities": [
+        { "Keyword": "Delve" },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ExiledWith": "This" },
+                    { "In": "Exile" }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "OwnedBy": "You" }
+                ],
+                "from": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

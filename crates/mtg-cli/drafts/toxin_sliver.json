@@ -1,0 +1,25 @@
+{
+  "oracle_id": "96ccad44-7912-4fdb-bb2d-9d16cc3cd68a",
+  "name": "Toxin Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toxin Sliver",
+      "oracle_fingerprint": "a4abb1b478a15123cfac61317bc2d685",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Sliver" }],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

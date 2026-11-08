@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2c89cf19-8dc6-422e-bbf8-4dd5a399c630",
+  "name": "Pyromania",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyromania",
+      "oracle_fingerprint": "aab7fc83e5723cada83dfc7c5c4fd84e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, { "DiscardRandom": 1 }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "SacrificeSelf"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

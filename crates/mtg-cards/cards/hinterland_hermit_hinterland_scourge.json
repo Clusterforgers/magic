@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8287306b-47d3-4e95-aa39-551f949d687c",
+  "name": "Hinterland Hermit // Hinterland Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hinterland Hermit",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hinterland Scourge",
+      "oracle_fingerprint": "f3dfb4d0a16259ef0ad807709b26b981",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

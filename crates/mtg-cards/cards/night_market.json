@@ -1,0 +1,24 @@
+{
+  "oracle_id": "4cdb9f80-d08f-4986-99c8-573166d66082",
+  "name": "Night Market",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Market",
+      "oracle_fingerprint": "ca3eb9cc9dcd0362b449ffd4494b2fbc",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{3}" } }
+      ]
+    }
+  ]
+}

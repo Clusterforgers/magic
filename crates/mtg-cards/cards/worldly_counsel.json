@@ -1,0 +1,38 @@
+{
+  "oracle_id": "079b1f07-6910-491b-83ba-5ec41260f32d",
+  "name": "Worldly Counsel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldly Counsel",
+      "oracle_fingerprint": "d57726f7016e3a0a91f66e070e23eb5e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b1f441ce-7619-4ab5-ab36-724ed0a76728",
+  "name": "Bloodcrazed Hoplite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodcrazed Hoplite",
+      "oracle_fingerprint": "fce072e0e7b5c98bf46552f37dc471cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "RemoveCounters": { "from": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

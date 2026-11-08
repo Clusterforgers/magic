@@ -1,0 +1,19 @@
+{
+  "oracle_id": "df197279-ddb2-4237-8bb1-8df41d3bed9e",
+  "name": "Ensnare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ensnare",
+      "oracle_fingerprint": "78bce185e2a8dc75cc11ed3c17324b80",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [{ "ReturnToHand": { "filter": [{ "Subtype": "Island" }], "count": 2 } }]
+          }
+        },
+        { "Spell": { "effects": [{ "Tap": { "what": { "Each": [{ "Type": "Creature" }] } } }] } }
+      ]
+    }
+  ]
+}

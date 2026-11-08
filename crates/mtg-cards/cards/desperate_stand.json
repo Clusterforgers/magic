@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f8252564-3e61-4ed5-bef1-6ec22882854b",
+  "name": "Desperate Stand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desperate Stand",
+      "oracle_fingerprint": "80b5bf21d132b9022d12add72aa5886f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{W}{R}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

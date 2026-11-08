@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e3d08582-85ba-48c4-a453-4a5a385a0c3e",
+  "name": "Sadistic Sacrament",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sadistic Sacrament",
+      "oracle_fingerprint": "2496c202935f739936817f96265d2d19",
+      "abilities": [
+        { "Keyword": { "Kicker": "{7}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [],
+                  "count": {
+                    "min": 0,
+                    "max": { "When": { "condition": "Kicked", "then": 15, "otherwise": 3 } }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

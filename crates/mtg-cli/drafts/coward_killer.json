@@ -1,0 +1,60 @@
+{
+  "oracle_id": "21591447-c045-4317-8d0e-705627aa157b",
+  "name": "Coward // Killer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coward",
+      "oracle_fingerprint": "34919a108dd3e7ed1f7cc0975903e901",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Coward" }, "CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "TimeTravel": {} }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Killer",
+      "oracle_fingerprint": "2ca7443d718966cc6f0ecbd8849585e1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "Is": { "Target": 0 } } },
+                            { "SharesSubtype": { "Target": 0 } }
+                          ]
+                        },
+                        "amount": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

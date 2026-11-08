@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ac5487ba-6d6e-47ee-ae29-776e186789cc",
+  "name": "Captive Weird // Compleated Conjurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captive Weird",
+      "oracle_fingerprint": "61eb8f50feb3a66cb86fd8b2a89c4fc9",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{3}{R/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Compleated Conjurer",
+      "oracle_fingerprint": "191e7be95b07105d8f48e90747660555",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

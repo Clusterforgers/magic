@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0d3617c3-1526-40e6-bc90-6139b5d3e1f1",
+  "name": "Opal Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal Champion",
+      "oracle_fingerprint": "45933896d9e35ddb74095cf73e7effc8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Knight"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

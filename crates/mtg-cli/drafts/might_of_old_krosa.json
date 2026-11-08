@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b50a6db0-16ce-4e98-afbd-ec37e1653e7c",
+  "name": "Might of Old Krosa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Might of Old Krosa",
+      "oracle_fingerprint": "09495a1379c519d4cb985c7ea8e2c875",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "All": [
+                                "YourTurn",
+                                { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }
+                              ]
+                            },
+                            "then": 4,
+                            "otherwise": 2
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "All": [
+                                "YourTurn",
+                                { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }
+                              ]
+                            },
+                            "then": 4,
+                            "otherwise": 2
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

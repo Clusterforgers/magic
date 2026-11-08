@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cde68428-0033-4ede-92f1-ab91de0a41fb",
+  "name": "Rustic Clachan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rustic Clachan",
+      "oracle_fingerprint": "0f5123e0e3949fffd4809139d826afc5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Kithkin" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

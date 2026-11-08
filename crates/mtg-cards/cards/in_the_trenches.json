@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1612a08f-fc1f-45cf-ae03-5f021a46869d",
+  "name": "In the Trenches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In the Trenches",
+      "oracle_fingerprint": "47da1f8df83a516e35ebaa3a548bbcb5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{W}",
+            "timing": "Sorcery",
+            "limit": "OncePerGame",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "Not": { "ControlledBy": "You" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

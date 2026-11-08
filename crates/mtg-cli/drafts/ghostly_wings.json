@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b07d8095-c5e2-4bf8-b055-af97ce5df4a4",
+  "name": "Ghostly Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostly Wings",
+      "oracle_fingerprint": "95c5c30bda5899ead660129796a1e0af",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [{ "Move": { "what": "Attached", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

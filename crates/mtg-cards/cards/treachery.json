@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8ed57194-7508-4aef-9373-64f7e80612d8",
+  "name": "Treachery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treachery",
+      "oracle_fingerprint": "b00c6816d80a4580f2eabe0253aff43f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": { "min": 0, "max": 5 },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

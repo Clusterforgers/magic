@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e3d7cea4-0d4c-4320-966d-17ef69b5e433",
+  "name": "Edgewall Innkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Edgewall Innkeeper",
+      "oracle_fingerprint": "d1f7acc9fbbd66f9dbdc0843d48eb450",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Type": "Creature" }, "HasAdventure"], "by": "You" }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

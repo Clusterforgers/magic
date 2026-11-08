@@ -1,0 +1,42 @@
+{
+  "oracle_id": "3c889b2e-380a-4bc4-8d56-5fb12bc7c78b",
+  "name": "Nyxathid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyxathid",
+      "oracle_fingerprint": "31a2f7c7d62bc50edf2a981a09b928d3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Count": [{ "OwnedBy": "Chosen" }, { "In": "Hand" }] }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Count": [{ "OwnedBy": "Chosen" }, { "In": "Hand" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

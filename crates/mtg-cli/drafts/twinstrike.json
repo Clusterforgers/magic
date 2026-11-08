@@ -1,0 +1,46 @@
+{
+  "oracle_id": "6d890c2a-2ed7-429d-a2b2-d261397f838d",
+  "name": "Twinstrike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinstrike",
+      "oracle_fingerprint": "ba6f14c3085aa28b8a554b0af8360a98",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

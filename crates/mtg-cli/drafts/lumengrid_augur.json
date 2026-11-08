@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d5409a7c-b928-4819-a560-e80226cf61f0",
+  "name": "Lumengrid Augur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lumengrid Augur",
+      "oracle_fingerprint": "b0efd16002982bd6b891f85060a1ddd0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 } } },
+              { "Discard": { "who": { "Target": 0 }, "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Untap": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

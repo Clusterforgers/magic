@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5f9ef763-22aa-4d43-b084-ef02465b489c",
+  "name": "Dynamite Diver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dynamite Diver",
+      "oracle_fingerprint": "e84754cd3b967bc9f2fc5a5662c34133",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bcaf3f32-c4e5-4d39-be98-bfc00327021b",
+  "name": "Ezuri's Archers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ezuri's Archers",
+      "oracle_fingerprint": "5cb789069c7f3d5e0eba94f8f4e87dfc",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

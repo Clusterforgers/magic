@@ -1,0 +1,41 @@
+{
+  "oracle_id": "bd5478df-3854-404b-8634-9debcef69b99",
+  "name": "Gaea's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaea's Blessing",
+      "oracle_fingerprint": "bf59f439e3551ec04bf1829a215d4929",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Shuffled" } } } },
+              { "Draw": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Library", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

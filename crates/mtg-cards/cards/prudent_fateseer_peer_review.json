@@ -1,0 +1,60 @@
+{
+  "oracle_id": "63f67baa-3f37-41b8-9ee6-3c37f828917d",
+  "name": "Prudent Fateseer // Peer Review",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prudent Fateseer",
+      "oracle_fingerprint": "4f939c3d8a674da15fdd4502fff8042a",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Scried", "who": "You" } },
+                { "Did": { "action": "Surveilled", "who": "You" } }
+              ]
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Peer Review",
+      "oracle_fingerprint": "dcd26564a7ce37dfadfd902c1064f895",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cadet",
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard", "Soldier"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              { "Surveil": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "594827de-e85f-4aac-b0e6-d92878f0f26c",
+  "name": "Winter Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter Blast",
+      "oracle_fingerprint": "17a71948215eef9d30e650e747a525fb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Is": { "Target": 0 } }, { "HasKeyword": "Flying" }] },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

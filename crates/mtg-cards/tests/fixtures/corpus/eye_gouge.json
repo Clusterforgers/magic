@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "94d4eb34-0529-48a0-ac52-b57cead7b651",
+  "oracle_id": "89661ef9-cb42-401a-ae45-b57bb8dac033",
+  "multiverse_ids": [
+    378439
+  ],
+  "mtgo_id": 51611,
+  "mtgo_foil_id": 51612,
+  "tcgplayer_id": 79102,
+  "cardmarket_id": 265876,
+  "name": "Eye Gouge",
+  "lang": "en",
+  "released_at": "2014-02-07",
+  "uri": "https://api.scryfall.com/cards/94d4eb34-0529-48a0-ac52-b57cead7b651",
+  "scryfall_uri": "https://scryfall.com/card/bng/67/eye-gouge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:45:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.jpg?1783939559",
+    "normal": "https://cards.scryfall.io/normal/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.jpg?1783939559",
+    "large": "https://cards.scryfall.io/large/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.jpg?1783939559",
+    "png": "https://cards.scryfall.io/png/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.png?1783939559",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.jpg?1783939559",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.jpg?1783939559",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.webp?1783939559",
+    "grid": "https://cards.scryfall.io/grid/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.webp?1783939559",
+    "display": "https://cards.scryfall.io/display/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.webp?1783939559",
+    "art": "https://cards.scryfall.io/art/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.webp?1783939559",
+    "crop": "https://cards.scryfall.io/crop/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.webp?1783939559",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/4/94d4eb34-0529-48a0-ac52-b57cead7b651.jpg?1783939559"
+  },
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature gets -1/-1 until end of turn. If it's a Cyclops, destroy it.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "50a80fe4-a757-408f-ad23-52c5cc5f45cc",
+  "set": "bng",
+  "set_name": "Born of the Gods",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/50a80fe4-a757-408f-ad23-52c5cc5f45cc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abng&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bng?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/94d4eb34-0529-48a0-ac52-b57cead7b651/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A89661ef9-cb42-401a-ae45-b57bb8dac033&unique=prints",
+  "collector_number": "67",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "One chance. One throw. One perfect hit.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tyler Jacobson",
+  "artist_ids": [
+    "522af130-8db4-4b4b-950c-6e2b246339cf"
+  ],
+  "illustration_id": "41c62169-8956-48cf-820f-efc3faaa09c0",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28975,
+  "prices": {
+    "usd": "0.08",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.18",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=378439&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEye%2BGouge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEye%2BGouge",
+    "edhrec": "https://edhrec.com/route/?cc=Eye+Gouge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F79102%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=265876&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/51611?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

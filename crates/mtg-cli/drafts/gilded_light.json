@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f7e7b2aa-9fd2-41dd-b11e-3a233530dc83",
+  "name": "Gilded Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilded Light",
+      "oracle_fingerprint": "54105a85d30755b56d5f19cb72ca2653",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "PlayersHave": { "who": "You", "keyword": "Shroud" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a9564593-b5a6-4a83-be1e-2af8caf647d7",
+  "name": "Daring Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daring Discovery",
+      "oracle_fingerprint": "f5c4be3e5f392ad3db35e6505a26fde5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 3 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

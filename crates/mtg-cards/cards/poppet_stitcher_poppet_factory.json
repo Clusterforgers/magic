@@ -1,0 +1,71 @@
+{
+  "oracle_id": "bc2d0702-b140-4b78-8a8f-3a6d19073b59",
+  "name": "Poppet Stitcher // Poppet Factory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poppet Stitcher",
+      "oracle_fingerprint": "28862e55c19724384957ebdfe021dfb6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Poppet Factory",
+      "oracle_fingerprint": "697261ca36aab82f58dcfa0e11f5b28f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }, "LoseAbilities"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "May": { "effects": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

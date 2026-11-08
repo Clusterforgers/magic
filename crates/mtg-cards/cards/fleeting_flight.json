@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6336401f-4e2d-4ebe-8c5b-24aa6f516abf",
+  "name": "Fleeting Flight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleeting Flight",
+      "oracle_fingerprint": "dd314faec690f65981dac22f2420591f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 }, "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

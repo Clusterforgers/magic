@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9307f7e9-bcd9-41f9-88f8-0fb9700a6b12",
+  "name": "Raffine, Scheming Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raffine, Scheming Seer",
+      "oracle_fingerprint": "e19ce6f70b827cee92c35bbb9faf4ac3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Connive": {
+                  "what": { "Target": 0 },
+                  "count": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "636e9863-29ac-476a-86db-d8f73b4adbf4",
+  "name": "Qal Sisma Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Qal Sisma Behemoth",
+      "oracle_fingerprint": "b0df89e9daf9f956d84e77d57ea22b13",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": [{ "Is": "This" }],
+                "mana": "{2}"
+              }
+            }
+          }
+        },
+        { "Rule": { "rule": { "BlockTax": { "blockers": ["This"], "mana": "{2}" } } } }
+      ]
+    }
+  ]
+}

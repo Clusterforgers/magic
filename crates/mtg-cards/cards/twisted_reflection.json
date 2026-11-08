@@ -1,0 +1,50 @@
+{
+  "oracle_id": "57fdf496-c31e-4a3b-a8a6-4f053b808267",
+  "name": "Twisted Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twisted Reflection",
+      "oracle_fingerprint": "93c8370bfb8282859c128b5e189aca68",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -6, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["SwitchPT"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{B}" } }
+      ]
+    }
+  ]
+}

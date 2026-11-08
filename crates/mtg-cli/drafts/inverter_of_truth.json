@@ -1,0 +1,34 @@
+{
+  "oracle_id": "941350ba-30e2-4549-865f-ca1bd7626782",
+  "name": "Inverter of Truth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inverter of Truth",
+      "oracle_fingerprint": "be6fa672a172088e7cc8bec30bbb7eb6",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Library" }] },
+                  "sealed": true
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

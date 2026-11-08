@@ -1,0 +1,29 @@
+{
+  "oracle_id": "69c69d69-3565-4d9c-82c0-a96d0fb80513",
+  "name": "Roterothopter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roterothopter",
+      "oracle_fingerprint": "743a2a3cf3efc0394b2dcc0d0395162c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "limit": { "TimesPerTurn": 2 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

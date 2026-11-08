@@ -1,0 +1,31 @@
+{
+  "oracle_id": "644b7aba-a7b8-4861-9e83-73329cf85be2",
+  "name": "Outrider en-Kor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outrider en-Kor",
+      "oracle_fingerprint": "2609581f7b2bc30cce7352a6313f1d0f",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

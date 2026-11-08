@@ -1,0 +1,27 @@
+{
+  "oracle_id": "16128b90-9b81-476e-8999-3ef498728c39",
+  "name": "Cinder Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinder Wall",
+      "oracle_fingerprint": "d49b3ad01010461ac6b478baa39d23f8",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

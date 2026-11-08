@@ -1,0 +1,51 @@
+{
+  "oracle_id": "20c9fb06-3941-456f-ba02-4fbde9deb1e2",
+  "name": "Selfless Samurai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selfless Samurai",
+      "oracle_fingerprint": "ed74cb019215c17e56263cf1eb61892a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

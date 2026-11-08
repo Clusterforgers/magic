@@ -1,0 +1,49 @@
+{
+  "oracle_id": "2a3b29c3-f69d-4671-8907-600d21528153",
+  "name": "Magmatic Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmatic Hellkite",
+      "oracle_fingerprint": "352232c0653878d79fad7c347047a440",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Search": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": {
+                    "Battlefield": { "tapped": true, "counters": [[{ "Other": "stun" }, 1]] }
+                  }
+                }
+              },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

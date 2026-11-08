@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3271e3b9-1710-4dfe-a381-00a3ee1032b2",
+  "name": "Overgrowth Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overgrowth Elemental",
+      "oracle_fingerprint": "2c80976bd373f3391f76914768b4ce66",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Elemental" }, "Other", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Subtype": "Elemental" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

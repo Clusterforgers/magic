@@ -1,0 +1,32 @@
+{
+  "oracle_id": "426dbe89-0cbb-4a3b-8812-d9761d063373",
+  "name": "Wax-Wane Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wax-Wane Witness",
+      "oracle_fingerprint": "f5e057c28829dac349d39aea7b13cfb5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "LifeGained": { "who": "You" } }, { "LifeLost": { "who": "You" } }]
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "36af3c2c-49d7-46ea-ab02-c254b332448e",
+  "name": "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eirdu, Carrier of Dawn",
+      "oracle_fingerprint": "eb89f4a68c586458c6a493c555a79aa4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{B}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Isilu, Carrier of Twilight",
+      "oracle_fingerprint": "de8af310060789e129a9e48d5a02493e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Not": "Token" },
+                "Other"
+              ]
+            },
+            "mods": [{ "AddKeyword": "Persist" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{W}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

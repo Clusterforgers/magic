@@ -1,0 +1,43 @@
+{
+  "oracle_id": "496e0fbb-cb01-41d6-9c56-23e3ae2bb4f7",
+  "name": "Myr Prototype",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Prototype",
+      "oracle_fingerprint": "d6e6c8e6902b2677cdb6430fab0826d9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": [{ "Is": "This" }],
+                "mana": "{1}",
+                "per": { "Counters": { "on": "This", "counter": "+1/+1" } }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "BlockTax": {
+                "blockers": ["This"],
+                "mana": "{1}",
+                "per": { "Counters": { "on": "This", "counter": "+1/+1" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

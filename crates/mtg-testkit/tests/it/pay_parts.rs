@@ -14,7 +14,7 @@ use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, GameSetup, replay};
-use mtg_testkit::cards::{forest, free_creature};
+use mtg_testkit::cards::{forest, free_creature, plains};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, with_counters};
 use rstest::rstest;
 
@@ -109,6 +109,19 @@ fn hand(driver: &Driver) -> usize {
     Scenario::new(2),
     1
 )]
+#[case::sacrificing_the_source(
+    r#"["SacrificeSelf"]"#,
+    "Sacrifice this permanent?",
+    Scenario::new(2),
+    0
+)]
+#[case::exiling_the_source(r#"["ExileSelf"]"#, "Exile this?", Scenario::new(2), 0)]
+#[case::mana_and_sacrificing_the_source(
+    r#"[{"Mana":"{1}"},"SacrificeSelf"]"#,
+    "Pay {1}, sacrifice this permanent?",
+    Scenario::new(2),
+    1
+)]
 #[case::mana_and_a_return(
     r#"[{"Mana":"{1}"},{"ReturnToHand":{"filter":[{"Type":"Land"}]}}]"#,
     "Pay {1}, return a land you control to its owner's hand?",
@@ -142,6 +155,29 @@ fn a_player_who_can_pay_is_asked_in_the_words_of_the_cost_and_pays_it_all(
         }
     }
     settle(&mut driver)?;
+    let named = |zone| -> Vec<String> {
+        driver
+            .state()
+            .zone(zone)
+            .iter()
+            .map(|id| name_of(driver.state(), *id))
+            .collect()
+    };
+    // The source is lost with the payment, to the zone the cost names.
+    let (sacrificed, exiled) = (
+        cost.contains("\"SacrificeSelf\""),
+        cost.contains("\"ExileSelf\""),
+    );
+    let sacrificed = sacrificed || cost.contains("\"Sacrifice\"");
+    assert_eq!(
+        named(Zone::Graveyard(pid(0))).contains(&"Taxed".to_owned()),
+        sacrificed
+    );
+    assert_eq!(named(Zone::Exile).contains(&"Taxed".to_owned()), exiled);
+    assert_eq!(
+        named(Zone::Battlefield).contains(&"Taxed".to_owned()),
+        !sacrificed && !exiled
+    );
     // The card the paid effect draws, less the one discarded, plus the land returned.
     let returned = usize::from(cost.contains("ReturnToHand"));
     assert_eq!(
@@ -310,5 +346,81 @@ fn the_picks_are_asked_with_the_cards_that_can_be_taken_and_the_discard_is_publi
         .filter(|event| matches!(event, mtg_engine::Event::CardDiscarded { .. }))
         .count();
     assert_eq!(discarded, 2, "{names:?}");
+    Ok(())
+}
+
+/// Collecting evidence 4 from a graveyard of cards with these mana values: whether the player is asked which to exile.
+#[rstest]
+#[case::two_cards_that_make_exactly_four(&[2, 2], false)]
+#[case::a_pair_worth_more(&[3, 2], true)]
+#[case::one_card_worth_enough(&[5], false)]
+#[case::three_cards_with_a_choice(&[2, 2, 1], true)]
+fn evidence_is_collected_by_total_mana_value_and_not_by_the_number_of_cards(
+    #[case] values: &[u32],
+    #[case] asks: bool,
+) -> Result<(), ScriptError> {
+    let graveyard: Vec<_> = values
+        .iter()
+        .enumerate()
+        .map(|(at, value)| mtg_testkit::cards::creature(&format!("Grave {at}"), *value, &[], 1, 1))
+        .collect();
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .graveyard(0, graveyard)
+            .battlefield(0, [ready(taxed(r#"[{"CollectEvidence":4}]"#))]),
+    )?;
+    let (life_before, hand_before) = (life(&driver), hand(&driver));
+    until_asked(&mut driver)?;
+    assert!(!asked(&driver).1, "the evidence can be collected");
+    driver.answer(yes_no(true))?;
+    if asks {
+        let DecisionKind::ChooseCards(options) = &driver.decision()?.kind else {
+            panic!("the picks were expected");
+        };
+        // The player may take every card offered: the total is what counts.
+        let all: Vec<_> = options.from.clone();
+        assert!(options.min <= 1 && options.max as usize == all.len());
+        driver.answer(Answer::ChooseCards(CardsChoice(all)))?;
+    }
+    settle(&mut driver)?;
+    assert_eq!(hand(&driver), hand_before + 1, "paid: the card is drawn");
+    assert_eq!(life(&driver), life_before);
+    let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
+    assert_eq!(state.state_hash(), driver.state().state_hash());
+    Ok(())
+}
+
+#[rstest]
+#[case::sacrificing_the_source(r#"["SacrificeSelf"]"#)]
+#[case::exiling_the_source(r#"["ExileSelf"]"#)]
+fn a_source_that_became_a_new_object_cannot_be_paid_with(
+    #[case] cost: &str,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(2)
+        .battlefield(0, [ready(taxed(cost)), ready(plains())])
+        .hand(0, [mtg_testkit::corpus::card("Cloudshift").unwrap()]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let before = life(&driver);
+    driver.begin_activation("Taxed")?;
+    // The ability waits on the stack; the source is flickered in response and returns as a new object (CR 400.7).
+    let target = driver.target_named("Taxed")?;
+    driver.cast_at("Cloudshift", &[target])?;
+    while !driver.state().stack().is_empty() {
+        match &driver.decision()?.kind {
+            DecisionKind::YesNo(options) => {
+                assert!(options.only_no, "the old object cannot be paid with");
+                driver.answer(yes_no(false))?;
+            }
+            _ => {
+                driver.pass()?;
+            }
+        }
+    }
+    let taxed = driver.id_of("Taxed")?;
+    assert_eq!(
+        driver.state().object(taxed).unwrap().zone(),
+        Zone::Battlefield
+    );
+    assert_eq!(life(&driver), before + 1, "unpaid");
     Ok(())
 }

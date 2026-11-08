@@ -99,6 +99,10 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Spell":{"effects":[{"Discard":{}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
     &["Ability.Spell", "Condition.Performed", "Condition.Performed.Other", "Effect.Discard", "Effect.Draw", "Effect.If"]
 )]
+#[case::if_you_do_not_exile(
+    r#"{"Spell":{"effects":[{"Exile":{"what":"This"}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Condition.Performed", "Effect.Draw", "Effect.Exile", "Effect.If"]
+)]
 #[case::the_monarch(
     r#"{"Spell":{"effects":[{"If":{"condition":{"Monarch":"You"},"then":[{"Draw":{}}]}}]}}"#,
     &["Ability.Spell", "Condition.Monarch", "Effect.Draw", "Effect.If"]
@@ -184,8 +188,8 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     &["Ability.Triggered", "Effect.Draw", "Trigger.BecomesTarget", "Trigger.Nth"]
 )]
 #[case::the_first_damage_to_an_object_in_a_turn(
-    r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
-    &["Ability.Triggered", "Effect.Draw", "Trigger.DealsDamage", "Trigger.Nth"]
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Batch", "Trigger.DealsDamage", "Trigger.Nth"]
 )]
 #[case::the_first_life_lost_in_a_turn(
     r#"{"Triggered":{"when":{"Nth":{"event":{"LifeLost":{"who":"You"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
@@ -255,6 +259,35 @@ fn a_node_validates_round_trips_and_names_its_primitive(
     let ability: Ability = serde_json::from_str(json).unwrap();
     assert_eq!(serde_json::to_string(&ability).unwrap(), json);
     assert_eq!(used_primitives(&ability), names(expected));
+}
+
+#[rstest]
+#[case::what_an_attacker_attacks(
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"DealDamage":{"to":"Against","amount":1}}]}}"#
+)]
+#[case::the_blocker_and_the_attacker_of_a_block(
+    r#"{"Triggered":{"when":{"Blocks":{"what":[]}},"effects":[{"DealDamage":{"to":"Against","amount":1}},{"LoseLife":{"who":{"ControllerOf":"Dealer"},"amount":1}}]}}"#
+)]
+#[case::a_delayed_block_names_its_blocker(
+    r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"Blocks":{"what":[]}},"effects":[{"LoseLife":{"who":{"ControllerOf":"Dealer"},"amount":1}}]}}]}}"#
+)]
+#[case::the_card_an_object_became(
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":{"Arrived":{"of":"This","zone":"Graveyard"}},"to":"Hand"}}]}}"#
+)]
+#[case::the_spells_of_the_last_turn(
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"if":{"Compare":{"left":{"CastLastTurn":"EachPlayer"},"op":"Ge","right":2}},"effects":[{"Draw":{}}]}}"#
+)]
+fn the_words_of_the_event_facts_validate_in_a_trigger(#[case] json: &str) {
+    assert_eq!(load(json), Ok(()));
+}
+
+#[rstest]
+#[case::against_in_a_spell(r#"{"Spell":{"effects":[{"DealDamage":{"to":"Against","amount":1}}]}}"#)]
+#[case::arrived_of_the_event_in_a_spell(
+    r#"{"Spell":{"effects":[{"Move":{"what":{"Arrived":{"of":"Triggering","zone":"Graveyard"}},"to":"Hand"}}]}}"#
+)]
+fn an_event_word_outside_a_trigger_is_refused(#[case] json: &str) {
+    assert!(load(json).is_err());
 }
 
 #[rstest]

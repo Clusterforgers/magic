@@ -1,0 +1,60 @@
+{
+  "oracle_id": "3c7ffc6c-88be-4127-a673-fba8c1aa5fa1",
+  "name": "Auratouched Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auratouched Mage",
+      "oracle_fingerprint": "06557d0358bd0c309d86828cc6293579",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Aura" }, "CanEnchantSource"],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "BattlefieldAttached": { "to": "This" } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Count": ["This"] }, "op": "Le", "right": 0 }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Aura" }, "CanEnchantSource"],
+                        "reveal": true,
+                        "as": "found2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

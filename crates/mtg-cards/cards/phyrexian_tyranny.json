@@ -1,0 +1,27 @@
+{
+  "oracle_id": "55082cd0-a33c-4f1d-9f46-9578f63e6bb6",
+  "name": "Phyrexian Tyranny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Tyranny",
+      "oracle_fingerprint": "839f35abe5477323d0debaa79404b1a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": {} },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "unpaid": [{ "LoseLife": { "who": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

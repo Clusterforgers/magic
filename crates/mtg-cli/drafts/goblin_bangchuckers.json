@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f2561cc9-3840-4bd7-ad8b-a85d35e47f71",
+  "name": "Goblin Bangchuckers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Bangchuckers",
+      "oracle_fingerprint": "97847529c6896ba9c3963a9d04040de6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }],
+                  "lose": [{ "DealDamage": { "to": "This", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

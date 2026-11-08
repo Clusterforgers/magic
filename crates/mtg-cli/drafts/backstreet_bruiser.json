@@ -1,0 +1,28 @@
+{
+  "oracle_id": "354d9db1-18a6-4701-be3c-c4ded900e2ff",
+  "name": "Backstreet Bruiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Backstreet Bruiser",
+      "oracle_fingerprint": "dd2e33f794bd261fa6b39c7e26cbba1b",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "AnyCounters": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

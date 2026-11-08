@@ -1,0 +1,23 @@
+{
+  "oracle_id": "412294bf-a25f-47c2-8043-12eb3e142b9e",
+  "name": "Cephalid Looter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Looter",
+      "oracle_fingerprint": "087967fd43c40a0f593c449f4bddfe07",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 } } },
+              { "Discard": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

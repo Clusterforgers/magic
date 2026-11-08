@@ -11,7 +11,7 @@ use crate::ability::Ability;
 use crate::cost::{Cost, CostItem};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
-use crate::value::Amount;
+use crate::value::{Amount, CounterKind};
 use mtg_core::card::Subtype;
 
 /// The parts of a cost, separated by commas: `{T}`, `{Q}`, a run of mana symbols, "Pay 2 life",
@@ -120,6 +120,9 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("mill") {
         return cards(r).map(CostItem::Mill);
     }
+    if r.word("put") {
+        return r.attempt(blight).or_else(|| put_on_source(r));
+    }
     r.need("sacrifice")?;
     if r.source() {
         return Some(CostItem::SacrificeSelf);
@@ -201,14 +204,22 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     Some(if from_hand {
         CostItem::ExileFromHand { filter, count }
     } else {
-        CostItem::ExileFromGraveyard { filter, count }
+        CostItem::ExileFromGraveyard {
+            filter,
+            any_player: false,
+            count,
+        }
     })
 }
 
-/// "Reveal a creature card from your hand", "Reveal a Giant card from your hand": the card stays in the hand.
+/// "Reveal a creature card from your hand", "Reveal a Giant card from your hand", the morph cost "Reveal a white card in
+/// your hand": the card stays in the hand.
 fn reveal(r: &mut Reader<'_>) -> Option<CostItem> {
     let (form, count) = how_many(r)?;
-    let mut filter = phrase(r, form)?;
+    // A count reads "in your hand" where a subject reads "from your hand".
+    let mut filter = r
+        .attempt(|r| phrase(r, form))
+        .or_else(|| phrase(r, Form::Count))?;
     without(&mut filter, &Pred::In(ZoneKind::Hand))?;
     without(&mut filter, &Pred::OwnedBy(Ref::You))?;
     Some(CostItem::RevealFromHand {
@@ -217,19 +228,49 @@ fn reveal(r: &mut Reader<'_>) -> Option<CostItem> {
     })
 }
 
-/// "Return a land you control to its owner's hand".
+/// "Return a land you control to its owner's hand", "Return two Islands you control to their owner's hand".
 fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
-    (r.word("a") || r.word("an")).then_some(())?;
-    let mut filter = phrase(r, Form::Subject)?;
+    let (form, count) = how_many(r)?;
+    (count != Amount::X).then_some(())?;
+    let mut filter = phrase(r, form)?;
     without(&mut filter, &Pred::ControlledBy(Ref::You))?;
-    r.words("to its owner's hand").then_some(())?;
+    let owner = if count == Amount::one() {
+        "to its owner's hand"
+    } else {
+        "to their owner's hand"
+    };
+    r.words(owner).then_some(())?;
     Some(CostItem::ReturnToHand {
         filter: kinds_only(filter)?,
-        count: Amount::one(),
+        count,
     })
 }
 
 /// "Remove a charge counter from ~": counters of the card itself.
+/// "Put a -1/-1 counter on a creature you control": blight 1 (CR 701.66), the payer picks the creature.
+fn blight(r: &mut Reader<'_>) -> Option<CostItem> {
+    let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
+    (counter == Some(CounterKind::MinusOneMinusOne) && count == Amount::one()).then_some(())?;
+    r.need("on a creature you control")?;
+    Some(CostItem::Blight(count))
+}
+
+/// "Put a -0/-1 counter on this creature": counters of a kind put on the source.
+fn put_on_source(r: &mut Reader<'_>) -> Option<CostItem> {
+    let number = super::amounts::number_word(r.take_word()?)?;
+    let counter = r
+        .attempt(super::counters::sized)
+        .or_else(|| r.attempt(super::counters::kind))?;
+    r.word(if number == 1 { "counter" } else { "counters" })
+        .then_some(())?;
+    r.need("on")?;
+    r.source().then_some(())?;
+    Some(CostItem::PutCounters {
+        counter,
+        count: Amount::Fixed(i32::try_from(number).ok()?),
+    })
+}
+
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
     let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
     r.need("from")?;
@@ -384,6 +425,13 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
+        CostItem::Exert => "Exert ~".to_owned(),
+        CostItem::PutCounters { counter, count } => {
+            format!("Put {} on ~", w2f_text(Some(counter), count)?)
+        }
+        CostItem::Blight(Amount::Fixed(1)) => {
+            "Put a -1/-1 counter on a creature you control".to_owned()
+        }
         CostItem::Sacrifice { filter, count } => sacrifice_text(filter, count)?,
         CostItem::Discard {
             count,
@@ -400,7 +448,11 @@ fn item_text(item: &CostItem) -> Option<String> {
             format!("Discard {}", text.strip_suffix(" from your hand")?)
         }
         CostItem::TapPermanents { filter, count } => tap_text(filter, count)?,
-        CostItem::ExileFromGraveyard { filter, count } => {
+        CostItem::ExileFromGraveyard {
+            filter,
+            count,
+            any_player: false,
+        } => {
             let mut said = filter.clone();
             said.0
                 .extend([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
@@ -437,7 +489,10 @@ fn item_text(item: &CostItem) -> Option<String> {
             from: Some(from),
         } => {
             let mut said = from.clone();
-            said.0.push(Pred::ControlledBy(Ref::You));
+            // The payer's own permanents, said once whether or not the filter names the controller.
+            if !said.0.contains(&Pred::ControlledBy(Ref::You)) {
+                said.0.push(Pred::ControlledBy(Ref::You));
+            }
             format!(
                 "Remove {} from {}",
                 w2f_text(counter.as_ref(), count)?,
@@ -618,8 +673,20 @@ pub(super) fn lowered(text: &str) -> String {
         .unwrap_or_default()
 }
 
+/// The sentences an additional cost is written as: the cost's own words, and "blight N" for a blight alone (CR 701.66).
+pub(super) fn additional_texts(cost: &Cost, required: bool) -> Vec<String> {
+    let mut out: Vec<String> = additional_text(cost, required).into_iter().collect();
+    if let [CostItem::Blight(Amount::Fixed(count @ 1..))] = cost.0.as_slice() {
+        let may = if required { "" } else { "you may " };
+        out.push(format!(
+            "As an additional cost to cast ~, {may}blight {count}."
+        ));
+    }
+    out
+}
+
 /// The sentence an additional cost is written as; `None` for a cost the readers do not write.
-pub(super) fn additional_text(cost: &Cost, required: bool) -> Option<String> {
+fn additional_text(cost: &Cost, required: bool) -> Option<String> {
     let body = if let [CostItem::Mana(mana)] = cost.0.as_slice() {
         // The reader takes a cost of mana alone only after "you may".
         (!required).then(|| format!("pay {mana}"))?

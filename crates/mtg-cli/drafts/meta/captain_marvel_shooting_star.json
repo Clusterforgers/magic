@@ -1,0 +1,68 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Flying",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever NICKNAME enters or attacks, exile up to one target creature. That creature's controller gains life equal to its power.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever NICKNAME enters or attacks, exile up to one target creature. That creature's controller gains life equal to its power.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature other than NICKNAME is exiled from the battlefield, you gain life equal to its power.",
+      "abilities": [],
+      "gap": "key:Trigger.Exiled.Origin"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 6
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 7,
+          "end": 140
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 141,
+          "end": 252
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

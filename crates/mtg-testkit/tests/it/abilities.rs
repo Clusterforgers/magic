@@ -272,6 +272,7 @@ fn thumper() -> Arc<CardDefinition> {
                 timing: Timing::Instant,
                 condition: None,
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: vec![TargetSpec {
                     what: Targetable::AnyTarget,
@@ -279,6 +280,8 @@ fn thumper() -> Arc<CardDefinition> {
                     divide: None,
                 }],
                 effects: vec![Effect::DealDamage {
+                    excess: None,
+                    unpreventable: false,
                     source: None,
                     to: Ref::Target(0),
                     amount: Amount::Stat {

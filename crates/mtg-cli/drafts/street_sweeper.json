@@ -10,8 +10,14 @@
         {
           "Triggered": {
             "when": { "Attacks": { "what": ["This"] } },
-            "targets": [{ "what": "AnyTarget" }],
-            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Subtype": "Aura" }, { "AttachedTo": { "Target": 0 } }] }
+                }
+              }
+            ]
           }
         }
       ]

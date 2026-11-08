@@ -1,0 +1,32 @@
+{
+  "oracle_id": "59b869b9-cb48-4152-ad91-52f582e2df5b",
+  "name": "Comparative Analysis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Comparative Analysis",
+      "oracle_fingerprint": "1415064e7993d1b8e1ac50fd27cde676",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{2}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

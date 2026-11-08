@@ -1,0 +1,61 @@
+{
+  "oracle_id": "f9489831-a9a2-47ab-abae-2f389c9fae2c",
+  "name": "Gideon's Phalanx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon's Phalanx",
+      "oracle_fingerprint": "4ca21ca1151681adc02e0a284edd87ad",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": 4
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

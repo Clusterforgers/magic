@@ -1,0 +1,40 @@
+{
+  "oracle_id": "6d56bd32-f47a-4e54-a88e-b69d16283ea4",
+  "name": "Dazzling Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dazzling Denial",
+      "oracle_fingerprint": "c055da25a586d83f81170477630ac110",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "Subtype": "Bird" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 2
+                    }
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

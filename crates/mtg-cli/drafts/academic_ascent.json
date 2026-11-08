@@ -1,0 +1,73 @@
+{
+  "oracle_id": "406e853b-713f-4c89-9efb-aca74a11183f",
+  "name": "Academic Ascent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academic Ascent",
+      "oracle_fingerprint": "9f2dd2d539539836e4dde7d63a4e9c5f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Jace",
+                            "colors": ["Blue"],
+                            "types": ["Planeswalker"],
+                            "subtypes": ["Jace"],
+                            "abilities": [
+                              {
+                                "Loyalty": {
+                                  "cost": { "Minus": 1 },
+                                  "effects": [{ "Surveil": {} }]
+                                }
+                              },
+                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "jace"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "jace" }, "counter": "loyalty", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

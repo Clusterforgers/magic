@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ea8a552d-c325-46ed-ae9b-f7f58a39e56a",
+  "name": "Kindred Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindred Denial",
+      "oracle_fingerprint": "d4d723c2261e70b81b84585aba5cad52",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "RememberValue": {
+                  "value": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "slot": "remembered_number"
+                }
+              },
+              {
+                "Seek": {
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

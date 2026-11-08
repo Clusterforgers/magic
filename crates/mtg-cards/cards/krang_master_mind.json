@@ -1,0 +1,56 @@
+{
+  "oracle_id": "52562194-4a97-40d2-aa73-7827f7834f2f",
+  "name": "Krang, Master Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krang, Master Mind",
+      "oracle_fingerprint": "8e544e6064f6cbbb24ef1a3c58c5c586",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Lt",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      4,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }] },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

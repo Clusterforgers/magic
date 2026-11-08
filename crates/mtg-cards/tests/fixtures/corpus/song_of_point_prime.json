@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "117d02a6-3024-490e-a9b0-d81262f69f1d",
+  "oracle_id": "808ad690-202a-4adf-b38a-499e144f8c06",
+  "multiverse_ids": [],
+  "name": "Song of Point Prime",
+  "lang": "en",
+  "released_at": "2025-08-19",
+  "uri": "https://api.scryfall.com/cards/117d02a6-3024-490e-a9b0-d81262f69f1d",
+  "scryfall_uri": "https://scryfall.com/card/yeoe/12/song-of-point-prime?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:20:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.jpg?1783905614",
+    "normal": "https://cards.scryfall.io/normal/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.jpg?1783905614",
+    "large": "https://cards.scryfall.io/large/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.jpg?1783905614",
+    "png": "https://cards.scryfall.io/png/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.png?1783905614",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.jpg?1783905614",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.jpg?1783905614",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.webp?1783905614",
+    "grid": "https://cards.scryfall.io/grid/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.webp?1783905614",
+    "display": "https://cards.scryfall.io/display/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.webp?1783905614",
+    "art": "https://cards.scryfall.io/art/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.webp?1783905614",
+    "crop": "https://cards.scryfall.io/crop/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.webp?1783905614",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/1/117d02a6-3024-490e-a9b0-d81262f69f1d.jpg?1783905614"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each opponent sacrifices a creature of their choice.\nConjure a card named Cantor of the Refrain into your graveyard.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Conjure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "06c44fdc-1cd9-4b7d-8f58-8a7b3b61cc35",
+      "component": "combo_piece",
+      "name": "Cantor of the Refrain",
+      "type_line": "Creature — Human Pilot",
+      "uri": "https://api.scryfall.com/cards/06c44fdc-1cd9-4b7d-8f58-8a7b3b61cc35"
+    },
+    {
+      "object": "related_card",
+      "id": "117d02a6-3024-490e-a9b0-d81262f69f1d",
+      "component": "combo_piece",
+      "name": "Song of Point Prime",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/117d02a6-3024-490e-a9b0-d81262f69f1d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9383ab27-10b2-49ce-9004-61587a6a477b",
+  "set": "yeoe",
+  "set_name": "Alchemy: Edge of Eternities",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/9383ab27-10b2-49ce-9004-61587a6a477b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ayeoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/yeoe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/117d02a6-3024-490e-a9b0-d81262f69f1d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A808ad690-202a-4adf-b38a-499e144f8c06&unique=prints",
+  "collector_number": "12",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bryan Sola",
+  "artist_ids": [
+    "e6879299-a28b-48bc-8db1-9cafcf36de09"
+  ],
+  "illustration_id": "00a9fbcf-15a5-489e-ad81-4be1d04b446d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSong%2Bof%2BPoint%2BPrime",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSong%2Bof%2BPoint%2BPrime",
+    "edhrec": "https://edhrec.com/route/?cc=Song+of+Point+Prime"
+  }
+}

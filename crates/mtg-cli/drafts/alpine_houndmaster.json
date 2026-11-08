@@ -1,0 +1,60 @@
+{
+  "oracle_id": "88939cb3-5f61-4857-95cb-9446c6c1f1aa",
+  "name": "Alpine Houndmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alpine Houndmaster",
+      "oracle_fingerprint": "b1bb1974515b3e2e4c0e999dd511c3a4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "AnyOf": [{ "Named": "Alpine Watchdog" }, { "Named": "Igneous Cur" }] }
+                        ],
+                        "count": { "min": 0, "max": 2 },
+                        "reveal": true,
+                        "distinct": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "oracle_id": "aee0388f-544e-4c28-a34f-29cc0a97d424",
+  "name": "Sculpted Sunburst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sculpted Sunburst",
+      "oracle_fingerprint": "0173465a0a5aa3fde32319c69c3b2f90",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Le",
+                          "to": {
+                            "Total": {
+                              "of": [
+                                { "Is": { "Bound": "card" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ],
+                              "stat": "Power"
+                            }
+                          }
+                        }
+                      },
+                      { "ControlledBy": "Chooser" }
+                    ]
+                  },
+                  "as": "card2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "Is": { "Bound": "card2" } } },
+                            { "Not": { "Is": { "Bound": "card" } } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

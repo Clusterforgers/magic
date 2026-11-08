@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b5d5dd1f-2d31-4849-8cb9-08354dd48d31",
+  "name": "Feral Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feral Hydra",
+      "oracle_fingerprint": "9fe31f1434256afadf0a58dba61be286",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "by": "Anyone",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

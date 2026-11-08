@@ -1,0 +1,36 @@
+{
+  "oracle_id": "58616e15-531f-4680-8294-35ab7e962c96",
+  "name": "Scarecrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scarecrow",
+      "oracle_fingerprint": "8455a17603021b480bc415f4e9190305",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": "You",
+                      "source": [
+                        { "Type": "Creature" },
+                        { "HasKeyword": "Flying" },
+                        { "In": "Battlefield" }
+                      ]
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

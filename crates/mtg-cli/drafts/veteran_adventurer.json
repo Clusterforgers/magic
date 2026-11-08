@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ea3401a9-76db-4f38-b973-2b7754087b97",
+  "name": "Veteran Adventurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran Adventurer",
+      "oracle_fingerprint": "44194780f170e5e2e30f7c9a12afde34",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddSubtype": "Cleric" },
+              { "AddSubtype": "Rogue" },
+              { "AddSubtype": "Warrior" },
+              { "AddSubtype": "Wizard" }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Party": "You" }
+          }
+        },
+        { "Keyword": "Vigilance" }
+      ]
+    }
+  ]
+}

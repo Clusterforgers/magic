@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bb039957-9e88-48cf-b41c-38d42eb87251",
+  "name": "Polygraph Orb",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Polygraph Orb",
+      "oracle_fingerprint": "65dfd7bbb2429665fef3139fba0bf675",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "LoseLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 354 }
+          }
+        }
+      ]
+    }
+  ]
+}

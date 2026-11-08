@@ -1,0 +1,78 @@
+{
+  "oracle_id": "eb036e02-f43e-46a2-90f1-931579467c9b",
+  "name": "Baboon Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baboon Spirit",
+      "oracle_fingerprint": "7e92c18e9c6f4a7f25048289fc9ad847",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Subtype": "Spirit" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              { "CanBlockOnly": [{ "Type": "Creature" }, { "Subtype": "Spirit" }] },
+                              {
+                                "CantBeBlockedBy": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "Subtype": "Spirit" } }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

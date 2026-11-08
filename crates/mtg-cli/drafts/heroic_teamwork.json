@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8025313d-048d-4a43-bc01-22398939a7e7",
+  "name": "Heroic Teamwork",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heroic Teamwork",
+      "oracle_fingerprint": "21d3dc770d1947866a6c59b5e213d3f1",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 3 } } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 1, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "If": { "condition": "AdditionalCostPaid", "then": [{ "Draw": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

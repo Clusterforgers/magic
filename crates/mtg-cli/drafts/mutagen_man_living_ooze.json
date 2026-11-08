@@ -1,0 +1,53 @@
+{
+  "oracle_id": "472d9a18-19a0-46c0-a4bf-328ebec7ce41",
+  "name": "Mutagen Man, Living Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutagen Man, Living Ooze",
+      "oracle_fingerprint": "8804202306d29fce8eef1c6970cabaf3",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Artifact" }, "Token", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Any"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutagen",
+                      "types": ["Artifact"],
+                      "subtypes": ["Mutagen"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                            "timing": "Sorcery",
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [
+                              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

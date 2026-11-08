@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2ba16e4d-2de7-4906-801a-4ba2b90b5050",
+  "name": "Ghost Council of Orzhova",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost Council of Orzhova",
+      "oracle_fingerprint": "e09bcb711393ce34aaac03e499603121",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

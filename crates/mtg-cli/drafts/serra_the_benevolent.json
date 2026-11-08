@@ -1,0 +1,80 @@
+{
+  "oracle_id": "8b0e2382-dd91-42e6-aba3-5e8a15418a49",
+  "name": "Serra the Benevolent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serra the Benevolent",
+      "oracle_fingerprint": "ae16d8242568f2771a67bb09a353a9ae",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "HasKeyword": "Flying" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Rule": {
+                        "rule": { "LifeFloor": { "who": "You", "floor": 1 } },
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

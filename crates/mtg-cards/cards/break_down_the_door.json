@@ -1,0 +1,47 @@
+{
+  "oracle_id": "a11d8372-87fb-40a2-b638-314c6a5af03b",
+  "name": "Break Down the Door",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Break Down the Door",
+      "oracle_fingerprint": "d34837437ab479464798ebd9b7bcb3de",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": 2, "as": "looked" } },
+                        {
+                          "Choose": {
+                            "from": { "Bound": "looked" },
+                            "as": "kept2",
+                            "rest_as": "rest3"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+                        { "Manifest": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

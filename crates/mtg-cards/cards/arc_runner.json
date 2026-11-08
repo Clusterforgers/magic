@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9bbee1a5-2eb0-4fad-9524-4ad9cc5ca998",
+  "name": "Arc Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arc Runner",
+      "oracle_fingerprint": "ae260dccc81ea65508b9d41ca33b0ed4",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

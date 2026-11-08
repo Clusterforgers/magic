@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c96424e7-63c4-4f07-959f-6ad09f91279a",
+  "name": "Beyond the Quiet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beyond the Quiet",
+      "oracle_fingerprint": "9df73c39cc89d93d7d3623caa9105ed9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

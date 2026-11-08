@@ -1,0 +1,46 @@
+{
+  "oracle_id": "90d2e092-6eb8-4d13-bdad-19e7325a8b36",
+  "name": "Steel of the Godhead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel of the Godhead",
+      "oracle_fingerprint": "620b7f8bad7cfe91accdd9b7a9ef19b1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "White" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "Blue" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Is": "Attached" }, { "Color": "Blue" }]
+            },
+            "mods": ["CantBeBlocked"]
+          }
+        }
+      ]
+    }
+  ]
+}

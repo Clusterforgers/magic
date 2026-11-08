@@ -1,0 +1,34 @@
+{
+  "oracle_id": "32ad99a9-b5ed-41a1-8060-22265f7c5da1",
+  "name": "Deadly Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Embrace",
+      "oracle_fingerprint": "b9db618ebf8d81e558d7dec95f22a64e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Draw": {
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

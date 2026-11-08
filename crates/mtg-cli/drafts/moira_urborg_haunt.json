@@ -1,0 +1,32 @@
+{
+  "oracle_id": "48060406-dd5a-4df5-84e9-3e797f0248cd",
+  "name": "Moira, Urborg Haunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moira, Urborg Haunt",
+      "oracle_fingerprint": "ce58e6c8644b2714f5ffef27a7dc6cf4",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "ArrivedFrom": "Battlefield" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

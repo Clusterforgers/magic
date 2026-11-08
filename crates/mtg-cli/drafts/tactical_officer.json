@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1397e7d5-4aa4-4c8d-8957-845579b775f7",
+  "name": "Tactical Officer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tactical Officer",
+      "oracle_fingerprint": "f1b2953e60e6edb74b8ad04d1289f62c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "op": "Ge",
+                  "right": 8
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,8 @@ use mtg_core::ids::PlayerId;
 
 use crate::characteristics::controller_of_object;
 use crate::choose::{Choices, Target};
-use crate::state::GameState;
+use crate::events::Event;
+use crate::state::{GameState, Tally};
 use crate::zones::Zone;
 
 /// Whether the spell or ability `player` announced with `choices` is a crime against an opponent.
@@ -22,6 +23,20 @@ pub(super) fn w11c_is_crime(state: &GameState, player: PlayerId, choices: &Choic
             whose != player
         }),
     })
+}
+
+/// A spell cast or an ability put on the stack that is a crime counts one crime for its controller this turn.
+pub(crate) fn g10c_note_crime(state: &mut GameState, event: &Event) {
+    let (player, choices) = match event {
+        Event::SpellCast {
+            player, choices, ..
+        } => (*player, choices),
+        Event::AbilityPutOnStack(put) => (put.controller, &put.choices),
+        _ => return,
+    };
+    if w11c_is_crime(state, player, choices) {
+        state.tally(player, Tally::G10cCrimes);
+    }
 }
 
 #[cfg(test)]

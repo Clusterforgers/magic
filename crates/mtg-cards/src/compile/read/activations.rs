@@ -20,8 +20,12 @@ pub(super) fn tails(timing: Timing, condition: &Condition, limit: Option<Limit>)
     if timing == Timing::Sorcery {
         parts.push(vec!["as a sorcery".to_owned()]);
     }
-    if limit.is_some() {
-        parts.push(vec!["once each turn".to_owned()]);
+    match limit {
+        None => {}
+        Some(Limit::OncePerTurn) => parts.push(vec!["once each turn".to_owned()]),
+        Some(Limit::OncePerGame) => parts.push(vec!["once".to_owned()]),
+        // "No more than twice each turn" is no part after "only"; a limit counted as done is a trigger's.
+        Some(Limit::TimesPerTurn(_) | Limit::OncePerTurnDone) => return Vec::new(),
     }
     let Some(held) = held(condition) else {
         return Vec::new();

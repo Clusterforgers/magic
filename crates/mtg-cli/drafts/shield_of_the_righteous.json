@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6d9aaa70-b2cc-424c-8095-a0b2fa272db3",
+  "name": "Shield of the Righteous",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shield of the Righteous",
+      "oracle_fingerprint": "e37884315632990a4dc2948b89e0cf52",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [], "by": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

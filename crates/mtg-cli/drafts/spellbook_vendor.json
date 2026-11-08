@@ -1,0 +1,73 @@
+{
+  "oracle_id": "51dad7d3-f91d-4bd8-aaed-235da42a448b",
+  "name": "Spellbook Vendor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellbook Vendor",
+      "oracle_fingerprint": "fc44861c9f602facc5b9429d5f006387",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Sorcerer",
+                                  "types": ["Enchantment"],
+                                  "subtypes": ["Aura", "Role"],
+                                  "abilities": [
+                                    { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                                    {
+                                      "Static": {
+                                        "affected": "Attached",
+                                        "mods": [
+                                          { "ModifyPT": { "power": 1, "toughness": 1 } },
+                                          {
+                                            "GrantAbility": {
+                                              "Triggered": {
+                                                "when": { "Attacks": { "what": ["This"] } },
+                                                "effects": [{ "Scry": {} }]
+                                              }
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "as": "token"
+                            }
+                          },
+                          { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0049438b-e37e-4c57-820e-f2ddf3322170",
+  "name": "High-Rise Sawjack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High-Rise Sawjack",
+      "oracle_fingerprint": "d23991d99918e6e469680b3e2537cde2",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

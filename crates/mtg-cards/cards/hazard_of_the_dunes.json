@@ -1,0 +1,22 @@
+{
+  "oracle_id": "799664fc-279c-40c1-8e40-44a68c38801b",
+  "name": "Hazard of the Dunes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hazard of the Dunes",
+      "oracle_fingerprint": "2cd748be4182fd5924ba03aea3f77241",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": "{6}{G}",
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

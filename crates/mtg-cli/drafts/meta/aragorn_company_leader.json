@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever the Ring tempts you, if you chose a creature other than CARDNAME as your Ring-bearer, put your choice of a counter from among first strike, vigilance, deathtouch, and lifelink on NICKNAME.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you put one or more counters on NICKNAME, put one of each of those kinds of counters on up to one other target creature.",
+      "abilities": [],
+      "gap": "trigger:CounterPlayerAddedAll"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 195
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 196,
+          "end": 324
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "97ba11a1-16cd-47ee-a187-1e919c468e4e",
+  "name": "Barbed Sextant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbed Sextant",
+      "oracle_fingerprint": "8264f8f8a7e3b9305d4d84a30b26a346",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

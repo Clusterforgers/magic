@@ -141,7 +141,7 @@ fn w15b_destroy_each(ability: &Ability, texts: &mut Vec<String>) {
 /// "Then sacrifice ~." after a mass destruction (The Moment): the sacrifice is the step after it.
 fn w15b_then_sacrifice(ability: &Ability, texts: &mut Vec<String>) {
     let follows = ability.effects().windows(2).any(|pair| {
-        matches!(pair, [Effect::Destroy { what: Ref::Each(_), .. }, Effect::Sacrifice { who: Ref::You, filter, count }]
+        matches!(pair, [Effect::Destroy { what: Ref::Each(_), .. }, Effect::Sacrifice { who: Ref::You, filter, count, .. }]
             if *filter == Selector::this() && count.is_one())
     });
     if !follows {

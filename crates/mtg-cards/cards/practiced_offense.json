@@ -1,0 +1,49 @@
+{
+  "oracle_id": "99678cc9-59c8-4358-b847-8c38ffb4a050",
+  "name": "Practiced Offense",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Practiced Offense",
+      "oracle_fingerprint": "2996dfda6a9acfd36325925ccc3e14e1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }, { "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 1 },
+                        "mods": [{ "AddKeyword": "DoubleStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 1 },
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{W}" } }
+      ]
+    }
+  ]
+}

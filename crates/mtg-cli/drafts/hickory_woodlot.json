@@ -1,0 +1,43 @@
+{
+  "oracle_id": "26259c65-8f4e-42a6-b8a7-f65c36d35c4d",
+  "name": "Hickory Woodlot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hickory Woodlot",
+      "oracle_fingerprint": "0bd36bf38880c3f1cb19c2591e324de0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": { "Other": "depletion" }, "count": 2, "tapped": true }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "depletion" } } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": ["This", { "Not": { "HasCounter": { "Other": "depletion" } } }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

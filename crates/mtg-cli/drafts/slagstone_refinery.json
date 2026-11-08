@@ -1,0 +1,68 @@
+{
+  "oracle_id": "a23c4378-9242-46a0-9f62-ca91f0baa428",
+  "name": "Slagstone Refinery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slagstone Refinery",
+      "oracle_fingerprint": "e3f00fa17f68a7b78fe5464b9c8e1ca2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Artifact" } },
+                                { "Not": { "Not": "Token" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": "Other" }
+                              ]
+                            }
+                          },
+                          "This"
+                        ]
+                      }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Artifact" } },
+                                { "Not": { "Not": "Token" } },
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": "Other" }
+                              ]
+                            }
+                          },
+                          "This"
+                        ]
+                      }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

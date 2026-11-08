@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e380e37d-926b-4a4b-a275-7844bf4956d5",
+  "name": "Titania, Rugged Rumbler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titania, Rugged Rumbler",
+      "oracle_fingerprint": "263abf96a279b7c04817d0e56129b896",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "OneOf": [[{ "Discard": {} }], "{2}"] }],
+            "required": true
+          }
+        },
+        { "Keyword": { "Ward": [{ "Discard": {} }] } }
+      ]
+    }
+  ]
+}

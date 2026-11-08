@@ -1,22 +1,31 @@
-//! `Effect::ExileHidden`: objects are exiled face down, linked to the permanent that hides them (hideaway, CR 702.75a).
+//! `Effect::ExileHidden`: objects are exiled face down, linked to the source of the effect (hideaway), or, when `held`, seen by the player whose effect it is alone, or, when `sealed`, seen by no player.
 
 use mtg_cards::effect::Effect;
 
+use super::moved_as::count_entry;
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::events::{Event, ZoneCause};
-use crate::object::ObjectKind;
+use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
-/// Each object the effect names that is still where it was named moves to exile with `ZoneCause::Hideaway` naming the
+/// Each object the effect names that is still where it was named moves to exile with `ZoneCause::Hideaway` (`ZoneCause::Held` when `held`, `ZoneCause::Sealed` when `sealed`) naming the
 /// source of the effect, so it lies face down there and the source is the permanent its abilities read it by. An
 /// ability, the resolving spell, an object already in exile, one that has changed zones since it was named and a name
 /// that repeats are passed over.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ExileHidden { what } = effect else {
+    let Effect::ExileHidden {
+        what,
+        bind,
+        held,
+        sealed,
+    } = effect
+    else {
         return Err(wrong_effect("ExileHidden"));
     };
     let mut events = Vec::new();
+    let mut hidden = Vec::new();
     for object in cx.scope.live_objects(what)? {
         let resolving_spell = object.zone() == Zone::Stack && object.id() == cx.resolving.object();
         if object.kind() == ObjectKind::Ability || resolving_spell || object.zone() == Zone::Exile {
@@ -26,14 +35,37 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             object: object.id(),
             from: object.zone(),
             to: Zone::Exile,
-            cause: ZoneCause::Hideaway {
-                by: cx.scope.source,
+            cause: if *sealed {
+                ZoneCause::Sealed {
+                    by: cx.scope.source,
+                }
+            } else if *held {
+                ZoneCause::Held {
+                    by: cx.scope.source,
+                    looker: cx.controller(),
+                }
+            } else {
+                ZoneCause::Hideaway {
+                    by: cx.scope.source,
+                }
             },
         });
+        hidden.push(Target::Object(ObjectRef {
+            id: object.id(),
+            counter: object.counter() + 1,
+        }));
     }
     Ok(Run::Done {
         events,
-        bound: Vec::new(),
+        bound: bind
+            .iter()
+            .flat_map(|name| {
+                [
+                    (name.clone(), hidden.clone()),
+                    count_entry(name, hidden.len()),
+                ]
+            })
+            .collect(),
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
@@ -103,6 +135,43 @@ mod tests {
         }
     }
 
+    #[rstest]
+    #[case::named(
+        r#"{"ExileHidden":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"}]},"as":"h"}}"#,
+        5
+    )]
+    #[case::unnamed(
+        r#"{"ExileHidden":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"}]}}}"#,
+        0
+    )]
+    fn the_name_holds_the_cards_as_the_objects_they_become_in_exile(
+        #[case] json: &str,
+        #[case] n: usize,
+    ) {
+        let game = game();
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving::begin(source.id());
+        let cx = Cx {
+            scope: Scope::announcing(&game, ME, source.reference()),
+            resolving: &resolving,
+        };
+        let effect: Effect = serde_json::from_str(json).unwrap();
+        let Run::Done { bound, .. } = run(&cx, &effect).unwrap() else {
+            panic!("hiding asks nothing");
+        };
+        let held = bound
+            .iter()
+            .find(|(name, _)| name == "h")
+            .map_or(0, |(_, v)| v.len());
+        assert_eq!(held, n);
+        for (_, targets) in &bound {
+            for target in targets {
+                let Target::Object(r) = target else { continue };
+                assert_eq!(r.counter, game.object(r.id).unwrap().counter() + 1);
+            }
+        }
+    }
+
     #[test]
     fn the_fold_lays_the_card_face_down_in_exile_linked_to_the_source() {
         let mut game = game();
@@ -121,5 +190,40 @@ mod tests {
         let object = game.object(card).unwrap();
         assert_eq!(object.zone(), Zone::Exile);
         assert_eq!(object.face_down(), Some(FaceDown::Hideaway { by: source }));
+    }
+
+    #[test]
+    fn a_held_card_lies_face_down_for_the_player_whose_effect_it_is() {
+        let game = game();
+        let events = hidden(
+            &game,
+            r#"{"ExileHidden":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"}]},"held":true}}"#,
+        );
+        let Some(Event::ZoneChanged { cause, .. }) = events.first() else {
+            panic!("a card is hidden");
+        };
+        assert!(matches!(cause, ZoneCause::Held { looker, .. } if *looker == ME));
+    }
+
+    #[test]
+    fn a_sealed_card_lies_face_down_for_no_player_and_stays_linked_to_the_source() {
+        let mut game = game();
+        let source = game
+            .object(game.zone(Zone::Battlefield)[0])
+            .unwrap()
+            .reference();
+        let card: ObjectId = *game.zone(Zone::Library(ME)).last().unwrap();
+        let events = hidden(
+            &game,
+            r#"{"ExileHidden":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"}]},"sealed":true}}"#,
+        );
+        for event in &events {
+            crate::fold::apply_event(&mut game, event).unwrap();
+        }
+        assert_eq!(
+            game.object(card).unwrap().face_down(),
+            Some(FaceDown::Sealed { by: source })
+        );
+        assert!(!game.may_look_at(ME, card));
     }
 }

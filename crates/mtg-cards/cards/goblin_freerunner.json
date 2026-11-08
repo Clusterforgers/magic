@@ -1,0 +1,27 @@
+{
+  "oracle_id": "372094f8-86dc-4c78-a5d0-444ffbf02630",
+  "name": "Goblin Freerunner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Freerunner",
+      "oracle_fingerprint": "0d6f29349d317fe7c974498814e9df21",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{1}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Menace" }
+      ]
+    }
+  ]
+}

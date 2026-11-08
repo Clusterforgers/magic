@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "02842e77-7475-4fe5-9d2e-f3c8ba56bc88",
+  "oracle_id": "c8981af1-b0aa-4c19-8520-a7fb59018bc8",
+  "multiverse_ids": [
+    643026
+  ],
+  "mtgo_id": 120565,
+  "tcgplayer_id": 531224,
+  "cardmarket_id": 748367,
+  "name": "Ghostway",
+  "lang": "en",
+  "released_at": "2024-01-12",
+  "uri": "https://api.scryfall.com/cards/02842e77-7475-4fe5-9d2e-f3c8ba56bc88",
+  "scryfall_uri": "https://scryfall.com/card/rvr/19/ghostway?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:29:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.jpg?1783913345",
+    "normal": "https://cards.scryfall.io/normal/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.jpg?1783913345",
+    "large": "https://cards.scryfall.io/large/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.jpg?1783913345",
+    "png": "https://cards.scryfall.io/png/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.png?1783913345",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.jpg?1783913345",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.jpg?1783913345",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.webp?1783913345",
+    "grid": "https://cards.scryfall.io/grid/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.webp?1783913345",
+    "display": "https://cards.scryfall.io/display/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.webp?1783913345",
+    "art": "https://cards.scryfall.io/art/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.webp?1783913345",
+    "crop": "https://cards.scryfall.io/crop/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.webp?1783913345",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/2/02842e77-7475-4fe5-9d2e-f3c8ba56bc88.jpg?1783913345"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile each creature you control. Return those cards to the battlefield under their owner's control at the beginning of the next end step.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set": "rvr",
+  "set_name": "Ravnica Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arvr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rvr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/02842e77-7475-4fe5-9d2e-f3c8ba56bc88/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8981af1-b0aa-4c19-8520-a7fb59018bc8&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I watched its blade swing through me, but I was hollow, empty. I saw its face contort in rage but could not hear it snarl.\"\n—Klattic, Boros legionnaire",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jim Murray",
+  "artist_ids": [
+    "1c906f9b-5bbe-4643-8f5c-90eb1c7f0c43"
+  ],
+  "illustration_id": "31f389a0-b70a-43a1-a0ba-06f6da9f1c1d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3416,
+  "penny_rank": 9181,
+  "prices": {
+    "usd": "5.11",
+    "usd_foil": "5.29",
+    "usd_etched": null,
+    "eur": "3.32",
+    "eur_foil": "3.11",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=643026&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGhostway",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGhostway",
+    "edhrec": "https://edhrec.com/route/?cc=Ghostway"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F531224%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=748367&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/120565?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

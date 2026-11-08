@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
+  "name": "Roaring Furnace // Steaming Sauna",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roaring Furnace",
+      "oracle_fingerprint": "212100f701a4e3df66f4191cefa21443",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Steaming Sauna",
+      "oracle_fingerprint": "30c3a921a96dd50673071bcb27a0ecf3",
+      "abilities": [
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

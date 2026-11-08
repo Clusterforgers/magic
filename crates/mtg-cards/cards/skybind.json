@@ -1,0 +1,50 @@
+{
+  "oracle_id": "13d34f21-f0ce-4e59-ac3e-6635bf7292d3",
+  "name": "Skybind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skybind",
+      "oracle_fingerprint": "adcb270f48a7b15c92092f4d16878450",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Enchantment" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Enchantment" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

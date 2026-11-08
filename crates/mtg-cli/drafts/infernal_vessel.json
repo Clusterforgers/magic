@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0e13c283-f462-441f-a8a5-0c75a59ff1d9",
+  "name": "Infernal Vessel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Vessel",
+      "oracle_fingerprint": "91e2301a0f1789f63bb2bc9e8b3c0804",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Not": { "Subtype": "Demon" } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "counters": [["+1/+1", 2]] } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Demon" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

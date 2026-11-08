@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Seek a card named Audacious Knuckleblade and put it onto the battlefield tapped.",
+      "abilities": [],
+      "gap": "key:Seek.RememberFound"
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Surveil 2, then untap this creature.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Creatures you control gain haste until end of turn.",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 98
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 99,
+          "end": 153
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 154,
+          "end": 220
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

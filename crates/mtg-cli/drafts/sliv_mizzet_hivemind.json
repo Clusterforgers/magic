@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6168fab8-ca10-4720-80b3-f910a87a1155",
+  "name": "Sliv-Mizzet, Hivemind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sliv-Mizzet, Hivemind",
+      "oracle_fingerprint": "fa25ecd0d11b1d5aed96f1935c3dcf67",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "GrantAbility": { "Activated": { "cost": ["Tap"], "effects": [{ "Draw": {} }] } } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Drew": { "who": "You" } },
+                    "targets": [{ "what": "AnyTarget" }],
+                    "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

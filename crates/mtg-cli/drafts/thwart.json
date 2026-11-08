@@ -1,0 +1,24 @@
+{
+  "oracle_id": "615a149a-2869-4b18-bbbe-9ec1825049d7",
+  "name": "Thwart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thwart",
+      "oracle_fingerprint": "59d382412436aa6293f8a490dbea30d3",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [{ "ReturnToHand": { "filter": [{ "Subtype": "Island" }], "count": 3 } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

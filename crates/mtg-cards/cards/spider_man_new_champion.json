@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4604c8fb-d38f-42aa-935a-eada20f6aafa",
+  "name": "Spider-Man, New Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Man, New Champion",
+      "oracle_fingerprint": "b9ee8524306dc74cba58ade93f1defd7",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

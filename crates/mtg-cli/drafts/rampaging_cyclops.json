@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cee8ad22-12a7-4da6-a7d9-e205ada16489",
+  "name": "Rampaging Cyclops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampaging Cyclops",
+      "oracle_fingerprint": "f77e98fcba1d1eb853469d6468cfff92",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

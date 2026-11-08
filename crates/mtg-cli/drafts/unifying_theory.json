@@ -1,0 +1,27 @@
+{
+  "oracle_id": "77c923ac-98f1-437c-a711-8c265756e53b",
+  "name": "Unifying Theory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unifying Theory",
+      "oracle_fingerprint": "9907937695618f1546eec4e67719da3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "paid": [{ "Draw": { "who": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "89abdf4c-ba9d-4602-ae50-cf79c68ea08d",
+  "name": "Pigment Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pigment Storm",
+      "oracle_fingerprint": "c7748e6b63e99f819c71b73aaa14ab95",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": 5,
+                  "excess": { "to": { "ControllerOf": { "Target": 0 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

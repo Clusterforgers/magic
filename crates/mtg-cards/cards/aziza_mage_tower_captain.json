@@ -1,0 +1,31 @@
+{
+  "oracle_id": "70e10cb9-ae27-4dba-9a0d-34a78f924774",
+  "name": "Aziza, Mage Tower Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aziza, Mage Tower Captain",
+      "oracle_fingerprint": "71edabacd40eae07ec0981dc38dab161",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": 3 } }],
+                  "paid": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "085f4595-4ae5-428e-a934-e918774df6fd",
+  "oracle_id": "c293f1c0-93de-4a73-aaf6-4e9f01e557ec",
+  "multiverse_ids": [
+    646691
+  ],
+  "mtgo_id": 121744,
+  "arena_id": 89048,
+  "tcgplayer_id": 533905,
+  "cardmarket_id": 751862,
+  "name": "Innocent Bystander",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/085f4595-4ae5-428e-a934-e918774df6fd",
+  "scryfall_uri": "https://scryfall.com/card/mkm/133/innocent-bystander?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:21:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.jpg?1783912882",
+    "normal": "https://cards.scryfall.io/normal/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.jpg?1783912882",
+    "large": "https://cards.scryfall.io/large/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.jpg?1783912882",
+    "png": "https://cards.scryfall.io/png/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.png?1783912882",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.jpg?1783912882",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.jpg?1783912882",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.webp?1783912882",
+    "grid": "https://cards.scryfall.io/grid/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.webp?1783912882",
+    "display": "https://cards.scryfall.io/display/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.webp?1783912882",
+    "art": "https://cards.scryfall.io/art/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.webp?1783912882",
+    "crop": "https://cards.scryfall.io/crop/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.webp?1783912882",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/8/085f4595-4ae5-428e-a934-e918774df6fd.jpg?1783912882"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Citizen",
+  "oracle_text": "Whenever this creature is dealt 3 or more damage, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ef607895-d6d2-44ab-a6b4-84af55fce593",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/ef607895-d6d2-44ab-a6b4-84af55fce593"
+    },
+    {
+      "object": "related_card",
+      "id": "085f4595-4ae5-428e-a934-e918774df6fd",
+      "component": "combo_piece",
+      "name": "Innocent Bystander",
+      "type_line": "Creature — Goblin Citizen",
+      "uri": "https://api.scryfall.com/cards/085f4595-4ae5-428e-a934-e918774df6fd"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/085f4595-4ae5-428e-a934-e918774df6fd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac293f1c0-93de-4a73-aaf6-4e9f01e557ec&unique=prints",
+  "collector_number": "133",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Whoops, this isn't my street! Don't mind me! I'll just be on my way while you enjoy your . . . very sharp knives.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Warren Mahy",
+  "artist_ids": [
+    "002c739e-aa1f-4c1d-921b-37cb2d1b1c5b"
+  ],
+  "illustration_id": "4bf40264-3c8f-46b5-8f14-c26a5686df55",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24109,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/murders-at-karlov-manor/card-image-gallery",
+    "previewed_at": "2024-01-19"
+  },
+  "prices": {
+    "usd": "0.08",
+    "usd_foil": "0.03",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.05",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646691&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInnocent%2BBystander",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInnocent%2BBystander",
+    "edhrec": "https://edhrec.com/route/?cc=Innocent+Bystander"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F533905%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=751862&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121744?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

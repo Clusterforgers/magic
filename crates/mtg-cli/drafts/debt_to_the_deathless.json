@@ -11,7 +11,7 @@
           "Spell": {
             "effects": [
               { "LoseLife": { "who": "Opponents", "amount": { "Times": { "by": 2, "of": "X" } } } },
-              { "GainLife": { "amount": "LifeLostThisWay" } }
+              { "GainLife": { "amount": 0 } }
             ]
           }
         }

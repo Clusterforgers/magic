@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5ffbbce1-fe38-40dc-a7c3-2055ae86c6c5",
+  "name": "Arwen Undómiel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arwen Undómiel",
+      "oracle_fingerprint": "b1aef2d7b293a81ce0067f36430c97c3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Activated": { "cost": "{4}{U}{G}", "effects": [{ "Scry": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

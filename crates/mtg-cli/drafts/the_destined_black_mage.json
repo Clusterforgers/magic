@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ef2aa67a-9531-495c-85c7-7f745bc19ce1",
+  "name": "The Destined Black Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Destined Black Mage",
+      "oracle_fingerprint": "90575c8674c2076165d5e8955aac8b4d",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": { "left": { "Party": "You" }, "op": "Eq", "right": 4 }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

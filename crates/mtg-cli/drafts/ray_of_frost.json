@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3de32046-454b-40be-b522-a3d1d5302b10",
+  "name": "Ray of Frost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ray of Frost",
+      "oracle_fingerprint": "e911f5a76ccd63c2f33cf756e79428b6",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "Is": "Attached" }, { "Color": "Red" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["LoseAbilities"],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "Red" }]
+              }
+            }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

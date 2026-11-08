@@ -1,0 +1,42 @@
+{
+  "oracle_id": "fe00278d-4385-4e3f-919c-12a794fd86f5",
+  "name": "King T'Challa // Black Panther, Hope Enduring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "King T'Challa",
+      "oracle_fingerprint": "7f566efc6c972db7b2b5f86bed7e982e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": {} }, "nth": 2 } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{W}{U}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Black Panther, Hope Enduring",
+      "oracle_fingerprint": "292722c032fd8ca4915b173b13fe7a2f",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "DoubleStrike" },
+        { "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "Prevent" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

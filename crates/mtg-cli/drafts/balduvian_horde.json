@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fd2a94d3-901d-4b46-aa9b-a30ed6dea6bd",
+  "name": "Balduvian Horde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balduvian Horde",
+      "oracle_fingerprint": "81c706eeca147b423fec060d780bcef6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "DiscardRandom": 1 }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "24b9204f-ecc8-472e-9296-f999adf1ab1b",
+  "name": "Flame-Wreathed Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame-Wreathed Phoenix",
+      "oracle_fingerprint": "8dd72861405a2d00c0b1ad55495460f2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 2 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddKeyword": "Haste" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

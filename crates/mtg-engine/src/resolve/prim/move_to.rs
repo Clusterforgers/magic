@@ -31,6 +31,7 @@ use crate::zones::Zone;
 fn movers<'a>(
     cx: &'a Cx<'_>,
     what: &mtg_cards::refs::Ref,
+    stack_ok: bool,
 ) -> Result<Vec<&'a GameObject>, ResolveError> {
     let state = cx.state();
     let mut found: Vec<&GameObject> = Vec::new();
@@ -38,13 +39,25 @@ fn movers<'a>(
         // A triggered ability that moves "this card" after it left the battlefield finds the card in the graveyard or exile it
         // went to, one zone change on (CR 400.7).
         let followed = matches!(what, Ref::This) && cx.scope.cause.is_some();
+        // A spell that moves itself as it resolves ("shuffle ~ into its owner's library") and the spell a cast trigger names
+        // ("return that spell to its owner's hand") leave the stack; a copy of a spell is no card and stays.
+        let spell_by_name = stack_ok
+            && match what {
+                Ref::This => named.id == cx.resolving.object(),
+                Ref::Triggering | Ref::Target(_) => true,
+                _ => false,
+            };
         let object = state.object(named.id).filter(|object| {
             (object.counter() == named.counter
                 || (followed
                     && object.counter() == named.counter + 1
                     && matches!(object.zone(), Zone::Graveyard(_) | Zone::Exile)))
                 && object.kind() != ObjectKind::Ability
-                && !matches!(object.zone(), Zone::Stack | Zone::PhasedOut)
+                && match object.zone() {
+                    Zone::Stack => spell_by_name && object.kind() == ObjectKind::Card,
+                    Zone::PhasedOut => false,
+                    _ => true,
+                }
         });
         if let Some(object) = object
             && !found.iter().any(|seen| seen.id() == object.id())
@@ -93,18 +106,25 @@ fn entering_under(cx: &Cx<'_>, under: Option<&Ref>) -> Result<Option<PlayerId>, 
 
 /// Each object the reference names goes to its owner's hand or graveyard, or into its owner's library on top, on
 /// the bottom or shuffled in, or onto the battlefield. Cards put into one library together are put in the order the
-/// controller chooses ("in any order"), asked as an `OrderCards` per library unless there is one card, and the first
+/// owner of the library chooses (CR 401.4), or the controller when the move says `Order::Chosen` ("in any order"), asked as an `OrderCards` per library unless there is one card, and the first
 /// of them is nearest the top; a shuffle needs no order.
 /// An object already where it would go stays. Moves from the battlefield carry a snapshot of the object as it was.
 /// A card put onto the battlefield is one `ZoneChanged`, so what triggers on entering sees it, and an `Entered` after
 /// it when the card comes in tapped or under a player other than its owner; an instant or a sorcery card stays where it
 /// is (CR 304.4, 307.4). A random order is not played yet; `Caps` keeps those cards out.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Move { what, to } = effect else {
+    let Effect::Move { what, to, .. } = effect else {
         return Err(wrong_effect("Move"));
     };
     let state = cx.state();
-    let objects = movers(cx, what)?;
+    let objects = movers(
+        cx,
+        what,
+        matches!(
+            to,
+            Destination::Hand | Destination::Graveyard | Destination::Library { .. }
+        ),
+    )?;
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
     match to {
@@ -127,6 +147,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             order: Some(Order::Random),
             place: Place::Top,
         } => return unsupported("Effect.Move.Random.Top"),
+        Destination::Library {
+            order: Some(Order::Random),
+            place: Place::Below(_),
+        } => return unsupported("Effect.Move.Random.Below"),
         Destination::Library { place, order } => {
             let mut owners: Vec<(PlayerId, Vec<&GameObject>)> = Vec::new();
             for object in objects {
@@ -139,7 +163,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 }
             }
             let random = *order == Some(Order::Random);
-            return Stop::settle(into_libraries(cx, *place, random, &owners));
+            let by_controller = *order == Some(Order::Chosen);
+            return Stop::settle(into_libraries(cx, *place, random, by_controller, &owners));
         }
         Destination::Battlefield {
             tapped,
@@ -400,6 +425,7 @@ fn into_libraries(
     cx: &Cx<'_>,
     place: Place,
     random: bool,
+    by_controller: bool,
     owners: &[(PlayerId, Vec<&GameObject>)],
 ) -> Result<Run, Stop> {
     let state = cx.state();
@@ -427,8 +453,13 @@ fn into_libraries(
             ids = shuffled(state, shuffles, ids);
             shuffles += 1;
         } else if place != Place::Shuffled && ids.len() > 1 {
-            let who = cx.controller();
-            ids = questions.order(who, ids, wording::library_order(place == Place::Bottom))?;
+            // Their owner puts them in any order (CR 401.4) unless the effect names the player who puts them.
+            let who = if by_controller {
+                cx.controller()
+            } else {
+                *owner
+            };
+            ids = questions.order(who, ids, wording::library_order(place))?;
         }
         let zone_of = |id: ObjectId| {
             group
@@ -453,11 +484,16 @@ fn into_libraries(
         }
         match place {
             Place::Top => {}
-            Place::Bottom if ids.is_empty() => {}
+            Place::Bottom | Place::Below(_) if ids.is_empty() => {}
             Place::Bottom => events.push(Event::LibraryBottomed {
                 player: *owner,
                 cards: ids,
                 random: drawn,
+            }),
+            Place::Below(below) => events.push(Event::LibraryInserted {
+                player: *owner,
+                cards: ids,
+                below,
             }),
             Place::Shuffled => {
                 let mut cards = state.zone(library).to_vec();
@@ -781,6 +817,72 @@ mod tests {
         assert_eq!(low[2..], library(&game, ME)[..]);
     }
 
+    #[rstest]
+    #[case::second_from_the_top(1, 1)]
+    #[case::third_from_the_top(2, 2)]
+    #[case::the_whole_library_above(5, 5)]
+    #[case::more_than_the_library_holds_goes_to_the_bottom(9, 5)]
+    fn a_card_put_beneath_the_top_cards_lies_below_exactly_those(
+        #[case] below: u32,
+        #[case] above: usize,
+    ) {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        let to = format!(r#"{{"Library":{{"place":{{"Below":{below}}}}}}}"#);
+        let (events, _) = done(run_with(&game, &[card], Vec::new(), &moving(&to)).unwrap());
+        assert_eq!(
+            events.last(),
+            Some(&Event::LibraryInserted {
+                player: ME,
+                cards: vec![card],
+                below
+            })
+        );
+        let before = library(&game, ME);
+        let now = library(&after(&game, &events), ME);
+        assert_eq!(now.len(), before.len() + 1);
+        let at = now.len() - 1 - above;
+        assert_eq!(now[at], card, "{above} cards stay above it");
+        assert_eq!(now[at + 1..], before[before.len() - above..]);
+        assert_eq!(now[..at], before[..before.len() - above]);
+    }
+
+    #[test]
+    fn a_card_of_the_library_moves_down_and_several_cards_are_ordered_by_their_owner() {
+        let game = game();
+        let top_card = *game.zone(Zone::Library(ME)).last().unwrap();
+        let to = r#"{"Library":{"place":{"Below":2}}}"#;
+        let (events, _) = done(run_with(&game, &[top_card], Vec::new(), &moving(to)).unwrap());
+        let now = library(&after(&game, &events), ME);
+        assert_eq!(now.len(), 5);
+        assert_eq!(now[now.len() - 3], top_card);
+        let cards = hand(&game, ME)[..2].to_vec();
+        let decision = asked(run_with(&game, &cards, Vec::new(), &moving(to)).unwrap());
+        let DecisionKind::OrderCards(options) = decision.kind else {
+            panic!("the cards are ordered");
+        };
+        assert_eq!(
+            options.text,
+            "Put the cards beneath the top 2 cards of your library in any order."
+        );
+        let chosen = vec![cards[1], cards[0]];
+        let journal = vec![(ME, Choice::Order(chosen.clone()))];
+        let (events, _) = done(run_with(&game, &cards, journal, &moving(to)).unwrap());
+        let now = library(&after(&game, &events), ME);
+        assert_eq!(now[now.len() - 4..now.len() - 2], [chosen[1], chosen[0]]);
+    }
+
+    #[test]
+    fn a_random_order_beneath_the_top_is_refused_by_name() {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        let to = r#"{"Library":{"place":{"Below":1},"order":"Random"}}"#;
+        let refused = run_with(&game, &[card], Vec::new(), &moving(to));
+        assert!(
+            matches!(refused, Err(ResolveError::Unsupported(name)) if name == "Effect.Move.Random.Below"),
+        );
+    }
+
     #[test]
     fn a_card_of_the_library_goes_to_the_bottom_or_the_top_of_it_without_leaving() {
         let game = game();
@@ -826,7 +928,7 @@ mod tests {
     }
 
     #[test]
-    fn the_controller_is_asked_for_the_order_of_the_cards_of_each_library_in_turn() {
+    fn the_owner_is_asked_for_the_order_of_the_cards_of_each_library_in_turn() {
         let game = game();
         let cards = [hand(&game, ME), hand(&game, FOE)].concat();
         let first = asked(run_with(&game, &cards, Vec::new(), &moving(TOP)).unwrap());
@@ -840,9 +942,12 @@ mod tests {
         let DecisionKind::OrderCards(options) = &second.kind else {
             panic!("the cards are ordered");
         };
-        assert_eq!((second.player, options.cards.as_slice()), (ME, &cards[3..]));
+        assert_eq!(
+            (second.player, options.cards.as_slice()),
+            (FOE, &cards[3..])
+        );
         let theirs = vec![cards[4], cards[3]];
-        let journal = [journal, vec![(ME, Choice::Order(theirs))]].concat();
+        let journal = [journal, vec![(FOE, Choice::Order(theirs))]].concat();
         let (events, _) = done(run_with(&game, &cards, journal, &moving(TOP)).unwrap());
         assert_eq!(events.len(), 5);
         let folded = after(&game, &events);

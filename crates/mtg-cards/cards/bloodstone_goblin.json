@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ec17b9db-dd80-4b46-a1b5-215f26bf6498",
+  "name": "Bloodstone Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodstone Goblin",
+      "oracle_fingerprint": "411efac2f4d80bf9d6ea9e834057a683",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Kicked"], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

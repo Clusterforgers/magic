@@ -719,3 +719,11 @@ fn five_seats_of_long_non_singleton_decks_in_any_colour_play_to_their_end() {
     let outcome = play_game(game_under(5, 7626, &house), 7626);
     assert!(outcome.is_ok(), "{:?}", outcome.err());
 }
+
+/// The input the proptest above found: a seat that controlled another's permanent still had its triggered ability on
+/// the stack when the owner lost, and the ability dealt its damage from the source that had left the game.
+#[test]
+fn five_seats_under_the_default_rules_play_to_their_end() {
+    let outcome = play_game(game_under(5, 7043, &HouseRules::default()), 7043);
+    assert!(outcome.is_ok(), "{:?}", outcome.err());
+}

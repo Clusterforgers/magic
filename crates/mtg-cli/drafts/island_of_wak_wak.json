@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d427e61d-5b30-4d2a-bad2-2e7f016036ca",
+  "name": "Island of Wak-Wak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Island of Wak-Wak",
+      "oracle_fingerprint": "d587ab7a3d47d8fdb3ea089a93119b70",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPower": 0 }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

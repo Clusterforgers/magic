@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7cc809ed-5ce1-40d1-896d-014ca8e2b5a6",
+  "name": "Stomp and Howl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stomp and Howl",
+      "oracle_fingerprint": "8887d27eb4fd9bf547785fd93c510ae6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] } },
+              { "what": { "Object": [{ "Type": "Enchantment" }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    { "Destroy": { "what": { "Target": 1 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

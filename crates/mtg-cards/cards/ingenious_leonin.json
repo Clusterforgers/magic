@@ -1,0 +1,54 @@
+{
+  "oracle_id": "99853d2e-2223-4c05-bbd7-0a746f8f810d",
+  "name": "Ingenious Leonin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ingenious Leonin",
+      "oracle_fingerprint": "df3eb568a1def095b577bab2d2100420",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Cat" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "FirstStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

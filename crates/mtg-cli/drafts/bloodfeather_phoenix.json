@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f4490b09-dc55-47ed-a573-4ae0b95725b1",
+  "name": "Bloodfeather Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodfeather Phoenix",
+      "oracle_fingerprint": "291416e3ee8c093df105cbafaebd80d1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "DealsDamage": {
+                    "source": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ],
+                    "to": "Opponents"
+                  }
+                },
+                {
+                  "DealsDamage": {
+                    "source": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ControlledBy": "You" }
+                    ],
+                    "to": { "Each": [{ "Type": "Battle" }] }
+                  }
+                }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}",
+                  "paid": [
+                    { "Move": { "what": "This", "to": { "Battlefield": {} } } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

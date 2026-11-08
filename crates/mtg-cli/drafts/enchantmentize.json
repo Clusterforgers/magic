@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c1ad6624-ec54-48ce-b874-528a62e593a9",
+  "name": "Enchantmentize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enchantmentize",
+      "oracle_fingerprint": "865bdd5d9ebe0715eed95bf2e49a5c3a",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetTypes": ["Enchantment"] }] } }
+      ]
+    }
+  ]
+}

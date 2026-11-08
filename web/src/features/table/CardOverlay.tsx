@@ -92,6 +92,7 @@ export function Overlay({
   const printed = usePrinted(object)
   const badge = statBadge(object, printed, loyaltyOf(object))
   const manual = object.manual ?? []
+  const granted = object.granted ?? []
   const chips = statusChips(object, role)
   const damage = chips.find((chip) => chip.kind === 'damage')
   const sick = chips.some((chip) => chip.kind === 'sick')
@@ -126,7 +127,12 @@ export function Overlay({
   const footWidth = width * FOOT_SHARE
   const room = roomFor(turned ? (width * 5) / 7 : (width * 7) / 5, others * OTHER_MARK_PX)
   const hasHead =
-    head.length > 0 || sick || manual.length > 0 || object.read === true || note?.label !== undefined
+    head.length > 0 ||
+    granted.length > 0 ||
+    sick ||
+    manual.length > 0 ||
+    object.read === true ||
+    note?.label !== undefined
   return (
     <span data-slot="card-overlay" className="pointer-events-none absolute inset-0">
       {sick ? (
@@ -243,6 +249,16 @@ export function Overlay({
           {head.map(({ label, tone }) => (
             <span key={label} data-slot="card-status" data-tone={tone} className={cn(MARK, TONE[tone], text)}>
               {label}
+            </span>
+          ))}
+          {granted.map((what) => (
+            <span
+              key={what}
+              data-slot="card-granted"
+              title={`Given by hand: ${what}`}
+              className={cn(MARK, 'bg-secondary text-secondary-foreground', text)}
+            >
+              <span className="truncate">+ {what}</span>
             </span>
           ))}
           {note?.label === undefined ? null : (

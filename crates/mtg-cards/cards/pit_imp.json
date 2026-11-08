@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3decbc45-3e79-455f-9d62-878ee31b458d",
+  "name": "Pit Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pit Imp",
+      "oracle_fingerprint": "2e1ab0998e9621498bc1dd758bac2eb7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "limit": { "TimesPerTurn": 2 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

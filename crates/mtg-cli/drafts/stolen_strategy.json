@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6807167a-e290-4259-940e-3cbbfa75d0a1",
+  "name": "Stolen Strategy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stolen Strategy",
+      "oracle_fingerprint": "857512718c335058c824b505d96b5960",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "who": "Opponents", "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Exile": { "what": { "Bound": "kept2" }, "as": "kept2_exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "kept2_exiled" },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

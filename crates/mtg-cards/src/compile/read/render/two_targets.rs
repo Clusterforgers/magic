@@ -21,6 +21,7 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
             Effect::Attach {
                 what: Ref::Target(0),
                 to: Ref::Target(1),
+                bind: None,
             },
         ] => Some(format!(
             "attach {} to {}",
@@ -36,6 +37,8 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
                         of: Ref::Target(0),
                         stat: StatKind::Power,
                     },
+                unpreventable: false,
+                ..
             },
         ] => Some(format!(
             "{} deals damage equal to its power to {}",

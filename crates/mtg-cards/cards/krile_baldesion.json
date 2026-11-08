@@ -11,7 +11,7 @@
         {
           "Triggered": {
             "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
-            "limit": "OncePerTurn",
+            "limit": "OncePerTurnDone",
             "targets": [
               {
                 "what": {

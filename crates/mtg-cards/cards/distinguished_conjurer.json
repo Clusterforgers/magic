@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6df57d67-2fd9-4e7a-b67b-f361fc30e496",
+  "name": "Distinguished Conjurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Distinguished Conjurer",
+      "oracle_fingerprint": "6b453bd1bf3db642403bb15d1f69c9d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{W}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

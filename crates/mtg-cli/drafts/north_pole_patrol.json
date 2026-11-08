@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a1230e78-0bfa-489e-a1b9-3c227bceb6fb",
+  "name": "North Pole Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "North Pole Patrol",
+      "oracle_fingerprint": "91eec6f061e235cb2231f45e12af88f0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": ["Other", { "ControlledBy": "You" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 3 }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

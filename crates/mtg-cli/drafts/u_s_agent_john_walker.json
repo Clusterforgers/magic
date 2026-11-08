@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2b6fa8b6-4865-4eb6-974b-00f6b16b6f0f",
+  "name": "U.S.Agent, John Walker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "U.S.Agent, John Walker",
+      "oracle_fingerprint": "08a99f219c8eda12fa24d2cef08541b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sturdy Shield",
+                      "types": ["Artifact"],
+                      "subtypes": ["Equipment"],
+                      "abilities": [
+                        { "Keyword": { "Equip": "{2}" } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

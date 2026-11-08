@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "53c5d47d-0c5c-4932-aaf1-df21b8b8daeb",
+  "oracle_id": "dfd3adec-033b-47ed-a227-ea1f48b4057c",
+  "multiverse_ids": [
+    151114
+  ],
+  "mtgo_id": 29990,
+  "mtgo_foil_id": 29991,
+  "tcgplayer_id": 27190,
+  "cardmarket_id": 19607,
+  "name": "Rise of the Hobgoblins",
+  "lang": "en",
+  "released_at": "2008-07-25",
+  "uri": "https://api.scryfall.com/cards/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb",
+  "scryfall_uri": "https://scryfall.com/card/eve/145/rise-of-the-hobgoblins?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:37:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.jpg?1783942661",
+    "normal": "https://cards.scryfall.io/normal/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.jpg?1783942661",
+    "large": "https://cards.scryfall.io/large/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.jpg?1783942661",
+    "png": "https://cards.scryfall.io/png/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.png?1783942661",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.jpg?1783942661",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.jpg?1783942661",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.webp?1783942661",
+    "grid": "https://cards.scryfall.io/grid/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.webp?1783942661",
+    "display": "https://cards.scryfall.io/display/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.webp?1783942661",
+    "art": "https://cards.scryfall.io/art/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.webp?1783942661",
+    "crop": "https://cards.scryfall.io/crop/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.webp?1783942661",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/3/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb.jpg?1783942661"
+  },
+  "mana_cost": "{R/W}{R/W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, you may pay {X}. If you do, create X 1/1 red and white Goblin Soldier creature tokens.\n{R/W}: Red creatures and white creatures you control gain first strike until end of turn.",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e836db04-161c-4f4f-88d2-4271cec62008",
+      "component": "token",
+      "name": "Goblin Soldier",
+      "type_line": "Token Creature — Goblin Soldier",
+      "uri": "https://api.scryfall.com/cards/e836db04-161c-4f4f-88d2-4271cec62008"
+    },
+    {
+      "object": "related_card",
+      "id": "53c5d47d-0c5c-4932-aaf1-df21b8b8daeb",
+      "component": "combo_piece",
+      "name": "Rise of the Hobgoblins",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "86b4dfef-f2d1-49d6-825d-7df6bda44357",
+  "set": "eve",
+  "set_name": "Eventide",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/86b4dfef-f2d1-49d6-825d-7df6bda44357",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeve&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eve?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/53c5d47d-0c5c-4932-aaf1-df21b8b8daeb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adfd3adec-033b-47ed-a227-ea1f48b4057c&unique=prints",
+  "collector_number": "145",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "A river even the merrow dare not cross.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeff Miracola",
+  "artist_ids": [
+    "9b465bde-3656-4495-ace4-af4ce29999ed"
+  ],
+  "illustration_id": "f830a2e9-982e-48c1-9cd7-e00030335f0b",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19628,
+  "penny_rank": 8650,
+  "prices": {
+    "usd": "4.01",
+    "usd_foil": "7.79",
+    "usd_etched": null,
+    "eur": "2.07",
+    "eur_foil": "5.50",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=151114&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRise%2Bof%2Bthe%2BHobgoblins",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRise%2Bof%2Bthe%2BHobgoblins",
+    "edhrec": "https://edhrec.com/route/?cc=Rise+of+the+Hobgoblins"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F27190%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=19607&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/29990?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

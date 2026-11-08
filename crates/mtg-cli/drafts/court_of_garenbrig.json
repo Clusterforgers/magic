@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1f3f6336-6f99-4181-be3c-1814f7b8ef36",
+  "name": "Court of Garenbrig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court of Garenbrig",
+      "oracle_fingerprint": "759ac4c9ec83162e5d27bac945de8dd4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": { "condition": { "Monarch": "You" }, "then": 1, "otherwise": 0 }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "MultiplyCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

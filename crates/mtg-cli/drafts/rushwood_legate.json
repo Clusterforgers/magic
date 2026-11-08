@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f3623759-bf3a-4846-9ef7-1b732ad4355f",
+  "name": "Rushwood Legate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rushwood Legate",
+      "oracle_fingerprint": "e4830e354397a5e7b020b87eefb499e8",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "Opponents" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

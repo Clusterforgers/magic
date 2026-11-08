@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8dad1fa8-3533-4e3c-b9b3-fcd57b20a33d",
+  "name": "Omnipresence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omnipresence",
+      "oracle_fingerprint": "12f5571e69893716d8b13231983db58d",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Not": { "Type": "Land" } },
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Le",
+                      "to": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                ],
+                "from": "Hand",
+                "free": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

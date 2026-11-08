@@ -1,0 +1,50 @@
+{
+  "oracle_id": "0ef80a38-f464-4d1f-9e81-d4087d6ecc9b",
+  "name": "Violent Urge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Violent Urge",
+      "oracle_fingerprint": "6f72ce7424293615854a5f0717c4d5dd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "DoubleStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

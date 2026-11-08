@@ -1,0 +1,48 @@
+{
+  "oracle_id": "f671583f-bd22-4d3e-bf19-fb740c607f8f",
+  "name": "River's Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "River's Grasp",
+      "oracle_fingerprint": "36b22ffdd732db0738c19a81e1ee1d1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } },
+              { "what": "Player" }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Blue" },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Black" },
+                  "then": [
+                    {
+                      "Reveal": {
+                        "what": { "Each": [{ "OwnedBy": { "Target": 1 } }, { "In": "Hand" }] }
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Target": 1 },
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "by": "You"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1c4918e6-3810-458e-a11b-949bbc43e7cc",
+  "name": "Riveteers Decoy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riveteers Decoy",
+      "oracle_fingerprint": "2b1b0298e3a1663e847b1660fb56b737",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        { "Keyword": { "Blitz": "{3}{G}" } }
+      ]
+    }
+  ]
+}

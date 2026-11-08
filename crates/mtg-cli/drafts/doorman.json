@@ -1,0 +1,46 @@
+{
+  "oracle_id": "01ea2130-e212-4532-b68b-2f940d53ef6e",
+  "name": "Doorman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doorman",
+      "oracle_fingerprint": "26b850357dbd52f30b85bee5d3638c7e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        {
+                          "AnyOf": [
+                            {
+                              "Not": {
+                                "AnyOf": [
+                                  { "Not": { "Type": "Creature" } },
+                                  { "Not": { "Compare": { "stat": "Power", "op": "Le", "to": 2 } } }
+                                ]
+                              }
+                            },
+                            { "Subtype": "Wall" }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

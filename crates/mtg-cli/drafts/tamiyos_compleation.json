@@ -1,0 +1,50 @@
+{
+  "oracle_id": "71d8b7f5-a5da-4528-815e-51c65626b681",
+  "name": "Tamiyo's Compleation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tamiyo's Compleation",
+      "oracle_fingerprint": "c0af2943f02978a1dfe1d2a13aad8dc7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Keyword": {
+            "Enchant": [
+              {
+                "AnyOf": [
+                  { "Type": "Artifact" },
+                  { "Type": "Creature" },
+                  { "Type": "Planeswalker" }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": "Attached" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Attached",
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Unattach": { "what": "Attached" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["LoseAbilities"] } },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

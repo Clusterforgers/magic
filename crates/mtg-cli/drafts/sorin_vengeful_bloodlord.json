@@ -1,0 +1,61 @@
+{
+  "oracle_id": "cffb615c-2de0-4c65-9d0b-08a649ba0695",
+  "name": "Sorin, Vengeful Bloodlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorin, Vengeful Bloodlord",
+      "oracle_fingerprint": "3fc99a433e048efdc0fbbd3d20645cd6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Vampire" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

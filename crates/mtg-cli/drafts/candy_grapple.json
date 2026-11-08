@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9588a7fd-bbe5-4a81-9a7e-d8e8f6c0537d",
+  "name": "Candy Grapple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Candy Grapple",
+      "oracle_fingerprint": "971f3ebe9da270543c3634d167256da7",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": "AdditionalCostPaid",
+                                "then": 5,
+                                "otherwise": 3
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "When": {
+                                "condition": "AdditionalCostPaid",
+                                "then": 5,
+                                "otherwise": 3
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

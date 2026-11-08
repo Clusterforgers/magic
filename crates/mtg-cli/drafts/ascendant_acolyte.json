@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8b9918c3-1135-4c63-991f-f0a38340a33b",
+  "name": "Ascendant Acolyte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ascendant Acolyte",
+      "oracle_fingerprint": "9abdd49589ac9860b7b281c0e299dbb5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Counters": {
+                    "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                    "counter": "+1/+1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "MultiplyCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

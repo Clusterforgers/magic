@@ -1,0 +1,39 @@
+{
+  "oracle_id": "854e0e2c-06dc-4166-a48a-107e939ca91e",
+  "name": "Evolution Vat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evolution Vat",
+      "oracle_fingerprint": "326a20d9eb2053360a926287ef55e147",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{2}{U}{G}",
+                          "effects": [{ "MultiplyCounters": { "on": "This", "counter": "+1/+1" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "3771c0d7-cea3-4c03-933d-f236f32ef2db",
+  "name": "White Glove Gourmand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Glove Gourmand",
+      "oracle_fingerprint": "1ad620b27570bf8d7ad7b4fc0bbaf5ff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Subtype": "Human" }, "Other", { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

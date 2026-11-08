@@ -1,0 +1,36 @@
+{
+  "oracle_id": "77b98632-e103-44fa-a940-2c3b2897b60f",
+  "name": "Swarm Surge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swarm Surge",
+      "oracle_fingerprint": "a4ec30d8dd9df953ce57b2bd914011e6",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Colorless", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4c6c064c-da61-4c7a-9607-8fb4490ff9a6",
+  "name": "River Delta",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "River Delta",
+      "oracle_fingerprint": "cfbab8e0d4b8235927f48038ee3fdbba",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["This", { "HasCounter": { "Other": "depletion" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "depletion" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

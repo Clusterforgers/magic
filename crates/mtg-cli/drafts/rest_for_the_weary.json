@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c7f08962-6c54-4fd5-a55e-7513e758af32",
+  "name": "Rest for the Weary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rest for the Weary",
+      "oracle_fingerprint": "8711c38cf5f7d2a0c8d08b51f749c934",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "GainLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Entered",
+                              "who": "You",
+                              "filter": [{ "Type": "Land" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 8,
+                      "otherwise": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

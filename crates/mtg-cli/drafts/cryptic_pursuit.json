@@ -1,0 +1,68 @@
+{
+  "oracle_id": "214cfbc8-369e-4035-9b65-80d0e0024889",
+  "name": "Cryptic Pursuit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptic Pursuit",
+      "oracle_fingerprint": "a45ad883834b83efa3381f88e87e0d04",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Manifest": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Exile": { "what": "Triggering", "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Not": { "Type": "Land" } }],
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" }
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

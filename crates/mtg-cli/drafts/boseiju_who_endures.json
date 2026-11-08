@@ -1,0 +1,94 @@
+{
+  "oracle_id": "bf1341dd-41a3-49f6-87ec-63170dde4324",
+  "name": "Boseiju, Who Endures",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boseiju, Who Endures",
+      "oracle_fingerprint": "80e3f8726a6fcfee87b81d0ed8685dea",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{G}" },
+              "DiscardSelf",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Land" } },
+                              { "Not": { "Not": { "Supertype": "Basic" } } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [
+                          { "Type": "Land" },
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Plains" },
+                              { "Subtype": "Island" },
+                              { "Subtype": "Swamp" },
+                              { "Subtype": "Mountain" },
+                              { "Subtype": "Forest" }
+                            ]
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

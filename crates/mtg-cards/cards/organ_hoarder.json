@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a6f0dcbc-ca45-4ae8-961e-e42ef8d8a975",
+  "name": "Organ Hoarder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Organ Hoarder",
+      "oracle_fingerprint": "01a82218042e0d878eb9b1f545150753",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

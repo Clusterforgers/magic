@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e4cf3710-8600-4f95-abb2-faefdc25693d",
+  "name": "Taigam, Ojutai Master",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Taigam, Ojutai Master",
+      "oracle_fingerprint": "2d979ab6782ec600a09ce579dcb7e910",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": [
+                  "Spell",
+                  {
+                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Subtype": "Dragon" }]
+                  },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 68, "end": 321 }
+          }
+        }
+      ]
+    }
+  ]
+}

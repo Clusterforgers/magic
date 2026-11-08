@@ -1,0 +1,37 @@
+{
+  "oracle_id": "902eb71f-62b3-40cb-816b-f6b7e92e91e7",
+  "name": "Might of Murasa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Might of Murasa",
+      "oracle_fingerprint": "c43c2a24a3ed013473c2ace485fc9d6a",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{G}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "When": { "condition": "Kicked", "then": 5, "otherwise": 3 } },
+                        "toughness": {
+                          "When": { "condition": "Kicked", "then": 5, "otherwise": 3 }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

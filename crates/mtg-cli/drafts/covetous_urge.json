@@ -1,0 +1,46 @@
+{
+  "oracle_id": "6f52008f-3365-4cf9-9cae-8e761d657902",
+  "name": "Covetous Urge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Covetous Urge",
+      "oracle_fingerprint": "685c48761e62e90a619ac01e7b63eb6b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled2" },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

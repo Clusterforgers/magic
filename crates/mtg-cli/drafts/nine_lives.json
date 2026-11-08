@@ -1,0 +1,57 @@
+{
+  "oracle_id": "236e1f57-7ef5-455a-82a6-8ff6b85d8849",
+  "name": "Nine Lives",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nine Lives",
+      "oracle_fingerprint": "00df361c9c481b632a8541129b08e967",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "PreventAnd": [
+                { "PutCounters": { "on": "This", "counter": { "Other": "incarnation" } } }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "This",
+                        {
+                          "CounterCount": {
+                            "kind": { "Other": "incarnation" },
+                            "op": "Ge",
+                            "to": 9
+                          }
+                        }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [{ "Exile": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "LoseGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

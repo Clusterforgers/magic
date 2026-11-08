@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e9b4e857-39e5-4a06-89ad-3dd94b3f252a",
+  "name": "Paralyze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paralyze",
+      "oracle_fingerprint": "31f2125213ba8fe8282570436c7e97f7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Attached" },
+                  "cost": "{4}",
+                  "paid": [{ "Untap": { "what": "Attached" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

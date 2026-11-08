@@ -1,0 +1,41 @@
+{
+  "oracle_id": "619ef7e1-33cd-4470-a1d4-83c5f1f5c31e",
+  "name": "Forget",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forget",
+      "oracle_fingerprint": "264925f616de12c68bf069c1608a280d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2, "as": "discarded" } },
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

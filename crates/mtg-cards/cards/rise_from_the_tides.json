@@ -1,0 +1,41 @@
+{
+  "oracle_id": "390b862a-2a85-44bd-832c-f5bbd3eb4ea0",
+  "name": "Rise from the Tides",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise from the Tides",
+      "oracle_fingerprint": "ed264ce6cc76d5e40af5d7fe6de6cc55",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

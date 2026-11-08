@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3ef03540-b538-466d-aa3c-da6750117ba4",
+  "name": "The Last Ride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Last Ride",
+      "oracle_fingerprint": "b6717f5ba6e904906409893f738b5633",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Times": { "by": -1, "of": { "Life": "You" } } },
+                  "toughness": { "Times": { "by": -1, "of": { "Life": "You" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, { "PayLife": 2 }],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

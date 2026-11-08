@@ -1,0 +1,128 @@
+{
+  "oracle_id": "7a4cc57b-9f85-446c-9ca0-98c72b9bb732",
+  "name": "Happily Ever After",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Happily Ever After",
+      "oracle_fingerprint": "68b06e3773f5f8b2b1f415ab7a411d65",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "GainLife": { "who": "EachPlayer", "amount": 5 } },
+              { "Draw": { "who": "EachPlayer" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Sum": [
+                        {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Distinct": {
+                                    "of": [{ "ControlledBy": "You" }],
+                                    "stat": "Colors"
+                                  }
+                                },
+                                "op": "Gt",
+                                "right": 5
+                              }
+                            },
+                            "then": 5,
+                            "otherwise": {
+                              "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" }
+                            }
+                          }
+                        },
+                        {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "CardTypes": [
+                                    {
+                                      "AnyOf": [
+                                        {
+                                          "Not": {
+                                            "AnyOf": [
+                                              { "Not": { "ControlledBy": "You" } },
+                                              { "Not": { "In": "Battlefield" } }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "Not": {
+                                            "AnyOf": [
+                                              { "Not": { "OwnedBy": "You" } },
+                                              { "Not": { "In": "Graveyard" } }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "op": "Gt",
+                                "right": 6
+                              }
+                            },
+                            "then": 6,
+                            "otherwise": {
+                              "CardTypes": [
+                                {
+                                  "AnyOf": [
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "Not": { "ControlledBy": "You" } },
+                                          { "Not": { "In": "Battlefield" } }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "Not": { "OwnedBy": "You" } },
+                                          { "Not": { "In": "Graveyard" } }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "op": "Eq",
+                    "right": 11
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Life": "You" },
+                    "op": "Ge",
+                    "right": { "StartingLife": "You" }
+                  }
+                }
+              ]
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

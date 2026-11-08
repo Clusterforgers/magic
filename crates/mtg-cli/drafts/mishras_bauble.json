@@ -1,0 +1,28 @@
+{
+  "oracle_id": "63afc3d1-7653-476e-838f-fc18d4a62a21",
+  "name": "Mishra's Bauble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra's Bauble",
+      "oracle_fingerprint": "890aefe15450a58497030ca8f09cae84",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,12 @@ use crate::spend::{ManaLasts, SpendOn, WhenSpent};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, DayNight, StatKind};
 
+/// The most passes any `RepeatWhile` makes, whatever it writes: a loop that never ends cannot hang a game.
+pub const MOST_PASSES: u32 = 1000;
+
+/// The most options a `OneOf` offers.
+pub const MOST_OPTIONS: usize = 8;
+
 /// The name a clash binds its opponent to.
 pub const W9B_CLASHED: &str = "clashed";
 
@@ -41,6 +47,15 @@ pub(crate) const fn yes() -> bool {
     true
 }
 
+/// How an effect changes the targets of a spell or ability (CR 115.7).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum NewTargets {
+    /// "Change the target": the only target of a spell or ability becomes another legal target, or stays when there is none.
+    Another,
+    /// "You may choose new targets": each target may become any legal target (CR 115.7b).
+    Choose,
+}
+
 /// A phase an effect adds to the turn (CR 500.8).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PhaseKind {
@@ -59,6 +74,9 @@ pub enum Place {
     Top,
     /// On the bottom.
     Bottom,
+    /// Beneath the top `n` cards (`Below(1)` is second from the top); on the bottom of a library with fewer cards
+    /// (CR 401.7).
+    Below(u32),
     /// Into the library, which is then shuffled.
     Shuffled,
 }
@@ -143,6 +161,12 @@ pub enum Produce {
     },
     /// One mana of a type the permanent tapped for mana produced; only in a triggered mana ability (CR 605.1b).
     OfTapped,
+    /// One mana of each color among the objects the selector picks ("For each color among permanents you control, add
+    /// one mana of that color"); none while they have no color.
+    EachColorAmong(Selector),
+    /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
+    /// color. Add an amount of mana of that color equal to your devotion to that color."
+    Devotion,
     /// The first mana, or the second when the condition holds as the mana is added ("Add {G}. If you control four or more
     /// creatures, add {G}{G} instead."); neither is itself a replacement.
     Instead {
@@ -165,6 +189,26 @@ pub enum Produce {
     },
 }
 
+impl Produce {
+    /// "Two mana of different colors": one list for each pair of distinct colors, in WUBRG order.
+    pub fn two_different_colors() -> Self {
+        let colors = [
+            ManaType::White,
+            ManaType::Blue,
+            ManaType::Black,
+            ManaType::Red,
+            ManaType::Green,
+        ];
+        let mut lists = Vec::new();
+        for (at, first) in colors.iter().enumerate() {
+            for second in &colors[at + 1..] {
+                lists.push(vec![*first, *second]);
+            }
+        }
+        Produce::OneOfLists(lists)
+    }
+}
+
 /// What a created token is.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -176,8 +220,11 @@ pub enum TokenRef {
     /// An X/X token whose size is an amount counted as the token is created ("an X/X black Horror creature token, where X
     /// is this creature's power"); the description leaves out its power and toughness.
     Sized {
-        /// Both its power and its toughness.
+        /// Its power, and its toughness too unless `toughness` is given.
         size: Amount,
+        /// Its toughness when it differs from `size`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        toughness: Option<Amount>,
         /// The rest of the token.
         token: Box<TokenSpec>,
     },
@@ -192,6 +239,18 @@ pub enum TokenRef {
         #[serde(default, skip_serializing_if = "is_false")]
         no_mana_cost: bool,
     },
+}
+
+/// What damage beyond lethal does (CR 120.10): damage dealt to a creature, planeswalker or battle beyond what is lethal to it.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Excess {
+    /// The name the number of excess damage is kept under, for `Amount::Bound` in the steps after it.
+    #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+    pub bind: Option<String>,
+    /// Who is dealt the excess damage instead of the recipient: only the lethal part goes to the recipient.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to: Option<Ref>,
 }
 
 /// One option of a modal spell or ability, with its own targets.
@@ -241,6 +300,31 @@ pub enum VoteFor {
     Of(Ref),
 }
 
+/// What an `Effect::ChooseValue` asks a player for.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ValueKind {
+    /// A colour.
+    Color,
+    /// One or more colours ("the color or colors of your choice"), each at most once.
+    Colors,
+    /// A creature type.
+    CreatureType,
+    /// A card type.
+    CardType,
+    /// A land type (CR 205.3i).
+    LandType,
+    /// The name of a card of the game that the selector matches (CR 201.3); an empty selector is any card.
+    CardName(Selector),
+    /// A whole number from the first amount to the second, read when the choice is made.
+    Number(Amount, Amount),
+    /// One of these words ("choose odd or even").
+    Options(Vec<String>),
+    /// One of these card types ("choose a permanent type", "choose creature or land").
+    CardTypeOf(Vec<CardType>),
+    /// A creature type other than these ("choose a creature type other than Wall").
+    CreatureTypeExcept(Vec<String>),
+}
+
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
 /// controller, an `Amount` is one, `source` is the ability's source.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -254,6 +338,9 @@ pub enum Effect {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The name the drawn cards are bound to, as the cards they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// The player discards cards of their choice, or at random.
     Discard {
@@ -266,6 +353,15 @@ pub enum Effect {
         /// Cards are chosen at random.
         #[serde(default, skip_serializing_if = "is_false")]
         random: bool,
+        /// Which cards of the hand may be chosen ("discard a creature card"); any card when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        filter: Option<Selector>,
+        /// The player who chooses the cards from the hand ("you choose a card from it"); the discarding player when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// The player may take fewer, even none ("discard up to two cards", "you may choose a nonland card").
+        #[serde(default, skip_serializing_if = "is_false")]
+        optional: bool,
         /// The name the discarded cards are bound to, as the objects they become in their graveyards (CR 400.7), for the
         /// steps that count them ("the greatest number of cards a player discarded this way").
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
@@ -279,6 +375,9 @@ pub enum Effect {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// The player scries (CR 701.22).
     Scry {
@@ -301,6 +400,11 @@ pub enum Effect {
         #[serde(rename = "as")]
         bind: String,
     },
+    /// The controller looks at the whole hand of each player the reference names; only they learn the cards.
+    LookAtHand {
+        /// Whose hand.
+        of: Ref,
+    },
     /// The objects are revealed to every player.
     Reveal {
         /// What is revealed.
@@ -311,6 +415,10 @@ pub enum Effect {
         /// Who searches.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+        /// Whose zone is searched when it is not the searcher's own ("search target opponent's library"); exactly one player,
+        /// the searcher sees the matches and chooses. Absent: the searcher's own.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        of: Option<Ref>,
         /// Whose zone: their library unless the zone says otherwise.
         #[serde(
             default = "ZoneKind::library",
@@ -329,6 +437,9 @@ pub enum Effect {
         /// The cards are revealed.
         #[serde(default, skip_serializing_if = "is_false")]
         reveal: bool,
+        /// The cards found have different names ("up to three Aura cards with different names").
+        #[serde(default, skip_serializing_if = "is_false")]
+        distinct: bool,
         /// The name the found cards are bound to.
         #[serde(rename = "as")]
         bind: String,
@@ -350,8 +461,20 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         rest_as: Option<String>,
     },
-    /// Cards of a public zone are picked at random, with the game's random source, and the pick is bound; fewer are
-    /// picked when the set holds fewer.
+    /// A player chooses a value that is not an object or a player and the resolution remembers it under the name:
+    /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked.
+    ChooseValue {
+        /// Who chooses; exactly one player.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What is chosen.
+        kind: ValueKind,
+        /// The name the value is remembered under.
+        #[serde(rename = "as")]
+        bind: String,
+    },
+    /// Cards of a public zone, or players ("choose an opponent at random"), are picked at random, with the game's
+    /// random source, and the pick is bound; fewer are picked when the set holds fewer.
     ChooseAtRandom {
         /// The objects picked from.
         from: Ref,
@@ -374,6 +497,9 @@ pub enum Effect {
         what: Ref,
         /// Where it goes.
         to: Destination,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Destroys permanents (CR 701.8).
     Destroy {
@@ -382,6 +508,9 @@ pub enum Effect {
         /// They can be regenerated; `false` for "can't be regenerated".
         #[serde(default = "yes", skip_serializing_if = "is_true")]
         regenerate: bool,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Regenerates permanents (CR 701.19): until end of turn, the next time each would be destroyed it is tapped,
     /// loses its damage and leaves combat instead.
@@ -439,10 +568,21 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
-    /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a).
+    /// Exiles objects face down, linked to the source of the effect: the permanent hides them (hideaway, CR 702.75a), or,
+    /// with `held`, the player whose effect it is alone looks at them for as long as they lie in exile, or, with `sealed`,
+    /// no player does.
     ExileHidden {
         /// What is exiled face down.
         what: Ref,
+        /// Only the player whose effect it is looks at them, whatever becomes of the source (not hideaway).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        held: bool,
+        /// No player looks at them (CR 406.3) unless a rule grants a look; never with `held`.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        sealed: bool,
+        /// The name the cards exiled are bound to, as the objects they become in exile (CR 400.7).
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Exiles the card of the resolving spell encoded on a creature (cipher, CR 702.99a): it lies in exile linked to that
     /// creature, and the link ends when the card leaves exile or the creature leaves the battlefield. Nothing happens
@@ -452,6 +592,38 @@ pub enum Effect {
         what: Ref,
         /// The creature it is encoded on.
         on: Ref,
+    },
+    /// Exiles a card from a graveyard haunting a creature (haunt, CR 702.55a): it lies in exile linked to that creature
+    /// as it is now. Nothing happens when `what` is no card in a graveyard or `on` names no creature on the battlefield.
+    Haunt {
+        /// The card exiled.
+        what: Ref,
+        /// The creature it haunts.
+        on: Ref,
+    },
+    /// The source remembers the objects `what` names in `slot` (Forge: Remember), added to what the slot holds. The memory
+    /// belongs to the object that is the source of the ability, is part of the game state and ends when that object
+    /// leaves its zone; `Ref::Remembered` reads it. An object that changes zones afterwards is another object and is no
+    /// longer remembered, so name objects after a move (a bound result) to remember where they went.
+    Remember {
+        /// The objects remembered.
+        what: Ref,
+        /// The name of the memory.
+        slot: String,
+    },
+    /// The source forgets everything it remembers in `slot` (Forge: Clear Remembered).
+    Forget {
+        /// The name of the memory.
+        slot: String,
+    },
+    /// The source remembers the number the amount works out to in `slot` (Forge: `RememberAmount`, `RememberRemoved`), added to
+    /// what the slot holds; `Amount::Remembered` reads the numbers added up. The numbers of a source are gone when the
+    /// resolution that wrote them ends.
+    RememberValue {
+        /// The number remembered.
+        value: Amount,
+        /// The name of the memory.
+        slot: String,
     },
     /// The player sacrifices permanents they control that match, of their choice.
     Sacrifice {
@@ -463,11 +635,31 @@ pub enum Effect {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
+    },
+    /// The player sacrifices as many permanents they control that match as they choose, up to the count ("sacrifice any
+    /// number of lands"); none is allowed.
+    SacrificeUpTo {
+        /// Who sacrifices.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// The most.
+        count: Amount,
+        /// The name the objects are bound to, as the objects they become, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Counters spells or abilities (CR 701.6).
     Counter {
         /// What is countered.
         what: Ref,
+        /// The name the countered spells are bound to, as the cards they become, for the steps after it; abilities are not.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Deals damage.
     DealDamage {
@@ -478,6 +670,12 @@ pub enum Effect {
         to: Ref,
         /// How much.
         amount: Amount,
+        /// What the damage beyond lethal does (CR 120.10); none when it is dealt as it is.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        excess: Option<Excess>,
+        /// "The damage can't be prevented" (CR 614.17): no prevention effect applies to this damage.
+        #[serde(default, skip_serializing_if = "is_false")]
+        unpreventable: bool,
     },
     /// The player gains life.
     GainLife {
@@ -540,6 +738,15 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         up_to: bool,
     },
+    /// Removes every counter of every kind from an object or player ("Remove all counters from target creature"), or
+    /// every counter of one kind ("remove all gold counters from all creatures").
+    RemoveAllCounters {
+        /// Where they come from.
+        from: Ref,
+        /// The one kind removed; every kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+    },
     /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
     MoveCounters {
         /// The object they leave.
@@ -563,6 +770,17 @@ pub enum Effect {
         /// What the number is multiplied by; two doubles it.
         #[serde(default = "two", skip_serializing_if = "is_two")]
         factor: u32,
+    },
+    /// Puts on an object or player counters of each kind another holds or held as it left ("put its counters on target
+    /// creature you control", "for each kind of counter on target permanent, give it another counter of that kind").
+    PutCountersOf {
+        /// Where they go.
+        on: Ref,
+        /// Whose kinds are read, as it last existed when it has left.
+        of: Ref,
+        /// How many of each kind; as many as `of` holds of the kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each: Option<Amount>,
     },
     /// Taps permanents.
     Tap {
@@ -602,8 +820,11 @@ pub enum Effect {
         what: Ref,
         /// The object they are attached to.
         to: Ref,
+        /// The name the permanents that became attached are bound to, for the steps after it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
-    /// Puts a creature that just entered the battlefield into combat, tapped and attacking the player or planeswalker the creature that the cost of the ability returned to its owner's hand was attacking (CR 702.49a, 508.4); it was never declared as an attacker.
+    /// Puts a creature that just entered the battlefield into combat, attacking the player or planeswalker the creature that the cost of the ability returned to its owner's hand was attacking (CR 702.49a), or, with no such cost, what its controller chooses among the defenders of their own attack (CR 508.4); it was never declared as an attacker.
     JoinAttack {
         /// The creature that joins the attack.
         what: Ref,
@@ -631,9 +852,31 @@ pub enum Effect {
         /// What flips.
         what: Ref,
     },
+    /// Turns face-down permanents face up (CR 702.37e, 708.8); a permanent that is face up already is passed over.
+    TurnFaceUp {
+        /// What is turned.
+        what: Ref,
+    },
     /// Makes prepare cards on the battlefield prepared: while one is, its controller may cast a copy of its spell face and doing so unprepares it. A permanent that is prepared already, is no prepare card or is not on the battlefield is passed over.
     Prepare {
         /// What becomes prepared.
+        what: Ref,
+    },
+    /// Suspects creatures on the battlefield (CR 701.60): while one is suspected, it has menace and can't block. One that
+    /// is suspected already, is no creature or is not on the battlefield is passed over.
+    Suspect {
+        /// What becomes suspected.
+        what: Ref,
+    },
+    /// Makes suspected permanents no longer suspected (CR 701.60d).
+    Unsuspect {
+        /// What stops being suspected.
+        what: Ref,
+    },
+    /// Solves Cases on the battlefield (CR 719.3): a solved Case stays solved until it leaves. One that is solved
+    /// already, is no Case or is not on the battlefield is passed over.
+    Solve {
+        /// What becomes solved.
         what: Ref,
     },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
@@ -687,6 +930,13 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The Ring tempts the player (CR 701.54): their Ring level rises (to 4 at most) and they choose a creature they
+    /// control as their Ring-bearer, if they control one.
+    RingTempts {
+        /// Who is tempted.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// The player takes the initiative (CR 725), even when they have it.
     TakeInitiative {
         /// Who takes it.
@@ -713,6 +963,9 @@ pub enum Effect {
         subtype: Subtype,
         /// How many +1/+1 counters.
         count: Amount,
+        /// The name the Army that got the counters is bound to, for the steps after it ("the amassed Army").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Each player named incubates (CR 701.53): they create an Incubator token with that many +1/+1 counters on it.
     Incubate {
@@ -720,6 +973,32 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
         /// How many +1/+1 counters.
+        count: Amount,
+    },
+    /// The player conjures cards (Alchemy): new cards named `name`, taken from the game's card library, are created in
+    /// a zone of theirs. A name the game cannot resolve conjures nothing.
+    Conjure {
+        /// Who conjures and owns the cards.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The card's name.
+        name: String,
+        /// The zone the cards are created in: a hand, the top of a library, a graveyard or exile.
+        zone: ZoneKind,
+        /// How many cards.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// The player seeks cards (Alchemy): random cards from their library that match the filter go to their hand, chosen
+    /// with the game's random source; fewer when fewer match.
+    Seek {
+        /// Who seeks.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What the cards must be.
+        filter: Selector,
+        /// How many cards.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
     /// The source creature becomes monstrous (CR 701.37): it gets +1/+1 counters.
@@ -784,6 +1063,9 @@ pub enum Effect {
     Connive {
         /// The creatures that connive.
         what: Ref,
+        /// How many cards each controller draws and then discards ("connives X", CR 701.50e); one when absent.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
     },
     /// The player exiles cards from the top of their library, face up one at a time, until one matches the filter
     /// (CR 702.85a, 701.57a); a library that runs out ends it with nothing found.
@@ -817,7 +1099,8 @@ pub enum Effect {
         /// The name every card revealed, the matching ones included, is bound to.
         revealed_as: String,
     },
-    /// The player exiles cards from the top of their library, face up (CR 406.3) and binds them.
+    /// The player exiles cards from the top of their library, face up (CR 406.3), or face down for no player to look at
+    /// with `sealed`, and binds them.
     ExileTop {
         /// Whose library.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
@@ -828,6 +1111,9 @@ pub enum Effect {
         /// The name the cards exiled are bound to, each as the object it becomes in exile.
         #[serde(rename = "as")]
         bind: String,
+        /// The cards lie face down and no player may look at them (CR 406.3).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        sealed: bool,
     },
     /// The player may cast a card during the resolution, without waiting for priority (CR 608.2g); `otherwise` is
     /// done when they do not.
@@ -846,6 +1132,10 @@ pub enum Effect {
         /// The alternative cost it is cast for (CR 118.9): `Madness` pays the madness cost of the card, `Suspend` pays nothing; the spell remembers it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         way: Option<CastWay>,
+        /// What it is cast for rather than its mana cost (CR 118.9): "by paying life equal to its mana value"; an amount in
+        /// it counts the card cast as `This`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rather: Option<Cost>,
         /// The card is cast transformed: the spell is its back face (CR 712.4, 310.11b "cast it transformed").
         #[serde(default, skip_serializing_if = "is_false")]
         transformed: bool,
@@ -893,6 +1183,9 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         skip_untap: bool,
     },
+    /// The turn ends (CR 723): the other spells and abilities on the stack are exiled, combat ends and the game goes on
+    /// at the cleanup step.
+    EndTurn,
     /// Phases are added after the current phase (CR 500.8), in this order and before any phase added earlier:
     /// "After this main phase, there is an additional combat phase followed by an additional main phase."
     AddPhase {
@@ -904,6 +1197,68 @@ pub enum Effect {
         /// Who wins.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+    },
+    /// The player loses the game (CR 104.3).
+    LoseGame {
+        /// Who loses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// The game is a draw (CR 104.4): every player still in it leaves it at once.
+    DrawGame {},
+    /// A player's life total becomes `amount`: the difference is gained or lost as life (CR 119.5).
+    SetLife {
+        /// Whose life total changes.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The new life total.
+        amount: Amount,
+    },
+    /// Two players exchange life totals (CR 119.7): each gains or loses the difference. Nothing happens when either
+    /// player's life total can't change.
+    ExchangeLife {
+        /// The first player.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The other player.
+        with: Ref,
+    },
+    /// All damage marked on each creature is removed (CR 120.6).
+    RemoveDamage {
+        /// The creatures.
+        what: Ref,
+    },
+    /// Does `effects` again and again while `condition` holds, read before each pass (after the first with
+    /// `at_least_once`), and at most `most` times.
+    RepeatWhile {
+        /// What must hold for a pass to begin.
+        condition: Condition,
+        /// What each pass does; a name bound inside is bound anew in each pass.
+        effects: Vec<Effect>,
+        /// The most passes, a hard bound ([`MOST_PASSES`] at the highest).
+        most: u32,
+        /// A second bound, an amount read before each pass ("X times"); no bound but `most` when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        times: Option<Amount>,
+        /// The first pass begins without reading `condition`: the body is done at least once (a do-while).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        at_least_once: bool,
+    },
+    /// `who` separates the objects `what` names into two piles (CR 700.3), then `chooser` chooses one pile: that pile is
+    /// bound as `chosen_as`, the other as `rest_as`.
+    SeparatePiles {
+        /// Who separates the objects.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The objects.
+        what: Ref,
+        /// Who chooses a pile.
+        chooser: Ref,
+        /// The name of the pile chosen.
+        #[serde(rename = "as")]
+        chosen_as: String,
+        /// The name of the other pile.
+        rest_as: String,
     },
     /// Does `effects` once for each player or object `over` names, in the order it lists them, with `bind` naming the one
     /// the pass is for (CR 608.2c: "for each player", "each opponent ... that player"). The list is fixed when the effect
@@ -1011,6 +1366,16 @@ pub enum Effect {
         /// The second option, after "or".
         second: Vec<Effect>,
     },
+    /// `who` chooses one of the lists as the effect resolves and only that one is done ("choose one of three ways"); the
+    /// first of several players named who is still in the game chooses, and the chooser is the controller by default. The
+    /// choice is public, and an unanswered question takes the first option.
+    OneOf {
+        /// Who chooses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The options, as printed; two to [`MOST_OPTIONS`].
+        options: Vec<Vec<Effect>>,
+    },
     /// A step of a Planechase game (CR 901): the controller planeswalks, or chaos ensues. A game without a planar deck,
     /// which every game the engine plays is, does nothing for it.
     Planechase {
@@ -1033,6 +1398,10 @@ pub enum Effect {
         /// They enter attacking.
         #[serde(default, skip_serializing_if = "is_false")]
         attacking: bool,
+        /// What they attack when the effect names it (CR 508.4a): the first player, planeswalker or battle this names;
+        /// one that can no longer be attacked leaves them attacking nothing.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        against: Option<Ref>,
         /// Names the tokens for the effects that follow ("then attach this to it").
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
@@ -1054,6 +1423,11 @@ pub enum Effect {
         /// Changes the copy has ("except that the copy is red").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
+        /// In place of `count`, one copy of a spell with a single target for each other object this selects that the spell
+        /// could target, each copy targeting a different one ("copy that spell for each other Golem that spell could
+        /// target").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        each_target: Option<Selector>,
     },
     /// Copies activated and triggered abilities on the stack (CR 707.10): each copy is put on the stack above the ability,
     /// not activated and not triggered, with the choices of the original.
@@ -1066,6 +1440,14 @@ pub enum Effect {
         /// The controller of the copy may choose new targets for it.
         #[serde(default, skip_serializing_if = "is_false")]
         new_targets: bool,
+    },
+    /// Changes the targets of spells and abilities on the stack (CR 115.7); the controller of the effect chooses the new
+    /// ones, each judged as a target of the spell or ability for its own controller.
+    ChangeTargets {
+        /// The spells and abilities whose targets change.
+        what: Ref,
+        /// How they change.
+        to: NewTargets,
     },
     /// The permanents become copies of an object for a while ("becomes a copy of target creature until end of turn",
     /// CR 707.2): the copy effect is the first layer, and the permanent is what it was again when it ends.
@@ -1125,6 +1507,19 @@ pub enum Effect {
         /// It waits only until the end of the turn it was set up in ("when you next cast a spell this turn").
         #[serde(default, skip_serializing_if = "is_false")]
         this_turn: bool,
+        /// It waits until this runs out instead ("until your next turn, whenever ..."), also when it triggers once.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        until: Option<Duration>,
+        /// What it does.
+        effects: Vec<Effect>,
+    },
+    /// A reflexive triggered ability ("when you do", CR 603.12): when the step before it was carried out, a trigger with
+    /// its own `targets` goes on the stack the next time a player would receive priority and runs `effects`; with no
+    /// legal target it is removed.
+    Reflexive {
+        /// The targets, chosen as the trigger goes on the stack.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
     },
@@ -1137,6 +1532,12 @@ pub enum Effect {
         /// Done when false.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
+    },
+    /// Does `effects` in order as one batch: what they move and damage is judged together by the triggers that read a batch
+    /// ("whenever one or more", CR 603.2c, 603.10a), after the last of them.
+    Together {
+        /// What the batch does.
+        effects: Vec<Effect>,
     },
     /// The player may do these effects.
     May {
@@ -1163,8 +1564,34 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         unpaid: Vec<Effect>,
     },
+    /// Binds the players or objects `what` names now under the name, so the steps after it (and a delayed trigger this
+    /// resolution sets up) read the same ones however the game changes ("its controller" of a spell about to be countered).
+    Bind {
+        /// What is named.
+        what: Ref,
+        /// The name they are kept under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// Adds them to what the name holds, and a repeat around the step keeps the name across its passes: "for each
+        /// player, choose a card in their graveyard; put those cards onto the battlefield" names every pick.
+        #[serde(default, skip_serializing_if = "is_false")]
+        adds: bool,
+    },
+    /// Fixes the amount as it is when this step runs and keeps it under the name, so `Amount::Bound` reads the same number
+    /// in the steps after it however the game changes ("X is the number of cards in your hand", "that many").
+    Let {
+        /// The name the number is kept under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The amount worked out when the step runs.
+        amount: Amount,
+    },
     /// The controller chooses modes when the spell or ability is put on the stack (CR 700.2).
     Modal {
+        /// Who chooses the modes when it is not the controller ("an opponent chooses one"). Several players: the first of
+        /// them in turn order from the controller who is still in the game. None in the game: the controller chooses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
         /// How many modes are chosen.
         #[serde(default, skip_serializing_if = "Bounds::is_one")]
         choose: Bounds,
@@ -1175,6 +1602,10 @@ pub enum Effect {
         /// pick is public. Needs a fixed number of modes and no repeats.
         #[serde(default, skip_serializing_if = "is_false")]
         at_random: bool,
+        /// Each mode must target a different player ("Each mode must target a different player."): a player that a
+        /// mode chosen earlier targets is not offered to the later ones.
+        #[serde(default, skip_serializing_if = "is_false")]
+        different_players: bool,
         /// A mode this ability chose earlier in the turn is not offered ('choose one that hasn't been chosen this
         /// turn'); a spell has no earlier choice to keep.
         #[serde(default, skip_serializing_if = "is_false")]
@@ -1187,6 +1618,13 @@ pub enum Effect {
         /// you cast this spell, you may choose both instead"); the fewest to choose stays.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         all_if: Option<Condition>,
+        /// The cost each mode adds to the total cost when chosen, parallel to `modes` (Spree, Tiered); empty when no mode
+        /// has one. A mode without a cost holds an empty cost.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        mode_costs: Vec<Cost>,
+        /// The cost added for each mode chosen beyond the first (Escalate).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        extra_mode_cost: Option<Cost>,
         /// The modes, in printed order.
         modes: Vec<Mode>,
     },
@@ -1210,6 +1648,30 @@ pub fn bound_names(effects: &[Effect]) -> Vec<String> {
     }
     names.sort();
     names.dedup();
+    names
+}
+
+/// The names an adding `Bind` in `effects` gathers into, which a repeat keeps across its passes.
+pub fn gathered_names(effects: &[Effect]) -> Vec<String> {
+    fn walk(value: &serde_json::Value, names: &mut Vec<String>) {
+        match value {
+            serde_json::Value::Object(fields) => {
+                if let Some(bind) = fields.get("Bind")
+                    && bind.get("adds") == Some(&serde_json::Value::Bool(true))
+                    && let Some(name) = bind.get("as").and_then(serde_json::Value::as_str)
+                {
+                    names.push(name.to_owned());
+                }
+                fields.values().for_each(|inner| walk(inner, names));
+            }
+            serde_json::Value::Array(items) => items.iter().for_each(|item| walk(item, names)),
+            _ => {}
+        }
+    }
+    let mut names = Vec::new();
+    if let Ok(value) = serde_json::to_value(effects) {
+        walk(&value, &mut names);
+    }
     names
 }
 
@@ -1261,6 +1723,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             exiled_as: EXILED.to_owned(),
         },
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
@@ -1276,6 +1739,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
                 place: Place::Bottom,
                 order: Some(Order::Random),
             },
+            bind: None,
         },
     ]
 }
@@ -1295,6 +1759,7 @@ pub fn discover(count: Amount) -> Vec<Effect> {
         vec![Effect::Move {
             what: Ref::Bound(FOUND.to_owned()),
             to: Destination::Hand,
+            bind: None,
         }],
     )
 }
@@ -1330,9 +1795,11 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
             who: Ref::You,
             count,
             bind: IMPULSE.to_owned(),
+            sealed: false,
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {
+                rather: None,
                 who: Ref::You,
                 what: Selector::default(),
                 from: Some(ZoneKind::Exile),
@@ -1342,6 +1809,8 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 play: true,
                 once: false,
                 additional: None,
+                spend_as: crate::modify::SpendAs::Normal,
+                when: None,
             }),
             duration,
         },
@@ -1375,6 +1844,9 @@ pub fn hideaway(count: Amount) -> Vec<Effect> {
         },
         Effect::ExileHidden {
             what: Ref::Bound(HIDDEN.to_owned()),
+            held: false,
+            sealed: false,
+            bind: None,
         },
         Effect::Move {
             what: Ref::Bound(UNHIDDEN.to_owned()),
@@ -1382,6 +1854,7 @@ pub fn hideaway(count: Amount) -> Vec<Effect> {
                 place: Place::Bottom,
                 order: Some(Order::Random),
             },
+            bind: None,
         },
     ]
 }
@@ -1393,37 +1866,49 @@ mod tests {
     use rstest::rstest;
 
     #[rstest]
-    #[case::draw_one(Effect::Draw { who: Ref::You, count: Amount::one() }, r#"{"Draw":{}}"#)]
+    #[case::draw_one(Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }, r#"{"Draw":{}}"#)]
     #[case::opponent_draws(
-        Effect::Draw { who: Ref::Target(0), count: Amount::Fixed(2) },
+        Effect::Draw { bind: None, who: Ref::Target(0), count: Amount::Fixed(2) },
         r#"{"Draw":{"who":{"Target":0},"count":2}}"#
     )]
     #[case::bolt(
-        Effect::DealDamage { source: None, to: Ref::Target(0), amount: Amount::Fixed(3) },
+        Effect::DealDamage { excess: None, source: None, to: Ref::Target(0), amount: Amount::Fixed(3), unpreventable: false },
         r#"{"DealDamage":{"to":{"Target":0},"amount":3}}"#
     )]
     #[case::wrath(
-        Effect::Destroy { what: Ref::Each(Selector(vec![Pred::Type(CardType::Creature)])), regenerate: false },
+        Effect::Destroy { what: Ref::Each(Selector(vec![Pred::Type(CardType::Creature)])), regenerate: false, bind: None },
         r#"{"Destroy":{"what":{"Each":[{"Type":"Creature"}]},"regenerate":false}}"#
     )]
     #[case::destroy_default(
-        Effect::Destroy { what: Ref::Target(0), regenerate: true },
+        Effect::Destroy { what: Ref::Target(0), regenerate: true, bind: None },
         r#"{"Destroy":{"what":{"Target":0}}}"#
     )]
     #[case::move_to_battlefield_tapped(
-        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, transformed: false, counters: vec![] } },
+        Effect::Move { what: Ref::Bound("land".into()), to: Destination::Battlefield { tapped: true, under: None, transformed: false, counters: vec![] }, bind: None },
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(
-        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
+        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, distinct: false, bind: "land".into() },
         r#"{"Search":{"filter":[{"Supertype":"Basic"}],"as":"land"}}"#
     )]
     #[case::search_of_several_zones(
-        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
+        Effect::Search { who: Ref::You, of: None, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, distinct: false, bind: "rune".into() },
         r#"{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}"#
     )]
+    #[case::search_of_another_player(
+        Effect::Search { who: Ref::You, of: Some(Ref::Opponents), zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![]), count: Bounds::default(), reveal: false, distinct: false, bind: "it".into() },
+        r#"{"Search":{"of":"Opponents","filter":[],"as":"it"}}"#
+    )]
+    #[case::conjure(
+        Effect::Conjure { who: Ref::You, name: "Lightning Bolt".into(), zone: ZoneKind::Hand, count: Amount::Fixed(2) },
+        r#"{"Conjure":{"name":"Lightning Bolt","zone":"Hand","count":2}}"#
+    )]
+    #[case::seek(
+        Effect::Seek { who: Ref::Opponents, filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Amount::one() },
+        r#"{"Seek":{"who":"Opponents","filter":[{"Supertype":"Basic"}]}}"#
+    )]
     #[case::pay(
-        Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), times: Amount::one(), paid: vec![], unpaid: vec![Effect::Draw { who: Ref::You, count: Amount::one() }] },
+        Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), times: Amount::one(), paid: vec![], unpaid: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }] },
         r#"{"Pay":{"who":"Triggering","cost":"{1}","unpaid":[{"Draw":{}}]}}"#
     )]
     #[case::put_a_poison_counter_on_a_player(
@@ -1438,6 +1923,10 @@ mod tests {
         Effect::RemoveCounters { from: Ref::Target(0), counter: None, count: Amount::Fixed(3), up_to: true },
         r#"{"RemoveCounters":{"from":{"Target":0},"count":3,"up_to":true}}"#
     )]
+    #[case::remove_all_counters(
+        Effect::RemoveAllCounters { from: Ref::Target(0), counter: None },
+        r#"{"RemoveAllCounters":{"from":{"Target":0}}}"#
+    )]
     #[case::double_the_counters_of_a_kind(
         Effect::MultiplyCounters { on: Ref::This, counter: Some(CounterKind::PlusOnePlusOne), factor: 2 },
         r#"{"MultiplyCounters":{"on":"This","counter":"+1/+1"}}"#
@@ -1447,15 +1936,19 @@ mod tests {
         r#"{"MultiplyCounters":{"on":{"Target":0},"factor":3}}"#
     )]
     #[case::repeat_for_each_opponent(
-        Effect::RepeatEach { over: Ref::Opponents, bind: "foe".to_owned(), effects: vec![Effect::Draw { who: Ref::Bound("foe".to_owned()), count: Amount::one() }] },
+        Effect::RepeatEach { over: Ref::Opponents, bind: "foe".to_owned(), effects: vec![Effect::Draw { bind: None, who: Ref::Bound("foe".to_owned()), count: Amount::one() }] },
         r#"{"RepeatEach":{"over":"Opponents","as":"foe","effects":[{"Draw":{"who":{"Bound":"foe"}}}]}}"#
+    )]
+    #[case::a_bind_that_adds(
+        Effect::Bind { what: Ref::Bound("pick".to_owned()), bind: "picks".to_owned(), adds: true },
+        r#"{"Bind":{"what":{"Bound":"pick"},"as":"picks","adds":true}}"#
     )]
     #[case::roll_a_die_with_a_table(
         Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
-        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false },
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
     )]
     #[case::flip_until_a_loss(
@@ -1463,8 +1956,21 @@ mod tests {
         r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::clash_and_repeat(
-        Effect::Clash { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: true, with: None },
+        Effect::Clash { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: true, with: None },
         r#"{"Clash":{"win":[{"Draw":{}}],"until":true}}"#
+    )]
+    #[case::lose_game(Effect::LoseGame { who: Ref::Opponents }, r#"{"LoseGame":{"who":"Opponents"}}"#)]
+    #[case::draw_game(Effect::DrawGame {}, r#"{"DrawGame":{}}"#)]
+    #[case::set_life(Effect::SetLife { who: Ref::You, amount: Amount::Fixed(1) }, r#"{"SetLife":{"amount":1}}"#)]
+    #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
+    #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
+    #[case::repeat_while(
+        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None, at_least_once: false },
+        r#"{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}"#
+    )]
+    #[case::separate_piles(
+        Effect::SeparatePiles { who: Ref::You, what: Ref::This, chooser: Ref::Opponents, chosen_as: "a".to_owned(), rest_as: "b".to_owned() },
+        r#"{"SeparatePiles":{"what":"This","chooser":"Opponents","as":"a","rest_as":"b"}}"#
     )]
     #[case::vote_on_two_names(
         Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },
@@ -1474,20 +1980,44 @@ mod tests {
         Effect::Planechase { act: PlanarAct::ChaosEnsues },
         r#"{"Planechase":{"act":"ChaosEnsues"}}"#
     )]
+    #[case::choose_a_number(
+        Effect::ChooseValue { who: Ref::You, kind: ValueKind::Number(Amount::Fixed(1), Amount::X), bind: "n".to_owned() },
+        r#"{"ChooseValue":{"kind":{"Number":[1,"X"]},"as":"n"}}"#
+    )]
+    #[case::choose_a_name(
+        Effect::ChooseValue { who: Ref::Opponents, kind: ValueKind::CardName(Selector(vec![Pred::Type(CardType::Land)])), bind: "n".to_owned() },
+        r#"{"ChooseValue":{"who":"Opponents","kind":{"CardName":[{"Type":"Land"}]},"as":"n"}}"#
+    )]
+    #[case::choose_a_word(
+        Effect::ChooseValue { who: Ref::You, kind: ValueKind::Options(vec!["odd".to_owned(), "even".to_owned()]), bind: "n".to_owned() },
+        r#"{"ChooseValue":{"kind":{"Options":["odd","even"]},"as":"n"}}"#
+    )]
+    #[case::choose_a_color(
+        Effect::ChooseValue { who: Ref::You, kind: ValueKind::Color, bind: "c".to_owned() },
+        r#"{"ChooseValue":{"kind":"Color","as":"c"}}"#
+    )]
     #[case::vote_on_objects(
         Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()) },
         r#"{"Vote":{"options":{"Of":{"Each":[{"In":"Battlefield"}]}},"as":"top"}}"#
     )]
     #[case::w2d_villainous_choice(
-        Effect::VillainousChoice { who: Ref::Triggering, first: vec![Effect::Draw { who: Ref::You, count: Amount::Fixed(1) }], second: Vec::new(), they: true },
+        Effect::VillainousChoice { who: Ref::Triggering, first: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::Fixed(1) }], second: Vec::new(), they: true },
         r#"{"VillainousChoice":{"who":"Triggering","first":[{"Draw":{}}],"second":[],"they":true}}"#
     )]
     #[case::dk1c5_either(
-        Effect::Either { first: vec![Effect::Draw { who: Ref::You, count: Amount::Fixed(1) }], second: vec![Effect::UnlockDoor { who: Ref::You }] },
+        Effect::Either { first: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::Fixed(1) }], second: vec![Effect::UnlockDoor { who: Ref::You }] },
         r#"{"Either":{"first":[{"Draw":{}}],"second":[{"UnlockDoor":{}}]}}"#
     )]
+    #[case::r1c_one_of(
+        Effect::OneOf { who: Ref::Triggering, options: vec![vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::Fixed(1) }], vec![Effect::UnlockDoor { who: Ref::You }], Vec::new()] },
+        r#"{"OneOf":{"who":"Triggering","options":[[{"Draw":{}}],[{"UnlockDoor":{}}],[]]}}"#
+    )]
+    #[case::r1c_one_of_by_you(
+        Effect::OneOf { who: Ref::You, options: vec![Vec::new(), Vec::new()] },
+        r#"{"OneOf":{"options":[[],[]]}}"#
+    )]
     #[case::attach_the_source_to_a_target(
-        Effect::Attach { what: Ref::This, to: Ref::Target(0) },
+        Effect::Attach { what: Ref::This, to: Ref::Target(0), bind: None },
         r#"{"Attach":{"what":"This","to":{"Target":0}}}"#
     )]
     #[case::unattach_the_source(Effect::Unattach { what: Ref::This }, r#"{"Unattach":{"what":"This"}}"#)]

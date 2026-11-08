@@ -1,0 +1,49 @@
+{
+  "oracle_id": "2e0cd5a5-3aee-4b32-873a-e5a40bfba3e9",
+  "name": "Protect // Serve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protect",
+      "oracle_fingerprint": "27d15edc04c9df26f7b0b1517705e04e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Serve",
+      "oracle_fingerprint": "6b33eb1cb993fc772feb601b24ba4350",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -6, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "868882d2-ed4e-4171-a17c-478a341080fb",
+  "name": "Prossh, Skyraider of Kher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prossh, Skyraider of Kher",
+      "oracle_fingerprint": "c60cd132178cbe6af4fab094927f738e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kobolds of Kher Keep",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kobold"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "ManaSpent": { "of": null } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

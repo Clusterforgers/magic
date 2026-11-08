@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { foldLog } from './logFold'
 import type { FoldedLine } from './logFold'
 import { useSeatNamer } from './names'
-import { knownDoorFaces } from './printed'
+import { knownDoorFaces, usePrintedVersion } from './printed'
 import { doorNameOf } from './rooms'
 import { SeatDot } from './PodParts'
 
@@ -55,6 +55,7 @@ export function LogPanel() {
   const objects = usePlay((state) => state.objectsById)
   const logNames = usePlay((state) => state.logNames)
   const seat = useSeatNamer()
+  const printedVersion = usePrintedVersion()
   const players = usePlay((state) => state.view?.players)
   const seats = usePlay(
     useShallow(
@@ -79,7 +80,7 @@ export function LogPanel() {
         },
         { seats, players },
       ),
-    [log, objects, logNames, seat, seats, players],
+    [log, objects, logNames, seat, seats, players, printedVersion],
   )
   const scroller = useRef<HTMLDivElement>(null)
   const following = useRef(true)

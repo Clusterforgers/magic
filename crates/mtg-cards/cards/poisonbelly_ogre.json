@@ -1,0 +1,21 @@
+{
+  "oracle_id": "38872730-0fd1-414e-8015-29d1bc649913",
+  "name": "Poisonbelly Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poisonbelly Ogre",
+      "oracle_fingerprint": "b0b561fd9f9969a3a4c565b4bc507547",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

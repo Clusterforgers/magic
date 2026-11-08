@@ -1,0 +1,16 @@
+{
+  "oracle_id": "094b778f-95a0-436f-a9d0-20a46a674486",
+  "name": "Elvish Bard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Bard",
+      "oracle_fingerprint": "d086d94bff869ad621ee566034e4e5a7",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "Every" } } } }
+        }
+      ]
+    }
+  ]
+}

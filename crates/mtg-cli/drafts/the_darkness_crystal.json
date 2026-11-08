@@ -34,29 +34,23 @@
         },
         {
           "Activated": {
-            "cost": [
-              { "Mana": "{4}{B}{B}" },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } },
-              { "TapPermanents": { "filter": [{ "Is": "This" }] } }
+            "cost": [{ "Mana": "{4}{B}{B}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                }
+              }
             ],
-            "targets": [{ "what": "AnyTarget" }],
             "effects": [
-              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } },
-              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": {
+                    "Battlefield": { "tapped": true, "under": "You", "counters": [["+1/+1", 2]] }
+                  }
+                }
+              }
             ]
           }
         }

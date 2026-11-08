@@ -1,0 +1,28 @@
+{
+  "oracle_id": "683089a8-d5a9-438a-a463-77cc6148125e",
+  "name": "Terraformer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terraformer",
+      "oracle_fingerprint": "98437f400c28aff4dbd2b18b06a93f17",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

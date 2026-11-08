@@ -31,6 +31,7 @@ fn swarm(count: i32) -> Arc<CardDefinition> {
                     count: Amount::Fixed(count),
                     tapped: false,
                     attacking: false,
+                    against: None,
                     bind: None,
                 }],
             }),

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "21486218-70ec-4c60-9844-8f7c80912333",
+  "name": "Splashy Spellcaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splashy Spellcaster",
+      "oracle_fingerprint": "9cf0e557bcd585850b1a5f33f6f74763",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sorcerer",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": { "Attacks": { "what": ["This"] } },
+                                    "effects": [{ "Scry": {} }]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

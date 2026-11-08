@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b967fbb8-ddc8-485b-bd18-cbf3ef6b1bf8",
+  "name": "Gwaihir the Windlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gwaihir the Windlord",
+      "oracle_fingerprint": "bf6bca49e76898c927c0ef16fd26b475",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Bird" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        }
+      ]
+    }
+  ]
+}

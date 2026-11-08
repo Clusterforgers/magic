@@ -1,0 +1,45 @@
+{
+  "oracle_id": "405a54b3-fb9f-4503-a4fc-3ba6a5e58205",
+  "name": "Prodigy's Prototype",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prodigy's Prototype",
+      "oracle_fingerprint": "544f5102b9d1bc4c170a89edd7d33264",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pilot",
+                      "types": ["Creature"],
+                      "subtypes": ["Pilot"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": { "who": "This", "quirk": { "TapPower": { "Plus": 2 } } }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

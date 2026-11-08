@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d92725de-ead0-4a6c-83db-55ec3acc7184",
+  "name": "Narset, Enlightened Exile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narset, Enlightened Exile",
+      "oracle_fingerprint": "090d4fb02e77b1f25f3dd6c16aa89f70",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Prowess" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Creature" } },
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy2" } },
+              { "CastFromZone": { "what": { "Bound": "copy2" }, "free": true, "play": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

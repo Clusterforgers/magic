@@ -1,0 +1,38 @@
+{
+  "oracle_id": "19b58ec9-bb88-4193-8ea8-c8f09ceec1ed",
+  "name": "Darigaaz's Caldera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darigaaz's Caldera",
+      "oracle_fingerprint": "b99f8ae16058d609466944216df37cfd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ReturnToHand": {
+                        "filter": [{ "Type": "Land" }, { "Not": { "Subtype": "Lair" } }]
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Red", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

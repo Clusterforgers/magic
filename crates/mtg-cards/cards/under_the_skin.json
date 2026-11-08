@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8e121178-e9e3-43a5-a174-ecbe47d759f9",
+  "name": "Under the Skin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Under the Skin",
+      "oracle_fingerprint": "f4712037881dc2f9ded0114f0fb7ae3f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked4"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked4" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

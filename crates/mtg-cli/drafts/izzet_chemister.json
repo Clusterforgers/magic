@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e4a3d6f3-36ba-4e6d-a254-351bc8886f20",
+  "name": "Izzet Chemister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Izzet Chemister",
+      "oracle_fingerprint": "5678ae32ac60df077a9b648fdefb9d17",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card",
+                  "effects": [
+                    { "CastFromZone": { "what": { "Bound": "card" }, "free": true, "play": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

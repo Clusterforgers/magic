@@ -55,6 +55,7 @@ pub fn from_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(PICKED.to_owned()),
             to,
+            bind: None,
         },
     ])
 }
@@ -70,6 +71,7 @@ pub(super) fn text(choose: &Effect, moved: &Effect) -> Option<String> {
         Effect::Move {
             what: Ref::Bound(name),
             to,
+            ..
         },
     ) = (choose, moved)
     else {

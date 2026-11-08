@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5b27b794-580c-472d-b63e-99b271eb115d",
+  "name": "Wicked Slumber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wicked Slumber",
+      "oracle_fingerprint": "f684446d43d96c55d174acba30b04486",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Choose": { "from": { "Each": [{ "Is": { "Target": 0 } }] }, "as": "card" } },
+              { "PutCounters": { "on": { "Bound": "card" }, "counter": { "Other": "stun" } } },
+              { "Choose": { "from": { "Each": [{ "Is": { "Target": 0 } }] }, "as": "card2" } },
+              { "PutCounters": { "on": { "Bound": "card2" }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

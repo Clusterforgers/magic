@@ -1,0 +1,29 @@
+{
+  "oracle_id": "329f6434-8f1b-4a10-8feb-2a9dc5f2712b",
+  "name": "Heated Argument",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heated Argument",
+      "oracle_fingerprint": "61e503836d0032f642840fa76bcbc2e7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6 } },
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [] } }],
+                  "paid": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

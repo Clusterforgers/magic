@@ -1,0 +1,40 @@
+{
+  "oracle_id": "70d90ef4-0cda-405f-abf1-734fa909efa6",
+  "name": "Armageddon Clock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armageddon Clock",
+      "oracle_fingerprint": "47ea58cbb225e4336cb68d079f511005",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "doom" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "EachPlayer",
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "doom" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "condition": { "Step": "Upkeep" },
+            "by": "Anyone",
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "doom" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

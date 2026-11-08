@@ -1,0 +1,66 @@
+{
+  "oracle_id": "ff59a95c-28de-44cf-abbe-772417851ffa",
+  "name": "Veiled Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veiled Serpent",
+      "oracle_fingerprint": "f2e0ecd11fe16a188bd4ce8062a42ad5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetCreatureTypes": ["Serpent"] },
+                    { "SetTypes": ["Creature"] },
+                    {
+                      "GrantAbility": {
+                        "Rule": {
+                          "rule": {
+                            "Cant": {
+                              "who": "This",
+                              "action": {
+                                "Attack": {
+                                  "unless": {
+                                    "Compare": {
+                                      "left": {
+                                        "Count": [
+                                          { "Subtype": "Island" },
+                                          { "ControlledBy": "You" }
+                                        ]
+                                      },
+                                      "op": "Ge",
+                                      "right": 1
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "3548489b-053e-4f81-a0be-07422cbe357d",
+  "name": "Gift of the Deity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gift of the Deity",
+      "oracle_fingerprint": "c424d0788a8314afffa3bedcde3b16db",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "Black" }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "Green" }]
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "Attached", "quirk": { "MustBeBlocked": "Every" } } },
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Type": "Creature" }, { "Color": "Green" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

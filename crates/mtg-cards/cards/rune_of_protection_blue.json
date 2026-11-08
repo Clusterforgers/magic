@@ -1,0 +1,39 @@
+{
+  "oracle_id": "092dd5be-da62-4198-b7fa-0813f075047c",
+  "name": "Rune of Protection: Blue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Protection: Blue",
+      "oracle_fingerprint": "71ccc22f01fb7dcad8e6bd8800b1090e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Blue" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

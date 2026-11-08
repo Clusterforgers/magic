@@ -25,7 +25,10 @@
         {
           "Triggered": {
             "when": {
-              "Nth": { "event": { "DealsDamage": { "source": [], "to": "This" } }, "nth": 1 }
+              "Nth": {
+                "event": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+                "nth": 1
+              }
             },
             "effects": [
               { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }

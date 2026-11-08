@@ -1,0 +1,59 @@
+{
+  "oracle_id": "da35de40-6fde-4018-bda8-b0ae91ed872a",
+  "name": "Kinbinding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinbinding",
+      "oracle_fingerprint": "94e8385b9a1ec5ce52eac6ec3a982231",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Tally": {
+                      "event": "Entered",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
+                  },
+                  "toughness": {
+                    "Tally": {
+                      "event": "Entered",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kithkin",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kithkin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -26,6 +26,7 @@ function preview(object: ObjectView, id: CardCommandId, over: Partial<MenuInput>
 }
 
 const SICK = permanent({ summoning_sick: true }, { id: 7, name: 'Fresh Elf' })
+const FORT = card({ id: 5, name: 'Mobile Fort', keywords: ['Defender'] })
 const DEAD = card({ id: 8, name: 'Old Bear', zone: { Graveyard: 0 }, permanent: null })
 const EXILED = card({ id: 9, name: 'It That Betrays', zone: 'Exile', permanent: null })
 
@@ -46,6 +47,38 @@ describe('what a control row sends', () => {
       'Fresh Elf: the battlefield → graveyard, sacrificed',
       'Sacrifice Fresh Elf',
       { Sacrifice: { object: 7 } },
+    ],
+    [
+      'a defender allowed to attack',
+      FORT,
+      'defender',
+      'Mobile Fort: may attack this turn despite defender',
+      'Let Mobile Fort attack',
+      { AttackDespiteDefender: { object: 5 } },
+    ],
+    [
+      'one more block',
+      SICK,
+      'blocks',
+      'Fresh Elf: can block 1 more creature this turn',
+      'Block 1 more',
+      { BlockAdditional: { object: 7, count: 1 } },
+    ],
+    [
+      'a permanent turned over',
+      SICK,
+      'transform',
+      'Fresh Elf: turned over to its other face',
+      'Turn over Fresh Elf',
+      { Transform: { object: 7 } },
+    ],
+    [
+      'a card put back face up',
+      DEAD,
+      'back',
+      'Old Bear: onto the battlefield, back face up',
+      'Put Old Bear back face up',
+      { MoveBack: { object: 8 } },
     ],
     [
       'control given',
@@ -73,6 +106,27 @@ describe('what a control row sends', () => {
     ],
   ])('%s', (_name, object, id, words, apply, action) => {
     expect(preview(object, id)).toEqual({ preview: words, apply, action })
+  })
+})
+
+describe('the combat permission rows', () => {
+  it.each<[number, boolean]>([
+    [0, false],
+    [1, true],
+    [99, true],
+    [100, false],
+  ])('block %i more creatures: allowed %s', (count, allowed) => {
+    const menu = input(SICK)
+    const command = controlCommands(menu).find((each) => each.id === 'blocks')
+    if (command === undefined) throw new Error('no blocks')
+    const result = previewOfCard(command, { ...startCardDraft(command, menu), count }, context(menu))
+    expect('action' in result).toBe(allowed)
+  })
+
+  it('offers the defender row only to a creature that has defender', () => {
+    const has = (object: ObjectView): boolean =>
+      controlCommands(input(object)).some((each) => each.id === 'defender')
+    expect([has(FORT), has(SICK)]).toEqual([true, false])
   })
 })
 

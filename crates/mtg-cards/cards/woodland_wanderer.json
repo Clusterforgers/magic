@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d5f3c711-edfa-4105-9844-e3f444942a03",
+  "name": "Woodland Wanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodland Wanderer",
+      "oracle_fingerprint": "da91429c88b2fff7a161fe7c2e4f78cf",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "ColorsSpent" } }
+          }
+        }
+      ]
+    }
+  ]
+}

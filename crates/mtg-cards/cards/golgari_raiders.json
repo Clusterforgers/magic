@@ -1,0 +1,27 @@
+{
+  "oracle_id": "abd12238-ea9d-4124-8229-3a479b8464d7",
+  "name": "Golgari Raiders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golgari Raiders",
+      "oracle_fingerprint": "13b51d323c5a1d411ffb17b4cddf7a25",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

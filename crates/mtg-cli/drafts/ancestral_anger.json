@@ -1,0 +1,47 @@
+{
+  "oracle_id": "e0828e8d-f01f-4088-9123-6d923ddb3242",
+  "name": "Ancestral Anger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancestral Anger",
+      "oracle_fingerprint": "e44a20349df4bd3e892c560c518220fc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Sum": [
+                            {
+                              "Count": [
+                                { "OwnedBy": "You" },
+                                { "Named": "Ancestral Anger" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            1
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

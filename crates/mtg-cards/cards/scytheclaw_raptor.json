@@ -1,0 +1,23 @@
+{
+  "oracle_id": "8c653a0d-e35a-4596-bed6-b5156192955b",
+  "name": "Scytheclaw Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scytheclaw Raptor",
+      "oracle_fingerprint": "d09d5c685b2b2db09f38791f1013b945",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "by": { "PlayersWhere": { "who": "EachPlayer", "test": { "Not": "YourTurn" } } }
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

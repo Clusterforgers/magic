@@ -1,0 +1,173 @@
+//! Printed trigger words a Forge script leaves out: a printed "you may" over the one step of a trigger whose script has
+//! no decider (the step becomes optional), and a printed "target creature you control" whose script targets any
+//! creature, or a printed "it deals" of another object whose script lets the card deal the damage (gaps: the script and
+//! the card disagree; the attacker of an attack trigger deals it).
+
+use serde_json::{Value, json};
+
+use super::ctx::{Tr, unmapped};
+
+/// The effects of a trigger with its printed words applied: a printed "you may" over the one step asks unless the
+/// script has a decider or a cost to pay (`(decider, pays)`); a printed "it deals" of the attacker the event (`when`) is
+/// about makes it the source; a printed "you may search" without a decider, a printed own target left open and any
+/// other printed "it deals" from the card are gaps.
+pub fn printed(
+    description: Option<&str>,
+    (decider, pays): (bool, bool),
+    when: &Value,
+    effects: Vec<Value>,
+    targets: &[Value],
+) -> Tr<Vec<Value>> {
+    // "you may search" printed with no decider in the script: the search would be forced. When the search opens the
+    // effect ("When ~ enters, you may search ..."), everything after it follows the search, so the whole effect asks:
+    // declining skips the shuffle too.
+    if !decider
+        && description.is_some_and(|text| text.contains("you may search"))
+        && !json!(effects).to_string().contains("\"May\":")
+    {
+        if g9a_search_opens(description) {
+            return Ok(super::frame::ask(effects, &json!("You")));
+        }
+        return unmapped("trigger:may-search-without-decider");
+    }
+    if unfiltered_own_target(description, targets) {
+        return unmapped("trigger:printed-own-target-unfiltered");
+    }
+    let effects = if !super::triggers::is_about_itself(when)
+        && other_deals_from_host(description, &effects)
+    {
+        let Some(dealt) = g13c_dealt_by_the_attacker(when, &effects) else {
+            return unmapped("trigger:printed-it-deals-from-host");
+        };
+        dealt
+    } else {
+        effects
+    };
+    Ok(
+        if !decider && !pays && printed_may_step(description, &effects) {
+            super::frame::ask(effects, &json!("You"))
+        } else {
+            effects
+        },
+    )
+}
+
+/// The verbs whose printed "you may" the trigger keeps when the script forgets its decider.
+const OPTIONAL_VERBS: [&str; 4] = ["put", "remove", "tap", "untap"];
+
+/// The description without reminder text.
+fn without_reminder(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut depth = 0u32;
+    for c in text.chars() {
+        match c {
+            '(' => depth += 1,
+            ')' => depth = depth.saturating_sub(1),
+            _ if depth == 0 => out.push(c),
+            _ => {}
+        }
+    }
+    out
+}
+
+/// Whether the printed effect is one optional step ("..., you may put a +1/+1 counter on ~.") and the translation is
+/// that one step without a choice.
+fn printed_may_step(description: Option<&str>, effects: &[Value]) -> bool {
+    let Some(text) = description.map(without_reminder) else {
+        return false;
+    };
+    let Some((head, step)) = text.split_once(", you may ") else {
+        return false;
+    };
+    let one_sentence = step
+        .trim_end()
+        .trim_end_matches('.')
+        .contains(". ")
+        .eq(&false);
+    let verb = step.split_whitespace().next().unwrap_or_default();
+    effects.len() == 1
+        && one_sentence
+        && !head.contains("may")
+        && !head.contains(". ")
+        && (OPTIONAL_VERBS.contains(&verb) || has_deal(step, effects))
+        && !step.starts_with("tap or untap")
+        && !serde_json::to_string(effects)
+            .unwrap_or_default()
+            .contains("\"May\":")
+}
+
+/// "you may have that creature deal 1 damage": the one step is damage the printed text lets you choose.
+fn has_deal(step: &str, effects: &[Value]) -> bool {
+    step.starts_with("have ")
+        && step.split_whitespace().take(4).any(|word| word == "deal")
+        && matches!(effects, [only] if only.get("DealDamage").is_some())
+}
+
+/// Whether the printed effect opens with "you may search": the words before it are the trigger alone (one clause, no
+/// other choice).
+fn g9a_search_opens(description: Option<&str>) -> bool {
+    let Some(text) = description.map(without_reminder) else {
+        return false;
+    };
+    text.split_once(", you may search ")
+        .is_some_and(|(head, _)| {
+            !head.contains("may")
+                && !head.contains(". ")
+                && !head.contains(", ")
+                && ["When", "Whenever", "At "]
+                    .iter()
+                    .any(|word| head.starts_with(word))
+        })
+}
+
+/// Whether the card prints "target creature you control" while no target of the translation is narrowed by controller.
+fn unfiltered_own_target(description: Option<&str>, targets: &[Value]) -> bool {
+    let Some(text) = description.map(without_reminder) else {
+        return false;
+    };
+    text.contains("target creature you control")
+        && !text.contains('"')
+        && !targets.is_empty()
+        && !serde_json::to_string(targets)
+            .unwrap_or_default()
+            .contains("ControlledBy")
+}
+
+/// Whether a trigger about another object prints "it deals" (the object of the event deals the damage) while the
+/// script's damage has no source, so the card itself would deal it.
+fn other_deals_from_host(description: Option<&str>, effects: &[Value]) -> bool {
+    let Some(text) = description.map(without_reminder) else {
+        return false;
+    };
+    let json = serde_json::to_string(effects).unwrap_or_default();
+    // "Whenever CARDNAME is dealt damage, it deals ...": "it" is the card itself.
+    let Some((head, step)) = text.split_once(", ") else {
+        return false;
+    };
+    let about_the_card = ["CARDNAME", "NICKNAME", "this ", "This ", "~"]
+        .iter()
+        .any(|word| head.contains(word));
+    !about_the_card
+        && step.starts_with("it deals ")
+        && json.contains("\"DealDamage\":")
+        && !json.contains("\"source\":")
+}
+
+/// The one damage step of a trigger about an attacker ("Whenever a Dragon you control attacks, it deals 2 damage") or a
+/// blocked creature, with that creature as its source (`Triggering` is the attacker); `None` for any other shape.
+fn g13c_dealt_by_the_attacker(when: &Value, effects: &[Value]) -> Option<Vec<Value>> {
+    let about_an_attacker = ["Attacks", "BecomesBlocked"].iter().any(|key| {
+        when.get(key)
+            .is_some_and(|inner| inner.get("what").is_some())
+    });
+    let [only] = effects else {
+        return None;
+    };
+    let damage = only.get("DealDamage")?.as_object()?;
+    if !about_an_attacker || damage.contains_key("source") {
+        return None;
+    }
+    let mut damage = damage.clone();
+    damage.insert("source".to_owned(), json!("Triggering"));
+    Some(vec![json!({ "DealDamage": damage })])
+}

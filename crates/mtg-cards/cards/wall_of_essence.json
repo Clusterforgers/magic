@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1374ac18-01bd-452f-af72-a5f96285ed69",
+  "name": "Wall of Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Essence",
+      "oracle_fingerprint": "17c948f5d6fcbda37d70f90c2f663421",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This", "combat": true } } },
+            "effects": [{ "GainLife": { "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c3acf94e-3adc-4397-a736-3f6072a5967d",
+  "name": "Proteus Machine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Proteus Machine",
+      "oracle_fingerprint": "35a6eae181378db58a35ef7d7a25b1d8",
+      "abilities": [
+        { "Keyword": { "Morph": "{0}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

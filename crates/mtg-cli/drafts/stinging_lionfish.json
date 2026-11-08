@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ffd6c4b8-928d-40f1-9549-d13fa0b3af82",
+  "name": "Stinging Lionfish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stinging Lionfish",
+      "oracle_fingerprint": "3fe7163c2636b6e4fa86c1c2076c3b5b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "May": { "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

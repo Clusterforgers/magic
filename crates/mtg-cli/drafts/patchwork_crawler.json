@@ -1,0 +1,41 @@
+{
+  "oracle_id": "74cbe86b-cc8c-4a5f-93c3-f4eaced50393",
+  "name": "Patchwork Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patchwork Crawler",
+      "oracle_fingerprint": "c315f6644eb026a41b11369aaf3a82c4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

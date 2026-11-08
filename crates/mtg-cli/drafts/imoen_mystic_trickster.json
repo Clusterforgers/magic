@@ -1,0 +1,36 @@
+{
+  "oracle_id": "280e05c5-7ab4-45bf-aa15-e594cec49ef3",
+  "name": "Imoen, Mystic Trickster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imoen, Mystic Trickster",
+      "oracle_fingerprint": "ae9c6f489c70e84761aeb42ecf5591e2",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Initiative": "You" },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

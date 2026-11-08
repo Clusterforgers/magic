@@ -1,0 +1,42 @@
+{
+  "oracle_id": "3c958b5f-680b-45fc-8c3d-27b23677436e",
+  "name": "Dream-Thief's Bandana",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream-Thief's Bandana",
+      "oracle_fingerprint": "1e5a2550948a967b75960ba50b8eba1f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

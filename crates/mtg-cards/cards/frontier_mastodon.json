@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ae81040b-572d-4906-bacc-e7bae16e1130",
+  "name": "Frontier Mastodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frontier Mastodon",
+      "oracle_fingerprint": "1775c3f9eb587647eb681b76c506d6d7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d211c03a-03cd-40c5-b7c8-ada352fd01a6",
+  "name": "Galvanic Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galvanic Blast",
+      "oracle_fingerprint": "ff7ab1f271a2ef61ca85947621e9ba91",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

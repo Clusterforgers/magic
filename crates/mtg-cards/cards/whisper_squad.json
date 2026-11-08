@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e6b27729-fea5-46c9-8624-07ba291791df",
+  "name": "Whisper Squad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whisper Squad",
+      "oracle_fingerprint": "9fe5735774f55053bcbce88114068b97",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Whisper Squad" }], "as": "found" } },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage FROM user_prefs WHERE user_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "default_stops",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "user_prefs",
+            "name": "default_stops"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "end_turn_by_hand",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "user_prefs",
+            "name": "end_turn_by_hand"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "auto_order_triggers",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "user_prefs",
+            "name": "auto_order_triggers"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "auto_assign_damage",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "user_prefs",
+            "name": "auto_assign_damage"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "31c012b98c963a31b0449419353e54f289df9f6ef0acce67bc3ea4a91ecd3380"
+}

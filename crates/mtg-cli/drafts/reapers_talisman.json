@@ -1,0 +1,37 @@
+{
+  "oracle_id": "bc2ea8c8-5360-4256-91c5-d821b5e59c0f",
+  "name": "Reaper's Talisman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reaper's Talisman",
+      "oracle_fingerprint": "7a9a2897e73749230eabe1dc1bfd14f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "LoseLife": { "who": "Defending", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

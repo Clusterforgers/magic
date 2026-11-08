@@ -1,0 +1,49 @@
+{
+  "oracle_id": "9eff1ce5-41e4-4ae6-9480-2b549c8546bd",
+  "name": "Guul Draz Overseer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guul Draz Overseer",
+      "oracle_fingerprint": "6108e45178bb56fd141882618e1beeda",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Sum": [
+                            {
+                              "CountOf": { "of": "Triggering", "filter": [{ "Subtype": "Swamp" }] }
+                            },
+                            1
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

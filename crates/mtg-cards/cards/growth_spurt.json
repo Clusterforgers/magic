@@ -1,0 +1,46 @@
+{
+  "oracle_id": "3ed835f6-fb5c-45b6-906b-a5d36bcc3742",
+  "name": "Growth Spurt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Growth Spurt",
+      "oracle_fingerprint": "31c3c4dba8ab87eeb6421e7fb0538080",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": { "DieResult": "Only" },
+                                  "toughness": { "DieResult": "Only" }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

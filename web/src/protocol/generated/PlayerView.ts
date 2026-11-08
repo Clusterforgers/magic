@@ -41,6 +41,18 @@ counters?: Array<[CounterKind, number]>,
  */
 citys_blessing?: boolean, 
 /**
+ * The player's speed (CR 702.179), 1 to 4 with 4 max speed; public, and left out while they have none.
+ */
+speed?: number, 
+/**
+ * The level of the player.s Ring (CR 701.54); public, and left out while the Ring has not tempted them.
+ */
+ring_level?: number, 
+/**
+ * The creature that is the player.s Ring-bearer; public, and left out while they have none.
+ */
+ring_bearer?: ObjectId, 
+/**
  * The Auras that enchant the player, in id order; public, and left out while there are none.
  */
 enchanted_by?: Array<ObjectId>, 

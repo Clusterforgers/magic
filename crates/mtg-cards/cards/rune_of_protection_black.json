@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b027302f-80c2-441d-a9fd-bbe64bf5cf8a",
+  "name": "Rune of Protection: Black",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Protection: Black",
+      "oracle_fingerprint": "9856a3185cb44bccd6a37c52da419adb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Black" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

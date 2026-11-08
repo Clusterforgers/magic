@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5667376e-e59c-4b17-b096-5d92cdfe3db1",
+  "name": "Darkest Hour",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darkest Hour",
+      "oracle_fingerprint": "46246445c52c0b8aafa99e9f99886aa7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "SetColors": ["Black"] }]
+          }
+        }
+      ]
+    }
+  ]
+}

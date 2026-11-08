@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Add an amount of {G} equal to the sacrificed creature's power.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, conjure a card named Slimy Dualleech onto the battlefield if you control no Leeches. Otherwise, put a +1/+1 counter on each Leech you control.",
+      "abilities": [],
+      "gap": "zone:MakeCard.Battlefield"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 177
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 178,
+          "end": 267
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

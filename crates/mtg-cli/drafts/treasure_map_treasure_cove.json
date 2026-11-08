@@ -1,0 +1,71 @@
+{
+  "oracle_id": "0b55eac6-a745-4bf4-8926-5ce83bc38d7d",
+  "name": "Treasure Map // Treasure Cove",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treasure Map",
+      "oracle_fingerprint": "538f13599e3a90096b5a12d2ffae60fa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "Scry": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "landmark" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          {
+                            "CounterCount": { "kind": { "Other": "landmark" }, "op": "Ge", "to": 3 }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "landmark" },
+                        "count": {
+                          "Counters": { "on": "This", "counter": { "Other": "landmark" } }
+                        }
+                      }
+                    },
+                    { "Transform": { "what": "This" } },
+                    { "CreateToken": { "token": { "Named": "treasure" }, "count": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Treasure Cove",
+      "oracle_fingerprint": "6660d03d669bd495723cf343a4e6f955",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Treasure" }] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ec9c3906-8628-48c6-96a7-8c6748cba816",
+  "name": "White Scarab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Scarab",
+      "oracle_fingerprint": "203e86b6b9bab1b9a2685e5af50c27d9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "White" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "White" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

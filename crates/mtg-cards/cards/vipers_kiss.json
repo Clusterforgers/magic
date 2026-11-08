@@ -1,0 +1,35 @@
+{
+  "oracle_id": "35dead9a-20ab-45e9-be3e-36857c928ab9",
+  "name": "Viper's Kiss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viper's Kiss",
+      "oracle_fingerprint": "84544f8071276914c05ebd9c43d7535b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

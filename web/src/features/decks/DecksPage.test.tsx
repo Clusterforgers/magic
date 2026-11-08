@@ -158,7 +158,7 @@ describe('the check state of a deck', () => {
   ]
 
   it.each(WORDS)('shows %s as an icon and the word %s', async (state, word) => {
-    await renderDecks({ decks: [deckIn(state, { name: 'Probe', changed: false })] })
+    await renderDecks({ decks: [deckIn(state, { name: 'Probe' })] })
     await screen.findByRole('list', { name: 'Your decks' })
     const badge = rowOf('Probe').querySelector('[data-deck-state]')
     expect(badge).toHaveAttribute('data-deck-state', state)
@@ -166,20 +166,8 @@ describe('the check state of a deck', () => {
     expect(badge?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('says "Changed since the last check" beside the name of a deck whose stored check is stale', async () => {
-    await renderDecks({ decks: [deckIn('unchecked', { name: 'Probe', changed: true })] })
-    await screen.findByRole('list', { name: 'Your decks' })
-    const marker = rowOf('Probe').querySelector('[data-marker]')
-    expect(marker).toHaveAttribute('data-marker', 'changed')
-    expect(marker).toHaveTextContent(/^Changed since the last check$/)
-    expect(marker?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
-  })
-
   it('gives every state its own icon, so colour never carries the meaning alone', async () => {
-    const decks = [
-      ...WORDS.map(([state]) => deckIn(state, { id: state, name: state, changed: false })),
-      deckIn('unchecked', { id: 'changed', name: 'changed', changed: true }),
-    ]
+    const decks = [...WORDS.map(([state]) => deckIn(state, { id: state, name: state }))]
     await renderDecks({ decks })
     await screen.findByRole('list', { name: 'Your decks' })
     const icons = decks.map((deck) =>
@@ -204,12 +192,7 @@ describe('the check state of a deck', () => {
       }),
       '2 legality issues, 1 unplayable card. Cannot be taken to a game until its issues are fixed.',
     ],
-    [
-      'a changed deck says it changed',
-      deckIn('unchecked', { changed: true }),
-      'Changed since the last check',
-    ],
-    ['a deck never checked says so', deckIn('unchecked', { changed: false }), 'Not checked yet'],
+    ['a deck of no check says so', deckIn('unchecked'), 'Not checked yet'],
   ])('%s', async (_what, deck, note) => {
     await renderDecks({ decks: [{ ...deck, name: 'Probe' }] })
     await screen.findByRole('list', { name: 'Your decks' })

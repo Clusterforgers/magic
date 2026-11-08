@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ccaa44f2-96be-44e2-884f-c31baa3908d5",
+  "name": "Kindred Dominance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindred Dominance",
+      "oracle_fingerprint": "f47d2c4642438dc37e4a85654b02f590",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "ChosenAs": "chosen" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

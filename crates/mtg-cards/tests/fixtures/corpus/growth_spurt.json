@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "a8052788-65d6-4809-a338-68ff40ef5b0f",
+  "oracle_id": "3ed835f6-fb5c-45b6-906b-a5d36bcc3742",
+  "multiverse_ids": [
+    479455
+  ],
+  "tcgplayer_id": 208537,
+  "cardmarket_id": 438439,
+  "name": "Growth Spurt",
+  "lang": "en",
+  "released_at": "2020-02-29",
+  "uri": "https://api.scryfall.com/cards/a8052788-65d6-4809-a338-68ff40ef5b0f",
+  "scryfall_uri": "https://scryfall.com/card/und/64/growth-spurt?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:28:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.jpg?1783931327",
+    "normal": "https://cards.scryfall.io/normal/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.jpg?1783931327",
+    "large": "https://cards.scryfall.io/large/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.jpg?1783931327",
+    "png": "https://cards.scryfall.io/png/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.png?1783931327",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.jpg?1783931327",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.jpg?1783931327",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.webp?1783931327",
+    "grid": "https://cards.scryfall.io/grid/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.webp?1783931327",
+    "display": "https://cards.scryfall.io/display/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.webp?1783931327",
+    "art": "https://cards.scryfall.io/art/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.webp?1783931327",
+    "crop": "https://cards.scryfall.io/crop/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.webp?1783931327",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/8/a8052788-65d6-4809-a338-68ff40ef5b0f.jpg?1783931327"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Roll a six-sided die. Target creature gets +X/+X until end of turn, where X is the result.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fccfdf97-f5f2-43b4-9be9-9255414e6633",
+  "set": "und",
+  "set_name": "Unsanctioned",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/fccfdf97-f5f2-43b4-9be9-9255414e6633",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aund&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/und?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a8052788-65d6-4809-a338-68ff40ef5b0f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3ed835f6-fb5c-45b6-906b-a5d36bcc3742&unique=prints",
+  "collector_number": "64",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "MORE TO LOVE: Friendly, nature-loving, Bunyonesque SEM seeks SEF looking for a huge commitment. . . . seeks atog prince",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeff Laubenstein",
+  "artist_ids": [
+    "7c5b6391-2a5a-4b78-b19d-2b181149cb0f"
+  ],
+  "illustration_id": "ce99770f-be0c-4ede-b37b-38285fa8a788",
+  "border_color": "silver",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": "0.13",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=479455&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGrowth%2BSpurt",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGrowth%2BSpurt",
+    "edhrec": "https://edhrec.com/route/?cc=Growth+Spurt"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F208537%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=438439&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Growth+Spurt&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

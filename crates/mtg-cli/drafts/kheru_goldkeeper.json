@@ -1,0 +1,29 @@
+{
+  "oracle_id": "aef4ab0e-c81f-428c-ab23-64504a9fb989",
+  "name": "Kheru Goldkeeper",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kheru Goldkeeper",
+      "oracle_fingerprint": "08e89edfa7b1e5438d407adeebc49f86",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 178, "end": 328 }
+          }
+        }
+      ]
+    }
+  ]
+}

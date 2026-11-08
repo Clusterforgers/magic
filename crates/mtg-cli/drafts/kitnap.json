@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a1bd1e83-40ac-449f-838c-ef308f275a5d",
+  "name": "Kitnap",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kitnap",
+      "oracle_fingerprint": "061e8ed39db75fc45292459f01fa034a",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 135, "end": 241 }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

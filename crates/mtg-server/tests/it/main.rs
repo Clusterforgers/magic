@@ -1,6 +1,7 @@
 //! Goal: the server's games, transport, accounts and persistence end to end; one test binary so the crate's integration tests share one link and run together on the thread pool.
 
 mod auto_pass;
+mod auto_yields;
 mod by_hand_window;
 mod common;
 mod companion_recipe;
@@ -38,11 +39,14 @@ mod pg_commander;
 mod pg_commander_pairs;
 mod pg_commander_real;
 mod pg_companion;
+mod pg_conjure;
 mod pg_deck_import_printings;
 mod pg_decks;
 mod pg_failed_games;
 mod pg_favourites;
+mod pg_fix21;
 mod pg_fix_marks;
+mod pg_forge_tier;
 mod pg_game;
 mod pg_game_close;
 mod pg_house_rules;

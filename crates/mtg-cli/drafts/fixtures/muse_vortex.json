@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "c11b6560-51e8-42d2-a51d-fca70a5807b5",
+  "oracle_id": "0b65dc8d-a8bf-4fa1-a44e-6a3782d18c0f",
+  "multiverse_ids": [
+    518424
+  ],
+  "tcgplayer_id": 236364,
+  "cardmarket_id": 558754,
+  "name": "Muse Vortex",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/c11b6560-51e8-42d2-a51d-fca70a5807b5",
+  "scryfall_uri": "https://scryfall.com/card/c21/28/muse-vortex?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:26:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.jpg?1783927603",
+    "normal": "https://cards.scryfall.io/normal/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.jpg?1783927603",
+    "large": "https://cards.scryfall.io/large/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.jpg?1783927603",
+    "png": "https://cards.scryfall.io/png/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.png?1783927603",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.jpg?1783927603",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.jpg?1783927603",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.webp?1783927603",
+    "grid": "https://cards.scryfall.io/grid/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.webp?1783927603",
+    "display": "https://cards.scryfall.io/display/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.webp?1783927603",
+    "art": "https://cards.scryfall.io/art/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.webp?1783927603",
+    "crop": "https://cards.scryfall.io/crop/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.webp?1783927603",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/1/c11b6560-51e8-42d2-a51d-fca70a5807b5.jpg?1783927603"
+  },
+  "mana_cost": "{X}{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile the top X cards of your library. You may cast an instant or sorcery spell with mana value X or less from among them without paying its mana cost. Then put the exiled instant and sorcery cards that weren't cast this way into your hand and the rest on the bottom of your library in a random order.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set": "c21",
+  "set_name": "Commander 2021",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac21&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c21?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c11b6560-51e8-42d2-a51d-fca70a5807b5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0b65dc8d-a8bf-4fa1-a44e-6a3782d18c0f&unique=prints",
+  "collector_number": "28",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "0189be12-4002-494d-987b-96c533a75d3f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 17387,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=518424&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMuse%2BVortex",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMuse%2BVortex",
+    "edhrec": "https://edhrec.com/route/?cc=Muse+Vortex"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F236364%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=558754&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Muse+Vortex&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

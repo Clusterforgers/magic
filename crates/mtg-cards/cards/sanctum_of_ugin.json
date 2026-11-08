@@ -1,0 +1,47 @@
+{
+  "oracle_id": "72cb5dcd-9b24-435c-921a-3766108374c4",
+  "name": "Sanctum of Ugin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanctum of Ugin",
+      "oracle_fingerprint": "21596cfcf308b866cad867952669f6aa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": ["Colorless", { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 7 } }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Creature" }, "Colorless"],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

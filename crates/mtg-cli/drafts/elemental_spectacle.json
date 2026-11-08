@@ -1,0 +1,39 @@
+{
+  "oracle_id": "dd963396-3f81-49ad-a68e-87b9764d7ac5",
+  "name": "Elemental Spectacle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Spectacle",
+      "oracle_fingerprint": "c24d3a7c9386daa2a8ec54baa8ec64d0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 5,
+                      "toughness": 5
+                    }
+                  },
+                  "count": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

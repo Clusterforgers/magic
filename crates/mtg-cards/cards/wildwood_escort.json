@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ce807ee3-a27c-4f3b-92a4-37faaca42aa1",
+  "name": "Wildwood Escort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildwood Escort",
+      "oracle_fingerprint": "0ef48f6e4011c3a7fb816c0c7d667f6f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Battle" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

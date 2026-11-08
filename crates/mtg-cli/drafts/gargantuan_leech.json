@@ -1,0 +1,47 @@
+{
+  "oracle_id": "073f12d1-eaa1-4d08-bc1d-b216a3dc0c67",
+  "name": "Gargantuan Leech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gargantuan Leech",
+      "oracle_fingerprint": "b56e321cd2a06f28a2a42740b2d33412",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                {
+                  "AnyOf": [
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Subtype": "Cave" } },
+                          { "Not": { "OwnedBy": "You" } },
+                          { "Not": { "In": "Graveyard" } }
+                        ]
+                      }
+                    },
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Subtype": "Cave" } },
+                          { "Not": { "ControlledBy": "You" } },
+                          { "Not": { "In": "Battlefield" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Lifelink" }
+      ]
+    }
+  ]
+}

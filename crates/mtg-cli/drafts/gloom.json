@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4d022f53-b1fb-4071-afcc-0af3214fe604",
+  "name": "Gloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gloom",
+      "oracle_fingerprint": "b1fd981f1d593af671096d9864e8b97b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Color": "White" }],
+            "change": "Increase",
+            "mana": "{3}"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Enchantment" }, { "Color": "White" }],
+            "change": "Increase",
+            "mana": "{3}",
+            "activating": "Any"
+          }
+        }
+      ]
+    }
+  ]
+}

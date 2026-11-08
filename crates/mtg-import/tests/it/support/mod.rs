@@ -4,7 +4,7 @@
 use mtg_core::mana::{ManaCost, ParseManaCostError};
 
 /// Symbols the engine does not model: X and its siblings (roadmap M3 "X costs"), snow, and the silver-border and playtest ones.
-pub const OUT_OF_SCOPE: &[&str] = &["D", "HW", "L", "S", "X", "Y", "Z"];
+pub const OUT_OF_SCOPE: &[&str] = &["D", "HW", "L", "X", "Y", "Z"];
 
 /// What reading one cost string came to.
 #[derive(Debug, PartialEq, Eq)]

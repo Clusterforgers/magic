@@ -1,0 +1,61 @@
+{
+  "oracle_id": "d8e6294d-51cc-44ff-8bc6-b0a168e4f423",
+  "name": "Faldorn, Dread Wolf Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faldorn, Dread Wolf Herald",
+      "oracle_fingerprint": "605807edb7616dd52a5c99b358c791b0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }], "by": "You" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                    "from": "Exile",
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

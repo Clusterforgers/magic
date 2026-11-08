@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7140d726-0136-43af-84b5-85005a66a186",
+  "name": "Metamorphosis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metamorphosis",
+      "oracle_fingerprint": "c05fb59f7d0058da498da4e4edb37439",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": { "Sum": [{ "Stat": { "of": "Paid", "stat": "ManaValue" } }, 1] }
+                  },
+                  "only": [{ "Spell": { "types": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

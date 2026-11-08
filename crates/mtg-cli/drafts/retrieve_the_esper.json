@@ -1,0 +1,52 @@
+{
+  "oracle_id": "9d6fdbd4-ba51-4df1-b383-9b709b36a8d7",
+  "name": "Retrieve the Esper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retrieve the Esper",
+      "oracle_fingerprint": "37bdcf85a0547f55e8205524a3c2da3b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot Warrior",
+                      "colors": ["Blue"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot", "Warrior"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "WasCast": { "from": "Graveyard" } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": { "on": { "Bound": "token" }, "counter": "+1/+1", "count": 2 }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{U}" } }
+      ]
+    }
+  ]
+}

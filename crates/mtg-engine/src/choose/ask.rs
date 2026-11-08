@@ -64,11 +64,24 @@ impl<'a> Questions<'a> {
         &mut self,
         player: PlayerId,
         from: Vec<ObjectId>,
+        bounds: (usize, usize),
+        text: String,
+    ) -> Result<Vec<ObjectId>, Stop> {
+        self.cards_named(player, from, bounds, text, false)
+    }
+
+    /// [`Self::cards`], with no two of the cards chosen sharing a name when `one_per_name`.
+    pub(crate) fn cards_named(
+        &mut self,
+        player: PlayerId,
+        from: Vec<ObjectId>,
         (min, max): (usize, usize),
         text: String,
+        one_per_name: bool,
     ) -> Result<Vec<ObjectId>, Stop> {
         let count = |n: usize| u32::try_from(n).unwrap_or(u32::MAX);
         let options = CardsOptions {
+            one_per_name,
             source: self.source,
             from,
             min: count(min),
@@ -252,6 +265,7 @@ mod tests {
             Decision {
                 player: ME,
                 kind: DecisionKind::ChooseCards(CardsOptions {
+                    one_per_name: false,
                     source,
                     from: ids(&[1, 2, 3]),
                     min: 0,

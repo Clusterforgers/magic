@@ -1,0 +1,36 @@
+{
+  "oracle_id": "15d2176b-ab3d-4738-bcbc-bcebf891d16e",
+  "name": "Life Goes On",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Life Goes On",
+      "oracle_fingerprint": "d4a5ceef266363a8274b540337fa9c5f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 8,
+                      "otherwise": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

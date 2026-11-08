@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1499af11-274f-4f8d-b0b6-20e1693ebab7",
+  "name": "Mistvein Borderpost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistvein Borderpost",
+      "oracle_fingerprint": "91cb45789cb934765e02fbe7910680b5",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }] } }
+            ]
+          }
+        },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

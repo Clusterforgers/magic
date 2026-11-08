@@ -20,7 +20,7 @@
         {
           "Triggered": {
             "when": { "Batch": { "Milled": { "what": [{ "Not": { "Type": "Land" } }] } } },
-            "limit": "OncePerTurn",
+            "limit": "OncePerTurnDone",
             "effects": [
               {
                 "May": {

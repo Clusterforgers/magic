@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e9602731-2e8e-44ea-96a1-6b38e1efbbd9",
+  "name": "Rift Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rift Elemental",
+      "oracle_fingerprint": "0f5fc29833630cce01db0e3f5eca4fe6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{R}" },
+              {
+                "RemoveCounters": {
+                  "counter": { "Other": "time" },
+                  "from": [{ "AnyOf": [{ "In": "Battlefield" }, "Suspended"] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

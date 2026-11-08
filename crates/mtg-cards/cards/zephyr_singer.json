@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1800ae74-0b54-4547-ab8f-ea61418d73e8",
+  "name": "Zephyr Singer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zephyr Singer",
+      "oracle_fingerprint": "2042dd62502f4423f0ebd1dd972744b8",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "PutCounters": { "on": "Convoked", "counter": { "Other": "flying" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

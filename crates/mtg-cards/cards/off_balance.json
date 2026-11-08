@@ -1,0 +1,27 @@
+{
+  "oracle_id": "38d9401e-2840-455d-8478-8c976588d4ab",
+  "name": "Off Balance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Off Balance",
+      "oracle_fingerprint": "7009e7af43d9eab84e511f072beda8d7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

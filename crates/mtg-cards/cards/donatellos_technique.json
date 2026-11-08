@@ -1,0 +1,41 @@
+{
+  "oracle_id": "194284f7-cf92-4d9f-a8ce-e4dc3505ab7a",
+  "name": "Donatello's Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Donatello's Technique",
+      "oracle_fingerprint": "5a93be1efe40afbb8b22c8faee97302c",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{U}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

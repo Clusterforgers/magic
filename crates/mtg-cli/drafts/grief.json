@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0d6b89dc-23fb-48e9-a54b-cea2838ae7c8",
+  "name": "Grief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grief",
+      "oracle_fingerprint": "b5b455b5453859e7ba147e58b94abf16",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Evoke": [{ "ExileFromHand": { "filter": [{ "Color": "Black" }, "Other"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0f1b5cea-2035-444c-9f63-87dcb9782c74",
+  "name": "Gyome, Master Chef",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gyome, Master Chef",
+      "oracle_fingerprint": "006bb9f34f0476afb57c979f313c94cc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "food" },
+                  "count": {
+                    "Tally": {
+                      "event": "Entered",
+                      "who": "EachPlayer",
+                      "filter": [
+                        { "Type": "Creature" },
+                        { "Not": "Token" },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "78b1cb2d-1b48-4068-b6f3-8727ef9e8080",
+  "name": "Dripping-Tongue Zubera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dripping-Tongue Zubera",
+      "oracle_fingerprint": "3eac6d2bbb6cab09e0ed0b32d911ecd7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Subtype": "Zubera" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

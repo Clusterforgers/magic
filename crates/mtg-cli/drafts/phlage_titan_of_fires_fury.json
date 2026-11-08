@@ -1,0 +1,55 @@
+{
+  "oracle_id": "3407eb6e-b74d-4159-a801-d7163937953c",
+  "name": "Phlage, Titan of Fire's Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phlage, Titan of Fire's Fury",
+      "oracle_fingerprint": "fdc21702d46352d1909bd6705258da70",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "CastWith": "Escape" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{W}{W}{R}{R}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

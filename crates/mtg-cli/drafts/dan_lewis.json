@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b84ab039-901e-4635-b57e-3f2dac239f38",
+  "name": "Dan Lewis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dan Lewis",
+      "oracle_fingerprint": "cb46d4039041a50828b89da4a936a7ff",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Not": { "Type": "Creature" } },
+                { "Not": { "Subtype": "Equipment" } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              { "AddKeyword": { "Equip": "{1}" } },
+              { "AddSubtype": "Equipment" },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "Attached",
+                    "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

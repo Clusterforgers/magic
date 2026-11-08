@@ -1,0 +1,33 @@
+{
+  "oracle_id": "15030c1d-7c0a-4273-a022-eb98d6c7a1ce",
+  "name": "Loan Shark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loan Shark",
+      "oracle_fingerprint": "104015b5510b0bcc60ad43e2ba31cd03",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Plot": "{3}{U}" } }
+      ]
+    }
+  ]
+}

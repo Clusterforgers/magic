@@ -1,0 +1,59 @@
+{
+  "oracle_id": "1cf4e16b-2273-41c7-9bcd-0cdc78e12198",
+  "name": "Unassuming Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unassuming Sage",
+      "oracle_fingerprint": "21b08ea1d9ab1d1d4da8a37ce70eef76",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Sorcerer",
+                            "types": ["Enchantment"],
+                            "subtypes": ["Aura", "Role"],
+                            "abilities": [
+                              { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                              {
+                                "Static": {
+                                  "affected": "Attached",
+                                  "mods": [
+                                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                                    {
+                                      "GrantAbility": {
+                                        "Triggered": {
+                                          "when": { "Attacks": { "what": ["This"] } },
+                                          "effects": [{ "Scry": {} }]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "as": "token"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "token" }, "to": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

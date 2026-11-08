@@ -1,0 +1,45 @@
+{
+  "oracle_id": "21e90420-aedb-4a84-ba57-d5eae497b09b",
+  "name": "Lurking Skirge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurking Skirge",
+      "oracle_fingerprint": "283d06255734b465a852d28198d950d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "OwnedBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 2 } },
+                    { "SetCreatureTypes": ["Phyrexian", "Imp"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "988aaf54-2e46-4afc-ae37-b0a01191a1f1",
+  "name": "Dream Coat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Coat",
+      "oracle_fingerprint": "81069a0214ef23afcca168620028396b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "limit": "OncePerTurn",
+            "effects": [
+              { "ChooseValue": { "kind": "Colors", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

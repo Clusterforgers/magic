@@ -41,6 +41,7 @@ impl KeywordRules for Afterlife {
                 count: Amount::Fixed(count),
                 tapped: false,
                 attacking: false,
+                against: None,
                 bind: None,
             }],
         }]

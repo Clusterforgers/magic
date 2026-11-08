@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "c4effc17-0d0e-423a-b5f2-597ea6c71f67",
+  "oracle_id": "7fd2cac5-cd29-4a47-9e89-9c6be39a0b67",
+  "multiverse_ids": [],
+  "resource_id": "468B3F7FA275573142C23D3EF924013E7BD37BAAEB92C04543B0ED59891EA27A",
+  "mtgo_id": 155776,
+  "tcgplayer_id": 719539,
+  "cardmarket_id": 909887,
+  "name": "Plan for All Outcomes",
+  "lang": "en",
+  "released_at": "2026-10-02",
+  "uri": "https://api.scryfall.com/cards/c4effc17-0d0e-423a-b5f2-597ea6c71f67",
+  "scryfall_uri": "https://scryfall.com/card/fra/35/plan-for-all-outcomes?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-09-30T05:35:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.jpg?1790746542",
+    "normal": "https://cards.scryfall.io/normal/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.jpg?1790746542",
+    "large": "https://cards.scryfall.io/large/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.jpg?1790746542",
+    "png": "https://cards.scryfall.io/png/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.png?1790746542",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.jpg?1790746542",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.jpg?1790746542",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.webp?1790746542",
+    "grid": "https://cards.scryfall.io/grid/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.webp?1790746542",
+    "display": "https://cards.scryfall.io/display/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.webp?1790746542",
+    "art": "https://cards.scryfall.io/art/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.webp?1790746542",
+    "crop": "https://cards.scryfall.io/crop/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.webp?1790746542",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/4/c4effc17-0d0e-423a-b5f2-597ea6c71f67.jpg?1790746542"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, the owner of up to one other target nonland permanent puts it on their choice of the top or bottom of their library.\nWhenever you cast your first noncreature spell each turn, empower Jace 1. (Put a loyalty counter on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Surveil",
+    "Empower Jace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c4effc17-0d0e-423a-b5f2-597ea6c71f67",
+      "component": "combo_piece",
+      "name": "Plan for All Outcomes",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/c4effc17-0d0e-423a-b5f2-597ea6c71f67"
+    },
+    {
+      "object": "related_card",
+      "id": "8d1e424f-6407-4f8c-bed2-eaf148237c81",
+      "component": "token",
+      "name": "Jace",
+      "type_line": "Token Planeswalker — Jace",
+      "uri": "https://api.scryfall.com/cards/8d1e424f-6407-4f8c-bed2-eaf148237c81"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "6595985e-39cf-4ca3-b43d-dd3e64749fdc",
+  "set": "fra",
+  "set_name": "Reality Fracture",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/6595985e-39cf-4ca3-b43d-dd3e64749fdc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afra&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fra?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c4effc17-0d0e-423a-b5f2-597ea6c71f67/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7fd2cac5-cd29-4a47-9e89-9c6be39a0b67&unique=prints",
+  "collector_number": "35",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Cold",
+  "artist_ids": [
+    "2622d22b-3fd8-4831-9b2b-adc5fac01b85"
+  ],
+  "illustration_id": "5db69d81-5e23-48a9-9dc2-f75deb62595e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14526,
+  "penny_rank": 5748,
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.15",
+    "tix": "0.01"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPlan%2Bfor%2BAll%2BOutcomes",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPlan%2Bfor%2BAll%2BOutcomes",
+    "edhrec": "https://edhrec.com/route/?cc=Plan+for+All+Outcomes"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F719539%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=909887&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/155776?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

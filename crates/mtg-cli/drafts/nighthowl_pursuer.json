@@ -1,0 +1,43 @@
+{
+  "oracle_id": "89aa97d0-1aef-4ed8-b29c-7943bb3d0e60",
+  "name": "Nighthowl Pursuer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nighthowl Pursuer",
+      "oracle_fingerprint": "fbccc22ba48c2638d25366d59f9acbdb",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

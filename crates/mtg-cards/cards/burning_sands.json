@@ -1,0 +1,32 @@
+{
+  "oracle_id": "262dd956-d90d-4782-91b6-6d183ec08b6c",
+  "name": "Burning Sands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Sands",
+      "oracle_fingerprint": "37328e21ead5994baddd75861c566fea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "filter": [{ "Type": "Land" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

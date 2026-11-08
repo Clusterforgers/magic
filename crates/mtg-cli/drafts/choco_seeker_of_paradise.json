@@ -1,0 +1,97 @@
+{
+  "oracle_id": "7979bf83-5091-4e62-8885-ca1833a97306",
+  "name": "Choco, Seeker of Paradise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Choco, Seeker of Paradise",
+      "oracle_fingerprint": "7ddca940698c63c3d6046e469e31bff0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Bird" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "LookAtTop": { "count": "Triggering", "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "top" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Sum": [
+                      "Triggering",
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": {
+                            "Count": [
+                              { "Is": { "Bound": "kept2" } },
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Hand" },
+                                  { "In": "Library" },
+                                  { "In": "Graveyard" },
+                                  { "In": "Exile" },
+                                  { "In": "Stack" }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "top4"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top4" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept5"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept5" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Move": { "what": { "Bound": "top4" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

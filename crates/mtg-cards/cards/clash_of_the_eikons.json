@@ -1,0 +1,60 @@
+{
+  "oracle_id": "b1c38b70-575d-4d87-bc50-0b77b48ee823",
+  "name": "Clash of the Eikons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clash of the Eikons",
+      "oracle_fingerprint": "78692b07002ccf3435ba6ad09899923e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 3 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Target": 0 },
+                            "counter": { "Other": "lore" }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] } }
+                      ],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lore" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

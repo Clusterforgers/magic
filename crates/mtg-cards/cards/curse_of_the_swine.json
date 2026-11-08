@@ -1,0 +1,55 @@
+{
+  "oracle_id": "5669ea7c-c4fc-494c-896b-4bce9b494817",
+  "name": "Curse of the Swine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Swine",
+      "oracle_fingerprint": "0933c79b69c0cca87c0269fd7f63f2db",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "exiled" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                              "token": {
+                                "Custom": {
+                                  "name": "Boar",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Boar"],
+                                  "power": 2,
+                                  "toughness": 2
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

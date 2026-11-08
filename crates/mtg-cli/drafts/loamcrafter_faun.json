@@ -1,0 +1,73 @@
+{
+  "oracle_id": "2fbfdbcc-5f89-47b2-bd8d-49c797e0624f",
+  "name": "Loamcrafter Faun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loamcrafter Faun",
+      "oracle_fingerprint": "ee65318681fb2395e01a0e59759f4509",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }] },
+                  "filter": [{ "Type": "Land" }],
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Not": { "Type": "Land" } },
+                                { "OwnedBy": "You" },
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Battle" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" }
+                                  ]
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "bounds": {
+                              "min": 0,
+                              "max": { "CountOf": { "of": { "Bound": "when2" }, "filter": [] } }
+                            }
+                          }
+                        ],
+                        "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

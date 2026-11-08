@@ -1,23 +1,48 @@
 # Cards backlog
 
-Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.md` apply (one line per item, claims, ids). The gap ledger (`mtg-cli check-rules --gaps`, `coverage --all`) ranks them by the popularity of the cards they hold back. Design and task order: `docs/cards-dsl.md` (Tasks).
+Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.md` apply (one line per item, claims, ids). The gap ledger (`mtg-cli check-rules --gaps`, `coverage --all`) ranks them by the popularity of the cards they hold back. Design: `docs/cards-dsl.md`.
 
 ## Generality
 
 - [ ] (gn1a) Blame names the unwritten part of a `Replacement`, `Rule` and `CostModifier` ability instead of "the combination"; splits 54 ledger cards into node gaps (Academy Manufactor, Harmonic Prodigy, Urza's Incubator); `mtg-cards/src/proposal/blame.rs`
-- [ ] (gn1b) Amount options: `StatKind::BasePower`, `Distinct` over colours, `CommanderColors`, targets of the triggering spell, damage prevented this way; frees about 19 ledger cards (War Room, Faeburrow Elder, Kutzil); `mtg-cards/src/value.rs`, engine evaluator, reader atoms
-- [ ] (gn1c) `Amount::Tally { event, who, filter }` beside `TurnTally`, with `TurnNumber` and `Condition::StartingPlayer`; frees about 6 ledger cards (Starting Town, Idol of Oblivion, Ashling, Flame Dancer); `value.rs`, engine tallies
-- [ ] (gn1d) `GameRule::CantCast { who, filter, more_than, unless }` and `CastOnly` with tally conditions (after gn1c); frees about 8 ledger cards (Rakdos, Lord of Riots, Moderation, Curse of Exhaustion); `modify.rs`, engine casting
-- [ ] (gn1e) Mana abilities of any shape (`Ability.ManaAbility.Other`: X, a choice, no `{T}`, untap costs) run as mana abilities; frees about 19 ledger cards (Nykthos, Shrine to Nyx, Energy Refractor, Urza's Saga); engine mana payment, `caps.rs`
-- [ ] (gn1f) Rule options: `UntapDuring { what, whose }`, `MaxHandSize`, `TriggerAgain.source`, `NoLegendRule`, `Ability::OpeningHand`; frees about 17 ledger cards (Seedborn Muse, Jin-Gitaxias, Core Augur, Leyline of Anticipation); `modify.rs`, `ability.rs`, engine rules
-- [ ] (gn1g) Keyword macros: a keyword the assembler expands into existing nodes, then Bushido, Modular, Mobilize, populate, endure, earthbend; frees about 15 ledger cards (Power Depot, Warden of the Grove, Fire Nation Palace); `keyword.rs`, `assemble.rs`
-- [ ] (gn1h) Keyword lock and combat permissions: `RemoveKeyword.cant_have`, as though no hexproof, defender or tapped, `CantAttackAlone`, `MustBeBlocked`; frees about 7 ledger cards (Archetype of Imagination, Arcane Lighthouse, Assault Formation); `modify.rs`, engine layers and combat
+- [ ] (gn1b2) Reader atoms and writers for the general amounts (`BasePower`, `Distinct` colors, `CommanderColors`, `TriggeringTargets`, `Tally`, `TurnNumber`, `StartingPlayer`) and the amount of damage prevented this way; War Room, Faeburrow Elder, Kutzil, Starting Town, Idol of Oblivion, Ashling, Flame Dancer; `compile/read/amounts.rs`, `facts.rs`, `resolve/mod.rs` (Resolving record of prevented damage)
+- [ ] (gn1e2) Mana abilities still `Ability.ManaAbility.Other`: an amount that depends on the chosen colour (Nykthos, Shrine to Nyx: devotion to that colour), effects before the mana beyond a counter on the source, a granted mana ability (Urza's Saga), and a mana-free cost without {T}; `mana_shape` in `mtg-cards/src/assemble.rs`, `mana_ability.rs`
 - [ ] (gn1i) Zone statics: `Static.affected` on the stack, hand, graveyard or exile for cast keywords, `uses` for "the next spell" and `Shield.uses` for "the next time"; frees about 11 ledger cards (Imoti, Lier, Archway of Innovation, Words of Worship); `ability.rs`, `effect.rs`, engine casting
 - [ ] (gn1j) Writer composition: a frame writes with parts that write alone, for the combinations gn1a names (after gn1a); frees about 27 ledger cards (Sylvan Library, Vanquisher's Banner, Emry, Lurker of the Loch); `compile/read/render`
 - [ ] (gn1k) Activated-ability modifiers: `CostModifier.applies_to` an ability kind with `change: Instead(cost)`, activate as though haste, loyalty twice; frees about 10 ledger cards (Thousand-Year Elixir, Fluctuator, Forge Anew); `ability.rs`, engine announcement
-- [ ] (gn1l) Copy exceptions: `BecomeCopy.except` keeps the source's ability and sets name and supertype, types added on a return (with o2fb); frees about 5 ledger cards (Thespian's Stage, Enduring Vitality, Sarkhan, Soul Aflame); `effect.rs`, `become_copy.rs`
-- [ ] (gn1m) Cost parts `PutCounters`, `UntapPermanents`, `Exert`, `RemoveCountersAmong` and counted sacrifices (with g6d); frees about 7 ledger cards (Devoted Druid, Arena of Glory, Tekuthal); `cost.rs`, engine `price.rs`
-- [ ] (gn1n) `Effect::ChangeTargets { what, to }` on the copy retarget path; frees about 4 ledger cards (Misdirection, Redirect Lightning, Bolt Bend); `effect.rs`, `prim/retarget.rs`
+- [ ] (r1a1) Cast permission `AnyColor`: colorless mana must not pay a colored symbol (`ManaCost::paid_by_any_mana` lets it); frees nothing new, fixes Daxos of Meletis, Robber of the Rich, Mezzio Mugger; `ways.rs`, `mana.rs`
+- [ ] (gn1la) A permanent that returns to the battlefield with its card types set ("it's an enchantment", Enduring Vitality); `Destination::Battlefield`
+- [ ] (gn1o) Mana abilities whose cost puts counters on the source, exerts it or untaps permanents run as mana abilities (after gn1e); frees Devoted Druid and Arena of Glory; `assemble.rs` `pays_with_activation`
+
+## Forge coverage
+
+Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `gn1a` and `gn1j` are writer items beside this list; a new decision comes with its web prompt in the same piece.
+
+- [ ] (fg5ea) Effect verbs with no mapper yet that free the most scripts: Vote, Repeat, ChooseSource; `translate/effects_verbs.rs`; MakeCard and Seek need engine nodes (conjure a named card, seek a card from the library); GenericChoice maps only two parts chosen by you, SetState only Transform; `translate/effects_verbs2.rs`
+- [ ] (fg5eb) Replacement events beyond entering and token multiplying: `Counter`, `AddCounter` (needs a selector for `CountersPut.on`), `Draw`, `ProduceMana`, `GameLoss`, `LifeReduced`, `Untap-affected`, token halving and added tokens; `translate/replacements_token.rs`
+- [ ] (fg5ec) Trigger modes beyond the batches mapped: `AbilityCast`, `AttackersDeclaredOneTarget`, `DamageDealtOnce`, `CounterAddedAll`, `Unattached`, `Always`, `CommitCrime`, and `FirstTime$` and `ValidSource$` on batches; `translate/triggers_batch.rs`
+- [ ] (gn1p) `RemoveCountersAmong` lets the payer distribute the removed counters instead of taking them in play order (a new decision with web support); `mtg-engine/src/parts/among.rs`
+- [ ] (fe1s) Actions of `Did` that need an event first (`Fought`, `Investigated`, `Evolved`, `Voted`, `Discovered`, `Sought`, `CollectedEvidence`, `AbilityResolved`, `Stationed`, `Trained`, `Mentored`, `PaidUpkeep`, `GameStarted`) with web support, and the reader and writer wordings of `Did`; `detect/did.rs`
+- [ ] (fe1qa) Double team as a keyword macro: the conjured duplicate waits for `Effect::Conjure` of `fe1j`; `macros.rs`
+- [ ] (gn1ha) Combat and lock leftovers: Forge `CantHaveKeyword$` (static and `AnimateAll`) and `RemoveKeywords$` onto `LockKeyword`, "must be blocked by exactly one / two or more creatures" (`MaxBlockers`, `MinBlockers` with `MustBeBlocked`), `IgnoreShroud`, statics carried by an `Effect` SVar (`StaticAbilities$ CanAttack`), ward that does not trigger under `IgnoreHexproof`; `translate/statics_rules.rs`, `compile/read`
+- [ ] (fe1q) Keyword macros that wait for another node: Rampage (the blockers beyond the first: `BlockedBy` of `fe1a`), Double team (a conjured duplicate: `fe1j`), Enlist (tap a creature as it attacks and add its power: `fe1e`); `macros.rs`, `compile/keywords.rs`
+- [ ] (fe1h) `Duration::Perpetual`: a modification that follows the card across zones (Alchemy), and clearing it; frees 158 scripts (Begin Anew, Cottontail Caretaker, Ethereal Grasp); `modify.rs`, engine card identity and `layers.rs`
+- [ ] (fe1ia) Macro keywords with a printed parameter besides a number: Champion (a type), Amplify (a type), Reinforce and Fortify (a cost); `Keyword::Macro` carries the cost or type that `$C` and `$T` fill in the table; `macros.rs`, `compile/keywords.rs`
+- [ ] (fe1ib) Tribute (an opponent of your choice decides as it enters, then "if tribute wasn't paid") and Haunt (exile it haunting a creature, remembered for the second trigger; after fe1c); `trigger.rs` `ReplaceBy`, `macros.rs`, `replace.rs`
+- [ ] (fe1ic) Paradigm (a spell that leaves the stack into a repeating upkeep copy, as epic does with `copies::KeptSpell`); `keywords/epic.rs`
+- [ ] (fe1j) `Heist` and intensity (`Starting intensity`, `Intensify`, `Amount::Intensity`) beside the existing `Effect::Conjure`; frees scripts with spellbook cards (Argothian Uprooting, Bladehold Cleaver); `effect.rs`, `resolve/prim/`, web spellbook prompt
+- [ ] (fe1u) One-shot skips for `Prohibited::SkipTurn` and `SkipStep` ("skip your next turn", "skip your next draw step": a rule used up by its skip, a duration `NextTurn`) and the manual panel (`manual.rs`), which bypasses prohibitions, obeying `Cant`; `prohibit.rs`, `steps.rs`, `manual.rs`, `modify.rs`
+- [ ] (fe1v) `Effect::RemoveDamage` with an amount (`DamageRemoved` carries the amount) and `ExchangeLife` with a creature's toughness; frees the remaining `fe1n` scripts; `resolve/prim/fe1n_damage.rs`, `fe1n_life.rs`
+- [ ] (fg3u) `translate-forge` mappers for the choices that persist past one ability (`ChosenAs`, `ChosenName`, `Chosen`, the `Choose` enters kinds, `ChooseNumber`, `ChoosePlayer`) and the `Remember*` params; `mtg-cli`
+- [ ] (fe1mg) Craft: materials beyond one type with a count (several kinds, shared type, "four or more") and the back faces that read the cards exiled with the card (`ExiledWith`, shared keywords); `keywords/craft.rs`, `parts/exile.rs`
+- [ ] (fe1mh) Assist: mana spent by the helper counts as spent to cast (Sunburst, colour of mana) and an assisted payment can be backed out of with the helper's mana returned; `announce/assist.rs`
+- [ ] (fe1mc) More Than Meets the Eye: an `AltCast` for the converted cost that casts the card transformed (`Effect::CastFromZone.transformed`)
+- [ ] (fe1md) Freerunning: the condition "a player was dealt combat damage this turn by an Assassin or a commander you controlled"; `CombatHit` gets a commander flag, read through a `TurnTally`
+- [ ] (fe1me) Offering: an `AltCast` with flash whose cost sacrifices a creature of the type and is reduced by its mana cost (the emerge reduction in `c9_emerge_ways.rs`)
+- [ ] (fe1mf) `AltCast.then`: the abilities of a way carried on the node and gated by `CastWith` by the engine (a new `AbilitySource`), so a table row holds its riders; and `Effect::CastFromZone { way }` for the table ways
+- [ ] (fe1ka) Costs in the announcement that are left: `Keyword::Splice` (reveal an Arcane card from the hand as the spell is cast), flash at a price, and the compiler readers and renderers for Spree, Tiered, Escalate, Bargain and Conspire (`r2dgc-a`); `keyword.rs`, `effect.rs`, `announce/price.rs`
+- [ ] (fe1oa) `Waterbend` in the cost of a spell (additional, optional, ward) and `Waterbend X`: the helpers are offered for activated abilities only; frees the spell scripts (Crashing Wave); `cost.rs`, engine `price.rs`, `announce/total.rs`
+- [ ] (fe2) Split into pieces the rest of the matrix: `MayLook`, `GainAbilitiesOf`, `AssignAsUnblocked` (184 scripts), planar deck and die (176), Vanguard (106), Archenemy (102), stickers (88), contraptions (66), the Ring (54), mana replacement and conversion (52), conspiracies (50), speed (49), durations (48), attractions (45), `ReplaceWhen::Did` (41), `SetStatus` with Case (40), library position N (36), outside the game (26), banding (25), combat changes (19), specialize (19), Mindslaver (15), meld (14), text changes (14), turn face down (11), ante (9), ownership and turn order (8), one-offs (63); `orch/forge-matrix/matrix.tsv`
 
 ## Costs and casting
 
@@ -57,7 +82,6 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 
 - [ ] (c2g) Keywords given to spells beyond convoke, improvise and delve, and keywords with a cost given to cards in a hand or graveyard; frees about 20 cards (Ghost Ark, Past in Flames, Zhulodok)
 - [ ] (c2d) The cards that print scavenge, transmute, awaken, gravestorm or sunburst and wait on another wording; frees about 15 cards (Brainspoil, Ondu Rising, Dodgy Jalopy)
-- [ ] (c2l3a) Plot: the special action from a hand, the plotted card cast free as a sorcery on a later turn, plot cost reductions; frees about 4 cards (Lock and Load, Pyretic Charge)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [ ] (r2da-h) "Do this only once each turn" after a may as its own limit: a declined may leaves the ability open for the turn (now read as a trigger limited to once each turn)
 - [ ] (r2da-c-j) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Carnelian Orb of Dragonkind, Oasis Ritualist, Fervent Paincaster)
@@ -141,7 +165,7 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (r1auhb) Villainous choices left: an additional choice, "Then" before the subject, "that opponent" and "each opponent who" subjects, a target's owner; frees about 10 cards (The Valeyard, This Is How It Ends)
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
-## Model-assisted reading
+## Checker and proposals
 
 - [ ] (t17e) Slips the proposal repair still leaves: an ability whose printed line the abilities of its kind do not give one-to-one, a target used in an event, phrases the target reader does not read ("target player's library"), a group in a static (`ControllerOf` as `affected`), a player where an object is meant, an `X` standing for "the chosen number"
 - [ ] (t19d) `mtg-cli compile` counts the cards with no rules text outside reminder text (they play as printed, nothing to store) apart from the cards it cannot read
@@ -160,7 +184,6 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (t15o) Three Tree City's `{2}, {T}` ability (a mana ability with a mana cost and a counted amount of one color) is offered among the mana abilities (`t15a_validate::t15a_v_three_tree_city_*`, ignored until then); demoting the card exposes seed 7626 of `house_commander::five_seats_*`
 - [ ] (t20b-a) Replacements the checker cannot read because the proposals are wrong, so new proposals first: Laboratory Maniac (`Count[In(Library)]` needs `OwnedBy(You)`, then a writer for "while your library has no cards in it, you win the game instead"), Sulfuric Vortex, Barad-dûr, Loading Zone, Bloodletter of Aclazotz, Phyrexian Vindicator, The Mindskinner
 - [ ] (t20b-b) One replacement for several token kinds applied to each token of a run ("instead create one of each": Academy Manufactor, `TokenCreation.what` as an `AnyOf` of subtypes) and the engine's `Instead` run once for every token
-- [ ] (t20b-c) A replacement of the card itself from every zone ("reveal ~ and shuffle it into its owner's library instead": Blightsteel Colossus, Darksteel Colossus, Nexus of Fate; `MoveTo(Library)` runs as a move to the graveyard today, the rules are `Instead` of a reveal and a shuffled move)
 - [ ] (t20b-d) Replacement events the DSL lacks: mana a permanent produces (Nyxbloom Ancient), cards milled (Bruvac the Grandiloquent), a creature's counters as a choice of the replaced event (Underrealm Lich, Library of Leng)
 - [ ] (t20d) Triggered shapes whose stored rules are right but lack a primitive: Edgar Markov (works from the command zone and the battlefield), Bennie Bracks and Mirkwood Bats (created a token this turn), Y'shtola ("a player lost 4 or more life this turn"), Valgavoth (`Nth` of `LifeLost` per opponent), Lunar Convocation, Bloodchief Ascension
 - [ ] (t20e) The other `Triggered:` rows of the gap ledger (effects If, May, Move, CreateToken, RepeatEach, BecomeCopy, DealDamage, Untap; about 40 cards): most stored rules of "the combination or its shape" are the model's mistakes (Sylvan Library, Vanquisher's Banner, Enduring Tenacity) and need a better proposal or a repair
@@ -182,7 +205,6 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (t12b3) Amounts a follow-up names: Bebop (X counters of any kind on ~, the X of the second sentence), Neheb and Loamcrafter Faun ("that many" of the discard), Mortarion (X capped by the life lost), Grishnákh (the amassed Army's power)
 - [ ] (t12b4) Costs and choices before the link: Kitt Kanto (tap two untapped creatures, "that player"), Myr Battlesphere (tap X Myr), Canoptek Wraith (pay and sacrifice, choose a land), Chorus of the Conclave (any amount of mana as an additional cost), Crosis (choose a color, discard all of it)
 - [ ] (t12b5) Follow-ups with a new shape: Forum Filibuster (return an Aura attached to the token), Craig Boone, Human Torch (a delayed damage copy), Braids, Lavabrink Floodgates, Insatiable Frugivore (repeat), N'Yami-Class Mother Ship ("if you don't"), Kozilek's Return
-- [ ] (t12b6) A reflexive trigger node (CR 603.12) that puts the follow-up on the stack with targets chosen then: Dream Eater ("surveil 4. When you do, ... target"), the targeted follow-ups after a sacrifice, and the payments read as `Pay.paid` whose target is chosen with the ability
 - [ ] (t12a1) Takes from among the top cards, the cards left unread: a conjunction inside a list of kinds (Acclaimed Contender), one take per kind (Harper Recruiter), put "tapped and attacking" (Arthur), a delayed trigger on what was put (Aethermage's Touch), proliferate by the shortfall (Expand the Sphere), one card per keyword (Selective Adaptation)
 - [ ] (t12a2) Choose a creature type or a card type as a spell resolves and take the cards of that type from the top (For the Ancestors, Winding Way)
 - [ ] (t12a3) Reveal until a card matches, the follow-ups left unread: all matches to one place and the rest to the bottom or shuffled (Old Stickfingers, Mass Polymorph), another player reveals (Proteus Staff, Collision of Realms), shares a type (Reality Scramble), Oath of Druids, Abundance
@@ -199,8 +221,6 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (t13c) A generic lasting-effect object with typed statics and triggers, bound objects and an end condition ("for as long as", "until your next turn"), the old duration nodes kept (about 200 tail cards, touches layers and lifetimes)
 - [ ] (t13d) Optional parameters on the big node families instead of new nodes: a library position and several origin zones on `Move`, division among targets on `PutCounters`, an `in` zone on `Continuous`, copy exceptions, "different names" (3 to 15 cards each)
 - [ ] (t13e) A cost item that wraps an effect (`CostItem::Do`) and one rule node for "X can't happen" (can't be cast, can't win or lose, triggers don't fire, untap in another player's untap step); about 65 tail cards
-- [ ] (t21a) The cards whose stored proposal differs from the printed text are proposed again after each writer round: the gap ledger (`check-rules --gaps`) names them and `propose --resume` retries them
-- [ ] (r4d-h) `Ability.ManaAbility.Other`: a mana ability with a sacrifice of X permanents whose X is the mana (Springjack Pasture, Hazel of the Rootbloom)
 - [ ] (r4d-e) A count of transformed permanents (Mutagen Connoisseur)
 - [ ] (r4d-f) Alternative costs past a "you control" condition: "If the {1}{B} cost was paid" (Baleful Mastery), "If a white creature is attacking" (Nemesis Trap), the other Traps and Invigorate
 - [ ] (r4d-g) A blocker of several attackers: its controller divides its damage, "Whenever ~ blocks" triggers once, and the web names a blocker for several attackers
@@ -218,7 +238,6 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (r3w4b) Delayed triggers and repeated steps left: a loyalty ability's delayed return (Nahiri, the Harbinger), steps repeated for each object ("each Dragon you control", "each of those creatures"), a delayed trigger on its own line (Forth Eorlingas!)
 - [ ] (r3w6a) The A to L mismatches left: "you may have it fight", "you and target opponent each create", "another target player", a token "that's all colors", one of two counter removals as a cost; Commodore Guff, Kazuul and Gyome need a rewrite
 - [ ] (r3w5a) Writers for the rules of the r3 samples: a draw replaced after the first in a draw step (Notion Thief), a type and a granted ability during your turn (Gourmand's Talent)
-- [ ] (r2ec) A specialist model: `mtg-cli export-pairs` writes card text and rules pairs from the Verified cards with a held-out split, decoding is limited to the DSL grammar (`dsl-schema`), and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2cf) A card's name in its token or a name that starts with a creature type reads as `~` in both the checker and the corpus calibration (Kher Keep, Tuktuk the Explorer, Sliver Hivelord)
 
 ## Layouts

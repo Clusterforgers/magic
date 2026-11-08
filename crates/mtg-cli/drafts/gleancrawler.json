@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bb7389fa-ab01-4ca2-bd18-03cf5b4cedf6",
+  "name": "Gleancrawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gleancrawler",
+      "oracle_fingerprint": "647749c1024670898b3af26dc9a2b28a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

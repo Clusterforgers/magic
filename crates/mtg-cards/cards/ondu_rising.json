@@ -1,0 +1,36 @@
+{
+  "oracle_id": "01081f81-f588-43ab-8d47-13593aa19ce1",
+  "name": "Ondu Rising",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ondu Rising",
+      "oracle_fingerprint": "f9cb21cf69ac20ab8ad6bfac1af3102c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "Attacks": { "what": [{ "Type": "Creature" }] } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 4, "cost": "{4}{W}" } } }
+      ]
+    }
+  ]
+}

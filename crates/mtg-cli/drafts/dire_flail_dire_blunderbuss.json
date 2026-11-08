@@ -1,0 +1,78 @@
+{
+  "oracle_id": "5a043512-fa56-4361-bb92-0a0f229f34d3",
+  "name": "Dire Flail // Dire Blunderbuss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dire Flail",
+      "oracle_fingerprint": "1b849fb44e0637878fcedf23a9b4757b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{3}{R}{R}" },
+              { "Craft": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dire Blunderbuss",
+      "oracle_fingerprint": "06d8271ca5215b4d892c9ed65d645b84",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 0 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": [
+                            {
+                              "Sacrifice": {
+                                "filter": [{ "Type": "Artifact" }, { "Not": { "Is": "Granter" } }]
+                              }
+                            }
+                          ],
+                          "paid": [
+                            {
+                              "Reflexive": {
+                                "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                                "effects": [
+                                  {
+                                    "DealDamage": {
+                                      "to": { "Target": 0 },
+                                      "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

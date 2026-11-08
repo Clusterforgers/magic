@@ -24,6 +24,7 @@ pub(super) fn w11c_to_hand() -> Effect {
     Effect::Move {
         what: Ref::Target(0),
         to: Destination::Hand,
+        bind: None,
     }
 }
 
@@ -38,6 +39,7 @@ pub(super) fn w11c_on_top() -> Effect {
                 place: Place::Top,
                 order: None,
             },
+            bind: None,
         }],
     }
 }

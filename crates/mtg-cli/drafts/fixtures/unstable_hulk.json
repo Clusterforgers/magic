@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "889cfde2-42fa-4278-ae4e-7e4dd993cda8",
+  "oracle_id": "8d01c85c-5f83-4514-b81c-4165051d5722",
+  "multiverse_ids": [
+    44405
+  ],
+  "mtgo_id": 18593,
+  "mtgo_foil_id": 18594,
+  "tcgplayer_id": 10792,
+  "cardmarket_id": 2096,
+  "name": "Unstable Hulk",
+  "lang": "en",
+  "released_at": "2003-02-03",
+  "uri": "https://api.scryfall.com/cards/889cfde2-42fa-4278-ae4e-7e4dd993cda8",
+  "scryfall_uri": "https://scryfall.com/card/lgn/115/unstable-hulk?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:15:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.jpg?1783944902",
+    "normal": "https://cards.scryfall.io/normal/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.jpg?1783944902",
+    "large": "https://cards.scryfall.io/large/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.jpg?1783944902",
+    "png": "https://cards.scryfall.io/png/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.png?1783944902",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.jpg?1783944902",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.jpg?1783944902",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.webp?1783944902",
+    "grid": "https://cards.scryfall.io/grid/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.webp?1783944902",
+    "display": "https://cards.scryfall.io/display/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.webp?1783944902",
+    "art": "https://cards.scryfall.io/art/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.webp?1783944902",
+    "crop": "https://cards.scryfall.io/crop/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.webp?1783944902",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/8/889cfde2-42fa-4278-ae4e-7e4dd993cda8.jpg?1783944902"
+  },
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Goblin Mutant",
+  "oracle_text": "Morph {3}{R}{R} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)\nWhen this creature is turned face up, it gets +6/+6 and gains trample until end of turn. You skip your next turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Morph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "889cfde2-42fa-4278-ae4e-7e4dd993cda8",
+      "component": "combo_piece",
+      "name": "Unstable Hulk",
+      "type_line": "Creature — Goblin Mutant",
+      "uri": "https://api.scryfall.com/cards/889cfde2-42fa-4278-ae4e-7e4dd993cda8"
+    },
+    {
+      "object": "related_card",
+      "id": "5430da88-b72e-4d64-bd3c-b21062cac1c2",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/5430da88-b72e-4d64-bd3c-b21062cac1c2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c2d60a18-1a81-4784-8e0c-e1de2f43c5cf",
+  "set": "lgn",
+  "set_name": "Legions",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c2d60a18-1a81-4784-8e0c-e1de2f43c5cf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Algn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lgn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/889cfde2-42fa-4278-ae4e-7e4dd993cda8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8d01c85c-5f83-4514-b81c-4165051d5722&unique=prints",
+  "collector_number": "115",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spencer",
+  "artist_ids": [
+    "dab52c11-0564-4207-a4a1-c1735c946a65"
+  ],
+  "illustration_id": "cca96527-af6c-4e15-b2a6-477862a35e8f",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31087,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "3.46",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "5.79",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=44405&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUnstable%2BHulk",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUnstable%2BHulk",
+    "edhrec": "https://edhrec.com/route/?cc=Unstable+Hulk"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10792%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2096&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/18593?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -86,13 +86,10 @@ fn every_single_faced_cost_reads_with_the_value_and_colors_scryfall_gives_it() {
             }
         }
     }
-    // 106 of the 864 use X or another symbol left out; every other cost is read, and agrees with Scryfall.
-    assert_eq!(parsed, 758);
+    // 104 of the 864 use X or another symbol left out; every other cost is read, and agrees with Scryfall.
+    assert_eq!(parsed, 760);
     // Pinned, the first symbol refused in each cost: a new kind of symbol in the data shows up here before anything is dropped.
-    assert_eq!(
-        refused.into_iter().collect::<Vec<_>>(),
-        ["D", "HW", "S", "X"]
-    );
+    assert_eq!(refused.into_iter().collect::<Vec<_>>(), ["D", "HW", "X"]);
 }
 
 #[test]

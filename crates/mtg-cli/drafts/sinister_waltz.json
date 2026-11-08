@@ -1,0 +1,43 @@
+{
+  "oracle_id": "36a7d1a6-4eb8-4ddc-942c-00fd2acbf2ee",
+  "name": "Sinister Waltz",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinister Waltz",
+      "oracle_fingerprint": "37228de84a5a19936515ac6108c83d5c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 3, "max": 3 }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [{ "Is": { "Target": 0 } }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "count": 2,
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Target": 0 } }, { "In": "Graveyard" }] },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4ac8c118-3942-4c92-856c-20d764283650",
+  "name": "Slick Sequence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slick Sequence",
+      "oracle_fingerprint": "7b4c1518513cef20468f30becd40a7ec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "EachPlayer",
+                          "filter": [{ "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

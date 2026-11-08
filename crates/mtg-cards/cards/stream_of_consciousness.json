@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9013214f-c066-4a09-871f-e9f8396f38a4",
+  "name": "Stream of Consciousness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stream of Consciousness",
+      "oracle_fingerprint": "3c0196004156bf11d770aeca642cb1c3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

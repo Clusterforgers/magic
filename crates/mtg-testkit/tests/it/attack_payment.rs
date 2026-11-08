@@ -167,7 +167,7 @@ fn backing_out_returns_to_the_declaration_as_often_as_the_player_does(
     for _ in 0..times {
         attack(&mut driver, &["A", "B"])?;
         driver.expect_decision(0, "pay-mana")?;
-        assert!(driver.pay_options()?.can_cancel);
+        assert!(driver.pay_options()?.can_cancel && driver.pay_options()?.attack);
         driver.answer(Answer::PayMana(PayChoice::Cancel))?;
         assert_eq!(driver.decision()?, &before, "the same declaration is asked");
         assert_eq!(driver.engine().state_hash(), hash, "nothing was paid");

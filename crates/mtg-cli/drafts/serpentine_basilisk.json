@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bf0f3d2a-6b6a-4822-888d-1d897a8b5aea",
+  "name": "Serpentine Basilisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpentine Basilisk",
+      "oracle_fingerprint": "f5a792bf07ec37f92a5e81faa18aac2b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{1}{G}{G}" } }
+      ]
+    }
+  ]
+}

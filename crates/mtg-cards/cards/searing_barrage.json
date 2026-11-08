@@ -1,0 +1,47 @@
+{
+  "oracle_id": "26c17025-1123-46d9-a8bd-edbad01c4b6e",
+  "name": "Searing Barrage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Searing Barrage",
+      "oracle_fingerprint": "fc89aea958f03a2df9a01a59c92119d4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "ManaSpent": { "of": "Red" } },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0c77d37e-791c-415e-b369-55e93147ec34",
+  "name": "Skizzik",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skizzik",
+      "oracle_fingerprint": "a817f89287090e448b2ff22bff333dcb",
+      "abilities": [
+        { "Keyword": { "Kicker": "{R}" } },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Not": "Kicked" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

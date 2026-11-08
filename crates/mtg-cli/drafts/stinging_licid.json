@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c6e48eaf-02f8-43b3-90bf-970d4e412fa6",
+  "name": "Stinging Licid",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Stinging Licid",
+      "oracle_fingerprint": "4b2c43a602a7462ca42c86930fb38613",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 166 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

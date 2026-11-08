@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5b83fede-851c-4e9d-98ba-d88f6caffc1b",
+  "name": "Sudden Spinnerets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Spinnerets",
+      "oracle_fingerprint": "4eb5a26600fe67485e2a8eecb8c13b8a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "reach" } } },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

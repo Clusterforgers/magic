@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1bb2b090-19a4-40d9-823a-671f6eaca9f9",
+  "name": "Pardic Lancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pardic Lancer",
+      "oracle_fingerprint": "fb86c7baf74b75263fa47ee6eeb75d76",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "DiscardRandom": 1 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

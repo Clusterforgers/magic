@@ -1,0 +1,44 @@
+{
+  "oracle_id": "aa40d270-63d7-4022-ade9-67c1ab65ef70",
+  "name": "Dreamshackle Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamshackle Geist",
+      "oracle_fingerprint": "ae19bc01bde33019efb0a073ff9bea71",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 1 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["DoesntUntap"],
+                            "duration": "NextUntapStep"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "5b18d2fd-bc65-49a2-b812-c217f125571d",
+  "name": "Initiate of Blood // Goka the Unjust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Initiate of Blood",
+      "oracle_fingerprint": "aa582d65ee43934c35fee92ff244320f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Flip": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Goka the Unjust",
+      "oracle_fingerprint": "d40a95083aa5f429a75a31c9fffdf347",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9e0461e7-ccc4-413b-be80-83311be46861",
+  "name": "Golden-Tail Trainer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golden-Tail Trainer",
+      "oracle_fingerprint": "6e02e26cfe2b5a6a5d636f0071252d4e",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Stat": { "of": "This", "stat": "Power" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }, "Other"]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

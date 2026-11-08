@@ -1,0 +1,37 @@
+{
+  "oracle_id": "382bc554-d170-4c19-82dd-829f254e855e",
+  "name": "Jilt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jilt",
+      "oracle_fingerprint": "0d693fa3c949f38fdfc06753e3633582",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{R}" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [{ "DealDamage": { "to": { "Target": 1 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

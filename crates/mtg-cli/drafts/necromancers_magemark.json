@@ -1,0 +1,42 @@
+{
+  "oracle_id": "dffa7c06-096a-47f8-9645-1ba7306ba5b0",
+  "name": "Necromancer's Magemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromancer's Magemark",
+      "oracle_fingerprint": "31575ae4d6c799dd63ae60170289630d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "HasAttached": [{ "Subtype": "Aura" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasAttached": [{ "Subtype": "Aura" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Hand" }
+          }
+        }
+      ]
+    }
+  ]
+}

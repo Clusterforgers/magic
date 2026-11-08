@@ -1,0 +1,24 @@
+{
+  "oracle_id": "608293f1-34aa-4e55-8389-73f975858de6",
+  "name": "Dirtcowl Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dirtcowl Wurm",
+      "oracle_fingerprint": "48ff7bdb76d495a0f9fd2651da0b7826",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "PlayedLand",
+                "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1f1b6130-3f18-4989-922b-438e41d683da",
+  "name": "Sleeper Dart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sleeper Dart",
+      "oracle_fingerprint": "08e86aacec9eadddb791b68a26d593ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

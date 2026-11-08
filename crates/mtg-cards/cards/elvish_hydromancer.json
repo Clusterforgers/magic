@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9a708f82-a4a1-47f9-8ff3-65608269eebd",
+  "name": "Elvish Hydromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Hydromancer",
+      "oracle_fingerprint": "e827ff9c617a67364d8a804d083dcb6f",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

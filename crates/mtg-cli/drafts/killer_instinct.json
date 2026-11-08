@@ -1,0 +1,62 @@
+{
+  "oracle_id": "bbf90463-280a-413e-b8a3-4577dcf11e54",
+  "name": "Killer Instinct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Killer Instinct",
+      "oracle_fingerprint": "c0f939150fb03d085ac3bf47fd5fa8f9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} },
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved4" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "moved4" } },
+                        "filter": [{ "Is": { "Bound": "moved4" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "moved4" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "715cb547-726f-4bc8-ad46-297d4dccb881",
+  "name": "Lita, Mechanical Engineer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lita, Mechanical Engineer",
+      "oracle_fingerprint": "cdf8f92b44ac7cbd45646bfffee948f8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 93, "end": 328 }
+          }
+        }
+      ]
+    }
+  ]
+}

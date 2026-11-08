@@ -1,0 +1,41 @@
+{
+  "oracle_id": "620f3851-493d-496e-880a-4a9dee074e79",
+  "name": "Shadow Prophecy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow Prophecy",
+      "oracle_fingerprint": "6634d5a6a010a95c32f506f7329fd36e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "LoseLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

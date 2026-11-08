@@ -1,0 +1,26 @@
+{
+  "oracle_id": "72a1e724-eb32-4781-b44d-3b1ed02a5a8b",
+  "name": "Misers' Cage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misers' Cage",
+      "oracle_fingerprint": "03a7c86dd2d710385115287c170098d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Ge",
+                "right": 5
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

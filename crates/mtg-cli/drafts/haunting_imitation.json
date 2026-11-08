@@ -1,0 +1,62 @@
+{
+  "oracle_id": "c96ed5b2-6286-4f54-becb-c07f54335e63",
+  "name": "Haunting Imitation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunting Imitation",
+      "oracle_fingerprint": "238f605b38e2f4630dde2df6be8d7aff",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "as": "each2",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Bound": "each2" },
+                            "except": [
+                              { "SetPT": { "power": 1, "toughness": 1 } },
+                              { "AddSubtype": "Spirit" },
+                              { "AddKeyword": "Flying" }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

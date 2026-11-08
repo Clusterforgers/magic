@@ -1,0 +1,41 @@
+{
+  "oracle_id": "60733a3a-dfc9-429a-af2d-f0ce9a58d533",
+  "name": "Mysterio's Mirage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mysterio's Mirage",
+      "oracle_fingerprint": "124773ded5140ccd4c74660f1b71ae60",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Discarded" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion Villain",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Illusion", "Villain"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

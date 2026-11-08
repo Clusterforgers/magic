@@ -74,6 +74,7 @@ describe('transcript fixture', () => {
       full_control: 'Off',
       end_turn_by_hand: false,
       auto_choices: { order_triggers: false, assign_damage: false },
+      auto_yields: [],
     })
     expect(snapshot?.type).toBe('Snapshot')
     expect(rest.at(-1)?.type).toBe('GameOver')
@@ -133,6 +134,7 @@ describe('transcript fixture', () => {
           expect(keysOf(message)).toEqual([
             'auto_choices',
             'auto_pass',
+            'auto_yields',
             'end_turn_by_hand',
             'full_control',
             'game',

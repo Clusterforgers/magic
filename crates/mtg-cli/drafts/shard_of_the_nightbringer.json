@@ -1,0 +1,34 @@
+{
+  "oracle_id": "eedd5a17-d0fe-4a13-8f2c-f343bfa43f92",
+  "name": "Shard of the Nightbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shard of the Nightbringer",
+      "oracle_fingerprint": "45472974d06d4f3e2d869f19de7273cb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Half": { "of": { "Life": { "Target": 0 } }, "up": true } }
+                }
+              },
+              { "GainLife": { "amount": 0 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

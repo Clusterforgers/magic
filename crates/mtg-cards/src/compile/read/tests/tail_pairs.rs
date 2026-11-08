@@ -96,6 +96,7 @@ fn a_card_returns_to_its_owners_hand_at_the_next_end_step(#[case] text: &str, #[
     let [
         Effect::Choose { from, bind, .. },
         Effect::DelayedTrigger {
+            until: None,
             when,
             once: true,
             this_turn: false,
@@ -119,7 +120,8 @@ fn a_card_returns_to_its_owners_hand_at_the_next_end_step(#[case] text: &str, #[
         effects,
         &[Effect::Move {
             what: later,
-            to: Destination::Hand
+            to: Destination::Hand,
+            bind: None
         }],
         "{text}"
     );
@@ -163,9 +165,13 @@ fn each_player_draws_the_most_cards_a_player_discarded(
                 who: Ref::EachPlayer,
                 count: draws::hand_of(&Ref::EachPlayer),
                 random: false,
+                filter: None,
+                by: None,
+                optional: false,
                 bind: Some(draws::DISCARDED.to_owned()),
             },
             Effect::Draw {
+                bind: None,
                 who: Ref::EachPlayer,
                 count: draws::most_discarded(),
             },

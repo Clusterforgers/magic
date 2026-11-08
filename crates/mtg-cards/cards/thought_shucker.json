@@ -1,0 +1,27 @@
+{
+  "oracle_id": "33f4fcd5-4eea-4146-a564-da5511a8ee0a",
+  "name": "Thought Shucker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Shucker",
+      "oracle_fingerprint": "b5dcd66f23e90f51771b616dbc876c93",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

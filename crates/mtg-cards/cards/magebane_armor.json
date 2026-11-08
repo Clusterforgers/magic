@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fc24af7b-f3d0-41d0-aaac-d83424455717",
+  "name": "Magebane Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magebane Armor",
+      "oracle_fingerprint": "b2ac432e10b57cffe500607b8dc595b1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 4 } }, { "RemoveKeyword": "Flying" }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached", "combat": false } },
+            "by": "Prevent"
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

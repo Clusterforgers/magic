@@ -1,0 +1,37 @@
+{
+  "oracle_id": "b9b58c3a-5a76-4b6a-884b-74f54f0ca53c",
+  "name": "Azorius Ploy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Ploy",
+      "oracle_fingerprint": "967758316b907409da9b62bf064c4de1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 1 }, "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

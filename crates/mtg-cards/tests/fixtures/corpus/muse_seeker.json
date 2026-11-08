@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "71cb4a6b-b500-4b28-bcdb-ec4188242f39",
+  "oracle_id": "31f3d37f-e613-427f-b34c-cc87611ea078",
+  "multiverse_ids": [],
+  "resource_id": "5D2AC8BBDE52E979E3F8C2BCB7BF9C8C7D8745A0F311A4B9D2B2AFE8CAC95142",
+  "mtgo_id": 149619,
+  "arena_id": 102519,
+  "tcgplayer_id": 688514,
+  "cardmarket_id": 882053,
+  "name": "Muse Seeker",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/71cb4a6b-b500-4b28-bcdb-ec4188242f39",
+  "scryfall_uri": "https://scryfall.com/card/sos/60/muse-seeker?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:48:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.jpg?1783903688",
+    "normal": "https://cards.scryfall.io/normal/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.jpg?1783903688",
+    "large": "https://cards.scryfall.io/large/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.jpg?1783903688",
+    "png": "https://cards.scryfall.io/png/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.png?1783903688",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.jpg?1783903688",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.jpg?1783903688",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.webp?1783903688",
+    "grid": "https://cards.scryfall.io/grid/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.webp?1783903688",
+    "display": "https://cards.scryfall.io/display/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.webp?1783903688",
+    "art": "https://cards.scryfall.io/art/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.webp?1783903688",
+    "crop": "https://cards.scryfall.io/crop/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.webp?1783903688",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/1/71cb4a6b-b500-4b28-bcdb-ec4188242f39.jpg?1783903688"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Wizard",
+  "oracle_text": "Opus — Whenever you cast an instant or sorcery spell, draw a card. Then discard a card unless five or more mana was spent to cast that spell.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Opus"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e487c9ce-5e76-4756-bcd0-e4b7db5c38a3",
+  "set": "sos",
+  "set_name": "Secrets of Strixhaven",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e487c9ce-5e76-4756-bcd0-e4b7db5c38a3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asos&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sos?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/71cb4a6b-b500-4b28-bcdb-ec4188242f39/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A31f3d37f-e613-427f-b34c-cc87611ea078&unique=prints",
+  "collector_number": "60",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "prismari",
+  "flavor_text": "\"Failure can be a reason to quit or fuel for inspiration. The choice is always yours.\"\n—Veyran, dean of perfection",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Murayama Scott",
+  "artist_ids": [
+    "f852fa13-137e-40f2-bbc1-0f01df09c0e0"
+  ],
+  "illustration_id": "de6e9159-464e-4e2d-9257-10a7fa404555",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13242,
+  "penny_rank": 4694,
+  "preview": {
+    "source": "fellbrinkmtg",
+    "source_uri": "https://www.instagram.com/p/DWop1Q6CA4M",
+    "previewed_at": "2026-04-02"
+  },
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.27",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMuse%2BSeeker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMuse%2BSeeker",
+    "edhrec": "https://edhrec.com/route/?cc=Muse+Seeker"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F688514%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=882053&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/149619?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

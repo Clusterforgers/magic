@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4418ff27-57c0-4c94-8aee-6151e4f8b0f9",
+  "name": "Ulvenwald Mystics // Ulvenwald Primordials",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulvenwald Mystics",
+      "oracle_fingerprint": "e85f9d225d537639fd16ebf6206903d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ulvenwald Primordials",
+      "oracle_fingerprint": "5bcc2f605288747965d0b331e5c80e48",
+      "abilities": [
+        { "Activated": { "cost": "{G}", "effects": [{ "Regenerate": { "what": "This" } }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

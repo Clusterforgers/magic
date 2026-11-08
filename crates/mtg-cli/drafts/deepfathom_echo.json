@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0c0d6c7e-a7cc-49e0-bf84-3fc33dd10b90",
+  "name": "Deepfathom Echo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deepfathom Echo",
+      "oracle_fingerprint": "3b768d46b37dc6ead7614a67b49dbfce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "Explore": { "what": "This" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "copied"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Bound": "copied" },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

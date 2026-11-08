@@ -18,7 +18,7 @@ use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
 use crate::object::{Chosen, Designations, GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
-use crate::rules::RulesCache;
+use crate::rules::{RulesCache, changes_costs};
 use crate::state::{GameState, Possible, Stage, Tallies};
 use crate::turn::{Step, TurnState};
 use crate::zones::{Zone, Zones};
@@ -125,6 +125,8 @@ pub struct GameSetup {
     pub start: Start,
     /// Whether decks are checked against the format (off for scenario setups).
     pub validate_decks: bool,
+    /// The cards an effect may conjure, by name; a name missing here conjures nothing.
+    pub conjurable: Arc<BTreeMap<String, Arc<CardDefinition>>>,
 }
 
 impl GameSetup {
@@ -147,7 +149,18 @@ impl GameSetup {
                 .collect(),
             start: Start::Mulligan,
             validate_decks: true,
+            conjurable: Arc::default(),
         }
+    }
+
+    /// The setup whose effects may conjure these cards, each under the name an effect asks for it by.
+    #[must_use]
+    pub fn with_conjurable(
+        mut self,
+        cards: impl IntoIterator<Item = (String, Arc<CardDefinition>)>,
+    ) -> Self {
+        self.conjurable = Arc::new(cards.into_iter().collect());
+        self
     }
 
     /// The setup with these commanders, one list for each seat in table order, starting in the command zone.
@@ -321,6 +334,8 @@ fn preset_state(
         x: None,
         face: None,
         spent: Vec::new(),
+        spent_from: Vec::new(),
+        convoked: Vec::new(),
         copy: None,
         merged: None,
         phased: crate::object::PhasedState::default(),
@@ -445,6 +460,7 @@ impl GameState {
             format: Arc::clone(&setup.format),
             house_rules: setup.house_rules.clone(),
             seed: setup.seed,
+            conjurable: Arc::clone(&setup.conjurable),
             rng_index: 0,
             stage,
             first_player,
@@ -467,6 +483,7 @@ impl GameState {
                 extra: false,
                 combats: 0,
                 ahead: Vec::new(),
+                ending: false,
             },
             priority: None,
             combat: CombatState::default(),
@@ -482,6 +499,7 @@ impl GameState {
             delayed: Vec::new(),
             next_delayed: 0,
             limits_spent: BTreeSet::new(),
+            game_limits_spent: BTreeSet::new(),
             loyalty_used: BTreeSet::new(),
             modes_ever: BTreeSet::new(),
             tallies: Tallies::default(),
@@ -493,8 +511,12 @@ impl GameState {
             possible: Possible::default(),
             result: None,
             day_night: None,
+            seat_turns: std::collections::BTreeMap::new(),
+            last_turn_of: None,
             monarch: None,
             citys_blessing: std::collections::BTreeSet::new(),
+            speeds: crate::speed::Speeds::default(),
+            ring: crate::ring::Rings::new(),
             w11d: crate::w11d_dungeon::W11dDungeons::default(),
             w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
@@ -502,6 +524,7 @@ impl GameState {
             looked_by_hand: Vec::new(),
             revealed_by_hand: Vec::new(),
             notes: Vec::new(),
+            memory: crate::memory::Memory::new(),
         };
         game.note_what_cards_can_do();
         // A commander is moved by a replacement effect and costs a tax, so both are looked for in its game.
@@ -510,6 +533,27 @@ impl GameState {
             game.possible.costs = true;
         }
         Ok(game)
+    }
+
+    /// Whether a permanent holds a finality counter, which exiles it in place of a graveyard (CR 122.1g).
+    fn holds_finality(&self) -> bool {
+        let finality = CounterKind::Other("finality".to_owned());
+        self.objects().any(|object| {
+            object
+                .permanent
+                .as_ref()
+                .is_some_and(|held| held.counters_of(&finality) > 0)
+        })
+    }
+
+    /// Whether some card has an activated ability that players other than its controller may activate.
+    fn others_may_activate(&self) -> bool {
+        self.objects().any(|object| {
+            object
+                .def
+                .each_face()
+                .any(crate::ability_reader::definition_lets_others_activate)
+        })
     }
 
     /// Whether any card of the game can trigger something or has a static ability, which the state then watches for.
@@ -542,6 +586,7 @@ impl GameState {
                 .any(crate::ability_reader::definition_works_elsewhere)
         });
         self.possible.elsewhere = elsewhere;
+        self.possible.others_activate = self.others_may_activate();
         let states = self.objects().any(|object| {
             object
                 .def
@@ -579,21 +624,24 @@ impl GameState {
                 .each_face()
                 .any(|face| face.supertypes.contains(&Supertype::Legendary))
         });
-        self.possible.legends = legends;
+        let supertypes = self.any_face(crate::ability_reader::definition_gives_supertype);
+        self.possible.supertypes = supertypes;
+        self.possible.legends = legends || supertypes;
         let costs = self.objects().any(|object| {
             object
                 .def
                 .each_face()
                 .any(crate::ability_reader::definition_has_cost_modifier)
         });
-        self.possible.costs = costs;
+        // A rule in force that changes costs counts too, as it did when it began.
+        self.possible.costs = costs || self.rule_effects.iter().any(changes_costs);
         let replacements = self.objects().any(|object| {
             object
                 .def
                 .each_face()
                 .any(crate::ability_reader::definition_has_replacement)
         });
-        self.possible.replacements = replacements;
+        self.possible.replacements = replacements || self.holds_finality();
         // Copies of a card share a name and a definition, so each name is read once.
         let mut read = std::collections::BTreeSet::new();
         let protection = self.objects().any(|object| {
@@ -611,6 +659,7 @@ impl GameState {
         self.possible.protection = protection;
         self.possible.day_night = self.any_face(crate::ability_reader::definition_has_day_night);
         self.possible.ascend = self.any_face(crate::ability_reader::definition_has_ascend);
+        self.possible.engines = self.any_face(crate::ability_reader::definition_has_engines);
     }
 
     /// Whether some face of a card of the game satisfies `test`.

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "1759547a-52b3-4bae-817a-658a6fd047e3",
+  "name": "Vhati il-Dal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vhati il-Dal",
+      "oracle_fingerprint": "2e523db8a28014c94a90de524dc5b348",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetPower": 1 }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetToughness": 1 }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

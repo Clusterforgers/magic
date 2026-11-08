@@ -1,0 +1,33 @@
+{
+  "oracle_id": "380b6a48-c364-4939-be0b-df542c63a5ff",
+  "name": "Red Scarab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Scarab",
+      "oracle_fingerprint": "105f9dc54b7dba49139758c4a4038398",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "Red" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "Red" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

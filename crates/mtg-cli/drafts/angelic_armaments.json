@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c2042b38-1f06-44d4-b56f-2cb4d9197712",
+  "name": "Angelic Armaments",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Armaments",
+      "oracle_fingerprint": "7bf5fac8697f948e136d5f5196de5b14",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              { "AddColors": ["White"] },
+              { "AddSubtype": "Angel" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

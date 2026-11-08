@@ -1,0 +1,63 @@
+{
+  "oracle_id": "38a3e144-93ad-497b-9b29-7040b6f337e1",
+  "name": "Guild Summit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guild Summit",
+      "oracle_fingerprint": "844501af76da60b3d98e402cd95b0477",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }, "Untapped"] },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }, "Untapped"]
+                    }
+                  },
+                  "as": "tap"
+                }
+              },
+              { "Tap": { "what": { "Bound": "tap" }, "as": "tapped2" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "tapped2" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

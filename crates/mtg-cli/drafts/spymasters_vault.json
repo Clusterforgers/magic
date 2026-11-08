@@ -1,0 +1,56 @@
+{
+  "oracle_id": "69ddca4b-5cc0-45f3-b2e6-a047c8d601be",
+  "name": "Spymaster's Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spymaster's Vault",
+      "oracle_fingerprint": "3ca8253b208f7a80f611a058e55aafc3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Connive": {
+                  "what": { "Target": 0 },
+                  "count": {
+                    "Tally": {
+                      "event": "Died",
+                      "who": "EachPlayer",
+                      "filter": [{ "Type": "Creature" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

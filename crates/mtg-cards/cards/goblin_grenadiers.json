@@ -1,0 +1,39 @@
+{
+  "oracle_id": "be83a518-cfab-46b1-9fe9-7e3d54311c37",
+  "name": "Goblin Grenadiers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Grenadiers",
+      "oracle_fingerprint": "69610c6debd5cafd5bb409fd9b29e510",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    {
+                      "Together": {
+                        "effects": [
+                          { "Destroy": { "what": { "Target": 0 } } },
+                          { "Destroy": { "what": { "Target": 1 } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

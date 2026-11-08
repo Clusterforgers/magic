@@ -1,0 +1,29 @@
+{
+  "oracle_id": "02bff648-fbad-4d61-ab09-93993a5fda58",
+  "name": "Hixus, Prison Warden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hixus, Prison Warden",
+      "oracle_fingerprint": "47a973bb13f662895e7af6ebc96138ad",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "You", "combat": true }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", "EnteredThisTurn"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Exile": { "what": "Dealer", "duration": "WhileSourceOnBattlefield" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

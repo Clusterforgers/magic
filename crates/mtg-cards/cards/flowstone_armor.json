@@ -1,0 +1,29 @@
+{
+  "oracle_id": "81f44bac-d28c-4dc1-922c-f4ebda817276",
+  "name": "Flowstone Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flowstone Armor",
+      "oracle_fingerprint": "a4b3c3faa5b4b75ee7742814a142bd63",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3e7bd846-7295-4590-a419-c97cd2526bc1",
+  "name": "Meteor Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meteor Swarm",
+      "oracle_fingerprint": "c582f5d768c5f67fef48a379791d8882",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": "X", "max": "X" },
+                "divide": 8
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

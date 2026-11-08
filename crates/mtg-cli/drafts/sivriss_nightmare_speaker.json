@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ed15a3c4-110e-4f08-bf09-fabbf5b4eeb9",
+  "name": "Sivriss, Nightmare Speaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sivriss, Nightmare Speaker",
+      "oracle_fingerprint": "48e9882b8932ed9a4750ccf61f7d9d6f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": "Other" }]
+                          }
+                        },
+                        { "Type": "Artifact" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    { "Mill": { "as": "milled2" } },
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": [{ "PayLife": 3 }],
+                        "unpaid": [{ "Move": { "what": { "Bound": "milled2" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

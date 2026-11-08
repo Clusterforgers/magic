@@ -15,7 +15,8 @@ function engineNames(): string[] {
 }
 
 describe('the glossary covers the engine and Scryfall', () => {
-  const engine = engineNames()
+  // `Macro` carries the keywords of the macro table, which show under their own names (`Keyword::shown_name`).
+  const engine = engineNames().filter((name) => name !== 'Macro')
 
   it('reads the engine list', () => {
     expect(engine.length).toBeGreaterThan(100)

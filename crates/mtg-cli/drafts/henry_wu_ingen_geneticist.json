@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d94a792f-a48b-4181-b656-86fe452a4875",
+  "name": "Henry Wu, InGen Geneticist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Henry Wu, InGen Geneticist",
+      "oracle_fingerprint": "b7293dc161b85e8460b85f8b4dcc1581",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    "This",
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Subtype": "Human" } },
+                          { "Not": { "ControlledBy": "You" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Exploit" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 130, "end": 280 }
+          }
+        }
+      ]
+    }
+  ]
+}

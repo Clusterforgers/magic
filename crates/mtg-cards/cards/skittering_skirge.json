@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fae1d5d9-a50e-423e-8692-3e41f39df081",
+  "name": "Skittering Skirge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skittering Skirge",
+      "oracle_fingerprint": "04eb68843fc191efff8d167fc0642b05",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

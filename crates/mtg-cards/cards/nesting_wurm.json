@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3160dada-d59f-4f23-8420-ba14f9df7514",
+  "name": "Nesting Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nesting Wurm",
+      "oracle_fingerprint": "37ccd24346770691d3bb59aabb3296e5",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Nesting Wurm" }],
+                        "count": { "min": 0, "max": 3 },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "oracle_id": "0ed2a07c-a7a5-4910-a63c-e72803947afb",
+  "name": "Lorehold Excavation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lorehold Excavation",
+      "oracle_fingerprint": "d6b7ab8506d506450596bc777149a7d5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Mill": { "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "milled" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "Type": "Land" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 1 } }],
+                  "otherwise": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

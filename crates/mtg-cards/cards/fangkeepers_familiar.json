@@ -1,0 +1,36 @@
+{
+  "oracle_id": "06343800-b555-4a13-ad4d-19e37d200138",
+  "name": "Fangkeeper's Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fangkeeper's Familiar",
+      "oracle_fingerprint": "62d621691709dec278c9dfb656487918",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "GainLife": { "amount": 3 } }, { "Surveil": { "count": 3 } }] },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0cdbd9e7-4941-46ac-99d8-ea227181bdf8",
+  "name": "Ethereal Haze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Haze",
+      "oracle_fingerprint": "7d2a0324a6b61c3ccfc0707eb4f87ee7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "source": [{ "Type": "Creature" }, { "In": "Battlefield" }] }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

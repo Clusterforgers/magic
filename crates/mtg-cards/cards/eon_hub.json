@@ -1,0 +1,18 @@
+{
+  "oracle_id": "84342991-b925-4064-a88f-b6d60fd931e7",
+  "name": "Eon Hub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eon Hub",
+      "oracle_fingerprint": "f051c7fa5d82480b7b9c8acf38894abd",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "EachPlayer", "action": { "SkipStep": "Upkeep" } } }
+          }
+        }
+      ]
+    }
+  ]
+}

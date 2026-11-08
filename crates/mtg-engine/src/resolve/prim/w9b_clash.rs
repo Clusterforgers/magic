@@ -4,6 +4,7 @@ use mtg_cards::effect::{Effect, W9B_CLASHED};
 use mtg_cards::refs::Ref;
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use super::repeat_each::clear_pass;
 use super::wrong_effect;
 use crate::choose::{ChoiceOption, Questions, Stop, Target};
 use crate::events::Event;
@@ -126,14 +127,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Some((events, opponent, won)) = walked else {
         return Ok(Run::events(Vec::new()));
     };
+    // A repeated clash keeps the opponent of the first, which "that player" names; a pass frees what the one before bound.
+    let mut bound = clear_pass(cx, win, &[]);
+    if !cx.resolving.bindings.contains_key(W9B_CLASHED) {
+        bound.push((W9B_CLASHED.to_owned(), vec![Target::Player(opponent)]));
+    }
     Ok(Run::Done {
         events,
-        // A repeated clash keeps the opponent of the first, which "that player" names.
-        bound: if cx.resolving.bindings.contains_key(W9B_CLASHED) {
-            Vec::new()
-        } else {
-            vec![(W9B_CLASHED.to_owned(), vec![Target::Player(opponent)])]
-        },
+        bound,
         snapshots: Vec::new(),
         next: if won && *until && win.is_empty() {
             Next::Again

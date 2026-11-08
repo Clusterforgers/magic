@@ -1,0 +1,49 @@
+{
+  "oracle_id": "0c31edd0-a471-4994-8209-b0a7370fc27b",
+  "name": "Slithery Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slithery Stalker",
+      "oracle_fingerprint": "901a32dd4c31bee1024311f1eb511438",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Swamp" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Forget": { "slot": "remembered" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

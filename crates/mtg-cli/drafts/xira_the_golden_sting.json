@@ -1,0 +1,63 @@
+{
+  "oracle_id": "18d0e6e1-3824-465d-9245-21e0174f551f",
+  "name": "Xira, the Golden Sting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xira, the Golden Sting",
+      "oracle_fingerprint": "7c91695d4e47a39af9cfc316d02e2486",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Other",
+                    { "Not": { "HasCounter": { "Other": "egg" } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "egg" } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "HasCounter": { "Other": "egg" } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "effects": [
+                    { "Draw": {} },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Insect",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Insect"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "facc2d6f-3f28-4b87-b643-44fdf939a2b5",
+  "name": "Mindleech Mass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindleech Mass",
+      "oracle_fingerprint": "32bed0b05d852e3f3ded474331924bff",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtHand": { "of": "Triggering" } },
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "OwnedBy": "Triggering" }, { "In": "Hand" }] },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

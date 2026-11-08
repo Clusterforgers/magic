@@ -1,0 +1,98 @@
+{
+  "oracle_id": "b9be00a5-448f-4c90-b9ca-b30bcdfe95f2",
+  "name": "Shifty Doppelganger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shifty Doppelganger",
+      "oracle_fingerprint": "9634a35ffeeed3c862eb9ed66a146f29",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, "ExileSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "moved2" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "filter": [{ "Is": { "Bound": "moved2" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "moved2" } }] },
+                              "as": "sacrificed3"
+                            }
+                          },
+                          {
+                            "If": {
+                              "condition": {
+                                "CountOf": {
+                                  "subject": { "Bound": "sacrificed3" },
+                                  "selector": [],
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

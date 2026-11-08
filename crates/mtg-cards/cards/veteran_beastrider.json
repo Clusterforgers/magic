@@ -1,0 +1,37 @@
+{
+  "oracle_id": "29f1484c-91b6-436a-a6be-3ab8b58c0fc1",
+  "name": "Veteran Beastrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran Beastrider",
+      "oracle_fingerprint": "57921f941be666bb3064b70a9b207c15",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

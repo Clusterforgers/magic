@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a298b2aa-02e3-422a-8804-861fd6bb1068",
+  "name": "Blazing Blade Askari",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blazing Blade Askari",
+      "oracle_fingerprint": "78fd19b8f7ceeae83423a5d39b8ffca3",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColors": [] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

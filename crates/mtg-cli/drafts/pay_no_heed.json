@@ -1,0 +1,36 @@
+{
+  "oracle_id": "71da5acb-78bc-453a-ae28-d22faa5a4e43",
+  "name": "Pay No Heed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pay No Heed",
+      "oracle_fingerprint": "5db7ed8da5a0afab6f48fdd6a53b7467",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

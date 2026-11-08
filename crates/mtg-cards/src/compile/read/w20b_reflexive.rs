@@ -9,7 +9,7 @@ use super::render::variants;
 use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::Effect;
-use crate::refs::Ref;
+use crate::refs::{Ref, TargetSpec};
 use crate::value::Condition;
 
 /// What the step before "When you do" is: a sacrifice, which the follow-up depends on, or a keyword action that is always done.
@@ -23,7 +23,7 @@ enum W20bLink {
 /// The kind of link the step before offers.
 fn w20b_link_of(step: &Effect) -> Option<W20bLink> {
     match step {
-        Effect::Sacrifice { .. } => Some(W20bLink::Performed),
+        Effect::Sacrifice { .. } | Effect::Discard { .. } => Some(W20bLink::Performed),
         Effect::Surveil { .. } | Effect::Scry { .. } => Some(W20bLink::Sequence),
         _ => None,
     }
@@ -35,6 +35,7 @@ pub(super) fn w20b_when_you_do(r: &mut Reader<'_>, effects: &mut Vec<Effect>) ->
     let reflexive = r.words("when you do");
     (reflexive || (matches!(link, W20bLink::Performed) && r.words("if you do"))).then_some(())?;
     r.punct(',').then_some(())?;
+    let from = r.targets.len();
     let mut then = Vec::new();
     loop {
         sentence(r, &mut then).then_some(())?;
@@ -42,8 +43,15 @@ pub(super) fn w20b_when_you_do(r: &mut Reader<'_>, effects: &mut Vec<Effect>) ->
             break;
         }
     }
-    // A target of the reflexive trigger would be chosen with the ability, before the step, and a missing one would remove
-    // the step too (CR 603.3d).
+    // The targets of a reflexive trigger are chosen when it goes on the stack, after the step (CR 603.12).
+    if reflexive && r.targets.len() > from {
+        let trigger = w20b_trigger(r, from, &then)?;
+        effects.push(trigger);
+        return Some(());
+    }
+    // After a discard only the trigger with targets reads.
+    (!matches!(effects.last(), Some(Effect::Discard { .. }))).then_some(())?;
+    // A target of the ability would be chosen before the step, and a missing one would remove the step too (CR 603.3d).
     (!reflexive || !w20b_uses_target(&then)).then_some(())?;
     match link {
         W20bLink::Performed => effects.push(Effect::If {
@@ -54,6 +62,17 @@ pub(super) fn w20b_when_you_do(r: &mut Reader<'_>, effects: &mut Vec<Effect>) ->
         W20bLink::Sequence => effects.extend(then),
     }
     Some(())
+}
+
+/// The reflexive trigger of steps whose targets the reader took since it held `from`: the targets move into the trigger
+/// and count from 0 there.
+pub(super) fn w20b_trigger(r: &mut Reader<'_>, from: usize, steps: &[Effect]) -> Option<Effect> {
+    let by = -i64::try_from(from).ok()?;
+    let mut value = serde_json::to_value((&r.targets[from..], steps)).ok()?;
+    crate::assemble::shift_targets(&mut value, by).then_some(())?;
+    let (targets, effects) = serde_json::from_value(value).ok()?;
+    r.targets.truncate(from);
+    Some(Effect::Reflexive { targets, effects })
 }
 
 /// "If you do" or, for a follow-up that chooses a target, "When you do" after a payment: whether it was the reflexive one.
@@ -119,11 +138,7 @@ pub(super) fn w20b_wordings(ability: &Ability, texts: &mut Vec<String>) {
     texts.extend(more);
     let mut linked: Vec<String> = w20b_sacrifice_texts(ability);
     for text in texts.iter() {
-        if w20b_is_reflexive_payment(effects) {
-            if text.matches(". If you do, ").count() == 1 {
-                linked.push(text.replacen(". If you do, ", ". When you do, ", 1));
-            }
-        } else if w20b_has_keyword_action_link(effects) && !w20b_uses_target(effects) {
+        if w20b_has_keyword_action_link(effects) && !w20b_uses_target(effects) {
             linked.extend(w20b_after_action(text, "surveil "));
             linked.extend(w20b_after_action(text, "scry "));
         }
@@ -149,20 +164,11 @@ fn w20b_has_fight_after_counter(effects: &[Effect]) -> bool {
     )
 }
 
-/// One payment whose steps choose a target: the reflexive trigger of a cost.
-fn w20b_is_reflexive_payment(effects: &[Effect]) -> bool {
-    matches!(
-        effects,
-        [Effect::Pay { who: Ref::You, paid, unpaid, .. }]
-            if unpaid.is_empty() && w20b_uses_target(paid)
-    )
-}
-
 /// "S. When you do, T." and "S. If you do, T." for a sacrifice S and the steps T that depend on it: the steps after the
 /// link are worded as a spell of their own, as the renderers write a search only as a step of an ability.
 fn w20b_sacrifice_texts(ability: &Ability) -> Vec<String> {
     let [
-        sacrifice @ Effect::Sacrifice { .. },
+        sacrifice @ (Effect::Sacrifice { .. } | Effect::Discard { .. }),
         Effect::If {
             condition: Condition::Performed,
             then,
@@ -231,4 +237,124 @@ fn w20b_after_action(text: &str, action: &str) -> Option<String> {
         first.to_lowercase(),
         chars.as_str()
     ))
+}
+
+/// Which step the reflexive trigger of an ability follows.
+enum W20bAfter {
+    /// A payment whose `paid` steps are the trigger.
+    Payment,
+    /// A sacrifice.
+    Sacrifice,
+    /// A surveil or a scry.
+    Action,
+}
+
+/// The wordings of an ability with a reflexive trigger: those of the same steps with the trigger's targets chosen with
+/// the ability, where the link "If you do" is "When you do". `None` for an ability with no such trigger.
+pub(super) fn w20b_variants(
+    ability: &Ability,
+    wordings: fn(&Ability) -> Vec<String>,
+) -> Option<Vec<String>> {
+    let (flat, after) = w20b_flattened(ability)?;
+    let texts = wordings(&flat);
+    let mut out = Vec::new();
+    for text in &texts {
+        match after {
+            W20bAfter::Payment | W20bAfter::Sacrifice => {
+                if text.matches(". If you do, ").count() == 1 {
+                    out.push(text.replacen(". If you do, ", ". When you do, ", 1));
+                }
+            }
+            W20bAfter::Action => {
+                out.extend(w20b_after_action(text, "surveil "));
+                out.extend(w20b_after_action(text, "scry "));
+            }
+        }
+    }
+    Some(out)
+}
+
+/// The ability with the targets of its reflexive trigger among its own and the steps of the trigger in its place.
+fn w20b_flattened(ability: &Ability) -> Option<(Ability, W20bAfter)> {
+    let mut effects = ability.effects().to_vec();
+    let mut targets = ability.targets().to_vec();
+    let found = effects
+        .iter()
+        .enumerate()
+        .find_map(|(at, effect)| match effect {
+            Effect::Pay {
+                who: Ref::You,
+                paid,
+                unpaid,
+                ..
+            } if unpaid.is_empty() => match paid.as_slice() {
+                [Effect::Reflexive { .. }] => Some((at, W20bAfter::Payment)),
+                _ => None,
+            },
+            Effect::Reflexive { .. } => match effects.get(at.checked_sub(1)?)? {
+                Effect::Sacrifice { .. } | Effect::Discard { .. } => {
+                    Some((at, W20bAfter::Sacrifice))
+                }
+                Effect::Surveil { .. } | Effect::Scry { .. } => Some((at, W20bAfter::Action)),
+                _ => None,
+            },
+            _ => None,
+        });
+    let (at, after) = found?;
+    let trigger = match (&effects[at], &after) {
+        (Effect::Pay { paid, .. }, W20bAfter::Payment) => paid.first()?.clone(),
+        (other, _) => other.clone(),
+    };
+    let Effect::Reflexive {
+        targets: own,
+        effects: steps,
+    } = trigger
+    else {
+        return None;
+    };
+    let by = i64::try_from(targets.len()).ok()?;
+    let mut value = serde_json::to_value((&own, &steps)).ok()?;
+    crate::assemble::shift_targets(&mut value, by).then_some(())?;
+    let (own, steps): (Vec<TargetSpec>, Vec<Effect>) = serde_json::from_value(value).ok()?;
+    targets.extend(own);
+    match (&mut effects[at], &after) {
+        (Effect::Pay { paid, .. }, W20bAfter::Payment) => *paid = steps,
+        (step, W20bAfter::Sacrifice) => {
+            *step = Effect::If {
+                condition: Condition::Performed,
+                then: steps,
+                otherwise: Vec::new(),
+            };
+        }
+        _ => {
+            effects.splice(at..=at, steps);
+        }
+    }
+    let mut flat = ability.clone();
+    match &mut flat {
+        Ability::Spell {
+            targets: t,
+            effects: e,
+        }
+        | Ability::Activated {
+            targets: t,
+            effects: e,
+            ..
+        }
+        | Ability::Loyalty {
+            targets: t,
+            effects: e,
+            ..
+        }
+        | Ability::Triggered {
+            targets: t,
+            effects: e,
+            ..
+        } => {
+            *t = targets;
+            *e = effects;
+        }
+        _ => return None,
+    }
+    Some((flat, after))
 }

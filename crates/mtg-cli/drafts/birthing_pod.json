@@ -11,9 +11,10 @@
           "Activated": {
             "cost": [
               { "Mana": "{1}{G/P}" },
-              { "TapPermanents": { "filter": [{ "Type": "Artifact" }, { "Is": "This" }] } },
-              { "Sacrifice": { "filter": [{ "Targeting": [] }] } }
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
             ],
+            "timing": "Sorcery",
             "effects": [
               {
                 "Search": {
@@ -23,25 +24,14 @@
                       "Compare": {
                         "stat": "ManaValue",
                         "op": "Eq",
-                        "to": {
-                          "Sum": [
-                            { "Stat": { "of": "This", "stat": "ManaValue" } },
-                            {
-                              "Count": [
-                                { "Type": "Creature" },
-                                { "In": "Graveyard" },
-                                { "OwnedBy": "You" }
-                              ]
-                            }
-                          ]
-                        }
+                        "to": { "Sum": [{ "Stat": { "of": "Paid", "stat": "ManaValue" } }, 1] }
                       }
                     }
                   ],
-                  "as": "card"
+                  "as": "found"
                 }
               },
-              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
               { "Shuffle": {} }
             ]
           }

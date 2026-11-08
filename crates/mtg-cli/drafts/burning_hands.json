@@ -1,0 +1,46 @@
+{
+  "oracle_id": "51a0d1c2-ff29-4ac9-84a2-ad4f566fee8d",
+  "name": "Burning Hands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning Hands",
+      "oracle_fingerprint": "d0bfc6f62f067dc8e205514a6c08f8c4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "CountOf": { "of": { "Target": 0 }, "filter": [{ "Color": "Green" }] }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 6,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

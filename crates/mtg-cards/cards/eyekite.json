@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fb3f2677-a31d-49ad-a9d1-7324733938d6",
+  "name": "Eyekite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eyekite",
+      "oracle_fingerprint": "44e0acecb481be477a5b61c2b3452353",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

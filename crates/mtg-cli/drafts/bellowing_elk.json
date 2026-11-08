@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d17a1109-3a7f-4a39-b602-155da819235f",
+  "name": "Bellowing Elk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bellowing Elk",
+      "oracle_fingerprint": "ba5bed503401d95f87d7833c283e0ed4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

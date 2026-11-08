@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "82b3088f-7b49-45e9-b447-129a597ceb75",
+  "oracle_id": "b21c99b3-b975-4428-9c9a-326ded2fa8dc",
+  "multiverse_ids": [
+    574516
+  ],
+  "mtgo_id": 102548,
+  "arena_id": 82088,
+  "tcgplayer_id": 283367,
+  "cardmarket_id": 672115,
+  "name": "Temporary Lockdown",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/82b3088f-7b49-45e9-b447-129a597ceb75",
+  "scryfall_uri": "https://scryfall.com/card/dmu/36/temporary-lockdown?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:42:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.jpg?1783921358",
+    "normal": "https://cards.scryfall.io/normal/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.jpg?1783921358",
+    "large": "https://cards.scryfall.io/large/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.jpg?1783921358",
+    "png": "https://cards.scryfall.io/png/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.png?1783921358",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.jpg?1783921358",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.jpg?1783921358",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.webp?1783921358",
+    "grid": "https://cards.scryfall.io/grid/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.webp?1783921358",
+    "display": "https://cards.scryfall.io/display/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.webp?1783921358",
+    "art": "https://cards.scryfall.io/art/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.webp?1783921358",
+    "crop": "https://cards.scryfall.io/crop/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.webp?1783921358",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/2/82b3088f-7b49-45e9-b447-129a597ceb75.jpg?1783921358"
+  },
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, exile each nonland permanent with mana value 2 or less until this enchantment leaves the battlefield.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set": "dmu",
+  "set_name": "Dominaria United",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/82b3088f-7b49-45e9-b447-129a597ceb75/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab21c99b3-b975-4428-9c9a-326ded2fa8dc&unique=prints",
+  "collector_number": "36",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Any one of us could be compromised,\" said Karn. \"No one leaves until we know who can be trusted.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bryan Sola",
+  "artist_ids": [
+    "e6879299-a28b-48bc-8db1-9cafcf36de09"
+  ],
+  "illustration_id": "3816222d-0b85-4b1a-9932-55361591ce54",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 18452,
+  "preview": {
+    "source": "Sol4r1s",
+    "source_uri": "https://www.youtube.com/watch?v=laI2BdGVHho",
+    "previewed_at": "2022-08-22"
+  },
+  "prices": {
+    "usd": "0.43",
+    "usd_foil": "0.46",
+    "usd_etched": null,
+    "eur": "0.71",
+    "eur_foil": "0.68",
+    "tix": "0.11"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=574516&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTemporary%2BLockdown",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTemporary%2BLockdown",
+    "edhrec": "https://edhrec.com/route/?cc=Temporary+Lockdown"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F283367%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=672115&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/102548?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

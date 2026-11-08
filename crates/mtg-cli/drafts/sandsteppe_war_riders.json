@@ -1,0 +1,31 @@
+{
+  "oracle_id": "461c0c37-7213-4ece-91f7-934e6a1a8d64",
+  "name": "Sandsteppe War Riders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandsteppe War Riders",
+      "oracle_fingerprint": "4a7092f98196453003288c0118ab926f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Bolster": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }, "Token"],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import type { AbilityCopy } from "./AbilityCopy";
 import type { AbilitySource } from "./AbilitySource";
 import type { AttackTarget } from "./AttackTarget";
 import type { BecameCopy } from "./BecameCopy";
+import type { CardConjured } from "./CardConjured";
 import type { CardCopy } from "./CardCopy";
 import type { CardsFound } from "./CardsFound";
 import type { Cause } from "./Cause";
@@ -20,6 +21,7 @@ import type { DelayedId } from "./DelayedId";
 import type { EffectId } from "./EffectId";
 import type { EmblemCreated } from "./EmblemCreated";
 import type { GameResult } from "./GameResult";
+import type { HandLooked } from "./HandLooked";
 import type { LeftToTable } from "./LeftToTable";
 import type { LibraryLooked } from "./LibraryLooked";
 import type { LossReason } from "./LossReason";
@@ -32,6 +34,7 @@ import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
 import type { PutOnStack } from "./PutOnStack";
+import type { Remembered } from "./Remembered";
 import type { ResolutionOutcome } from "./ResolutionOutcome";
 import type { Restricted } from "./Restricted";
 import type { Revealed } from "./Revealed";
@@ -43,6 +46,7 @@ import type { SpendOn } from "./SpendOn";
 import type { Step } from "./Step";
 import type { Surveilled } from "./Surveilled";
 import type { Target } from "./Target";
+import type { TargetsChanged } from "./TargetsChanged";
 import type { TokenCreated } from "./TokenCreated";
 import type { Triggered } from "./Triggered";
 import type { Unplayable } from "./Unplayable";
@@ -96,6 +100,14 @@ player: PlayerId, } } | { "CardsBottomed": {
 player: PlayerId, 
 /**
  * Cards in the order placed (the last is the bottom).
+ */
+cards: Array<ObjectId>, } } | { "OpeningCardsPlayed": { 
+/**
+ * Whose cards.
+ */
+player: PlayerId, 
+/**
+ * The cards, from the hand.
  */
 cards: Array<ObjectId>, } } | "MulliganPhaseEnded" | { "TurnBegan": { 
 /**
@@ -363,7 +375,11 @@ form?: DamageForm,
 /**
  * The poison counters the player dealt this combat damage also gets, from the toxic of the source (CR 702.164).
  */
-toxic?: number, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromCombat": { 
+toxic?: number, 
+/**
+ * The damage can't be prevented (CR 614.17): no prevention effect applies to it.
+ */
+unpreventable?: boolean, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromCombat": { 
 /**
  * The creature.
  */
@@ -537,11 +553,23 @@ player: PlayerId,
 /**
  * How much, at least 1.
  */
-amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "EmblemCreated": EmblemCreated } | { "LibraryLooked": LibraryLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Surveilled": Surveilled } | { "Revealed": Revealed } | { "ChosenAtRandom": { 
+amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "EmblemCreated": EmblemCreated } | { "LibraryLooked": LibraryLooked } | { "HandLooked": HandLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Surveilled": Surveilled } | { "Revealed": Revealed } | { "ChosenAtRandom": { 
 /**
  * The cards picked.
  */
-cards: Array<ObjectId>, } } | { "LibraryBottomed": { 
+cards: Array<ObjectId>, } } | { "PlayersChosenAtRandom": { 
+/**
+ * The players picked.
+ */
+players: Array<PlayerId>, } } | { "CardConjured": CardConjured } | { "Sought": { 
+/**
+ * Who seeks.
+ */
+player: PlayerId, 
+/**
+ * How many cards were picked.
+ */
+count: number, } } | { "LibraryBottomed": { 
 /**
  * Whose library.
  */
@@ -553,7 +581,19 @@ cards: Array<ObjectId>,
 /**
  * The order was drawn at random, with the next substream of the generator (CR 702.85a).
  */
-random: boolean, } } | { "Entered": { 
+random: boolean, } } | { "LibraryInserted": { 
+/**
+ * Whose library.
+ */
+player: PlayerId, 
+/**
+ * The cards, top to bottom as they lie after the move.
+ */
+cards: Array<ObjectId>, 
+/**
+ * How many cards of the library stay above them.
+ */
+below: number, } } | { "Entered": { 
 /**
  * The permanent.
  */
@@ -633,11 +673,23 @@ object: ObjectId, } } | { "Unprepared": {
 /**
  * The permanent.
  */
+object: ObjectId, } } | { "Suspected": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "Unsuspected": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "Solved": { 
+/**
+ * The permanent.
+ */
 object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "CopyCeased": { 
 /**
  * The copy.
  */
-object: ObjectId, } } | { "AbilityCopied": AbilityCopy } | { "CopyEnded": { 
+object: ObjectId, } } | { "AbilityCopied": AbilityCopy } | { "TargetsChanged": TargetsChanged } | { "Remembered": Remembered } | { "CopyEnded": { 
 /**
  * The permanent.
  */
@@ -649,7 +701,31 @@ next_turn_of?: PlayerId, } } | { "MonarchChanged": {
 /**
  * The new monarch.
  */
-player: PlayerId, } } | { "CitysBlessingGained": { 
+player: PlayerId, } } | { "RingTempted": { 
+/**
+ * The tempted player.
+ */
+player: PlayerId, 
+/**
+ * Their Ring level now.
+ */
+level: number, 
+/**
+ * The creature they chose as their Ring-bearer.
+ */
+bearer?: ObjectId, } } | { "RingBearerLost": { 
+/**
+ * The player whose creature it was.
+ */
+player: PlayerId, } } | { "SpeedChanged": { 
+/**
+ * Whose speed.
+ */
+player: PlayerId, 
+/**
+ * The new speed, 1 to 4.
+ */
+speed: number, } } | { "CitysBlessingGained": { 
 /**
  * Who got it.
  */

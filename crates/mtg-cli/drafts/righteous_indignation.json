@@ -1,0 +1,35 @@
+{
+  "oracle_id": "97409c60-537e-4eeb-9d63-be0fde7e8284",
+  "name": "Righteous Indignation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Righteous Indignation",
+      "oracle_fingerprint": "404c2641fb95bcb0d2cd29f0f9f67356",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }
+                ],
+                "by": [{ "Type": "Creature" }]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Dealer",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

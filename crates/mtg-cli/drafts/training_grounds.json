@@ -7,7 +7,15 @@
       "name": "Training Grounds",
       "oracle_fingerprint": "7561b1cb92f25a59837ce84ab609aadb",
       "abilities": [
-        { "CostModifier": { "applies_to": ["Spell", "This"], "change": "Reduce", "mana": "{2}" } }
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Any",
+            "least": 1
+          }
+        }
       ]
     }
   ]

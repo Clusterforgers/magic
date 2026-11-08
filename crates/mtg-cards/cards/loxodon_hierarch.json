@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2df404eb-fbfb-4902-b52b-71225b898dd4",
+  "name": "Loxodon Hierarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loxodon Hierarch",
+      "oracle_fingerprint": "1a00975eae15878b4c12383f5f5fde7c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{G}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Regenerate": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

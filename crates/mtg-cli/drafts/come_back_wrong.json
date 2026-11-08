@@ -1,0 +1,56 @@
+{
+  "oracle_id": "2a9783c5-084b-4cd3-b7fa-ae9d7fed51d1",
+  "name": "Come Back Wrong",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Come Back Wrong",
+      "oracle_fingerprint": "b8d081cd04094f54410dd13b568b7697",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "destroyed" },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "destroyed" },
+                        "to": { "Battlefield": { "under": "You" } },
+                        "as": "moved2"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "moved2" } },
+                              "filter": [{ "Is": { "Bound": "moved2" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "moved2" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "422a76e1-97a2-4a90-b07d-f487a2d8c236",
+  "name": "Thalia and The Gitrog Monster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thalia and The Gitrog Monster",
+      "oracle_fingerprint": "154a417c72d4a534c6bcd93307da688f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Deathtouch" },
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Creature" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Land" } },
+                            { "Not": { "Not": { "Supertype": "Basic" } } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "by": "Tapped"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Land" }, { "Type": "Creature" }] }]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

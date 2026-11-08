@@ -1,0 +1,59 @@
+{
+  "oracle_id": "4f14bf38-13ec-461d-8a1b-340843b5d95d",
+  "name": "Planar Atlas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Atlas",
+      "oracle_fingerprint": "d7a15b3a6c6a42ddece439d0246554fa",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "count": 4, "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Land" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kept2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept2" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

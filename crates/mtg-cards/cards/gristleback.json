@@ -1,0 +1,20 @@
+{
+  "oracle_id": "36f4d359-f46c-4da4-a8c2-1fe1799ac3f7",
+  "name": "Gristleback",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gristleback",
+      "oracle_fingerprint": "5e6b2e5e1ea6d2b8d635cd157c6dce3e",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bloodthirst", "amount": 1 } } },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

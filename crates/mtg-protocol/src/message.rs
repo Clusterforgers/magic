@@ -2,7 +2,7 @@
 //!
 //! Both enums are internally tagged with `type`, so each message is one flat JSON object.
 
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::GameResult;
@@ -136,6 +136,19 @@ pub struct AutoChoices {
     pub assign_damage: bool,
 }
 
+/// A triggered or activated ability a seat lets resolve unasked for the rest of the game (see
+/// [`ClientMessage::AutoYield`]).
+///
+/// Keyed by what every player reads on the stack: the source's name and the ability's words, so a seat can yield to
+/// an ability of any seat and the key never names a hidden card. Two unworded abilities of one source share a key.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS)]
+pub struct AutoYield {
+    /// The name of the ability's source, as the stack shows it to every player.
+    pub name: String,
+    /// The ability's rules text as the stack shows it; empty for an ability the card writer cannot word.
+    pub text: String,
+}
+
 /// A message from a client to the server.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(tag = "type")]
@@ -255,6 +268,21 @@ pub enum ClientMessage {
         /// The new settings.
         choices: AutoChoices,
     },
+    /// Lets the ability `object` is on the stack, and every later one with its [`AutoYield`] key, resolve unasked.
+    ///
+    /// The server passes for the seat whenever such an ability is on top of the stack, out of Full Control, for the
+    /// rest of the game; [`ServerMessage::AutoYields`] says what it holds. A spell, an object off the stack or an
+    /// ability whose source is hidden from some player is refused with `Error{BadMessage}`. Kept per seat in memory
+    /// like the stops.
+    AutoYield {
+        /// The ability on the stack.
+        object: ObjectId,
+    },
+    /// Takes back a yield of [`ClientMessage::AutoYield`]; one the seat does not hold changes nothing.
+    ClearAutoYield {
+        /// The key of the yield.
+        ability: AutoYield,
+    },
 }
 
 /// A message from the server to one client.
@@ -285,6 +313,9 @@ pub enum ServerMessage {
         /// The decisions the server answers for this seat (see [`ClientMessage::AutoChoices`]).
         #[serde(default)]
         auto_choices: AutoChoices,
+        /// The abilities this seat lets resolve unasked, in key order (see [`ClientMessage::AutoYield`]).
+        #[serde(default)]
+        auto_yields: Vec<AutoYield>,
     },
     /// Who is at the table before the game starts.
     ///
@@ -401,6 +432,13 @@ pub enum ServerMessage {
     AutoChoices {
         /// The settings now in force.
         choices: AutoChoices,
+    },
+    /// The abilities this seat lets resolve unasked changed (see [`ClientMessage::AutoYield`]).
+    ///
+    /// Sent whenever they change, in the same place as [`ServerMessage::Stops`].
+    AutoYields {
+        /// The whole list now held, in key order.
+        yields: Vec<AutoYield>,
     },
     /// A seat's bank of clock extensions changed with no event to carry it: an extension was spent at the deadline.
     ///

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "409305b3-5373-4376-8096-c04a73184cef",
+  "name": "Rona, Disciple of Gix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rona, Disciple of Gix",
+      "oracle_fingerprint": "f2ec4c10ef4f27dc36478246eed739bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Supertype": "Legendary" },
+                        { "Type": "Artifact" },
+                        { "Subtype": "Saga" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Not": { "Type": "Land" } }, { "ExiledWith": "This" }],
+                "from": "Exile"
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [{ "ExileTop": { "as": "exiled" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "24c852a5-4f38-464b-89b6-2100cf405ff5",
+  "oracle_id": "39b4a47a-df51-4bd9-9a20-43ac80a5d352",
+  "multiverse_ids": [
+    643073
+  ],
+  "mtgo_id": 120659,
+  "tcgplayer_id": 531074,
+  "cardmarket_id": 748414,
+  "name": "Balustrade Spy",
+  "lang": "en",
+  "released_at": "2024-01-12",
+  "uri": "https://api.scryfall.com/cards/24c852a5-4f38-464b-89b6-2100cf405ff5",
+  "scryfall_uri": "https://scryfall.com/card/rvr/66/balustrade-spy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:28:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.jpg?1783913329",
+    "normal": "https://cards.scryfall.io/normal/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.jpg?1783913329",
+    "large": "https://cards.scryfall.io/large/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.jpg?1783913329",
+    "png": "https://cards.scryfall.io/png/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.png?1783913329",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.jpg?1783913329",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.jpg?1783913329",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.webp?1783913329",
+    "grid": "https://cards.scryfall.io/grid/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.webp?1783913329",
+    "display": "https://cards.scryfall.io/display/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.webp?1783913329",
+    "art": "https://cards.scryfall.io/art/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.webp?1783913329",
+    "crop": "https://cards.scryfall.io/crop/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.webp?1783913329",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/4/24c852a5-4f38-464b-89b6-2100cf405ff5.jpg?1783913329"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Vampire Rogue",
+  "oracle_text": "Flying\nWhen this creature enters, target player reveals cards from the top of their library until they reveal a land card, then puts those cards into their graveyard.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "banned",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set": "rvr",
+  "set_name": "Ravnica Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/fed2c8cd-ab92-44f6-808a-41e7809bcfe2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arvr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rvr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/24c852a5-4f38-464b-89b6-2100cf405ff5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A39b4a47a-df51-4bd9-9a20-43ac80a5d352&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jaime Jones",
+  "artist_ids": [
+    "92f6c2c1-fa57-4b52-99c4-0fd866c13dc9"
+  ],
+  "illustration_id": "c86dcc57-0553-4e33-ad14-c96509caec9c",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12939,
+  "penny_rank": 1505,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.32",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=643073&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBalustrade%2BSpy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBalustrade%2BSpy",
+    "edhrec": "https://edhrec.com/route/?cc=Balustrade+Spy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F531074%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=748414&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/120659?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

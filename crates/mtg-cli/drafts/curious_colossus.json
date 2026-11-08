@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c8de2e1b-f2fa-4b6a-a3c5-9811c7f5f051",
+  "name": "Curious Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curious Colossus",
+      "oracle_fingerprint": "6cb3aacfcbbbd054d7f60271a22cd2d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "AddSubtype": "Coward" },
+                    "LoseAbilities"
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

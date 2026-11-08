@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ae2db472-c699-4c39-aa35-c359ac42df4e",
+  "name": "Rishadan Brigand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rishadan Brigand",
+      "oracle_fingerprint": "e75e7908ef797d92b300efcf17a5b8a4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "each" },
+                        "cost": "{3}",
+                        "unpaid": [{ "Sacrifice": { "who": { "Bound": "each" }, "filter": [] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

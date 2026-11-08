@@ -1,0 +1,21 @@
+{
+  "oracle_id": "eb23aed0-c450-4e57-96f2-2866dceca004",
+  "name": "Jin-Gitaxias, Core Augur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jin-Gitaxias, Core Augur",
+      "oracle_fingerprint": "744c38191b7114b2219f490b7138d137",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "Draw": { "count": 7 } }]
+          }
+        },
+        { "Rule": { "rule": { "HandSizeChange": { "who": "Opponents", "by": -7 } } } }
+      ]
+    }
+  ]
+}

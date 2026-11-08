@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ed1e5d24-c8a8-48fe-a88f-1003ad432477",
+  "name": "Hurkyl's Recall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hurkyl's Recall",
+      "oracle_fingerprint": "2689928e5b28d726c74d1be8dfd09d9c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Artifact" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

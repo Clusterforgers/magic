@@ -1,0 +1,64 @@
+{
+  "oracle_id": "7ab01e23-cbf5-458c-880c-50e061ece688",
+  "name": "Waterspout Weavers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waterspout Weavers",
+      "oracle_fingerprint": "faff2f48bc2b206af056894a40a4603a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "mods": [{ "AddKeyword": "Flying" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

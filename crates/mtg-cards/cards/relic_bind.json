@@ -1,0 +1,41 @@
+{
+  "oracle_id": "35b9f327-d1f6-47d1-aefa-6f70f407b4bc",
+  "name": "Relic Bind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic Bind",
+      "oracle_fingerprint": "e5b13a8f0f04fa089cb98337391bd218",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 1 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

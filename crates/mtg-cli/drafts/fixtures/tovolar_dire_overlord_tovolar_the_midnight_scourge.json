@@ -1,0 +1,213 @@
+{
+  "object": "card",
+  "id": "f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2",
+  "oracle_id": "45d49831-548a-4a0e-9a18-9f7397913895",
+  "multiverse_ids": [
+    535042,
+    535043
+  ],
+  "resource_id": "DBB6CFCB2E8670DE4BC4916F4E803BB73DD094CA2D1CABEA6CFD11DEFC656C1C",
+  "mtgo_id": 93498,
+  "arena_id": 78613,
+  "tcgplayer_id": 247834,
+  "cardmarket_id": 574769,
+  "name": "Tovolar, Dire Overlord // Tovolar, the Midnight Scourge",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2",
+  "scryfall_uri": "https://scryfall.com/card/mid/246/tovolar-dire-overlord-tovolar-the-midnight-scourge?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:52:37Z",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Werewolf // Legendary Creature — Werewolf",
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Daybound",
+    "Transform",
+    "Nightbound"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Tovolar, Dire Overlord",
+      "mana_cost": "{1}{R}{G}",
+      "type_line": "Legendary Creature — Human Werewolf",
+      "oracle_text": "Whenever a Wolf or Werewolf you control deals combat damage to a player, draw a card.\nAt the beginning of your upkeep, if you control three or more Wolves and/or Werewolves, it becomes night. Then transform any number of Human Werewolves you control.\nDaybound",
+      "colors": [
+        "G",
+        "R"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "artist": "Chris Rahn",
+      "artist_id": "7742047e-0f80-4c0f-a530-d07460165e86",
+      "illustration_id": "cda4953b-7217-4b73-bea0-077a5ae53460",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "normal": "https://cards.scryfall.io/normal/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "large": "https://cards.scryfall.io/large/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "png": "https://cards.scryfall.io/png/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.png?1783925557",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "thumb": "https://cards.scryfall.io/thumb/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "grid": "https://cards.scryfall.io/grid/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "display": "https://cards.scryfall.io/display/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "art": "https://cards.scryfall.io/art/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "crop": "https://cards.scryfall.io/crop/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "jpeg": "https://cards.scryfall.io/normal/front/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Tovolar, the Midnight Scourge",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Werewolf",
+      "oracle_text": "Whenever a Wolf or Werewolf you control deals combat damage to a player, draw a card.\n{X}{R}{G}: Target Wolf or Werewolf you control gets +X/+0 and gains trample until end of turn.\nNightbound",
+      "colors": [
+        "G",
+        "R"
+      ],
+      "color_indicator": [
+        "G",
+        "R"
+      ],
+      "power": "4",
+      "toughness": "4",
+      "artist": "Chris Rahn",
+      "artist_id": "7742047e-0f80-4c0f-a530-d07460165e86",
+      "illustration_id": "32968d5f-1bb5-4ce6-9111-08d71d7e6bf5",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "normal": "https://cards.scryfall.io/normal/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "large": "https://cards.scryfall.io/large/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "png": "https://cards.scryfall.io/png/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.png?1783925557",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557",
+        "thumb": "https://cards.scryfall.io/thumb/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "grid": "https://cards.scryfall.io/grid/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "display": "https://cards.scryfall.io/display/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "art": "https://cards.scryfall.io/art/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "crop": "https://cards.scryfall.io/crop/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.webp?1783925557",
+        "jpeg": "https://cards.scryfall.io/normal/back/f/9/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2.jpg?1783925557"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "925dee92-9c8d-4eef-a326-2fdae72b4328",
+      "component": "combo_piece",
+      "name": "Tovolar, Dire Overlord // Tovolar, the Midnight Scourge",
+      "type_line": "Legendary Creature — Human Werewolf // Legendary Creature — Werewolf",
+      "uri": "https://api.scryfall.com/cards/925dee92-9c8d-4eef-a326-2fdae72b4328"
+    },
+    {
+      "object": "related_card",
+      "id": "dc26e13b-7a0f-4e7f-8593-4f22234f4517",
+      "component": "combo_piece",
+      "name": "Day // Night",
+      "type_line": "Card // Card",
+      "uri": "https://api.scryfall.com/cards/dc26e13b-7a0f-4e7f-8593-4f22234f4517"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set": "mid",
+  "set_name": "Innistrad: Midnight Hunt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f953fad3-0cd1-48aa-8ed9-d7d2e293e6e2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A45d49831-548a-4a0e-9a18-9f7397913895&unique=prints",
+  "collector_number": "246",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Chris Rahn",
+  "artist_ids": [
+    "7742047e-0f80-4c0f-a530-d07460165e86"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "sunmoondfc"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 7204,
+  "penny_rank": 5554,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2021-09-02"
+  },
+  "prices": {
+    "usd": "0.40",
+    "usd_foil": "2.45",
+    "usd_etched": null,
+    "eur": "0.61",
+    "eur_foil": "1.61",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=535042&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTovolar%252C%2BDire%2BOverlord%2B%252F%252F%2BTovolar%252C%2Bthe%2BMidnight%2BScourge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTovolar%252C%2BDire%2BOverlord%2B%252F%252F%2BTovolar%252C%2Bthe%2BMidnight%2BScourge",
+    "edhrec": "https://edhrec.com/route/?cc=Tovolar%2C+Dire+Overlord"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F247834%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574769&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93498?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

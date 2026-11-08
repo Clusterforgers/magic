@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "ead68c0a-eed1-4a9c-a790-56f8a79b444c",
+  "oracle_id": "ca54e14c-67ee-4de2-bc0f-19a5f9461d37",
+  "multiverse_ids": [
+    555304
+  ],
+  "mtgo_id": 98425,
+  "arena_id": 80254,
+  "tcgplayer_id": 268786,
+  "cardmarket_id": 651842,
+  "name": "Call In a Professional",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/ead68c0a-eed1-4a9c-a790-56f8a79b444c",
+  "scryfall_uri": "https://scryfall.com/card/snc/103/call-in-a-professional?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:12:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.jpg?1783923120",
+    "normal": "https://cards.scryfall.io/normal/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.jpg?1783923120",
+    "large": "https://cards.scryfall.io/large/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.jpg?1783923120",
+    "png": "https://cards.scryfall.io/png/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.png?1783923120",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.jpg?1783923120",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.jpg?1783923120",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.webp?1783923120",
+    "grid": "https://cards.scryfall.io/grid/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.webp?1783923120",
+    "display": "https://cards.scryfall.io/display/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.webp?1783923120",
+    "art": "https://cards.scryfall.io/art/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.webp?1783923120",
+    "crop": "https://cards.scryfall.io/crop/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.webp?1783923120",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/a/ead68c0a-eed1-4a9c-a790-56f8a79b444c.jpg?1783923120"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Players can't gain life this turn. Damage can't be prevented this turn. Call In a Professional deals 3 damage to any target. (Shield counters don't prevent this damage as they're removed.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
+  "set": "snc",
+  "set_name": "Streets of New Capenna",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ead68c0a-eed1-4a9c-a790-56f8a79b444c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aca54e14c-67ee-4de2-bc0f-19a5f9461d37&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "For the next week, Park Heights smelled of burnt oil paint and brimstone.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Filip Burburan",
+  "artist_ids": [
+    "66082c3b-a623-4d34-be51-2475214b85d3"
+  ],
+  "illustration_id": "3e2465a4-323a-47d5-a0df-760e72a8953c",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16496,
+  "penny_rank": 7351,
+  "preview": {
+    "source": "JS2mtg",
+    "source_uri": "https://twitter.com/JS2mtg/status/1513417811187875840",
+    "previewed_at": "2022-04-11"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.09",
+    "tix": "0.01"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555304&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCall%2BIn%2Ba%2BProfessional",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCall%2BIn%2Ba%2BProfessional",
+    "edhrec": "https://edhrec.com/route/?cc=Call+In+a+Professional"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268786%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651842&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/98425?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d37c4e77-5023-4d13-9cfe-a43f513364bf",
+  "name": "Wormfang Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wormfang Drake",
+      "oracle_fingerprint": "f339c64aa718d362e4d3ead6134cd1e5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              { "Remember": { "what": { "Bound": "exiled2" }, "slot": "remembered" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

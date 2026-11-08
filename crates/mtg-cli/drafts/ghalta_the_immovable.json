@@ -1,0 +1,58 @@
+{
+  "oracle_id": "0d496c6e-8f7b-420f-9197-dacd2feb528f",
+  "name": "Ghalta the Immovable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghalta the Immovable",
+      "oracle_fingerprint": "ab29233ea2574f10d926a617b1d344ab",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Greatest": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "stat": "Toughness"
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Lt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                      }
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "quirk": "AssignsByToughness"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

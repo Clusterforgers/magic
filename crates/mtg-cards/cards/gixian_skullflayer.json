@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0b2a59a3-cf87-48fe-99e2-4c2063119b55",
+  "name": "Gixian Skullflayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gixian Skullflayer",
+      "oracle_fingerprint": "9f4fbbde8e20aaabc75caec992bcc61c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

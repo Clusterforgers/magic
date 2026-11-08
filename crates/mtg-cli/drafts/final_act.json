@@ -1,0 +1,35 @@
+{
+  "oracle_id": "335a6c6a-030f-45d4-806c-467a22962eed",
+  "name": "Final Act",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Final Act",
+      "oracle_fingerprint": "1dbaaddc60a3c529ac4b6712bc1bb674",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 5 },
+                  "modes": [
+                    { "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }] },
+                    {
+                      "effects": [
+                        { "Destroy": { "what": { "Each": [{ "Type": "Planeswalker" }] } } }
+                      ]
+                    },
+                    { "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Battle" }] } } }] },
+                    { "effects": [{ "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }] },
+                    { "effects": [{ "RemoveAllCounters": { "from": "Opponents" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2eb2f6a2-e31a-4d3e-93ce-100394899014",
+  "name": "Kotis, the Fangkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kotis, the Fangkeeper",
+      "oracle_fingerprint": "836c787791321cc7d31c155fbcd0ab83",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "count": "Triggering", "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Is": { "Bound": "exiled" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card2",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card2" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9e6e1ea6-4682-4056-b70e-fe45d0c9fdee",
+  "name": "Samite Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Sanctuary",
+      "oracle_fingerprint": "7f621883af63b7c37c26dc15e0f70210",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

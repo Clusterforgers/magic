@@ -1,0 +1,62 @@
+{
+  "oracle_id": "18207fe8-41e4-418d-b5f9-e1239c527e67",
+  "name": "Extract the Truth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extract the Truth",
+      "oracle_fingerprint": "3664732bd37c471c05ca78df6a2b9ab1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "filter": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              }
+                            ],
+                            "by": "You",
+                            "optional": true
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": { "Target": 0 },
+                            "filter": [{ "Type": "Enchantment" }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

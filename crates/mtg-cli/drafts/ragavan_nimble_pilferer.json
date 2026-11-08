@@ -9,13 +9,19 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
             "effects": [
               { "CreateToken": { "token": { "Named": "treasure" } } },
-              { "ExileTop": { "as": "card" } },
+              { "ExileTop": { "who": "Triggering", "as": "exiled" } },
               {
                 "Rule": {
-                  "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "card" } } },
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" }
+                    }
+                  },
                   "duration": "UntilEndOfTurn"
                 }
               }

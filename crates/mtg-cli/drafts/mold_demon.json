@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7ce9513e-50f3-4d36-889b-b180a8a16252",
+  "name": "Mold Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mold Demon",
+      "oracle_fingerprint": "18d66f3d2e38e60f2c09b155c5923077",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Swamp" }], "count": 2 } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

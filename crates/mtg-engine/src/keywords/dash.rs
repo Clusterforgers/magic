@@ -36,6 +36,7 @@ impl KeywordRules for Dash {
                 Effect::Move {
                     what: Ref::Bound(DASHED.to_owned()),
                     to: Destination::Hand,
+                    bind: None,
                 },
             ),
         ]
@@ -75,6 +76,7 @@ pub(super) fn at_next_end_step(way: CastWay, name: &str, effect: Effect) -> Abil
                 rest_as: None,
             },
             Effect::DelayedTrigger {
+                until: None,
                 when: TriggerPattern::StepBegins {
                     step: Step::End,
                     whose: Ref::EachPlayer,

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "854cac11-9a22-4dea-8c1b-c49a4858a754",
+  "name": "Raiding Schemes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raiding Schemes",
+      "oracle_fingerprint": "72c41a95babc9889e48c4f57a78c0de3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Not": { "Type": "Creature" } },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Conspire" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "oracle_id": "9b205900-ec39-455e-900b-615ece08a07f",
+  "name": "Cut In",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut In",
+      "oracle_fingerprint": "cb202141f08d41e02f771cb01b7f0636",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Young Hero",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": { "Attacks": { "what": ["This"] } },
+                                    "if": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            "This",
+                                            {
+                                              "Compare": {
+                                                "stat": "Toughness",
+                                                "op": "Le",
+                                                "to": 3
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    "effects": [
+                                      { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

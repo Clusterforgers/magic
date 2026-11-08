@@ -1,0 +1,48 @@
+{
+  "oracle_id": "6512ddb8-0868-4d32-ab32-8a5250fc571b",
+  "name": "Rite of Renewal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Renewal",
+      "oracle_fingerprint": "96b60c0f31c2885c0d1cb0fe7a237b10",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              },
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 1 } }] },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 2 }, "to": { "Library": { "place": "Shuffled" } } } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

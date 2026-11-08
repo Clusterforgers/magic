@@ -1,0 +1,119 @@
+{
+  "oracle_id": "c9432e87-38f6-4889-8f07-ae7cd045e532",
+  "name": "Gilgamesh, Master-at-Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilgamesh, Master-at-Arms",
+      "oracle_fingerprint": "b1c609283c5ac2f7d471debc4c02d03c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Equipment" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": {} },
+                  "as": "kept2_moved"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2_moved" },
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "If": {
+                              "condition": {
+                                "CountOf": {
+                                  "subject": { "Bound": "kept2_moved" },
+                                  "selector": [{ "Subtype": "Equipment" }],
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": [
+                                {
+                                  "Choose": {
+                                    "from": {
+                                      "Each": [{ "Subtype": "Samurai" }, { "ControlledBy": "You" }]
+                                    },
+                                    "count": { "min": 0, "max": 1 },
+                                    "as": "card4"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "May": {
+                              "effects": [
+                                {
+                                  "Choose": {
+                                    "from": {
+                                      "Each": [
+                                        { "Subtype": "Equipment" },
+                                        { "ControlledBy": "You" },
+                                        { "Is": { "Bound": "kept2" } }
+                                      ]
+                                    },
+                                    "as": "attach5"
+                                  }
+                                },
+                                {
+                                  "Attach": {
+                                    "what": { "Bound": "attach5" },
+                                    "to": { "Bound": "card4" }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

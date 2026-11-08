@@ -1,0 +1,43 @@
+{
+  "oracle_id": "8f85088c-256d-4925-a4dd-aafcc2632282",
+  "name": "Magnetic Snuffler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magnetic Snuffler",
+      "oracle_fingerprint": "f2e6bebe506617cc053bde4e32ae1f31",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Equipment" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "BattlefieldAttached": { "to": "This" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

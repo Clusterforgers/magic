@@ -28,6 +28,7 @@ impl KeywordRules for Miracle {
                 event: Box::new(TriggerPattern::Drew {
                     who: Ref::You,
                     what: Selector::this(),
+                    first_in_draw_step: None,
                 }),
                 nth: 1,
             },
@@ -36,6 +37,7 @@ impl KeywordRules for Miracle {
             from: ZoneKind::Hand,
             targets: Vec::new(),
             effects: vec![Effect::CastFromZone {
+                rather: None,
                 who: Ref::You,
                 what: Ref::This,
                 free: false,

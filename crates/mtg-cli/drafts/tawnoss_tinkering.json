@@ -1,0 +1,57 @@
+{
+  "oracle_id": "bd101a9b-4c1e-44c8-b9ef-cd79c4d28f36",
+  "name": "Tawnos's Tinkering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tawnos's Tinkering",
+      "oracle_fingerprint": "ca0a816d39b7607d00995d9a8095448c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Not": { "Type": "Creature" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 0, "toughness": 0 } },
+                          { "AddType": "Creature" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

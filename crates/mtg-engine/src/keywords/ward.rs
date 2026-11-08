@@ -37,6 +37,7 @@ impl KeywordRules for Ward {
                 paid: Vec::new(),
                 unpaid: vec![Effect::Counter {
                     what: Ref::Triggering,
+                    bind: None,
                 }],
             }],
         }]

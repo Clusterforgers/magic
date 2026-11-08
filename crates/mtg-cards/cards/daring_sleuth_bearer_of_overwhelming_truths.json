@@ -1,0 +1,32 @@
+{
+  "oracle_id": "69ca69c7-403b-4b5d-be08-d9dce8ce410e",
+  "name": "Daring Sleuth // Bearer of Overwhelming Truths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daring Sleuth",
+      "oracle_fingerprint": "278305dcb2f296d049ef54d8c38b5a51",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bearer of Overwhelming Truths",
+      "oracle_fingerprint": "b2b1d588061e055614c943f6d4114bb3",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

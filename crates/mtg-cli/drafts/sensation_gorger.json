@@ -1,0 +1,74 @@
+{
+  "oracle_id": "42a7daf1-59a9-4e85-a664-47061758e748",
+  "name": "Sensation Gorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sensation Gorger",
+      "oracle_fingerprint": "827d7b9af1b8848a7d5fb9066d0e70b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "SharesSubtype": "This" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Discard": {
+                              "who": "EachPlayer",
+                              "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Draw": { "who": "EachPlayer", "count": 4 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

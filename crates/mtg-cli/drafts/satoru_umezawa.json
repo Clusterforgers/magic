@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ed1d21ba-ddfe-4f82-9e37-93f9e2c7ba33",
+  "name": "Satoru Umezawa",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Satoru Umezawa",
+      "oracle_fingerprint": "aea57fd6e388e272f4b38496c96e4589",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 217 }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Hand" }] },
+            "mods": [{ "AddKeyword": { "Ninjutsu": "{2}{U}{B}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

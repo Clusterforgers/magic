@@ -1,0 +1,36 @@
+{
+  "oracle_id": "cef5361a-a189-4e05-a8b8-fc764aed73b9",
+  "name": "All-Fates Scroll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All-Fates Scroll",
+      "oracle_fingerprint": "7293ed718de9f2f265ee15e526d0a404",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{7}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e07b6988-9ee7-4f20-8aa5-7dfa87ff507b",
+  "name": "Shield Mare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shield Mare",
+      "oracle_fingerprint": "cc5ce1ca423d926d8d62a3e65a2695bf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "Red" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "BecomesTarget": {
+                    "what": ["This"],
+                    "by": [
+                      { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

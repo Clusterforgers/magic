@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "5e849bec-2ee6-4c83-83e6-bf9f5543e414",
+  "oracle_id": "1fb4c1c1-b10c-463f-a97d-eca9f978e371",
+  "multiverse_ids": [
+    503628
+  ],
+  "mtgo_id": 87367,
+  "arena_id": 75059,
+  "tcgplayer_id": 230890,
+  "cardmarket_id": 532937,
+  "name": "Resplendent Marshal",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/5e849bec-2ee6-4c83-83e6-bf9f5543e414",
+  "scryfall_uri": "https://scryfall.com/card/khm/22/resplendent-marshal?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:37:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.jpg?1783928279",
+    "normal": "https://cards.scryfall.io/normal/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.jpg?1783928279",
+    "large": "https://cards.scryfall.io/large/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.jpg?1783928279",
+    "png": "https://cards.scryfall.io/png/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.png?1783928279",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.jpg?1783928279",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.jpg?1783928279",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.webp?1783928279",
+    "grid": "https://cards.scryfall.io/grid/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.webp?1783928279",
+    "display": "https://cards.scryfall.io/display/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.webp?1783928279",
+    "art": "https://cards.scryfall.io/art/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.webp?1783928279",
+    "crop": "https://cards.scryfall.io/crop/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.webp?1783928279",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/e/5e849bec-2ee6-4c83-83e6-bf9f5543e414.jpg?1783928279"
+  },
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Angel Warrior",
+  "oracle_text": "Flying\nWhen this creature enters or dies, you may exile another creature card from your graveyard. When you do, put a +1/+1 counter on each creature you control other than this creature that shares a creature type with the exiled card.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5e849bec-2ee6-4c83-83e6-bf9f5543e414/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1fb4c1c1-b10c-463f-a97d-eca9f978e371&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ryan Pancoast",
+  "artist_ids": [
+    "89cc9475-dda2-4d13-bf88-54b92867a25c"
+  ],
+  "illustration_id": "907b9db0-09fa-4da6-b7c0-c79051966a42",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12354,
+  "penny_rank": 10985,
+  "preview": {
+    "source": "Caleb Durward",
+    "source_uri": "https://twitter.com/CalebDMTG/status/1351366209082687495",
+    "previewed_at": "2021-01-18"
+  },
+  "prices": {
+    "usd": "0.92",
+    "usd_foil": "1.28",
+    "usd_etched": null,
+    "eur": "1.22",
+    "eur_foil": "2.73",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503628&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DResplendent%2BMarshal",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DResplendent%2BMarshal",
+    "edhrec": "https://edhrec.com/route/?cc=Resplendent+Marshal"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230890%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=532937&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87367?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

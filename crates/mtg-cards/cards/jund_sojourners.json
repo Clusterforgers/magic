@@ -1,0 +1,28 @@
+{
+  "oracle_id": "84a3ebc2-5c38-40ef-b5f4-62a92cbca493",
+  "name": "Jund Sojourners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jund Sojourners",
+      "oracle_fingerprint": "0ca3a8967535c94f8a6d03c95369b55b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Cycled": { "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{R}" } }
+      ]
+    }
+  ]
+}

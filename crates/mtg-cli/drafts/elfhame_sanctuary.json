@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6f98f270-f6ff-4029-bcdd-3e7f6483eb5d",
+  "name": "Elfhame Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elfhame Sanctuary",
+      "oracle_fingerprint": "75b52ccefd96def401bcb0d70fa58b20",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} },
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

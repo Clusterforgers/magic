@@ -1,0 +1,65 @@
+{
+  "oracle_id": "800fb917-8898-4eba-9f94-aec6e9d75236",
+  "name": "Mazemind Tome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mazemind Tome",
+      "oracle_fingerprint": "f9dd2b2a3b45a5a9bbdbe39dc5af6fac",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PutCounters": { "counter": { "Other": "page" } } }],
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "PutCounters": { "counter": { "Other": "page" } } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "This",
+                        { "CounterCount": { "kind": { "Other": "page" }, "op": "Ge", "to": 4 } }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": ["This"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

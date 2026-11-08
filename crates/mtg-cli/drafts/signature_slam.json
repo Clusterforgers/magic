@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5ae23752-47a6-4031-8398-b8f6c77cfaad",
+  "name": "Signature Slam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Signature Slam",
+      "oracle_fingerprint": "521d61e1658db655c5e7eaeb3c5b7af0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }]
+                  },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

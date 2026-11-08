@@ -1,0 +1,70 @@
+{
+  "oracle_id": "84856b92-5ce8-47f3-9a1c-78d6a3e26aca",
+  "name": "Eden, Seat of the Sanctum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eden, Seat of the Sanctum",
+      "oracle_fingerprint": "5ad971364148a3152e1840bb2513b9ec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "May": { "effects": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }] }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                "Other",
+                                { "OwnedBy": "You" },
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Battle" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" }
+                                  ]
+                                },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

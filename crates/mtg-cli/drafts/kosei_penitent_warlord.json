@@ -1,0 +1,53 @@
+{
+  "oracle_id": "41f7e725-bdb8-4c3a-adc7-a8184ec7c394",
+  "name": "Kosei, Penitent Warlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kosei, Penitent Warlord",
+      "oracle_fingerprint": "90daf2f33f3354a19ec5627909e23edf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "Opponents", "combat": true }
+                    },
+                    "effects": [
+                      { "Draw": { "count": "Triggering" } },
+                      {
+                        "DealDamage": {
+                          "to": {
+                            "PlayersWhere": {
+                              "who": "Opponents",
+                              "test": { "Not": { "Among": "Triggering" } }
+                            }
+                          },
+                          "amount": "Triggering"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "HasAttached": [{ "Subtype": "Aura" }] },
+                  { "HasAttached": [{ "Subtype": "Equipment" }] },
+                  "HasAnyCounter"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

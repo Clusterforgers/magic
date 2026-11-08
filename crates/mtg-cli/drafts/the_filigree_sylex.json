@@ -1,0 +1,53 @@
+{
+  "oracle_id": "38347ab3-ae43-4d10-b665-8520ace0eb76",
+  "name": "The Filigree Sylex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Filigree Sylex",
+      "oracle_fingerprint": "1d5401307b08782aeafe257a69710290",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": { "Counters": { "on": "This", "counter": { "Other": "oil" } } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCountersAmong": { "counter": { "Other": "oil" }, "count": 10, "from": [] } },
+              "SacrificeSelf"
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 10 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

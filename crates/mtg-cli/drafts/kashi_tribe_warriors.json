@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4920492e-c210-4d99-ace9-184d65e697f5",
+  "name": "Kashi-Tribe Warriors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kashi-Tribe Warriors",
+      "oracle_fingerprint": "0b4ee98313f5c0ec256d588a3074b96a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

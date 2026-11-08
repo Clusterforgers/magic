@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a30a2b96-4a8c-4d18-b276-5005b8aff7ed",
+  "name": "Tester of the Tangential",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tester of the Tangential",
+      "oracle_fingerprint": "67b09991f530910996a3ac6a79198167",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 161, "end": 302 }
+          }
+        }
+      ]
+    }
+  ]
+}

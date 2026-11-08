@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "8705e5a4-8a62-40fa-a649-270557c382ce",
+  "oracle_id": "8025313d-048d-4a43-bc01-22398939a7e7",
+  "multiverse_ids": [],
+  "resource_id": "F6768BC77B7ECE18761A3A907C8C14E952057A8F2968F9E8379F48301CFD3C86",
+  "mtgo_id": 151643,
+  "arena_id": 105607,
+  "tcgplayer_id": 697132,
+  "cardmarket_id": 891919,
+  "name": "Heroic Teamwork",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/8705e5a4-8a62-40fa-a649-270557c382ce",
+  "scryfall_uri": "https://scryfall.com/card/msc/597/heroic-teamwork?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:38:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.jpg?1783903083",
+    "normal": "https://cards.scryfall.io/normal/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.jpg?1783903083",
+    "large": "https://cards.scryfall.io/large/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.jpg?1783903083",
+    "png": "https://cards.scryfall.io/png/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.png?1783903083",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.jpg?1783903083",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.jpg?1783903083",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.webp?1783903083",
+    "grid": "https://cards.scryfall.io/grid/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.webp?1783903083",
+    "display": "https://cards.scryfall.io/display/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.webp?1783903083",
+    "art": "https://cards.scryfall.io/art/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.webp?1783903083",
+    "crop": "https://cards.scryfall.io/crop/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.webp?1783903083",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/7/8705e5a4-8a62-40fa-a649-270557c382ce.jpg?1783903083"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Teamwork 3 (As an additional cost to cast this spell, you may tap any number of creatures you control with total power 3 or more.)\nOne or two target creatures each get +2/+1 until end of turn. If this spell was cast using teamwork, draw a card.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Teamwork"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8705e5a4-8a62-40fa-a649-270557c382ce/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8025313d-048d-4a43-bc01-22398939a7e7&unique=prints",
+  "collector_number": "597",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bachzim",
+  "artist_ids": [
+    "c1a926d5-abed-4ecc-a653-17d389cac12a"
+  ],
+  "illustration_id": "1cf6b82b-630c-4b6c-a64d-4e72d82ea471",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 28597,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.19",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.09",
+    "tix": "0.26"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHeroic%2BTeamwork",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHeroic%2BTeamwork",
+    "edhrec": "https://edhrec.com/route/?cc=Heroic+Teamwork"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697132%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891919&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151643?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

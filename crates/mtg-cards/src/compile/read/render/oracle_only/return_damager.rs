@@ -23,7 +23,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         effects.as_slice(),
         [Effect::Move {
             what: Ref::Triggering,
-            to: Destination::Hand
+            to: Destination::Hand,
+            ..
         }]
     );
     if !targets.is_empty() || !returned {

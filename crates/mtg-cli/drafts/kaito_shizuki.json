@@ -1,0 +1,105 @@
+{
+  "oracle_id": "ba48e067-f4d9-45b2-ade1-71cf8cda418c",
+  "name": "Kaito Shizuki",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaito Shizuki",
+      "oracle_fingerprint": "d3fd548234ef417eeb1fc0493e3bd905",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", "EnteredThisTurn"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PhaseOut": { "what": "This" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ninja",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ninja"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "DealsDamage": {
+                            "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "to": "EachPlayer",
+                            "combat": true
+                          }
+                        },
+                        "effects": [
+                          {
+                            "Search": {
+                              "filter": [
+                                { "Type": "Creature" },
+                                { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }
+                              ],
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                          { "Shuffle": {} }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

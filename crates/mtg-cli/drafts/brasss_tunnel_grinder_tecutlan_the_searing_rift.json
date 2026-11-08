@@ -1,0 +1,75 @@
+{
+  "oracle_id": "af1553eb-4f9f-4335-9078-56649bd8d8fc",
+  "name": "Brass's Tunnel-Grinder // Tecutlan, the Searing Rift",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Brass's Tunnel-Grinder",
+      "oracle_fingerprint": "b0e6224134177d6e7846e14078dafc99",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Is": { "Bound": "discarded" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 381 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tecutlan, the Searing Rift",
+      "oracle_fingerprint": "ba9d7eadc695ccf10390b6703428bf4d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 56, "end": 172 }
+          }
+        }
+      ]
+    }
+  ]
+}

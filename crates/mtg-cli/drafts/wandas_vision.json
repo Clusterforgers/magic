@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1448eadb-e8b1-4e8f-9697-3bb919085dab",
+  "name": "Wanda's Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanda's Vision",
+      "oracle_fingerprint": "ffdfa04ec61863097213809887951aa2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              { "CastFromZone": { "what": { "Bound": "found_exiled" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

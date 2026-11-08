@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "3f888843-4bdb-438d-8fb9-968edb2713ac",
+  "oracle_id": "a47b71df-9357-4118-90c0-f86fca6d362b",
+  "multiverse_ids": [],
+  "resource_id": "AD99A96DC26FB86388FDB4004A80EC9189CE2F2CF756A96F835C946B13A68BCC",
+  "mtgo_id": 151761,
+  "arena_id": 105666,
+  "tcgplayer_id": 697256,
+  "cardmarket_id": 892036,
+  "name": "Fixer, Techno Terror",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/3f888843-4bdb-438d-8fb9-968edb2713ac",
+  "scryfall_uri": "https://scryfall.com/card/msc/656/fixer-techno-terror?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.jpg?1783903062",
+    "normal": "https://cards.scryfall.io/normal/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.jpg?1783903062",
+    "large": "https://cards.scryfall.io/large/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.jpg?1783903062",
+    "png": "https://cards.scryfall.io/png/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.png?1783903062",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.jpg?1783903062",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.jpg?1783903062",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.webp?1783903062",
+    "grid": "https://cards.scryfall.io/grid/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.webp?1783903062",
+    "display": "https://cards.scryfall.io/display/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.webp?1783903062",
+    "art": "https://cards.scryfall.io/art/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.webp?1783903062",
+    "crop": "https://cards.scryfall.io/crop/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.webp?1783903062",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/f/3f888843-4bdb-438d-8fb9-968edb2713ac.jpg?1783903062"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Artificer Villain",
+  "oracle_text": "{T}, Pay 2 life: Draw a card. Activate only if an artifact entered the battlefield under your control this turn.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3f888843-4bdb-438d-8fb9-968edb2713ac/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa47b71df-9357-4118-90c0-f86fca6d362b&unique=prints",
+  "collector_number": "656",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"You've got a problem? I'm The Fixer. I fix things. It's what I do.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Filipe Pagliuso",
+  "artist_ids": [
+    "64c537b4-a864-4051-9a24-fbdd22cb40b4"
+  ],
+  "illustration_id": "ef47a127-9e09-4304-b70a-570c6392bc99",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 25777,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": "0.20",
+    "tix": "0.25"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFixer%252C%2BTechno%2BTerror",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFixer%252C%2BTechno%2BTerror",
+    "edhrec": "https://edhrec.com/route/?cc=Fixer%2C+Techno+Terror"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697256%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892036&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151761?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

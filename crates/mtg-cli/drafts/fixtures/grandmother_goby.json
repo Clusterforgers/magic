@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "d4133c12-436c-49d2-b1b2-30103d073168",
+  "oracle_id": "2d29c40a-4e13-4d99-bb5a-e991e385b8c2",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709761,
+  "name": "Grandmother Goby",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/d4133c12-436c-49d2-b1b2-30103d073168",
+  "scryfall_uri": "https://scryfall.com/card/mbc/9/grandmother-goby?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-03T12:07:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.jpg?1785758847",
+    "normal": "https://cards.scryfall.io/normal/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.jpg?1785758847",
+    "large": "https://cards.scryfall.io/large/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.jpg?1785758847",
+    "png": "https://cards.scryfall.io/png/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.png?1785758847",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.jpg?1785758847",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.jpg?1785758847",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.webp?1785758847",
+    "grid": "https://cards.scryfall.io/grid/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.webp?1785758847",
+    "display": "https://cards.scryfall.io/display/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.webp?1785758847",
+    "art": "https://cards.scryfall.io/art/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.webp?1785758847",
+    "crop": "https://cards.scryfall.io/crop/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.webp?1785758847",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/4/d4133c12-436c-49d2-b1b2-30103d073168.jpg?1785758847"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Merfolk Wizard",
+  "oracle_text": "Whenever you cast a noncreature spell, counter that spell. Create a number of 1/1 blue Merfolk creature tokens equal to the amount of mana spent to cast that spell.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d4133c12-436c-49d2-b1b2-30103d073168",
+      "component": "combo_piece",
+      "name": "Grandmother Goby",
+      "type_line": "Legendary Creature — Merfolk Wizard",
+      "uri": "https://api.scryfall.com/cards/d4133c12-436c-49d2-b1b2-30103d073168"
+    },
+    {
+      "object": "related_card",
+      "id": "7f7a4f95-f12b-4c28-a6f7-f3c64364abba",
+      "component": "token",
+      "name": "Merfolk",
+      "type_line": "Token Creature — Merfolk",
+      "uri": "https://api.scryfall.com/cards/7f7a4f95-f12b-4c28-a6f7-f3c64364abba"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d4133c12-436c-49d2-b1b2-30103d073168/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2d29c40a-4e13-4d99-bb5a-e991e385b8c2&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "She wraps the fry nursery in nullwater so the ruckus of wayward mages doesn't bother the little ones.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "DiTerlizzi",
+  "artist_ids": [
+    "ed44dce4-30cf-4c2c-b2e1-a19ba2295690"
+  ],
+  "illustration_id": "771e38ff-cbb1-4a86-a082-0d8e349f74ab",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 26193,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGrandmother%2BGoby",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGrandmother%2BGoby",
+    "edhrec": "https://edhrec.com/route/?cc=Grandmother+Goby"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709761%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Grandmother+Goby&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Grandmother+Goby&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "97369152-3b85-4cf1-aeb9-b3a8f1c37611",
+  "name": "Invasion Submersible",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion Submersible",
+      "oracle_fingerprint": "1aabbe79a5b79fff545861714197f716",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 3 }],
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ff50d002-834e-4b5e-8db0-b0c8b4efb21f",
+  "name": "Scent of Cinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scent of Cinder",
+      "oracle_fingerprint": "f633573c9e93dc3015a15c8637aba7df",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Color": "Red" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "revealed" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

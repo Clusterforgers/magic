@@ -1,0 +1,15 @@
+{
+  "oracle_id": "fe378f26-5c80-4548-8127-10724ac0c452",
+  "name": "Riptide Biologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riptide Biologist",
+      "oracle_fingerprint": "bb7c91a1ddf5253b44832913b6cf7ec4",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Subtype": "Beast" }] } },
+        { "Keyword": { "Morph": "{2}{U}" } }
+      ]
+    }
+  ]
+}

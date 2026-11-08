@@ -1,0 +1,22 @@
+{
+  "oracle_id": "be315fa6-afb5-4ab6-a143-7bbf37046d15",
+  "name": "Bubble Snare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bubble Snare",
+      "oracle_fingerprint": "afc1fa818d1204b87d542eac825579e9",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{U}" } },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "object": "card",
+  "id": "043718ea-59f6-4d1a-94c5-271704c1a38a",
+  "oracle_id": "105aea98-8eb9-4fb2-a0cb-7c7513317c5b",
+  "multiverse_ids": [
+    629741
+  ],
+  "mtgo_id": 116864,
+  "arena_id": 86970,
+  "tcgplayer_id": 513821,
+  "cardmarket_id": 729951,
+  "name": "Twining Twins // Swift Spiral",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/043718ea-59f6-4d1a-94c5-271704c1a38a",
+  "scryfall_uri": "https://scryfall.com/card/woe/240/twining-twins-swift-spiral?utm_source=api",
+  "layout": "adventure",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:57:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.jpg?1783915061",
+    "normal": "https://cards.scryfall.io/normal/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.jpg?1783915061",
+    "large": "https://cards.scryfall.io/large/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.jpg?1783915061",
+    "png": "https://cards.scryfall.io/png/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.png?1783915061",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.jpg?1783915061",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.jpg?1783915061",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.webp?1783915061",
+    "grid": "https://cards.scryfall.io/grid/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.webp?1783915061",
+    "display": "https://cards.scryfall.io/display/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.webp?1783915061",
+    "art": "https://cards.scryfall.io/art/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.webp?1783915061",
+    "crop": "https://cards.scryfall.io/crop/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.webp?1783915061",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/4/043718ea-59f6-4d1a-94c5-271704c1a38a.jpg?1783915061"
+  },
+  "mana_cost": "{2}{U}{U} // {1}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Faerie Wizard // Instant — Adventure",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance",
+    "Ward"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Twining Twins",
+      "mana_cost": "{2}{U}{U}",
+      "type_line": "Creature — Faerie Wizard",
+      "oracle_text": "Flying, vigilance, ward {1}",
+      "power": "4",
+      "toughness": "4",
+      "flavor_text": "\"We spin and spin to keep us busy, but somehow you're the one who's dizzy.\"",
+      "artist": "Fajareka Setiawan",
+      "artist_id": "0cc534e0-be18-4cb1-8521-50fabd0dac6f",
+      "illustration_id": "22176dae-6462-4483-a9f0-1de3c07e0e16"
+    },
+    {
+      "object": "card_face",
+      "name": "Swift Spiral",
+      "mana_cost": "{1}{W}",
+      "type_line": "Instant — Adventure",
+      "oracle_text": "Exile target nontoken creature. Return it to the battlefield under its owner's control at the beginning of the next end step.",
+      "artist": "Fajareka Setiawan",
+      "artist_id": "0cc534e0-be18-4cb1-8521-50fabd0dac6f"
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "38708b07-df7d-4ea4-b10e-ead7cd03d849",
+      "component": "combo_piece",
+      "name": "Twining Twins // Swift Spiral",
+      "type_line": "Creature — Faerie Wizard // Instant — Adventure",
+      "uri": "https://api.scryfall.com/cards/38708b07-df7d-4ea4-b10e-ead7cd03d849"
+    },
+    {
+      "object": "related_card",
+      "id": "fcf4c7fb-7859-4c11-8552-6817f5119d2e",
+      "component": "combo_piece",
+      "name": "On an Adventure",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/fcf4c7fb-7859-4c11-8552-6817f5119d2e"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set": "woe",
+  "set_name": "Wilds of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/79139661-13ee-43c4-8bad-a8c069f1a1df",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/043718ea-59f6-4d1a-94c5-271704c1a38a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A105aea98-8eb9-4fb2-a0cb-7c7513317c5b&unique=prints",
+  "collector_number": "240",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"We spin and spin to keep us busy, but somehow you're the one who's dizzy.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fajareka Setiawan",
+  "artist_ids": [
+    "0cc534e0-be18-4cb1-8521-50fabd0dac6f"
+  ],
+  "illustration_id": "22176dae-6462-4483-a9f0-1de3c07e0e16",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12412,
+  "penny_rank": 3321,
+  "preview": {
+    "source": "The Gatherers",
+    "source_uri": "https://www.youtube.com/watch?v=N382LEqyGhQ",
+    "previewed_at": "2023-08-23"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.17",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.15",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=629741&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTwining%2BTwins%2B%252F%252F%2BSwift%2BSpiral",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTwining%2BTwins%2B%252F%252F%2BSwift%2BSpiral",
+    "edhrec": "https://edhrec.com/route/?cc=Twining+Twins"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F513821%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=729951&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/116864?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

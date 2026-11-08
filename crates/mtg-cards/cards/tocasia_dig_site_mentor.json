@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e790f7e6-45f5-45df-b8e5-bcbda4f69f8a",
+  "name": "Tocasia, Dig Site Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tocasia, Dig Site Mentor",
+      "oracle_fingerprint": "fa098df0e19f3ce1a25895250ae2544b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": "Vigilance" },
+              {
+                "GrantAbility": { "Activated": { "cost": ["Tap"], "effects": [{ "Surveil": {} }] } }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{W}{U}{U}{G}{G}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Artifact" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "rule": { "TotalManaValueAtMost": 10 }
+                  }
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

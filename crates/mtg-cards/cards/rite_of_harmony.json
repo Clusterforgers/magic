@@ -1,0 +1,36 @@
+{
+  "oracle_id": "af94fd87-ea37-49eb-b5e6-0b1846f23859",
+  "name": "Rite of Harmony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Harmony",
+      "oracle_fingerprint": "c255c3a189c17e1db8040add5f89409e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                        { "ControlledBy": "You" }
+                      ],
+                      "to": "Battlefield"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{2}{W}{G}" } }
+      ]
+    }
+  ]
+}

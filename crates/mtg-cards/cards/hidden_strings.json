@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a50737d7-dd2d-40da-817c-f913f76b5011",
+  "name": "Hidden Strings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Strings",
+      "oracle_fingerprint": "42eaa5610bd58aa455a23768d48a5c31",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [] } },
+              { "what": { "Object": [{ "Not": { "Is": { "Target": 0 } } }] } }
+            ],
+            "effects": [
+              { "TapOrUntap": { "what": { "Target": 0 } } },
+              { "TapOrUntap": { "what": { "Target": 1 } } }
+            ]
+          }
+        },
+        { "Keyword": "Cipher" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "234f1c4b-dd0c-4c4e-b3c1-3b9ccfc42226",
+  "name": "Together as One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Together as One",
+      "oracle_fingerprint": "9c4c13d5fe20f0b3aeafca5bde9b934d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }, { "what": "AnyTarget" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": "ColorsSpent" } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": "ColorsSpent" } },
+              { "GainLife": { "amount": "ColorsSpent" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

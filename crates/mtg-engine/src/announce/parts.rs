@@ -10,22 +10,34 @@
 use std::borrow::Cow;
 
 use mtg_cards::ability::Ability;
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Ctx, Needs, Next, What, Work, x};
 use crate::choose::{CardsOptions, Choices};
 use crate::decision::DecisionKind;
+use crate::error::IllegalAnswer;
 use crate::parts::{Part, Payer};
 use crate::price::Price;
 use crate::state::GameState;
 
 /// The price of the cost of an activated ability, when it has parts beyond `{T}`, mana and the loss of the source.
-pub(super) fn read(what: &What, rules: Option<&Ability>) -> Option<Box<Price>> {
+pub(super) fn read(
+    state: &GameState,
+    player: PlayerId,
+    what: &What,
+    rules: Option<&Ability>,
+) -> Option<Box<Price>> {
     match (what, rules?) {
-        (What::Ability(_), Ability::Activated { cost, .. }) => Price::announced(cost)
-            .ok()
-            .filter(|price| !price.parts.is_empty())
-            .map(Box::new),
+        (What::Ability(ability), Ability::Activated { cost, .. }) => Price::announced_in(
+            cost,
+            state,
+            player,
+            ability.object,
+            ability.source.granter(),
+        )
+        .ok()
+        .filter(|price| !price.parts.is_empty())
+        .map(Box::new),
         _ => None,
     }
 }
@@ -69,18 +81,20 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             player: ctx.player,
             source: ctx.source,
             barred: &barred,
+            granter: price.granter,
         });
         if pick.short(ctx.state, &candidates) {
             return Some(Next::Drop);
         }
         // Nothing to choose between: the part takes what there is, or nothing for X = 0.
-        if let Some(taken) = pick.unasked(&candidates) {
+        if let Some(taken) = pick.unasked(ctx.state, &candidates) {
             work.choices.pick_for_cost(taken);
             settled += 1;
             continue;
         }
         let (min, max) = pick.bounds(candidates.len());
         return Some(ctx.ask(DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
             source: ctx.source,
             from: candidates,
             min,
@@ -107,6 +121,7 @@ pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 player: ctx.player,
                 source: ctx.source,
                 barred: &barred,
+                granter: price.granter,
             })
         })
         .min()
@@ -120,7 +135,7 @@ pub(super) fn weak(
     choices: &Choices,
     state: &GameState,
     cards: &[ObjectId],
-) -> Option<(u32, u32)> {
+) -> Option<IllegalAnswer> {
     let parts = match what {
         What::Spell(_) => needs.cost_parts(choices),
         _ => needs.price.as_deref()?.parts.clone(),

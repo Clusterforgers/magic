@@ -1,0 +1,54 @@
+{
+  "oracle_id": "5e0f0fd8-fdeb-44d9-b5e7-e3948f2dd10b",
+  "name": "Simic Basilisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simic Basilisk",
+      "oracle_fingerprint": "33571ffeae404fd41edfe38aeec9d83c",
+      "abilities": [
+        { "Keyword": { "Graft": 3 } },
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasCounter": "+1/+1" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": { "Each": [{ "Type": "Creature" }] },
+                              "combat": true
+                            }
+                          },
+                          "effects": [
+                            { "Bind": { "what": "Triggering", "as": "event" } },
+                            {
+                              "DelayedTrigger": {
+                                "when": { "StepBegins": { "step": "EndCombat" } },
+                                "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

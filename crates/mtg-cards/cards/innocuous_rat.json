@@ -1,0 +1,24 @@
+{
+  "oracle_id": "114725ef-ac81-4d13-9153-0a303c3ce9c4",
+  "name": "Innocuous Rat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Innocuous Rat",
+      "oracle_fingerprint": "6e2ac77e9b2c17e7a736f8cd50acf709",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

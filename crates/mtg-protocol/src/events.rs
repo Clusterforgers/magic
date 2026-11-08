@@ -33,6 +33,11 @@ pub enum HiddenEvent {
         /// Who drew.
         player: PlayerId,
     },
+    /// A card was conjured for a player into a hand or a library.
+    CardConjured {
+        /// Whose card.
+        player: PlayerId,
+    },
     /// A player was dealt an opening hand.
     HandDealt {
         /// Who received it.
@@ -65,12 +70,35 @@ pub enum HiddenEvent {
         /// Cards placed.
         count: u32,
     },
+    /// A player put cards beneath the top cards of their library.
+    CardsInserted {
+        /// Whose cards.
+        player: PlayerId,
+        /// Cards placed.
+        count: u32,
+        /// How many cards stay above them.
+        below: u32,
+    },
     /// A card the viewer could not see left the game with its owner.
     ObjectLeftGame,
+    /// A source remembered objects the viewer cannot identify; how many is all that shows.
+    Remembered {
+        /// Objects added to the slot.
+        count: u32,
+    },
     /// A player looked at cards in a library; which, only they know.
     LibraryLooked {
         /// Who looked.
         player: PlayerId,
+        /// Cards looked at.
+        count: u32,
+    },
+    /// A player looked at the hand of a player; which cards, only those two know.
+    HandLooked {
+        /// Who looked.
+        player: PlayerId,
+        /// Whose hand.
+        of: PlayerId,
         /// Cards looked at.
         count: u32,
     },
@@ -252,6 +280,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::CardDrawn { player, .. } if !own(player) => {
             Some(HiddenEvent::CardDrawn { player: *player })
         }
+        Event::CardConjured(card) if matches!(card.zone, Zone::Hand(_) | Zone::Library(_)) && !own(&card.owner) => {
+            Some(HiddenEvent::CardConjured { player: card.owner })
+        }
         Event::AnnouncementRewound { player, .. } if *player != viewer => {
             Some(HiddenEvent::AnnouncementRewound { player: *player })
         }
@@ -264,12 +295,23 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
             player: *player,
             count: count(cards.len()),
         }),
+        Event::LibraryInserted {
+            player,
+            cards,
+            below,
+        } => Some(HiddenEvent::CardsInserted {
+            player: *player,
+            count: count(cards.len()),
+            below: *below,
+        }),
         // What the effects of spells and abilities make known: some of it is private to a player or to cards.
         Event::LibraryLooked(_)
+        | Event::HandLooked(_)
         | Event::CardsFound(_)
         | Event::Scried(_)
         | Event::Surveilled(_)
         | Event::ZoneChanged { .. }
+        | Event::Remembered(_)
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. } => redact_effects(before, event, viewer),
         // A card moved by hand is named unless it goes between places the viewer cannot see into, as `ZoneChanged` does.
@@ -286,6 +328,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::FirstPlayerChosen { .. }
         | Event::MulliganPhaseBegan
         | Event::MulliganDeclared { .. }
+        | Event::OpeningCardsPlayed { .. }
         | Event::MulliganKept { .. }
         | Event::MulliganPhaseEnded
         | Event::TurnBegan { .. }
@@ -309,6 +352,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ManaPoolEmptied { .. }
         | Event::ManaBurned { .. }
         | Event::LifePaid { .. }
+        | Event::CardConjured(_)
+        | Event::Sought { .. }
         | Event::DrewFromEmptyLibrary { .. }
         | Event::CardDiscarded { .. }
         | Event::Cycled { .. }
@@ -350,6 +395,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CardCopied(_)
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
+        | Event::TargetsChanged(_)
         | Event::CopyEnded { .. }
         | Event::Entered { .. }
         | Event::Attached { .. }
@@ -362,9 +408,15 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Flipped { .. }
         | Event::Prepared { .. }
         | Event::Unprepared { .. }
+        | Event::Suspected { .. }
+        | Event::Unsuspected { .. }
+        | Event::Solved { .. }
         | Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. }
+        | Event::SpeedChanged { .. }
+        | Event::RingTempted { .. }
+        | Event::RingBearerLost { .. }
         | Event::Learned { .. }
         | Event::DieRolled { .. }
         | Event::CoinFlipped { .. }
@@ -396,6 +448,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         // A pick at random is of the cards of a public zone, which every seat sees, or of the cards a discard at
         // random then reveals.
         | Event::ChosenAtRandom { .. }
+        // Players are public.
+        | Event::PlayersChosenAtRandom { .. }
         | Event::Revealed(_) => None,
     }
 }
@@ -444,6 +498,14 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
                 count: count(looked.cards.len()),
             })
         }
+        // The owner of a hand knows what is in it; nobody else learns it but the looker.
+        Event::HandLooked(looked) if looked.player != viewer && looked.of != viewer => {
+            Some(HiddenEvent::HandLooked {
+                player: looked.player,
+                of: looked.of,
+                count: count(looked.cards.len()),
+            })
+        }
         // A search of a zone the viewer sees into (a graveyard, a hand with open hands) tells the viewer which cards.
         Event::CardsFound(found)
             if found.player != viewer && !zone_is_visible_in(before, found.zone, viewer) =>
@@ -451,6 +513,17 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
             Some(HiddenEvent::CardsFound {
                 player: found.player,
                 count: count(found.cards.len()),
+            })
+        }
+        // A memory of cards the viewer cannot see names no id, as `ZoneChanged` names none.
+        Event::Remembered(change)
+            if !change
+                .objects
+                .iter()
+                .all(|object| knows(before, object.id, viewer)) =>
+        {
+            Some(HiddenEvent::Remembered {
+                count: count(change.objects.len()),
             })
         }
         Event::Scried(scried) if scried.player != viewer => Some(HiddenEvent::Scried {
@@ -826,7 +899,9 @@ mod tests {
     use mtg_engine::choose::{Choice, Choices, Target};
     use mtg_engine::counters::CountersChanged;
     use mtg_engine::events::{ResolutionOutcome, ZoneCause};
-    use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
+    use mtg_engine::library::{
+        CardsFound, HandLooked, LibraryLooked, Revealed, Scried, Surveilled,
+    };
     use mtg_engine::object::GameObject;
     use mtg_engine::snapshot::snapshot;
     use mtg_engine::tokens::TokenCreated;
@@ -871,6 +946,94 @@ mod tests {
     /// What `viewer` is told of `event`: `Err` with the hidden form, `Ok` when it is the event as logged.
     fn told(state: &GameState, event: &Event, viewer: PlayerId) -> Result<(), HiddenEvent> {
         redact(state, event, viewer).map_or(Ok(()), Err)
+    }
+
+    /// A look at a hand is told in full to the one who looked and to the owner of the hand; a bystander learns how many.
+    #[test]
+    fn a_look_at_a_hand_is_told_to_the_looker_and_the_owner_only() {
+        let t = table();
+        let looked = Event::HandLooked(HandLooked {
+            player: OTHER,
+            of: OWNER,
+            cards: vec![t.hand],
+        });
+        assert_eq!(told(&t.state, &looked, OTHER), Ok(()));
+        assert_eq!(told(&t.state, &looked, OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &looked, PlayerId(2)),
+            Err(HiddenEvent::HandLooked {
+                player: OTHER,
+                of: OWNER,
+                count: 1
+            })
+        );
+    }
+
+    /// A memory names the cards it holds only to a viewer who can identify them all; others learn how many.
+    #[test]
+    fn a_memory_of_cards_the_viewer_cannot_see_names_no_id() {
+        let t = table();
+        let remember = |object: ObjectId| {
+            let source = t.state.object(t.creature).unwrap().reference();
+            let held = t.state.object(object).unwrap().reference();
+            Event::Remembered(Box::new(mtg_engine::memory::Remembered {
+                source,
+                slot: "s".to_owned(),
+                objects: vec![held],
+                values: Vec::new(),
+                replace: false,
+            }))
+        };
+        let hidden = Err(HiddenEvent::Remembered { count: 1 });
+        for (object, owner, other) in [
+            (t.hand, Ok(()), hidden.clone()),
+            (t.library, hidden.clone(), hidden),
+            (t.creature, Ok(()), Ok(())),
+        ] {
+            assert_eq!(told(&t.state, &remember(object), OWNER), owner);
+            assert_eq!(told(&t.state, &remember(object), OTHER), other);
+        }
+    }
+
+    /// A conjured card is told whole when it lands in a zone every seat sees and to its owner alone in a hand or a library.
+    #[test]
+    fn a_conjured_card_is_named_only_where_the_viewer_sees_it() {
+        let t = table();
+        let hidden = Err(HiddenEvent::CardConjured { player: OWNER });
+        let cases = [
+            (Zone::Library(OWNER), hidden.clone()),
+            (Zone::Hand(OWNER), hidden),
+            (Zone::Graveyard(OWNER), Ok(())),
+            (Zone::Exile, Ok(())),
+        ];
+        for (zone, other) in cases {
+            let conjured = Event::CardConjured(mtg_engine::conjure::CardConjured {
+                object: ObjectId(900),
+                owner: OWNER,
+                zone,
+                name: "Bear".to_owned(),
+                definition: std::sync::Arc::new(mtg_cards::CardDefinition::new("Bear")),
+            });
+            assert_eq!(
+                told(&t.state, &conjured, OWNER),
+                Ok(()),
+                "{zone:?} to the owner"
+            );
+            assert_eq!(
+                told(&t.state, &conjured, OTHER),
+                other,
+                "{zone:?} to another seat"
+            );
+        }
+        let sought = Event::Sought {
+            player: OWNER,
+            count: 2,
+        };
+        assert_eq!(
+            told(&t.state, &sought, OTHER),
+            Ok(()),
+            "a seek tells only how many"
+        );
     }
 
     /// A search tells the viewer which cards it found in a zone the viewer sees into and only how many in any other.
@@ -1210,6 +1373,7 @@ mod tests {
                 snapshots: vec![snapshot(&t.state, subject).unwrap()],
                 amount: 0,
                 source: None,
+                against: None,
             },
             snapshot: snapshot(&t.state, t.creature).unwrap(),
             delayed: None,
@@ -1334,8 +1498,11 @@ mod tests {
                 when: TriggerPattern::AnyOf(Vec::new()),
                 once: true,
                 this_turn: false,
+                until: None,
+                targets: Vec::new(),
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
+                kept: None,
             }))
         };
         assert_eq!(told(&t.state, &created(t.hand), OWNER), Ok(()));

@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "81f0902a-1bc7-4231-8530-2b0fe28a6030",
+  "oracle_id": "82185e99-903d-4b18-8ff9-fb4f95ff17fc",
+  "multiverse_ids": [
+    580661
+  ],
+  "tcgplayer_id": 287967,
+  "cardmarket_id": 677329,
+  "name": "Six-Sided Die",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/81f0902a-1bc7-4231-8530-2b0fe28a6030",
+  "scryfall_uri": "https://scryfall.com/card/unf/92/six-sided-die?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.jpg?1783920576",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.jpg?1783920576",
+    "large": "https://cards.scryfall.io/large/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.jpg?1783920576",
+    "png": "https://cards.scryfall.io/png/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.png?1783920576",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.jpg?1783920576",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.jpg?1783920576",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.webp?1783920576",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.webp?1783920576",
+    "display": "https://cards.scryfall.io/display/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.webp?1783920576",
+    "art": "https://cards.scryfall.io/art/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.webp?1783920576",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.webp?1783920576",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/81f0902a-1bc7-4231-8530-2b0fe28a6030.jpg?1783920576"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose target creature. Roll a six-sided die.\n1 — It has base toughness 1 until end of turn.\n2 — Put two -1/-1 counters on it.\n3 — Six-Sided Die deals 3 damage to it and you gain 3 life.\n4 — It gets -4/-4 until end of turn.\n5 — Destroy it.\n6 — Exile it.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/81f0902a-1bc7-4231-8530-2b0fe28a6030/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A82185e99-903d-4b18-8ff9-fb4f95ff17fc&unique=prints",
+  "collector_number": "92",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ben Wootten",
+  "artist_ids": [
+    "31cdca96-ecde-4245-bfb6-653929d57d9c"
+  ],
+  "illustration_id": "2f980e9c-401a-4975-9ccf-4eae43e547b7",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8996,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.43",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.28",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580661&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSix-Sided%2BDie",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSix-Sided%2BDie",
+    "edhrec": "https://edhrec.com/route/?cc=Six-Sided+Die"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F287967%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=677329&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Six-Sided+Die&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

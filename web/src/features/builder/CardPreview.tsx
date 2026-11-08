@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SupportMark, supportDecoration } from '@/features/decks/SupportMark'
+import { LineMarksList } from '@/features/decks/preview/LineMarks'
 import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
@@ -225,6 +226,7 @@ function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?
             name={card.name}
             api={fixMarks}
             emphasis={isIssue(support) ? 'prominent' : 'quiet'}
+            support={support}
           />
         )}
       </header>
@@ -279,6 +281,7 @@ function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?
               support={support}
             />
           ))}
+          {support === 'partial' ? <LineMarksList detail={state.detail} /> : null}
           <Clauses support={support} reasons={state.detail.reasons} />
         </div>
       ) : null}

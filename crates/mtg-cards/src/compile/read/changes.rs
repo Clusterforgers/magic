@@ -25,6 +25,7 @@ fn duration_words(duration: &Duration) -> Option<&'static str> {
     match duration {
         Duration::UntilEndOfTurn => Some(END_OF_TURN),
         Duration::UntilYourNextTurn => Some(NEXT_TURN),
+        Duration::WhileSourceTapped => Some(super::render::WHILE_TAPPED),
         _ => None,
     }
 }
@@ -150,6 +151,14 @@ fn becomes_part(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     let mut types = Vec::new();
     while let Some(name) = r.name() {
         types.push(Subtype(name.to_owned()));
+    }
+    // A basic land type replaces the land's types (CR 305.7): "target land becomes an Island" (w9).
+    if found.is_none()
+        && types.len() == 1
+        && super::land_types::r9w_basic(&types[0])
+        && r.peek_word() != Some("with")
+    {
+        return Some(vec![Modification::SetLandTypes(types)]);
     }
     // The data keeps the creature types before the colors, as the layers apply them.
     let mut mods = Vec::new();

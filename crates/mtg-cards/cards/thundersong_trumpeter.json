@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6ad87598-5b57-496c-96ec-c04fe0616b6b",
+  "name": "Thundersong Trumpeter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thundersong Trumpeter",
+      "oracle_fingerprint": "30d22cb2bc031760137fda2938124a14",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

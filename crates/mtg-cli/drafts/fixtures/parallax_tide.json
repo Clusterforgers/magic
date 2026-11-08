@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "7fe593eb-df3c-43e5-97a6-418f91e87cb3",
+  "oracle_id": "e36a92be-537d-4a63-858a-afaab064fbf7",
+  "multiverse_ids": [
+    22035
+  ],
+  "mtgo_id": 13827,
+  "mtgo_foil_id": 13828,
+  "tcgplayer_id": 7200,
+  "cardmarket_id": 11760,
+  "name": "Parallax Tide",
+  "lang": "en",
+  "released_at": "2000-02-14",
+  "uri": "https://api.scryfall.com/cards/7fe593eb-df3c-43e5-97a6-418f91e87cb3",
+  "scryfall_uri": "https://scryfall.com/card/nem/37/parallax-tide?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:30:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.jpg?1783945836",
+    "normal": "https://cards.scryfall.io/normal/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.jpg?1783945836",
+    "large": "https://cards.scryfall.io/large/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.jpg?1783945836",
+    "png": "https://cards.scryfall.io/png/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.png?1783945836",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.jpg?1783945836",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.jpg?1783945836",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.webp?1783945836",
+    "grid": "https://cards.scryfall.io/grid/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.webp?1783945836",
+    "display": "https://cards.scryfall.io/display/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.webp?1783945836",
+    "art": "https://cards.scryfall.io/art/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.webp?1783945836",
+    "crop": "https://cards.scryfall.io/crop/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.webp?1783945836",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/f/7fe593eb-df3c-43e5-97a6-418f91e87cb3.jpg?1783945836"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Fading 5 (This enchantment enters with five fade counters on it. At the beginning of your upkeep, remove a fade counter from it. If you can't, sacrifice it.)\nRemove a fade counter from this enchantment: Exile target land.\nWhen this enchantment leaves the battlefield, each player returns to the battlefield all cards they own exiled with it.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Fading"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "banned",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set": "nem",
+  "set_name": "Nemesis",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anem&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nem?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7fe593eb-df3c-43e5-97a6-418f91e87cb3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae36a92be-537d-4a63-858a-afaab064fbf7&unique=prints",
+  "collector_number": "37",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Carl Critchlow",
+  "artist_ids": [
+    "17948f16-611a-44b8-8d10-9895a0bdfff1"
+  ],
+  "illustration_id": "c40707de-11d2-443e-a9c7-cda1f570b43e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21264,
+  "prices": {
+    "usd": "14.78",
+    "usd_foil": "199.99",
+    "usd_etched": null,
+    "eur": "10.81",
+    "eur_foil": "109.60",
+    "tix": "1.30"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=22035&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DParallax%2BTide",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DParallax%2BTide",
+    "edhrec": "https://edhrec.com/route/?cc=Parallax+Tide"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7200%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11760&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/13827?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

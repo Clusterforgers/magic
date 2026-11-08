@@ -11,9 +11,7 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-            "targets": [
-              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Type": "Creature" } }] } }
-            ],
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Creature" } }] } }],
             "effects": [
               {
                 "CreateToken": {
@@ -23,6 +21,7 @@
                       "except": [
                         { "SetPT": { "power": 3, "toughness": 3 } },
                         { "AddSubtype": "Dragon" },
+                        { "AddType": "Creature" },
                         { "AddKeyword": "Flying" }
                       ]
                     }

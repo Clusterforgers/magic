@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ac6cf9a7-732d-4ff0-9e88-aae97a2ff169",
+  "name": "Siege Modification",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siege Modification",
+      "oracle_fingerprint": "60141f6dc9da64cda0df2b6e97007d3c",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Vehicle" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 0 } },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

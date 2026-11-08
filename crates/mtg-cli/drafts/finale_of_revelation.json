@@ -1,0 +1,57 @@
+{
+  "oracle_id": "755bd5d8-67f1-4f24-a4e8-d98edf2f2e03",
+  "name": "Finale of Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Finale of Revelation",
+      "oracle_fingerprint": "a3fb499ab6aaa645fbfd73b607bc0f9b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 10 } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": { "count": "X" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 10 } },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Land" }] },
+                        "count": { "min": 0, "max": 5 },
+                        "as": "untap"
+                      }
+                    },
+                    { "Untap": { "what": { "Bound": "untap" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 10 } },
+                  "then": [
+                    { "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "Forever" } }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

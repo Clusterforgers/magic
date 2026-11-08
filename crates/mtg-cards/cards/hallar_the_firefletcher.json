@@ -1,0 +1,28 @@
+{
+  "oracle_id": "04559759-1afd-4785-badc-c3416041f016",
+  "name": "Hallar, the Firefletcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hallar, the Firefletcher",
+      "oracle_fingerprint": "474fb6f8517181a2df828f6747011e1f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Kicked"], "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

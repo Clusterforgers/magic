@@ -1,0 +1,33 @@
+{
+  "oracle_id": "82fefb82-a436-488d-8ecd-594686117e34",
+  "name": "Foggy Swamp Vinebender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foggy Swamp Vinebender",
+      "oracle_fingerprint": "057e1a2e1740276d8b0899283f053ead",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 5 }],
+            "condition": "YourTurn",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

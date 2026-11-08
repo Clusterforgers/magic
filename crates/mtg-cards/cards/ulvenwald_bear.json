@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2a79c29c-e539-49c5-b10c-1d5fd77842c9",
+  "name": "Ulvenwald Bear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulvenwald Bear",
+      "oracle_fingerprint": "40cc55542b52843b14b762fbf03c267d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

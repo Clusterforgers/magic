@@ -1,0 +1,50 @@
+{
+  "oracle_id": "d7dddeac-c6ed-4111-ba40-e2830c08d480",
+  "name": "Deceit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deceit",
+      "oracle_fingerprint": "44d6ded3d892b7d89a2182694f78766c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": { "left": { "ManaSpent": { "of": "Blue" } }, "op": "Ge", "right": 2 }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": { "left": { "ManaSpent": { "of": "Black" } }, "op": "Ge", "right": 2 }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Evoke": "{U/B}{U/B}" } }
+      ]
+    }
+  ]
+}

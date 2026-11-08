@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9ec2114c-023b-45c3-a44c-6a9f6462bc85",
+  "name": "Unforgiving One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unforgiving One",
+      "oracle_fingerprint": "7efec8494b5438b59530fb19e44db35b",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Modified"]
+                        }
+                      }
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

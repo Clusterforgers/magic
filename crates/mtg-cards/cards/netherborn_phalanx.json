@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1a6ed882-ea6c-4dc2-8614-541e4a56b43c",
+  "name": "Netherborn Phalanx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Netherborn Phalanx",
+      "oracle_fingerprint": "42338d51a4b017d9044a647a6a440847",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each" },
+                        "amount": {
+                          "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "each" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Transmute": "{1}{B}{B}" } }
+      ]
+    }
+  ]
+}

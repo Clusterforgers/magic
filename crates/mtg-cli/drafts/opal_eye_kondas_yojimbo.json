@@ -1,0 +1,57 @@
+{
+  "oracle_id": "e4acac65-112b-48fc-bea3-44747c1389a3",
+  "name": "Opal-Eye, Konda's Yojimbo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal-Eye, Konda's Yojimbo",
+      "oracle_fingerprint": "55fd85c130a1fb11ddd1a9223bfcdabf",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": {
+                    "InsteadNext": [
+                      { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

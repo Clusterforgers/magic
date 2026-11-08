@@ -44,6 +44,7 @@ pub(super) fn returns_with(kind: CounterKind) -> Vec<Ability> {
                 transformed: false,
                 counters: vec![(kind, 1)],
             },
+            bind: None,
         }],
     }]
 }

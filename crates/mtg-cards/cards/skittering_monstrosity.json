@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c6cd6934-b661-455a-8de5-ceb920664bbe",
+  "name": "Skittering Monstrosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skittering Monstrosity",
+      "oracle_fingerprint": "ff4b99e81dc08f328bfa788e415fefb9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "a6e2d8bd-8fe7-4de0-af25-7ad3e9dcb81b",
+  "name": "Harried Dronesmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harried Dronesmith",
+      "oracle_fingerprint": "13146f42ebe61b1e2ad2f97f4b87ce05",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "token" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

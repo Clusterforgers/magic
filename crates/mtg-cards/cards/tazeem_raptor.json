@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3111f8b7-36af-4390-af99-5b8976b2f241",
+  "name": "Tazeem Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tazeem Raptor",
+      "oracle_fingerprint": "b8eef8e91cd677a56948322480af65b6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

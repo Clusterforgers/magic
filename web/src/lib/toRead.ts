@@ -1,4 +1,4 @@
-/** The one wording and address for cards that wait for a player's read, so every deck check agrees (docs/web.md, "Reading cards"). */
+/** The one wording and address for cards that wait for a player's read, so every deck check agrees (docs/web.md, "Accounts and games pages"). */
 import { BY_HAND } from './byHand'
 
 /** What is said of a draft nobody has judged, in a count: "3 cards to read". */
@@ -9,6 +9,14 @@ export const TO_READ_TITLE = 'To read'
 
 /** The deck state of a deck whose only cards that are not Verified are approved reads. */
 export const RUNS_ON_READS = 'Runs on reads'
+
+/** What a card translated from a Forge script is, in plain words: the game runs it, nobody verified it. */
+export const FROM_FORGE = 'Runs automatically, translated from Forge, not verified'
+
+/** "1 card from Forge", "4 cards from Forge": copies of cards that run on a Forge translation. */
+export function cardsFromForge(count: number): string {
+  return `${count} ${count === 1 ? 'card' : 'cards'} from Forge`
+}
 
 /** "no cards to read", "1 card to read", "12 cards to read". */
 export function cardsToRead(count: number): string {

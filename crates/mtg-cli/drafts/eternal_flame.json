@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b3119f27-45fd-4411-8a09-5f8d3cd8d927",
+  "name": "Eternal Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eternal Flame",
+      "oracle_fingerprint": "51bcdf461e4864db0572a237f04c6241",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "You",
+                  "amount": {
+                    "Half": {
+                      "of": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

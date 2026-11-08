@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6dff1d15-604f-4eea-9b7a-0c0ba6afbbac",
+  "name": "Meticulous Excavation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meticulous Excavation",
+      "oracle_fingerprint": "6a21dd75ad89bcbecc4112e4297c4c21",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "condition": "YourTurn",
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "HasKeywordNamed": "Unearth" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

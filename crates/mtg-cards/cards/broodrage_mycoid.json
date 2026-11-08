@@ -1,0 +1,42 @@
+{
+  "oracle_id": "eeba4706-b4f2-48f9-bcb1-e42a5fc68c40",
+  "name": "Broodrage Mycoid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broodrage Mycoid",
+      "oracle_fingerprint": "f878e6d2fb4d904291ac72166f64a9df",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fungus",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fungus"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

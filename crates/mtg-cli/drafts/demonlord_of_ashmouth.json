@@ -1,0 +1,28 @@
+{
+  "oracle_id": "049777d0-910d-46d2-9ca1-10277b2fb845",
+  "name": "Demonlord of Ashmouth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonlord of Ashmouth",
+      "oracle_fingerprint": "43e6991d3f38ff7ebb737161ac9752a4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "unpaid": [{ "Exile": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Undying" }
+      ]
+    }
+  ]
+}

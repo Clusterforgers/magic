@@ -1,0 +1,72 @@
+{
+  "oracle_id": "ddbe0d17-5cac-417c-afc0-e4aebae83205",
+  "name": "Restoration Magic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Restoration Magic",
+      "oracle_fingerprint": "70a47318cabff4b3d9f38ce4acea6043",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "mode_costs": ["{0}", "{1}", "{3}{W}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "AddKeyword": "Hexproof" },
+                              { "AddKeyword": "Indestructible" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "AddKeyword": "Hexproof" },
+                              { "AddKeyword": "Indestructible" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        { "GainLife": { "amount": 3 } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "ControlledBy": "You" }] },
+                            "mods": [
+                              { "AddKeyword": "Hexproof" },
+                              { "AddKeyword": "Indestructible" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        { "GainLife": { "amount": 6 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

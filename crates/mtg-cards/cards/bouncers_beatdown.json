@@ -1,0 +1,60 @@
+{
+  "oracle_id": "36ac8fc6-98ad-499b-9adf-046433e2c122",
+  "name": "Bouncer's Beatdown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bouncer's Beatdown",
+      "oracle_fingerprint": "4870812e870ce5a29ef0cc2df94aa86d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This", { "Targeting": [{ "Color": "Black" }] }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Is": { "Target": 0 } },
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                      ],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

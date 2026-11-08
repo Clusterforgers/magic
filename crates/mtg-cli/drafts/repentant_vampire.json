@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a5dabc98-0db9-4b4f-b2d2-f74dbd022d22",
+  "name": "Repentant Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repentant Vampire",
+      "oracle_fingerprint": "9da7614c581a353f6ab68340aee217ac",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetColors": ["White"] },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Color": "Black" }] } }
+                    ],
+                    "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

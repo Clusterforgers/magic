@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "0a2cf195-01bf-4076-a0c6-ca5403d84f7d",
+  "oracle_id": "a2b6faca-3321-45d2-a027-ff3a8ae61f10",
+  "multiverse_ids": [
+    3336
+  ],
+  "mtgo_id": 6951,
+  "mtgo_foil_id": 6952,
+  "tcgplayer_id": 5053,
+  "cardmarket_id": 8116,
+  "name": "Ether Well",
+  "lang": "en",
+  "released_at": "1996-10-08",
+  "uri": "https://api.scryfall.com/cards/0a2cf195-01bf-4076-a0c6-ca5403d84f7d",
+  "scryfall_uri": "https://scryfall.com/card/mir/65/ether-well?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:51:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.jpg?1783947111",
+    "normal": "https://cards.scryfall.io/normal/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.jpg?1783947111",
+    "large": "https://cards.scryfall.io/large/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.jpg?1783947111",
+    "png": "https://cards.scryfall.io/png/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.png?1783947111",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.jpg?1783947111",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.jpg?1783947111",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.webp?1783947111",
+    "grid": "https://cards.scryfall.io/grid/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.webp?1783947111",
+    "display": "https://cards.scryfall.io/display/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.webp?1783947111",
+    "art": "https://cards.scryfall.io/art/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.webp?1783947111",
+    "crop": "https://cards.scryfall.io/crop/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.webp?1783947111",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/a/0a2cf195-01bf-4076-a0c6-ca5403d84f7d.jpg?1783947111"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Put target creature on top of its owner's library. If that creature is red, you may put it on the bottom of its owner's library instead.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set": "mir",
+  "set_name": "Mirage",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f06acf3-8123-4a78-b2e7-089b0b775a4a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amir&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mir?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0a2cf195-01bf-4076-a0c6-ca5403d84f7d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa2b6faca-3321-45d2-a027-ff3a8ae61f10&unique=prints",
+  "collector_number": "65",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Whoa—my tail will *never* fit through that hole!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Charles Gillespie",
+  "artist_ids": [
+    "ec2c14ea-79eb-4c55-963f-c46f7cef1c22"
+  ],
+  "illustration_id": "490ceb0d-c742-480f-9855-e59d61218981",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29201,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.35",
+    "eur_foil": null,
+    "tix": "0.09"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3336&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEther%2BWell",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEther%2BWell",
+    "edhrec": "https://edhrec.com/route/?cc=Ether+Well"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5053%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8116&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/6951?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

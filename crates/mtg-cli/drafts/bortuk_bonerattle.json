@@ -1,0 +1,84 @@
+{
+  "oracle_id": "d965e8c2-34b1-42eb-9647-59951d9fc06b",
+  "name": "Bortuk Bonerattle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bortuk Bonerattle",
+      "oracle_fingerprint": "61a50d31702c96051cf9807aa2d28422",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "WasCast": { "by": "You" } }, "This"],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        {
+                          "Compare": {
+                            "stat": "ManaValue",
+                            "op": "Le",
+                            "to": {
+                              "Distinct": {
+                                "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                "stat": "BasicLandTypes"
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        {
+                          "Compare": {
+                            "stat": "ManaValue",
+                            "op": "Gt",
+                            "to": {
+                              "Distinct": {
+                                "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                "stat": "BasicLandTypes"
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

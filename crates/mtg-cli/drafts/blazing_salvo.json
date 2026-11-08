@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e6681d22-821a-47c8-9c0d-042a7d44f843",
+  "name": "Blazing Salvo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blazing Salvo",
+      "oracle_fingerprint": "6a736f6004f1678b8d6b7582ad947de3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "DamageToYou": 5 }],
+                  "unpaid": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

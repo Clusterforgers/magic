@@ -1,0 +1,73 @@
+{
+  "oracle_id": "4884ad6c-2290-44fc-ab9e-6e6b75b2d69a",
+  "name": "Sanwell, Avenger Ace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanwell, Avenger Ace",
+      "oracle_fingerprint": "5d1619609aa6dbca2b38388730a5e4e9",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": "Prevent",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    "Attacking"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "count": 6, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Vehicle" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Artifact" } },
+                                { "Not": { "Type": "Creature" } }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

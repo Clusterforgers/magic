@@ -1,0 +1,52 @@
+{
+  "oracle_id": "fe84933e-d98f-4cbc-b272-387a80894e31",
+  "name": "Invasion of Ergamon // Truga Cliffcharger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Ergamon",
+      "oracle_fingerprint": "e12cf4bfa23659971e4ab142a7764122",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              { "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": {} }] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Truga Cliffcharger",
+      "oracle_fingerprint": "0714541be1b8b203f4ede97229d164cf",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "AnyOf": [{ "Type": "Land" }, { "Type": "Battle" }] }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

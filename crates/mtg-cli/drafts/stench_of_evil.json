@@ -1,0 +1,48 @@
+{
+  "oracle_id": "14062abe-14df-4dbe-ad7b-530e5f6c4988",
+  "name": "Stench of Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stench of Evil",
+      "oracle_fingerprint": "6cc1ead80952833e387ab07e46d4242f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Subtype": "Plains" }] }, "as": "destroyed" } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "destroyed" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "Pay": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                              "cost": "{2}",
+                              "unpaid": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                                    "amount": 1
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

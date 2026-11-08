@@ -1,0 +1,22 @@
+{
+  "oracle_id": "d4bcbce9-9739-4828-9980-e21490b44346",
+  "name": "Leaden Fists",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leaden Fists",
+      "oracle_fingerprint": "f7efe0d93da14c891a32d249fa285545",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

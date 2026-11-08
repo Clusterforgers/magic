@@ -28,6 +28,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
             rest_as: None,
         },
         Effect::CastFromZone {
+            rather: None,
             who: Ref::You,
             what: Ref::Bound(cast),
             free: true,

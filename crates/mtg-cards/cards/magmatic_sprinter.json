@@ -1,0 +1,47 @@
+{
+  "oracle_id": "85d025d9-158d-4bf1-b3b2-361f3fe59663",
+  "name": "Magmatic Sprinter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmatic Sprinter",
+      "oracle_fingerprint": "031e073e255288145f7a29e5d10574a7",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "oil" }, "count": 2 }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": { "Other": "oil" }, "count": 2 } }],
+                  "unpaid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

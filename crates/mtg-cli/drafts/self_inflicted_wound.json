@@ -1,0 +1,43 @@
+{
+  "oracle_id": "28956db0-985c-402d-abae-1075c68b97e7",
+  "name": "Self-Inflicted Wound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Self-Inflicted Wound",
+      "oracle_fingerprint": "48bcdfcd4a8af02b6b3216fc25ef172c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Green" }] }
+                  ],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

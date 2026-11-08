@@ -1,0 +1,39 @@
+{
+  "oracle_id": "cf4959bf-92ae-4c9b-b631-724ce100cbb8",
+  "name": "Pact of the Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pact of the Titan",
+      "oracle_fingerprint": "ce4b1b22eb9f0b3498126899f9a69cfd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Giant",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Giant"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Pay": { "cost": "{4}{R}", "unpaid": [{ "LoseGame": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

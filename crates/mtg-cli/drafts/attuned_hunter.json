@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f652c593-e8fa-42ff-a8b4-206556b273de",
+  "name": "Attuned Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Attuned Hunter",
+      "oracle_fingerprint": "2c3a4594153ab01d1af5076013effa86",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

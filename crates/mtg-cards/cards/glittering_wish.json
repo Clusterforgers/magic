@@ -1,0 +1,32 @@
+{
+  "oracle_id": "45c29ac0-f9ca-4ab9-b93e-8b678509bcd7",
+  "name": "Glittering Wish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glittering Wish",
+      "oracle_fingerprint": "debef115db866dcb45ae6d9db6b76f9c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [
+                    { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                    { "OwnedBy": "You" }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

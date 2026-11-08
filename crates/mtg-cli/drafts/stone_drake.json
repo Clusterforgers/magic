@@ -1,0 +1,48 @@
+{
+  "oracle_id": "7373b50b-a707-40fb-967a-550c31e6ea59",
+  "name": "Stone Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stone Drake",
+      "oracle_fingerprint": "78cb8c312b17dee88efedf97aac3c995",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+                      "effects": [{ "Tap": { "what": { "Target": 0 } } }, { "Draw": {} }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "count": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "EachPlayer",
+                                "filter": [{ "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

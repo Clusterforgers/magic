@@ -1,0 +1,164 @@
+//! e16c: declarations of attackers at one player, written back: "Whenever you attack a player", "Whenever one or more
+//! creatures attack you", "Whenever an opponent attacks you" and "Whenever two or more Warriors you control attack a
+//! player", and counters a player gets together ("Whenever you get one or more {E}"). No template reads them: only the
+//! proposal checker writes them.
+
+use mtg_core::card::CardType;
+
+use crate::ability::Ability;
+use crate::effect::Effect;
+use crate::modify::Duration;
+use crate::refs::{Pred, Ref, Selector};
+use crate::trigger::TriggerPattern;
+use crate::value::CounterKind;
+
+use super::selectors::{Form, phrase_text};
+
+/// Wordings of one attack trigger: a player attacks a player when one or more creatures attack that player, and the
+/// creatures you control attack only your opponents (CR 508.1b).
+const SAME: [(&str, &str); 3] = [
+    (
+        "Whenever a player attacks you,",
+        "Whenever one or more creatures attack you,",
+    ),
+    (
+        "Whenever a player attacks one of your opponents,",
+        "Whenever one or more creatures attack one of your opponents,",
+    ),
+    (
+        " you control attack one of your opponents,",
+        " you control attack a player,",
+    ),
+];
+
+/// The text with each wording of `SAME` written the second way; both sides of a comparison are normalized.
+pub(super) fn normal(text: &str) -> String {
+    SAME.iter()
+        .fold(text.to_owned(), |text, (from, to)| text.replace(from, to))
+}
+
+/// The attackers of one player change until end of turn: "it gets -1/-0" is "those creatures get -1/-0 until end of
+/// turn" on a card.
+pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Triggered {
+        when: TriggerPattern::GroupAttacksAt { .. },
+        effects,
+        ..
+    } = ability
+    else {
+        return;
+    };
+    let [
+        Effect::Continuous {
+            affected: Ref::Triggering,
+            duration: Duration::UntilEndOfTurn,
+            ..
+        },
+    ] = effects.as_slice()
+    else {
+        return;
+    };
+    let found: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let (head, change) = text.split_once(", it ")?;
+            let change = change.strip_suffix(" until end of turn.")?;
+            let (verb, rest) = change.split_once(' ')?;
+            let plural = match verb {
+                "gets" => "get",
+                "gains" => "gain",
+                _ => return None,
+            };
+            Some(format!(
+                "{head}, those creatures {plural} {rest} until end of turn."
+            ))
+        })
+        .filter(|text| !texts.contains(text))
+        .collect();
+    texts.extend(found);
+}
+
+/// "Whenever you get one or more {E}", "Whenever an opponent gets one or more poison counters": counters put on a player
+/// together.
+pub(super) fn e16c_player_counters_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::PlayerCountersPut {
+        who,
+        counter: Some(counter),
+    } = pattern
+    else {
+        return None;
+    };
+    let some = if *counter == CounterKind::Other("energy".to_owned()) {
+        "{E}".to_owned()
+    } else {
+        format!("{} counters", super::counters::kind_text(counter)?)
+    };
+    Some(format!(
+        "Whenever {} one or more {some}",
+        super::triggers::player_verb(who, "get")?
+    ))
+}
+
+/// What one creature attacks, as the trigger words it: "attacks enchanted player", "attacks the monarch", "attacks one
+/// of your opponents" and "attacks the player with the most life or tied for most life".
+pub(super) fn e16c_attacks_player(at: &Ref) -> Option<&'static str> {
+    Some(match at {
+        Ref::AttachedPlayer => "attacks enchanted player",
+        Ref::Monarch => "attacks the monarch",
+        Ref::Opponents => "attacks one of your opponents",
+        Ref::MostLife => "attacks the player with the most life or tied for most life",
+        _ => return None,
+    })
+}
+
+/// The player attacked, as the trigger words it.
+fn attacked(at: &Ref) -> Option<&'static str> {
+    Some(match at {
+        Ref::EachPlayer => "a player",
+        Ref::You => "you",
+        Ref::Opponents => "one of your opponents",
+        _ => return None,
+    })
+}
+
+/// The wording of `GroupAttacksAt`; `None` for a shape it does not say.
+pub(super) fn e16c_group_at_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::GroupAttacksAt { what, at, at_least } = pattern else {
+        return None;
+    };
+    let at_least = *at_least;
+    // The creatures you control attack only your opponents: "attack a player" (CR 508.1b).
+    let yours = what.0.contains(&Pred::ControlledBy(Ref::You));
+    let player = if yours && *at == Ref::Opponents {
+        "a player"
+    } else {
+        attacked(at)?
+    };
+    let creature = Pred::Type(CardType::Creature);
+    if at_least == 1 {
+        match what.0.as_slice() {
+            // Only you attack with the creatures you control, so you attack someone else.
+            [kind, Pred::ControlledBy(Ref::You)] if *kind == creature && *at == Ref::EachPlayer => {
+                return Some("Whenever you attack a player".to_owned());
+            }
+            [kind, Pred::ControlledBy(Ref::Opponents)] if *kind == creature && *at == Ref::You => {
+                return Some("Whenever an opponent attacks you".to_owned());
+            }
+            // "Whenever you attack a player with one or more equipped creatures": a quality of the creatures.
+            [kind, Pred::ControlledBy(Ref::You), quality]
+                if *kind == creature
+                    && *at == Ref::EachPlayer
+                    && matches!(quality, Pred::HasAttached(_) | Pred::Compare { .. }) =>
+            {
+                let group = Selector(vec![creature, quality.clone()]);
+                return Some(format!(
+                    "Whenever you attack a player with one or more {}",
+                    phrase_text(&group, Form::All)?
+                ));
+            }
+            _ => {}
+        }
+    }
+    let group = super::triggers::group_attacks_text(what, at_least)?;
+    Some(format!("{group} {player}"))
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "efd73b8a-1caa-4fc8-855a-cad33ea54097",
+  "name": "Juntu Stakes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Juntu Stakes",
+      "oracle_fingerprint": "db7843848016cb9563d5dfaade49e471",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Compare": { "stat": "Power", "op": "Le", "to": 1 } }
+              ]
+            },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f8d64a8e-1bff-4960-bc36-1fbb4fc18c8f",
+  "name": "Returned Phalanx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Returned Phalanx",
+      "oracle_fingerprint": "a36ea192b2f09f1b562f3d26147d1fc9",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

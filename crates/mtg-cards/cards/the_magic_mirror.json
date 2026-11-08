@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9acf2701-2ba1-46fa-ad4a-b130a58181d3",
+  "name": "The Magic Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Magic Mirror",
+      "oracle_fingerprint": "e0cb2912ee9e9f64d917dd0b9ff29b8a",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            }
+          }
+        },
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "knowledge" } } },
+              {
+                "Draw": {
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "knowledge" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

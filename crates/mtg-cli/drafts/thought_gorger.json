@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ec5dc165-c760-4060-99fb-ec50f87374cb",
+  "name": "Thought Gorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Gorger",
+      "oracle_fingerprint": "e35b86e88998a55c0e12c4ba225150a0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": { "subject": "This", "selector": [], "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

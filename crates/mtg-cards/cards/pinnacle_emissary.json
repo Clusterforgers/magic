@@ -1,0 +1,72 @@
+{
+  "oracle_id": "522e8db5-857e-492f-afed-d60cd2ce3dcd",
+  "name": "Pinnacle Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pinnacle Emissary",
+      "oracle_fingerprint": "19e747aa719317139645a920ae15b818",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Drone",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Drone"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{U/R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

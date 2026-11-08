@@ -3,13 +3,69 @@
 //! your graveyard to your hand.").
 
 use super::{Destination, Effect, Form, Writer, article, phrase_text};
-use crate::refs::{Pred, Ref, Selector, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, ZoneKind};
+use crate::value::Amount;
+
+/// How many a choice takes, worded: "a land card" (exactly one, or "you may" for none or one), "two land cards", "up to
+/// two land cards", "any number of land cards".
+pub(super) struct Quantity {
+    /// "you may " or nothing, before the verb.
+    pub lead: &'static str,
+    /// The cards or permanents, with their number.
+    pub noun: String,
+    /// More than one: "their owner's hand" for "its owner's hand".
+    pub plural: bool,
+}
+
+/// The words for the count of a choice from the selector; any other count is not worded here.
+pub(super) fn quantity(count: &Bounds, from: &Selector) -> Option<Quantity> {
+    let one = |lead| {
+        let phrase = phrase_text(from, Form::Subject)?;
+        let noun = if phrase.starts_with("another ") {
+            phrase
+        } else {
+            format!("{} {phrase}", article(&phrase))
+        };
+        Some(Quantity {
+            lead,
+            noun,
+            plural: false,
+        })
+    };
+    if count.is_one() {
+        return one("");
+    }
+    if *count == Bounds::up_to(Some(Amount::Fixed(1))) {
+        return one("you may ");
+    }
+    let many = |lead_in: &str| {
+        Some(Quantity {
+            lead: "",
+            noun: format!("{lead_in}{}", phrase_text(from, Form::All)?),
+            plural: true,
+        })
+    };
+    let number = |count: i32| super::count_word(u32::try_from(count).ok()?);
+    match (&count.min, &count.max) {
+        (Amount::Fixed(0), None) => many("any number of "),
+        (Amount::Fixed(0), Some(Amount::Fixed(most))) if *most >= 2 => {
+            many(&format!("up to {} ", number(*most)?))
+        }
+        (Amount::Fixed(least), Some(Amount::Fixed(most))) if least == most && *least >= 2 => {
+            many(&format!("{} ", number(*least)?))
+        }
+        _ => None,
+    }
+}
 
 /// Whether the selector names cards of the graveyard of the player.
 fn from_your_graveyard(selector: &Selector) -> bool {
-    selector
-        .0
-        .starts_with(&[Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)])
+    in_your(selector, ZoneKind::Graveyard)
+}
+
+/// Whether the selector names cards of the given zone of the player, wherever its words stand in the list.
+pub(super) fn in_your(selector: &Selector, zone: ZoneKind) -> bool {
+    selector.0.contains(&Pred::In(zone)) && selector.0.contains(&Pred::OwnedBy(Ref::You))
 }
 
 /// "return all legendary creature cards from your graveyard to your hand".
@@ -17,6 +73,7 @@ pub(super) fn all_text(effect: &Effect) -> Option<String> {
     let Effect::Move {
         what: Ref::Each(selector),
         to: Destination::Hand,
+        ..
     } = effect
     else {
         return None;
@@ -41,16 +98,17 @@ pub(super) fn one_text(choose: &Effect, moved: &Effect) -> Option<String> {
         Effect::Move {
             what: Ref::Bound(name),
             to: Destination::Hand,
+            ..
         },
     ) = (choose, moved)
     else {
         return None;
     };
-    if bind != name || !count.is_one() || !from_your_graveyard(from) {
+    if bind != name || !from_your_graveyard(from) {
         return None;
     }
-    let phrase = phrase_text(from, Form::Subject)?;
-    Some(format!("return {} {phrase} to your hand", article(&phrase)))
+    let q = quantity(count, from)?;
+    Some(format!("{}return {} to your hand", q.lead, q.noun))
 }
 
 impl Writer<'_> {
@@ -69,6 +127,7 @@ impl Writer<'_> {
                     return None;
                 };
                 let returned = one_text(choose, moved)?;
+                (!returned.starts_with("you may ")).then_some(())?;
                 Some((
                     format!("{}, then you may {returned}", self.effect(first)?),
                     2,

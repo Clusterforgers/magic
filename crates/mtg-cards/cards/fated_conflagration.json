@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ac0a110a-0721-4aa6-a891-95e3fcc847df",
+  "name": "Fated Conflagration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fated Conflagration",
+      "oracle_fingerprint": "45c4ee0355df70715f9ff0416ea6a055",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              { "If": { "condition": "YourTurn", "then": [{ "Scry": { "count": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

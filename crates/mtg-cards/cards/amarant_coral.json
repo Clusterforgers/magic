@@ -1,0 +1,33 @@
+{
+  "oracle_id": "322d2407-fa9f-48d0-bdf0-88f6d24cf865",
+  "name": "Amarant Coral",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amarant Coral",
+      "oracle_fingerprint": "1213f8ac591430819d0a7847c9ac5dc9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents", "combat": true } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "Triggering" } }
+                    }
+                  },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

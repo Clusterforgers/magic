@@ -1,0 +1,45 @@
+{
+  "oracle_id": "161c6317-f4b6-45a2-98ac-6340a374eac5",
+  "name": "Axavar, Fate Thief",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Axavar, Fate Thief",
+      "oracle_fingerprint": "53f29155af9102811792874443beafaa",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 182 }
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{B/R}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "oracle_id": "f95fda8c-0737-447f-9212-1c459062b9e7",
+  "name": "Gruesome Menagerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruesome Menagerie",
+      "oracle_fingerprint": "76e3fbc037d182f39190d5200027125d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 2 } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "card2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 3 } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "card3"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "Is": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Is": { "Bound": "card" } },
+                                { "Is": { "Bound": "card2" } },
+                                { "Is": { "Bound": "card3" } }
+                              ]
+                            },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "bd768e8f-8f04-487e-85e9-2828d6fd8745",
+  "name": "The Cloning of Shredder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Cloning of Shredder",
+      "oracle_fingerprint": "c1eadac24c9b36eed1cdffef6bbc8bf0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [{ "AddSubtype": "Mutant" }, { "RemoveSupertype": "Legendary" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                      "except": [{ "AddSubtype": "Mutant" }, { "RemoveSupertype": "Legendary" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                      "except": [{ "AddSubtype": "Mutant" }, { "RemoveSupertype": "Legendary" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

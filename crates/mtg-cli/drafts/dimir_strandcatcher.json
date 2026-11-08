@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4689206f-7907-46fb-82a7-2716687a58fc",
+  "name": "Dimir Strandcatcher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dimir Strandcatcher",
+      "oracle_fingerprint": "e0ca82e7319ce2af2d422f70ef2f13bb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Surveil": { "count": { "Players": "Attacked" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 241 }
+          }
+        }
+      ]
+    }
+  ]
+}

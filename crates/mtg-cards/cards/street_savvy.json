@@ -1,0 +1,23 @@
+{
+  "oracle_id": "5d13386e-faac-4440-96c3-11c60872ceec",
+  "name": "Street Savvy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Street Savvy",
+      "oracle_fingerprint": "2a0707e6f9411fd66fee63c52325a6f5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }]
+          }
+        },
+        {
+          "Rule": { "rule": { "Combat": { "who": "Attached", "quirk": "BlockIgnoringLandwalk" } } }
+        }
+      ]
+    }
+  ]
+}

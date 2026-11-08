@@ -1,0 +1,29 @@
+{
+  "oracle_id": "799f31fc-3b6f-419a-8e70-b41c8e97f000",
+  "name": "Quicksilver Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksilver Behemoth",
+      "oracle_fingerprint": "bd965656f0648ae409c1179c035e47cc",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

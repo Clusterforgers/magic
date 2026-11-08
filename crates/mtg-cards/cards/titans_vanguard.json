@@ -19,7 +19,7 @@
             "effects": [
               {
                 "PutCounters": {
-                  "on": { "Each": ["Colorless", { "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "on": { "Each": [{ "Type": "Creature" }, "Colorless", { "ControlledBy": "You" }] },
                   "counter": "+1/+1"
                 }
               }

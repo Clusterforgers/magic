@@ -1,0 +1,32 @@
+{
+  "oracle_id": "63eed1f5-442f-433d-989c-397b88543162",
+  "name": "Wary Farmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wary Farmer",
+      "oracle_fingerprint": "2e0e6ddac367243161eced048345f6b9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

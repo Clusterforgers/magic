@@ -1,0 +1,38 @@
+{
+  "oracle_id": "df2738fe-9cd1-4347-8808-105fcfde1190",
+  "name": "Circle of Protection: Red",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Protection: Red",
+      "oracle_fingerprint": "3e0663eea6be51f454226bc714ada47a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "Color": "Red" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

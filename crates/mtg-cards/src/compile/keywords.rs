@@ -108,6 +108,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("extort", Params::None),
     ("living weapon", Params::None),
     ("for mirrodin!", Params::None),
+    ("start your engines!", Params::None),
     ("job select", Params::None),
     ("totem armor", Params::None),
     ("umbra armor", Params::None),
@@ -129,6 +130,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("conspire", Params::None),
     ("dethrone", Params::None),
     ("gravestorm", Params::None),
+    ("epic", Params::None),
+    ("assist", Params::None),
     ("provoke", Params::None),
     ("double team", Params::None),
     ("compleated", Params::None),
@@ -144,6 +147,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("buyback", Params::Cost),
     ("dash", Params::Cost),
     ("echo", Params::Cost),
+    ("recover", Params::Cost),
     ("emerge", Params::Cost),
     ("entwine", Params::Cost),
     ("escape", Params::Cost),
@@ -155,6 +159,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("replicate", Params::Cost),
     ("scavenge", Params::Cost),
     ("spectacle", Params::Cost),
+    ("freerunning", Params::Cost),
     ("surge", Params::Cost),
     ("unearth", Params::Cost),
     ("awaken", Params::Cost),
@@ -200,6 +205,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("fading", Params::Number),
     ("graft", Params::Number),
     ("hideaway", Params::Number),
+    ("ripple", Params::Number),
     ("gift", Params::Text),
     ("modular", Params::Number),
     ("poisonous", Params::Number),
@@ -209,10 +215,13 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("soulshift", Params::Number),
     ("toxic", Params::Number),
     ("tribute", Params::Number),
+    ("teamwork", Params::Number),
     ("vanishing", Params::W15bNumberOrNone),
     ("devour", Params::Counted),
     ("frenzy", Params::Number),
     ("mobilize", Params::Number),
+    ("firebending", Params::Number),
+    ("ingest", Params::None),
     ("saddle", Params::Number),
     ("saddled", Params::None),
     ("station", Params::None),
@@ -353,7 +362,37 @@ pub fn read_all(item: &str) -> Option<Vec<Keyword>> {
         let qualities = protections(found.rest)?;
         return Some(qualities.into_iter().map(Keyword::Protection).collect());
     }
+    if found.name == "hexproof from" && plausible(found.params, found.rest) {
+        let qualities = hexproof_qualities(found.rest)?;
+        return Some(qualities.into_iter().map(Keyword::HexproofFrom).collect());
+    }
     read(item).map(|keyword| vec![keyword])
+}
+
+/// The qualities of a hexproof: "black", "monocolored", "instants", or a list ("artifacts, creatures, and
+/// enchantments") that is one hexproof for each.
+fn hexproof_qualities(rest: &str) -> Option<Vec<Selector>> {
+    let lower = rest.trim_end_matches('.').to_ascii_lowercase();
+    lower
+        .replace(", and ", ", ")
+        .replace(" and ", ", ")
+        .split(", ")
+        .map(hexproof_quality)
+        .collect()
+}
+
+/// The sources one word of a hexproof names; `quality` words, "each color", "monocolored" and "instants".
+fn hexproof_quality(word: &str) -> Option<Selector> {
+    match word {
+        "each color" => Some(each_color()),
+        "monocolored" => Some(Selector(vec![Pred::Compare {
+            stat: StatKind::Colors,
+            op: Cmp::Eq,
+            to: Amount::Fixed(1),
+        }])),
+        "instants" => Some(Selector(vec![Pred::Type(CardType::Instant)])),
+        other => quality(other),
+    }
 }
 
 /// The keyword an item names, when the DSL declares it and its parameter reads; `None` leaves the
@@ -377,9 +416,9 @@ pub fn read(item: &str) -> Option<Keyword> {
         "madness" => spell_cost(rest).map(Keyword::Madness),
         "miracle" => spell_cost(rest).map(Keyword::Miracle),
         "dredge" => positive(rest).map(Keyword::Dredge),
-        "morph" => cost(rest).map(Keyword::Morph),
-        "megamorph" => cost(rest).map(Keyword::Megamorph),
-        "disguise" => cost(rest).map(Keyword::Disguise),
+        "morph" => spell_cost(rest).map(Keyword::Morph),
+        "megamorph" => spell_cost(rest).map(Keyword::Megamorph),
+        "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
         "mutate" => cost(rest).map(Keyword::Mutate),
@@ -391,12 +430,15 @@ pub fn read(item: &str) -> Option<Keyword> {
         "gift" => gift(rest),
         "devour" => devour(rest),
         "foretell" => cost(rest).map(Keyword::Foretell),
+        "plot" => cost(rest).map(Keyword::Plot),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
         "embalm" => spell_cost(rest).map(Keyword::Embalm),
         "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
         "scavenge" => spell_cost(rest).map(Keyword::Scavenge),
         "transmute" => spell_cost(rest).map(Keyword::Transmute),
         "awaken" => awaken(rest),
+        "craft" => craft(rest),
+        "prototype" => prototype(rest),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
         "bestow" => spell_cost(rest).map(Keyword::Bestow),
@@ -407,9 +449,12 @@ pub fn read(item: &str) -> Option<Keyword> {
         "emerge" => spell_cost(rest).map(Keyword::Emerge),
         "harmonize" => spell_cost(rest).map(Keyword::Harmonize),
         "spectacle" => spell_cost(rest).map(Keyword::Spectacle),
+        "freerunning" => spell_cost(rest).map(Keyword::Freerunning),
         "afterlife" => positive(rest).map(Keyword::Afterlife),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
+        "recover" => spell_cost(rest).map(Keyword::Recover),
+        "ripple" => positive(rest).map(Keyword::Ripple),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
         "vanishing" if rest.is_empty() => Some(Keyword::Vanishing(0)),
         "vanishing" => positive(rest).map(Keyword::Vanishing),
@@ -418,10 +463,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "afflict" => positive(rest).map(Keyword::Afflict),
         "renown" => positive(rest).map(Keyword::Renown),
         "replicate" => spell_cost(rest).map(Keyword::Replicate),
-        "backup" => positive(rest).map(|count| Keyword::Backup {
-            count,
-            abilities: Vec::new(),
-        }),
+        "backup" => positive(rest).map(backup),
         "crew" => positive(rest).map(Keyword::Crew),
         "saddle" => positive(rest).map(Keyword::Saddle),
         "fabricate" => positive(rest).map(Keyword::Fabricate),
@@ -434,6 +476,10 @@ pub fn read(item: &str) -> Option<Keyword> {
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
         "partner" if rest.starts_with('\u{2014}') => partner_group(rest),
         "protection" => protection(rest).map(Keyword::Protection),
+        "hexproof from" => match hexproof_qualities(rest)?.as_slice() {
+            [only] => Some(Keyword::HexproofFrom(only.clone())),
+            _ => None,
+        },
         "companion" => companion(rest),
         "toxic" => positive(rest).map(Keyword::Toxic),
         "annihilator" => positive(rest).map(Keyword::Annihilator),
@@ -447,9 +493,31 @@ pub fn read(item: &str) -> Option<Keyword> {
             ]),
             cost,
         }),
+        name if crate::macros::is_keyword(name) => macro_keyword(name, rest),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// Backup N as its keyword line reads: the abilities it gives are not part of the line.
+fn backup(count: u32) -> Keyword {
+    Keyword::Backup {
+        count,
+        abilities: Vec::new(),
+    }
+}
+
+/// A keyword of the macro table: its number, or nothing after the name for one that prints none.
+fn macro_keyword(name: &str, rest: &str) -> Option<Keyword> {
+    let amount = if crate::macros::takes_number(name) {
+        positive(rest)?
+    } else {
+        rest.is_empty().then_some(0)?
+    };
+    Some(Keyword::Macro {
+        name: name.to_owned(),
+        amount,
+    })
 }
 
 /// `Devour 2`, `Devour artifact 1`, `Devour Food 3`: the counters for each permanent and what may be sacrificed.
@@ -659,13 +727,18 @@ fn plain(name: &str) -> Option<Keyword> {
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
         "gravestorm" => Keyword::Gravestorm,
+        "epic" => Keyword::Epic,
+        "assist" => Keyword::Assist,
         "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
+        "bargain" => Keyword::Bargain,
+        "conspire" => Keyword::Conspire,
         "read ahead" => Keyword::ReadAhead,
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
         "for mirrodin!" => Keyword::ForMirrodin,
+        "start your engines!" => Keyword::StartYourEngines,
         "job select" => Keyword::JobSelect,
         "fuse" => Keyword::Fuse,
         "changeling" => Keyword::Changeling,
@@ -695,6 +768,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "dethrone" => Keyword::Dethrone,
         "umbra armor" => Keyword::UmbraArmor,
         "cipher" => Keyword::Cipher,
+        "haunt" => Keyword::Haunt,
         "exploit" => Keyword::Exploit,
         "soulbond" => Keyword::Soulbond,
         "extort" => Keyword::Extort,
@@ -719,6 +793,9 @@ fn protection(rest: &str) -> Option<Selector> {
         .strip_prefix("from ")?
         .trim_end_matches('.')
         .to_ascii_lowercase();
+    if word == "each color" {
+        return Some(each_color());
+    }
     quality(&word).or_else(|| mana_value_bound(&word))
 }
 
@@ -830,12 +907,69 @@ fn spell_cost(rest: &str) -> Option<Cost> {
     })
 }
 
+/// `with one or more creatures {2}{B}{B}`: the materials one pick of the cost exiles, and the mana of craft. The materials
+/// are one type or subtype, "one or more" of them (an X of at least 1) or a number.
+fn craft(rest: &str) -> Option<Keyword> {
+    let words = rest.strip_prefix("with ")?.trim();
+    let at = words.find('{')?;
+    let (materials, price) = words.split_at(at);
+    let mana = ManaCostX::from_str(price.trim()).ok()?;
+    let materials = materials.trim();
+    let (count, noun) = if let Some(noun) = materials.strip_prefix("one or more ") {
+        (Amount::X, noun)
+    } else {
+        let (number, noun) = materials.split_once(' ').unwrap_or(("1", materials));
+        let number = match number {
+            "1" | "a" | "an" | "one" => 1,
+            "two" => 2,
+            "three" => 3,
+            "four" => 4,
+            "five" => 5,
+            "six" => 6,
+            _ => return None,
+        };
+        (Amount::Fixed(number), noun)
+    };
+    let single = noun.trim().trim_end_matches('s');
+    let kind = match single.to_ascii_lowercase().as_str() {
+        "creature" => Pred::Type(CardType::Creature),
+        "artifact" => Pred::Type(CardType::Artifact),
+        "enchantment" => Pred::Type(CardType::Enchantment),
+        "land" => Pred::Type(CardType::Land),
+        word if word.chars().all(char::is_alphabetic) && !word.is_empty() => {
+            let mut chars = word.chars();
+            let first = chars.next()?.to_ascii_uppercase();
+            Pred::Subtype(Subtype(format!("{first}{}", chars.as_str())))
+        }
+        _ => return None,
+    };
+    Some(Keyword::Craft(Cost(vec![
+        CostItem::Mana(mana),
+        CostItem::Craft {
+            filter: Selector(vec![kind, Pred::Other]),
+            count,
+            least: None,
+        },
+    ])))
+}
+
 /// `3—{4}{U}`: the counters and the mana cost of awaken.
 fn awaken(rest: &str) -> Option<Keyword> {
     let (count, price) = rest.split_once('\u{2014}')?;
     Some(Keyword::Awaken {
         count: count.trim().parse().ok().filter(|count| *count > 0)?,
         cost: cost(price.trim())?,
+    })
+}
+
+/// `{1}{U}{U} \u{2014} 2/1`: the prototype mana cost and the power and toughness.
+fn prototype(rest: &str) -> Option<Keyword> {
+    let (price, size) = rest.split_once('\u{2014}')?;
+    let (power, toughness) = size.trim().trim_end_matches('.').split_once('/')?;
+    Some(Keyword::Prototype {
+        cost: cost(price.trim())?,
+        power: power.trim().parse().ok()?,
+        toughness: toughness.trim().parse().ok()?,
     })
 }
 
@@ -902,7 +1036,19 @@ mod tests {
         Keyword::Protection(Selector(vec![pred]))
     }
 
+    fn hexproof_of(kind: CardType) -> Keyword {
+        Keyword::HexproofFrom(Selector(vec![Pred::Type(kind)]))
+    }
+
     #[rstest]
+    #[case::hexproof_list(
+        "Hexproof from artifacts, creatures, and enchantments",
+        &[hexproof_of(CardType::Artifact), hexproof_of(CardType::Creature), hexproof_of(CardType::Enchantment)]
+    )]
+    #[case::hexproof_pair(
+        "Hexproof from artifacts and creatures",
+        &[hexproof_of(CardType::Artifact), hexproof_of(CardType::Creature)]
+    )]
     #[case::one_colour("Protection from white", &[protects(Pred::Color(Color::White))])]
     #[case::two_colours(
         "Protection from white and from blue",
@@ -938,6 +1084,43 @@ mod tests {
         #[case] expected: &[Keyword],
     ) {
         assert_eq!(read_all(item).as_deref(), Some(expected));
+    }
+
+    #[rstest]
+    #[case::bushido("Bushido 1", "bushido", 1)]
+    #[case::bushido_capitals("bushido 3", "bushido", 3)]
+    #[case::modular("Modular 2", "modular", 2)]
+    #[case::mobilize("Mobilize 4", "mobilize", 4)]
+    #[case::firebending("Firebending 2", "firebending", 2)]
+    #[case::soulshift("Soulshift 3", "soulshift", 3)]
+    #[case::bloodthirst("Bloodthirst 1", "bloodthirst", 1)]
+    #[case::flanking("Flanking", "flanking", 0)]
+    #[case::training("training", "training", 0)]
+    #[case::unleash("Unleash", "unleash", 0)]
+    #[case::ingest("Ingest", "ingest", 0)]
+    fn a_keyword_of_the_macro_table_reads_with_its_number(
+        #[case] item: &str,
+        #[case] name: &str,
+        #[case] amount: u32,
+    ) {
+        assert_eq!(
+            read(item),
+            Some(Keyword::Macro {
+                name: name.to_owned(),
+                amount
+            })
+        );
+        assert!(is_keyword_line(item));
+    }
+
+    #[rstest]
+    #[case::no_number("Bushido")]
+    #[case::zero("Modular 0")]
+    #[case::a_cost("Mobilize {2}")]
+    #[case::soulshift_without("Soulshift")]
+    #[case::a_number_on_flanking("Flanking 1")]
+    fn a_macro_keyword_without_a_number_reads_as_no_keyword(#[case] item: &str) {
+        assert_eq!(read(item), None);
     }
 
     #[rstest]
@@ -998,6 +1181,14 @@ mod tests {
     #[case::lowercase_delve("delve", Keyword::Delve)]
     #[case::hexproof("Hexproof", Keyword::Hexproof)]
     #[case::shroud("Shroud", Keyword::Shroud)]
+    #[case::hexproof_from_a_colour("Hexproof from black", Keyword::HexproofFrom(Selector(vec![Pred::Color(Color::Black)])))]
+    #[case::hexproof_from_lowercase("hexproof from planeswalkers", Keyword::HexproofFrom(Selector(vec![Pred::Type(CardType::Planeswalker)])))]
+    #[case::hexproof_from_instants("hexproof from instants", Keyword::HexproofFrom(Selector(vec![Pred::Type(CardType::Instant)])))]
+    #[case::hexproof_from_each_color(
+        "Hexproof from each color",
+        Keyword::HexproofFrom(each_color())
+    )]
+    #[case::hexproof_from_monocolored("Hexproof from monocolored", Keyword::HexproofFrom(Selector(vec![Pred::Compare { stat: StatKind::Colors, op: Cmp::Eq, to: Amount::Fixed(1) }])))]
     #[case::protection_from_a_colour("Protection from white", Keyword::Protection(Selector(vec![Pred::Color(Color::White)])))]
     #[case::protection_from_a_colour_in_lowercase("protection from red", Keyword::Protection(Selector(vec![Pred::Color(Color::Red)])))]
     #[case::protection_from_colorless("Protection from colorless", Keyword::Protection(Selector(vec![Pred::Colorless])))]
@@ -1126,7 +1317,13 @@ mod tests {
     #[case::gift_a_tapped_fish("Gift a tapped Fish", Keyword::Gift(GiftKind::TappedFish))]
     #[case::gift_an_extra_turn("Gift an extra turn", Keyword::Gift(GiftKind::ExtraTurn))]
     #[case::hideaway_five("hideaway 5", Keyword::Hideaway(5))]
+    #[case::recover("Recover {R}{R}", Keyword::Recover(mana("{R}{R}")))]
+    #[case::recover_generic("Recover {1}{B}", Keyword::Recover(mana("{1}{B}")))]
+    #[case::ripple("Ripple 4", Keyword::Ripple(4))]
+    #[case::epic("Epic", Keyword::Epic)]
     #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
+    #[case::bargain("Bargain", Keyword::Bargain)]
+    #[case::conspire("Conspire", Keyword::Conspire)]
     #[case::read_ahead("Read ahead", Keyword::ReadAhead)]
     #[case::devour("Devour 2", Keyword::Devour { counters: 2, of: creature() })]
     #[case::devour_artifact("Devour artifact 1", Keyword::Devour { counters: 1, of: Selector(vec![Pred::Type(CardType::Artifact)]) })]
@@ -1173,6 +1370,7 @@ mod tests {
     #[case::dethrone("dethrone", Keyword::Dethrone)]
     #[case::umbra_armor("Umbra armor", Keyword::UmbraArmor)]
     #[case::cipher("Cipher", Keyword::Cipher)]
+    #[case::haunt("Haunt", Keyword::Haunt)]
     #[case::graft("Graft 2", Keyword::Graft(2))]
     #[case::afflict("Afflict 3", Keyword::Afflict(3))]
     #[case::renown("Renown 2", Keyword::Renown(2))]
@@ -1189,6 +1387,7 @@ mod tests {
     #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
     #[case::fabricate_lowercase("fabricate 1", Keyword::Fabricate(1))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
+    #[case::plot("Plot {2}{R}", Keyword::Plot(mana("{2}{R}")))]
     #[case::foretell_for_nothing("Foretell {0}", Keyword::Foretell(mana("{0}")))]
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
     #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
@@ -1201,8 +1400,12 @@ mod tests {
     #[case::scavenge_free("Scavenge {0}", Keyword::Scavenge(mana("{0}")))]
     #[case::transmute("Transmute {1}{U}{U}", Keyword::Transmute(mana("{1}{U}{U}")))]
     #[case::awaken("Awaken 3\u{2014}{4}{U}", Keyword::Awaken { count: 3, cost: mana("{4}{U}") })]
+    #[case::prototype("Prototype {1}{U}{U} \u{2014} 2/1", Keyword::Prototype { cost: mana("{1}{U}{U}"), power: 2, toughness: 1 })]
     #[case::awaken_big("Awaken 6\u{2014}{6}{U}{U}{U}", Keyword::Awaken { count: 6, cost: mana("{6}{U}{U}{U}") })]
     #[case::gravestorm("Gravestorm", Keyword::Gravestorm)]
+    #[case::assist("Assist", Keyword::Assist)]
+    #[case::craft_x("Craft with one or more creatures {2}{B}{B}", Keyword::Craft(Cost(vec![CostItem::Mana("{2}{B}{B}".parse().unwrap()), CostItem::Craft { filter: Selector(vec![Pred::Type(CardType::Creature), Pred::Other]), count: Amount::X, least: None }])))]
+    #[case::craft_one("Craft with artifact {3}{W}", Keyword::Craft(Cost(vec![CostItem::Mana("{3}{W}".parse().unwrap()), CostItem::Craft { filter: Selector(vec![Pred::Type(CardType::Artifact), Pred::Other]), count: Amount::one(), least: None }])))]
     #[case::sunburst("Sunburst", Keyword::Sunburst)]
     #[case::eternalize_with_a_life_cost(
         "Eternalize—Pay 3 life.",
@@ -1227,6 +1430,7 @@ mod tests {
         Keyword::Harmonize(mana("{X}{G}{G}{G}{G}"))
     )]
     #[case::spectacle("Spectacle {1}{B}", Keyword::Spectacle(mana("{1}{B}")))]
+    #[case::freerunning("Freerunning {1}{B}", Keyword::Freerunning(mana("{1}{B}")))]
     #[case::spectacle_hybrid("spectacle {B/R}{B/R}", Keyword::Spectacle(mana("{B/R}{B/R}")))]
     #[case::afterlife("Afterlife 1", Keyword::Afterlife(1))]
     #[case::afterlife_three("afterlife 3", Keyword::Afterlife(3))]
@@ -1236,7 +1440,7 @@ mod tests {
         "Escape\u{2014}{2}{R}, Exile three other cards from your graveyard.",
         Keyword::Escape(Cost(vec![
             CostItem::Mana("{2}{R}".parse().unwrap()),
-            CostItem::ExileFromGraveyard { filter: Selector(vec![Pred::Other]), count: Amount::Fixed(3) },
+            CostItem::ExileFromGraveyard { filter: Selector(vec![Pred::Other]), any_player: false, count: Amount::Fixed(3) },
         ]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
@@ -1247,6 +1451,7 @@ mod tests {
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]
     #[case::station("Station", Keyword::Station)]
     #[case::for_mirrodin("For Mirrodin!", Keyword::ForMirrodin)]
+    #[case::start_your_engines("Start your engines!", Keyword::StartYourEngines)]
     #[case::job_select("Job select", Keyword::JobSelect)]
     #[case::a_named_equip("Murasame \u{2014} Equip {5}", Keyword::Equip(mana("{5}")))]
     #[case::a_named_equip_of_two_words(
@@ -1397,7 +1602,7 @@ mod tests {
     #[case::equip_for_a_made_up_type("Equip Banana {2}")]
     #[case::equip_for_two_types("Equip Shaman, Warlock, or Wizard {2}")]
     #[case::equip_without_a_cost("Equip legendary creature")]
-    #[case::hexproof_from("Hexproof from white")]
+    #[case::hexproof_from_something_else("Hexproof from banana")]
     #[case::protection_from_a_pair("Protection from red and from blue")]
     #[case::protection_from_a_subtype("Protection from Vampires")]
     #[case::protection_without_a_quality("Protection from")]
@@ -1406,7 +1611,7 @@ mod tests {
     #[case::ward_sacrificing_a_made_up_kind("Ward\u{2014}Sacrifice a frobnicator.")]
     #[case::ward_with_a_cost_that_is_a_sentence("Ward\u{2014}Draw a card.")]
     #[case::enchant_a_card_in_a_graveyard("Enchant creature card in a graveyard")]
-    #[case::enchant_with_a_quality_the_table_keeps("Enchant suspected creature")]
+    #[case::enchant_with_a_quality_the_table_keeps("Enchant bewildered creature")]
     #[case::enchant_with_another_aura("Enchant creature with another Aura attached to it")]
     #[case::enchant_nothing("Enchant")]
     #[case::partner_without_a_text("Partner\u{2014}")]
@@ -1500,7 +1705,13 @@ mod tests {
 
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
     /// attacks.").
-    const W9D_SENTENCES: [&str; 1] = ["Exert"];
+    const W9D_SENTENCES: [&str; 5] = [
+        "Exert",
+        "Macro",
+        "Hexproof from",
+        "Flash, sacrificed at cleanup",
+        "Protection sparing",
+    ];
 
     #[test]
     fn every_keyword_the_dsl_declares_is_recognised_by_name() {
@@ -1603,6 +1814,7 @@ mod tests {
             "Riot",
             "Decayed",
             "Foretell {1}",
+            "Plot {1}",
             "Fabricate 1",
             "Ascend",
             "Daybound",
@@ -1631,6 +1843,8 @@ mod tests {
             "Scavenge {1}",
             "Transmute {1}{U}{U}",
             "Awaken 3\u{2014}{4}{U}",
+            "Prototype {1}{U}{U} \u{2014} 2/1",
+            "Assist",
             "Gravestorm",
             "Sunburst",
             "Dash {1}",
@@ -1646,16 +1860,21 @@ mod tests {
             "Horsemanship",
             "Phasing",
             "Spectacle {B}",
+            "Freerunning {B}",
             "Demonstrate",
+            "Bargain",
+            "Conspire",
             "Hideaway 4",
             "Gift a card",
             "For Mirrodin!",
+            "Start your engines!",
             "Job select",
             "Equip legendary creature {1}",
             "Ninjutsu {1}{U}",
             "Improvise",
             "Affinity for artifacts",
             "Cipher",
+            "Haunt",
             "Graft 2",
             "Afflict 2",
             "Replicate {1}{R}",
@@ -1663,6 +1882,10 @@ mod tests {
             "Exploit",
             "Soulbond",
             "Read ahead",
+            "Recover {1}",
+            "Ripple 4",
+            "Epic",
+            "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

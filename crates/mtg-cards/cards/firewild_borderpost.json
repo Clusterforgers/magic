@@ -1,0 +1,28 @@
+{
+  "oracle_id": "312a5a75-9b68-4e4b-97fe-3ab644e3e493",
+  "name": "Firewild Borderpost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firewild Borderpost",
+      "oracle_fingerprint": "7de9aa18537eedcd9ba9466dd4a42c67",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }] } }
+            ]
+          }
+        },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

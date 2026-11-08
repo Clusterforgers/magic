@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "f74120ce-9f11-449f-bb72-04fe2a27a9f6",
+  "oracle_id": "efd31076-2bbe-4c65-9166-19ec0e832b57",
+  "multiverse_ids": [
+    513683
+  ],
+  "mtgo_id": 88889,
+  "arena_id": 76599,
+  "tcgplayer_id": 235966,
+  "cardmarket_id": 558038,
+  "name": "Harness Infinity",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/f74120ce-9f11-449f-bb72-04fe2a27a9f6",
+  "scryfall_uri": "https://scryfall.com/card/stx/191/harness-infinity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:21:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.jpg?1783927311",
+    "normal": "https://cards.scryfall.io/normal/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.jpg?1783927311",
+    "large": "https://cards.scryfall.io/large/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.jpg?1783927311",
+    "png": "https://cards.scryfall.io/png/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.png?1783927311",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.jpg?1783927311",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.jpg?1783927311",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.webp?1783927311",
+    "grid": "https://cards.scryfall.io/grid/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.webp?1783927311",
+    "display": "https://cards.scryfall.io/display/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.webp?1783927311",
+    "art": "https://cards.scryfall.io/art/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.webp?1783927311",
+    "crop": "https://cards.scryfall.io/crop/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.webp?1783927311",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/7/f74120ce-9f11-449f-bb72-04fe2a27a9f6.jpg?1783927311"
+  },
+  "mana_cost": "{1}{B}{B}{B}{G}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Instant",
+  "oracle_text": "Exchange your hand and graveyard.\nExile Harness Infinity.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "541c3c28-8747-40e5-a231-8e8f33234859",
+  "set": "stx",
+  "set_name": "Strixhaven: School of Mages",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/541c3c28-8747-40e5-a231-8e8f33234859",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Astx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/stx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f74120ce-9f11-449f-bb72-04fe2a27a9f6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aefd31076-2bbe-4c65-9166-19ec0e832b57&unique=prints",
+  "collector_number": "191",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "witherbloom",
+  "flavor_text": "\"As I stepped into the star arch, it all became perfectly clear. Life and death are not opposites, but an endless path, twisting around and back upon itself, never ending and never beginning.\"\n—Zhaer, professor of biophilosophy",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Seb McKinnon",
+  "artist_ids": [
+    "ad4caca0-8d89-44ce-a1a6-d5ca905bd6fb"
+  ],
+  "illustration_id": "370604e5-cfdb-4c2f-8a86-07f6b91d3155",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18859,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-image-gallery/strixhaven",
+    "previewed_at": "2021-04-02"
+  },
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": "0.45",
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": "1.33",
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=513683&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHarness%2BInfinity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHarness%2BInfinity",
+    "edhrec": "https://edhrec.com/route/?cc=Harness+Infinity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F235966%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=558038&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/88889?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

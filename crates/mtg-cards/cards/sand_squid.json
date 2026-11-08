@@ -1,0 +1,31 @@
+{
+  "oracle_id": "40578245-2cb8-4a6a-aeff-2252719c2d1c",
+  "name": "Sand Squid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sand Squid",
+      "oracle_fingerprint": "ee06307a21756282d123553a7f89bd11",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

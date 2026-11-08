@@ -1,0 +1,72 @@
+{
+  "oracle_id": "a881bf6e-6247-4adb-9f9c-e4b928692573",
+  "name": "Stensia Uprising",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stensia Uprising",
+      "oracle_fingerprint": "ecaf4002f517b9a6093ae3d9e23ff9b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 13
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 7 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

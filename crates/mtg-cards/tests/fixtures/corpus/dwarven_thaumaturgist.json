@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "8e68aa29-9f38-48a2-b00a-39aef9d91f6d",
+  "oracle_id": "019d0013-52fd-4261-9cc8-7efcee5a4616",
+  "multiverse_ids": [
+    4544
+  ],
+  "mtgo_id": 9323,
+  "tcgplayer_id": 6018,
+  "cardmarket_id": 8666,
+  "name": "Dwarven Thaumaturgist",
+  "lang": "en",
+  "released_at": "1997-06-09",
+  "uri": "https://api.scryfall.com/cards/8e68aa29-9f38-48a2-b00a-39aef9d91f6d",
+  "scryfall_uri": "https://scryfall.com/card/wth/98/dwarven-thaumaturgist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:45:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.jpg?1783946727",
+    "normal": "https://cards.scryfall.io/normal/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.jpg?1783946727",
+    "large": "https://cards.scryfall.io/large/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.jpg?1783946727",
+    "png": "https://cards.scryfall.io/png/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.png?1783946727",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.jpg?1783946727",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.jpg?1783946727",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.webp?1783946727",
+    "grid": "https://cards.scryfall.io/grid/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.webp?1783946727",
+    "display": "https://cards.scryfall.io/display/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.webp?1783946727",
+    "art": "https://cards.scryfall.io/art/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.webp?1783946727",
+    "crop": "https://cards.scryfall.io/crop/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.webp?1783946727",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/e/8e68aa29-9f38-48a2-b00a-39aef9d91f6d.jpg?1783946727"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Dwarf Shaman",
+  "oracle_text": "{T}: Switch target creature's power and toughness until end of turn.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "700997ac-add2-4ce2-992e-5efa0fdfc0e9",
+  "set": "wth",
+  "set_name": "Weatherlight",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/700997ac-add2-4ce2-992e-5efa0fdfc0e9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awth&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/wth?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8e68aa29-9f38-48a2-b00a-39aef9d91f6d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A019d0013-52fd-4261-9cc8-7efcee5a4616&unique=prints",
+  "collector_number": "98",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kipling West",
+  "artist_ids": [
+    "c1a4427b-5f74-44cf-9183-b321bdeef0dc"
+  ],
+  "illustration_id": "383a6d57-7aa0-4623-bc95-fc1c67f78bdc",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23418,
+  "penny_rank": 5017,
+  "prices": {
+    "usd": "0.97",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.16",
+    "eur_foil": null,
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4544&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDwarven%2BThaumaturgist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDwarven%2BThaumaturgist",
+    "edhrec": "https://edhrec.com/route/?cc=Dwarven+Thaumaturgist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6018%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8666&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/9323?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

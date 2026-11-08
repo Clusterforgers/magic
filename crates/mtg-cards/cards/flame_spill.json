@@ -1,0 +1,27 @@
+{
+  "oracle_id": "de6ebf55-f1df-4c3c-bba5-8655b7daf488",
+  "name": "Flame Spill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame Spill",
+      "oracle_fingerprint": "7957bfb058df0f2b3764ebb1d64e836f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": 4,
+                  "excess": { "to": { "ControllerOf": { "Target": 0 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

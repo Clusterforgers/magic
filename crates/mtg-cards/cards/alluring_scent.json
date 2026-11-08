@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ad218276-a44b-4a61-8e42-26a27929bbbb",
+  "name": "Alluring Scent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alluring Scent",
+      "oracle_fingerprint": "d9c0a615e0a55531a191313b70df4626",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "Every" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "5e7c2cf6-f36f-451b-bba5-19a82c659c4c",
+  "oracle_id": "2ffb2647-60bb-4916-b919-cbcf18e5e424",
+  "multiverse_ids": [
+    2757
+  ],
+  "tcgplayer_id": 4778,
+  "cardmarket_id": 6551,
+  "name": "Lava Tubes",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/5e7c2cf6-f36f-451b-bba5-19a82c659c4c",
+  "scryfall_uri": "https://scryfall.com/card/ice/358/lava-tubes?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:57:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.jpg?1783947451",
+    "normal": "https://cards.scryfall.io/normal/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.jpg?1783947451",
+    "large": "https://cards.scryfall.io/large/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.jpg?1783947451",
+    "png": "https://cards.scryfall.io/png/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.png?1783947451",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.jpg?1783947451",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.jpg?1783947451",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.webp?1783947451",
+    "grid": "https://cards.scryfall.io/grid/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.webp?1783947451",
+    "display": "https://cards.scryfall.io/display/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.webp?1783947451",
+    "art": "https://cards.scryfall.io/art/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.webp?1783947451",
+    "crop": "https://cards.scryfall.io/crop/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.webp?1783947451",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/e/5e7c2cf6-f36f-451b-bba5-19a82c659c4c.jpg?1783947451"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land doesn't untap during your untap step if it has a depletion counter on it.\nAt the beginning of your upkeep, remove a depletion counter from this land.\n{T}: Add {B} or {R}. Put a depletion counter on this land.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "R"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5e7c2cf6-f36f-451b-bba5-19a82c659c4c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2ffb2647-60bb-4916-b919-cbcf18e5e424&unique=prints",
+  "collector_number": "358",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bryon Wackwitz",
+  "artist_ids": [
+    "c99a114b-c679-47df-a6e9-4f9d3ad5b114"
+  ],
+  "illustration_id": "1e28d8fa-ebc8-4b82-90fd-39e62c3f0a55",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28914,
+  "prices": {
+    "usd": "1.13",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.39",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2757&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLava%2BTubes",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLava%2BTubes",
+    "edhrec": "https://edhrec.com/route/?cc=Lava+Tubes"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4778%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6551&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Lava+Tubes&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

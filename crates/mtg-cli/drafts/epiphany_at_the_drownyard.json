@@ -1,0 +1,31 @@
+{
+  "oracle_id": "33befbd6-56ac-45a7-a4d0-448167162707",
+  "name": "Epiphany at the Drownyard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Epiphany at the Drownyard",
+      "oracle_fingerprint": "58dfe2f420334eb60b7740bc07f1d8eb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": { "Sum": ["X", 1] }, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "SeparatePiles": {
+                  "what": { "Bound": "top" },
+                  "chooser": "Opponents",
+                  "as": "pile2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "pile2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

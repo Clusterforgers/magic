@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c454d5af-5617-4ddf-a9be-dd7d154b55ad",
+  "name": "Steeling Stance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steeling Stance",
+      "oracle_fingerprint": "32bda495f084cc4029e49daa7ed25e02",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, { "RevealFromHand": { "filter": ["This"] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "limit": "OncePerTurn",
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

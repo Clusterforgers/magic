@@ -1,0 +1,45 @@
+{
+  "oracle_id": "05551d91-50c6-46d1-86a4-cd3d177d0923",
+  "name": "Anim Pakal, Thousandth Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anim Pakal, Thousandth Moon",
+      "oracle_fingerprint": "ec9f5b9d9294c9ec5d2d2c67deb91153",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "Subtype": "Gnome" } }
+                ]
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gnome",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Gnome"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

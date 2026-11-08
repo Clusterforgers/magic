@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3eec0ca6-e461-4583-9989-e4f6b15a53f8",
+  "name": "Tideshaper Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tideshaper Mystic",
+      "oracle_fingerprint": "3363e78096874bdef547752c980a9916",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "YourTurn",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

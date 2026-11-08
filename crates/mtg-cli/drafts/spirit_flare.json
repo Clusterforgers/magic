@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d19a2c28-8d09-40bf-aeb1-e699672b009f",
+  "name": "Spirit Flare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit Flare",
+      "oracle_fingerprint": "724cf1c2ce657229407dc0cf6e2b2afe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Untapped", { "ControlledBy": "You" }]
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": ["Attacking", "Blocking"] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": [{ "Mana": "{1}{W}" }, { "PayLife": 3 }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "You may choose not to untap CARDNAME during your untap step.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "For as long as CARDNAME remains tapped, gain control of target creature of an opponent's choice they control.",
+      "abilities": [],
+      "gap": "key:GainControl.TargetingPlayer"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 65
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 66,
+          "end": 185
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

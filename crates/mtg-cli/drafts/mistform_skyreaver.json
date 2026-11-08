@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6a291cf5-13cc-4e04-a565-f36650fbe5a1",
+  "name": "Mistform Skyreaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Skyreaver",
+      "oracle_fingerprint": "a686cfe867f67602276827f33303076e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

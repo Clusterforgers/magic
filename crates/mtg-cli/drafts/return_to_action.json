@@ -1,0 +1,59 @@
+{
+  "oracle_id": "9c002b4d-bb6c-45a5-88e1-1df2958dff9f",
+  "name": "Return to Action",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Return to Action",
+      "oracle_fingerprint": "581d618aa644e25d0356d69af0359191",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "This",
+                                "to": { "Battlefield": { "tapped": true } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

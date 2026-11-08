@@ -1,0 +1,45 @@
+{
+  "oracle_id": "1e44bb4e-aeea-4f43-9cbd-4c24a9b6b022",
+  "name": "Break Ties",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Break Ties",
+      "oracle_fingerprint": "9525fbbde93014f24837d218115b5c21",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

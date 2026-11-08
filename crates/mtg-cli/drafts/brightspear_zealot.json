@@ -1,0 +1,33 @@
+{
+  "oracle_id": "31a0c9a2-c9bd-47f7-872b-a43fb64d873c",
+  "name": "Brightspear Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brightspear Zealot",
+      "oracle_fingerprint": "f2d3562be50cb33f4589286b1577cf87",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
