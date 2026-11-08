@@ -294,11 +294,11 @@ impl Happened {
         match self {
             Happened::Damaged { amount, .. }
             | Happened::LifeGained { amount, .. }
-            | Happened::LifeLost { amount, .. } => *amount,
+            | Happened::LifeLost { amount, .. }
+            | Happened::Did { amount, .. } => *amount,
             Happened::Counters { delta, .. } => delta.unsigned_abs(),
             Happened::Monstrous { x, .. } | Happened::Cycled { x, .. } => *x,
             Happened::Cast { before, .. } => *before,
-            Happened::Did { amount, .. } => *amount,
             _ => 0,
         }
     }
