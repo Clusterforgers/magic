@@ -96,6 +96,7 @@ fn proposal(dir: &Path, folder: &str, slug: &str, text: &str) -> PathBuf {
 }
 
 /// What a run is asked: the switches and the files.
+#[allow(clippy::struct_excessive_bools)] // one field per switch of `promote`
 struct Run {
     draft: bool,
     dry: bool,

@@ -184,5 +184,5 @@ fn a_draft_that_reads_back_has_no_differing_clauses_in_the_deck_report() {
     let report = deck_report("freeform", &lines, &facts, &library, &Caps::everything());
 
     assert_eq!(report.summary.to_read, 1);
-    assert!(report.cards[0].differs.is_empty());
+    assert_eq!(report.cards[0].differs, []);
 }
