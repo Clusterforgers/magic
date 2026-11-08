@@ -96,7 +96,7 @@ fn sacrifice_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         None => sacrifice_group(ctx, p)?,
         Some(word) => sacrifice_named(ctx, p, word)?,
     };
-    if super::remember::wanted(p, &["RememberSacrificed"]) {
+    if super::remember::wanted(p, "SacrificeAll") {
         super::remember::bind_moved(ctx, &mut node, "Sacrifice", "sacrificed");
     }
     Ok(node)

@@ -39,9 +39,10 @@ pub mod validate;
 pub mod value;
 pub mod vanilla;
 pub mod w11d_dungeon;
+pub mod wording;
 
 pub use assemble::{Assembled, assemble};
-pub use definition::{AbilityDef, CardDefinition, CardIdentity, ManaAbility, ManualClause};
+pub use definition::{AbilityDef, CardDefinition, CardIdentity, ManaAbility, ManualClause, Shown};
 pub use draft::{Draft, DraftRules, ReadState};
 pub use identity::pairing_keywords;
 pub use support::{Caps, PrintedCard, PrintedFace};

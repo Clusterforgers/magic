@@ -15,7 +15,8 @@
                   "Batch": {
                     "CountersPut": {
                       "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
-                      "counter": "+1/+1"
+                      "counter": "+1/+1",
+                      "each": true
                     }
                   }
                 },

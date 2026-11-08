@@ -27,10 +27,11 @@ interface FixMarkButtonProps {
   className?: string
 }
 
-/** What a press does to a card the game runs in part or from Forge: the mark plays the whole card by hand. */
+/** What a press does to a card the game runs in part, from Forge or unverified: the mark plays the whole card by hand. */
 export const DEMOTES = 'Marks it important to fix and plays the whole card by hand until it is fixed'
 
-const demotes = (support: Support | undefined): boolean => support === 'partial' || support === 'forge'
+const demotes = (support: Support | undefined): boolean =>
+  support === 'partial' || support === 'forge' || support === 'unverified'
 
 /** The popover that takes the note of a mark: what is wrong with the card, up to 280 characters, optional. */
 function NoteEditor({

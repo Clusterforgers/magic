@@ -48,7 +48,7 @@ const fn damage(combat: Option<bool>) -> &'static str {
 
 impl Writer<'_> {
     /// The one object a shield names: "~", "enchanted creature", "it" for the target named before, "target creature".
-    fn g8e_object(&mut self, named: &Ref) -> Option<String> {
+    pub(super) fn g8e_object(&mut self, named: &Ref) -> Option<String> {
         match named {
             Ref::This => Some("~".to_owned()),
             Ref::Attached => Some("enchanted creature".to_owned()),

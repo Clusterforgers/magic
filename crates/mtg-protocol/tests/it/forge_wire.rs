@@ -24,6 +24,7 @@ fn counts_round_trip_with_forge_and_a_check_stored_before_the_tier_has_none() {
         verified: 6,
         read: 1,
         forge: 3,
+        unverified: 0,
         partial: 0,
         manual: 0,
         stale: 0,

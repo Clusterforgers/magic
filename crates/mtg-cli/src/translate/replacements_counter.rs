@@ -161,6 +161,27 @@ pub fn draw(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({"Replacement": {"when": when, "by": by}}))
 }
 
+/// `Event$ Mill`: a player mills twice that many cards, or that many plus a number.
+pub fn mill(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    let read = ["Event", "ValidPlayer", "ReplaceWith", "ActiveZones"];
+    check_keys(p, "Replacement.Mill", &read, |_, _| false)?;
+    if p.get("ActiveZones") != Some("Battlefield") {
+        return unmapped("key:Replacement.Mill.ActiveZones");
+    }
+    let who = player_ref(p.get("ValidPlayer"))?;
+    let Some(name) = p.get("ReplaceWith") else {
+        return unmapped("replacement:Mill-without-ReplaceWith");
+    };
+    let part = ctx.sub(name)?;
+    let read = ["DB", "VarName", "VarValue"];
+    check_keys(&part, "Replacement.Mill", &read, |_, _| false)?;
+    if part.get("DB") != Some("ReplaceEffect") || part.get("VarName") != Some("Number") {
+        return unmapped("replacement:Mill-instead");
+    }
+    let by = part_change(ctx, part.get("VarValue"), "Number")?;
+    Ok(json!({"Replacement": {"when": {"Mill": {"who": who}}, "by": by}}))
+}
+
 /// `Event$ AddCounter`: counters put on permanents or on a player are doubled or increased.
 pub fn add_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let read = [

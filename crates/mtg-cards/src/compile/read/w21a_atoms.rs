@@ -53,9 +53,25 @@ pub(super) fn w21a_place(
     zone: Option<String>,
     plural: bool,
 ) -> Option<(Vec<String>, Option<String>)> {
-    let (graved, suffixes): (Vec<String>, Vec<String>) = suffixes
+    let (arrived, suffixes): (Vec<String>, Vec<String>) = suffixes
+        .into_iter()
+        .partition(|suffix| suffix == W21A_ARRIVED);
+    let (graved, mut suffixes): (Vec<String>, Vec<String>) = suffixes
         .into_iter()
         .partition(|suffix| suffix == W21A_GRAVED);
+    if !arrived.is_empty() {
+        // "cards in your graveyard that were put there from the battlefield this turn".
+        let place = match zone.as_deref()? {
+            "from your graveyard" => "in your graveyard",
+            "from a graveyard" => "in a graveyard",
+            _ => return None,
+        };
+        let verb = if plural { "were" } else { "was" };
+        suffixes.push(format!(
+            "{place} that {verb} put there from the battlefield this turn"
+        ));
+        return Some((suffixes, None));
+    }
     if graved.is_empty() {
         return Some((suffixes, zone));
     }
@@ -113,6 +129,30 @@ const W21A_COMPARISONS: [(&str, Cmp); 5] = [
 
 /// The marker the writer gives `GravedThisTurn`, which `phrase_text` turns into the zone it is said with.
 pub(super) const W21A_GRAVED: &str = "put into a graveyard from the battlefield this turn";
+
+/// A card that arrived in a graveyard has its zone said before its owner ("in your graveyard"): the graveyard moves to
+/// the place of the owner in front of it.
+pub(super) fn w21a_zone_first(preds: &[Pred]) -> Vec<Pred> {
+    let mut preds = preds.to_vec();
+    if preds
+        .iter()
+        .any(|pred| matches!(pred, Pred::ArrivedFrom(_)))
+        && let Some(zone) = preds
+            .iter()
+            .position(|pred| *pred == Pred::In(ZoneKind::Graveyard))
+        && let Some(owner) = preds
+            .iter()
+            .position(|pred| matches!(pred, Pred::OwnedBy(_)))
+        && owner < zone
+    {
+        let pred = preds.remove(zone);
+        preds.insert(owner, pred);
+    }
+    preds
+}
+
+/// The marker the writer gives `ArrivedFrom` the battlefield, which `phrase_text` says with the zone it is in.
+pub(super) const W21A_ARRIVED: &str = "put there from the battlefield this turn";
 
 /// An adjective of this module before the noun.
 pub(super) fn w21a_adjective(word: &str) -> Option<Pred> {
@@ -243,6 +283,7 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ChosenSubtype => "of the chosen type".to_owned(),
         Pred::ChosenColor => "of the chosen color".to_owned(),
         Pred::GravedThisTurn => W21A_GRAVED.to_owned(),
+        Pred::ArrivedFrom(ZoneKind::Battlefield) => W21A_ARRIVED.to_owned(),
         Pred::TargetsPlayer(Ref::You) => "that targets you".to_owned(),
         Pred::TargetsPlayer(Ref::Opponents) => "that targets an opponent".to_owned(),
         Pred::AttackingAlone if !form.plural() => "that's attacking alone".to_owned(),

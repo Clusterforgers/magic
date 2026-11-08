@@ -8,25 +8,27 @@
 //! engine's capabilities are fixed for the life of a [`CardSource`].
 
 use std::collections::{BTreeMap, HashMap, HashSet};
-use std::sync::Arc;
+use std::sync::{Arc, PoisonError};
+use std::time::{Duration, Instant};
 
 use mtg_cards::deck::{
     CardFacts, Counts, DeckLine as CheckLine, DeckReport, DeckState, DeckZone, Issue, IssueCode,
     ZoneCounts, deck_report,
 };
 use mtg_cards::load::Library;
+use mtg_cards::support::PrintedCard;
 use mtg_cards::{Caps, CardDefinition};
 use mtg_core::color::ColorSet;
 use mtg_core::house::HouseRules;
 use mtg_db::{DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion};
 use mtg_protocol::rest::{DeckPicture, MAX_DECK_PICTURES, PreconListItem};
 use thiserror::Error;
-use tokio::sync::Mutex;
+use tokio::sync::watch;
 
 use crate::card_api::card_colors;
 use crate::cards::{
-    CardSource, CatalogError, Reads, Rules, StoredVersion, card_facts, identified, pin_of,
-    printed_card,
+    CardSource, CatalogError, Reads, Rules, StoredVersion, card_facts, identified, off_runtime,
+    pin_of, printed_card,
 };
 use crate::deck_cards::Line;
 use crate::deck_choice::{commander_ids, format_issues, library_ids};
@@ -276,6 +278,19 @@ impl<'a> Judge<'a> {
     }
 }
 
+/// Judges `deck` under `rules` on the blocking pool, so the runtime keeps serving meanwhile.
+pub(crate) async fn judged_off(
+    rules: &Rules,
+    deck: PreconDeckDetail,
+) -> Result<(PreconDeckDetail, Judged), PreconError> {
+    let rules = rules.clone();
+    Ok(off_runtime(move || {
+        let judged = Judge::new(&rules).judge(&deck);
+        (deck, judged)
+    })
+    .await?)
+}
+
 /// Adds the entries that match no card to a report: an `unknown_card` issue each, their copies as
 /// `unplayable`, and a blocked deck.
 fn count_unresolved(report: &mut DeckReport, unresolved: &[Unresolved]) {
@@ -415,6 +430,7 @@ impl PreconIndex {
             })
             .collect();
         let codes = codes(&named);
+        decide_all(rules, details);
         let mut judge = Judge::new(rules);
         let decks: Vec<Indexed> = details
             .iter()
@@ -433,6 +449,37 @@ impl PreconIndex {
     }
 }
 
+/// Most threads [`decide_all`] runs on.
+const DECIDING_THREADS: usize = 8;
+
+/// Decides every card of the precons once, spread over a few threads, so the library holds the decisions before the
+/// decks are judged one by one: the first build decides thousands of cards, each in milliseconds.
+fn decide_all(rules: &Rules, details: &[PreconDeckDetail]) {
+    let cards: Vec<PrintedCard> = details
+        .iter()
+        .flat_map(|deck| deck.entries.iter())
+        .filter_map(|entry| entry.card.as_ref())
+        .map(|card| (card.oracle_id.to_string(), card))
+        .collect::<BTreeMap<_, _>>()
+        .into_values()
+        .map(printed_card)
+        .collect();
+    let threads = std::thread::available_parallelism()
+        .map_or(1, std::num::NonZero::get)
+        .clamp(1, DECIDING_THREADS);
+    let (library, caps) = (rules.library(), rules.caps());
+    std::thread::scope(|scope| {
+        for part in cards.chunks(cards.len().div_ceil(threads).max(1)) {
+            scope.spawn(move || {
+                for card in part {
+                    library.assemble(card, caps);
+                    library.draft_state(card, caps);
+                }
+            });
+        }
+    });
+}
+
 /// What the stored precons, cards and compiled rules looked like when an index was built.
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Stamp {
@@ -441,15 +488,43 @@ struct Stamp {
     rules: StoredVersion,
 }
 
+/// How long a request waits for a build of the index before it is served the index held from before.
+pub(crate) const FRESH_WAIT: Duration = Duration::from_millis(500);
+
+/// A build of the index that every request of the same stamp shares; the error is its message.
+type Building = watch::Receiver<Option<Result<Arc<PreconIndex>, String>>>;
+
+/// What [`PreconCache`] holds: the index last built and the build under way.
+#[derive(Default)]
+struct Slots {
+    built: Option<(Stamp, Arc<PreconIndex>)>,
+    building: Option<(Stamp, Building)>,
+}
+
 /// The index of the precons, built the first time it is needed and again when the precons, the
-/// cards or the printings change; requests that arrive while it is built wait for that build.
-#[derive(Debug, Default)]
+/// cards, the printings or the stored rules change.
+///
+/// One build runs at a time per stamp, in a task of its own, its judging on the blocking pool. A request waits for it
+/// at most [`FRESH_WAIT`] while an older index is held and is then served the older one, so no request queues behind
+/// a whole build once the first one is done.
+#[derive(Default)]
 pub(crate) struct PreconCache {
-    built: Mutex<Option<(Stamp, Arc<PreconIndex>)>>,
+    slots: Arc<std::sync::Mutex<Slots>>,
+}
+
+impl std::fmt::Debug for PreconCache {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("PreconCache")
+    }
+}
+
+/// The slots, whatever a panic left in them: each write leaves them whole.
+fn slots(slots: &std::sync::Mutex<Slots>) -> std::sync::MutexGuard<'_, Slots> {
+    slots.lock().unwrap_or_else(PoisonError::into_inner)
 }
 
 impl PreconCache {
-    /// The current index.
+    /// The current index, or the one held from before while the current one is built.
     pub(crate) async fn index(&self, source: &CardSource) -> Result<Arc<PreconIndex>, PreconError> {
         let database = source.database();
         let rules = source.rules().await?;
@@ -458,17 +533,85 @@ impl PreconCache {
             precons: database.precons().version().await?,
             rules: rules.version().clone(),
         };
-        let mut built = self.built.lock().await;
-        if let Some((held, index)) = built.as_ref()
-            && *held == stamp
-        {
-            return Ok(index.clone());
+        let (held, building) = {
+            let mut held = slots(&self.slots);
+            if let Some((built, index)) = held.built.as_ref()
+                && *built == stamp
+            {
+                return Ok(index.clone());
+            }
+            let building = match &held.building {
+                Some((building, build)) if *building == stamp => build.clone(),
+                _ => {
+                    let build = self.start(source.clone(), rules, stamp.clone());
+                    held.building = Some((stamp, build.clone()));
+                    build
+                }
+            };
+            (
+                held.built.as_ref().map(|(_, index)| index.clone()),
+                building,
+            )
+        };
+        let failed = |message: String| PreconError::Catalog(CatalogError::Rules(message));
+        match held {
+            None => finished(building).await.map_err(failed),
+            Some(held) => match tokio::time::timeout(FRESH_WAIT, finished(building)).await {
+                Ok(built) => built.map_err(failed),
+                Err(_) => Ok(held),
+            },
         }
-        let details = database.precons().all().await?;
-        let index = Arc::new(PreconIndex::build(&rules, &details));
-        *built = Some((stamp, index.clone()));
-        Ok(index)
     }
+
+    /// Starts a build of the index for `stamp`. When it is done it is kept, unless a build for another stamp was
+    /// started meanwhile; a failed build is forgotten, so the next request tries again.
+    fn start(&self, source: CardSource, rules: Rules, stamp: Stamp) -> Building {
+        let held = self.slots.clone();
+        let (done, building) = watch::channel(None);
+        tokio::spawn(async move {
+            let started = Instant::now();
+            let built = match source.database().precons().all().await {
+                Ok(details) => tokio::task::spawn_blocking(move || {
+                    #[cfg(test)]
+                    source.pass_precon_gate();
+                    Arc::new(PreconIndex::build(&rules, &details))
+                })
+                .await
+                .map_err(|error| format!("the precon index build stopped: {error}")),
+                Err(error) => Err(error.to_string()),
+            };
+            tracing::info!(
+                elapsed_ms = started.elapsed().as_millis(),
+                built = built.is_ok(),
+                "precon index built"
+            );
+            {
+                let mut held = slots(&held);
+                if held
+                    .building
+                    .as_ref()
+                    .is_none_or(|(building, _)| *building == stamp)
+                {
+                    held.building = None;
+                    if let Ok(index) = &built {
+                        held.built = Some((stamp, index.clone()));
+                    }
+                }
+            }
+            done.send_replace(Some(built));
+        });
+        building
+    }
+}
+
+/// What a build of the index came to, once it is done.
+async fn finished(mut building: Building) -> Result<Arc<PreconIndex>, String> {
+    let done = building
+        .wait_for(Option::is_some)
+        .await
+        .map_err(|_| "the precon index build stopped".to_owned())?;
+    done.clone()
+        .unwrap_or_else(|| Err("the precon index build stopped".to_owned()))
 }
 
 #[cfg(test)]
@@ -612,3 +755,6 @@ mod tests {
         assert_eq!(report, before);
     }
 }
+
+#[cfg(test)]
+mod index_tests;

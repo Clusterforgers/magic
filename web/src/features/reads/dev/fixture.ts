@@ -129,12 +129,14 @@ export const READ_CARDS: Readonly<Record<string, ReadCard>> = {
 /** The deck the fixture reads. */
 export const READ_QUEUE: ReadQueue = {
   title: 'Izzet Spellcraft',
-  cards: Object.values(READ_CARDS).map((value) => ({
+  cards: Object.values(READ_CARDS).map((value, at) => ({
     oracle_id: value.oracle_id,
     name: value.name,
     read_hash: value.read_hash,
     state: value.state,
     differs: value.sheet.rows.filter((r) => typeof r.state !== 'string' && 'differs' in r.state).length,
+    rank: at === 2 ? null : ([14, 1204][at] ?? null),
+    in_decks: at !== 1,
   })),
 }
 
@@ -159,12 +161,13 @@ export function fixtureReadsApi(options: ReadFixtureOptions = {}): ReadsApi {
   const cards = new Map(Object.entries(READ_CARDS).map(([id, value]) => [id, structuredClone(value)]))
   const wait = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, options.delayMs ?? 0))
   return {
-    async queue() {
+    async queue(target) {
       if (options.loading === true) return never
       await wait()
       if (options.listFails === 'network') throw new DeckError('network', 0, 'Could not reach the server.')
       if (options.listFails === 'not_found') throw new DeckError('not_found', 404, 'not found')
-      return options.empty === true ? { ...READ_QUEUE, cards: [] } : structuredClone(READ_QUEUE)
+      const queue = target === null ? { ...READ_QUEUE, title: '' } : READ_QUEUE
+      return options.empty === true ? { ...queue, cards: [] } : structuredClone(queue)
     },
     async get(oracleId) {
       await wait()

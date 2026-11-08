@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO card_ranks (oracle_id, edhrec_rank)\n             SELECT r.oracle_id, r.edhrec_rank\n             FROM unnest($1::uuid[], $2::int4[]) WITH ORDINALITY AS r(oracle_id, edhrec_rank, at)\n             JOIN cards c ON c.oracle_id = r.oracle_id\n             ORDER BY r.at\n             ON CONFLICT (oracle_id) DO NOTHING",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "UuidArray",
+        "Int4Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ca740fa9502300f168f27dbe35b60fea4f3e619f521a32f8d0b79806636ad41b"
+}

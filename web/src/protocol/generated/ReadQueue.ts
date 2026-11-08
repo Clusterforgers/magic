@@ -2,14 +2,15 @@
 import type { ReadQueueCard } from "./ReadQueueCard";
 
 /**
- * The answer of `GET /api/reads`: what the account has left to read in one deck, pending drafts first.
+ * The answer of `GET /api/reads`: what the account has left to read in one deck, a precon or every card, pending
+ * drafts first, each part most played first.
  */
 export type ReadQueue = { 
 /**
- * The deck's or the precon's name.
+ * The deck's or the precon's name; empty for every card.
  */
 title: string, 
 /**
- * The cards, in deck order within each state.
+ * The cards, by popularity (`rank`) within each state.
  */
 cards: Array<ReadQueueCard>, };

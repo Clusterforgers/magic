@@ -332,6 +332,7 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
             "SetColor",
             "AddColor",
             "RemoveCardTypes",
+            "RemoveCreatureTypes",
         ],
         |_, _| false,
     )?;
@@ -365,6 +366,25 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
         }
         types.retain(|m| m.get("AddType").is_none());
         types.insert(0, json!({ "SetTypes": only }));
+    }
+    if part.get("RemoveCreatureTypes") == Some("True") {
+        // "It's a Spirit Detective (it's no longer a Human)": the creature types the line names replace the others.
+        let only: Vec<Value> = types
+            .iter()
+            .filter_map(|m| m.get("AddSubtype").and_then(Value::as_str))
+            .map(|word| mtg_core::card::Subtype(word.to_owned()))
+            .filter(|subtype| subtype.is_known() && subtype.is_creature_type())
+            .map(|subtype| json!(subtype.0))
+            .collect();
+        let named = types
+            .iter()
+            .filter(|m| m.get("AddSubtype").is_some())
+            .count();
+        if only.is_empty() || only.len() != named {
+            return unmapped("key:ChangeZone.StaticEffect.RemoveCreatureTypes");
+        }
+        types.retain(|m| m.get("AddSubtype").is_none());
+        types.push(json!({ "SetCreatureTypes": only }));
     }
     mods.extend(types);
     if let Some(color) = part.get("SetColor") {
@@ -634,7 +654,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
     // What a later line reads of a target named again is its past (last known information), which no name here holds.
     if p.get("Defined") == Some("Targeted")
         && p.has("ValidTgts")
-        && remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"])
+        && remember::wanted(p, "ChangeZone")
     {
         return unmapped("key:ChangeZone.Defined-with-memory");
     }
@@ -651,9 +671,7 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
         );
     }
     let two_ways = p.has("DestinationAlternative");
-    let keeps = p.has("Duration")
-        || p.has("StaticEffect")
-        || remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]);
+    let keeps = p.has("Duration") || p.has("StaticEffect") || remember::wanted(p, "ChangeZone");
     if (two_ways && (keeps || whats.len() > 1)) || (keeps && whats.len() > 1) {
         return unmapped("key:ChangeZone.DestinationAlternative-with-memory");
     }
@@ -716,7 +734,7 @@ fn keep_track(
         }
         Some(_) => return unmapped("key:ChangeZone.Duration"),
     }
-    if remember::wanted(p, &["RememberChanged", "RememberLKI", "RememberTargets"]) {
+    if remember::wanted(p, "ChangeZone") {
         bind_moved(ctx, effect);
     }
     Ok(())
@@ -857,7 +875,7 @@ fn each_kind(
         || p.has("DifferentNames")
         || p.has("AtRandom")
         || p.has("DefinedPlayer")
-        || remember::wanted(p, &["RememberChanged"])
+        || remember::wanted(p, "ChangeZone.Hidden")
     {
         return unmapped("key:ChangeZone.Choose.EACH-shape");
     }
@@ -927,7 +945,7 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     } else {
         json!({"Choose": {"who": chooser, "from": {"Each": filter}, "count": {"min": count.min, "max": count.max}, "as": bind}})
     };
-    let remembers = remember::wanted(p, &["RememberChanged"]);
+    let remembers = remember::wanted(p, "ChangeZone.Hidden");
     let places = frame::places(ctx, p, destination, false)?;
     if places.second.is_some() && (remembers || p.has("StaticEffect") || who.each.is_some()) {
         return unmapped("key:ChangeZone.Choose.DestinationAlternative-with-memory");
@@ -1898,7 +1916,7 @@ fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
         }
         Some(_) => return unmapped("key:ChangeZoneAll.Duration"),
     }
-    if remember::wanted(p, &["RememberChanged"]) {
+    if remember::wanted(p, "ChangeZoneAll") {
         let (verb, stem) = if effect.get("Exile").is_some() {
             ("Exile", "exiled")
         } else {

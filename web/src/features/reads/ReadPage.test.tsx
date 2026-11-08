@@ -1,4 +1,4 @@
-// Goal: the review screen lists a deck's cards to read beside the card being read, highlights a clause the game words differently, gives no verdict for the first 2 s, takes Correct with C or the button and moves to the next card, needs a note for Wrong (W opens it), asks to load a draft that changed meanwhile, ends with every card read, and the table's ReadDialog shows the same sheet.
+// Goal: the review screen lists a deck's cards (or every card, with its count and ranks) to read beside the card being read, loads the next card ahead, reopens where the reader was, highlights a clause the game words differently, gives no verdict for the first 2 s, takes Correct with C or the button and moves to the next card, needs a note for Wrong (W opens it), asks to load a draft that changed meanwhile, ends with every card read, and the table's ReadDialog shows the same sheet.
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
@@ -57,6 +57,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers()
+  window.localStorage.clear()
 })
 
 describe('ReadPage', () => {
@@ -151,13 +152,58 @@ describe('ReadPage', () => {
     expect(await screen.findByRole('heading', { name: 'Every card is read' })).toBeVisible()
   })
 
-  it('says what to do with no deck in the address, and when nothing waits', async () => {
+  it('reads every card with no deck in the address, with the count and the ranks', async () => {
     await renderInRouter(
       <AuthContext value={signedIn()}>
         <ReadPage target={null} api={fixtureReadsApi()} />
       </AuthContext>,
     )
-    expect(screen.getByText('Open this page from a deck or a precon that has cards to read.')).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Read every card' })).toBeVisible()
+    expect(document.querySelector('[data-slot="read-count"]')).toHaveTextContent(
+      '3 to read, 2 of them in your decks.',
+    )
+    const list = screen.getByRole('navigation', { name: 'Cards to read' })
+    expect(within(list).getAllByRole('button')[0]).toHaveTextContent('#14')
+    expect(within(list).getAllByRole('button')[1]).toHaveTextContent('#1,204')
+    expect(within(list).getAllByRole('button')[0]).toHaveTextContent('in your decks')
+  })
+
+  it('loads the next card ahead, so a verdict opens it at once, and counts down', async () => {
+    const api = fixtureReadsApi()
+    const get = vi.fn(api.get)
+    await renderInRouter(
+      <AuthContext value={signedIn()}>
+        <ReadPage target={null} api={{ ...api, get }} />
+      </AuthContext>,
+    )
+    await screen.findByRole('heading', { level: 2, name: FIRST.name })
+    await waitFor(() => expect(get).toHaveBeenCalledWith(SECOND.oracle_id))
+    await pass(READ_DELAY_MS)
+    fireEvent.keyDown(document.body, { key: 'c' })
+    await screen.findByRole('heading', { level: 2, name: SECOND.name })
+    expect(get.mock.calls.filter(([id]) => id === SECOND.oracle_id)).toHaveLength(1)
+    expect(document.querySelector('[data-slot="read-count"]')).toHaveTextContent(
+      '2 to read, 1 of them in your decks.',
+    )
+  })
+
+  it('opens the queue again at the card the reader was on', async () => {
+    window.localStorage.setItem('mtg.read-position:deck:deck-izzet', SECOND.oracle_id)
+    try {
+      const { api } = spied()
+      await renderInRouter(
+        <AuthContext value={signedIn()}>
+          <ReadPage target={{ deck: 'deck-izzet' }} api={api} />
+        </AuthContext>,
+      )
+      await screen.findByRole('heading', { level: 2, name: SECOND.name })
+      const list = screen.getByRole('navigation', { name: 'Cards to read' })
+      fireEvent.click(within(list).getByRole('button', { name: new RegExp(THIRD.name) }))
+      await screen.findByRole('heading', { level: 2, name: THIRD.name })
+      expect(window.localStorage.getItem('mtg.read-position:deck:deck-izzet')).toBe(THIRD.oracle_id)
+    } finally {
+      window.localStorage.clear()
+    }
   })
 
   it('shows a failed list with Try again', async () => {

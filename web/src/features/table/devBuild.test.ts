@@ -8,6 +8,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 import { LOBBY_FIXTURE_MARKER } from '@/features/game/dev/lobbyGame'
 import { UNVALIDATED_FIXTURE_MARKER } from '@/features/decks/unvalidated/fixture'
 import { PRECONS_FIXTURE_MARKER } from '@/features/precons/dev/fixture'
+import { BULK_READS_FIXTURE_MARKER } from '@/features/bulk-reads/dev/fixture'
 import { READS_FIXTURE_MARKER } from '@/features/reads/dev/fixture'
 import { COMMANDERS } from './dev/cards'
 import { FIXTURE_MARKER } from './dev/fixture'
@@ -40,6 +41,7 @@ const FIXTURE_TRACES = [
   'Sakashima of a Thousand Faces',
   LOBBY_FIXTURE_MARKER,
   PRECONS_FIXTURE_MARKER,
+  BULK_READS_FIXTURE_MARKER,
   READS_FIXTURE_MARKER,
   'Tidecaller of the Long Shoal',
   UNVALIDATED_FIXTURE_MARKER,
@@ -82,5 +84,7 @@ describe('the dev table route in a build', () => {
     expect(unvalidated).toMatch(/DevUnvalidatedRoute/)
     const [reads] = filesWith(development, READS_FIXTURE_MARKER)
     expect(reads).toMatch(/DevReadRoute/)
+    const [bulk] = filesWith(development, BULK_READS_FIXTURE_MARKER)
+    expect(bulk).toMatch(/DevBulkReadRoute/)
   }, 90_000)
 })

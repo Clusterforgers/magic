@@ -7,7 +7,6 @@ import { CardPicture } from '@/features/cards/CardPicture'
 import { cardsText, formatLabel } from '@/features/decks/format'
 import { ToRead } from '@/features/decks/ToRead'
 import { BY_HAND, byHandCopies, linesByHand, linesText } from '@/lib/byHand'
-import { cardsFromForge, cardsOnReads } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import { copiesOf, groupByKind, identityOfDeck, manaCurve, supportCounts, typeCounts } from './model'
 import type { DeckPreviewData } from './model'
@@ -160,7 +159,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
               {total === 0
                 ? 'No cards to count.'
                 : hand === 0
-                  ? `The whole deck runs${stats.support.read === 0 ? '' : `, ${cardsOnReads(stats.support.read)}`}${stats.support.forge === 0 ? '' : `, ${cardsFromForge(stats.support.forge)}`}.`
+                  ? 'The whole deck runs.'
                   : `${hand} of ${total} cards are ${BY_HAND}${stats.lines === 0 ? '' : `, ${linesText(stats.lines)}`}.`}
             </p>
             <SupportBar counts={stats.support} />

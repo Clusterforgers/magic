@@ -338,3 +338,65 @@ fn w16_one_object(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
 fn w16_joined_actions(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
     assert_eq!(same_written_text(left, right), same, "{right}");
 }
+
+#[rstest]
+#[case::also(
+    "It gets +1/+1 and gains haste.",
+    "It gets +1/+1 and also also gains haste.",
+    true
+)]
+#[case::then(
+    "Draw a card. Then discard a card.",
+    "Draw a card. Then then discard a card.",
+    true
+)]
+#[case::you(
+    "Whenever it dies, you may draw a card.",
+    "Whenever it dies, you you may draw a card.",
+    true
+)]
+#[case::dropped_step_still_differs(
+    "Draw a card. Then discard a card.",
+    "Draw a card. Then then.",
+    false
+)]
+#[case::other_verb_still_differs(
+    "Draw a card. Then discard a card.",
+    "Draw a card. Then then exile a card.",
+    false
+)]
+#[case::real_double_is_kept("It had one.", "It had had one.", false)]
+fn w19r_stutter(#[case] left: &str, #[case] right: &str, #[case] same: bool) {
+    assert_eq!(same_written_text(left, right), same, "{right}");
+}
+
+#[rstest]
+#[case::short(
+    "{T}: Add {R}. Spend this mana only to cast Knight spells or Equipment spells.",
+    "{T}: Add {R}. Spend this mana only to cast a Knight or Equipment spell.",
+    true
+)]
+#[case::long(
+    "{T}: Add {R}. Spend this mana only to cast Elemental spells or Chandra planeswalker spells.",
+    "{T}: Add {R}. Spend this mana only to cast an Elemental spell or a Chandra planeswalker spell.",
+    true
+)]
+#[case::long_is_not_the_short_form(
+    "{T}: Add {R}. Spend this mana only to cast Elemental spells or Chandra planeswalker spells.",
+    "{T}: Add {R}. Spend this mana only to cast an Elemental or Chandra planeswalker spell.",
+    false
+)]
+#[case::other_kind(
+    "{T}: Add {R}. Spend this mana only to cast Knight spells or Equipment spells.",
+    "{T}: Add {R}. Spend this mana only to cast a Knight or Aura spell.",
+    false
+)]
+#[case::a_third_kind(
+    "{T}: Add {R}. Spend this mana only to cast Knight spells or Equipment spells.",
+    "{T}: Add {R}. Spend this mana only to cast a Knight, Equipment or Aura spell.",
+    false
+)]
+fn w19r_two_kinds_of_spell(#[case] written: &str, #[case] oracle: &str, #[case] said: bool) {
+    let forms = super::super::spend::more(written);
+    assert_eq!(forms.iter().any(|form| form == oracle), said, "{forms:?}");
+}

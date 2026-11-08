@@ -1,6 +1,6 @@
 /** Words for the decks page: format names, the check state and its note, card counts and the kind of a pasted list. */
 import { BY_HAND, BY_HAND_TITLE, byHandCopies, cardsByHand } from '@/lib/byHand'
-import { cardsFromForge, RUNS_ON_READS } from '@/lib/toRead'
+import { runsBreakdown, UNVERIFIED, WHOLE_DECK_RUNS } from '@/lib/toRead'
 import type {
   Counts,
   DeckListItem,
@@ -43,7 +43,7 @@ export function formatLabel(key: string): string {
 /** The word of each check state; the badge shows it beside an icon so colour never carries the meaning alone. */
 export const STATE_LABEL: Readonly<Record<DeckState, string>> = {
   verified: 'Verified',
-  read: RUNS_ON_READS,
+  read: WHOLE_DECK_RUNS,
   manual_play: BY_HAND_TITLE,
   blocked: 'Blocked',
   unchecked: 'Unchecked',
@@ -57,6 +57,7 @@ export const SUPPORT_LABEL: Readonly<Record<Support, string>> = {
   verified: 'Verified',
   read: 'Read',
   forge: 'From Forge',
+  unverified: UNVERIFIED,
   partial: 'Partial',
   manual: 'Manual',
   stale: 'Stale',
@@ -69,13 +70,15 @@ export const cardsText = (count: number): string => `${count} ${count === 1 ? 'c
 const plural = (count: number, noun: string): string => `${count} ${noun}${count === 1 ? '' : 's'}`
 
 /**
- * What a check found, in copies: "96 of 100 verified, 4 played by hand, 1 unplayable". Only the states that have copies are named.
+ * What a check found, in copies: "60 of 100 verified, 34 from Forge, 3 unverified, 2 played by hand, 1 unplayable". Only
+ * the states that have copies are named.
  */
 export function countsText(counts: Counts): string {
   const hand = byHandCopies(counts)
   const parts = [
-    counts.read > 0 ? `${counts.read} on reads` : null,
-    counts.forge > 0 ? cardsFromForge(counts.forge) : null,
+    counts.forge > 0 ? `${counts.forge} from Forge` : null,
+    counts.unverified > 0 ? `${counts.unverified} unverified` : null,
+    counts.read > 0 ? `${counts.read} read` : null,
     hand > 0 ? `${hand} ${BY_HAND}` : null,
     counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
   ].filter((part) => part !== null)
@@ -108,6 +111,7 @@ export function checkNote(deck: DeckListItem): string | null {
     case 'verified':
       return null
     case 'read':
+      return runsBreakdown(counts)
     case 'manual_play':
       return countsText(counts)
     case 'blocked': {

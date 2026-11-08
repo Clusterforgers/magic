@@ -124,6 +124,10 @@ pub struct Counts {
     /// stored before this tier has none.
     #[serde(default)]
     pub forge: u32,
+    /// Copies of `unverified` cards: whole drafts waiting for their first read, which the game runs like `read` ones. A
+    /// check stored before this tier has none.
+    #[serde(default)]
+    pub unverified: u32,
     /// Copies of `partial` cards.
     pub partial: u32,
     /// Copies of `manual` cards.
@@ -141,6 +145,7 @@ impl Counts {
             Support::Verified => &mut self.verified,
             Support::Read => &mut self.read,
             Support::Forge => &mut self.forge,
+            Support::Unverified => &mut self.unverified,
             Support::Partial => &mut self.partial,
             Support::Manual => &mut self.manual,
             Support::Stale => &mut self.stale,
@@ -167,10 +172,10 @@ pub struct ZoneCounts {
 pub enum DeckState {
     /// Legal, and every card of every zone is `verified`.
     Verified,
-    /// Legal, and every card of every zone is `verified`, `read` or `forge`, at least one of the last two: the game
-    /// runs all of it, part of it on the reads of players or translated from Forge.
+    /// Legal, and every card of every zone is `verified`, `read`, `forge` or `unverified`, at least one not `verified`:
+    /// the game runs all of it, part of it on the reads of players, translated from Forge or not yet read.
     Read,
-    /// Legal, with some cards that are neither `verified` nor `read`; the table resolves them by hand.
+    /// Legal, with some cards the game does not run whole; the table resolves them by hand.
     ManualPlay,
     /// Illegal in its format, or holds an `unplayable` card.
     Blocked,
@@ -184,12 +189,13 @@ impl DeckState {
         let runs_whole = counts
             .verified
             .saturating_add(counts.read)
-            .saturating_add(counts.forge);
+            .saturating_add(counts.forge)
+            .saturating_add(counts.unverified);
         if has_issues || counts.unplayable > 0 {
             DeckState::Blocked
         } else if runs_whole < counts.total {
             DeckState::ManualPlay
-        } else if counts.read > 0 || counts.forge > 0 {
+        } else if runs_whole > counts.verified {
             DeckState::Read
         } else {
             DeckState::Verified
@@ -204,7 +210,7 @@ pub struct Summary {
     /// The format the deck was checked in.
     pub format: String,
     /// `blocked` if the deck is illegal or holds an unplayable card, `manual_play` if some card is
-    /// neither verified nor read, `read` if some are read, otherwise `verified`.
+    /// not run whole, `read` if some run whole without being verified, otherwise `verified`.
     pub state: DeckState,
     /// Copies by support state across all zones.
     pub counts: Counts,
@@ -213,7 +219,7 @@ pub struct Summary {
     /// How many legality issues the deck has.
     pub issues: u32,
     /// How many distinct cards of the deck, in any zone, are drafts that wait for a player to read them: the draft is
-    /// `pending`, new or changed since its last read, and played by hand until then. A check stored before the Read
+    /// `pending`, new or changed since its last read; a whole one runs as `unverified` until then. A check stored before the Read
     /// tier has none.
     #[serde(default)]
     pub to_read: u32,
@@ -286,8 +292,8 @@ impl DeckReport {
     }
 
     /// Replaces the legality, as a table's rules judge it, and the summary with it: `issues` counts them and the state
-    /// is `blocked` while one is left or a card is `unplayable`, else `manual_play` while a card is neither `verified`
-    /// nor `read`, else `read` while one is `read`.
+    /// is `blocked` while one is left or a card is `unplayable`, else `manual_play` while a card does not run whole, else
+    /// `read` while one runs whole without being `verified`.
     pub fn set_legality(&mut self, legality: Vec<Issue>) {
         self.summary.issues = u32::try_from(legality.len()).unwrap_or(u32::MAX);
         self.summary.state = DeckState::of(!legality.is_empty(), &self.summary.counts);
@@ -347,7 +353,7 @@ fn judge(
 }
 
 /// The clauses a card's draft marked as differing reads back as other text, from its read sheet.
-fn differs_of(library: &Library, printed: &PrintedCard) -> Vec<ReadDiffers> {
+pub fn differs_of(library: &Library, printed: &PrintedCard) -> Vec<ReadDiffers> {
     let Some(draft) = library
         .draft(&printed.oracle_id)
         .filter(|draft| draft.differs)

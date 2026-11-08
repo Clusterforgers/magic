@@ -1051,7 +1051,7 @@ fn mill(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if !matches!(p.get("ShowMilledCards"), None | Some("True")) {
         return unmapped("key:Mill.ShowMilledCards");
     }
-    let milled = remember::wanted(p, &["RememberMilled"]);
+    let milled = remember::wanted(p, "Mill");
     let plain = p.without(&["RememberMilled", "Mode", "ShowMilledCards"]);
     let mut effect = count_verb(ctx, &plain, "Mill", "NumCards")?;
     if milled {
