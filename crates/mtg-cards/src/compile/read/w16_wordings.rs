@@ -8,7 +8,13 @@
 pub(super) fn normal(text: &str) -> String {
     // Lines of a clause join as one text: a line break is a space.
     let mut text = text.split_whitespace().collect::<Vec<_>>().join(" ");
-    for step in [pronouns, dies, one_duration, super::w17_forms::before_lists] {
+    for step in [
+        super::w18_forms::early,
+        pronouns,
+        dies,
+        one_duration,
+        super::w17_forms::before_lists,
+    ] {
         if let Some(changed) = step(&text) {
             text = changed;
         }
