@@ -11,8 +11,8 @@ import {
   counterLabels,
   frameOf,
   keywordLine,
-  loyaltyOf,
   powerToughness,
+  statCounterOf,
   statusChips,
   typeLine,
 } from './cardModel'
@@ -101,6 +101,7 @@ function artRoom(height: number, chips: number, links: Links | undefined): numbe
     rows -
     (chips > 0 ? 1 : 0) -
     (links?.host === undefined ? 0 : 1) -
+    (links?.protector === undefined ? 0 : 1) -
     (links?.partner === undefined ? 0 : 1) -
     (links?.doors === undefined ? 0 : 2)
   )
@@ -212,8 +213,8 @@ export function TextFace({
   const keywords = keywordLine(object)
   const pt = powerToughness(object)
   const counters = counterLabels(object)
-  const loyalty = loyaltyOf(object)
-  const modified = statBadge(object, usePrinted(object), loyalty)?.modified ?? null
+  const stat = statCounterOf(object)
+  const modified = statBadge(object, usePrinted(object), stat)?.modified ?? null
   // A compact face that draws its cost keeps two lines of name, so the name and the cost fit the top a hand row shows.
   const nameLines = nameLinesOf(turned, full || (cost && object.mana_cost !== null), size)
   // A token whose picture is missing still looks like a card: the card back's colours, its name, "Token" and its type.
@@ -302,6 +303,17 @@ export function TextFace({
             On {links.host}
           </span>
         )}
+        {links?.protector === undefined ? null : (
+          <span
+            data-slot="card-protector"
+            className={cn(
+              'h-fit max-w-full rounded-sm border border-foreground bg-background px-1 leading-snug break-words text-foreground',
+              classes.text,
+            )}
+          >
+            Protected by {links.protector}
+          </span>
+        )}
         <GrantMarks
           attaches={links?.attaches ?? []}
           compact={size === 'compact'}
@@ -369,12 +381,12 @@ export function TextFace({
           {keywords}
         </span>
       ) : null}
-      {pt === null && loyalty === null ? (
+      {pt === null && stat === null ? (
         // The mana strip lies over the bottom left of the face, so the type line moves up clear of it.
         <span data-slot="card-foot" className="h-1 shrink-0 group-has-[[data-slot=mana-strip]]/card:h-5" />
       ) : (
         <span
-          data-slot={pt === null ? 'card-loyalty' : undefined}
+          data-slot={pt === null && stat !== null ? `card-${stat.kind}` : undefined}
           data-modified={modified ?? undefined}
           className={cn(
             classes.name,
@@ -384,7 +396,7 @@ export function TextFace({
             modified === 'down' && 'border-background bg-destructive text-background',
           )}
         >
-          {pt ?? loyalty}
+          {pt ?? stat?.count}
         </span>
       )}
     </span>

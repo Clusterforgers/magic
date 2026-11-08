@@ -225,10 +225,31 @@ export function loyaltyOf(object: ObjectView): number | null {
   return found === undefined ? null : found[1]
 }
 
-/** The counters a face shows as badges, such as "+1/+1 ×2" and "charge"; loyalty is not among them. */
+/** The counter a face shows in its stat box: a planeswalker's loyalty or a battle's defense. */
+export interface StatCounter {
+  kind: 'loyalty' | 'defense'
+  count: number
+}
+
+const isDefense = (kind: CounterKind): boolean => typeof kind !== 'string' && kind.Other === 'defense'
+
+/** The loyalty of a planeswalker, or the defense counters of a battle; null when it has neither. */
+export function statCounterOf(object: ObjectView): StatCounter | null {
+  const loyalty = loyaltyOf(object)
+  if (loyalty !== null) return { kind: 'loyalty', count: loyalty }
+  if (!object.types.includes('Battle')) return null
+  const found = countersOf(object).find(([kind]) => isDefense(kind))
+  return found === undefined ? null : { kind: 'defense', count: found[1] }
+}
+
+// The counters left to the stat box: loyalty, and a battle's defense.
+const inStatBox = (object: ObjectView, kind: CounterKind): boolean =>
+  kind === 'loyalty' || (isDefense(kind) && object.types.includes('Battle'))
+
+/** The counters a face shows as badges, such as "+1/+1 ×2" and "charge"; loyalty and a battle's defense are not among them. */
 export function counterLabels(object: ObjectView): string[] {
   return countersOf(object)
-    .filter(([kind]) => kind !== 'loyalty')
+    .filter(([kind]) => !inStatBox(object, kind))
     .map(([kind, count]) => (count === 1 ? counterName(kind) : `${counterName(kind)} ×${count}`))
 }
 
@@ -248,10 +269,10 @@ const COUNTER_SYMBOL: Partial<Record<string, string>> = {
   charge: '⚡',
 }
 
-/** The counters of a permanent as chips, loyalty left to the stat box. */
+/** The counters of a permanent as chips, loyalty and a battle's defense left to the stat box. */
 export function counterChips(object: ObjectView): CounterChip[] {
   return countersOf(object)
-    .filter(([kind]) => kind !== 'loyalty')
+    .filter(([kind]) => !inStatBox(object, kind))
     .map(([kind, count]) => {
       const name = counterName(kind)
       return {
@@ -263,11 +284,11 @@ export function counterChips(object: ObjectView): CounterChip[] {
     })
 }
 
-/** The same counters in words, loyalty included, for a screen reader: "2 +1/+1 counters", "loyalty 3". */
+/** The same counters in words, loyalty and defense included, for a screen reader: "2 +1/+1 counters", "loyalty 3", "defense 4". */
 export function counterWords(object: ObjectView): string[] {
   return countersOf(object).map(([kind, count]) =>
-    kind === 'loyalty'
-      ? `loyalty ${count}`
+    inStatBox(object, kind)
+      ? `${counterName(kind)} ${count}`
       : `${count} ${counterName(kind)} ${count === 1 ? 'counter' : 'counters'}`,
   )
 }

@@ -4,7 +4,7 @@ import { must } from '@/test-utils/batches'
 import { fixtureState } from './devGame'
 import { buildFixture } from './fixture'
 import { STATES_BASE_PERMANENTS, printedDetail, withStates } from './states'
-import { loyaltyOf, statusLabels } from '../cardModel'
+import { loyaltyOf, statCounterOf, statusLabels } from '../cardModel'
 import { battlefieldStacks } from '../rowStacks'
 import { statBadge } from '../overlay'
 import type { ObjectView } from '@/protocol/generated'
@@ -118,7 +118,7 @@ describe('the states fixture', () => {
       )
       const faces = (await printedDetail(must(object.identity).oracle_id)).faces
       const printed = must(faces[0])
-      const badge = statBadge(object, printed, loyaltyOf(object))
+      const badge = statBadge(object, printed, statCounterOf(object))
       expect(badge?.modified ?? null).toBe(modified)
     }
   })
