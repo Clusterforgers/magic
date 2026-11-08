@@ -120,6 +120,9 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return Ok(json!({ "Bound": bound }));
     }
+    if text == "Wins" && ctx.flip_win {
+        return Ok(json!(1));
+    }
     if ctx.die_result.as_deref() == Some(text) {
         return Ok(json!({"DieResult": "Only"}));
     }
