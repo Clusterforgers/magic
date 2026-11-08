@@ -1,7 +1,7 @@
 //! Wordings of one meaning that the oracle text and the writers say differently (w15 win-back of `Differs` clauses):
 //! "also deals", a toll counted as "{X}, where X is the number of", "any number" of sacrificed creatures, the other card
 //! of two looked at, the top card revealed and sorted by "If it's a ..., Otherwise", a pair of types in a count, the names
-//! of modes (when every mode has one) and of quoted abilities, support, blight and adamant. Both sides of a comparison are
+//! of quoted abilities, support, blight and adamant. Both sides of a comparison are
 //! normalized, so a rule of another meaning still differs.
 
 /// The text with each of the wordings below written one way.
@@ -137,7 +137,9 @@ fn reveal_sorted(rest: &str) -> Option<String> {
         .strip_prefix("a ")
         .or_else(|| rest.strip_prefix("an "))?;
     let (kind, rest) = rest.split_once(" card, put it ")?;
-    let (kept, rest) = rest.split_once(". Otherwise, put it ")?;
+    let (kept, rest) = rest
+        .split_once(". Otherwise, put it ")
+        .or_else(|| rest.split_once(". Otherwise, put that card "))?;
     Some(format!(
         ". Then put all {kind} cards revealed this way {kept} and the rest {rest}"
     ))
