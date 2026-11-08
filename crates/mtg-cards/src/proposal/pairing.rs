@@ -54,7 +54,12 @@ pub(crate) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) 
         let attachment = printed
             .faces
             .get(face)
-            .map_or("", |printed| attachment_word(&printed.type_line));
+            .map_or(("", String::new()), |printed| {
+                (
+                    attachment_word(&printed.type_line),
+                    enchanted_noun(&printed.oracle_text),
+                )
+            });
         let found = Pairer::new(face, abilities, &of_face, (creature_at, names, attachment)).run();
         paired.clauses.extend(found.clauses);
         paired.strays.extend(found.strays);
@@ -72,6 +77,17 @@ fn attachment_word(type_line: &str) -> &'static str {
     } else {
         ""
     }
+}
+
+/// What an Aura enchants by its first line ("Enchant land" is "land"); "creature" for any other line.
+fn enchanted_noun(oracle: &str) -> String {
+    oracle
+        .lines()
+        .next()
+        .and_then(|line| line.strip_prefix("Enchant "))
+        .filter(|noun| !noun.contains(' '))
+        .unwrap_or("creature")
+        .to_owned()
 }
 
 /// The clause kinds an ability can stand for.
@@ -216,8 +232,9 @@ struct Pairer<'a> {
     names: Vec<String>,
     /// "a Dragon was beheld" or "evidence was collected": the words for the paid additional cost of the face.
     beheld: Option<String>,
-    /// What the face attaches by: "equipped" for an Equipment, "enchanted" for an Aura, nothing for another card.
-    attachment: &'static str,
+    /// What the face attaches by: "equipped" for an Equipment, "enchanted" for an Aura, nothing for another card; and
+    /// the noun of what an Aura enchants ("land" for "Enchant land").
+    attachment: (&'static str, String),
     slots: Vec<Slot<'a>>,
     taken: Vec<bool>,
     slot_of: Vec<Option<usize>>,
@@ -230,7 +247,7 @@ impl<'a> Pairer<'a> {
         face: usize,
         abilities: &'a [Ability],
         clauses: &[&'a Clause],
-        (creature_at, names, attachment): (Option<i32>, Vec<String>, &'static str),
+        (creature_at, names, attachment): (Option<i32>, Vec<String>, (&'static str, String)),
     ) -> Self {
         Pairer {
             face,
@@ -308,27 +325,35 @@ impl<'a> Pairer<'a> {
     }
 
     /// The wording with the attached object named by the face's own attachment: the data keeps "what the source is
-    /// attached to" and the face says whether that is equipped or enchanted.
+    /// attached to" and the face says whether that is equipped or enchanted, and what an Aura enchants.
     fn attached(&self, variant: &str) -> String {
-        let (from, to) = match self.attachment {
+        let (word, noun) = &self.attachment;
+        let enchanted = format!("nchanted {noun}");
+        let (from, to) = match *word {
             "equipped" => ("nchanted creature", "quipped creature"),
-            "enchanted" => ("quipped creature", "nchanted creature"),
+            "enchanted" => ("quipped creature", enchanted.as_str()),
             _ => return variant.to_owned(),
         };
         // A quoted ability belongs to the object that gains it, which names its own attachment ("enchanted permanent
         // ... has "Equipped creature has lifelink."").
+        let outside_quotes = |text: &str, from: &str, to: &str| {
+            text.split('"')
+                .enumerate()
+                .map(|(at, part)| {
+                    if at % 2 == 0 {
+                        part.replace(from, to)
+                    } else {
+                        part.to_owned()
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join("\"")
+        };
+        let variant = outside_quotes(variant, from, to);
+        if *word == "enchanted" && noun != "creature" {
+            return outside_quotes(&variant, "nchanted creature", &enchanted);
+        }
         variant
-            .split('"')
-            .enumerate()
-            .map(|(at, part)| {
-                if at % 2 == 0 {
-                    part.replace(from, to)
-                } else {
-                    part.to_owned()
-                }
-            })
-            .collect::<Vec<_>>()
-            .join("\"")
     }
 
     /// Whether a written wording is the clause text; the face's own names count as `~` in it, as in the clause.

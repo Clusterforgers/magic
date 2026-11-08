@@ -982,6 +982,7 @@ fn decided(
     Ok(match p.get("OptionalDecider") {
         None => effects,
         Some("You" | "TriggeredCardController") if pays => effects,
+        Some("You") if !super::fix26_printed::asks(p) => effects,
         Some("You") => super::frame::ask(effects, &you),
         // The card's own trigger, also with a condition on it ("When ~ dies, if it had no counters"): you decide.
         Some("TriggeredCardController") if itself || g9a_about_this(when) => {

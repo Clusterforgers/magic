@@ -44,6 +44,7 @@ pub mod effects_vote;
 pub mod effects_zone;
 mod enters_with;
 pub mod filter;
+mod fix26_printed;
 pub mod forget;
 pub mod frame;
 mod header;

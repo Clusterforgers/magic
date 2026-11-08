@@ -1160,6 +1160,7 @@ fn modifier(
         if p.get("Relative").is_some_and(|word| word != "True") {
             return unmapped("key:Static.CostModifier.Relative");
         }
+        super::fix26_printed::relative_count(p, ctx.svar(amount))?;
         let per = super::amount::amount(ctx, amount)?;
         return Ok(
             json!({"CostModifier": {"applies_to": applies, "change": change, "mana": symbol, "per": per}}),
