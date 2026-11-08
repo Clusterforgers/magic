@@ -98,7 +98,7 @@ const SPELLS_YOURS: &str =
 #[case::afflict(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"Type":"Artifact"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":{"Afflict":3}}]}}"#, "Artifact creatures you control have afflict 3.")]
 #[case::equipped_afflict(r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":2,"toughness":0}},{"AddKeyword":{"Afflict":1}}]}}"#, "Equipped creature gets +2/+0 and has afflict 1.")]
 #[case::training(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]},"mods":[{"AddKeyword":{"Macro":{"amount":0,"name":"training"}}}]}}"#, "Creature tokens you control have training.")]
-#[case::outlast(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},"Other",{"Not":{"HasCounter":"+1/+1"}}]},"mods":[{"AddKeyword":{"Outlast":"{G/W}"}}]}}"#, "Each other creature you control without a +1/+1 counter on it has outlast {G/W}.")]
+#[case::outlast(r#"{"Static":{"affected":{"Each":[{"Subtype":"Sliver"},{"ControlledBy":"You"},"Other"]},"mods":[{"AddKeyword":{"Outlast":"{2}"}}]}}"#, "Other Slivers you control have outlast {2}.")]
 #[case::ward_life(r#"{"Static":{"affected":{"Each":[{"Subtype":"Warlock"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":{"Ward":[{"PayLife":2}]}}]}}"#, "Warlocks you control have \"Ward—Pay 2 life.\"")]
 #[case::cumulative(
     r#"{"Static":{"affected":"Attached","mods":[{"AddKeyword":{"CumulativeUpkeep":"{1}"}}]}}"#,
@@ -148,6 +148,13 @@ fn a_group_is_given_a_keyword_with_a_number_or_a_cost(#[case] json: &str, #[case
 #[case::tapped(r#"{"Static":{"affected":"Attached","condition":{"Matches":{"selector":[{"Type":"Creature"},"Untapped"],"subject":"Attached"}},"mods":[{"AddKeyword":"Shroud"}]}}"#, "Enchanted creature has shroud as long as it's tapped.")]
 #[case::three_equipment(r#"{"Static":{"affected":"Attached","condition":{"Compare":{"left":{"Count":[{"Subtype":"Equipment"},{"AttachedTo":{"Each":[{"Type":"Creature"},{"Is":"Attached"}]}}]},"op":"Ge","right":2}},"mods":[{"AddKeyword":"DoubleStrike"}]}}"#, "Equipped creature has double strike as long as three or more Equipment are attached to it.")]
 #[case::auras(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"condition":{"Compare":{"left":{"Count":["This",{"HasAttached":[{"Subtype":"Aura"}]}]},"op":"Ge","right":1}},"mods":[{"AddKeyword":"Vigilance"}]}}"#, "Creatures you control have vigilance as long as this creature is equipped.")]
+#[case::cascade_twice_in_one_list(&spells(CAST, r#""Cascade""#).replace(r#"[{"AddKeyword":"Cascade"}]"#, r#"[{"AddKeyword":"Cascade"},{"AddKeyword":"Cascade"}]"#), "Spells you cast have \"Cascade, cascade.\"")]
 fn near_misses_do_not_read_back(#[case] json: &str, #[case] clause: &str) {
     assert!(!written(json, clause), "{clause}");
+}
+
+#[test]
+fn a_keyword_given_twice_is_not_worded() {
+    let twice = r#"{"Static":{"affected":{"Each":["Colorless",{"ControlledBy":"You"},{"OwnedBy":"You"},{"WasCast":{"from":"Hand"}},{"Compare":{"op":"Ge","stat":"ManaValue","to":7}},{"In":"Stack"}]},"mods":[{"AddKeyword":"Cascade"},{"AddKeyword":"Cascade"}]}}"#;
+    assert_eq!(written_variants(&ability(twice)), Vec::<String>::new());
 }

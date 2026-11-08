@@ -1819,6 +1819,9 @@ fn static_texts(
     mods: &[Modification],
     condition: Option<&Condition>,
 ) -> Vec<String> {
+    if repeated_keyword(mods) {
+        return Vec::new();
+    }
     // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
     let helds: Vec<String> = condition.map(as_long_as::texts).unwrap_or_default();
     let tails: Vec<String> = if condition.is_some() {
@@ -1923,6 +1926,13 @@ fn static_texts(
         .collect()
 }
 
+/// A keyword given twice ("Cascade, cascade.") is not worded as one list.
+pub(super) fn repeated_keyword(mods: &[Modification]) -> bool {
+    mods.iter()
+        .enumerate()
+        .any(|(at, m)| matches!(m, Modification::AddKeyword(_)) && mods[..at].contains(m))
+}
+
 /// "The first historic spell you cast each turn has convoke."
 fn first_spell_texts(
     affected: &Ref,
@@ -1951,6 +1961,9 @@ pub(super) fn predicate_variants(
     itself: bool,
     conditional: bool,
 ) -> Vec<String> {
+    if repeated_keyword(mods) {
+        return Vec::new();
+    }
     let mut written = if itself && !conditional && !chosen_protection(mods) && !entered_choice(mods)
     {
         Vec::new()

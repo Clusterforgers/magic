@@ -14,11 +14,15 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Ability::Static {
         affected,
         condition,
+        mods,
         ..
     } = ability
     else {
         return;
     };
+    if !super::w21_words::only_keywords(mods) {
+        return;
+    }
     match (affected, condition) {
         // The condition is part of what is affected: the attached creature that is a Human.
         (Ref::Each(Selector(preds)), None) if preds.contains(&Pred::Is(Ref::Attached)) => {

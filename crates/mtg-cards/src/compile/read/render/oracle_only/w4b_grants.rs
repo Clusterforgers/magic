@@ -14,7 +14,11 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let value = json(ability);
     let mut mods = Vec::new();
     collect_mods(&value, &mut mods);
-    for found in mods {
+    for found in mods.clone() {
+        // The same keyword twice would be swapped once and read as two words.
+        if mods.iter().filter(|other| **other == found).count() > 1 {
+            continue;
+        }
         if let Some((stand_in, from, to)) = grant(&found) {
             // A stand-in the ability has already would swap the wrong words.
             if replace(&mut value.clone(), &stand_in, &stand_in).is_some() {

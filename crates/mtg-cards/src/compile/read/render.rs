@@ -512,6 +512,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    // A keyword given twice ("Cascade, cascade.") is not worded as one list.
+    if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
+        return Vec::new();
+    }
     let mut texts = super::written_memo::written(ability, written_anew);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));

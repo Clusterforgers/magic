@@ -61,6 +61,17 @@ pub(super) fn words(keyword: &Keyword, unit: bool) -> Option<Words> {
     }
 }
 
+/// Whether the changes are keywords and pumps only, which a condition's words can follow once ("has flying as long as ...").
+pub(super) fn only_keywords(mods: &[crate::modify::Modification]) -> bool {
+    use crate::modify::Modification;
+    mods.iter().all(|m| {
+        matches!(
+            m,
+            Modification::AddKeyword(_) | Modification::ModifyPT { .. }
+        )
+    })
+}
+
 /// The mana of a cost that is only mana.
 fn mana_only(cost: &Cost) -> Option<String> {
     match cost.0.as_slice() {

@@ -11,11 +11,15 @@ use serde_json::{Value, json};
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Ability::Static {
         condition: Some(condition),
+        mods,
         ..
     } = ability
     else {
         return;
     };
+    if !super::w21_words::only_keywords(mods) {
+        return;
+    }
     let condition = json(condition);
     let Some(stand) = stand(ability, |value| {
         *value.pointer_mut("/Static/condition")? = json!("YourTurn");
