@@ -1,0 +1,35 @@
+{
+  "oracle_id": "43923f24-7e95-4934-9a5c-8d9a5e06ddea",
+  "name": "Myr Custodian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Custodian",
+      "oracle_fingerprint": "4c3b8c9635cb31144d0201890ef14302",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Scry": { "count": 2 } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "scrier",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "scrier" },
+                        "effects": [{ "Scry": { "who": { "Bound": "scrier" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

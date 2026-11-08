@@ -58,6 +58,9 @@ const C7_UNTAP_ONLY: &str =
 
 const SKIP_ONLY: &str = "only the rule that a player skips a turn lasts until the turn is skipped";
 
+/// Only a continuous effect lasts until a card is cast from exile.
+const E17A_CAST_ONLY: &str = "only a continuous effect lasts until this card is cast from exile";
+
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
 /// Whether the replacement prevents only part of the damage, or only the next of it.
 fn prevents_in_part(by: &ReplaceBy) -> bool {
@@ -1019,6 +1022,10 @@ impl<'a> Walker<'a> {
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
+            }
+            Amount::CountedAsCast(inner) => {
+                self.uses("Amount", "CountedAsCast");
+                self.at("inner", |w| w.amount(inner));
             }
             Amount::Mutations(of) => {
                 self.uses("Amount", "Mutations");
@@ -3653,6 +3660,9 @@ impl Walker<'_> {
                 if matches!(duration, Duration::UntilPaid(_)) {
                     w.uses("Duration", "UntilPaid");
                 }
+                if *duration == Duration::UntilCastFromExile {
+                    w.uses("Duration", "UntilCastFromExile");
+                }
                 if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
                     w.problem(C7_UNTAP_ONLY);
                 }
@@ -3681,6 +3691,9 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
                 }
+                if *duration == Duration::UntilCastFromExile {
+                    w.problem(E17A_CAST_ONLY);
+                }
             }
             Effect::Rule { rule, duration } => w.at("rule", |w| {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
@@ -3696,6 +3709,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Rule", "Duration.WhileSourceTapped");
+                }
+                if *duration == Duration::UntilCastFromExile {
+                    w.problem(E17A_CAST_ONLY);
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
@@ -3748,6 +3764,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
+                }
+                if *duration == Duration::UntilCastFromExile {
+                    w.problem(E17A_CAST_ONLY);
                 }
                 w.at("when", |w| w.replace_when(when));
                 w.at("by", |w| w.replace_by(when, by));

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "34c0f75d-10a9-428d-b202-3defb3949090",
+  "name": "Ant-Man's Army",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ant-Man's Army",
+      "oracle_fingerprint": "676930942ee7bd801b83809218156902",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Either": {
+                  "first": [{ "CreateToken": { "token": { "Named": "food" } } }],
+                  "second": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

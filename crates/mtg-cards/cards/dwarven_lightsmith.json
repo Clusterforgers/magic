@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cb9210eb-f5cb-430d-b893-b1d814117043",
+  "name": "Dwarven Lightsmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Lightsmith",
+      "oracle_fingerprint": "693ad9d03897c82b368eb8d311832ebe",
+      "abilities": [
+        { "Keyword": "Assist" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "14613521-a939-426e-9bd5-183186b51583",
+  "name": "Rushblade Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rushblade Commander",
+      "oracle_fingerprint": "8ce817bb99d284d7e36ffd47d0bba8cb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Warrior" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

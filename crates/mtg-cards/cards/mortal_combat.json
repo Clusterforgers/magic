@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dc9d1d0c-5310-460a-a3cd-1ff1f4f83c8f",
+  "name": "Mortal Combat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mortal Combat",
+      "oracle_fingerprint": "36c3c4217c7042e1ab06cf293a1cc1b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 20
+              }
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d2aa50d2-d22d-495e-afc9-23a51c8c8f32",
+  "name": "Assault on Osgiliath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assault on Osgiliath",
+      "oracle_fingerprint": "33808f122624e316646f51d04411d274",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Amass": { "subtype": "Orc", "count": "X" } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1c995c80-3301-409b-822b-9297aa260823",
+  "name": "Ureni, the Song Unending",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ureni, the Song Unending",
+      "oracle_fingerprint": "9e8fa8dee05bbaa2ab3d247a1126d54f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Protection": [{ "Color": "White" }] } },
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                },
+                "divide": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

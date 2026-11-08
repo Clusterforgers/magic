@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1e7b075b-1c0f-4c44-a597-5c167a786cb1",
+  "name": "Labyrinth Minotaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Labyrinth Minotaur",
+      "oracle_fingerprint": "7ddb32f5f464b8d41724af6415c0676a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [], "by": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

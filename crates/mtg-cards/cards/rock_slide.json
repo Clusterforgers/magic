@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0b2e7c1a-dc07-4138-a560-dc80fa723860",
+  "name": "Rock Slide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rock Slide",
+      "oracle_fingerprint": "1cbdc205094bfb4993afb740532d9998",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": ["Attacking", "Blocking"] },
+                    { "Not": { "HasKeyword": "Flying" } }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "AnyOf": ["Attacking", "Blocking"] },
+                      { "Not": { "HasKeyword": "Flying" } }
+                    ]
+                  }
+                },
+                "divide": "X"
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

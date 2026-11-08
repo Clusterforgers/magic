@@ -1,0 +1,37 @@
+{
+  "oracle_id": "58b9f933-7b13-4335-996c-4722ab9e08b2",
+  "name": "Returned Pastcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Returned Pastcaller",
+      "oracle_fingerprint": "1cdc00d8a551069e197855263f8c1c41",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" },
+                        { "Subtype": "Spirit" }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

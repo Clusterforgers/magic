@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f1dca9ac-8886-4688-9245-763ef486701c",
+  "name": "Armament Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armament Master",
+      "oracle_fingerprint": "77cac65527996b6a304ab3567ea6f162",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Kor" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e245d5c9-ae3a-4246-bd74-c6fed76b9fad",
+  "name": "Temmet, Vizier of Naktamun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temmet, Vizier of Naktamun",
+      "oracle_fingerprint": "f3eda7ae9a3c9f929dc475c9da2a1162",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Embalm": "{3}{W}{U}" } }
+      ]
+    }
+  ]
+}

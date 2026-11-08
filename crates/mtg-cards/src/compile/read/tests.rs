@@ -273,6 +273,7 @@ mod e14g_mana_writers;
 mod e15g_writers;
 mod e16a_writers;
 mod e16c_writers;
+mod e17b_writers;
 mod each_pump;
 mod effect_writers;
 mod enchanted_player;
@@ -1189,6 +1190,7 @@ mod r9w;
 mod r11w;
 // e10c
 mod e10c_writers;
+mod e17a_writers;
 mod fix20_writers;
 mod fix23_writers;
 mod fix25_writers;

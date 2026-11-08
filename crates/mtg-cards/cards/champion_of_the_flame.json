@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d9dbe40f-38e9-460a-b84f-4aa22650017e",
+  "name": "Champion of the Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of the Flame",
+      "oracle_fingerprint": "7f276bb5987c53bde368129c1dc8f4c5",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                          { "AttachedTo": "This" }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                          { "AttachedTo": "This" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

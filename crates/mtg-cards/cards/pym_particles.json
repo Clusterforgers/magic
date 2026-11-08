@@ -1,0 +1,35 @@
+{
+  "oracle_id": "636b44dc-f7e4-42d2-abf6-ae49432b6052",
+  "name": "Pym Particles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pym Particles",
+      "oracle_fingerprint": "bc8e613ba52f26d11df7a9d26ecc6e4b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

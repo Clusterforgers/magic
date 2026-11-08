@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6eaa343d-0097-4f05-80ab-deb016d4e15e",
+  "name": "Shreds of Sanity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shreds of Sanity",
+      "oracle_fingerprint": "f00c45030b161d71b4962a2e3ef256f7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Instant" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Sorcery" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } },
+              { "Discard": {} },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

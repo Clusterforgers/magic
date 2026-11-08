@@ -413,31 +413,53 @@ impl CardDefinition {
 
     /// The conditions its abilities (and those of its faces) ask "as you cast this spell" (`Condition::AsCast`), each once.
     pub fn as_cast_conditions(&self) -> Vec<crate::value::Condition> {
-        fn walk(value: &serde_json::Value, found: &mut Vec<crate::value::Condition>) {
+        self.as_cast_asks().0
+    }
+
+    /// The conditions it asks and the amounts it counts "as you cast this spell" (`Condition::AsCast`,
+    /// `Amount::CountedAsCast`), each once.
+    pub fn as_cast_asks(&self) -> (Vec<crate::value::Condition>, Vec<crate::value::Amount>) {
+        let Ok(value) = serde_json::to_value(self) else {
+            return (Vec::new(), Vec::new());
+        };
+        (
+            Self::tagged_inners(&value, "AsCast"),
+            Self::tagged_inners(&value, "CountedAsCast"),
+        )
+    }
+
+    /// What every `{tag: inner}` in a serialized form holds, read as `T`, each once.
+    fn tagged_inners<T: serde::de::DeserializeOwned + PartialEq>(
+        value: &serde_json::Value,
+        tag: &str,
+    ) -> Vec<T> {
+        fn walk<T: serde::de::DeserializeOwned + PartialEq>(
+            value: &serde_json::Value,
+            tag: &str,
+            found: &mut Vec<T>,
+        ) {
             match value {
                 serde_json::Value::Object(map) => {
-                    if let Some(inner) = map.get("AsCast")
-                        && let Ok(condition) = serde_json::from_value(inner.clone())
-                        && !found.contains(&condition)
+                    if let Some(inner) = map.get(tag)
+                        && let Ok(read) = serde_json::from_value(inner.clone())
+                        && !found.contains(&read)
                     {
-                        found.push(condition);
+                        found.push(read);
                     }
                     for inner in map.values() {
-                        walk(inner, found);
+                        walk(inner, tag, found);
                     }
                 }
                 serde_json::Value::Array(items) => {
                     for inner in items {
-                        walk(inner, found);
+                        walk(inner, tag, found);
                     }
                 }
                 _ => {}
             }
         }
         let mut found = Vec::new();
-        if let Ok(value) = serde_json::to_value(self) {
-            walk(&value, &mut found);
-        }
+        walk(value, tag, &mut found);
         found
     }
 

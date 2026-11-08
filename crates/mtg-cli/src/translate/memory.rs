@@ -499,7 +499,7 @@ pub fn line(
     let mut line = p.without(&[]);
     let mut acted: Vec<Slot> = Vec::new();
     let mut moved: Vec<Slot> = Vec::new();
-    for (key, slot) in &keys {
+    for (key, slot) in keys.iter().filter(|_| !super::e17b_memory::splits(api, p)) {
         if let Some(&(_, _, own)) = IMPRINT_AS
             .iter()
             .find(|(verb, imprint, _)| *verb == api && imprint == key)

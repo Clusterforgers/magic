@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a729a684-9171-4ca9-83ad-1d199afad7bb",
+  "name": "Press into Service",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Press into Service",
+      "oracle_fingerprint": "e9ae26e35d0b70895e1cc1bd4a9b62c2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 1 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

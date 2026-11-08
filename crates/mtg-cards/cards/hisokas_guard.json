@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6136f019-da8f-471e-9ac5-41e535aa8a21",
+  "name": "Hisoka's Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hisoka's Guard",
+      "oracle_fingerprint": "980e1ba953dabbb80c93c220453baf9d",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Shroud" }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
