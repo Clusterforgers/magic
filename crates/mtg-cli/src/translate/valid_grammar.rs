@@ -17,10 +17,6 @@ pub(super) fn atom(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
         "Kicked" => return one(json!("Kicked")),
         "Mayhem" => return one(json!({"CastWith": "Mayhem"})),
         "Party" => return party(ctx).map(Some),
-        "attacking Valid Planeswalker.OppCtrl" => {
-            return one(json!({"AttackingPlaneswalkerOf": "Opponents"}));
-        }
-        "attacking Valid Planeswalker.YouCtrl" => return one(json!({"AttackingPlaneswalkerOf": "You"})),
         _ => {}
     }
     // `CastSa Spell.ManaFromTreasure`: the properties of the spell that cast the card are the card's own cast facts.

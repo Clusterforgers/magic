@@ -234,6 +234,13 @@ pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
             }
             one(json!({ "HasAttached": attached }))
         }
+        // "Attacking planeswalkers your opponents control" (or you control).
+        "attacking" if arg.trim() == "Valid Planeswalker.OppCtrl" => {
+            one(json!({"AttackingPlaneswalkerOf": "Opponents"}))
+        }
+        "attacking" if arg.trim() == "Valid Planeswalker.YouCtrl" => {
+            one(json!({"AttackingPlaneswalkerOf": "You"}))
+        }
         "attacking" => match defined(ctx, arg) {
             Ok(who) if is_player(&who) => one(json!({"AttackingPlayer": who})),
             // The player one group of attackers attacks: a trigger reads it only when the group attacks a player.
