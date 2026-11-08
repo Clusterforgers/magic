@@ -2156,7 +2156,19 @@ fn batch_causes<'a>(
         let Some(found) = matching(inner, member, scope) else {
             continue;
         };
-        let players: Vec<Target> = if damage == Some(false) {
+        let on_objects = matches!(
+            inner,
+            TriggerPattern::CountersPut { .. } | TriggerPattern::CountersRemoved { .. }
+        );
+        let players: Vec<Target> = if on_objects {
+            // "One or more counters are put on a creature" is an event of each creature (CR 603.2c).
+            found
+                .subjects
+                .iter()
+                .filter(|subject| matches!(subject, Target::Object(_)))
+                .copied()
+                .collect()
+        } else if damage == Some(false) {
             Vec::new()
         } else {
             found

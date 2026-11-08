@@ -475,6 +475,9 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
             format!("{} would be countered", phrase::selector(ctx, what))
         }
         ReplaceWhen::LifeGain { who } => format!("{} would gain life", phrase::who(ctx, who)),
+        ReplaceWhen::Mill { who } => {
+            format!("{} would mill one or more cards", phrase::who(ctx, who))
+        }
         ReplaceWhen::Draw { who, .. } => format!("{} would draw a card", phrase::who(ctx, who)),
         other => generic::node(ctx, other),
     }

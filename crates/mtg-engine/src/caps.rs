@@ -620,6 +620,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
+    "ReplaceWhen.Mill",
     "ReplaceWhen.Draw",
     "ReplaceWhen.Draw.ExceptDrawStep",
     "ReplaceWhen.Enters",
@@ -907,6 +908,7 @@ mod tests {
     #[case::replacing_zone_changes("ReplaceWhen.ZoneChange", true)]
     #[case::replacing_counters_put("ReplaceWhen.CountersPut", true)]
     #[case::replacing_life_gain("ReplaceWhen.LifeGain", true)]
+    #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
     #[case::replacing_entering("ReplaceWhen.Enters", true)]
     #[case::multiplying("ReplaceBy.Multiply", true)]

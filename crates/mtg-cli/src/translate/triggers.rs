@@ -86,6 +86,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         destination: when
             .get("ZoneChange")
             .and_then(|change| change.get("to")?.as_str().map(str::to_owned)),
+        counters_on_objects: super::triggered::counters_on_objects(&when),
     });
     let intervening = match super::condition::on_triggered_card(ctx, &all)? {
         Some(found) => super::condition::single(intervening.into_iter().chain([found]).collect()),

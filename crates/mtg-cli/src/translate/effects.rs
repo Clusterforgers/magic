@@ -1412,6 +1412,7 @@ fn delayed_node(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         arrives: None,
         targeting: None,
         destination: None,
+        counters_on_objects: super::triggered::counters_on_objects(&when),
     });
     let outer = std::mem::replace(&mut ctx.trigger, shape);
     let declared = ctx.targets.len();

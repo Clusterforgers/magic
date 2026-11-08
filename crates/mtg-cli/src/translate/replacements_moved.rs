@@ -85,6 +85,7 @@ fn exiled_and(ctx: &mut Ctx, p: &Params, part: &Params, what: &[Value]) -> Tr<Va
         arrives: None,
         targeting: None,
         destination: None,
+        counters_on_objects: false,
     });
     let rest = ctx.sub(next).and_then(|sub| chain_at(ctx, &sub, false));
     ctx.trigger = None;

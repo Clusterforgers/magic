@@ -332,6 +332,7 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
             "SetColor",
             "AddColor",
             "RemoveCardTypes",
+            "RemoveCreatureTypes",
         ],
         |_, _| false,
     )?;
@@ -365,6 +366,25 @@ fn static_effect_mods(ctx: &mut Ctx, name: &str) -> Tr<Vec<Value>> {
         }
         types.retain(|m| m.get("AddType").is_none());
         types.insert(0, json!({ "SetTypes": only }));
+    }
+    if part.get("RemoveCreatureTypes") == Some("True") {
+        // "It's a Spirit Detective (it's no longer a Human)": the creature types the line names replace the others.
+        let only: Vec<Value> = types
+            .iter()
+            .filter_map(|m| m.get("AddSubtype").and_then(Value::as_str))
+            .map(|word| mtg_core::card::Subtype(word.to_owned()))
+            .filter(|subtype| subtype.is_known() && subtype.is_creature_type())
+            .map(|subtype| json!(subtype.0))
+            .collect();
+        let named = types
+            .iter()
+            .filter(|m| m.get("AddSubtype").is_some())
+            .count();
+        if only.is_empty() || only.len() != named {
+            return unmapped("key:ChangeZone.StaticEffect.RemoveCreatureTypes");
+        }
+        types.retain(|m| m.get("AddSubtype").is_none());
+        types.push(json!({ "SetCreatureTypes": only }));
     }
     mods.extend(types);
     if let Some(color) = part.get("SetColor") {

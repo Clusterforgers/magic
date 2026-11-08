@@ -769,6 +769,13 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would mill one or more cards (CR 701.17): all the cards one effect mills from a player's library are
+    /// one event, so `Multiply` and `Add` change how many are milled ("they mill twice that many cards instead").
+    Mill {
+        /// Who would mill.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// A player would draw a card.
     Draw {
         /// Who would draw.

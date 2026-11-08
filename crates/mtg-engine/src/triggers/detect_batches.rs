@@ -1,4 +1,4 @@
-//! Goal: a subject that follows an attachment ("equipped creature") triggers for the host alone, as it was when it left; the events of one batch ("one or more") trigger once for each player they are about and count themselves; the nth card, spell or life gain of a turn triggers once for its player, together or apart, and starts again with each turn; the cause carries the amount of the event.
+//! Goal: a subject that follows an attachment ("equipped creature") triggers for the host alone, as it was when it left; the events of one batch ("one or more") trigger once for each player they are about (counters once for each object) and count themselves; the nth card, spell or life gain of a turn triggers once for its player, together or apart, and starts again with each turn; the cause carries the amount of the event.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -218,11 +218,12 @@ fn cards_put_into_your_graveyard_from_your_library_together_trigger_once_and_cou
 const COUNTER_BATCH: &str = r#"{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"counter":"+1/+1"}}}"#;
 
 #[rstest]
-#[case::two_creatures_are_one_batch(&[("Bear", 1), ("Watcher", 2)], 1, 3)]
+#[case::each_creature_is_its_own_event(&[("Bear", 1), ("Watcher", 2)], 2, 3)]
+#[case::two_puts_on_one_creature(&[("Bear", 1), ("Bear", 2)], 1, 3)]
 #[case::one_counter_is_enough(&[("Bear", 1)], 1, 1)]
 #[case::an_opponents_creature(&[("Ogre", 1)], 0, 0)]
 #[case::mine_among_theirs(&[("Ogre", 1), ("Bear", 1)], 1, 1)]
-fn counters_put_together_trigger_once(
+fn counters_put_together_trigger_once_for_each_creature(
     #[case] puts: &[(&str, i32)],
     #[case] expected: usize,
     #[case] that_many: u32,

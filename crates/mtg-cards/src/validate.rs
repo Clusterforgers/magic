@@ -4627,7 +4627,9 @@ impl Walker<'_> {
                     self.at("on", |w| w.reference(on, Kind::Either));
                 }
             }
-            ReplaceWhen::LifeGain { who } | ReplaceWhen::Draw { who, .. } => {
+            ReplaceWhen::LifeGain { who }
+            | ReplaceWhen::Mill { who }
+            | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
         }
@@ -4780,6 +4782,12 @@ impl Walker<'_> {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
         self.g12a_moves(when, by);
+        if matches!(when, ReplaceWhen::Mill { .. })
+            && !matches!(by, ReplaceBy::Multiply(_) | ReplaceBy::Add(_))
+        {
+            // The engine changes only the count of a mill.
+            self.uses("ReplaceWhen", "Mill.Other");
+        }
         if let ReplaceWhen::TurnedFaceUp { what } = when
             && (*what != Selector::this()
                 || !matches!(by, ReplaceBy::WithCounters { tapped: false, .. }))

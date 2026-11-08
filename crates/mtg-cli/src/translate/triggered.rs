@@ -25,6 +25,9 @@ pub struct Shape {
     pub targeting: Option<Vec<Value>>,
     /// The zone the event object moved to (`Battlefield` for a permanent entering), when the pattern is a zone change.
     pub destination: Option<String>,
+    /// The pattern is a batch of counters put on objects ("one or more -1/-1 counters are put on a creature"): the card of
+    /// the event is the object they were put on.
+    pub counters_on_objects: bool,
 }
 
 /// The zone a permanent that left the battlefield by this pattern arrived in, when the pattern names one.
@@ -42,6 +45,17 @@ pub fn targeting(when: &Value) -> Option<Vec<Value>> {
     let what = when.get("SpellCast")?.get("what")?.as_array()?;
     let found = what.iter().find_map(|pred| pred.get("Targeting"))?;
     found.as_array().cloned()
+}
+
+/// Whether the pattern is a batch of counters put on objects, plain or by a cause.
+pub fn counters_on_objects(when: &Value) -> bool {
+    let inner = when
+        .get("Caused")
+        .and_then(|caused| caused.get("inner"))
+        .unwrap_or(when);
+    inner
+        .get("Batch")
+        .is_some_and(|batch| batch.get("CountersPut").is_some())
 }
 
 /// The name of the pattern a trigger's `when` is.
@@ -204,6 +218,8 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
             "Triggering"
         }
         Word::Card if did.is_some_and(|(_, object)| object) => "Triggering",
+        // "That creature" of "one or more counters are put on a creature": the engine triggers once for each object.
+        Word::Card if mode == "CounterAddedOnce" && shape.counters_on_objects => "Triggering",
         // The permanent that was tapped for mana is the event's first subject.
         Word::Card if mode == "TapsForMana" => "Triggering",
         Word::Attacker
@@ -260,6 +276,9 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         (Word::Owner, _) => Ok(json!({"OwnerOf": reference})),
         (Word::Card, "This") if ONE_OBJECT.contains(&mode) => Ok(json!("You")),
         (Word::Card, "Triggering") if ONE_OBJECT.contains(&mode) => {
+            Ok(json!({"ControllerOf": "Triggering"}))
+        }
+        (Word::Card, "Triggering") if mode == "CounterAddedOnce" && shape.counters_on_objects => {
             Ok(json!({"ControllerOf": "Triggering"}))
         }
         (Word::Source | Word::Blocker, "Dealer") => Ok(json!({"ControllerOf": "Dealer"})),
