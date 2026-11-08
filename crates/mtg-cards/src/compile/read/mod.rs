@@ -197,6 +197,7 @@ mod w14a_wanderer;
 mod w14b_or_spell;
 mod w14c_alt_costs;
 mod w14c_block_capacity;
+mod w15_wordings;
 mod w15b_time;
 mod w15c_clash;
 mod w17b_statics;
@@ -246,7 +247,7 @@ pub use render::{
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;
-pub use tokens::same_text;
+pub use tokens::{same_text, same_written_text};
 
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
