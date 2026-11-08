@@ -17,6 +17,10 @@ use crate::proposal::partial::{Mark, PartialProof};
 use crate::support::{Caps, PrintedCard, Support, SupportRecord, held_back, support};
 use crate::validate::{Problem, check_card, check_printed, check_token};
 
+mod decisions;
+
+use decisions::Decisions;
+
 /// A problem in a file: which file, where inside it, and what.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LoadError {
@@ -169,6 +173,8 @@ pub struct Library {
     files: BTreeMap<String, String>,
     generated: BTreeSet<String>,
     drafts: BTreeMap<String, Draft>,
+    /// What was decided of each card asked about; a clone, which is changed before it is used, starts empty.
+    decisions: Decisions,
 }
 
 impl Library {
@@ -475,6 +481,17 @@ impl Library {
     /// once read, that is while no rules file or `Verified` row outranks it and the engine runs it whole. `None`
     /// for a card without such a draft.
     pub fn draft_state(&self, printed: &PrintedCard, caps: &Caps) -> Option<ReadState> {
+        self.decisions.get(
+            printed,
+            caps,
+            |decided| decided.draft_state,
+            || self.draft_state_now(printed, caps),
+            |decided, state| decided.draft_state = Some(state),
+        )
+    }
+
+    /// What [`Library::draft_state`] answers, worked out again.
+    fn draft_state_now(&self, printed: &PrintedCard, caps: &Caps) -> Option<ReadState> {
         let id = printed.oracle_id.as_str();
         let rules = self.card(id);
         let draft = self.drafts.get(id)?;
@@ -492,6 +509,31 @@ impl Library {
     /// Rules that read back as other text than the card (a compiled row or a draft) play by hand with the reason
     /// `readback:Differs`; the hand-written corpus is held to the same read back by its tests.
     fn decide(&self, printed: &PrintedCard, caps: &Caps) -> (Option<&Card>, SupportRecord, bool) {
+        let (record, from_draft) = self.decisions.get(
+            printed,
+            caps,
+            |decided| decided.record.clone(),
+            || {
+                let (_, record, from_draft) = self.decide_now(printed, caps);
+                (record, from_draft)
+            },
+            |decided, made| decided.record = Some(made),
+        );
+        let id = printed.oracle_id.as_str();
+        let rules = if from_draft {
+            self.drafts.get(id).map(|draft| &draft.card)
+        } else {
+            self.card(id)
+        };
+        (rules, record, from_draft)
+    }
+
+    /// What [`Library::decide`] answers, worked out again.
+    fn decide_now(
+        &self,
+        printed: &PrintedCard,
+        caps: &Caps,
+    ) -> (Option<&Card>, SupportRecord, bool) {
         let id = printed.oracle_id.as_str();
         let rules = self.card(id);
         let mut record = support(rules, printed, caps);
@@ -531,8 +573,30 @@ impl Library {
 
     /// The definition of an imported card with the rules that decide it (see [`Library::support`]), if any.
     pub fn assemble(&self, printed: &PrintedCard, caps: &Caps) -> Assembled {
-        let (rules, record, from_draft) = self.decide(printed, caps);
-        assemble_record(printed, rules, record, caps, from_draft)
+        self.decisions.get(
+            printed,
+            caps,
+            |decided| decided.assembled.clone(),
+            || {
+                let (rules, record, from_draft) = self.decide(printed, caps);
+                assemble_record(printed, rules, record, caps, from_draft)
+            },
+            |decided, assembled| decided.assembled = Some(assembled),
+        )
+    }
+
+    /// Takes over what `previous` decided of the cards whose draft is the same in both, so that a library built
+    /// again for a changed draft or verdict decides again only the cards that changed. `previous` must be built from
+    /// the same rules files and compiled rows (the same base of [`Library::with_drafts`]).
+    pub fn inherit_decisions(&self, previous: &Library) {
+        self.decisions.inherit(&previous.decisions, |id| {
+            self.drafts.get(id) == previous.drafts.get(id)
+        });
+    }
+
+    /// How many cards this library holds a decision on.
+    pub fn decided(&self) -> usize {
+        self.decisions.len()
     }
 }
 
