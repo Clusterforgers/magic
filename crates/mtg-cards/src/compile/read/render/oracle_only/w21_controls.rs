@@ -17,7 +17,7 @@ pub(super) fn controls(compare: &Value) -> Option<String> {
         .cloned()
         .collect();
     (kinds.len() + 1 == counted.len()).then_some(())?;
-    let another = kinds.iter().any(|pred| *pred == Pred::Other);
+    let another = kinds.contains(&Pred::Other);
     kinds.retain(|pred| *pred != Pred::Other);
     // "artifact creature": the types may stand in either order.
     let reversed: Vec<Pred> = kinds.iter().rev().cloned().collect();

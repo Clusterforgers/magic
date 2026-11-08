@@ -1331,7 +1331,6 @@ pub fn texts(ability: &Ability) -> Vec<String> {
                 mods,
                 condition.as_ref(),
             ));
-            written.extend(first_spell_texts(affected, mods, condition.as_ref()));
             written
         }
         Ability::CostModifier {
@@ -1819,9 +1818,6 @@ fn static_texts(
     mods: &[Modification],
     condition: Option<&Condition>,
 ) -> Vec<String> {
-    if repeated_keyword(mods) {
-        return Vec::new();
-    }
     // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
     let helds: Vec<String> = condition.map(as_long_as::texts).unwrap_or_default();
     let tails: Vec<String> = if condition.is_some() {
@@ -1869,7 +1865,7 @@ fn static_texts(
             .map(|subject| (subject.to_owned(), false)),
         );
     }
-    subjects
+    let mut written: Vec<String> = subjects
         .into_iter()
         .flat_map(|(subject, plural)| {
             let predicates = predicate_variants(
@@ -1923,7 +1919,9 @@ fn static_texts(
                 .chain(during)
                 .collect::<Vec<_>>()
         })
-        .collect()
+        .collect();
+    written.extend(first_spell_texts(affected, mods, condition));
+    written
 }
 
 /// A keyword given twice ("Cascade, cascade.") is not worded as one list.

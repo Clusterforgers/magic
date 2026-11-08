@@ -46,9 +46,8 @@ fn spells(preds: &[Pred]) -> Option<Spells> {
     // "From your hand" is the cards of the player's own hand; "from exile" any exile.
     let owner_ok = match from {
         Some(ZoneKind::Hand) => owned,
-        Some(ZoneKind::Exile) => !owned,
+        Some(ZoneKind::Exile) | None => !owned,
         Some(_) => false,
-        None => !owned,
     };
     (stacked && yours && owner_ok).then_some(())?;
     Some(Spells {
