@@ -717,7 +717,15 @@ bearer?: ObjectId, } } | { "RingBearerLost": {
 /**
  * The player whose creature it was.
  */
-player: PlayerId, } } | { "CitysBlessingGained": { 
+player: PlayerId, } } | { "SpeedChanged": { 
+/**
+ * Whose speed.
+ */
+player: PlayerId, 
+/**
+ * The new speed, 1 to 4.
+ */
+speed: number, } } | { "CitysBlessingGained": { 
 /**
  * Who got it.
  */

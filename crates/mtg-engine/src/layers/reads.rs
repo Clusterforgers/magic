@@ -380,6 +380,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
         | Amount::CommanderCasts(who)
+        | Amount::Speed(who)
         | Amount::Counters { on: who, .. }
         | Amount::AnyCounters(who)
         | Amount::Mutations(who)
@@ -466,6 +467,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
+        | Condition::MaxSpeed(who)
         | Condition::Among(who)
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. } => reads_of_ref(who),

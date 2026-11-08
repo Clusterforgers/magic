@@ -577,6 +577,7 @@ const RUNS: &[&str] = &[
     "Amount.ColorsSpent",
     "Amount.PermanentsGraved",
     "Amount.CommanderCasts",
+    "Amount.Speed",
     "Amount.Tallied",
     "Amount.Largest",
     "Amount.HighestCounters",
@@ -700,9 +701,11 @@ const RUNS: &[&str] = &[
     "Keyword.Fabricate",
     "Keyword.Ascend",
     "Keyword.ForMirrodin",
+    "Keyword.StartYourEngines",
     "Keyword.JobSelect",
     "Keyword.EquipTo",
     "Condition.CitysBlessing",
+    "Condition.MaxSpeed",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
     "Keyword.Retrace",
@@ -1031,6 +1034,7 @@ mod tests {
     #[case::distinct_values("Amount.Distinct", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]
     #[case::commander_casts("Amount.CommanderCasts", true)]
+    #[case::speed("Amount.Speed", true)]
     #[case::may("Effect.May", true)]
     #[case::together("Effect.Together", true)]
     #[case::choosing("Effect.Choose", true)]
@@ -1243,6 +1247,7 @@ mod tests {
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
+    #[case::max_speed("Condition.MaxSpeed", true)]
     #[case::becoming_day_or_night("Effect.BecomeDayNight", true)]
     #[case::it_is_day("Condition.IsDay", true)]
     #[case::it_is_night("Condition.IsNight", true)]
@@ -1331,6 +1336,7 @@ mod tests {
     #[case::affinity("Keyword.Affinity", true)]
     #[case::typecycling("Keyword.Typecycling", true)]
     #[case::for_mirrodin("Keyword.ForMirrodin", true)]
+    #[case::start_your_engines("Keyword.StartYourEngines", true)]
     #[case::job_select("Keyword.JobSelect", true)]
     #[case::equip_to("Keyword.EquipTo", true)]
     #[case::split_second("Keyword.SplitSecond", true)]

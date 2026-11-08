@@ -90,6 +90,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Choose a Background" => "ChooseABackground",
         "Doctor's companion" => "DoctorsCompanion",
         "For Mirrodin" | "For Mirrodin!" => "ForMirrodin",
+        "Start your engines" | "Start your engines!" => "StartYourEngines",
         "Job select" => "JobSelect",
         _ => return None,
     })

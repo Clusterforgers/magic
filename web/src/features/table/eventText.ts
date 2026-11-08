@@ -916,6 +916,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('DungeonCompleted' in event) {
     return line(`${n.seat(event.DungeonCompleted.player)} completes a dungeon`)
   }
+  if ('SpeedChanged' in event) {
+    const { player, speed } = event.SpeedChanged
+    return line(`${n.seat(player)}'s speed becomes ${speed}${speed >= 4 ? ' (max speed)' : ''}`)
+  }
   if ('CitysBlessingGained' in event) {
     return line(`${n.seat(event.CitysBlessingGained.player)} gets the city's blessing`)
   }

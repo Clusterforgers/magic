@@ -493,6 +493,7 @@ pub fn named(name: &str) -> Tr<Value> {
         "Bargain" => json!("AdditionalCostPaid"),
         "Blessing" => json!({"CitysBlessing": "You"}),
         "Monarch" => json!({"Monarch": "You"}),
+        "MaxSpeed" => json!({"MaxSpeed": "You"}),
         "Night" => json!("IsNight"),
         "Threshold" => {
             let cards = yours(json!({"In": "Graveyard"}));

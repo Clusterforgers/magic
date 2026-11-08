@@ -108,6 +108,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("extort", Params::None),
     ("living weapon", Params::None),
     ("for mirrodin!", Params::None),
+    ("start your engines!", Params::None),
     ("job select", Params::None),
     ("totem armor", Params::None),
     ("umbra armor", Params::None),
@@ -726,6 +727,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
         "for mirrodin!" => Keyword::ForMirrodin,
+        "start your engines!" => Keyword::StartYourEngines,
         "job select" => Keyword::JobSelect,
         "fuse" => Keyword::Fuse,
         "changeling" => Keyword::Changeling,
@@ -1434,6 +1436,7 @@ mod tests {
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]
     #[case::station("Station", Keyword::Station)]
     #[case::for_mirrodin("For Mirrodin!", Keyword::ForMirrodin)]
+    #[case::start_your_engines("Start your engines!", Keyword::StartYourEngines)]
     #[case::job_select("Job select", Keyword::JobSelect)]
     #[case::a_named_equip("Murasame \u{2014} Equip {5}", Keyword::Equip(mana("{5}")))]
     #[case::a_named_equip_of_two_words(
@@ -1849,6 +1852,7 @@ mod tests {
             "Hideaway 4",
             "Gift a card",
             "For Mirrodin!",
+            "Start your engines!",
             "Job select",
             "Equip legendary creature {1}",
             "Ninjutsu {1}{U}",

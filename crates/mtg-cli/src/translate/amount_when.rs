@@ -24,6 +24,7 @@ pub fn when(ctx: &Ctx, base: &str) -> Option<Tr<Value>> {
         // `OptionalGenericCostPaid`: the optional additional cost of the spell's own `OptionalCost` line was paid.
         "Bargained" | "Teamwork" | "OptionalGenericCostPaid" => json!("AdditionalCostPaid"),
         "Monarch" => json!({"Monarch": "You"}),
+        "MaxSpeed" => json!({"MaxSpeed": "You"}),
         "Morbid" => {
             json!({"Compare": {"left": {"Tallied": {"who": "EachPlayer", "what": "CreaturesDied"}}, "op": "Ge", "right": 1}})
         }

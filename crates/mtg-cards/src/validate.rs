@@ -858,6 +858,20 @@ impl<'a> Walker<'a> {
         self.at(name, |w| w.reference(who, Kind::Player));
     }
 
+    /// The targets of the triggering spell or ability, which only a triggered ability has.
+    fn triggering_targets(&mut self) {
+        self.uses("Amount", "TriggeringTargets");
+        if !self.scope.in_trigger {
+            self.problem("`TriggeringTargets` is only valid in a triggered ability");
+        }
+    }
+
+    /// A condition about the players a reference names: a designation they hold or their speed.
+    fn player_condition(&mut self, name: &str, who: &Ref) {
+        self.uses("Condition", name);
+        self.at(name, |w| w.reference(who, Kind::Player));
+    }
+
     /// The fewest cards in a hand of the players a reference names, and the life lost or the dice rolled by the resolving
     /// ability.
     fn hand_or_life_lost(&mut self, amount: &Amount) {
@@ -1022,12 +1036,8 @@ impl<'a> Walker<'a> {
                 self.at("on", |w| w.reference(on, Kind::Object));
             }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
-            Amount::TriggeringTargets => {
-                self.uses("Amount", "TriggeringTargets");
-                if !self.scope.in_trigger {
-                    self.problem("`TriggeringTargets` is only valid in a triggered ability");
-                }
-            }
+            Amount::Speed(who) => self.player_amount("Speed", who),
+            Amount::TriggeringTargets => self.triggering_targets(),
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
             Amount::When {
                 condition,
@@ -1209,26 +1219,12 @@ impl<'a> Walker<'a> {
                 self.chosen_as(name);
             }
             Condition::Performed => self.performed(),
-            Condition::CompletedDungeon(who) => {
-                self.uses("Condition", "CompletedDungeon");
-                self.at("CompletedDungeon", |w| w.reference(who, Kind::Player));
-            }
-            Condition::Monarch(who) => {
-                self.uses("Condition", "Monarch");
-                self.at("Monarch", |w| w.reference(who, Kind::Player));
-            }
-            Condition::Initiative(who) => {
-                self.uses("Condition", "Initiative");
-                self.at("Initiative", |w| w.reference(who, Kind::Player));
-            }
-            Condition::MonarchAtTurnStart(who) => {
-                self.uses("Condition", "MonarchAtTurnStart");
-                self.at("MonarchAtTurnStart", |w| w.reference(who, Kind::Player));
-            }
-            Condition::CitysBlessing(who) => {
-                self.uses("Condition", "CitysBlessing");
-                self.at("CitysBlessing", |w| w.reference(who, Kind::Player));
-            }
+            Condition::CompletedDungeon(who) => self.player_condition("CompletedDungeon", who),
+            Condition::Monarch(who) => self.player_condition("Monarch", who),
+            Condition::Initiative(who) => self.player_condition("Initiative", who),
+            Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
+            Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
+            Condition::MaxSpeed(who) => self.player_condition("MaxSpeed", who),
             Condition::IsDay => self.uses("Condition", "IsDay"),
             Condition::IsNight => self.uses("Condition", "IsNight"),
             Condition::Step(_) => self.uses("Condition", "Step"),

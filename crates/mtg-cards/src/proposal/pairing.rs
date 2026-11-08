@@ -92,6 +92,10 @@ fn stripped(text: &str) -> &str {
     let Some((word, rest)) = text.split_once(" \u{2014} ") else {
         return text;
     };
+    // "Max speed" is no flavor: it is the condition of the ability (CR 702.179).
+    if word == "Max speed" {
+        return text;
+    }
     let ability_word = !word.contains(['~', ',', '.', ':', '\n']) && word.split(' ').count() <= 5;
     let numerals = word
         .chars()

@@ -138,6 +138,7 @@ pub mod rules;
 pub mod setup;
 pub mod sight;
 pub mod snapshot;
+pub mod speed;
 pub mod spend;
 pub mod stack;
 pub mod state;

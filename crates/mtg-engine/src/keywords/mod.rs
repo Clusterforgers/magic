@@ -132,6 +132,7 @@ mod soulbond;
 mod spectacle;
 mod split_second;
 mod squad;
+mod start_your_engines;
 mod station;
 mod storm;
 mod sunburst;
@@ -560,6 +561,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
+        Keyword::StartYourEngines => &start_your_engines::StartYourEngines,
         Keyword::JobSelect => &job_select::JobSelect,
         Keyword::EquipTo { .. } => &equip::EquipTo,
         Keyword::FlashSacrifice => &r6f_flash_sacrifice::FlashSacrifice,
@@ -925,6 +927,7 @@ mod tests {
             Keyword::Hideaway(4),
             Keyword::Gift(GiftKind::Card),
             Keyword::ForMirrodin,
+            Keyword::StartYourEngines,
             Keyword::JobSelect,
             Keyword::EquipTo {
                 to: Box::default(),
@@ -1099,6 +1102,7 @@ mod tests {
         "Keyword.Fabricate",
         "Keyword.Ascend",
         "Keyword.ForMirrodin",
+        "Keyword.StartYourEngines",
         "Keyword.JobSelect",
         "Keyword.EquipTo",
         "Keyword.Encore",
@@ -1301,6 +1305,7 @@ mod tests {
     #[case::decayed(Keyword::Decayed, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ascend(Keyword::Ascend, Hooks::none())]
+    #[case::start_your_engines(Keyword::StartYourEngines, Hooks::none())]
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::equip_to(Keyword::EquipTo { to: Box::default(), cost: Cost::mana("{1}".parse().unwrap()) }, Hooks { abilities: 1, ..Hooks::none() })]

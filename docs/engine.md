@@ -195,6 +195,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - Restrictions (`CantAttack`, `CantBlock`, `DoesntUntap`, `CantBeBlocked`, limits) have no layer and are read through `characteristics` (`cant_attack`, `cant_block`, ...), asked by `can_attack` and `block_options`.
 - Durations (`ContinuousEffect::is_active`): `UntilEndOfTurn` ends in the cleanup step in the batch that removes damage (CR 514.2), so a creature that a pump kept alive survives it. `Engine::add_continuous_effect` and `add_continuous_effect_from` register an effect with no card behind it, the hook the tests use.
 - Designations: a suspected permanent has menace and "can't block" from the base of layer 6 (`Held::suspect_cant_block`), so losing all abilities removes both (CR 701.60c); a solved Case (`Event::Solved`, CR 719.3) stays solved until it leaves. "As ~ is turned face up" counters (`ReplaceWhen::TurnedFaceUp`) are put on with the turn-up event (CR 708.8).
+- Speed (CR 702.179, `speed.rs`): start your engines! gives speed 1 with the state-based actions; a life loss of an opponent on the active player's turn marks the once-per-turn rise as it folds, and the next state-based check gives it without the stack, as the monarch's draw; speed stays after the permanent leaves.
 - Counters in layer 7c: counters named for their numbers change power and toughness; keyword counters grant the keyword. A permanent with both a +1/+1 and a -1/-1 counter loses as many of each as it has of the kind it has fewer of (CR 704.5q).
 
 ## Copies
