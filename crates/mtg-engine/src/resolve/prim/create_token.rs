@@ -133,6 +133,44 @@ fn named_defender(
         .then_some(aim))
 }
 
+/// What each player's tokens attack when the effect names nothing: their controller chooses, once for all of them;
+/// the question when one is still open.
+fn chosen_defenders(
+    cx: &Cx<'_>,
+    aims: &mut [(PlayerId, Option<AttackTarget>)],
+) -> Result<Option<Run>, ResolveError> {
+    let state = cx.state();
+    let options: Vec<(PlayerId, Vec<(AttackTarget, ChoiceOption)>)> = aims
+        .iter()
+        .map(|(player, _)| (*player, attackable(state, *player)))
+        .filter(|(_, targets)| !targets.is_empty())
+        .collect();
+    let choosers: Vec<OptionChooser> = options
+        .iter()
+        .map(|(player, targets)| OptionChooser {
+            player: *player,
+            options: targets.iter().map(|(_, option)| option.clone()).collect(),
+            text: "Choose a player or planeswalker for the tokens to attack.".into(),
+        })
+        .collect();
+    match pick_options(cx, &choosers)? {
+        Optioned::Ask(decision) => return Ok(Some(Run::Ask(decision))),
+        Optioned::Done(taken) => {
+            for (player, index) in taken {
+                let target = options
+                    .iter()
+                    .find(|(seat, _)| *seat == player)
+                    .and_then(|(_, targets)| targets.get(index))
+                    .map(|(target, _)| *target);
+                if let Some(aim) = aims.iter_mut().find(|(seat, _)| *seat == player) {
+                    aim.1 = target;
+                }
+            }
+        }
+    }
+    Ok(None)
+}
+
 /// What each token the effect makes is made from: a predefined or described token, a token sized by an amount counted
 /// now (never below zero), or the copies of the objects a reference names.
 fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveError> {
@@ -209,35 +247,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         for aim in &mut aims {
             aim.1 = named_defender(cx, against, aim.0)?;
         }
-    } else if *attacking {
-        let options: Vec<(PlayerId, Vec<(AttackTarget, ChoiceOption)>)> = players
-            .iter()
-            .map(|player| (*player, attackable(state, *player)))
-            .filter(|(_, targets)| !targets.is_empty())
-            .collect();
-        let choosers: Vec<OptionChooser> = options
-            .iter()
-            .map(|(player, targets)| OptionChooser {
-                player: *player,
-                options: targets.iter().map(|(_, option)| option.clone()).collect(),
-                text: "Choose a player or planeswalker for the tokens to attack.".into(),
-            })
-            .collect();
-        match pick_options(cx, &choosers)? {
-            Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
-            Optioned::Done(taken) => {
-                for (player, index) in taken {
-                    let target = options
-                        .iter()
-                        .find(|(seat, _)| *seat == player)
-                        .and_then(|(_, targets)| targets.get(index))
-                        .map(|(target, _)| *target);
-                    if let Some(aim) = aims.iter_mut().find(|(seat, _)| *seat == player) {
-                        aim.1 = target;
-                    }
-                }
-            }
-        }
+    } else if *attacking && let Some(asked) = chosen_defenders(cx, &mut aims)? {
+        return Ok(asked);
     }
     let first = state.next_object().get();
     let mut made = 0;

@@ -1372,25 +1372,9 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             )
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::AttachedPlayer,
-        } => said(what, "attacks enchanted player"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::Monarch,
-        } => said(what, "attacks the monarch"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::Opponents,
-        } => said(what, "attacks one of your opponents"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::MostLife,
-        } => said(
-            what,
-            "attacks the player with the most life or tied for most life",
-        ),
+        TriggerPattern::AttacksPlayer { what, at } => {
+            said(what, super::e16c_attacks::e16c_attacks_player(at)?)
+        }
         TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
             said(what, "attacks you or a planeswalker you control")
         }
@@ -1620,11 +1604,6 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             counter_text(what, counter.as_ref(), "removed from")
         }
         TriggerPattern::Nth { event, nth } => nth_text(event, *nth),
-        TriggerPattern::Batch(inner)
-            if matches!(**inner, TriggerPattern::PlayerCountersPut { .. }) =>
-        {
-            super::e16c_attacks::e16c_player_counters_text(inner)
-        }
         TriggerPattern::Batch(inner) => super::r7e_events::r7e_one_object_damage(inner)
             .or_else(|| batch_text(inner))
             .or_else(|| super::r7e_events::r7e_player_batch(inner)),
@@ -1632,16 +1611,15 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             super::g13d_attacked::g13d_attacked_text(&what.0, *at_least)
                 .or_else(|| group_attacks_text(what, *at_least))
         }
-        TriggerPattern::GroupAttacksAt { what, at, at_least } => {
-            super::e16c_attacks::e16c_group_at_text(what, at, *at_least)
-        }
         TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
             .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
             .or_else(|| any_of_text(patterns))
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))
             .or_else(|| super::r7e_events::r7e_any_of(patterns)),
         _ => {
-            if let Some(each) = super::r7e_events::fix10_each_source(pattern) {
+            if let Some(each) = super::r7e_events::fix10_each_source(pattern)
+                .or_else(|| super::e16c_attacks::e16c_group_at_text(pattern))
+            {
                 return Some(each);
             }
             let (what, verb) = happening(pattern)?;
@@ -1789,6 +1767,9 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
 /// into your graveyard from your library".
 fn batch_text(inner: &TriggerPattern) -> Option<String> {
     match inner {
+        TriggerPattern::PlayerCountersPut { .. } => {
+            super::e16c_attacks::e16c_player_counters_text(inner)
+        }
         TriggerPattern::DealsDamage { source, to, combat } => Some(format!(
             "Whenever one or more {} deal {}",
             phrase_text(source, Form::All)?,

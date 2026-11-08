@@ -58,7 +58,7 @@ fn glimmers(driver: &Driver) -> Vec<(PlayerId, Option<AttackTarget>)> {
                 .attackers()
                 .iter()
                 .find(|attacker| attacker.object() == *id)
-                .map(|attacker| attacker.target());
+                .map(mtg_engine::combat::Attacker::target);
             (controller_of(state, *id).unwrap(), aim)
         })
         .collect();

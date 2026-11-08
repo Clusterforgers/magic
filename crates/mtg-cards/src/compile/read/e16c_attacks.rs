@@ -99,6 +99,18 @@ pub(super) fn e16c_player_counters_text(pattern: &TriggerPattern) -> Option<Stri
     ))
 }
 
+/// What one creature attacks, as the trigger words it: "attacks enchanted player", "attacks the monarch", "attacks one
+/// of your opponents" and "attacks the player with the most life or tied for most life".
+pub(super) fn e16c_attacks_player(at: &Ref) -> Option<&'static str> {
+    Some(match at {
+        Ref::AttachedPlayer => "attacks enchanted player",
+        Ref::Monarch => "attacks the monarch",
+        Ref::Opponents => "attacks one of your opponents",
+        Ref::MostLife => "attacks the player with the most life or tied for most life",
+        _ => return None,
+    })
+}
+
 /// The player attacked, as the trigger words it.
 fn attacked(at: &Ref) -> Option<&'static str> {
     Some(match at {
@@ -110,7 +122,11 @@ fn attacked(at: &Ref) -> Option<&'static str> {
 }
 
 /// The wording of `GroupAttacksAt`; `None` for a shape it does not say.
-pub(super) fn e16c_group_at_text(what: &Selector, at: &Ref, at_least: u32) -> Option<String> {
+pub(super) fn e16c_group_at_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::GroupAttacksAt { what, at, at_least } = pattern else {
+        return None;
+    };
+    let at_least = *at_least;
     let player = attacked(at)?;
     let creature = Pred::Type(CardType::Creature);
     if at_least == 1 {
