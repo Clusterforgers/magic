@@ -484,9 +484,12 @@ impl Library {
         self.decisions.get(
             printed,
             caps,
-            |decided| decided.draft_state,
+            |decided| decided.draft_known.then_some(decided.draft_state),
             || self.draft_state_now(printed, caps),
-            |decided, state| decided.draft_state = Some(state),
+            |decided, state| {
+                decided.draft_known = true;
+                decided.draft_state = state;
+            },
         )
     }
 

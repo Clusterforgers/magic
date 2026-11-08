@@ -18,8 +18,10 @@ pub(crate) struct Decided {
     printed: PrintedCard,
     /// The support record and whether a draft decides the card.
     pub(crate) record: Option<(SupportRecord, bool)>,
-    /// The read state the deck check shows.
-    pub(crate) draft_state: Option<Option<ReadState>>,
+    /// Whether `draft_state` is decided.
+    pub(crate) draft_known: bool,
+    /// The read state the deck check shows, once `draft_known`.
+    pub(crate) draft_state: Option<ReadState>,
     /// The definition the engine plays.
     pub(crate) assembled: Option<Assembled>,
 }
@@ -30,6 +32,7 @@ impl Decided {
         Decided {
             printed: printed.clone(),
             record: None,
+            draft_known: false,
             draft_state: None,
             assembled: None,
         }
@@ -84,7 +87,7 @@ impl Decisions {
                 return found;
             }
         }
-        let made = make();
+        let answer = make();
         let mut held = self.held.lock().unwrap_or_else(PoisonError::into_inner);
         if held.caps.as_ref() != Some(caps) {
             held.caps = Some(caps.clone());
@@ -97,8 +100,8 @@ impl Decisions {
         if decided.printed != *printed {
             *decided = Arc::new(Decided::of(printed));
         }
-        keep(Arc::make_mut(decided), made.clone());
-        made
+        keep(Arc::make_mut(decided), answer.clone());
+        answer
     }
 
     /// Takes over the decisions of `previous` on the cards `same` says this library decides as `previous` does.
