@@ -456,10 +456,6 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     t20a_either::add(ability, texts);
     t20a_fold::add(ability, texts);
     t20a_greatest::add(ability, texts);
-    // e17a
-    e17a_until_cast::add(ability, texts);
-    e17a_as_cast::add(ability, texts);
-    e17a_next_turn::add(ability, texts);
     // t20c
     t20c_pay::add(ability, texts);
     t20c_rule::add(ability, texts);
@@ -469,8 +465,17 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_latest(ability, texts);
 }
 
-/// Adds the wordings of fix29, which read the wordings every other writer has added.
+/// Adds the wordings of round 17's e17a: the hand ability until the card is cast from exile, counts as you cast this
+/// spell, and a trigger lasting until your next turn.
+fn add_e17a(ability: &Ability, texts: &mut Vec<String>) {
+    e17a_until_cast::add(ability, texts);
+    e17a_as_cast::add(ability, texts);
+    e17a_next_turn::add(ability, texts);
+}
+
+/// Adds e17a's wordings, then those of fix29, which read the wordings every other writer has added.
 pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
+    add_e17a(ability, texts);
     f29_wordings::add(ability, texts);
 }
 

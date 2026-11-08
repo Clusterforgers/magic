@@ -43,7 +43,7 @@ fn another_shape_is_a_gap(#[case] from: &str, #[case] to: &str) {
 #[test]
 fn another_wording_is_a_gap() {
     let oracle = OUTLAW_ORACLE.replace(" for as long as it remains exiled", " this turn");
-    assert!(!gaps(&outlaw("", "", &oracle)).is_empty());
+    assert!(!gaps(&outlaw("", "", &oracle)).is_empty(), "{oracle}");
 }
 
 /// An instant that deals 4 damage when a creature was yours as it was cast, else 2, with the Oracle text `oracle`.
