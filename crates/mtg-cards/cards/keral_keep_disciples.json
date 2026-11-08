@@ -11,7 +11,7 @@
           "Triggered": {
             "when": {
               "Did": {
-                "action": "Activated",
+                "action": "ActivatedLoyalty",
                 "who": "You",
                 "what": [{ "Type": "Planeswalker" }, { "Subtype": "Chandra" }]
               }

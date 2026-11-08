@@ -842,7 +842,11 @@ fn tapping_a_permanent_for_mana_triggers_once_for_the_tap(
     let mana_taps = found.len();
     assert_eq!(mana_taps, expected);
     if expected == 1 {
-        assert_eq!(found[0].cause.subjects, [Target::Player(player)]);
+        let tapped = pre.object(id(&pre, land)).unwrap().reference();
+        assert_eq!(
+            found[0].cause.subjects,
+            [Target::Object(tapped), Target::Player(player)]
+        );
     }
 }
 

@@ -18,7 +18,7 @@ fn trigger(mode: &str, word: &str) -> String {
 #[case::sacrifice("Sacrificed", "TriggeredCardController", Some(json!("TriggeringPlayer")))]
 #[case::land_play("LandPlayed", "TriggeredCardController", Some(json!("TriggeringPlayer")))]
 #[case::draw("Drawn", "TriggeredCardController", Some(json!("Triggering")))]
-#[case::mana("TapsForMana", "TriggeredActivator", Some(json!("Triggering")))]
+#[case::mana("TapsForMana", "TriggeredActivator", Some(json!("TriggeringPlayer")))]
 // A discard names no activator, and a tap of a permanent not for mana names no player who tapped it.
 #[case::discard_activator("Discarded", "TriggeredActivator", None)]
 #[case::untap_activator("Untaps", "TriggeredActivator", None)]

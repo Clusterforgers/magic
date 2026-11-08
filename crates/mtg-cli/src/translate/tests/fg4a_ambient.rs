@@ -30,7 +30,7 @@ use super::{abilities, gaps, normal};
     "Name:T\nTypes:Sorcery\nA:SP$ Effect | ValidTgts$ Creature | RememberObjects$ Targeted | Duration$ Permanent | Triggers$ Hits\nSVar:Hits:Mode$ Attacks | ValidCard$ Card.IsRemembered | TriggerZones$ Command | Execute$ Gain\nSVar:Gain:DB$ GainLife | LifeAmount$ 1\n",
     json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}], "effects": [
         {"DelayedTrigger": {"when": {"Attacks": {"what": [{"Is": {"Target": 0}}]}}, "once": false,
-            "effects": [{"GainLife": {"amount": 1}}]}}]}})
+            "until": "Forever", "effects": [{"GainLife": {"amount": 1}}]}}]}})
 )]
 fn ambient_statics_map(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);

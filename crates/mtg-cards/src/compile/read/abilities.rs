@@ -186,7 +186,8 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
             .map_or_else(|| sentences(r, true), Some)?,
         None => sentences(r, true)?,
     };
-    let effects = super::c10_pa_monstrous::c10_pa_put_in(r, effects, monstrous);
+    let mut effects = super::c10_pa_monstrous::c10_pa_put_in(r, effects, monstrous);
+    damage_to_the_player_alone(&when, &mut effects);
     let limit = once_each_turn(r, &effects);
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.
@@ -209,6 +210,20 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         targets: std::mem::take(&mut r.targets),
         effects,
     })
+}
+
+/// A tap for mana holds the permanent too, so the damage to "that player" is to the player alone.
+fn damage_to_the_player_alone(when: &TriggerPattern, effects: &mut [Effect]) {
+    if !matches!(when, TriggerPattern::TappedForMana { .. }) {
+        return;
+    }
+    for effect in effects {
+        if let Effect::DealDamage { to, .. } = effect
+            && *to == Ref::Triggering
+        {
+            *to = Ref::TriggeringPlayer;
+        }
+    }
 }
 
 /// What the event says about who attacks whom and which spell is cast, which the pronouns of the effects name.

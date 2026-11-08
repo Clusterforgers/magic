@@ -114,10 +114,7 @@ fn a_damage_replacement_reads_the_execute_mode_of_its_batch(
     "| ValidCard$ Planeswalker.Other | ValidActivatingPlayer$ You | ValidSA$ Activated.Loyalty",
     r#""Other""#
 )]
-fn activating_a_loyalty_ability_is_activating_an_ability_of_a_planeswalker(
-    #[case] words: &str,
-    #[case] expected: &str,
-) {
+fn activating_a_loyalty_ability_is_its_own_action(#[case] words: &str, #[case] expected: &str) {
     let (json, found) = card(
         "Enchantment",
         &format!(
@@ -125,7 +122,7 @@ fn activating_a_loyalty_ability_is_activating_an_ability_of_a_planeswalker(
         ),
     );
     assert!(found.is_empty(), "{found:?}");
-    assert!(json.contains(r#"{"Type":"Planeswalker"}"#), "{json}");
+    assert!(json.contains(r#""action":"ActivatedLoyalty""#), "{json}");
     assert!(json.contains(expected), "{json}");
 }
 

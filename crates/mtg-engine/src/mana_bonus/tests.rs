@@ -131,7 +131,7 @@ fn an_ability_that_does_more_than_add_mana_still_triggers_onto_the_stack() {
             .with_type(CardType::Enchantment)
             .with_rules(
                 serde_json::from_str(
-                    r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}]}},"effects":[{"DealDamage":{"to":"Triggering","amount":1}}]}}"#,
+                    r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}]}},"effects":[{"DealDamage":{"to":"TriggeringPlayer","amount":1}}]}}"#,
                 )
                 .unwrap(),
             ),

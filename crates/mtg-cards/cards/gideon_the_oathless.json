@@ -21,13 +21,7 @@
         },
         {
           "Triggered": {
-            "when": {
-              "Did": {
-                "action": "Activated",
-                "who": "Opponents",
-                "what": [{ "Type": "Planeswalker" }]
-              }
-            },
+            "when": { "Did": { "action": "ActivatedLoyalty", "who": "Opponents" } },
             "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 1 } }]
           }
         }
