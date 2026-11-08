@@ -80,6 +80,14 @@ fn owner_targeted(p: &Params) -> bool {
         }
 }
 
+/// A line whose tokens go to you and to its player target ("you and target opponent each create a Treasure token").
+fn you_and_target(p: &Params) -> bool {
+    p.get("TokenOwner") == Some("TargetedAndYou")
+        && player_targets(p)
+        && !p.has("AttachedTo")
+        && !p.has("RememberTokens")
+}
+
 /// A line whose tokens are yours and whose target players only the count reads ("create a token for each nonland card in
 /// that player's graveyard").
 fn counted_targets(p: &Params) -> bool {
@@ -187,7 +195,8 @@ fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
         token = json!({"Sized": size});
     }
     // The target comes first: the count may read it ("for each nonland card in that player's graveyard").
-    let who = if owner_targeted(p) {
+    let both = you_and_target(p);
+    let who = if owner_targeted(p) || both {
         super::valid::subject(ctx, p, "", None)?
     } else if counted_targets(p) {
         super::valid::subject(ctx, p, "", None)?;
@@ -218,7 +227,14 @@ fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
     }
     let attach = attached(ctx, p, &mut create)?;
     let after = pumped(ctx, p, &mut create)?;
-    let mut effects = vec![json!({ "CreateToken": create })];
+    let mut effects = Vec::new();
+    // "You and target opponent each create ...": the same tokens for you and for the target.
+    if both {
+        let mut yours = create.clone();
+        yours["who"] = json!("You");
+        effects.push(json!({ "CreateToken": yours }));
+    }
+    effects.push(json!({ "CreateToken": create }));
     effects.extend(after);
     effects.extend(attach);
     Ok(effects)
@@ -606,7 +622,7 @@ fn spend_filter(restriction: &str) -> Tr<Value> {
 /// on a creature through the state-based actions (CR 704.5y).
 fn attached(ctx: &mut Ctx, p: &Params, create: &mut Value) -> Tr<Option<Value>> {
     let Some(word) = p.get("AttachedTo") else {
-        if p.has("ValidTgts") && !owner_targeted(p) && !counted_targets(p) {
+        if p.has("ValidTgts") && !owner_targeted(p) && !counted_targets(p) && !you_and_target(p) {
             return unmapped("key:Token.ValidTgts");
         }
         return Ok(None);

@@ -3061,6 +3061,7 @@ impl Writer<'_> {
             .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
             .or_else(|| self.w2b_you_and_each(effects))
+            .or_else(|| self.you_and_each_create(effects))
             .or_else(|| untapped::text(effects))
             .or_else(|| free_casts::text(effects))
             .or_else(|| self.opponent_exiles(effects))

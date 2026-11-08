@@ -174,6 +174,11 @@ fn player_word(ctx: &Ctx, word: &str) -> Tr<Value> {
         "You" => Ok(json!("You")),
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         "TargetedPlayer" => ctx.player_target(),
+        // The player the trigger that spawned a reflexive trigger was about, bound as the reflexive trigger was set up.
+        "Spawner>TriggeredTarget" => match ctx.delayed_remembered.clone() {
+            Some(held) => Ok(held),
+            None => unmapped("valid:ControlledBy Spawner>TriggeredTarget"),
+        },
         "TargetedOrController" => Ok(json!({"OrController": ctx.last_target()?})),
         // An earlier target, read as chosen even by a later target's filter (CR 601.2c).
         "ParentTarget" if super::frame::parent_is_player(ctx) => ctx.parent(),

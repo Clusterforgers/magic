@@ -63,21 +63,34 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
     match (&only, affected) {
         (Some(objects), valid) => {
             // "That card" with more words (`Card.IsRemembered+nonLand`): the remembered objects the rest still matches.
-            let Some(props) = valid.strip_prefix("Card.") else {
-                return unmapped("valid:MayPlay-Affected-with-remembered");
-            };
-            let parts: Vec<&str> = props.split('+').collect();
-            if !parts.contains(&"IsRemembered") {
-                return unmapped("valid:MayPlay-Affected-with-remembered");
+            // A type word or a list of alternatives (`Instant.IsRemembered,Sorcery.IsRemembered`) is read the same way.
+            let mut rests: Vec<String> = Vec::new();
+            for alternative in valid.split(',') {
+                let (head, props) = alternative.split_once('.').unwrap_or((alternative, ""));
+                let parts: Vec<&str> = props.split('+').collect();
+                if !parts
+                    .iter()
+                    .any(|part| matches!(*part, "IsRemembered" | "ChosenCard"))
+                {
+                    return unmapped("valid:MayPlay-Affected-with-remembered");
+                }
+                let rest: Vec<&str> = parts
+                    .into_iter()
+                    .filter(|part| !matches!(*part, "IsRemembered" | "ChosenCard"))
+                    .collect();
+                rests.push(if rest.is_empty() {
+                    head.to_string()
+                } else {
+                    format!("{head}.{}", rest.join("+"))
+                });
             }
             permission["only"] = (*objects).clone();
-            let rest: Vec<&str> = parts
-                .into_iter()
-                .filter(|part| *part != "IsRemembered")
-                .collect();
             // Exile holds anyone's cards: "the card you own" excludes the others among the ones named.
-            if !rest.is_empty() {
-                let what = selector_any(ctx, &format!("Card.{}", rest.join("+")))?;
+            if rests.iter().any(|rest| rest != "Card") {
+                let what: Vec<Value> = selector_any(ctx, &rests.join(","))?
+                    .into_iter()
+                    .filter(|pred| *pred != json!({"ControlledBy": "You"}))
+                    .collect();
                 if !what.is_empty() {
                     permission["what"] = json!(what);
                 }
