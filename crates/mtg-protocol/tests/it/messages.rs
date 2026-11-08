@@ -52,7 +52,7 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 18;
+const CLIENT_VARIANTS: usize = 19;
 const SERVER_VARIANTS: usize = 17;
 
 const YIELDS: [YieldUntil; 3] = [
@@ -109,6 +109,7 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::AutoChoices { .. } => 15,
         ClientMessage::AutoYield { .. } => 16,
         ClientMessage::ClearAutoYield { .. } => 17,
+        ClientMessage::LoadAutoYields { .. } => 18,
     }
 }
 
@@ -630,6 +631,9 @@ fn client_samples() -> Vec<ClientMessage> {
             .into_iter()
             .map(|ability| ClientMessage::ClearAutoYield { ability }),
     );
+    out.push(ClientMessage::LoadAutoYields {
+        yields: auto_yields(),
+    });
     out.extend(
         manual_samples()
             .into_iter()
@@ -958,6 +962,10 @@ fn every_event_view_variant_round_trips() {
 #[case(
     ClientMessage::ClearAutoYield { ability: AutoYield { name: "Soul Warden".into(), text: "gain".into() } },
     json!({"type": "ClearAutoYield", "ability": {"name": "Soul Warden", "text": "gain"}})
+)]
+#[case(
+    ClientMessage::LoadAutoYields { yields: vec![AutoYield { name: "Soul Warden".into(), text: "gain".into() }] },
+    json!({"type": "LoadAutoYields", "yields": [{"name": "Soul Warden", "text": "gain"}]})
 )]
 #[case(
     ClientMessage::Join { protocol_version: 1, game: "g".into(), name: "n".into() },
