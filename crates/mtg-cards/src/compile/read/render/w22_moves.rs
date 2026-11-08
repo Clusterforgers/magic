@@ -51,6 +51,21 @@ pub fn w22_graved_wordings(texts: &mut Vec<String>) {
                     "{head}{} to {dest} {cards}{after}",
                     lead("return", opens)
                 ));
+                // The cards of your own graveyard are said by where they were put.
+                let own = " in your graveyard that were put there from the battlefield this turn";
+                if let Some(kind) = cards.strip_suffix(own) {
+                    let alt = format!(
+                        "{kind} that were put into your graveyard from the battlefield this turn"
+                    );
+                    found.push(format!(
+                        "{head}{} to {dest} {alt}{after}",
+                        lead("return", opens)
+                    ));
+                    found.push(format!(
+                        "{head}{} {alt} to {dest}{after}",
+                        lead("return", opens)
+                    ));
+                }
                 if chosen {
                     let them = if plural { "them" } else { "it" };
                     found.push(format!(
