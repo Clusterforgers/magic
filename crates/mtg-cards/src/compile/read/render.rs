@@ -549,6 +549,14 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // Numbered bookkeeping names read as the plain ones; the twin has none left, so this recurses once.
+    if let Some(plain) = super::t18_binds::t18_unnumbered(ability) {
+        for text in written_variants(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
     let six_sided: Vec<String> = texts
         .iter()
         .filter_map(|text| super::fix23_dice::fix23_six_sided(text))
