@@ -195,7 +195,7 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 
 ### Account preferences
 
-`prefs.rs` and `mtg-db`'s `PrefsRepo` (`user_prefs`, one row per account, deleted with the account). The default stops and "End my turn by hand" follow the account to every browser. `PUT /api/me/prefs` stores them sorted, each side and step once, all lasting and at steps that grant priority, at most `MAX_DEFAULT_STOPS`; otherwise 400 `invalid_request`. Needs an account (401 `unauthenticated`; 503 `cards_unavailable` without a database). Bodies are at most 8 KiB.
+`prefs.rs` and `mtg-db`'s `PrefsRepo` (`user_prefs`, one row per account, deleted with the account). The default stops and "End my turn by hand" follow the account to every browser. The always-yield list (`auto_yields`, at most `MAX_AUTO_YIELDS`) is kept the same way. `PUT /api/me/prefs` stores the stops sorted, each side and step once, all lasting and at steps that grant priority, at most `MAX_DEFAULT_STOPS`; otherwise 400 `invalid_request`. Needs an account (401 `unauthenticated`; 503 `cards_unavailable` without a database). Bodies are at most 8 KiB.
 
 ### Fix marks
 

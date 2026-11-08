@@ -46,7 +46,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (pf25a) Hovering or focusing a folded stack chip draws the target arrows of every item in its run, not only its top one's (`combat/stackArrows.ts`, `stackGroups.ts`)
 - [ ] (pf23a) A mana source in the hand (Simian Spirit Guide, Elvish Spirit Guide) is offered for payments and counted when an unpayable optional payment is declined without asking
 
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)
@@ -66,7 +65,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 The table and its prompts are live; the items below polish them.
 
-- [ ] (i2c1) A stack item in the stack panel offers "Always yield to" on its own menu, also while the seat is not asked, and per-ability yields are kept with the account like the auto choices (i2d)
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)

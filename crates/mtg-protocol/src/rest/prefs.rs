@@ -3,10 +3,13 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::message::{AutoChoices, Stop};
+use crate::message::{AutoChoices, AutoYield, Stop};
 
 /// The most default stops an account keeps.
 pub const MAX_DEFAULT_STOPS: usize = 40;
+
+/// The most abilities an account always yields to.
+pub const MAX_AUTO_YIELDS: usize = 200;
 
 /// The pace preferences of an account, kept on the server and applied to every game it plays.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
@@ -18,4 +21,7 @@ pub struct UserPrefs {
     /// The decisions the server answers for the account's seats; off when absent.
     #[serde(default)]
     pub auto_choices: AutoChoices,
+    /// The abilities the account's seats always yield to; sorted, each once.
+    #[serde(default)]
+    pub auto_yields: Vec<AutoYield>,
 }

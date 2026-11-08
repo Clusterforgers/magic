@@ -247,3 +247,44 @@ async fn only_an_ability_on_the_stack_can_be_yielded_to(#[case] spell: bool) {
     );
     assert_eq!(waiting(&handle).await, Some(PlayerId::from_index(ME)));
 }
+
+#[rstest]
+#[case::within_the_limit(1, true)]
+#[case::too_many(mtg_protocol::rest::MAX_AUTO_YIELDS + 1, false)]
+#[tokio::test]
+async fn kept_yields_load_at_once_and_only_up_to_the_limit(
+    #[case] count: usize,
+    #[case] taken: bool,
+) {
+    let (handle, mut clients) = table().await;
+    let yields: Vec<AutoYield> = (0..count)
+        .map(|n| AutoYield {
+            name: format!("Kept {n}"),
+            text: String::new(),
+        })
+        .collect();
+    clients[ME].drain();
+    send(
+        &handle,
+        &clients[ME],
+        ClientMessage::LoadAutoYields {
+            yields: yields.clone(),
+        },
+    )
+    .await;
+    if taken {
+        assert_eq!(told(&mut clients[ME]).await, yields);
+    } else {
+        let messages = clients[ME].drain();
+        assert!(
+            matches!(
+                messages.as_slice(),
+                [ServerMessage::Error {
+                    code: ErrorCode::BadMessage,
+                    ..
+                }]
+            ),
+            "{messages:?}"
+        );
+    }
+}
