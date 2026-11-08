@@ -283,6 +283,8 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::GainAbilitiesOf(_)
+            // Only the resolution of an activated ability knows which ability it is, so it is not a row of the table.
+            | mtg_cards::modify::Modification::LoseThisAbility
             | mtg_cards::modify::Modification::LoseAbilities
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack

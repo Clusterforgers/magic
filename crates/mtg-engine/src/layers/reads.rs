@@ -59,7 +59,9 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::AddKeyword(_)
         | Modification::RemoveKeyword(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
-        Modification::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
+        Modification::LoseAbilities | Modification::LoseAbility(_) => {
+            Traits::KEYWORDS.or(Traits::RULES)
+        }
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
         | Modification::SetPower(_)
@@ -106,7 +108,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
         | Wanted::LockKeyword(_) => Traits::KEYWORDS,
-        Wanted::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
+        Wanted::LoseAbilities | Wanted::LoseThisAbility => Traits::KEYWORDS.or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
         | Wanted::SetPower(_)
@@ -169,6 +171,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
         | Wanted::LockKeyword(_)
+        | Wanted::LoseThisAbility
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
         | Wanted::CantAttack

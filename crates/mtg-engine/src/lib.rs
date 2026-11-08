@@ -97,6 +97,7 @@ pub mod counters;
 pub mod day_night;
 pub mod decision;
 pub mod dk1c5_rooms;
+pub(crate) mod e15g_paid;
 pub mod effects;
 pub mod engine;
 pub mod error;

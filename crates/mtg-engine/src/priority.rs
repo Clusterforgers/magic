@@ -499,6 +499,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .filter(|id| ways::can_turn_up(state, player, *id, &pool, &all_mana, life))
         .collect();
     let unlockable = crate::dk1c5_rooms::dk1c5_unlockable(state, player, &pool, &all_mana, life);
+    let endable = crate::e15g_paid::endable(state, player, &pool, &all_mana, life);
     let abilities = if silenced {
         Vec::new()
     } else {
@@ -542,6 +543,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             .concat(),
         ) || !faces.is_empty()
             || !unlockable.is_empty()
+            || !endable.is_empty()
             || companion,
         playable_lands,
         castable,
@@ -552,6 +554,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         plottable,
         turnable,
         unlockable,
+        endable,
         companion,
         faces,
         unplayable,
@@ -638,6 +641,14 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("unlock").into());
             }
             Ok(Outcome::BeginUnlock(object, door))
+        }
+        PriorityAction::EndEffect(effect) => {
+            let offered = options
+                .endable
+                .iter()
+                .find(|option| option.effect == effect)
+                .ok_or(IllegalAnswer::NotOffered("end effect"))?;
+            Ok(Outcome::BeginEndEffect(offered.object, effect))
         }
         PriorityAction::CastPrepared(object) => {
             let offered = options.faces.iter().any(|option| {

@@ -563,6 +563,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))
         }
+        Duration::UntilPaid(cost) => format!("until you pay {cost}"),
         Duration::Forever => "permanently".to_owned(),
     }
 }

@@ -50,6 +50,7 @@ mod c4_phase;
 mod c4_rules;
 mod c6_au_dead;
 mod c6_blk_aura;
+mod e15g_licid;
 mod c6_blk_draws;
 mod c7_untap;
 mod c8_eg_cast_itself;

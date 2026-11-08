@@ -593,6 +593,9 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants) {
         return texts;
     }
+    if let Some(texts) = super::e15g_licid::e15g_licid_texts(ability, written_variants) {
+        return texts;
+    }
     let mut texts = variants(ability);
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);

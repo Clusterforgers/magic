@@ -1190,7 +1190,10 @@ fn of_target_player(ctx: &mut Ctx, p: &Params, valid: &str) -> Tr<Value> {
     Ok(json!({ "Each": selector }))
 }
 
-const ANIMATE_KEYS: [&str; 27] = [
+const ANIMATE_KEYS: [&str; 30] = [
+    "RemoveEnchantmentTypes",
+    "RemoveThisAbility",
+    "RevertCost",
     "Defined",
     "ValidTgts",
     "Types",
@@ -1290,6 +1293,9 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     mods.extend(super::effects_animate::restrictions(p)?);
     if mods.is_empty() {
         return unmapped("key:Animate.nothing");
+    }
+    if let Some(paid) = e15g_licid(ctx, p, &mut mods)? {
+        return Ok(vec![json!({"Continuous": {"affected": affected, "mods": mods, "duration": paid}})]);
     }
     let rules = super::effects_animate::rule_effects(p, &affected, duration)?;
     let mut effects =
@@ -2219,4 +2225,41 @@ fn dies_shield(ctx: &mut Ctx, p: &Params) -> Tr<Option<Value>> {
         "by": {"MoveTo": "Exile"},
         "duration": "UntilEndOfTurn"}});
     Ok(Some(shield))
+}
+
+/// The Licids: "~ loses this ability and becomes an Aura enchantment with enchant creature. Attach it to target creature.
+/// You may pay {W} to end this effect." `RemoveThisAbility$` takes the resolving ability away, `RevertCost$` makes the
+/// effect last until its controller pays that mana (CR 116.2c), and `RemoveEnchantmentTypes$` drops the enchantment
+/// subtypes the object had: the duration of the effect, or `None` for a line without these keys. Only the shape of the
+/// Licids, a permanent that changes itself for ever until paid, and only one that is no enchantment yet.
+fn e15g_licid(ctx: &Ctx, p: &Params, mods: &mut Vec<Value>) -> Tr<Option<Value>> {
+    let keys = ["RemoveEnchantmentTypes", "RemoveThisAbility", "RevertCost"];
+    if !keys.iter().any(|key| p.has(key)) {
+        return Ok(None);
+    }
+    let licid = p.get("RemoveThisAbility") == Some("True")
+        && p.get("RemoveEnchantmentTypes") == Some("True")
+        && p.get("RemoveCardTypes") == Some("True")
+        && p.get("Defined") == Some("Self")
+        && p.get("Duration") == Some("Permanent")
+        && !ctx.types.contains("Enchantment")
+        && [
+            "ValidCards",
+            "ValidTgts",
+            "HiddenKeywords",
+            "AtEOT",
+            "LeaveBattlefield",
+        ]
+        .iter()
+        .all(|key| !p.has(key));
+    let (true, Some(revert)) = (licid, p.get("RevertCost")) else {
+        return unmapped("key:Animate.RevertCost-shape");
+    };
+    // A cost of mana alone is its text.
+    let cost = super::cost::cost(ctx, revert)?;
+    let Some(mana) = cost.as_str() else {
+        return unmapped("key:Animate.RevertCost-not-mana");
+    };
+    mods.push(json!("LoseThisAbility"));
+    Ok(Some(json!({ "UntilPaid": mana })))
 }

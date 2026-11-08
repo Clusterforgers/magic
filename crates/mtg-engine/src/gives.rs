@@ -110,6 +110,8 @@ impl Gives {
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities => GivenRule::LoseAbilities,
+            // An ability of its own that the attachment loses is no mark it gives.
+            Modification::LoseAbility(_) => return,
             Modification::RemoveKeyword(_) | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
             Modification::GrantAbility(_) | Modification::GainAbilities(_) => {
                 GivenRule::GainAbility

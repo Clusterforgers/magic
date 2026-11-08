@@ -107,6 +107,9 @@ pub enum Modification {
     GainAbilitiesOf(Ref),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
+    /// The object loses the ability that made the effect, as the effect begins (layer 6): "~ loses this ability". Only an
+    /// effect of an activated ability has it, never a static ability.
+    LoseThisAbility,
     /// Changes the controller to the player (layer 2).
     SetController(Ref),
     /// The object can't attack (a restriction, no layer).
@@ -181,6 +184,7 @@ impl Modification {
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
+            | Modification::LoseThisAbility
             | Modification::LoseAbilities => Some("6"),
             Modification::SetPT { .. }
             | Modification::SetPower(_)
@@ -239,6 +243,9 @@ pub enum Duration {
     UntilTurnSkipped,
     /// Without end (until the object or the game is gone).
     Forever,
+    /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay
+    /// {W} to end this effect", CR 116.2c), or the object is gone. Only a continuous effect that names its objects lasts this way.
+    UntilPaid(#[cfg_attr(feature = "ts", ts(type = "string"))] ManaCostX),
 }
 
 /// A permission to cast cards (CR 601.3): which cards, from where, and what is waived.

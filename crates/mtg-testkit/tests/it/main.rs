@@ -204,6 +204,7 @@ mod e14e_rather_cost;
 mod e14e_targeted_equip;
 mod e14e_until_next_turn;
 mod e14f_mechanics;
+mod e15g_licids;
 mod e14g_counted_mana;
 mod e14g_mana_riders;
 mod elimination;

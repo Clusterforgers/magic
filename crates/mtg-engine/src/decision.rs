@@ -2,7 +2,7 @@
 //!
 //! A [`Decision`] lists every legal option; an [`Answer`] must be built from exactly those.
 
-use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
 
@@ -181,6 +181,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<FaceOption>>", optional))]
     pub unlockable: Vec<FaceOption>,
+    /// The effects the holder can end now by paying (a special action that does not use the stack, CR 116.2c): "you may
+    /// pay {W} to end this effect".
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PaidEnd>>", optional))]
+    pub endable: Vec<PaidEnd>,
     /// Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
     /// timing, once a game.
     #[serde(default, skip_serializing_if = "is_false")]
@@ -231,6 +236,18 @@ pub enum Unplayable {
     Cost,
     /// An effect or rule forbids it now: "can't cast spells", "cast only during ...", split second.
     Restricted,
+}
+
+/// An effect its controller may end by paying (CR 116.2c).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct PaidEnd {
+    /// The effect, named by its first part.
+    pub effect: EffectId,
+    /// The permanent it changes.
+    pub object: ObjectId,
+    /// What ending it costs.
+    pub cost: ManaCost,
 }
 
 /// A face of a card with several faces that a player can cast or play now.
@@ -667,6 +684,8 @@ pub enum PriorityAction {
     BringCompanion,
     /// Unlock this locked door of this Room (CR 709.5e, a special action): pay the door's mana cost.
     UnlockDoor(ObjectId, u8),
+    /// End this effect (CR 116.2c, a special action): pay what it names (it must be offered in `PriorityOptions.endable`).
+    EndEffect(EffectId),
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
     /// any priority, checked against the state (`manual.rs`).
     Manual(ManualAction),
