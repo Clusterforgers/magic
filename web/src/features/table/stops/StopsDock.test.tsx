@@ -31,7 +31,11 @@ function stopsOf(width: number, height: number) {
       await screen.findByRole('dialog', { name: 'Stops and Full Control' })
     }
   }
-  return { ...table, setStop, setFullControl, open }
+  const close = async (): Promise<void> => {
+    await table.user.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Stops and Full Control' })).toBeNull())
+  }
+  return { ...table, setStop, setFullControl, open, close }
 }
 
 const step = (side: StopSide, name: Step): HTMLElement =>
@@ -44,25 +48,30 @@ const keep = (): HTMLElement => screen.getByRole('button', { name: 'Keep stops' 
 
 describe.each(SIZES)('the toggles in %s', (_name, width, height) => {
   it('send the same SetStop for a press, a shift press and a press with Keep on', async () => {
-    const { user, open, setStop } = stopsOf(width, height)
-    await open()
+    const { user, open, close, setStop } = stopsOf(width, height)
+    // The ladder is in the popover below 1024 px; above, it is in the top bar and the open popover hides it.
+    const inPopover = width < 1024
+    if (inPopover) await open()
     await user.click(step('Own', 'Main1'))
     expect(setStop).toHaveBeenLastCalledWith('Own', 'Main1', true, false)
     await user.keyboard('{Shift>}')
     await user.click(step('Own', 'Main1'))
     await user.keyboard('{/Shift}')
     expect(setStop).toHaveBeenLastCalledWith('Own', 'Main1', true, true)
+    if (!inPopover) await open()
     await user.click(keep())
     expect(keep()).toHaveAttribute('aria-pressed', 'true')
+    if (!inPopover) await close()
     await user.click(step('Own', 'End'))
     expect(setStop).toHaveBeenLastCalledWith('Own', 'End', true, true)
     expect(setStop).toHaveBeenCalledTimes(3)
   })
 
   it('reach the other side after the switch, with the same arguments', async () => {
-    const { user, open, setStop } = stopsOf(width, height)
+    const { user, open, close, setStop } = stopsOf(width, height)
     await open()
     await user.click(screen.getByRole('button', { name: /^Theirs/ }))
+    if (width >= 1024 && width < 1600) await close()
     await user.click(step('Opponent', 'Draw'))
     expect(setStop).toHaveBeenCalledExactlyOnceWith('Opponent', 'Draw', true, false)
   })
@@ -138,7 +147,7 @@ describe('the targets of the dock', () => {
       await open()
       const buttons = [
         ...document.querySelectorAll<HTMLElement>(
-          '[data-region="controls"] button, [data-slot="popover-content"] button',
+          '[data-region="controls"] button, [data-region="bar"] [data-slot="stop"], [data-slot="popover-content"] button',
         ),
       ].filter((button) => button.closest('[hidden]') === null)
       expect(buttons.length).toBeGreaterThan(10)

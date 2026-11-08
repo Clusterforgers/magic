@@ -315,11 +315,14 @@ describe('the scales', () => {
     expect(theme.get('ease-in')).toBe('cubic-bezier(0.3, 0, 1, 1)')
   })
 
-  it('ends the largest breakpoint at 1600 px and gives pages three widths', () => {
+  it('ends the largest breakpoint at 1600 px and gives pages four widths', () => {
     expect(px(theme.get('breakpoint-2xl'))).toBe(1600)
-    expect([theme.get('container-narrow'), theme.get('container-page'), theme.get('container-wide')]).toEqual(
-      ['28rem', '48rem', '72rem'],
-    )
+    expect([
+      theme.get('container-narrow'),
+      theme.get('container-page'),
+      theme.get('container-wide'),
+      theme.get('container-wider'),
+    ]).toEqual(['28rem', '48rem', '72rem', '90rem'])
   })
 
   it('declares the colour scheme of each theme, so scrollbars and native controls follow it', () => {

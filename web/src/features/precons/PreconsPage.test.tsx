@@ -1,5 +1,5 @@
 // Goal: the precon page lists every precon with its deck check as an icon and words, filters by search, set and state, shows the loading, empty, failed and no-card-data states, opens the details with each card's mark and clauses and a Copy list of the cards that are not Verified, and Play makes a game with `precon:<code>` (one click for an account, a name first for a guest) and opens its lobby, while a deck the game cannot take has a disabled Play and a 422 says so.
-import { screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
@@ -307,6 +307,18 @@ describe('the details', () => {
     expect(within(main).queryByText('Sol Ring')).toBeNull()
     expect(within(main).getByText('Seer')).toBeInTheDocument()
     expect(screen.queryByRole('region', { name: /Commander/ })).toBeNull()
+  })
+
+  it('draws each card with its picture and shows the large picture on a mouse hover of its name', async () => {
+    const page = await open({ views: [view] })
+    await listed()
+    await page.user.click(screen.getByRole('button', { name: 'Details of Eldrazi Unbound' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Eldrazi Unbound' })
+    const main = await within(dialog).findByRole('region', { name: /Main deck/ })
+    const row = within(main).getByText('Sol Ring').closest('li') as HTMLElement
+    expect(row.querySelector('img')).toHaveAttribute('src', '/api/images/oracle/oracle-sol-ring/0/small')
+    act(() => fireEvent.pointerEnter(within(row).getByText('Sol Ring'), { pointerType: 'mouse' }))
+    expect(document.querySelector('[data-slot="hover-picture"]')).not.toBeNull()
   })
 
   it('copies the cards that are not Verified, a block each with its clauses quoted beside the reasons', async () => {
