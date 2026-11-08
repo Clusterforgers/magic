@@ -94,6 +94,11 @@ const fn weighs(event: TallyEvent) -> bool {
     )
 }
 
+/// The kinds that count the creatures that did it rather than the times.
+const fn once_per_object(event: TallyEvent) -> bool {
+    matches!(event, TallyEvent::Attacked | TallyEvent::Blocked)
+}
+
 /// Whether the kind is one of the turn's records rather than of the snapshot log.
 pub(crate) const fn is_record(event: TallyEvent) -> bool {
     matches!(
@@ -151,7 +156,8 @@ impl Scope<'_> {
     }
 
     /// The records of the kind this turn that count for the players and whose object the filter selects: events counted,
-    /// damage and counters by their amount.
+    /// damage and counters by their amount, an attack or a block once per creature ("each creature that attacked this turn"
+    /// counts a creature that attacked in two combats once).
     pub(crate) fn recorded(
         &self,
         event: TallyEvent,
@@ -168,6 +174,7 @@ impl Scope<'_> {
                 .filter_map(|record| record.shot.as_ref()),
         );
         let mut total = 0i64;
+        let mut seen: Vec<ObjectRef> = Vec::new();
         for record in &self.state.tallies.records {
             if record.event != event
                 || !record
@@ -181,7 +188,13 @@ impl Scope<'_> {
                     .shot
                     .as_ref()
                     .is_some_and(|shot| scope.selects(filter, shot.reference()).unwrap_or(false));
-            if selected {
+            let again = once_per_object(event)
+                && record.subject.is_some_and(|subject| {
+                    let known = seen.contains(&subject);
+                    seen.push(subject);
+                    known
+                });
+            if selected && !again {
                 total += if weighs(event) {
                     i64::from(record.amount)
                 } else {

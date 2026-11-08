@@ -92,6 +92,7 @@ pub fn may_cast(ctx: &Ctx, p: &Params, only: Option<&Value>) -> Tr<Value> {
                 .collect();
             // A permanent card is not an instant or a sorcery.
             what.extend(super::valid::permanent_card(valid)?);
+            (!valid.contains(',')).then(|| super::valid::fix23_creature_of_subtype(ctx, &mut what));
             if !what.is_empty() {
                 permission["what"] = json!(what);
             }
