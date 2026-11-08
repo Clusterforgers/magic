@@ -15,5 +15,7 @@ pub(super) fn next(state: &GameState, player: PlayerId, effect: EffectId) -> Nex
     if events(state, player, effect).is_none() {
         return Next::Drop;
     }
-    suspend::pay(state, player, object, cost, || events(state, player, effect))
+    suspend::pay(state, player, object, cost, || {
+        events(state, player, effect)
+    })
 }

@@ -929,6 +929,14 @@ describe('events with more than one shape', () => {
       "Grizzly Bears and Hill Giant can't attack Ana while each has a charge counter",
     ],
     [
+      effect(objects(2), { AddSubtype: 'Aura' }, { UntilPaid: '{W}' }),
+      'Hill Giant becomes Aura too until its controller pays {W} to end it',
+    ],
+    [
+      effect(objects(2), { LoseAbility: { object: 2, ability: 0 } }, { UntilPaid: '{1}' }),
+      'Hill Giant loses one of its abilities until its controller pays {1} to end it',
+    ],
+    [
       effect(objects(2), { SetController: 1 }, 'NextUntapStep'),
       "Hill Giant changes controller through its controller's next untap step",
     ],

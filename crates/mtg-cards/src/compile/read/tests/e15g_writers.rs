@@ -29,12 +29,13 @@ fn grant(what: &str, mods: &str, when: &str) -> String {
     )
 }
 
-const CAST: &str = r#"{"SpellCast":{"by":"You","what":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}]}}"#;
-const DIES: &str = r#"{"ZoneChange":{"from":"Battlefield","to":"Graveyard","what":[{"Type":"Creature"}]}}"#;
+const CAST: &str =
+    r#"{"SpellCast":{"by":"You","what":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}]}}"#;
+const DIES: &str =
+    r#"{"ZoneChange":{"from":"Battlefield","to":"Graveyard","what":[{"Type":"Creature"}]}}"#;
 const REBOUND: &str = r#"[{"AddKeyword":"Rebound"}]"#;
 const LIFELINK: &str = r#"[{"AddKeyword":"Lifelink"}]"#;
-const SWIFTSPEAR: &str =
-    "Whenever you cast an instant or sorcery spell, that spell gains rebound.";
+const SWIFTSPEAR: &str = "Whenever you cast an instant or sorcery spell, that spell gains rebound.";
 
 #[rstest]
 #[case::calming(licid("{W}", MODS, CREATURE), CALMING)]

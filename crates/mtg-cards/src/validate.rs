@@ -5438,6 +5438,10 @@ mod tests {
         format!(r#"{{"Spell":{{"effects":[{{"Shield":{{"when":{{"Damage":{{"to":"You"}}}},"by":"Prevent","duration":{FOLLOWS_A_COUNTER}}}}}]}}}}"#),
         &["faces[0].abilities[0].Spell.effects[0].Shield: only a continuous effect lasts for as long as the permanents it names have a counter"]
     )]
+    #[case::e15g_a_rule_until_paid(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"CantDraw":"You"},"duration":{"UntilPaid":"{W}"}}}]}}"#.to_owned(),
+        &["faces[0].abilities[0].Spell.effects[0].Rule.rule: only a continuous effect lasts until its controller pays to end it"]
+    )]
     #[case::a_permanent_that_prevents_only_the_next_damage(
         r#"{"Replacement":{"when":{"Damage":{"to":"You"}},"by":"PreventNext"}}"#.to_owned(),
         &["faces[0].abilities[0].Replacement: only a shield changes the next damage"]

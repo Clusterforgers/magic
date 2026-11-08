@@ -69,7 +69,8 @@ pub(super) fn e15g_licid_texts(
         targets: targets.clone(),
         effects: vec![attach.clone()],
     };
-    let change = "~ loses this ability and becomes an Aura enchantment with enchant creature. Attach it to ";
+    let change =
+        "~ loses this ability and becomes an Aura enchantment with enchant creature. Attach it to ";
     let end = format!(" You may pay {price} to end this effect.");
     let texts: Vec<String> = write(&plain)
         .iter()

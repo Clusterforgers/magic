@@ -1295,7 +1295,9 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return unmapped("key:Animate.nothing");
     }
     if let Some(paid) = e15g_licid(ctx, p, &mut mods)? {
-        return Ok(vec![json!({"Continuous": {"affected": affected, "mods": mods, "duration": paid}})]);
+        return Ok(vec![
+            json!({"Continuous": {"affected": affected, "mods": mods, "duration": paid}}),
+        ]);
     }
     let rules = super::effects_animate::rule_effects(p, &affected, duration)?;
     let mut effects =

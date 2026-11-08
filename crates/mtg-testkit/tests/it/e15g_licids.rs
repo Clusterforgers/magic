@@ -84,12 +84,14 @@ fn is(driver: &Driver, id: ObjectId, kind: CardType) -> bool {
 }
 
 fn table(seats: usize) -> Scenario {
-    let mut scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
-        0,
-        vec![ready(licid()), ready(plains()), ready(plains())],
-    );
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, vec![ready(licid()), ready(plains()), ready(plains())]);
     for seat in 1..seats {
-        scenario = scenario.battlefield(seat, vec![ready(free_creature(&format!("Bear {seat}"), 2, 2))]);
+        scenario = scenario.battlefield(
+            seat,
+            vec![ready(free_creature(&format!("Bear {seat}"), 2, 2))],
+        );
     }
     scenario
 }
@@ -114,13 +116,27 @@ fn a_licid_becomes_an_aura_until_its_controller_pays(
     let mut driver = Driver::from_scenario(scenario)?;
     let printed = abilities_of(driver.state(), driver.id_of("Calming Licid")?).len();
     let (licid, bear) = enchant(&mut driver)?;
-    assert_eq!(driver.state().zone(Zone::Battlefield).contains(&licid), true);
+    assert_eq!(
+        driver.state().zone(Zone::Battlefield).contains(&licid),
+        true
+    );
     assert!(is(&driver, licid, CardType::Enchantment) && !is(&driver, licid, CardType::Creature));
-    assert_eq!(driver.state().host_of(licid), Some(bear), "attached to the target");
-    assert_eq!(abilities_of(driver.state(), licid).len(), printed - 1, "loses this ability");
+    assert_eq!(
+        driver.state().host_of(licid),
+        Some(bear),
+        "attached to the target"
+    );
+    assert_eq!(
+        abilities_of(driver.state(), licid).len(),
+        printed - 1,
+        "loses this ability"
+    );
     let offers = endable(&driver);
     assert_eq!(offers.len(), 1, "its controller may end the effect");
-    assert_eq!((offers[0].object, offers[0].cost.to_string()), (licid, "{W}".to_owned()));
+    assert_eq!(
+        (offers[0].object, offers[0].cost.to_string()),
+        (licid, "{W}".to_owned())
+    );
     // An opponent who holds priority may not end it.
     driver.pass()?;
     assert_eq!(driver.decision()?.player, pid(1));
@@ -129,11 +145,22 @@ fn a_licid_becomes_an_aura_until_its_controller_pays(
     let effect = endable(&driver)[0].effect;
     driver.answer(Answer::Priority(PriorityAction::EndEffect(effect)))?;
     pay(&mut driver)?;
-    assert!(driver.state().zone(Zone::Stack).is_empty(), "a special action uses no stack");
-    assert_eq!(driver.decision()?.player, pid(0), "the payer keeps priority");
+    assert!(
+        driver.state().zone(Zone::Stack).is_empty(),
+        "a special action uses no stack"
+    );
+    assert_eq!(
+        driver.decision()?.player,
+        pid(0),
+        "the payer keeps priority"
+    );
     assert!(is(&driver, licid, CardType::Creature) && !is(&driver, licid, CardType::Enchantment));
     assert_eq!(driver.state().host_of(licid), None, "no longer attached");
-    assert_eq!(abilities_of(driver.state(), licid).len(), printed, "the ability is back");
+    assert_eq!(
+        abilities_of(driver.state(), licid).len(),
+        printed,
+        "the ability is back"
+    );
     assert!(endable(&driver).is_empty(), "ended once");
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
@@ -144,10 +171,11 @@ fn a_licid_becomes_an_aura_until_its_controller_pays(
 fn an_aura_licid_without_its_creature_goes_to_the_graveyard(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(table(seats).hand(0, vec![burn("Shock", 2)]).battlefield(
-        0,
-        vec![ready(licid()), ready(plains()), ready(mountain())],
-    ))?;
+    let mut driver = Driver::from_scenario(
+        table(seats)
+            .hand(0, vec![burn("Shock", 2)])
+            .battlefield(0, vec![ready(licid()), ready(plains()), ready(mountain())]),
+    )?;
     let (licid, _) = enchant(&mut driver)?;
     driver.begin_cast("Shock")?;
     let target = driver.target_named("Bear 1")?;
@@ -156,7 +184,10 @@ fn an_aura_licid_without_its_creature_goes_to_the_graveyard(
     settle(&mut driver)?;
     let owner = Zone::Graveyard(pid(0));
     let dead = driver.state().zone(owner).iter().any(|id| {
-        driver.state().object(*id).is_some_and(|o| o.card().name == "Calming Licid")
+        driver
+            .state()
+            .object(*id)
+            .is_some_and(|o| o.card().name == "Calming Licid")
     });
     assert!(dead, "the Aura is put into its owner's graveyard");
     assert!(!driver.state().zone(Zone::Battlefield).contains(&licid));
@@ -174,7 +205,10 @@ fn a_spell_deals_damage_with_the_keywords_it_gained(
         .battlefield(
             0,
             vec![
-                ready(granter("Judith", r#"[{"AddKeyword":"Deathtouch"},{"AddKeyword":"Lifelink"}]"#)),
+                ready(granter(
+                    "Judith",
+                    r#"[{"AddKeyword":"Deathtouch"},{"AddKeyword":"Lifelink"}]"#,
+                )),
                 ready(mountain()),
             ],
         )
@@ -186,8 +220,15 @@ fn a_spell_deals_damage_with_the_keywords_it_gained(
     driver.choose_targets(&[target])?;
     pay(&mut driver)?;
     settle(&mut driver)?;
-    assert!(driver.id_of("Wall").is_err(), "deathtouch destroys the wall");
-    assert_eq!(driver.state().player(pid(0)).unwrap().life(), life + 1, "lifelink");
+    assert!(
+        driver.id_of("Wall").is_err(),
+        "deathtouch destroys the wall"
+    );
+    assert_eq!(
+        driver.state().player(pid(0)).unwrap().life(),
+        life + 1,
+        "lifelink"
+    );
     Ok(())
 }
 
@@ -197,7 +238,10 @@ fn a_spell_that_gains_rebound_is_exiled_as_it_resolves(
     #[values(false, true)] granted: bool,
 ) -> Result<(), ScriptError> {
     let mine = if granted {
-        vec![ready(granter("Taigam", r#"[{"AddKeyword":"Rebound"}]"#)), ready(mountain())]
+        vec![
+            ready(granter("Taigam", r#"[{"AddKeyword":"Rebound"}]"#)),
+            ready(mountain()),
+        ]
     } else {
         vec![ready(free_creature("Taigam", 1, 1)), ready(mountain())]
     };
@@ -212,11 +256,12 @@ fn a_spell_that_gains_rebound_is_exiled_as_it_resolves(
     pay(&mut driver)?;
     settle(&mut driver)?;
     let held = |zone: Zone| {
-        driver
-            .state()
-            .zone(zone)
-            .iter()
-            .any(|id| driver.state().object(*id).is_some_and(|o| o.card().name == "Shock"))
+        driver.state().zone(zone).iter().any(|id| {
+            driver
+                .state()
+                .object(*id)
+                .is_some_and(|o| o.card().name == "Shock")
+        })
     };
     assert_eq!(
         (held(Zone::Exile), held(Zone::Graveyard(pid(0)))),
