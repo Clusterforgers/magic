@@ -95,6 +95,7 @@ pub(crate) fn given(kind: GiftKind) -> Vec<Effect> {
         count: Amount::one(),
         tapped,
         attacking: false,
+        against: None,
         bind: None,
     };
     vec![match kind {

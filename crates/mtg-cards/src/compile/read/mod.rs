@@ -88,6 +88,7 @@ mod e15f_words;
 mod e15g_licid;
 mod e16a_history;
 mod e16b_presence;
+mod e16c_attacks;
 mod effects;
 mod either_way_pairs;
 mod equip_options;

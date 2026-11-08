@@ -2187,7 +2187,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Surveilled { who }
             | TriggerPattern::Bolstered { who }
             | TriggerPattern::Expend { who, .. }
-            | TriggerPattern::W11cCrime { who } => {
+            | TriggerPattern::W11cCrime { who }
+            | TriggerPattern::PlayerCountersPut { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             TriggerPattern::Drew { who, what, .. } | TriggerPattern::Did { who, what, .. } => {
@@ -3577,12 +3578,16 @@ impl Walker<'_> {
                 who,
                 token,
                 count,
+                against,
                 bind,
                 ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
                 w.at("count", |w| w.amount(count));
+                if let Some(against) = against {
+                    w.at("against", |w| w.reference(against, Kind::Either));
+                }
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }

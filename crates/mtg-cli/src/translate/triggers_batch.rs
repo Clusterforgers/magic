@@ -26,11 +26,27 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "RingTemptsYou" => ring_tempts(ctx, p),
         "BecomesCrewed" => becomes_crewed(ctx, p),
         "Attached" => attached(ctx, p),
+        "CounterAddedOnce" if p.has("ValidPlayer") && !p.has("ValidCard") => {
+            player_counters(p).map(|inner| batch(&inner))
+        }
         "CounterAddedOnce" | "CounterPlayerAddedAll" => {
             counters(ctx, p, "CountersPut").map(|inner| batch(&inner))
         }
         _ => return None,
     })
+}
+
+/// "Whenever you get one or more {E}": counters put on a player together (e16c).
+fn player_counters(p: &Params) -> Tr<Value> {
+    keys(p, "PlayerCounter", &["ValidPlayer", "CounterType"])?;
+    let mut pattern = json!({ "who": player_ref(p.get("ValidPlayer"))? });
+    if let Some(kind) = p.get("CounterType") {
+        let Some(kind) = super::amount::counter_kind(kind) else {
+            return unmapped("key:Trigger.PlayerCounter.CounterType");
+        };
+        pattern["counter"] = kind;
+    }
+    Ok(json!({ "PlayerCountersPut": pattern }))
 }
 
 fn unblocked(ctx: &Ctx, p: &Params) -> Tr<Value> {

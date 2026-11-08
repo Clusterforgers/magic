@@ -1382,18 +1382,9 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             )
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::AttachedPlayer,
-        } => said(what, "attacks enchanted player"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::Monarch,
-        } => said(what, "attacks the monarch"),
-        TriggerPattern::AttacksPlayer {
-            what,
-            at: Ref::Opponents,
-        } => said(what, "attacks one of your opponents"),
+        TriggerPattern::AttacksPlayer { what, at } => {
+            said(what, super::e16c_attacks::e16c_attacks_player(at)?)
+        }
         TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
             said(what, "attacks you or a planeswalker you control")
         }
@@ -1637,7 +1628,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))
             .or_else(|| super::r7e_events::r7e_any_of(patterns)),
         _ => {
-            if let Some(each) = super::r7e_events::fix10_each_source(pattern) {
+            if let Some(each) = super::r7e_events::fix10_each_source(pattern)
+                .or_else(|| super::e16c_attacks::e16c_group_at_text(pattern))
+            {
                 return Some(each);
             }
             let (what, verb) = happening(pattern)?;
@@ -1647,7 +1640,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
 }
 
 /// "Whenever one or more creatures you control attack", "Whenever two or more Knights attack".
-fn group_attacks_text(what: &Selector, at_least: u32) -> Option<String> {
+pub(super) fn group_attacks_text(what: &Selector, at_least: u32) -> Option<String> {
     let count = if at_least == 1 {
         "one"
     } else {
@@ -1786,6 +1779,9 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
 /// into your graveyard from your library".
 fn batch_text(inner: &TriggerPattern) -> Option<String> {
     match inner {
+        TriggerPattern::PlayerCountersPut { .. } => {
+            super::e16c_attacks::e16c_player_counters_text(inner)
+        }
         TriggerPattern::DealsDamage { source, to, combat } => Some(format!(
             "Whenever one or more {} deal {}",
             phrase_text(source, Form::All)?,

@@ -86,6 +86,7 @@ fn one_copy_for_each_opponent() -> Effect {
         count: Amount::Players(Ref::Opponents),
         tapped: false,
         attacking: false,
+        against: None,
         bind: Some(ENCORED.to_owned()),
     }
 }

@@ -521,6 +521,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)
         }
+        TriggerPattern::PlayerCountersPut { who: by, .. } => {
+            let (name, s) = who(by);
+            (format!("{name} get{s} counters"), false)
+        }
         TriggerPattern::Ventured {
             who: by,
             room: None,

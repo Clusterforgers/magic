@@ -65,9 +65,7 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let mut create = json!({
         "token": spec, "count": count, "tapped": flag(p, "TokenTapped")?});
-    if flag(p, "TokenAttacking")? {
-        create["attacking"] = json!(true);
-    }
+    super::tokens::entering_attacking(ctx, p, &mut create)?;
     // Who owns and controls the copies: the controller by default.
     match p.get("Controller") {
         None | Some("You") => {}

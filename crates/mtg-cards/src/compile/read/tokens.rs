@@ -219,7 +219,7 @@ pub fn same_written_text(left: &str, right: &str) -> bool {
     // in a printed text is the "~" of a written one, and no step reads it as another object.
     let normal = |text: &str| {
         symbols_sorted(without_period(&canonical(&super::w16_wordings::normal(
-            &super::w15_wordings::normal(&canonical(text)),
+            &super::e16c_attacks::normal(&super::w15_wordings::normal(&canonical(text))),
         ))))
     };
     normal(left) == normal(right)

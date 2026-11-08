@@ -140,6 +140,7 @@ fn w9c_create(token: crate::effect::TokenRef) -> Effect {
         count: Amount::Triggering,
         tapped: false,
         attacking: false,
+        against: None,
         bind: None,
     }
 }

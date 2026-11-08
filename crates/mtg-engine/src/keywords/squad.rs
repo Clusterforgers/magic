@@ -54,6 +54,7 @@ impl KeywordRules for Squad {
                 count: Amount::Kicks,
                 tapped: false,
                 attacking: false,
+                against: None,
                 bind: None,
             }],
         }]
