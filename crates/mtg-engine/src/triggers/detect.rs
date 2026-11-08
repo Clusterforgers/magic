@@ -119,8 +119,12 @@ enum Happened {
         nth: u32,
         in_draw_step: u32,
     },
-    /// A permanent became tapped.
-    Tapped { object: ObjectId },
+    /// A permanent became tapped: the `nth` time this turn, and whether as it was declared as an attacker.
+    Tapped {
+        object: ObjectId,
+        nth: u32,
+        declared: bool,
+    },
     /// A permanent became untapped.
     Untapped { object: ObjectId },
     /// A permanent phased out; judged as it was before (CR 702.26).
@@ -314,6 +318,7 @@ impl Happened {
             | Happened::LifeLost { nth, .. }
             | Happened::Cycled { nth, .. }
             | Happened::Surveilled { nth, .. }
+            | Happened::Tapped { nth, .. }
             | Happened::Created { nth, .. }
             | Happened::Counters { nth, .. } => Some(*nth),
             _ => None,
@@ -838,6 +843,23 @@ const fn crewed_tally(saddle: bool) -> Tally {
     }
 }
 
+/// A permanent becoming tapped: which time of the turn for it, and whether an earlier event of the batch declared it as an
+/// attacker (the tap of attacking, CR 508.1f).
+fn e16a_tapped(look: Look<'_>, object: ObjectId) -> Happened {
+    let declared = look.earlier.iter().any(|event| {
+        matches!(event, Event::AttackersDeclared { attackers, .. }
+            if attackers.iter().any(|(attacker, _)| *attacker == object))
+    });
+    let nth = look.post.object(object).map_or(0, |held| {
+        object_ordinal(look, held.reference(), None, Tally::E16aTapped)
+    });
+    Happened::Tapped {
+        object,
+        nth,
+        declared,
+    }
+}
+
 /// Which time of the turn the event of `kind` is for `object` (caused by what `by` controls, when it is given): the count
 /// after the batch less the events of that kind for the object that follow it in the batch.
 fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind: Tally) -> u32 {
@@ -846,6 +868,7 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
         (Tally::Attacked, Event::AttackersDeclared { attackers, .. }) => {
             attackers.iter().any(|(attacker, _)| *attacker == object.id)
         }
+        (Tally::E16aTapped, Event::PermanentTapped { object: tapped }) => *tapped == object.id,
         (
             Tally::Damaged,
             Event::DamageDealt {
@@ -1020,7 +1043,7 @@ fn about_players_and_permanents(
         }),
         Event::PermanentTapped { object } => {
             tapped.push(*object);
-            found.push(Happened::Tapped { object: *object });
+            found.push(e16a_tapped(look, *object));
         }
         Event::PermanentUntapped { object } => found.push(Happened::Untapped { object: *object }),
         Event::PermanentPhasedOut { object, .. } => {
@@ -1748,7 +1771,15 @@ fn matching_permanents(
             (level == reached && picks(what, actor)?)
                 .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
         }
-        (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
+        (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped, .. })
+        | (
+            TriggerPattern::TappedNotAttacking { what },
+            Happened::Tapped {
+                object: tapped,
+                declared: false,
+                ..
+            },
+        )
         | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped })
         | (TriggerPattern::PhasedOut { what }, Happened::PhasedOut { object: tapped })
         | (TriggerPattern::PhasedIn { what }, Happened::PhasedIn { object: tapped }) => {
@@ -2029,9 +2060,44 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
             });
             batch_causes(inner, firsts, scope)
         }
+        // "Whenever you discard one or more cards for the first time each turn": the batch that holds the player's first
+        // discards of the turn, any card.
+        (TriggerPattern::Nth { event, nth: 1 }, Happened::Batch(members))
+            if matches!(&**event, TriggerPattern::Batch(inner)
+                if matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())) =>
+        {
+            let TriggerPattern::Batch(inner) = &**event else {
+                return Vec::new();
+            };
+            let firsts = members
+                .iter()
+                .filter(|member| e16a_first_discards(scope.state, members, member));
+            batch_causes(inner, firsts, scope)
+        }
         (TriggerPattern::Batch(_), _) | (_, Happened::Batch(_)) => Vec::new(),
         _ => matching(pattern, happened, scope).into_iter().collect(),
     }
+}
+
+/// Whether `member` is a discard of a player whose discards this turn are all in this batch: the turn's count after the
+/// batch (`post`) equals the player's discards in it.
+fn e16a_first_discards(post: &GameState, members: &[Happened], member: &Happened) -> bool {
+    let discarder = |happened: &Happened| match happened {
+        Happened::Moved {
+            from: Zone::Hand(player),
+            cause: Some(ZoneCause::Discarded),
+            ..
+        } => Some(*player),
+        _ => None,
+    };
+    let Some(player) = discarder(member) else {
+        return false;
+    };
+    let here = members
+        .iter()
+        .filter(|other| discarder(other) == Some(player))
+        .count();
+    usize::try_from(post.tallied(player, Tally::Discarded)).is_ok_and(|turn| turn == here)
 }
 
 /// Whether a damage pattern's recipient names players, so that its batch triggers once for each player dealt damage.

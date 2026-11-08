@@ -75,6 +75,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         | TriggerPattern::Mutates { what }
         | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
+        | TriggerPattern::TappedNotAttacking { what }
         | TriggerPattern::Untapped { what }
         | TriggerPattern::PhasedOut { what }
         | TriggerPattern::PhasedIn { what }
@@ -752,6 +753,9 @@ fn each_turn(r: &mut Reader<'_>, noun: &str, whose: &str) -> Option<u32> {
 /// The ordinals a count of a turn names.
 const ORDINALS: [&str; 5] = ["first", "second", "third", "fourth", "fifth"];
 
+/// A tap other than to attack (`TriggerPattern::TappedNotAttacking`).
+const NOT_ATTACKING: &str = "becomes tapped, if it isn't being declared as an attacker";
+
 /// The card itself, or an object with its article: "a creature you control", "another creature".
 pub(super) fn subject(r: &mut Reader<'_>) -> Option<Selector> {
     if r.source() {
@@ -1389,6 +1393,7 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         }
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
+        TriggerPattern::TappedNotAttacking { what } => said(what, NOT_ATTACKING),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::PhasedOut { what } => said(what, "phases out"),
         TriggerPattern::PhasedIn { what } => said(what, "phases in"),
@@ -1744,7 +1749,8 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         }
         // The damage of one batch is one time, and the engine counts only the first batch of a turn.
         TriggerPattern::Batch(inner) if nth == 1 => {
-            let counted = super::r7e_events::r7e_one_object_damage(inner)?;
+            let counted = super::r7e_events::r7e_one_object_damage(inner)
+                .or_else(|| super::e16a_history::first_discards(inner))?;
             return Some(format!("{counted} for the first time each turn"));
         }
         // The counters of one batch are one time: the first counter put in the turn is the one that counts.

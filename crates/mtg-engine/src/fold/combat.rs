@@ -141,6 +141,12 @@ fn damage_player(
     };
     if amount > 0 {
         state.tally_by(id, Tally::Hurt, amount);
+        let kind = if in_combat {
+            Tally::E16aCombatHurt
+        } else {
+            Tally::E16aNoncombatHurt
+        };
+        state.tally_by(id, kind, amount);
         if lost > 0 {
             state.tally_loss(id, u32::try_from(lost).unwrap_or(0));
         }

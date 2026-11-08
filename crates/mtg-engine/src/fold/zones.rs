@@ -485,6 +485,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 )));
             }
             let before = state.objects.get(object).map(|o| o.controller);
+            log_sacrifice(state, (*cause, *from), before, *object);
             move_object(state, *object, *to, Placement::Top)?;
             if *cause == ZoneCause::Discarded
                 && let Zone::Hand(player) = *from
@@ -584,6 +585,22 @@ fn tally_sacrifice(
         && let Some(controller) = controller
     {
         state.tally(controller, Tally::Sacrificed);
+    }
+}
+
+/// Logs a permanent about to be sacrificed as it last existed on the battlefield (`TallyEvent::Sacrificed`), so "an
+/// artifact you've sacrificed this turn" judges what it was, not the card in the graveyard.
+fn log_sacrifice(
+    state: &mut GameState,
+    (cause, from): (ZoneCause, Zone),
+    controller: Option<PlayerId>,
+    id: ObjectId,
+) {
+    if cause == ZoneCause::Sacrificed
+        && from == Zone::Battlefield
+        && let Some(controller) = controller
+    {
+        state.log_event(TallyEvent::Sacrificed, controller, id);
     }
 }
 

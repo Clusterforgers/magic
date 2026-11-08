@@ -86,6 +86,7 @@ mod e15a_max_speed;
 mod e15b_entering;
 mod e15f_words;
 mod e15g_licid;
+mod e16a_history;
 mod effects;
 mod either_way_pairs;
 mod equip_options;

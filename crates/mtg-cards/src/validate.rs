@@ -2194,6 +2194,7 @@ impl<'a> Walker<'a> {
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
             TriggerPattern::Tapped { what }
+            | TriggerPattern::TappedNotAttacking { what }
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
@@ -2368,6 +2369,8 @@ impl Walker<'_> {
             | TriggerPattern::LifeGained { .. }
             | TriggerPattern::LifeLost { .. }
             | TriggerPattern::Surveilled { .. }
+            // The times the permanent itself became tapped.
+            | TriggerPattern::Tapped { .. }
             | TriggerPattern::Attacks { .. }
             | TriggerPattern::BecomesCrewed { .. }
             | TriggerPattern::BecomesSaddled { .. }
@@ -2397,12 +2400,14 @@ impl Walker<'_> {
                     to: Some(to),
                     combat: None,
                 } if source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::Defending))
+                    // A player's first discards of the turn, of any card.
+                    || matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())
             }
             _ => false,
         };
         if !counted {
             self.problem(
-                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source are counted in a turn",
+                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source or a player's first discards are counted in a turn",
             );
         }
         self.at("event", |w| w.trigger_pattern(event));

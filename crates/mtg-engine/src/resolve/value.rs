@@ -416,6 +416,8 @@ impl<'a> Scope<'a> {
         let kind = match what {
             TurnTally::Attackers => Tally::Attackers,
             TurnTally::DamageTaken => Tally::Hurt,
+            TurnTally::CombatDamageTaken => Tally::E16aCombatHurt,
+            TurnTally::NoncombatDamageTaken => Tally::E16aNoncombatHurt,
             TurnTally::LifeGained => Tally::Gained,
             TurnTally::SpellsCast => Tally::Cast,
             TurnTally::InstantsAndSorceriesCast => Tally::CastInstantOrSorcery,
