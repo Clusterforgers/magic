@@ -491,3 +491,36 @@ async fn an_empty_cache_is_refused_before_the_database_is_touched(pool: PgPool) 
     .unwrap();
     assert_eq!(tables, 0, "not even the schema was created");
 }
+
+#[sqlx::test]
+async fn ingest_stores_the_popularity_of_the_oracle_file_and_keeps_it_without_ranks(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let cache = fixture_cache(dir.path());
+    common::put_ranks(
+        &cache,
+        &[("Lightning Bolt", Some(3)), ("Sol Ring", Some(1))],
+    );
+    let (_, log) = run(&cache, &pool, false).await;
+    assert!(log.contains("ranks: 2 cards ranked by popularity"), "{log}");
+    let stored: Vec<(String, i32)> = sqlx::query_as(
+        "SELECT c.name, r.edhrec_rank FROM card_ranks r JOIN cards c USING (oracle_id) ORDER BY 2",
+    )
+    .fetch_all(&pool)
+    .await
+    .unwrap();
+    assert_eq!(
+        stored,
+        [("Sol Ring".to_owned(), 1), ("Lightning Bolt".to_owned(), 3)]
+    );
+
+    // An unchanged file with ranks stored is not read again.
+    let (_, log) = run(&cache, &pool, false).await;
+    assert!(!log.contains("ranks:"), "{log}");
+    assert_eq!(count(&pool, "card_ranks").await, 2);
+
+    // A new file without a rank leaves the stored ranks.
+    common::put_ranks(&cache, &[]);
+    let (_, log) = run(&cache, &pool, false).await;
+    assert!(log.contains("ranks: left as they are"), "{log}");
+    assert_eq!(count(&pool, "card_ranks").await, 2);
+}

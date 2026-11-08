@@ -16,6 +16,7 @@ use crate::fix_marks::FixMarkRepo;
 use crate::import::Importer;
 use crate::precons::PreconRepo;
 use crate::prefs::PrefsRepo;
+use crate::ranks::RankRepo;
 use crate::reads::ReadRepo;
 use crate::runs::ImportRuns;
 
@@ -99,6 +100,11 @@ impl Database {
     /// Verdicts players gave the drafts.
     pub fn reads(&self) -> ReadRepo {
         ReadRepo::new(self.pool.clone())
+    }
+
+    /// The popularity of cards (EDHREC ranks).
+    pub fn ranks(&self) -> RankRepo {
+        RankRepo::new(self.pool.clone())
     }
 
     /// Precon deck listing and loading.
