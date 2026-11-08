@@ -4,7 +4,7 @@
 //! the costs are left out, since paying one can read the hand (a discard), and so is everything outside the
 //! battlefield. Whether the seat can pay is for the window itself, where a dwell hides it.
 
-use mtg_cards::ability::{Ability, Limit, Timing};
+use mtg_cards::ability::{Ability, Timing};
 use mtg_core::ids::PlayerId;
 
 use crate::abilities::AbilityRef;
@@ -36,7 +36,7 @@ pub fn can_answer_now(state: &GameState, player: PlayerId) -> bool {
         })
 }
 
-/// Whether the timing, the zone, a once-per-turn limit, an "activate only" condition and a `{T}` let `rules` be activated.
+/// Whether the timing, the zone, a use limit, an "activate only" condition and a `{T}` let `rules` be activated.
 fn timely(
     state: &GameState,
     player: PlayerId,
@@ -62,8 +62,8 @@ fn timely(
     if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
         return false;
     }
-    if *limit == Some(Limit::OncePerTurn)
-        && state.limit_spent(object.reference(), address.source, address.ability)
+    if let Some(limit) = limit
+        && state.limit_spent(*limit, object.reference(), address.source, address.ability)
     {
         return false;
     }
