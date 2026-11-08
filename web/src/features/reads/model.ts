@@ -52,7 +52,7 @@ export function differsCount(card: ReadCard): number {
 
 /** The words of a draft's state. */
 export const STATE_WORDS: Readonly<Record<ReadState, string>> = {
-  pending: 'Waits for a read',
+  pending: 'Unverified, waiting for a read',
   approved: RUNS_ON_READS,
   wrong: 'Found wrong',
 }

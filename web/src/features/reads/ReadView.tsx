@@ -232,7 +232,7 @@ export function ReadView({ api, target }: ReadViewProps) {
           action={<BackLink target={target} />}
         >
           {finished
-            ? `Thank you. A card found correct runs automatically from the next game; one found wrong is ${BY_HAND} until it is fixed.`
+            ? `Thank you. A card found correct counts as read from the next game; one found wrong is ${BY_HAND} until it is fixed.`
             : target === null
               ? 'Every draft has a read.'
               : 'Every draft in this deck has your read, or the deck has none.'}
